@@ -1,0 +1,70 @@
+# Preamble {-}
+
+## Dedication {-}
+
+```{r, echo = FALSE}
+knitr::include_graphics("other/images/marine_corps_birthday_ball.jpeg") 
+```
+
+And what is romantic, Kay ---  
+And what is love?  
+Need we ask anyone to tell us these things?  
+
+## Acknowledgements {-}
+
+This work builds on and extends the contributions of many people in the R and Open Source communities. In particular, I would like to acknowledge extensive material taken from @isrs2014, @rds2016, @dapa2019, @mdrt2019, @bryan2019, @isrs2014, @bsms2012, @rds2016, @tmwr2020, @timbers, and @glmlm2019.   
+ 
+[Alboukadel Kassambara](https://www.datanovia.com/en/blog/gganimate-how-to-create-plots-with-beautiful-animation-in-r/), [Andrew Tran](https://github.com/andrewbtran/NICAR-2019-mapping), [Thomas Mock](https://themockup.blog/) and others kindly allowed for the re-use and/or modification of their work.
+
+```{r, echo = FALSE, fig.align='center'}
+knitr::include_graphics("other/images/team.png") 
+```
+ 
+Thanks to contributions from students and colleagues at Harvard and elsewhere, as well as from random people I met on the internet: Albert Rivero, Nicholas Dow, Celine Vendler, Sophia Zheng, Maria Burzillo, Robert McKenzie, Deborah Gonzalez, Beau Meche, Evelyn Cai, Miro Bergam, Jessica Edwards, Emma Freeman, Cassidy Bargell, Yao Yu, Vivian Zhang, Ishan Bhatt,  Mak Famulari, Tahmid Ahmed, Eliot Min, Hannah Valencia, Asmer Safi, Erin Guetzloe, Shea Jenkins, Thomas Weiss, Diego Martinez, Andy Wang, Tyler Simko, Jake Berg, Connor Rust, Liam Rust, Alla Baranovsky, Carine Hajjar, Diego Arias, and Stephanie Yao.
+
+```{r, echo = FALSE, fig.align='center'}
+knitr::include_graphics("other/images/bootcamp.png") 
+```
+
+Also, Becca Gill, Ajay Malik, Heather Li, Nosa Lawani, Stephanie Saab, Nuo Wen Lei, Anmay Gupta and Dario Anaya.
+
+```{r, echo = FALSE, fig.align='center'}
+knitr::include_graphics("other/images/summer_2021_students.png") 
+```
+
+Also, Kevin Xu, Anmay Gupta, Sophia Zhu, Arghayan Jeiyasarangkan, Yuhan Wu, Ryan Southward, George Pentchev, Ahmet Atilla Colak, Mahima Malhotra, and Shreeram Patkar.
+
+```{r, echo = FALSE, fig.align='center'}
+knitr::include_graphics("other/images/summer_2022_students.png") 
+```
+
+Also, Tejas Mundhe, Jackson Roe, Varun Dommeti, Soham Gunturu and Felix Cai.
+
+```{r, echo = FALSE, fig.align='center'}
+knitr::include_graphics("other/images/summer-2023.png") 
+```
+
+Also Melissa Ban, Srihith Garlapati, Miriam Heiss, Matthew Ru, Mann Talati, Alex Kuai, Anish Bellamkonda, Krish Saluja, Aryan Kancherla, Zayan Farooq, Rajarshi Mandal, Pranav Chivukula, and Pratham Kancherla.
+
+```{r, echo = FALSE, fig.align='center'}
+knitr::include_graphics("other/images/summer-2024.png") 
+```
+
+Also Tongyan Ban, Anish Bellamkonda, Tejas Mundhe, Vaangmaya Rebba, Luit Deka, Aadhira Satheesh, Ethan Xiao, Nosa Lawani, Alan Cai, Adi Chaudhary, Atharva Bir Dutta, Monish Malla, Navya Joshi, Mihir Kaushal, Sanaka Dash, Gia Khang, and Tanay Janmanchi.
+
+I would like to gratefully acknowledge funding from [The Derek Bok Center for Teaching and Learning](https://bokcenter.harvard.edu/) at Harvard University, via its [Digital Teaching Fellows](https://bokcenter.harvard.edu/graduate-fellows-0) and [Learning Lab Undergraduate Fellows](https://bokcenter.harvard.edu/undergraduate-fellows) programs.
+
+```{r, echo = FALSE}
+knitr::include_graphics("other/images/motorcycle.jpeg") 
+```
+
+*David Kane*  
+
+
+## License {-}
+
+<a rel="license" href="http://creativecommons.org/licenses/by-nc-sa/4.0/"><img alt="Creative Commons License" style="border-width:0" src="https://i.creativecommons.org/l/by-nc-sa/4.0/88x31.png" /></a><br />This work is licensed under a <a rel="license" href="http://creativecommons.org/licenses/by-nc-sa/4.0/">Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International License</a>.
+
+
+
+

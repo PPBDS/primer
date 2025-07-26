@@ -1,0 +1,408 @@
+# Getting Started {.unnumbered}
+
+*You can never look at the data too much.* -- Mark Engerman
+
+The world confronts us. Make decisions we must.
+
+### Installing R and Positron {.unnumbered}
+
+<!-- Add images -->
+
+<!-- Need to figure out how to run with set_positron_settings(). -->
+
+We use [**R**](https://www.r-project.org/about.html) via [**Positron**](https://positron.posit.co). R is to Positron as a car's engine is to its dashboard.
+
+More precisely, R is a programming language that runs computations, while Positron is an *integrated development environment (IDE)* that provides an interface with many convenient features. Just as having access to a speedometer, rearview mirrors, and a navigation system makes driving much easier, using Positron's interface makes working with R much easier.
+
+Download and install R and Positron on your computer.
+
+1. [Download and install R](https://cloud.r-project.org/). If you are using a Mac, make sure to use the correct installation, depending on whether you are using newer Apple silicon "M1-3 Macs" (first option) or older "Intel Macs" (second option). You can look up the chip used in your Mac by checking "About This Mac" under the Apple menu.
+
+2. [Download and install Positron](https://github.com/posit-dev/positron/releases). Use the latest release at the top.
+
+3. If you are using Windows, you **must** also do two things:
+
+  + Install [Git for Windows](https://gitforwindows.org/). Make sure to check the option which installs "Git Bash."
+
+  + Install RTools. See [here](https://cran.r-project.org/bin/windows/Rtools/) for the latest version. Currently, the Rtools45 installer is what you want, assuming that your installed R version is at least 4.5.0. The link is in the seventh paragraph of [this page](https://cran.r-project.org/bin/windows/Rtools/rtools45/rtools.html). Use your favorite AI to help determine whether to use the Rtools45 installer or 64-bit ARM Rtools45 installer. Again, this is not required, but if you have problems installing packages later in this chapter, you **must** install RTools. If not, you are all set.
+
+<!-- Advice about Workbench? -->
+
+### The Console {.unnumbered}
+
+Much as we don't drive a car by interacting directly with the engine but rather by interacting with elements of the car's dashboard, we won't be using R directly. Instead, we will work through Positron's interface. After you install R and Positron on your computer, you'll have two new *programs* (also called *applications*) you can open. Always work in Positron and not directly in the R application.
+
+Open up Positron. 
+
+```{r}
+#| echo: false
+knitr::include_graphics("getting-started/images/positron-window.png")
+```
+
+Look at the Console tab in the Panel at the lower left. At start up, the Console gives you some information about your version of R. The Console is where you can type and run R code. For example, if you type `1 + 1` and hit `Enter`, the Console returns 2.
+
+We often use the phrase "run the following code." This means that you should type or copy-and-paste the code into the Console and then hit the `Enter` key. (Note that `Return` is the name of a Mac key and `Enter` the name of the corresponding Windows key. We use `Enter` throughout the *Primer*.)
+
+The right side of the Positron window is the Secondary Side Bar.
+
+```{r}
+#| echo: false
+knitr::include_graphics("getting-started/images/positron-window-2.png")
+```
+
+In the Session tab, there is a Variables listing for the current R session. There are no variables yet. Let's change that. Go to your Console and type:
+
+```{r}
+#| code-fold: false
+x <- 5
+```
+
+This code assigns the value 5 to an object, `x`. `<-` is the operator used to assign values to objects in R. Now, hit `Enter` and you should see a variable `x` equal to 5 under Values. You must always hit `Enter` after typing a command, otherwise Positron will not realize that you want R to execute the command.
+
+```{r}
+#| echo: false
+knitr::include_graphics("getting-started/images/x-gets-5.png")
+```
+
+The Secondary Side Bar contains different tabs in the top half and a display area for plots in the bottom half. 
+
+```{r}
+#| echo: false
+knitr::include_graphics("getting-started/images/secondary-side-bar.png")
+```
+
+In the Console, type `plot(1:10)` and hit `Enter`.
+
+```{r}
+#| echo: false
+knitr::include_graphics("getting-started/images/positron-plot.png")
+```
+
+The far left of the Positron window is the Activity Bar. The area in which the Welcome screen is currently located is the Editor. Once you start writing code, the Editor is the location in which your files will appear.
+
+### The Terminal {.unnumbered}
+
+The Console is where we talk to R. The Terminal is where we talk to the computer. The Console behaves almost identically regardless of the kind of computer you use. The Terminal, sadly, is different. Windows and Mac are very different. Next to "Console" on the Panel menu is "Terminal." See the red oval below. Click on the word "Terminal" to access it.
+
+```{r}
+#| echo: false
+knitr::include_graphics("getting-started/images/terminal-1.png")
+```
+
+`dkane@macbook ~ % ` is the "prompt," the place where we type commands, just like the `>` in the Console. Your prompt will be different from mine, especially if you are using Windows. 
+
+We often want a new Terminal with a different "shell," the program which serves as the interface between you and the computer. On a Mac, the default shell is referred to as "[Unix-like](https://en.wikipedia.org/wiki/Unix-like)" since it acts very much like the tradition UNIX command line. In Windows, the default shell is [PowerShell](https://en.wikipedia.org/wiki/PowerShell), an older technology which is not worth learning. To start a new Terminal with a specific shell, press the downward arrow next to the `+` sign. This is the "Launch Profile ..." arrow. See the red arrow above.
+
+```{r}
+#| echo: false
+knitr::include_graphics("getting-started/images/terminal-2.png")
+```
+
+If you are using Windows, you should see an option for "Git Bash" (or maybe just "bash"), at least if your have installed Git for Windows as we told you to do above. If you did, and you don't see a bash option, try restarting Positron.
+
+Wth luck, bash will also be the default every time you open the Terminal on Windows. But, if that does not work, you should select it by hand. One way to make it the default choice is to use the "Select Default Profile" tool:
+
+```{r}
+#| echo: false
+knitr::include_graphics("getting-started/images/terminal-3.png")
+```
+
+Again, this is only useful for Windows users. But they should click on that tool and select the option that says "Git Bash" or something like it. This should set it as the default going forward.
+
+Click the `+` button to start a second Terminal and see if it works! Restarting Positron may help.
+
+### Package installation {.unnumbered}
+
+To install packages, we work with the Console, not the Terminal.
+
+R *packages*, also known as *libraries*, extend the power of R by providing additional functions and data.
+
+```{r}
+#| echo: false
+#| fig.cap: R is to R packages as a new phone is to apps for that phone.
+knitr::include_graphics("getting-started/images/r-versus-r-packages.png")
+```
+
+R is like a new phone. While it has a certain amount of features when you use it for the first time, it doesn't have everything. R packages are like the apps you download onto your phone.
+
+Consider an analogy to Instagram. If you have a new phone and want to share a photo with friends. You need to:
+
+1.  *Install the app*: Since your phone is new and does not include the Instagram app, you need to download the app. You do this only once. (You might need to do this again in the future when there is an update to the app.)
+2.  *Open the app*: After you've installed Instagram, you need to open it. You need to do this every time you use the app.
+
+The process is very similar for an R package. You need to:
+
+```{r}
+#| echo: false
+#| fig.cap: Installing versus loading an R package
+knitr::include_graphics("getting-started/images/install-versus-load.jpg")
+```
+
+1.  *Install the package*: This is like installing an app on your phone. Most packages are not installed by default when you put R on your computer. Thus if you want to use a package for the first time, you need to install it. Once you've installed a package, you likely won't install it again unless you want to update it to a newer version.
+
+2.  *Load the package*: "Loading" a package is like opening an app on your phone. Packages are not loaded by default when you start Positron. You need to load each package you want to use every time you restart Positron.
+
+Just for this chapter, execute this command in your R Console. Do **not** do this if you are working in the cloud using, for example, Posit Workbench.
+
+```{r}
+#| eval: false
+#| code-fold: false
+options("pkgType" = "binary")
+```
+
+This helps to ensure that package installation will go more smoothly. 
+
+Let's *install* a useful package. At the Console within Positron, type:
+
+```{r}
+#| eval: false
+#| code-fold: false
+install.packages("remotes")
+```
+
+And press `Enter` on your keyboard. You must include the quotation marks around the name of the package. A package can depend on other packages, which will be automatically installed if needed.
+
+One tricky aspect of this process is that R will occasionally ask you:
+
+```{bash}
+#| eval: false
+#| code-fold: false
+Do you want to install from sources the packages which 
+need compilation? (Yes/no/cancel)
+```
+
+Unless you have a good reason not to, always answer "no" to this question.
+
+R packages generally live in one of two places:
+
+-   CRAN (rhymes with "clan") for more mature, popular packages. Use `install.packages()`, as you did above.
+
+-   Github for more experimental, less stable packages. Use `remotes::install_github()`.
+
+### Package loading {.unnumbered}
+
+After you install a package, you need to "load" it by using the `library()` command. To load the **remotes** package, run the following code in the Console. 
+
+```{r}
+#| eval: false
+#| code-fold: false
+library(remotes)
+```
+
+After running this code, a blinking cursor should appear next to the `>` symbol. (The `>` is the "prompt.") This means you were successful and the **remotes** package is now loaded and ready to use. However, you might get a red "error message" which reads:
+
+<span style="color: red;">Error in library(remotes) : there is no package called 'remotes'</span>
+
+This error message means that you haven't successfully installed the package. If you get this error message, make sure to install the **remotes** package before proceeding.
+
+For historical reasons, *packages* are also known as *libraries*, which is why the relevant command for loading them is `library()`.
+
+R will occasionally ask you if you want to install some packages. You almost always want to, otherwise R would not be asking you.
+
+Let's install another package:
+
+```{r}
+#| eval: false
+#| code-fold: false
+install.packages("tutorial.helpers")
+```
+
+This package provides infrastructure for doing tutorials, a common approach for learning R. After you install this package, run this command in the Console:
+
+```{r}
+#| eval: false
+#| code-fold: false
+tutorial.helpers::set_positron_settings()
+```
+
+`set_positron_settings()` makes some sensible changes to your Positron settings file and to your `.Rprofile`.
+
+Let's install another package:
+
+```{r}
+#| eval: false
+#| code-fold: false
+install.packages("tidyverse")
+```
+
+### Package use {.unnumbered}
+
+*You have to load each package you want to use every time you start Positron.* If you don't load a package before attempting to use one of its features, you will see an error message like:
+
+<span style="color: red;">Error: could not find function</span>
+
+This is a different error message than the one about a package not having been installed yet. R is telling you that you are trying to use a function in a package that has not yet been loaded. R doesn't know where to "find" the function you want to use.
+
+Let's install three other packages: **positron.tutorials**, **r4ds.tutorials** and **primer.tutorials**. Copy and paste the following to the Console:
+
+```{r}
+#| eval: false
+#| code-fold: false
+library(remotes)
+install_github("PPBDS/positron.tutorials")
+```
+
+This should install easily. 
+
+Next, copy and paste the following to the Console:
+
+```{r}
+#| eval: false
+#| code-fold: false
+remotes::install_github("PPBDS/r4ds.tutorials")
+```
+
+Instead of loading the **remotes** package explicitly, we used the double colon notation --- `::` --- to refer directly to the `install_github()` function which resides in the **remotes** package.
+
+There is a version of **r4ds.tutorials** available on CRAN, but we want to get the latest version, often called the "development" version.
+
+Then:
+
+```{r}
+#| eval: false
+#| code-fold: false
+remotes::install_github("PPBDS/primer.tutorials")
+```
+
+If the download fails, try
+
+```{r}
+#| eval: false
+#| code-fold: false
+options("timeout" = 600)
+```
+
+This gives the download more time to complete. Try it again.
+
+If that fails, try:
+
+```{r}
+#| eval: false
+#| code-fold: false
+install.packages("pak")
+pak::pak("PPBDS/primer.tutorials")
+```
+
+Some other new packages will be installed as well, most importantly **primer.data**, which includes most of the data we use in the *Primer*. It may take a few minutes. If something gets messed up, it is often useful to read the error messages and see if a specific package is at fault. If so, use the `remove.packages()` function to remove the problematic package and then install it again.
+
+If **primer.tutorials** does not install correctly, don't worry about it for now. This package is much less important than **positron.tutorials** and **r4ds.tutorials**.
+
+### Tutorials {.unnumbered}
+
+There are many tutorials available in the **positron.tutorials**, **r4ds.tutorials**, and **primer.tutorials** packages. 
+
+Because Positron is still evolving, there is no easy way to start a tutorial. Instead, we must issue a command like this from the Console:
+
+```{r}
+#| eval: false
+#| code-fold: false
+learnr::run_tutorial(name = "positron", 
+                     package = "tutorial.helpers")
+```
+
+The first argument to `run_tutorial()` is the `name` of the tutorial and the second is the `package` in which the tutorial is installed. We often leave out the arguments and just provide their values. Example:
+
+```{r}
+#| eval: false
+#| code-fold: false
+learnr::run_tutorial("01-code", "positron.tutorials")
+```
+
+This is how you will start the next tutorial you are likely to be assigned, the `01-code` tutorial from the **positron.tutorials** package.
+
+You may notice that the Console will show output as the tutorial is starting up. This is because Positron is running the code to create the tutorial.
+
+In most cases, the newly created tutorial will appear in the Viewer tab. Sometimes, especially on Windows machines, it won't, and your screen will look like this:
+
+```{r}
+#| echo: false
+knitr::include_graphics("getting-started/images/tutorial-failure.png")
+```
+
+Note the URL --- `http://127.0.0.1:7323` --- highlighted in the red oval. This is the location of the newly created tutorial on your machine. The `http://127.0.0.1` portion of the URL, which will be the same for you, indicates the "localhost" for your machine. The `:7323`, which will be different for you, indicates the `tutorial.html` document which has just been created.
+
+Just paste that URL into your browser and start the tutorial.
+
+But, for most people, the tutorial will appear in the Viewer tab: 
+
+```{r}
+#| echo: false
+knitr::include_graphics("getting-started/images/positron-tutorial-1.png")
+```
+
+You can "pop" the tutorial into a browser by clicking the "Open the current URL in the default browser" button. (See where the red arrow points in the image below.) 
+
+We think that working with the tutorial in the browser is more convenient than using the Viewer tab. If a tutorial becomes "greyed out," you can usually just "refresh" it with the "Reload the current URL" swirly arrow button, just to the left of the "Open the current URL in the default browser" button.
+
+Because the current Console is now being used to run the tutorial, we sometimes need to start up a new Console by pressing the "Start a New Session" button --- the `+` symbol --- on the Console menu. See the red arrow above. Choose the R option.
+
+```{r}
+#| echo: false
+knitr::include_graphics("getting-started/images/positron-tutorial-2.png")
+```
+
+You now have two R sessions running. The first is maintaining the tutorial itself, recording your answers. The second allows you to run R commands. You will spend almost all your time with the second session since many tutorials require you to issue some R commands directly to the Console.
+
+**Your work will automatically be saved between Positron sessions**. You can complete the tutorial in multiple sittings.
+
+Complete the "Tutorials in Positron" tutorial from the **tutorial.helpers** package. Recall that you start this tutorial by issuing this command in the Console:
+
+```{r}
+#| eval: false
+#| code-fold: false
+learnr::run_tutorial(name = "positron", 
+                     package = "tutorial.helpers")
+```
+
+Once you have done so, or if you already know R, you can start to learn about data science.
+
+## Summary {.unnumbered}
+
+You should have done the following:
+
+  - Installed the latest versions of R and Positron.
+  
+  - Installed, from CRAN, the **remotes**, **tutorial.helpers** and **tidyverse** packages:
+
+```{r}
+#| eval: false
+#| code-fold: false
+# Only run this options() line if NOT on Cloud platform
+# options("pkgType" = "binary"). 
+install.packages("remotes")
+install.packages("tidyverse")
+install.packages("tutorial.helpers")
+```
+
+  - Installed, from Github, the **positron.tutorials**, **r4ds.tutorials**, and **primer.tutorials** packages:
+
+```{r}
+#| eval: false
+#| code-fold: false
+remotes::install_github("PPBDS/positron.tutorials")
+remotes::install_github("PPBDS/r4ds.tutorials")
+remotes::install_github("PPBDS/primer.tutorials")
+```
+
+  - Complete the "Tutorials in Positron" tutorial from the **tutorial.helpers** package:
+  
+```{r}
+#| eval: false
+#| code-fold: false
+learnr::run_tutorial("positron", package = "tutorial.helpers")
+```
+
+As part of that tutorial, you will also run:
+
+```{r}
+#| eval: false
+#| code-fold: false
+tutorial.helpers::set_positron_settings()
+```
+
+Let's get started.
+
+```{r}
+#| echo: false
+knitr::include_graphics("getting-started/images/ending.gif")
+```

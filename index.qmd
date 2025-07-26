@@ -1,0 +1,23 @@
+# Welcome {.unnumbered}
+
+<!-- nocite: '@*' is what ensures that all the references appear. Not sure why! -->
+
+<!-- Need a new cover. Sirens will do for now. Format more like Mastering Shiny?-->
+
+The *Primer* is being re-written. Consider it all to be a  draft, at least for now. There are three major changes in progress. First, I am switching from **brms** to **tidymodels** and **marginaleffects**. (If you disagree with this change, please let me know!) Second, I am standardizing the usage of the Cardinal Virtues. Third, I am using AI tools like ChatGPT and Claude to help with both writing and coding.
+
+```{r, echo = FALSE}
+knitr::include_graphics("other/images/sirens.jpg") 
+```
+
+&nbsp;
+
+This isn't the book you're looking for.
+
+{{< video https://www.youtube.com/embed/532j-186xEQ >}}
+
+First, the book is for students in my classes. Everything about the book is designed to make the experience of those students better. I hope that some of the material here may be useful to people outside of this class.
+
+Second, the book changes all the time. It is as up-to-date as possible. 
+
+Third, I am highly opinionated about what matters and what does not. You might not share [my](https://arxiv.org/abs/2012.14390) [views](https://arxiv.org/abs/2309.06983). 
