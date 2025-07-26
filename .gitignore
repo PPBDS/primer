@@ -1,4 +1,7 @@
 docs
 
 .DS_Store
-.quarto
+
+
+/.quarto/
+*html
