@@ -1,4 +1,4 @@
-# Fast Quarto book building with r2u + renv, deploy to docs/
+# Fast Quarto book building with r2u container + renv
 name: Build and Deploy Book
 
 on:
@@ -10,6 +10,7 @@ on:
 jobs:
   build-deploy:
     runs-on: ubuntu-latest
+    container: rocker/r2u:latest
     
     permissions:
       contents: write
@@ -17,57 +18,13 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - uses: quarto-dev/quarto-actions/setup@v2
-
-      - name: Setup r2u
-        uses: eddelbuettel/github-actions/r2u-setup@master
-
-      - name: Setup r2u
-        uses: eddelbuettel/github-actions/r2u-setup@master
-
-      - name: Install system dependencies for non-r2u packages
+      - name: Install Quarto
         run: |
-          sudo apt-get update
-          sudo apt-get install -y \
-            libcurl4-openssl-dev \
-            libssl-dev \
-            libxml2-dev \
-            libgit2-dev
+          curl -LO https://quarto.org/download/latest/quarto-linux-amd64.deb
+          dpkg -i quarto-linux-amd64.deb
 
-      - name: Install packages with r2u + renv hybrid approach
-        run: |
-          # Install renv first
-          sudo apt-get install -y r-cran-renv || R -q -e 'install.packages("renv")'
-          
-          # Smart package installation
-          R -q -e '
-          if (file.exists("renv.lock")) {
-            renv::activate()
-            lockfile <- renv:::lockfile_read()
-            
-            for (pkg_name in names(lockfile$Packages)) {
-              pkg_info <- lockfile$Packages[[pkg_name]]
-              
-              # Check if it is a CRAN package (can use r2u)
-              if (pkg_info$Source == "Repository" && 
-                  any(grepl("CRAN", sapply(lockfile$R$Repositories, `[[`, "Name"), ignore.case = TRUE))) {
-                
-                # Try r2u first
-                apt_result <- system(paste0("sudo apt-get install -y r-cran-", tolower(pkg_name)), 
-                                   ignore.stdout = TRUE, ignore.stderr = TRUE)
-                
-                if (apt_result != 0) {
-                  # Fall back to install.packages for CRAN packages not in r2u
-                  cat("Installing", pkg_name, "from CRAN (not in r2u)\n")
-                  install.packages(pkg_name)
-                }
-              } else {
-                # GitHub/other sources - use renv::install
-                cat("Installing", pkg_name, "from", pkg_info$Source, "\n")
-                renv::install(pkg_name)
-              }
-            }
-          }'
+      - name: Restore R packages with renv
+        run: R -q -e 'renv::restore()'
 
       - name: Render book to docs directory
         run: quarto render --output-dir docs
