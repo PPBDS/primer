@@ -29,12 +29,4 @@ jobs:
         run: R -q -e 'renv::restore()'
 
       - name: Render book to docs directory
-        run: quarto render --output-dir docs
-
-      - name: Deploy to docs directory
-        if: github.ref == 'refs/heads/main'
-        run: |
-          git config --local user.email "action@github.com"
-          git config --local user.name "GitHub Action"
-          git add docs/
-          git diff --staged --quiet || (git commit -m "Update rendered book" && git push)
+        run: quarto render
