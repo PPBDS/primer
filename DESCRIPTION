@@ -17,6 +17,7 @@ Imports:
     marginaleffects,
     pak,
     patchwork,
+    primer.data,
     remotes,
     tidymodels,
     tidyverse,

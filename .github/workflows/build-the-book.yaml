@@ -28,6 +28,8 @@ jobs:
           
       - name: Setup R Dependencies
         uses: r-lib/actions/setup-r-dependencies@v2
+        with:
+          cache-version: 1  # Increment when you need to bust cache
         
       - name: Render Book
         uses: quarto-dev/quarto-actions/render@v2
