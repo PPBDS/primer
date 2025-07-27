@@ -18,7 +18,12 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - uses: quarto-dev/quarto-actions/setup@v2
+      - name: Install Quarto
+        run: |
+          apt-get update
+          apt-get install -y curl
+          curl -LO https://quarto.org/download/latest/quarto-linux-amd64.deb
+          apt-get install -y ./quarto-linux-amd64.deb
 
       - name: Restore R packages with renv
         run: R -q -e 'renv::restore()'
