@@ -18,10 +18,10 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: Install Quarto
+      - name: Install Quarto and dependencies
         run: |
           apt-get update
-          apt-get install -y curl
+          apt-get install -y curl git pandoc
           curl -LO https://quarto.org/download/latest/quarto-linux-amd64.deb
           apt-get install -y ./quarto-linux-amd64.deb
 
