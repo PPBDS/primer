@@ -12,7 +12,10 @@ Depends:
 Imports:
     broom,
     downlit,
+    gt,
+    knitr,
     marginaleffects,
+    pak,
     remotes,
     tidymodels,
     tidyverse,

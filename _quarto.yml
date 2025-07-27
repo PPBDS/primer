@@ -17,6 +17,7 @@ book:
     - index.qmd
     - preamble.qmd
     - getting-started.qmd
+    - 01-causal.qmd
 
 format:
   html:
