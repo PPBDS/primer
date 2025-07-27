@@ -22,19 +22,52 @@ jobs:
       - name: Setup r2u
         uses: eddelbuettel/github-actions/r2u-setup@master
 
-      - name: Configure R for r2u + renv integration
-        run: |
-          # Install bspm to bridge R and apt
-          sudo apt-get install -y r-cran-bspm
-          # Configure renv to use install.packages (which now uses r2u)
-          R -q -e 'writeLines(c(
-            "options(renv.config.install.staged = FALSE)",
-            "if (requireNamespace(\"bspm\", quietly = TRUE)) bspm::enable()"
-          ), con = ".Rprofile")'
+      - name: Setup r2u
+        uses: eddelbuettel/github-actions/r2u-setup@master
 
-      - uses: r-lib/actions/setup-renv@v2
-        with:
-          cache-version: 1
+      - name: Install system dependencies for non-r2u packages
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y \
+            libcurl4-openssl-dev \
+            libssl-dev \
+            libxml2-dev \
+            libgit2-dev
+
+      - name: Install packages with r2u + renv hybrid approach
+        run: |
+          # Install renv first
+          sudo apt-get install -y r-cran-renv || R -q -e 'install.packages("renv")'
+          
+          # Smart package installation
+          R -q -e '
+          if (file.exists("renv.lock")) {
+            renv::activate()
+            lockfile <- renv:::lockfile_read()
+            
+            for (pkg_name in names(lockfile$Packages)) {
+              pkg_info <- lockfile$Packages[[pkg_name]]
+              
+              # Check if it is a CRAN package (can use r2u)
+              if (pkg_info$Source == "Repository" && 
+                  any(grepl("CRAN", sapply(lockfile$R$Repositories, `[[`, "Name"), ignore.case = TRUE))) {
+                
+                # Try r2u first
+                apt_result <- system(paste0("sudo apt-get install -y r-cran-", tolower(pkg_name)), 
+                                   ignore.stdout = TRUE, ignore.stderr = TRUE)
+                
+                if (apt_result != 0) {
+                  # Fall back to install.packages for CRAN packages not in r2u
+                  cat("Installing", pkg_name, "from CRAN (not in r2u)\n")
+                  install.packages(pkg_name)
+                }
+              } else {
+                # GitHub/other sources - use renv::install
+                cat("Installing", pkg_name, "from", pkg_info$Source, "\n")
+                renv::install(pkg_name)
+              }
+            }
+          }'
 
       - name: Render book to docs directory
         run: quarto render --output-dir docs
