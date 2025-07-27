@@ -1,0 +1,48 @@
+# Fast Quarto book building with r2u + renv, deploy to docs/
+name: Build and Deploy Book
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  build-deploy:
+    runs-on: ubuntu-latest
+    
+    permissions:
+      contents: write
+    
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: quarto-dev/quarto-actions/setup@v2
+
+      - name: Setup r2u
+        uses: eddelbuettel/github-actions/r2u-setup@master
+
+      - name: Configure R for r2u + renv integration
+        run: |
+          # Install bspm to bridge R and apt
+          sudo apt-get install -y r-cran-bspm
+          # Configure renv to use install.packages (which now uses r2u)
+          R -q -e 'writeLines(c(
+            "options(renv.config.install.staged = FALSE)",
+            "if (requireNamespace(\"bspm\", quietly = TRUE)) bspm::enable()"
+          ), con = ".Rprofile")'
+
+      - uses: r-lib/actions/setup-renv@v2
+        with:
+          cache-version: 1
+
+      - name: Render book to docs directory
+        run: quarto render --output-dir docs
+
+      - name: Deploy to docs directory
+        if: github.ref == 'refs/heads/main'
+        run: |
+          git config --local user.email "action@github.com"
+          git config --local user.name "GitHub Action"
+          git add docs/
+          git diff --staged --quiet || (git commit -m "Update rendered book" && git push)
