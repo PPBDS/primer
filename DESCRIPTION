@@ -1,5 +1,6 @@
 Package: pp
 Title: Preceptor's Primer
+Version: 0.1
 Authors@R: 
     person(given = "David",
            family = "Kane",
