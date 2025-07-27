@@ -17,11 +17,12 @@ book:
     - index.qmd
     - preamble.qmd
     - getting-started.qmd
-    - 01-rubin-causal-model.qmd
-    - 02-probability.qmd
-    - 03-sampling.qmd
-    - 04-elections.qmd
-
+    - 01-probability.qmd
+    - 02-sampling.qmd
+    - 03-rubin-causal-model.qmd
+    - 04-cardinal-virtues.qmd
+    - 05-polls.qmd
+    - set-up.qmd
 format:
   html:
     code-fold: true

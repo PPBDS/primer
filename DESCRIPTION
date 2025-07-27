@@ -16,6 +16,7 @@ Imports:
     knitr,
     marginaleffects,
     pak,
+    patchwork,
     remotes,
     tidymodels,
     tidyverse,
