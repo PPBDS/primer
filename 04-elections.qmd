@@ -1,0 +1,653 @@
+# Models {#sec-models}
+
+```{r}
+#| label: hidden-libraries
+#| message: false
+#| echo: false
+#| warning: false
+library(tidyverse)
+library(gt)
+```
+
+
+<!-- What should the Question for this chapter be? And, if we start by keeping the simple \rho of Biden support, should we add another question, like the odds of two people both being Biden supporters. One problem with using (just) \rho is that we already did that the last chapter with the beads. This is too repetitive. Counter-argument is that all of this material is so new that it can only help students to go through it all again, especially in a case with much more substantive issues to deal with in evaluating the assumptions. Also, it is not obvious how to calculate the uncertainty associated with the two voters odds problem?  -->
+
+
+In @sec-probability, we learned how to do inference. We created a joint distribution of the models under consideration and the data which might be observed. Once we observed the data, we went from the joint distribution to the conditional distribution of possible models given the data which we did, in fact, observe. That conditional distribution, suitably normalized, was our posterior probability distribution over the space of possible models. With that distribution, we can answer any question we might (reasonably) ask.
+
+<!-- Need a gif here. Like Hunger Games in Sampling chapter. -->
+
+*But what a pain in the ass that whole process was!* Do professionals actually go through all those steps every time they work on a data science problem? No! That would be absurd. Instead, professionals use standard tools which, in an automated fashion, take care of those steps, taking us directly from assumptions and data to the posterior:
+
+$$\text{Prob}(\text{models} | \text{data} = \text{data we observed})$$
+
+Even then, however, the relative likelihood of different models is not that important. Models are invisible, mental entities with no more physical presence than unicorns or leprechauns. In the world itself, we make and test predictions. *People with better models make better predictions. That is what matters.*
+
+In @sec-sampling, we learned about sampling, the process of gathering data to answer our questions. In this chapter, we will learn about constructing *models*, creating the data generating mechanism (DGM) which we will use to answer our questions.
+
+We always use the Cardinal Virtues. Wisdom helps us to clarify the questions with which we begin. We build the Preceptor Table which, if no data were missing, would allow us to answer the question. We check for validity. Justice creates the Population Table and examines the assumptions of stability, representativeness, and unconfoundedness. With Courage, we create a data generating mechanism (DGM). Temperance helps us to use that DGM to answer the questions with which we began.
+
+As (almost) always, we start by loading the **tidyverse** package.
+
+```{r}
+#| code-fold: false
+#| message: false
+
+library(tidyverse)
+```
+
+
+In @sec-sampling, we estimated the proportion, $\rho$, of red beans in an urn. In the real world, of course, we never mess with urns. But we are often interested in unknown proportions. For example, what proportion of US citizens support specific political candidates. Imagine that it is March 15, 2024 and we want to know $\rho$, the percentage of people who will vote for President Joe Biden in the 2024 presidential election. **How many beads are for Biden?**
+
+
+Use the Cardinal Virtues to guide your thinking. 
+
+## Wisdom
+
+```{r}
+#| echo: false
+knitr::include_graphics("other/images/Wisdom.jpg")
+```
+
+Wisdom requires the creation of a Preceptor Table, an examination of our data, and a determination, using the concept of "validity," as to whether or not we can (reasonably!) assume that the two come from the same *population*. We begin with a question:
+
+> *What proportion of all votes will be cast for Joe Biden in the 2024 election?*
+
+For the purpose of this question, assume that it is April, 7 months before the election.
+
+### Preceptor Table
+
+A Preceptor Table is a table with rows and columns, such that, if no data is missing, we can easily answer our questions. 
+
+*Units*: The units are individual voters. Note that this is not all American adults or even all registered voters. To answer our question, we only need information about actual voters. Any other rows would be superfluous.
+
+*Outcome*: The outcome is the candidate for whom the vote was cast. But, looking at the question, this formulation is too broad. We don't actually need to know the name of the candidate. We just need to know if the vote was cast for Biden or not. The name of the candidate, if it was not Biden, is irrelevant to our question.
+
+*Treatment*: There is no treatment. 
+
+*Causal or predictive model*: This is clearly a predictive model since there is only one outcome for each person: their vote. It would be a causal model if we were considering a treatment which might change the vote of person $i$ from one candidate to another. A causal model would require two 
+
+*Covariates*: There are no covariates. If the question referred to who will win the election, then we would at least have to add a column for state of residence in order to tabulate electoral votes.
+
+*Moment in Time*: The moment in time is just after Election Day 2024.
+
+
+```{r}
+#| echo: false
+tibble(voter_ID = c("1", "2", 
+                   "...", "200", "201", "...", "2078", "2079", "..."),
+       biden = c("0", "0", 
+                   "...", "1", "0", "...", "1", "0", "...")) |>
+  gt() |>
+    tab_header(title = "Preceptor Table") |> 
+    cols_label(voter_ID = "Voter ID",
+               biden = "Voted for Biden") |>
+    tab_style(cell_borders(sides = "right"),
+              location = cells_body(columns = c(voter_ID))) |>
+    cols_align(align = "center", columns = everything())
+```
+
+&nbsp;
+
+
+Once we have all the information in the Preceptor Table, it is easy to calculate the proportion of all votes which were cast for Biden. 
+
+Moreover, we could use the Preceptor Table to answer other related questions. For example, assume we wanted to know the odds that the next two people we meet, just after the election, both voted for Biden.
+
+With the data in the Preceptor Table, we could create a computer simulation which, for example, draws 1,000 pairs of voters at random from the table, checks to see if they both voted for Biden, and then report the percentage of the 1,000 which meet this criteria. Of course, we will need to construct such a simulation carefully. People don't walk around at random! They walk with friends, and friends share the same politics more often than strangers do.
+
+The important point is that the Preceptor Table has the fewest rows and columns such that, if no data is missing, we can answer our question.
+
+### EDA
+
+The data we have come from a [YouGov](https://today.yougov.com/) poll ([pdf](https://github.com/PPBDS/primer/blob/master/sources/you-gov-2024-03-12.pdf)) of 1,559 US adult citizens, conducted March 10 - 12, 2024.  There are many questions in the poll. For the purpose of answering our question, the most relevant one is:
+
+> If an election for president were going to be held now and the Democratic nominee was  oe Biden and the Republican nominee was Donald Trump, would you vote for...
+
+The allowed choice are "Joe Biden," "Donald Trump," "Other," "Not Sure," and "I would not vote." 42% of those polled indicated Joe Biden. Although rounding makes it impossible to know for sure, we will assume that 655 of the 1,559 "US adult citizens" would vote for Biden. Our data looks like:
+
+```{r}
+#| echo: false
+tibble(poll_ID = c("1", "2", 
+                   "...", "200", "201", "...", "1,559"),
+       biden = c("0", "0", 
+                   "...", "1", "0", "...", "1")) |>
+  gt() |>
+    tab_header(title = "Polling Data") |> 
+    cols_label(poll_ID = "Poll ID",
+               biden = "Would Vote for Biden") |>
+    tab_style(cell_borders(sides = "right"),
+              location = cells_body(columns = c(poll_ID))) |>
+    cols_align(align = "center", columns = everything())
+```
+
+There are key differences between our data table and our Preceptor Table, despite their superficial similarities. 
+
+* Our Polling Data includes exactly 1,559 rows. We don't know how many rows are in our Preceptor Table because we don't know, today, how many people will vote in November 2024.
+
+* The ID column is labeled "Voter ID" in the Preceptor Table and "Poll ID" in the Polling Data. In many ways, the ID doesn't matter. The person labeled "2" in the first table, for example, has no necessary connection to the person labeled "2" in the second table. The numbers don't mean anything. But, conceptually, having different labels helps to highlight the issue of sampling and concerns about *representativeness*, concerns which we will address under Justice.
+
+* The variable labels differ. "Voted for Biden" is not the same thing as "Would Vote for Biden." Indeed, the two columns represent very different things. 
+
+
+### Validity
+
+
+*Validity* is the consistency, or lack thereof, in the columns of the data set and the corresponding columns in the Preceptor Table. In order to consider the two data sets to be drawn from the same population, the columns from one must have a *valid correspondence* with the columns in the other. Validity, if true (or at least reasonable), allows us to construct the *Population Table*, which is the first step in Justice.
+
+Our key problem is that there is not a one-to-one correspondence between our data (which is about an *reported intention* to vote for Biden) and our Preceptor Table (which records an *actual* vote). What we tell other people we will do is often not what we actually do. Consider a voter who is embarrassed about her support for Biden. Perhaps she perceives the interviewer as a Republican and doesn't care to admit to him, in March, her support for Biden. But, in November, in the privacy of the polling booth, she votes for Biden. In her case, the outcome from the data (what she told the pollster) did not have a *valid* correspondence with her behavior in the polling booth.
+
+When we "stack" our data on top of our Preceptor Table, we are assuming that intention is a *valid* measure of actual voting. There may be problem, as with our hypothetical example, but they are not numerous enough to matter.
+
+We conclude the Wisdom section by summarizing how we hope to use the data we have to answer the question we started with: 
+
+> *Using data from a YouGov poll of 1,559 US adult citizens, conducted March 10 - 12, 2024, we seek to understand what proportion of voters will support Biden in the 2024 election.*
+
+## Justice
+
+```{r}
+#| echo: false
+knitr::include_graphics("other/images/Justice.jpg")
+```
+
+*Justice* is the second [Cardinal Virtue](https://en.wikipedia.org/wiki/Cardinal_virtues) in data science. Justice starts with the Population Table – the data we want to have, the data which we actually have, and all the other data from that same population. Each row of the Population Table is defined by a unique unit/time combination. We explore three key issues. First, does the relationship among the variables demonstrate *stability*, meaning is the model stable across different time periods? Second, are the rows associated with the data and, separately, the rows associated with the Preceptor Table *representative* of all the units from the population? Third, for causal models only, we consider *unconfoundedness*.
+
+### Population Table
+
+We use the *Population Table* to acknowledge the wider source from which we could have collected our data. It includes rows from three sources: the data for units we want to have (the Preceptor Table), the data for units which we have (our actual data), and the data for units we do not care about (the rest of the population, not included in the data or in the Preceptor Table). Consider:
+
+
+```{r}
+#| echo: false
+tibble(source = c("...", "...", "...","...",  
+                  "Data", "Data", "Data", "Data", "...",
+                  "...", "...", "...","...", 
+                  "Preceptor Table", "Preceptor Table", "Preceptor Table", "...",
+                  "...", "...", "..."),
+       time = c("February 2024", "February 2024", "February 2024", "...",
+                "March 2024", "March 2024", "March 2024", "March 2024", "...",
+                "October 2024", "October 2024", "October 2024", "...",
+                "November 2024", "November 2024", "November 2024", "...",
+                "December 2024", "December 2024", "December 2024"),
+       id = c("1", "200", "976", "...",
+              "1", "200", "...", "1559", "...",
+              "1", "200", "2025", "...",
+              "1", "200", "2078", "...",
+              "1", "200", "2300"),
+       biden = c("?", "?", "?", "...",
+              "0", "1", "...", "1", "...",
+              "?", "?", "?", "...",
+              "1", "0", "1", "...",
+              "?", "?", "?")) |>
+
+  # Then, we use the gt function to make it pretty
+
+  gt() |>
+  cols_label(source = md("Source"),
+             time = md("Time"),
+             id = md("ID"),
+             biden = md("Biden")) |>
+  tab_style(cell_borders(sides = "right"),
+            location = cells_body(columns = c(source))) |>
+  tab_style(style = cell_text(align = "left", v_align = "middle", size = "large"),
+            locations = cells_column_labels(columns = c(source))) |>
+  cols_align(align = "center", columns = everything()) |>
+  cols_align(align = "left", columns = c(source)) |>
+  fmt_markdown(columns = everything())
+```
+
+&nbsp;
+
+Every row in a Population Table corresponds to a unit/time combination. This is different from the Preceptor Table and the data, in both of which each row is for a unit. The entire Preceptor Table and data each have a specific time associated with them, even if that moment corresponds to a few days or longer. Nothing in this imperfect world is ever instantaneous. 
+
+A Population Table will usually have several types of columns: id, time, covariates, and outcome(s). There are no covariates in this simple example, but we will use them in later chapters.
+
+Now that we have created our Population Table, we can analyze the key assumptions of stability, representativeness and unconfoundedness.  
+
+### Stability
+
+*Stability* means that the relationship between the columns in the Population Table is the same for three categories of rows: the data, the Preceptor Table, and the larger population from which both are drawn. 
+
+Our Population Table is so simple that stability is true almost automatically true. There is only one column! Stability might become important as we think about the actual process by which we might meet the two voters in our original question, but, in terms of the Population Table itself, there is no problem.
+
+### Representativeness
+
+*Representativeness*, or the lack thereof, concerns two relationship, among the rows in the Population Table. The first is between the Preceptor Table and the other rows. The second is between our data and the other rows. Ideally, we would like both the Preceptor Table *and* our data to be random samples from the population. Sadly, this is almost never the case.
+
+
+The *sampling mechanism* is the technical term for the process by which some people were sampled and some were not. We hope that all members of the population have the same chance of being sampled, or else our data might be unrepresentative of the larger population. Another term for this would be having a "biased" sample. Almost all samples have some bias, but we must make a judgement call to see if the data we have is close enough to the data we want (i.e., the Preceptor Table) that we can consider both as coming from the same population. 
+
+One concern might involve the process by which YouGov sampled potential voters in March. If that process were flawed, if the people it sampled were systematically different than the people it did not, then the assumption of representativeness would fail. Imagine that YouGov only polled residents in Washington DC. That would be bad, even if everyone polled answered truthfully. We would end up with data which was much more pro-Biden than the country as a whole.
+
+Representativeness might also be a problem with regard to the Preceptor Table, even if our data was perfectly representativeness of the US population. Recall that the set of voters is much smaller than the full set of all US adults. In fact, voters as a class are systematically different from all adults. They are richer, better educated and more knowledgeable about politics. To the extent that the Preceptor Table --- which is only voters --- is not representative of all adults, we might have a problem.
+
+The assumption of representativeness is *never* completely true. We can only hope/assume that it is true enough that the inferences we draw from our data can be roughly applied to our question. Let's assume that is this case.
+
+### Unconfoundedness
+
+*Unconfoundedness* means that the treatment assignment is independent of the potential outcomes, when we condition on pre-treatment covariates. This assumption is only relevant for causal models. We describe a model as "confounded" if this is not true. The easiest way to ensure unconfoundedness is to assign treatment randomly.
+
+Since this is a predictive model, we do not have to worry about unconfoundedness. There is no "treatment" which might be confounded with anything.
+
+> *Using data from a YouGov poll of 1,559 US adult citizens, conducted March 10 - 12, 2024, we seek to understand what proportion of voters will support Biden in the 2024 election. Biden's popularity might change significantly over the course of the election campaign.*
+
+
+
+## Courage
+
+```{r}
+#| echo: false
+knitr::include_graphics("other/images/Courage.jpg")
+```
+
+Justice verifies the Population Table. Courage creates a mathematical model which connects the outcome variable to the covariates, if any. Then, using code, we create a fitted model, including posterior probability distributions for all the unknown parameters.
+
+Given that the polling problem is conceptually similar to the beads-in-an-urn problem, it is useful to perform the same back-of-the-envelope calculation we did in @sec-sampling. To do that, we first need to create the tibble:
+
+```{r}
+#| code-fold: false
+poll_data <- tibble(biden = c(rep(1, 655), 
+                              rep(0, 904)))
+
+slice_sample(poll_data, n = 10)
+```
+
+First, calculate the mean. This is our estimate of the center of the posterior distribution for $\rho$, the unknown proportion of the voters who support Biden.
+
+```{r}
+#| code-fold: false
+mean(poll_data$biden)
+```
+
+42% of the sample support Biden. Second, calculate the standard error of this estimate, by taking the standard deviation of the data and dividing it by the square root of the number of observations.
+
+```{r}
+#| code-fold: false
+sd(poll_data$biden) / sqrt(length(poll_data$biden))
+```
+
+The standard error is about 1.25%. This suggests that a 95% confidence interval for the true value of $\rho$ would be:
+
+```{r}
+#| code-fold: false
+c(mean(poll_data$biden) - 2 * sd(poll_data$biden) / sqrt(length(poll_data$biden)),
+  mean(poll_data$biden) + 2 * sd(poll_data$biden) / sqrt(length(poll_data$biden)))
+```
+
+The margin of error, which is another term for two times the standard error, is about 2.5%. This is less than the value of 3.5% given in the pdf. The reason for the difference involves all the technical adjustments which YouGov needs to make to their estimate. We ignore those problems and so our value is probably too small. 
+
+<!-- DK: Discuss how sloppy we are with language. -->
+
+The *data generating mechanism*, or DGM, is a mathematical formula which mimics the process by which the data comes to us. The DGM for sampling scenarios with only two possible values is called *Bernoulli*, usually denoted as: 
+
+<!-- DK: Should be y's and x's? -->
+
+$$ biden_i  \sim Bernoulli(\rho) $$
+Each voter $i$ might vote for Biden or vote for someone else. It is convenient to define the model in terms of whether or not the vote was for Biden. If the vote was for Biden, the value drawn is `1`, which is the standard way of representing `TRUE`. In other words, $biden_i = 1$ means that voter $i$ voted for Biden. Similarly, a vote for anyone else but Biden is indicated with `0`, meaning that it is `FALSE` that the the vote was for Biden. $\rho$ is the only parameter in a Bernoulli model. It is the probability that a `1`, instead of a `0`, is drawn. That is, $\rho$ is the probability of a Biden vote, which is the same thing as the proportion of all votes which were cast for Biden, assuming again that the sampling mechanism is not biased.
+
+We typical estimate the unknown parameter $\rho$ from the Bernoulli model by using a logit regression:
+
+$$
+\rho = \frac{e^{\beta_0}}{1 + e^{\beta_0}}
+$$
+
+There are generally two parts for a statistical model: *family* and *link function*. The family is the probability distribution which generates the randomness in our data. The link function is the mathematical formula which *links* our data to the unknown parameters in the probability distribution. We will be reviewing these concepts over and over again in the rest of the *Primer*, so don't worry if things are a little unclear right now.
+
+<!-- DK: Is the above correct? Could we explain it better? Maybe use multiple link functions in this chapter? Should we show the linear model math first? -->
+
+### Models
+
+Load the [**brms**](https://paul-buerkner.github.io/brms/) package:
+
+```{r}
+#| code-fold: false
+#| message: false
+library(brms)
+```
+
+The **brms** package provides a user-friendly interface to work with the statistical language [Stan](https://mc-stan.org/), the leading tool for Bayesian model building.
+
+#### Gaussian
+
+The key function in the **brms** package is `brm()`. 
+
+```{r}
+#| cache: true
+#| code-fold: false
+#| error: false
+fit_gauss <- brm(formula = biden ~ 1,
+                data = poll_data)
+```
+
+Notes:
+
+* `brm()` produces a great deal of output, as you can see above. This is useful if there is some sort of problem. But, most of the time, we don't care. So we suppress the output in the rest of the *Primer*, using `refresh = 0` and `silent = 2`.
+
+* We almost always assign the result of a `brm()` call to an object, as here. By convention, the name of that object begins with "fit" because it is a **fit**ted model object. This model was created quickly but larger models take longer. So, we assign the result to an object so we don't need to recreate it.
+
+* The first argument to `brm()` is `formula`. This is provided using the R formula syntax in which the dependent variable, `red` is separated from the independent variables by a tilde: `~`. This is the standard approach in almost all R model estimating functions. In this case, the only independent variable is a constant, which is represented with a `1`.
+
+* The second argument to `brm()` is `data`, which is a tibble containing the data used to estimate the model parameters. The variables specified in the `formula` must match the variables in the tibble which is passed in, which is .
+
+* Because the fitting process is random, if we run this code again we will get a (very slightly) different answer. In most applications, the differences are too small to matter. But, they are annoying! So, we use the `seed` argument so that your result will match ours.
+
+
+```{r}
+#| cache: true
+#| code-fold: false
+#| error: false
+fit_gauss <- brm(formula = biden ~ 1,
+                data = poll_data,
+                refresh = 0,
+                silent = 2,
+                seed = 9)
+```
+
+<!-- DK: Given the simple model we use first, maybe we can make the math above simpler first. -->
+
+
+<!-- DK: Need more details on the above! Maybe not use a family the first time, or a model?  -->
+
+Print out the model object.
+
+```{r}
+#| code-fold: false
+fit_gauss
+```
+
+There are many details. We will take a first pass here, leaving out elements which we will return to in later chapters. Highlights:
+
+* The "Family" is "gaussian," which is the default value for the `family` argument in `brms()`. In the next example, we will provide the `family` argument explicitly. Gaussian is another term for the normal distribution. Using "gaussian" is almost certainly a mistake on our part, but "discovering" this mistake and then fixing it is a useful exercise.
+
+* The "Links" are "identity" for both "mu" and "sigma." Recall the the gaussian/normal distribution is specified as $N(\mu, \sigma^2)$ in which $\mu$, or "mu," is the parameter for the mean or center of the distribution and $\sigma$, or "sigma," is the parameter for the standard deviation or spread of the distribution. 
+
+<!-- DK: ? Identity links are ones in which the mathematical connection between the  -->
+
+* The "Formula" is `biden ~ 1`, which is what we passed in to the `formula` argument when we called `brm()`.
+
+* The "Data" is `poll_data`, which is what we passed in to the `data` argument when we called `brm()`. Note the reminder that there are 1,559 observations. Never hurts to check that the reported number of observations matches what you expect.
+
+* Fitting Bayesian models is computationally complex. The information about "Draws," and the values for "Rhat," "Bulk_ESS," and "Tail_ESS" refer to those complexities. The bottom message gives a basic explanation. Don't worry about any of that now.
+
+* The "Intercept" is the key part of the model. Because the family is (incorrectly!) Gaussian and the link function an identity, the actual model we are estimating looks like:
+
+$$ biden_i =  \mu + \epsilon_i $$
+
+with $\epsilon_i \sim N(0, \sigma^2)$. $y_i$ is the height of male $i$. $\mu$ is true proportion of Biden voters. $\epsilon_i$ is the "error term," the difference between the vote of person $i$ and the true proportion of Biden voters. The obvious problem with this is that $\mu$, also called the "Intercept," is about 0.42. The value of `biden` is either `0` or `1`. So, the value of $\epsilon$ is either -0.42 or + 0.58. No other value is possible. But that makes no sense if $\epsilon_i \sim N(0, \sigma^2)$! This will cause problems soon.
+
+* Ignoring that Gaussian/Bernoulli issue for now, we have an "Intercept" (or $\mu$) value of 0.42. Note the complexity involved in even this simple model. We have multiple ways of describing the same concept: the true proportion of Biden voters. First, we have $\rho$, a mathematical symbol associated with Bernoulli models and to which we will return. Second, we have `1`, meaning the symbol in the formula: `biden ~ 1`. This is an "intercept only" model, one with no covariates. Third, we have $\mu$, the standard symbol for the intercept in a intercept-only linear or Gaussian model. Fourth, we have the word "Intercept," as in the printout from the fitted model object. In other words, $\rho$, $1$, $\mu$, and Intercept all refer to the same thing!
+
+* The "Est.Error" is, more or less, the same thing as the standard error of our 0.42 estimate for the intercept. The full value is 0.0123, which is very close to the value we calculated by hand above.
+
+* The **l**ower and **u**pper bounds of the 95% **c**onfidence **i**nterval are indicated by "l-95% CI" and "u-95% CI." The number also match, subject to rounding, our calculations.  (We can't use the by-hand calculations with more complex models, otherwise we would have no need for **brms**!)
+
+* The "sigma" variable in the "Family Specific Parameters" section refers to out estimate of $\sigma$, given the assumed truth of a gaussian error term. Since that assumption is clearly false, we won't waste time interpreting the results here.
+
+Once we have a fitted model, we can use that model, along with the R packages [**tidybayes**](https://mjskay.github.io/tidybayes/) and [**bayesplots**](https://mc-stan.org/bayesplot/), to answer various questions.
+
+```{r}
+#| code-fold: false
+#| message: false
+library(tidybayes)
+library(bayesplot)
+```
+
+<!-- DK: At some point, we should deal with the unique theme of which bayesplot uses. I want a consistent theme throughout the book. -->
+
+We can generate a posterior distribution for $\rho$ with:
+
+```{r}
+#| code-fold: false
+
+fit_gauss |> 
+  add_epred_draws(newdata = tibble(.rows = 1))
+```
+
+The first argument to the key function, `add_epred_draws()`, is `newdata`. We often want to examine the behavior of the model with new data sets, data which was not used in model estimation. The object passed as `newdata` is generally a tibble, with a row corresponding to each set of values for the independet variables. In this case, we have an intercept-only model, which means that there are no independent variables, other than the intercept, which does not need to be explicitly passed in. So, `newdata` is a tibble with no variables and one row.
+
+```{r}
+#| code-fold: false
+
+tibble(.rows = 1)
+```
+
+The resulting tibble includes 4,000 rows, each of which is a draw from the posterior distribution of $\rho$. (Recall that $\rho$ and $\mu$ refer to the same thing.) You can ignore that columns named `.row`, `.chain`, and  `.iteration`. The `.draw` variable just keeps count of the draws. The key variable is `.epred`, which us a draw from the posterior distribution of $\rho$. The "e" in `.epred` stands for expected value. Grahically, we have:
+
+
+```{r}
+#| code-fold: false
+
+fit_gauss |> 
+  add_epred_draws(newdata = tibble(.rows = 1)) |> 
+  ggplot(aes(x = .epred)) + 
+    geom_histogram(aes(y = after_stat(count/sum(count))),
+                   bins = 50) + 
+    labs(title = expression(paste("Posterior Probability Distribution of ", rho)),
+         subtitle = "Distribution is centered at 42%",
+         x = expression(paste("Proportion, ", rho, ", of Biden Voters")),
+         y = "Probability") + 
+  
+    scale_x_continuous(labels = scales::percent_format()) +
+    scale_y_continuous(labels = scales::percent_format()) +
+    theme_classic()
+```
+
+Even more useful than posteriors of the parameters in the model are predictions we can make with the model. The key function for exploring those predictions is `add_predicted_draws()`. This function behaves similarly to `add_epred_draws()`. In both cases, we need to provide the value for the `newdata` argument, generally a tibble with a column for all the variables used in the fitted model. Again, because this is an intercept-only model, there is no need for columns in the `newdata` tibble. No variables are used in `fit_gauss`.
+
+
+
+```{r}
+#| code-fold: false
+fit_gauss |> 
+  add_predicted_draws(newdata = tibble(.rows = 1))
+```
+
+The columns which result are the same as with `add_epred_draws()` except that `.epred` is replaced with `.prediction`. (The reason that all the variable names have a leading `.` is that this convention makes it less likely, but not impossible, that they will conflict with any variable names in the `newdata` tibble.)
+
+### Tests
+
+A glance at the result shows the problem: `.prediction` takes on a variety of values. But that is impossible! By definition, the only possible values are 0/1. We must have made a mistake in specifying the model. Another way to see the model is to perform a "posterior predictive check," a comparison of model predictions with your actual data. The **bayesplot** package includes the `pp_check()` function for that purpose.
+
+```{r}
+#| code-fold: false
+
+pp_check(fit_gauss)
+```
+
+$y$ is the original data. $y_rep$ is a replication of the data, using the `fit_gauss` model. In other words, we "pretend" that `fit_gauss` is the true model. We then create 10 versions of the output data, as created by `add_predictive_draws()`, each the same size are our original data, which is 1,559 observations in this case. We then graph both $y$ and the 10 versions of $y_rep$.
+
+As the graphic makes clear, we have a serious problem. The data, meaning the variable `biden`, which is referred to as $y$ in the plot, is always either 0 or 1, hence the two spikes in the plot. $y_rep$, on the other hand, is a continuous variable with a range of -0.8 to about 1.8. That is a contradiction! If our model were true, then the replicated values --- the posterior predictions --- would look a lot like our original data.
+
+Sadly, most usage of `pp_check()` does not produce such a clear cut conclusion. We need to decide if $y$ and $y_rep$ are "close enough" that our model can be used as if it were true.
+
+
+#### Bernoulli
+
+We have discovered that our initial assumption about the correct mathematical formula for the data generating mechanism was mistaken. Instead of a gaussion (or Normal) probability model, we should use a Bernoulli model. We must modify our call to `brm()` as follows:
+
+
+```{r}
+#| cache: true
+#| code-fold: false
+#| error: false
+fit_bern <- brm(formula = biden ~ 1,
+                data = poll_data,
+                family = bernoulli(),
+                refresh = 0,
+                silent = 2,
+                seed = 12)
+```
+
+This call to `brm()` is the same as the previous one, except that we have specified the value of the `family` argument as `bernoulli()`. (Note that we can give just the name of the family, which is itself a function, or include the parentheses as in `bernoulli()`. The results are the same.) Recall that the default value of `family` is `gaussian()` or, equivalently, `guassian`.  In a Bernoulli data generating mechanism, we have:
+
+$$ biden_i  \sim Bernoulli(\rho) $$
+
+Each voter $i$ which we sample either supports Biden or they do not. If person $i$ supports Biden, the value drawn is `1`, which is the standard way of representing `TRUE`. In other words, $biden_i = 1$ means that person $i$ supports Biden. Similarly, a person not supporting Biden is indicated with `0`, meaning that it is `FALSE` that the person $i$ supports Biden. $\rho$ is the only parameter in a Bernoulli model. It is the probability that a `1`, instead of a `0`, is drawn. That is, $\rho$ is the probability that a person supports Biden or, equivalently, the proportion of all voters who support Biden.
+
+Consider the fitted object:
+
+```{r}
+#| code-fold: false
+
+fit_bern
+```
+
+The output is, of course, very similar to that for `fit_gauss`. The "Family" is "bernoulli" rather than "gaussian." The "Links" are "mu = logit" instead of "mu = identity." There is no link for "sigma" because a Bernoulli model has only one parameter. The "Formula," "Data," and "Draws" are the same as before. In order to interpret the Intercept value of -0.32, we need to revisit the concept of a link function.
+
+Via my friend Claude, we have:
+
+> In statistical modeling, a link function is a mathematical function that relates the linear predictor (the linear combination of the predictors and their coefficients) to the expected value of the response variable. The link function is a key component of generalized linear models (GLMs) and is used to account for the relationship between the predictors and the response variable when the response variable follows a non-normal distribution or has a restricted range.
+
+> The purpose of the link function is to transform the expected value of the response variable to a scale that is unbounded and continuous, allowing it to be modeled as a linear combination of the predictors. The choice of the link function depends on the distribution of the response variable and the assumptions made about the relationship between the predictors and the response.
+
+Don't worry if this is difficult to understand, we will revisit in future chapters.
+
+The default link function for a Bernoulli model is logit, as in:
+
+$$
+\rho = \frac{e^{\beta_0}}{1 + e^{\beta_0}}
+$$
+By definition, the parameter $\rho$ is only allowed to take values between 0 and 1. We want to constrain the model so that only these values are even possible. Using the Gaussian model was a bad choice because it allows for values anywhere from positive to negative infinity. The magic of the link function, as you can see, is that it can only ever produce a number close to zero, if $\beta_0$ is very small, or close to one, if $\beta_0$ is very large. In other words, the model structure (which is a "logit" function) "bakes in" the restrictions on $\rho$ from the very start. We call this a "link" function because it *links* the unknown parameters we are estimating ($\beta_0$ in this case) to the paramter(s) (just one parameter, $\rho$, in this case, ) which are part of the data generating mechanism. Once we have $\rho$ (or, more precisely, the posterior distribution of $\rho$) we no longer care about $\beta_0$.
+
+We can now interpret the value of the Intercept (which is the same thing as $\mu$ in this case, but not the same thing as $\rho$) as the value of $\beta_0$. In fact, the most common mathematical symbol for the intercept of a statistical model is $\beta_0$.
+
+<!-- DK: Get each equation to appear on its own line. -->
+
+$$
+\begin{eqnarray}
+\rho &=& \frac{e^{\beta_0}}{1 + e^{\beta_0}}\
+\rho &=& \frac{e^{-0.32}}{1 + e^{-0.32}}\
+\rho &\approx& 0.42
+\end{eqnarray}
+$$
+<!-- DK: maybe replace the above with. But it doesn't work -->
+
+<!-- $$ -->
+<!-- \begin{aligned} -->
+<!-- \rho &= \frac{e^{\beta_0}}{1 + e^{\beta_0}}\ -->
+<!-- \rho &= \frac{e^{-0.7}}{1 + e^{-0.7}}\ -->
+<!-- \rho &\approx 0.33 -->
+<!-- \end{aligned} -->
+<!-- $$ -->
+
+<!-- Maybe we need amsmath package? -->
+
+0.42 is the same number we calculated by hand and the same result when we used `family = gaussian()`. We can calculate the values for the upper and lower 95% confidence intervals by plugging -0.22 and -0.42 into the same formula.
+
+We can create the entire posterior distribution for $\rho$ using similar code as before:
+
+```{r}
+#| code-fold: false
+
+fit_bern |> 
+  add_epred_draws(newdata = tibble(.rows = 1)) |> 
+  ggplot(aes(x = .epred)) + 
+    geom_histogram(aes(y = after_stat(count/sum(count))),
+                   bins = 50) + 
+    labs(title = expression(paste("Posterior Probability Distribution of ", rho)),
+         subtitle = "Distribution is centered at 42%",
+         x = expression(paste("Proportion, ", rho, ", of Biden Voters")),
+         y = "Probability") + 
+    scale_x_continuous(labels = scales::percent_format(accuracy = 1)) +
+    scale_y_continuous(labels = scales::percent_format()) +
+    theme_classic()
+```
+
+If both `fit_gauss` and `fit_bern` produce the same posterior distribution for $\rho$, then who cares which one we use? The answer is that `fit_bern` produces reasonable posterior predictions:
+
+
+```{r}
+#| code-fold: false
+fit_bern |> 
+  add_predicted_draws(newdata = tibble(.rows = 1))
+```
+
+All the values of `.prediction` are either zero or one, as we expect. Consider:
+
+```{r}
+#| code-fold: false
+pp_check(fit_bern, type = "bars")
+```
+
+Using `type = "bars"` is a good choice for `pp_check()` when `family` is `bernoulli()`. Note how the 10 replications of $y_rep$ are indistinguishable from the true output values $y$. A good model produces replications, sometimes termed "fake data," which is indistinguishable for the actual data.
+
+### Data Generating Mechanism
+
+We now have our data generating mechansim:
+
+$$ biden_i  \sim Bernoulli(\rho = 0.42) $$
+
+<!-- broom.mixed::tidy(fit_bern) produces ugly stuff here, so maybe don't introduce it now. -->
+
+> *Using data from a YouGov poll of 1,559 US adult citizens, conducted March 10 - 12, 2024, we seek to understand what proportion of voters will support Biden in the 2024 election. Biden's popularity might change significantly over the course of the election campaign. In the poll, Biden's support was much less than 50%.*
+
+We have not yet used our DGM to answer our question. But, the DGM itself, prior to us asking any specific question, includes all sorts of interesting information. It is sensible for us to add one aspect of that information to our summary of the work done so far.
+
+## Temperance
+
+```{r}
+#| echo: false
+knitr::include_graphics("other/images/Temperance.jpg")
+```
+
+Courage produced the data generating mechanism. Temperance guides us in the use of the DGM --- or the "model" ---  we have created to answer the questions with which we began. We create posteriors for the quantities of interest. We should be modest in the claims we make. The posteriors we create are never the “truth.” The assumptions we made to create the model are never perfect. Yet decisions made with flawed posteriors are almost always better than decisions made without them.
+
+### Questions and Answers
+
+Recall the question with which we began:
+
+> *What proportion of all votes will be cast for Joe Biden in the 2024 election?*
+
+
+Let's use `fit_bern` to answer this question with the help of `add_epred_draws()`. 
+
+```{r}
+#| code-fold: false
+
+fit_bern |> 
+  add_epred_draws(newdata = tibble(.rows = 1)) |> 
+  summarise(
+    lower_95 = quantile(.epred, 0.025),
+    median = quantile(.epred, 0.5),
+    upper_95 = quantile(.epred, 0.975)
+  )
+```
+
+We can also refer to the figure we created above of the posterior probability distribution for $\rho$. Of course, if we want (mostly) precise numbers, we need to do more than just stare at a graphic. We should calculate precise quantiles from the posterior distribution.
+
+
+> *Using data from a YouGov poll of 1,559 US adult citizens, conducted March 10 - 12, 2024, we seek to understand what proportion of voters will support Biden in the 2024 election. Biden's popularity might change significantly over the course of the election campaign. In the poll, Biden's support was much less than 50%. We estimate that Biden's percentage of the vote in Election Day will be about 42%, plus or minus 2.5%.*
+
+
+### Humility
+
+*We can never know the truth.*
+
+Recall all the ways in which are DGM is a poor description of reality. We assume *representativeness*. But that is false! We know that our sample is not perfectly representative of the people who will be voting in the election. No poll is ever perfect. The sort of people who answer polling questions are systematically different from those who do not. Professionals will do their best to "control" for those differences, a topic beyond the scope of this *Primer*, but those controls will never be perfect.
+
+We also assume *stability* in constructing our DGM. This is certainly false. The 0.42 estimate is highly unlikely to stay stable throughout the election campaign.
+
+Life is not a textbook. We first calculate the textbook answer, with all of its absurd assumptions. We then use that answer, along with our other knowledge, to produce the best possible estimate for our quantity of interest along with our uncertainty about that estimate.
+
+Our initial answer to the question has two major problems. First, it does not use information about other US presidential elections. Second, it is over-confident because it assumes that the model's assumptions are correct.
+
+A better answer would be:
+
+> *Using data from a YouGov poll of 1,559 US adult citizens, conducted March 10 - 12, 2024, we seek to understand what proportion of voters will support Biden in the 2024 election. Biden's popularity might change significantly over the course of the election campaign. In the poll, Biden's support was much less than 50%. We estimate that Biden's percentage of the vote in Election Day will be about 44%, plus or minus 5%.*
+
+Wait!?! This is not what the model reported!
+
+Where did that 44% come from? The model estimated 42%. But, the problem, as always, is that our models are always flawed. They always assume things that are false. They always leave out lots of information. For example, no Democrat has won less than 43% of the votes for president since Walter Mondale in 1980. Is Biden really a worse candidate then every other Democrat in almost 50 years? Probably not. 
+
+Does that history "prove" anything? No! History suggests. It does not construct proofs. Your job as a data scientist is not simply to **read** the numbers from your R Console. Your job is to **combine** those numbers with other sources of information and then offer your best estimate for the quantity of interest.
+
+
+Where did that "plus or minus 5%" come from? The 95% confidence (or uncertainty or whatever) intervals provided by **brms** run from about 39.7% to 44.5%. That would suggest a plus/minus range of somewhere between 2.3% and 2.5%. 
+
+You always need to be prepared to give two ranges of uncertainty related to your quantity of interest. First, is the range provided by the model, the one which assumes that every aspect of the model is perfectly true. For this range to be correct, every assumption must be true. 
+
+But, in addition to the computer output, you bring your experience to bear. You know that polls are volatile. You know that polling is hard. In general, the uncertainty interval provided by the model is a **floor** for the true uncertainty.
+
+*The world is always more uncertain than our models would have us believe.*
+
+

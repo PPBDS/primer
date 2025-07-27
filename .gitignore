@@ -5,3 +5,6 @@ docs
 
 /.quarto/
 *html
+*_cache
+*_files
+site_libs

@@ -1,0 +1,1138 @@
+# Rubin Causal Model {#sec-rubin-causal-model}
+
+```{r}
+#| label: hidden-libraries
+#| message: false
+#| echo: false
+#| warning: false
+library(tidyverse)
+library(knitr)
+library(gt)
+```
+
+<!-- Do the assumptions twice! That is, have two separate sections: predictive models and causal models. Do predictive first, but do all the steps: Preceptor Table (with a covariate like sex), Population Table and so on. All the assumptions. Then, do it all again but with causal model. -->
+
+<!-- Bring to the fore and emphasize the difference between predictive and causal models, with a focus on how they suggest different preceptor tables. Indeed, we should probably have paired preceptor/population tables for causal/predictive problems all the way through . . . -->
+
+<!-- In the height example, we can add a covariate, sex, and then discuss a predictive model. -->
+
+<!-- Or maybe we drop height and just use immigration attitude. This is a prediction problem at the start. -->
+
+<!-- The column names which require math text, like Y_t, do not line up with the column names which don't use math, like sex. They should look the same. Maybe we use $$\text{sex}$$ to achieve that? -->
+
+<!-- Simplify tables. Do they really need `$$`, for example? -->
+
+<!-- Make all tables look the same. -->
+
+<!-- Note that the all the columns of the Preceptor Table fit within the Population Table. It is just that the Population Table also includes some extra columns, both Source and Time. -->
+
+
+<!-- Maybe the whole chapter should begin with simple prediction, with only one possible outcome Y. Then, the step to multiple potential outcomes is clearer. Might even explain multiple units at the start. We already sort of do that with the height example. Just make it more explicit. All examples have a predictive version and a causal version. Start with Yao. We might just care about predicting Yao's attitude toward immigration, given that we know he did not receive the treatment. That is a predictive problem, like predicting Andy's height. Only after understanding that, do we try to look at the causal question. We do this a bit at the end of the Multiple Units section. -->
+
+
+<!-- https://stats.stackexchange.com/questions/3520/can-someone-explain-the-concept-of-exchangeability. Mention this under stability? -->
+
+<!-- Need to emphasize units, outcomes, and (if causal) treatments throughout. Every time you mention creating the Preceptor Table, we should mention these three.  When predictive, an outcome like immigration attitude has a single column, where it is the name of the column. When causal, the column names are the name of the treatment, and the value in the column is the outcome variable. An outcome variable in a causal model does not have one column, it has two or more. -->
+
+<!-- Rough idea: Organize the set of problems which can plague us into broad categories, united in a similar structure. I *think* that the way to do this is to discuss the missing data mechanisms which can cause trouble.  -->
+
+<!-- Complications discuss: What are the broad categories of what can go wrong? Phrase this in terms of correlations between X and missingness. First, if missingness is correlated with the values of unobserved potential outcomes, you are hosed! Second, missingness might be correlated with values of observed outcomes. Third, missingness might be correlated with the values of righthand side variables. Fourth, missingness might be correlated with the values of other variables.   -->
+
+<!-- Clean up the weird text in some of the tables. See this
+
+https://mpopov.com/blog/2020/05/22/strings-in-r-4.x/ 
+
+for discussion. I think that something like c("$$13 - \\tau_M$$") could become c(r"$13 - \tau_M$")
+->
+
+<!-- Lots of useful material here: https://chabefer.github.io/STCI/. Raises the possibility of using $Y^{t}_i to indicate potential outcome under treatment for unit i. -->
+
+<!-- unit/item nonresponse as an example of another mechanism. Where do question marks come from? -->
+
+<!-- Add these to references.bib and then reference them. -->
+
+<!-- Holland, Paul W. (1986). "Statistics and Causal Inference." *J. Amer. Statist. Assoc.* 81 (396): 945–960. doi:10.1080/01621459.1986.10478354. -->
+
+<!-- Rubin (2011, page 288), Discussion of “Towards more accessible conceptions of statistical inferences” by C. J. Wild, M. Pfannkuch, M. Regan and N. J. Horton, Journal of the Royal Statistical Society. Series A (Statistics in Society), Vol. 174, No. 2 (APRIL 2011), pp. 247-295. -->
+
+Have you ever wondered what the world would be like without you?
+
+{{< video https://www.youtube.com/embed/cR7p-IB6INM >}}
+
+
+In the classic film "[It's a Wonderful Life](https://en.wikipedia.org/wiki/It%27s_a_Wonderful_Life)," the protagonist, George Bailey, finds himself in a state of despair, convinced that his life has been meaningless. The movie takes the audience on a journey alongside George as he is granted a glimpse into an alternate reality—a world in which he had never existed. Through this experience, it becomes evident that George's life had a significant and positive impact on the lives of countless individuals within his community. His selfless actions and kind-hearted nature had touched the lives of many, leaving an indelible mark that he had never fully appreciated. The film serves as a poignant reminder that our lives, no matter how seemingly ordinary, have the power to make a profound difference in the world around us.
+
+By showing what the world would have been like without George, we get an idea of the *causal effect* of his life on his town and the people who live there. This chapter explains causation using the framework of *potential outcomes* and the *Rubin Causal Model* (RCM).
+
+We begin by discussing *predictive* versus *causal* models in data science. In both cases, a *Preceptor Table* and a *Population Table* provide analytic tools for attacking the problem. Assumptions concerning *validity*, *stability*, *representativeness*, and *unconfoundedness* are critical.
+
+## Predictive model
+
+We would not need data science if we (and our bosses, colleagues, and clients) did not have questions. Every data science project starts with a question. Examples:
+
+*What is the average height of a student at New College of Florida?*
+
+*What are the chances that, out of the next four New College students we meet, one will be taller than 183 centimeters?*
+
+A *predictive model* involves exactly one outcome which, in this case, is height. Of course, there are many other variables associated with college students: weight, sex, age, family income, GPA, et cetera. These questions, however, are about height, a variable which is *fixed*, meaning that each individual has only one possible value for height, at least for the purpose of these questions.
+
+
+### Preceptor Table
+
+A **Preceptor Table**^[The term Preceptor Table is, perhaps unsurprisingly, unique to this textbook. We hope you find it useful.] is the smallest possible table with rows and columns such that, if none of the data is missing, then the things we want to know are easy to calculate. Consider:
+
+```{r}
+#| echo: false
+tibble(ID = c("Student 1", "Student 2", "...", "Student 47", "Student 48",
+              "...", "Student 325", "Student 326", "...", "Student 670"),
+       Heights = c("190", "160", "...", "172", "176", "...", "180", "162", "...", "185")) |>
+  
+  # Then, we use the gt function to make it pretty
+  
+  gt() |>
+  tab_header(title = "Preceptor Table") |> 
+  cols_label(ID = md("ID"),
+                Heights = "Height (cm)") |>
+  tab_style(style = cell_text(align = "left", v_align = "middle"), 
+            locations = cells_column_labels(columns = c(ID))) |>
+  cols_align(align = "center", columns = everything()) |>
+  cols_align(align = "left", columns = c(ID)) |>
+  tab_spanner(label = "Outcome", columns = c(Heights)) |> 
+  tab_style(style = cell_text(v_align = "bottom"),
+            locations = cells_column_labels())
+```
+
+If we had a table with the height of every New College student, then statistics like the average would be easy to calculate. It would also be straightforward, using simulation, to estimate the chances of various scenarios, as in our second question.
+
+Constructing the Preceptor Table is sometimes tricky. The question(s) we start with help us to identify the "units," "outcome," and "covariates" which describe the structure of the table. The "units" refer to the rows, which are the individual students at New College. Different question(s) would require different units. The "outcome" refers to height, the key variable which is the focus of the question(s).
+
+Even the simplest Preceptor Table will have two columns. The first is an *ID* column which serves to label each unit. The second column is the *outcome* of interest, the variable we are trying to predict/understand/influence. The rows of the Preceptor Table are the *units*, the objects on which the outcome is measured. 
+
+However, if we had different questions, then we would need a different Preceptor Table. Consider:
+
+*What is the average height of a female student at New College of Florida?*
+
+*What are the chances that, out of the next four male New College students we meet, one will be taller than 183 centimeters?*
+
+The Preceptor Table for the first set of questions did not require a column for sex because we did not need that information to answer those questions. For these new questions, we do:
+
+```{r}
+#| echo: false
+tibble(ID = c("Student 1", "Student 2", "...", "Student 47", "Student 48",
+              "...", "Student 325", "Student 326", "...", "Student 670"),
+       Heights = c("190", "160", "...", "172", "176", "...", "180", "162", "...", "185"),
+       Sex     = c("Male", "Female", "...", "Female", "Female", "...", "Male", "Female", "...", "Male")) |>
+  
+  # Then, we use the gt function to make it pretty
+  
+  gt() |>
+  tab_header(title = "Preceptor Table") |> 
+  cols_label(ID = md("ID"),
+             Heights = "Height (cm)",
+             Sex = md("Sex")) |>
+  tab_style(style = cell_text(align = "left", v_align = "middle"), 
+            locations = cells_column_labels(columns = c(ID))) |>
+  cols_align(align = "center", columns = everything()) |>
+  cols_align(align = "left", columns = c(ID)) |>
+  tab_spanner(label = "Outcome", columns = c(Heights)) |> 
+  tab_spanner(label = "Covariate", columns = c(Sex)) |> 
+  tab_style(style = cell_text(v_align = "bottom"),
+            locations = cells_column_labels())
+```
+
+*Covariates* are the variables, other than the outcome, which we need to answer our question(s). 
+
+### Data
+
+Sadly, in the real world, we almost never have a complete Preceptor Table with no missing data. After all, if our boss/client/colleague had that, they would not have needed to call us! Instead, we have some data. Consider:
+
+
+```{r}
+#| echo: false
+tibble(ID = c("Student 11", "Student 32", "Student 47", "Student 68",
+              "Student 425", "Student 436", "Student 570"),
+       Heights = c("160", "189",  "172", "170",  "175", "162",  "188")) |>
+  
+  # Then, we use the gt function to make it pretty
+  
+  gt() |>
+  tab_header(title = "Data for New College Students") |> 
+  cols_label(ID = md("ID"),
+                Heights = "Height (cm)") |>
+  tab_style(style = cell_text(align = "left", v_align = "middle"), 
+            locations = cells_column_labels(columns = c(ID))) |>
+  cols_align(align = "center", columns = everything()) |>
+  cols_align(align = "left", columns = c(ID)) |>
+  tab_spanner(label = "Outcome", columns = c(Heights)) |> 
+  tab_style(style = cell_text(v_align = "bottom"),
+            locations = cells_column_labels())
+```
+
+Note that, if this is the only data we have, then we can't answer the second set of questions because our data does not include any information about sex. And that is OK! There are many situations in which the data we have access to is not enough to answer the questions which we have.
+
+The notion of time is important, both in our Preceptor Table and in our data. To what moment in time do the questions refer? At what moment in time was our data collected? Those two moments are almost always different. Our data comes from some point in the past, even if it was collected yesterday. Our questions usually refer to *now* or to an indeterminate moment in the future. Implicit in both the Preceptor Table and the data is a "time" column, even if it is not actually present. The times almost always differ between Preceptor Table and data.
+
+In order to use this data to answer our questions, we need to consider the concept of *validity*. Is the data we have *valid* for answering our questions? Height, as an outcome, seems to make this simple, but, even here, complications can arise. For example, was height measured with shoes on or off? Which measure do we want? Validity is the consistency, or lack there of, in the columns of our data set and the corresponding columns in our Preceptor Table. If validity holds --- if "height" means close enough to the same thing in both sources --- we can combine the Preceptor Table with our data to construct the Population Table. 
+
+
+### Population Table
+
+We create the *Population Table*^[The term Population Table is, perhaps unsurprisingly, unique to this textbook. We hope you find it useful.] by combining the Preceptor Table and the data. The aim of the Population Table is to illustrate the broader population in which we are interested. This table has three sources of data: the data for units we *want to have* (the Preceptor Table), the data for units which we *actually have* (our data), and the data for units we *do not care about* (the rest of the population, not included in the data or the Preceptor Table).
+
+We are trying to answer questions about the height of New College students in 2025, so the "Year" entries for these rows will read "2025." In this case, the actual data comes from a survey of New College students in 2015.
+
+We drop the ID column since we do not need it to answer our questions. 
+
+The "Source" column refers to the source of the rows in the Population Table. The rows with no "Source" are from the larger population from which, by assumption, both the Preceptor Table and the data are drawn. As such, all values, other than year, are missing.
+
+```{r}
+#| echo: false
+tibble(source = c("...", "...",  "Data", "Data", 
+                  "...", "...", "...", 
+                  "Preceptor Table", "Preceptor Table", "...", "...", "..."),
+       year = c("2010", "...", "2015", "2015", 
+                "...","2018", "...", "2025", "2025", "...", "2030", "2030"),
+       height = c("...", "...", "180", "163", "...", "...", "...","?", "?", "...", "...", "...")) |> 
+  
+  # Then, we use the gt function to make it pretty
+  
+  gt() |>
+  tab_header(title = "Population Table") |> 
+  cols_label(source = md("Source"),
+             year = md("Year"),
+             height = md("Height")) |>
+  tab_style(style = cell_text(align = "left", v_align = "middle", size = "large"), 
+            locations = cells_column_labels(columns = c(source))) |>
+  cols_align(align = "center", columns = everything()) |>
+  cols_align(align = "left", columns = c(source)) |>
+  fmt_markdown(columns = everything())  
+```
+
+The question marks indicate the data which we do not know but which we need in order to answer the questions. The ellipses are data we don't know and don't need to know. 
+
+By definition, our population covers both the data we have and the data we want to have: the Preceptor Table. That is to say that, given our data is sourced from 2015 and our desired data is from 2025, our population must span at least those years. But, obviously, it seems reasonable that the population goes both earlier and later than these endpoints. After all, we would probably use the same model even if our data came from 2010 instead of 2015 or if we had wanted to answer questions about 2030 instead of 2025.
+
+Never forget that **time is always a lie** in the Population Table. Indeed, any time variable is suspect in data science more broadly. 
+
+* A moment in time is rarely measured accurately. In this example, we refer to the data being recorded in 2015. But that isn't true! We didn't record student heights across a year. We recorded them once, on a specific date like August 9, 2015 and at a specific time like 3:16 PM.
+
+* Identical values often aren't truly identical. Even though the data measures for different students all refer to 2015, they almost certainly occurred at different moments in time, even if all measurements were taken during the year 2015. In fact, measurements can and do occur on different days or even months. Using `2015` a the value for `year` hides that variation.
+
+* The value for the time variable for rows corresponding to the Preceptor Table is always hazy. Does it refer to now? Tomorrow? Whenever we finish the analysis? In general, we don't know the time period for which we are answering our question until we actually get to the point of answering it.
+
+### Assumptions
+
+**Validity**, as we have already discussed, is the consistency, or lack there of, in the columns of our data set and the corresponding columns in our Preceptor Table. In order to consider the two data sets to be drawn from the same population, the columns from one must have a *valid correspondence* with the columns in the other. Validity, if true (or at least reasonable), allows us to construct the *Population Table*. Fortunately, the `height` variable from each source, while perhaps not identical in meaning, are similar enough that we can treat them *as if* they are the same thing. 
+
+**Stability** means that the relationship between the columns in the Population Table is the same for three categories of rows: the data, the Preceptor Table, and the larger population from which both are drawn.
+
+In the case of height, we might worry that the population of students at New College is different today than it was in 2015. For example, maybe there are more students from Denmark and Slovenia, two countries where people are taller, on average, than in the US. If so, then the stability assumption would not hold and we could not use our data from 2015 to make inferences about students in 2015.
+
+**Representativeness**, or the lack thereof, concerns two relationships among the rows in the Population Table. The first is between the Preceptor Table and the other rows. The second is between our data and the other rows. Ideally, we would like both the Preceptor Table *and* our data to be random samples from the population. Sadly, this is almost never the case.
+
+With height among New College students, we might worry about the process by which our data was collected in 2015. If the students in the data were a random sample of all students, then representativeness would not be a concern. Random samples are representative, at least in expectation. But if, instead, the 2015 data was collected from students walking out of the gym, then that sample of students might not be representative of the population of New College students from 2010 to 2030 as a whole.
+
+**Unconfounded** is an assumption which only applies to causal models. We will discuss it below.
+
+We started with some questions about the height of New College students. We created a Preceptor Table which, if it existed with no missing data, would allow us to answer those questions
+
+
+## Causal model
+
+Predictive models are flexible enough to cover a wide range of questions. For example, @enos2014 measured attitudes toward immigration among Boston commuters. Individuals were exposed to one of two possible conditions, and then their attitudes towards immigrants were recorded. One condition was waiting on a train platform near individuals speaking Spanish. The other was being on a train platform without Spanish-speakers. 
+
+```{r}
+#| echo: false
+#| fig.cap: This study, which shows the impact of exposure to Spanish-speaking individuals
+#|   on attitudes towards immigration, was conducted by Ryan Enos.
+knitr::include_graphics("rubin-causal-model/images/enos_seal.png")
+```
+
+Consider two questions:
+
+*What is the average attitude toward immigration of Boston commuters?*
+
+*What is the average attitude toward immigration of Boston commuters exposed to Spanish speakers on the train platform?*
+
+To answer these questions, we can use a Preceptor Table with the same format as the height/sex example from New College:
+
+```{r}
+#| echo: false
+tibble(ID = c("Commuter 1", "Commuter 2", "...", "Commuter 47", "Commuter 48",
+              "...", "Commuter 325", "Commuter 326", "...", "Commuter N"),
+       Attitude = c("10", "15", "...", "7", "5", "...", "10", "9", "...", "6"),
+       Treatment     = c("Treated", "Control", "...", "Control", "Control", "...", "Treated", "Control", "...", "Treated")) |>
+  
+  # Then, we use the gt function to make it pretty
+  
+  gt() |>
+  tab_header(title = "Preceptor Table") |> 
+  cols_label(ID = md("ID"),
+             Attitude = "Attitude toward Immigration",
+             Treatment = md("Treatment")) |>
+  tab_style(style = cell_text(align = "left", v_align = "middle"), 
+            locations = cells_column_labels(columns = c(ID))) |>
+  cols_align(align = "center", columns = everything()) |>
+  cols_align(align = "left", columns = c(ID)) |>
+  tab_spanner(label = "Outcome", columns = c(Attitude)) |> 
+  tab_spanner(label = "Covariate", columns = c(Treatment)) |> 
+  tab_style(style = cell_text(v_align = "bottom"),
+            locations = cells_column_labels())
+```
+
+The two Preceptor Tables have the same structure because the structure of the two problems is the same. In this case, the units are individual Boston commuters, the outcome is their attitude toward immigration (measured on a 3 to 15 integer scale), and the covariate is whether or not they were exposed to Spanish speakers ("treated") on the train platform or not ("control"). If we had access to a Preceptor Table with no missing data, we could easily answer our questions. (Side note: the last commuter has an ID number `N` because we are not sure how many commuters there are.)
+
+This is a predictive model, like the height one, because we assume that attitude toward immigration is fixed, conditional on the covariate value for treatment. We want to know what Commuter 1's attitude is (10) and, to estimate that, we can use the fact that they were treated, i.e., exposed to Spanish speakers on the train platform. To answer our questions, we do not need to consider any *counter-factuals*. We do not need to know what Commuter 1's attitude *would have been* if they *had not been* exposed to the Spanish speakers. To answer questions concerning such counter-factuals, we need to construct a *causal* model.
+
+
+### Rubin Causal Model (RCM)
+
+The Rubin Causal Model (RCM) is based on the idea of **potential outcomes.** To calculate the causal effect of having Spanish-speakers nearby, we need to compare the outcome for an individual in one possible state of the world (with Spanish-speakers) to the outcome for that same individual in another state of the world (without Spanish-speakers). However, it is impossible to observe both potential outcomes at once. One of the potential outcomes is always missing, since a unit cannot travel back in time, and experience both treatments. This dilemma is the **Fundamental Problem of Causal Inference**.
+
+In most circumstances, we are interested in comparing two experimental manipulations, one generally termed "treatment" and the other "control." The difference between the potential outcome under treatment and the potential outcome under control is a "causal effect" or a "treatment effect." According to the RCM, the **causal effect** of being on the platform with Spanish-speakers is the *difference* between what your attitude would have been under "treatment" (with Spanish-speakers) and under "control" (no Spanish-speakers).
+
+The commuter survey consisted of three questions, each measuring agreement on a 1 to 5 integer scale, with 1 being liberal and 5 being conservative. For each person, the three answers were summed, generating an overall measure of attitude toward immigration which ranged from 3 (very liberal) to 15 (very conservative). If your attitude towards immigrants would have been a 13 after being exposed to Spanish-speakers and a 9 with no such exposure, then the causal effect of being on a platform with Spanish-speakers is a 4-point increase in your score.
+
+We will use the symbol $Y$ to represent potential outcomes, the variable we are interested in understanding and modeling. $Y$ is called the *response* or *outcome* variable. It is the variable we want to "explain." In our case this would be the attitude score. If we are trying to understand a causal effect, we need two symbols so that the value with treatment and the value with control can be represented separately: $Y_t$ and $Y_c$.
+
+### Potential outcomes
+
+Suppose that Yao is one of the commuters surveyed in this experiment. If we were omniscient, we would know the outcomes for Yao under both treatment (with Spanish-speakers) and control (no Spanish-speakers), and we would be able to ignore the Fundamental Problem of Causal Inference. We can show this using a Preceptor Table. Calculating the number we are interested in is trivial because none of the data is missing.
+
+```{r}
+#| echo: false
+#| fig.align: left
+# First, we create a tibble with the values we want for the table
+
+tibble(ID = "Yao",
+       ytreat = "13",
+       ycontrol = "9") |>
+  
+  # Then, we use the gt function to make it pretty
+  
+  gt() |>
+  tab_header(title = "Preceptor Table") |> 
+  cols_label(ID = md("ID"),
+                ytreat = "Attitude if Treated",
+                ycontrol = "Attitude if Control") |>
+  tab_style(style = cell_text(align = "left", v_align = "middle"), 
+            locations = cells_column_labels(columns = c(ID))) |>
+  cols_align(align = "center", columns = everything()) |>
+  cols_align(align = "left", columns = c(ID)) |>
+  tab_spanner(label = "Outcomes", columns = c(ytreat, ycontrol))|> 
+  tab_style(style = cell_text(v_align = "bottom"),
+            locations = cells_column_labels())
+```
+
+Regardless of what the causal effect is for other subjects, the causal effect for Yao of being on the train platform with Spanish-speakers is a shift towards a more conservative attitude.
+
+Using the response variable --- the actual symbol rather than a written description --- makes for a more concise Preceptor Table.
+
+```{r}
+#| echo: false
+# First, we create a tibble with the values we want for the table.
+
+# Note that math text can not be bolded, so we are stuck with terms like $$Y_t$$
+# unbolded.
+
+tibble(subject = "Yao",
+       ytreat = "13",
+       ycontrol = "9") |>
+  
+  # Then, we use the gt function to make it pretty
+  
+  gt() |>
+    tab_header(title = "Preceptor Table") |> 
+    cols_label(subject = md("ID"),
+                  ytreat = md("$$Y_t$$"),
+                  ycontrol = md("$$Y_c$$")) |>
+    tab_style(style = cell_text(align = "left", 
+                                v_align = "middle", size = "large"), 
+              locations = cells_column_labels(columns = 
+                                                c(subject))) |>
+    cols_align(align = "center", columns = everything()) |>
+    cols_align(align = "left", columns = c(subject)) |>
+    fmt_markdown(columns = everything()) |>
+    tab_spanner(label = "Outcomes", c(ytreat, ycontrol))|> 
+  tab_style(style = cell_text(v_align = "bottom"),
+            locations = cells_column_labels())
+```
+
+The "causal effect" is the difference between Yao's potential outcome under treatment and his potential outcome under control.
+
+```{r}
+#| echo: false
+# First, we create a tibble with the values we want for the table
+
+tibble(subject = "Yao",
+       ytreat = "13",
+       ycontrol = "9",
+       ydiff = "+4") |>
+  
+  # Then, we use the gt function to make it pretty
+  
+  gt() |>
+    tab_header(title = "Preceptor Table") |> 
+    cols_label(subject = md("ID"),
+                  ytreat = md("$$Y_t$$"),
+                  ycontrol = md("$$Y_c$$"),
+                  ydiff = md("$$Y_t - Y_c$$")) |>
+    cols_move(columns = c(ytreat, ycontrol), after = c(subject)) |>
+    tab_style(style = cell_text(align = "left", v_align = "middle", size = "large"), 
+              locations = cells_column_labels(columns = c(subject))) |>
+    cols_align(align = "center", columns = everything()) |>
+    cols_align(align = "left", columns = c(subject)) |>
+    fmt_markdown(columns = everything()) |>
+    tab_spanner(label = "Outcomes", c(ytreat, ycontrol)) |>
+    tab_spanner(label = "Causal Effect", c(ydiff))|> 
+  tab_style(style = cell_text(v_align = "bottom"),
+            locations = cells_column_labels())
+```
+
+Remember that, in the real world, we will have a bunch of missing data! We can not use simple arithmetic to calculate the causal effect on Yao's attitude toward immigration. Instead, we will be required to estimate it. An **estimand** is some unknown variable in the real world that we are trying to measure. In this case, it is $Y_{t}-Y_{c}$, not $+4$. An estimand is not the *value* you calculated, but is rather the *unknown variable* you want to estimate.
+
+```{r}
+#| echo: false
+#| fig.cap: Don Rubin was a Professor of Statistics at Harvard.
+knitr::include_graphics("rubin-causal-model/images/don_rubin.jpg")
+```
+
+### Causal and predictive models
+
+Causal inference is often compared with prediction. In prediction, we want to know an outcome, $Y$. In causal inference, we want to know a function of *potential* outcomes, such as the treatment effect: $Y_t - Y_c$.
+
+These are both missing data problems. Prediction involves estimating an outcome variable that we don't have, and thus is missing, whether because it is in the future or because it is from data that we are unable to collect. Thus, prediction is the term for using statistical inference to fill in missing data for *individual* outcomes. Causal inference, however, involves filling in missing data for more than one potential outcome. This is unlike prediction, where only one outcome can *ever* be observed, even in principle.
+
+**Key point**: In a predictive model, there is only one $Y$ value for each unit. This is very different to the RCM where there are (at least) two potential outcomes (treatment and control). There is only one outcome column in a predictive model, whereas there are two or more in a causal model.
+
+With a predictive model, we cannot infer what would happen to the outcome $Y$ if we changed $X$ *for a given unit*. We can only *compare* two units, one with one value of $X$ and another with a different value of $X$.
+
+In a sense, all models are predictive. However, only a subset of models are causal, meaning that, for a given individual, you can change the value $X$ and observe a change in outcome, $Y$, and from that calculate a causal effect.
+
+### No causation without manipulation
+
+<!-- DK: This whole section is awkward. Rewrite! -->
+
+In order for a potential outcome to make sense, it must be possible, at least *a priori*, for a unit to receive both the treatment and the control. If a unit can not receive the treatment, for example, then $Y_t$ is not defined and, therefore, the causal effect for that unit is not defined.
+
+The causal effect of exposure to Spanish-speakers is the difference between two potential outcomes. In this case, we (or something else) can manipulate the world, at least conceptually, so that it is possible that one thing (exposure to Spanish speakers) or another (no exposure) might happen.
+
+This definition of causal effects becomes much more problematic if there is no way for one of the potential outcomes to occur, ever. For example, what is the causal effect of Yao's height on his weight? It might seem we would just need to compare two potential outcomes: Yao's weight under the treatment (where treatment is defined as being 3 inches taller) and Yao's weight under the control (where control is defined as his current height).
+
+A moment's reflection highlights the problem: *we can't increase Yao's height*. There is no way to observe, even conceptually, what Yao's weight would be if he were taller because there is no way to make him taller. We can't manipulate Yao's height, so it makes no sense to investigate the causal effect of height on weight. Hence the slogan: *No causation without manipulation.*
+
+This then raises the question of what can and cannot be manipulated. If something cannot be manipulated, we should not consider it causal. Can race ever be considered causal? What about sex? A genetic condition like color blindness? Can we manipulate these characteristics? In the modern world these questions are not simple.
+
+Consider color blindness. Say we are interested in how color blindness impacts ability to complete a jig-saw puzzle. Because color blindness is genetic some might argue it cannot be manipulated. But advances in technology like gene therapy might allow us to actually change someone's genes. Could we then claim the ability to manipulate color blindness? If yes, we could then measure the causal effect of color blindness on ability to complete jig-saw puzzles.
+
+The slogan of "No causation without manipulation" may at first seem straight-forward, but it is not so simple. Questions about race, sex, and genetics are very complex and should be considered with care.
+
+### Multiple units
+
+<!-- Do these numbers work? Maybe change Diego to 7 and Yao to 9 as well. Otherwise, you end u with results which are outside the 3 to 15 range. If you move Diego up 4 and Yao down 4, then all the math still works. Right?  -->
+
+Generally, a study has many individuals (or, more broadly, "units") who each have their own potential outcomes. More notation is needed to allow us to differentiate between different units.
+
+In other words, there needs to be a distinction between $Y_t$ for Yao, and $Y_t$ for Emma. We use the variable $u$ ($u$ for "unit") to indicate that the outcome under control and the outcome under treatment can differ for each individual unit (person).
+
+Instead of $Y_t$, we will use $Y_t(u)$ to represent "Attitude if Treated." If you want to talk about only Emma, you could say "Emma's Attitude if Treated" or "$Y_t(u = Emma)$" or "the $Y_t(u)$ for Emma", but not just $Y_t$. That notation is too ambiguous when there is more than one subject.
+
+Let's look at a Preceptor Table with more subjects using our new notation:
+
+<!-- DK: Do the two table trick. A descriptive table only has one outcome table, labeled Y. -->
+
+```{r}
+#| echo: false
+# First, we create a tibble with the values we want for the table
+
+tibble(subject = c("Yao", "Emma", "Cassidy", "Tahmid", "Diego"),
+       ytreat = c("13", "14", "11", "9", "3"),
+       ycontrol = c("9", "11", "6", "12", "4"),
+       ydiff = c("+4", "+3", "+5", "-3", "-1")) |>
+  
+  # Then, we use the gt function to make it pretty
+  
+  gt() |>
+    tab_header(title = "Preceptor Table") |> 
+    cols_label(subject = md("ID"),
+                  ytreat = md("$$Y_t(u)$$"),
+                  ycontrol = md("$$Y_c(u)$$"),
+                  ydiff = md("$$Y_t(u) - Y_c(u)$$")) |>
+    cols_move(columns = c(ytreat, ycontrol), after = c(subject)) |>
+    tab_style(style = cell_text(align = "left", v_align = "middle", size = "large"), 
+              locations = cells_column_labels(columns = c(subject))) |>
+    cols_align(align = "center", columns = everything()) |>
+    cols_align(align = "left", columns = c(subject)) |>
+    fmt_markdown(columns = everything()) |>
+    tab_spanner(label = "Outcomes", c(ytreat, ycontrol))  |>
+    tab_spanner(label = "Causal Effect", c(ydiff)) |> 
+  tab_style(style = cell_text(v_align = "bottom"),
+            locations = cells_column_labels())
+```
+
+From this Preceptor Table, there are many possible estimands we might be interested in. Consider some examples, along with their true values:
+
+<!-- Do we need this full width stuff? -->
+
+::: fullwidth
+-   A potential outcome for one person, e.g., Yao's potential outcome under treatment: $13$.
+-   A causal effect for one person, such as for Emma. This is the difference between the potential outcomes: $14 - 11 = +3$.
+-   The most positive causal effect: $+5$, for Cassidy.
+-   The most negative causal effect: $-3$, for Tahmid.
+-   The median causal effect: $+3$.
+-   The median percentage change: $+27.2\%$. To see this, calculate the percentage change for each person. You'll get 5 percentages: $+44.4\%$, $+27.2\%$, $+83.3\%$, $-25.0\%$, and $-25.0\%$.
+:::
+
+Similar concepts can also be applied to the Population Table:
+
+```{r}
+#| echo: false
+tibble(source = c("...", "...",  "Data", "Data", 
+                  "...", "...", "...", 
+                  "Preceptor Table", "...", "..."),
+       year = c("2010", "...", "2012", "2012", 
+                "...","2018", "...", "2025", "...", "2030"),
+       ID = c("?", "...", "Yao", "Cassidy","...", "?","...","Yao", "...","?"),
+       ytreated = c("?", "...", "5", "3", "...", "?", "...","13", "...", "?"),
+       ycontroled = c("?", "...", "3", "6", "...", "?", "...","9", "...", "?"),
+       causaleffect = c("?", "...", "+2", "-3", "...", "?", "...","+4", "...", "?")) |> 
+  
+  gt() |>
+  tab_header(title = "Population Table") |> 
+  cols_label(source = md("Source"),
+             year = md("Year"),
+             ID = md("ID"),
+             ytreated = md("$$Y_t(u)$$"), 
+             ycontroled = md("$$Y_c(u)$$"),
+             causaleffect = md("$$Y_t(u) - Y_c(u)$$")) |>
+  tab_style(style = cell_text(align = "left", v_align = "middle", size = "large"), 
+            locations = cells_column_labels(columns = c(source))) |>
+  cols_align(align = "center", columns = everything()) |>
+  cols_align(align = "left", columns = c(source)) |>
+  fmt_markdown(columns = everything()) |> 
+  tab_spanner(label = "Outcomes", c(ytreated, ycontroled))  |>
+  tab_spanner(label = "Causal Effect", c(causaleffect))|> 
+  tab_style(style = cell_text(v_align = "bottom"),
+            locations = cells_column_labels())
+```
+
+Again, all the rows in the Preceptor Table are, by definition, included in the Population Table. The later includes two sorts of extra rows. The first corresponds to our data set. The second corresponds to other unit/time combinations in the population which are neither part of the Preceptor Table nor part of the data.
+
+All of the variables calculated in the Preceptor and Population Tables are examples of estimands we might be interested in. One estimand is important enough that it has its own name: the **average treatment effect**, often abbreviated as **ATE**. The average treatment effect is the mean of all the individual causal effects. Here, the mean is $+1.6$.
+
+<!-- What does our real world Preceptor Table look like? -->
+
+<!-- Can't seem to make GT tables appear side by side, can only find working versions for Kable tables. Thoughts?  
+See: https://stackoverflow.com/questions/65835639/arrange-gt-tables-side-by-side-or-in-a-grid-or-table-of-tables -->
+
+<!-- Add another Preceptor Table row. -->
+
+<!-- ### Causal versus Predictive -->
+
+<!-- Seems like the below ought to be included here, that we ought to make more clear the distinction between causal models and predictive models. and how that distinction manifests itself in different Preceptor/Population tables. -->
+
+
+```{r}
+#| echo: false
+# First, we create a tibble with the values we want for the table
+
+causal_table <- tibble(subject = c("Yao", "Emma", "Cassidy", "Tahmid", "Diego"),
+       ytreat = c("13", "14", "?", "?", "3"),
+       ycontrol = c("?", "?", "6", "12", "?"),
+       ydiff = c("?", "?", "?", "?", "?")) |>
+  
+  # Then, we use the gt function to make it pretty
+  
+  gt() |>
+    tab_header(title = "Causal Preceptor Table") |> 
+    cols_label(subject = md("ID"),
+                  ytreat = md("$$Y_t(u)$$"),
+                  ycontrol = md("$$Y_c(u)$$"),
+                  ydiff = md("$$Y_t(u) - Y_c(u)$$")) |>
+    cols_move(columns = c(ytreat, ycontrol), after = c(subject)) |>
+    tab_style(style = cell_text(align = "left", v_align = "middle", size = "large"), 
+              locations = cells_column_labels(columns = c(subject))) |>
+    cols_align(align = "center", columns = everything()) |>
+    cols_align(align = "left", columns = c(subject)) |>
+    fmt_markdown(columns = everything())  |>
+    tab_spanner(label = "Outcomes", c(ytreat, ycontrol))  |>
+    tab_spanner(label = "Causal Effect", c(ydiff))|> 
+  tab_style(style = cell_text(v_align = "bottom"),
+            locations = cells_column_labels())
+
+predictive_table <- tibble(subject = c("Yao", "Emma", "Cassidy", "Tahmid", "Diego"),
+       yall = c("13", "14", "6", "12", "3")) |> 
+gt() |>
+    tab_header(title = "Predictive Preceptor Table") |> 
+    cols_label(subject = md("ID"),
+                  yall = md("$$Y_t(u)$$")) |>
+    cols_move(columns = c(yall), after = c(subject)) |>
+    tab_style(style = cell_text(align = "left", v_align = "middle", size = "large"), 
+              locations = cells_column_labels(columns = c(subject))) |>
+    cols_align(align = "center", columns = everything()) |>
+    cols_align(align = "left", columns = c(subject)) |>
+    fmt_markdown(columns = everything())|> 
+  tab_style(style = cell_text(v_align = "bottom"),
+            locations = cells_column_labels())
+
+# causal_table
+# predictive_table
+  
+```
+
+<!-- This section ends awkwardly! Add some words. This is important! -->
+
+## Assumptions
+
+In this section, we will explore the four key assumptions underlying any data science project: validity, stability, representativeness and unconfoundedness.
+
+Recall that the Population Table is constructed from three sources: the Preceptor Table, our data, and the greater population from which both are drawn. Consider a different Population Table:
+
+<!-- Seems like we should add ID and time columns, place them toward the left and then put year there. Year is *not* just another covariate. -->
+
+```{r}
+#| echo: false
+# First, we create a tibble with the values we want for the table
+
+tibble(source = c("...", "...", "...",
+                  "Data", "Data", "...", 
+                  "Preceptor Table", "Preceptor Table", "...",
+                  "...", "..."), 
+       year = c("2010", "2010", "...",
+                "2012", "2012", "...",
+                "2025", "2025", "...",
+                "2025", "2025"),
+       sex = c("?", "?", "...",
+               "Male", "Female", "...",
+               "Female", "Female", "...",
+               "?", "?"),
+       ytreat = c("?", "?", "...",
+                  "13", "?", "...",
+                  "?", "?", "...",
+                  "?", "?"),
+       ycontrol = c("?", "?", "...",
+                    "?", "9", "...",
+                    "?", "?", "...",
+                    "?", "?"),
+       ydiff = c("?", "?", "...",
+                 "?", "?", "...",
+                 "?", "?", "...", "?", "?")) |>
+  
+  # Then, we use the gt function to make it pretty
+  
+  gt() |>
+    tab_header(title = "Population Table") |> 
+    cols_label(source = md("Source"),
+               year = md("Year"),
+               sex = md("Sex"),
+               ytreat = md("$$Y_t(u)$$"),
+               ycontrol = md("$$Y_c(u)$$"),
+               ydiff = md("$$Y_t(u) - Y_c(u)$$")) |>
+    cols_move(columns = c(ytreat, ycontrol), after = c(source)) |>
+    tab_style(style = cell_text(align = "left", v_align = "middle", size = "large"), 
+              locations = cells_column_labels(columns = c(source))) |>
+    cols_align(align = "center", columns = everything()) |>
+    cols_align(align = "left", columns = c(source)) |>
+    tab_spanner(label = "Outcomes", c(ytreat, ycontrol)) |>
+    tab_spanner(label = "Causal Effect", c(ydiff)) |> 
+    tab_spanner(label = "Covariates", c(sex)) |> 
+  tab_style(style = cell_text(v_align = "bottom"),
+            locations = cells_column_labels())         
+```
+
+The rows from our data have covariates and two potential outcomes. (By definition, we only know the value for one, at most, of the potential outcomes for each unit.) The rows from the Preceptor Table include covariates, but not outcomes. (We have no outcome data for 2025, but we will, in theory, be given the sex of any units about whom we need to make inferences.) The rows from our greater population include no data, as we know nothing about these units.
+
+<!-- More detail here? -->
+
+<!-- Need a transition. The data is, usually, the data, with lots of columns. The Preceptor Table is always more narrow, and varies according to the question we are being asked. -->
+
+### Validity
+
+<!-- Need a gif of three data sources be stacked together, but only if validity is true. -->
+
+**Validity** is the consistency, or lack there of, in the columns of your data set and the corresponding columns in your Preceptor Table. In order to consider the two data sets to be drawn from the same population, the columns from one must have a *valid correspondence* with the columns in the other. Validity, if true (or at least reasonable), allows us to construct the *Population Table*.
+
+Consider the potential outcomes: attitude toward immigration under treatment and control. How is this measured? In this case, we use answers to survey questions. Are we going to use the *exact* same questions in 2025 as were used in our data from 2012? Probably not. Even if we used the same wording, will the *meaning* of the words be constant? Almost certainly not! The word "undocumented" could mean something very different in the America before the election of Donald Trump in 2016. Consider the treatment: exposure to Spanish speakers on a train platform. The speakers used in 2012 will not be available in 2025 if we were to redo the experiment. 
+
+*Validity* is an assumption which allows us to "stack" the data and the Preceptor Table on top of one another, into a single Population Table. The variables from each source, while not identical in meaning, are similar enough that we can treat them *as if* they are the same thing. 
+
+
+### Stability
+
+**Stability** means that the relationship between the columns in the Population Table is the same for three categories of rows: the data, the Preceptor Table, and the larger population from which both are drawn.
+
+We will be constructing *models*, mathematical relationships between different variables. For example, perhaps the treatment has a greater effect on women than on men. However, we can only directly observe that relationship in the data which we have, from 2012. We must *assume* stability in order to use the model created from the data to make inferences about other rows in the Population Table, specifically the rows corresponding to the Preceptor Table.
+
+Must the world be stable? No! In fact, the world is always changing! The *stability* assumption, in this case, is a claim that the world has not changed that much between 2012 and 2025. Stability applies, not just to the data and the Preceptor Table rows, but to the entire Population Table. *Stability allows us to ignore the passage of time.*
+
+### Representativeness
+
+<!-- Clean up. -->
+
+<!-- Should we use the word unbiasedness instead? -->
+
+Representativeness, or the lack thereof, concerns two relationships among the rows in the Population Table. The first is between the Preceptor Table and the other rows. The second is between our data and the other rows. Ideally, we would like both the Preceptor Table *and* our data to be random samples from the population. Sadly, this is almost never the case.
+
+Does the train experiment allow us to calculate a causal effect for people who commute by cars? Can we calculate the causal effect for people in New York City? Before we generalize to a broader population we have to consider if our experimental estimates are applicable beyond our experiment. Maybe we think that commuters in Boston and New York are similar enough to generalize our findings. We could also conclude that people who commute by car are fundamentally different than people who commute by train. If that was true, then we could not say our estimate is true for all commuters because our sample does not accurately *represent* the broader group to which we want to generalize.
+
+<!-- Generally: *if there was no chance that a certain type of person would have been in this experiment, we cannot make an assumption for that person*. Hmm. Include this? -->
+
+<!-- Below is awkward and poorly done. -->
+
+<!-- Get into missing data mechanism?  -->
+
+<!-- Additionally, representativeness can also consider whether or not the sample is biased or not. Let's look at it from the lenses of missing data mechanisms. If we have a Preceptor Table with no missing values, we have it easy. We just calculate the answer. Sadly, Preceptor Tables are (almost) always missing values, resulting in "missing data." The process by which some data is missing is known as the "missing data mechanism." The are two main missing data mechanisms which are of interest: the *assignment mechanism* and the *sampling mechanism*. The assignment mechanism is the process by which some units receive (or are "assigned") the treatment and some units receive the control. The sampling mechanism is the process by which some units appear in our data and some do not. The sampling mechanism will be talked about in this section, whereas the assignment mechanism will be discussed in the next section.  -->
+
+### Unconfoundedness
+
+A fourth assumption we use when working with causal models --- but not with predictive models --- is **"unconfoundedness."** If whether or not a unit received treatment or control is random, we write that treatment assignment is not "confounded." If, however, treatment assignment depends on the value of a potential outcome, then treatment assignment is confounded. Our lives are easiest if we can (reasonably!) assume unconfoundedness. In that case, we can estimate the average treatment effect by subtracting the average outcome for control units from the average outcome for treated units.
+
+Consider the "Perfect Doctor" as an example of the problems caused by confounded treatment assignments. Imagine we have an omniscient doctor who knows how any patient will respond to a certain drug. She has perfect knowledge of the entire Preceptor Table. Using this information, she always assign each patient the treatment with the best outcome, whether that is treatment or control. In this case, lower blood pressue is better. Consider:
+
+<!-- DK: Blood pressue numbers be changes so that, in the range of these numbers, lower is better. Some of them are too low, I think. -->
+
+```{r}
+#| echo: false
+tibble(subject = c("Yao", "Emma", "Cassidy", "Tahmid", "Diego", "MEAN"),
+       ytreat = c("130", "120", "100", "115", "135", "120"),
+       ycontrol = c("105", "140", "170", "125", "100", "128"),
+       ydiff = c("+25", "-20", "-70", "-10", "35", "-8")) |>
+  
+  gt() |>
+    tab_header(title = "Holy Grail of Information") |> 
+    cols_label(subject = md("ID"),
+                  ytreat = md("$$Y_t(u)$$"),
+                  ycontrol = md("$$Y_c(u)$$"),
+                  ydiff = md("$$Y_t(u) - Y_c(u)$$")) |>
+    cols_move(columns = c(ytreat, ycontrol), after = c(subject)) |>
+    tab_style(style = cell_text(align = "left", v_align = "middle", size = "large"), 
+              locations = cells_column_labels(columns = c(subject))) |>
+    cols_align(align = "center", columns = everything()) |>
+    cols_align(align = "left", columns = c(subject)) |>
+    tab_spanner(label = "Blood Pressure Outcomes", c(ytreat, ycontrol)) |>
+    tab_spanner(label = "Causal Effect", c(ydiff)) |>
+    fmt_markdown(columns = everything()) |> 
+  tab_style(style = cell_text(v_align = "bottom"),
+            locations = cells_column_labels())
+```
+
+The Perfect Doctor would assign the treatment to Emma, Cassidy and Tahmid. She would assign control to Yao and Diego. And that is good! This is what the doctor should do. This is the best treatment assignment for the patients. But **it is not a good assignment mechanism for estimating the average causal effect because treatment assignment is confounded by the values of the potential outcomes.**
+
+We, the non-Perfect Doctors, do not have access to the entire Preceptor Table. We can only see this:
+
+```{r}
+#| echo: false
+tibble(subject = c("Yao", "Emma", "Cassidy", "Tahmid", "Diego", "MEAN"),
+       ytreat = c("?", "120", "100", "115", "?", "111.66"),
+       ycontrol = c("105", "?", "?", "?", "100", "102.5"),
+       ydiff = c("?", "?", "?", "?", "?", "9.16")) |>
+  
+  # Then, we use the gt function to make it pretty
+  
+  gt() |>
+    tab_header(title = "Skewed Holy Grail of Information") |> 
+    cols_label(subject = md("ID"),
+                  ytreat = md("$$Y_t(u)$$"),
+                  ycontrol = md("$$Y_c(u)$$"),
+                  ydiff = md("$$Y_t(u) - Y_c(u)$$")) |>
+    cols_move(columns = c(ytreat, ycontrol), after = c(subject)) |>
+    tab_style(style = cell_text(align = "left", v_align = "middle", size = "large"), 
+              locations = cells_column_labels(columns = c(subject))) |>
+    cols_align(align = "center", columns = everything()) |>
+    cols_align(align = "left", columns = c(subject)) |>
+    tab_spanner(label = "Blood Pressure Outcomes", c(ytreat, ycontrol)) |>
+    tab_spanner(label = "Causal Effect", c(ydiff)) |>
+    fmt_markdown(columns = everything()) |> 
+  tab_style(style = cell_text(v_align = "bottom"),
+            locations = cells_column_labels())
+```
+
+The true causal effect of the treatment, as we can see in the first table, is -8. In other words, the treatment lowers blood pressure on average. But, using just the data we have access to if the Perfect Doctor performs the treatment assignment, we would estimate --- if we mistakenly assume unconfoundedness --- that the causal effect is positive, that treatment increases blood pressure.
+
+The best way to ensure unconfoundedness is to randomize the treatment across units. Don't let the doctor decide who gets the treatment and who gets the control. Randomize assignment. As long as you use randomization as your assignment mechanism, you are good. There is the possibility that you can't use pure randomization due to ethical or practical reasons, so we are forced to use a non-random assignment mechanisms. Many statistical methods have been developed for causal inference when there is a non-random assignment mechanism. Those methods, however, are largely beyond the scope of this book.
+
+<!-- DK: Can't we make the above numbers more round? -->
+
+## Simple models
+
+How can we fill in the question marks? Because of the *Fundamental Problem of Causal Inference*, we can never *know* the missing values. Because we can never know the missing values, we must make assumptions. "Assumption" just means that we need a "model," and all models have parameters.
+
+### A single value for tau
+
+One model might be that the causal effect is the same for everyone. There is a single parameter, $\tau$, which we then estimate. ($\tau$ is a Greek letter, written as "tau" and rhyming with "cow.") Once we have an estimate, we can fill in the Preceptor Table because, knowing it, we can estimate what the unobserved potential outcome is for each person. We use our assumption about $\tau$ to estimate the counterfactual outcome for each unit.
+
+Remember what our Preceptor Table looks like with all of the missing data:
+
+```{r}
+#| echo: false
+# First, we create a tibble with the values we want for the table
+
+tibble(subject = c("Yao", "Emma", "Cassidy", "Tahmid", "Diego"),
+       ytreat = c("13", "14", "?", "?", "3"),
+       ycontrol = c("?", "?", "6", "12", "?"),
+       ydiff = c("?", "?", "?", "?", "?")) |>
+  
+  # Then, we use the gt function to make it pretty
+  
+  gt() |>
+    tab_header(title = "Preceptor Table") |> 
+    cols_label(subject = md("ID"),
+                  ytreat = md("$$Y_t(u)$$"),
+                  ycontrol = md("$$Y_c(u)$$"),
+                  ydiff = md("$$Y_t(u) - Y_c(u)$$")) |>
+    cols_move(columns = c(ytreat, ycontrol), after = c(subject)) |>
+    tab_style(style = cell_text(align = "left", v_align = "middle", size = "large"), 
+              locations = cells_column_labels(columns = c(subject))) |>
+    cols_align(align = "center", columns = everything()) |>
+    cols_align(align = "left", columns = c(subject)) |>
+    tab_spanner(label = "Outcomes", c(ytreat, ycontrol)) |>
+    tab_spanner(label = "Causal Effect", c(ydiff)) |>
+    fmt_markdown(columns = everything())|> 
+  tab_style(style = cell_text(v_align = "bottom"),
+            locations = cells_column_labels())
+```
+
+If we assume $\tau$ is the treatment effect for everyone, how do we fill in the table? We are using $\tau$ as an estimate for the causal effect. By definition: $Y_t(u) - Y_c(u) = \tau$. Using simple algebra, it is then clear that $Y_t(u) = Y_c(u) + \tau$ and $Y_c(u) = Y_t(u) - \tau$. In other words, you could add it to the observed outcome for every observation in the control group (or subtract it from the observed outcome for every observation in the treatment group), and thus fill in all the missing values.
+
+Assuming there is a constant treatment effect, $\tau$, for everyone, filling in the missing values would look like this:
+
+```{r}
+#| echo: false
+# First, we create a tibble with the values we want for the table
+
+tibble(subject = c("Yao", "Emma", "Cassidy", "Tahmid", "Diego"),
+       ytreat = c("13", "14", "$$6 + \\tau$$", "$$12 + \\tau$$", "3"),
+       ycontrol = c("$$13 - \\tau$$", "$$14 - \\tau$$", "6", "12", "$$3 - \\tau$$"),
+       ydiff = c("$$\\tau$$", "$$\\tau$$", "$$\\tau$$", "$$\\tau$$", "$$\\tau$$")) |>
+  
+  # Then, we use the gt function to make it pretty
+  
+  gt() |>
+    tab_header(title = "Preceptor Table") |> 
+    cols_label(subject = md("ID"),
+                  ytreat = md("$$Y_t(u)$$"),
+                  ycontrol = md("$$Y_c(u)$$"),
+                  ydiff = md("$$Y_t(u) - Y_c(u)$$")) |>
+    cols_move(columns = c(ytreat, ycontrol), after = c(subject)) |>
+    tab_style(style = cell_text(align = "left", v_align = "middle", size = "large"), 
+              locations = cells_column_labels(columns = c(subject))) |>
+    cols_align(align = "center", columns = everything()) |>
+    cols_align(align = "left", columns = c(subject)) |>
+    tab_spanner(label = "Outcomes", c(ytreat, ycontrol)) |>
+    tab_spanner(label = "Causal Effect", c(ydiff)) |>
+    fmt_markdown(columns = everything())|> 
+  tab_style(style = cell_text(v_align = "bottom"),
+            locations = cells_column_labels())
+```
+
+Now we need to find an estimate for $\tau$ in order to fill in the missing values. One approach is to subtract the average of the observed outcomes from units assigned to control from the average of the observed outcomes from units assigned to treatment: $$((13 + 14 + 3) / 3) - ((6 + 12) /  2)$$ $$10 - 9 = +1$$
+
+Or, in other words, we use this formula:
+
+$$\frac{\Sigma Y_t(u)}{n_t} + \frac{\Sigma Y_c(u)}{n_c} = \widehat{ATE}$$
+
+$\Sigma$ represents the sum of the outcomes under treatment or control, with $n_t$ and $n_c$ being the number of units assigned to treatment and control, respectively. This is the formula for $\widehat{ATE}$, our estimate of the average causal (or treatment) effect.
+
+Continuing with the example, calculating the ATE or the causal effect, gives us an estimate of $+1$ for $\tau$. Let's fill in our missing values by adding $\tau$ to the observed values under control and by subtracting $\tau$ from the observed value under treatment like so:
+
+```{r}
+#| echo: false
+# First, we create a tibble with the values we want for the table
+
+tibble(subject = c("Yao", "Emma", "Cassidy", "Tahmid", "Diego"),
+       ytreat = c("13", "14", "$$6 + (+1)$$", "$$12 + (+1)$$", "3"),
+       ycontrol = c("$$13 - (+1)$$", "$$14 - (+1)$$", "6", "12", "$$3 - (+1)$$"),
+       ydiff = c("+1", "+1", "+1", "+1", "+1")) |>
+  
+  # Then, we use the gt function to make it pretty
+  
+  gt() |>
+    tab_header(title = "Preceptor Table") |> 
+    cols_label(subject = md("ID"),
+                  ytreat = md("$$Y_t(u)$$"),
+                  ycontrol = md("$$Y_c(u)$$"),
+                  ydiff = md("$$Y_t(u) - Y_c(u)$$")) |>
+    cols_move(columns = c(ytreat, ycontrol), after = c(subject)) |>
+    tab_style(style = cell_text(align = "left", v_align = "middle", size = "large"), 
+              locations = cells_column_labels(columns = c(subject))) |>
+    cols_align(align = "center", columns = everything()) |>
+    cols_align(align = "left", columns = c(subject)) |>
+    tab_spanner(label = "Outcomes", c(ytreat, ycontrol)) |>
+    tab_spanner(label = "Causal Effect", c(ydiff)) |>
+    fmt_markdown(columns = everything())|> 
+  tab_style(style = cell_text(v_align = "bottom"),
+            locations = cells_column_labels())
+```
+
+Which gives us:
+
+```{r}
+#| echo: false
+# First, we create a tibble with the values we want for the table
+
+tibble(subject = c("Yao", "Emma", "Cassidy", "Tahmid", "Diego"),
+       ytreat = c("13", "14", "7", "13", "3"),
+       ycontrol = c("12", "13", "6", "12", "2"),
+       ydiff = c("+1", "+1", "+1", "+1", "+1")) |>
+  
+  # Then, we use the gt function to make it pretty
+  
+  gt() |>
+    tab_header(title = "Preceptor Table") |> 
+    cols_label(subject = md("ID"),
+                  ytreat = md("$$Y_t(u)$$"),
+                  ycontrol = md("$$Y_c(u)$$"),
+                  ydiff = md("$$Y_t(u) - Y_c(u)$$")) |>
+    cols_move(columns = c(ytreat, ycontrol), after = c(subject)) |>
+    tab_style(style = cell_text(align = "left", v_align = "middle", size = "large"), 
+              locations = cells_column_labels(columns = c(subject))) |>
+    cols_align(align = "center", columns = everything()) |>
+    cols_align(align = "left", columns = c(subject)) |>
+    tab_spanner(label = "Outcomes", c(ytreat, ycontrol)) |>
+    tab_spanner(label = "Causal Effect", c(ydiff)) |>
+    fmt_markdown(columns = everything())|> 
+  tab_style(style = cell_text(v_align = "bottom"),
+            locations = cells_column_labels())|> 
+  tab_style(style = cell_text(v_align = "bottom"),
+            locations = cells_column_labels())
+```
+
+If we make the assumption that there is a single value for $\tau$ *and* that $1$ is a good estimate of that value, then we can determine the missing potential outcomes. The Preceptor Table no longer has any missing values, so we can use it to easily answer (almost) any conceivable question.
+
+### Two values for tau
+
+A second model might assume that the causal effect is different between levels of a category but the same within those levels. For example, perhaps there is a $\tau_F$ for females and $\tau_M$ for males where $\tau_F might not equal \tau_M$. We are making this assumption to give us a different model with which we can fill in the missing values in our Preceptor Table. We can't make any progress unless we make some assumptions. That is an inescapable consequence of the *Fundamental Problem of Causal Inference*.
+
+A covariate is any variable outside of the (potential) outcomes. In this case, possible covariates include, but are not limited to, sex, age, political party and almost everything else which might be associated with attitudes toward immigration. Consider a model in which causal effects differ based on sex. (Don't forget that "causal effect" means, by convention, the same thing as *average* causal effect when we are discussing the results of a data science project.) 
+
+<!-- Not sure that I like this table. Also, maybe introduce the notion of covariates in a predictive context first. Knowing sex helps to predict Yao's attitude toward immigration, regardless of causal effects. -->
+
+```{r}
+#| echo: false
+# First, we create a tibble with the values we want for the table
+
+tibble(subject = c("Yao", "Emma", "Cassidy", "Tahmid", "Diego"),
+       Sex = c("Male", "Female", "Female", "Male", "Male"),
+       ytreat = c("13", "14", "$$6 + \\tau_F$$", "$$12 + \\tau_M$$", "3"),
+       ycontrol = c("$$13 - \\tau_M$$", "$$14 - \\tau_F$$", "6", "12", "$$3 - \\tau_M$$"),
+       ydiff = c("$$\\tau_M$$", "$$\\tau_F$$", "$$\\tau_F$$", "$$\\tau_M$$", "$$\\tau_M$$")) |>
+  
+  # Then, we use the gt function to make it pretty
+  
+  gt() |>
+    tab_header(title = "Preceptor Table") |> 
+    cols_label(subject = md("ID"),
+                  ytreat = md("$$Y_t(u)$$"),
+                  ycontrol = md("$$Y_c(u)$$"),
+                  ydiff = md("$$Y_t(u) - Y_c(u)$$")) |>
+    cols_move(columns = c(ytreat, ycontrol), after = c(subject)) |>
+    tab_style(style = cell_text(align = "left", v_align = "middle", size = "large"), 
+              locations = cells_column_labels(columns = c(subject))) |>
+    cols_align(align = "center", columns = everything()) |>
+    cols_align(align = "left", columns = c(subject)) |>
+    tab_spanner(label = "Outcomes", c(ytreat, ycontrol)) |>
+    tab_spanner(label = "Causal Effect", c(ydiff)) |>
+    tab_spanner(label = "Covariate", c(Sex)) |>
+    fmt_markdown(columns = everything())|> 
+  tab_style(style = cell_text(v_align = "bottom"),
+            locations = cells_column_labels())
+```
+
+Our estimate for $\tau_M$ would be $$(13+3)/2 - 12 = -4$$ while that for $\tau_F$ would be $$14-6 = +8$$.
+
+Using those values, we would fill out our new table like this:
+
+```{r}
+#| echo: false
+# First, we create a tibble with the values we want for the table
+
+tibble(subject = c("Yao", "Emma", "Cassidy", "Tahmid", "Diego"),
+       ytreat = c("13", "14", "$$6 + (+8)$$", "$$12 + (-4)$$", "3"),
+       ycontrol = c("$$13 - (-4)$$", "$$14 - (+8)$$", "6", "12", "$$3 - (-4)$$"),
+       ydiff = c("-4", "+8", "+8", "-4", "-4")) |>
+  
+  # Then, we use the gt function to make it pretty
+  
+  gt() |>
+    tab_header(title = "Preceptor Table") |> 
+    cols_label(subject = md("ID"),
+                  ytreat = md("$$Y_t(u)$$"),
+                  ycontrol = md("$$Y_c(u)$$"),
+                  ydiff = md("$$Y_t(u) - Y_c(u)$$")) |>
+    cols_move(columns = c(ytreat, ycontrol), after = c(subject)) |>
+    tab_style(style = cell_text(align = "left", v_align = "middle", size = "large"), 
+              locations = cells_column_labels(columns = c(subject))) |>
+    cols_align(align = "center", columns = everything()) |>
+    cols_align(align = "left", columns = c(subject)) |>
+    tab_spanner(label = "Outcomes", c(ytreat, ycontrol)) |>
+    tab_spanner(label = "Causal Effect", c(ydiff)) |>
+    fmt_markdown(columns = everything())|> 
+  tab_style(style = cell_text(v_align = "bottom"),
+            locations = cells_column_labels())
+```
+
+Which gives us:
+
+<!-- Y_c for Yao can't be 17! Biggest value is 15. Change it or discuss it. -->
+
+```{r}
+#| echo: false
+# First, we create a tibble with the values we want for the table
+
+tibble(subject = c("Yao", "Emma", "Cassidy", "Tahmid", "Diego"),
+       ytreat = c("13", "14", "14", "8", "3"),
+       ycontrol = c("17", "6", "6", "12", "7"),
+       ydiff = c("-4", "+8", "+8", "-4", "-4")) |>
+  
+  # Then, we use the gt function to make it pretty
+  
+  gt() |>
+    tab_header(title = "Preceptor Table") |> 
+    cols_label(subject = md("ID"),
+                  ytreat = md("$$Y_t(u)$$"),
+                  ycontrol = md("$$Y_c(u)$$"),
+                  ydiff = md("$$Y_t(u) - Y_c(u)$$")) |>
+    cols_move(columns = c(ytreat, ycontrol), after = c(subject)) |>
+    tab_style(style = cell_text(align = "left", v_align = "middle", size = "large"), 
+              locations = cells_column_labels(columns = c(subject))) |>
+    cols_align(align = "center", columns = everything()) |>
+    cols_align(align = "left", columns = c(subject)) |>
+    tab_spanner(label = "Outcomes", c(ytreat, ycontrol)) |>
+    tab_spanner(label = "Causal Effect", c(ydiff)) |>
+    fmt_markdown(columns = everything())|> 
+  tab_style(style = cell_text(v_align = "bottom"),
+            locations = cells_column_labels())
+```
+
+We now have two different estimates for Emma (and for everyone else in the table). When we estimate $Y_c(Emma)$ using an assumption of constant treatment effect (a single value for $\tau$), we get $Y_c(Emma) = 13$. When we estimate assuming treatment effect is constant for each sex, we calculate that $Y_c(Emma) = 8$. This difference between our estimates for Emma highlights the difficulties of inference. Models drive inference. Different models will produce different inferences.
+
+### Heterogenous treatment effects
+
+Is the assumption of a constant treatment effect, $\tau$, usually true? No! It is never true. People vary. The effect of a pill on you will always be different from the effect of a pill on your friend, at least if we measure outcomes accurately enough. Treatment effects are always *heterogeneous*, meaning that they vary across individuals.
+
+Reality looks like this:
+
+```{r}
+#| echo: false
+# First, we create a tibble with the values we want for the table
+
+tibble(subject = c("Yao", "Emma", "Cassidy", "Tahmid", "Diego"),
+       ytreat = c("13", "14", "$$6 + \\tau_{cassidy}$$", "$$12 + \\tau_{tahmid}$$", "3"),
+       ycontrol = c("$$13 - \\tau_{yao}$$", "$$14 - \\tau_{emma}$$", "6", "12", "$$3 - \\tau_{diego}$$"),
+       ydiff = c("$$\\tau_{yao}$$", "$$\\tau_{emma}$$", "$$\\tau_{cassidy}$$", "$$\\tau_{tahmid}$$", "$$\\tau_{diego}$$")) |>
+  
+  # Then, we use the gt function to make it pretty
+  
+  gt() |>
+    tab_header(title = "Preceptor Table") |> 
+    cols_label(subject = md("ID"),
+                  ytreat = md("$$Y_t(u)$$"),
+                  ycontrol = md("$$Y_c(u)$$"),
+                  ydiff = md("$$Y_t(u) - Y_c(u)$$")) |>
+    cols_move(columns = c(ytreat, ycontrol), after = c(subject)) |>
+    tab_style(style = cell_text(align = "left", v_align = "middle", size = "large"), 
+              locations = cells_column_labels(columns = c(subject))) |>
+    cols_align(align = "center", columns = everything()) |>
+    cols_align(align = "left", columns = c(subject)) |>
+    tab_spanner(label = "Outcomes", c(ytreat, ycontrol)) |>
+    tab_spanner(label = "Causal Effect", c(ydiff)) |>
+    fmt_markdown(columns = everything())|> 
+  tab_style(style = cell_text(v_align = "bottom"),
+            locations = cells_column_labels())
+```
+
+Can we solve for $\tau_{yao}$? No! That is the *Fundamental Problem of Causal Inference*. Instead, we usually focus on the average causal effect for the entire population.
+
+<!-- DK: Awkward to discuss ATE above before introducing it here. -->
+
+### Average treatment effect
+
+The average treatment effect (ATE), as discussed above, is the **average** difference in *potential* outcomes between the treated group and the control groups. Because averaging is a linear operator, the average difference is the same as the difference between the averages. The distinction between this estimand and estimands like $\tau$, $\tau_M$ and $\tau_F$, is that, in this case, we do not care about using the average treatment effect to fill in missing values in each row. The average treatment effect is useful because we don't have to assume anything about each individuals' $\tau$, like $\tau_{yao}$, but can still understand something about the average causal effect across the whole population.
+
+As we did before, the simplest way to estimate the ATE is to take the mean of the treated group ($10$) and the mean of the control group ($9$) and then take the difference in those means ($1$). If we use this method to an estimate of the ATE, we'll call it $\widehat{ATE}$, pronounced "ATE-hat."
+
+As we noted before, this is a popular estimand. Why?
+
+1.  There's an obvious *estimator* for this estimand: the mean difference of the *observed* outcomes between the treated group and the control group: $\overline{Y_t(u)} - \overline{Y_c(u)}$.
+
+2.  If treatment is *randomly assigned*, the estimator is *unbiased*: you can be fairly confident in the estimate if you have a large enough treatment and control groups.
+
+3.  If you are willing to assume that the causal effect is the same for everyone (a big assumption!), you can use your estimate of the ATE, $\widehat{ATE}$, to fill in the missing individual values in your Preceptor Table.
+
+Just because the ATE is often a useful estimand doesn't mean that it *always* is.
+
+Consider point #3. For example, let's say the treatment effect does vary dependent on sex. For males there is a small negative effect (-4), but for females there is a larger positive effect (+8). However, the average treatment effect for the whole sample, even if you estimate it correctly, will be a single positive number (+1) -- since the positive effect for females is larger than the negative effect for males.
+
+<!-- DK: Awkward paragraph. -->
+
+Estimating the average treatment effect, by calculating $\widehat{ATE}$, is easy. But is our $\widehat{ATE}$ a good estimate of the actual ATE? After all, if we knew all the missing values in the Preceptor Table, we could calculate the ATE perfectly. But those missing values may be wildly different from the observed values. Consider this Preceptor Table:
+
+```{r}
+#| echo: false
+# First, we create a tibble with the values we want for the table
+
+tibble(subject = c("Yao", "Emma", "Cassidy", "Tahmid", "Diego"),
+       ytreat = c("13", "14", "9", "15", "3"),
+       ycontrol = c("10", "11", "6", "12", "0"),
+       ydiff = c("+3", "+3", "+3", "+3", "+3")) |>
+  
+  # Then, we use the gt function to make it pretty
+  
+  gt() |>
+    tab_header(title = "Preceptor Table") |> 
+    cols_label(subject = md("ID"),
+                  ytreat = md("$$Y_t(u)$$"),
+                  ycontrol = md("$$Y_c(u)$$"),
+                  ydiff = md("$$Y_t(u) - Y_c(u)$$")) |>
+    cols_move(columns = c(ytreat, ycontrol), after = c(subject)) |>
+    tab_style(style = cell_text(align = "left", v_align = "middle", size = "large"), 
+              locations = cells_column_labels(columns = c(subject))) |>
+    cols_align(align = "center", columns = everything()) |>
+    cols_align(align = "left", columns = c(subject)) |>
+    tab_spanner(label = "Outcomes", c(ytreat, ycontrol)) |>
+    tab_spanner(label = "Causal Effect", c(ydiff)) |>
+    fmt_markdown(columns = everything())|> 
+  tab_style(style = cell_text(v_align = "bottom"),
+            locations = cells_column_labels())
+```
+
+In this example, there is indeed a constant treatment effect for everyone: $+3$. Note that the *observed* values are all the same, but the unobserved values were such that our estimated ATE, $+1$, is pretty far from the actual ATE, $+3$. If we think we have a reasonable estimate of ATE, using that value as a constant for $\tau$ might be our *best guess*.
+
+## Summary
+
+::: callout-tip
+## Glossary
+
+-   A **Preceptor Table** is the smallest possible table that includes all rows and columns such that, if no data is missing, it is easy to calculate our quantity of interest. Unfortunately, there is always data missing.
+
+-   A **Population Table** has three sources of data: the Preceptor Table, the data set, and the greater population from which both are drawn.
+
+-   A **Potential Outcome** is the outcome for an individual depending on if they receive the treatment or not.
+
+-   A **Causal Effect** is the difference between two potential outcomes. The term **treatment effect** is used interchangeably with causal effect.
+
+- **ATE**, the average treatment (or causal) effect, is the average of the causal (treatment) effect for the units of interest. We often drop the word "average" since it is implied. By convention, causal effect, treatment effect and average treatment effect all refer to the same (unknown) number.
+
+-   The **Fundamental Problem of Causal Inference** is that it is impossible to observe the causal effect on a single unit because we can never observe both potential outcomes for that unit. We must make assumptions in order to estimate causal effects.
+
+- When confronting a causal question, first identify the **units**, **treatments** and **outcomes**.
+
+:::
+
+The fundamental components of every problem in causal inference are units, treatments and outcomes. The units are the rows in the table. The treatments are (some of) the columns. The outcomes are the values under the treatment columns. (There are also covariate columns and the values within them.) **Whenever you confront a problem in causal inference, start by identifying the units, treatments and outcomes.**
+
+A causal effect is the difference between one potential outcome and another. How different would your life be if you missed the train?
+
+<!-- Replace Sliding Doors in Summary with something from Wonderful Life that references "An angel gets his wings."  Every time a predictive model is interpreted causally, a devil gets his pitchfork. -->
+
+{{< video https://www.youtube.com/embed/BvUbv4iwbDs >}}
+
+A Preceptor Table includes all rows and columns such that, if no data is missing, it is easy to calculate our quantity of interest. Unfortunately, data is always missing in causal models because, at most, we can only observe one *potential outcome* for each unit. The causal effect of a treatment on a single unit at a point in time is the difference between the value of the outcome variable with the treatment and without the treatment. The *Fundamental Problem of Causal Inference* is that it is impossible to observe the causal effect on a single unit. We must make assumptions --- i.e, we must make models --- in order to estimate causal effects.
+
+The Population Table has three sources of data: the Preceptor Table, the data set, and the greater population from which both are drawn.
+
+The assumption of *validity*, if met, allows us to create the Population Table because it ensures that the columns of data from the different sources can be put into a single table. If the relationships among the data are the same (or at least same'ish), over time, then we can assume *stability.* A model estimated on our data will also apply to our Preceptor Table. *Representativeness* examines the rows we have relative to the rows in the Population Table which we might have had. *Unconfoundedness*, which only matters in causal settings, means that either the treatment was randomly assigned or that we can act *as if* it was.
+
+Random assignment of treatments to units is the best experimental set up for estimating causal effects. Other assignment mechanisms are subject to confounding. If the treatment assigned is correlated with the potential outcomes, it is very hard to estimate the true treatment effect. (As always, we use the terms "causal effects" and "treatment effects" interchangeably.) With random assignment, we can, mostly safely, estimate the average treatment effect (ATE) by looking at the difference between the average outcomes of the treated and control units.
+
+Be wary of claims made in situations without random assignment: [Here be dragons](https://en.wikipedia.org/wiki/Here_be_dragons)!
