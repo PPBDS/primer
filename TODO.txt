@@ -1,0 +1,466 @@
+# Priorities
+
+## Ivy
+
+Enjoy camp!
+
+## Aashna
+
+Fix Height
+
+Start work on Immigration. 
+
+Check the source code for make_exercise
+
+
+
+## Guidelines for Chapter Rewrites
+
+* There should be two "Imgagine that" sentences, one causal and one prediction, interested in different times and different units. One is the same as the tutorial, but one is different.
+
+* Counter-examples needed for each case.
+
+* More data poking around. More commentary on what we see. More background on the data itself. More plots. Include the two plots in the tutorial.
+
+* Excellent Preceptor Tables and Populations Tables. (And what should be the standard design of these that we use everywhere?)
+
+
+
+Update tutorial name in tutorial.helpers and then fix Getting Started chapter.
+
+Revisit set_positron_setting() function, and its description here. Set at least Git Bash default.
+
+
+
+Is the Probability chapter correct? Especially the two models section. How can we calculate your odds of having the disease if we don't know the background rate of people having the disease. Imagine if no one had the disease. Or everyone did! In either case, it does not matter what my test result is! Same applies in the 0.1% or 99.9% cases.
+
+
+Update Getting Started with this advice for dealing with primer.data/primer.tutorials:
+
+----
+se HTTPS Instead of Default GitHub API (Fallback Option)
+You can try setting a different download method in your R session:
+
+r
+options(download.file.method = "libcurl")
+remotes::install_github("PPBDS/primer.tutorials")
+Or try with curl or wininet (on Windows):
+
+r
+options(download.file.method = "wininet")  # Windows only
+remotes::install_github("PPBDS/primer.tutorials") When I used this command and than ran the command learnr::run_tutorial("021-probability", "primer.tutorials") as suggested by ChatGPT for Windows, this issue was quickly resolved for me.
+----
+
+
+
+
+Need to standardize the creation of the Population Table, include ID/time column.
+
+https://discord.com/channels/1066524559240597595/1066524726278762608/1266378902646034432
+
+Claim that the percentages in the Probability 2 Models example are inconsistent with the graphic. 99% versus 1% or 50/50.
+
+https://aml4td.org/
+
+Add http://www.stat.columbia.edu/~gelman/research/published/standarderror.pdf to Standard Error section.
+
+Spend more time and detail on how you make a Preceptor Table in Chapter 1, and in the associated tutorial. Students had a lot of trouble with this in class, even though they had one the tutorial. Maybe drop some other material, like the by-hand calculation of various quantities . . .
+
+Rethink exactly what we want students to know at the end of the Primer. Given that goal, what should we be doing in each chapter? This framing makes clear that we don't really care about teaching students how to use map functions and list columns. Maybe that stuff is valuable. Maybe not. I leave that judgment to R4DS. But it is nowhere in the top 20 (50?) things I want students to get out of the Primer.
+
+With our focus on Cardinal Virtues, we are doing a much better job of having the Primer focus on what we care about. Excellent! But there is a lot more that could be done. Examples:
+
+1) Students need to understand quantiles, along with confidence/credible/uncertainty intervals in a deep way. This needs to be taught well in the Probability and Sampling chapters, and then reinforced in the Cardinal Virtues. (Presumably, we need a related question somewhere in the Courage/Temperance sections of each chapter.)
+
+2) Be quick with creating/modifying Preceptor Tables. Examples: What is the difference between the PT for the trains example if we think of it as predictive rather than causal? Are the units in a change in reading instruction approach students or classrooms? They need lots of practice going from questions to PTs and then back again.
+
+3) 
+
+Make more use of "When Shall We Use Our Heads
+Instead of the Formula?" https://meehl.umn.edu/sites/meehl.umn.edu/files/files/043_when_use_heads.pdf
+
+
+Should predictive/causal question come at the end of the Preceptor Table reasoning?
+
+
+
+## Students
+
+
+
+
+
+# Other Stuff
+
+Rethink the book's structure. 
+
+Get rid of Summary at the end of each chapter. Or not? Maybe it just includes the key concepts which are first introduced in that chapter? If students remember everything in all the summaries, then we have been successful.
+
+Need to standardize definitions of all assumptions and restate those definitions at the start of the relevant section. 
+
+Need to standardize the display of the mathematical structure of the model (which uses y's and x's) and which goes at the beginning of courage.
+
+
+Using brms. But! Use it alone in the first 4 chapters of its use. Then, start using it with tidymodels, and then show more tidymodels.
+
+I suspect that the reason we see segfaults in probability and sampling, but only after each has knitted to html, has something to do with the graphics in both, and how those graphics interact with XQuartz. library(rgl) or maybe library(rayshader) might be involved. That might explain the problems in probability, but we get the exact same error in sampling, even after removing those libraries. But no other chapters sees the problem. Need to create a reprex package which shows this error. For now, ignore.
+
+Replace r, cache = TRUE with #| cache: true.
+
+Figure which packages are needed and when we introduce them. All at the start? Or add the modeling ones at the start of Courage.
+
+
+## Plan
+
+Given that the course is two weeks away, we need to start to make some choices. Here is my current thinking:
+
+The RCM and probability chapters are good. But the associated tutorials need to be cleaned up.
+
+The sampling and models chapters are OK. But the tutorials don't really exist. These four chapters combined are week 5 of the course. You can make a model and use it to answer questions.
+
+two-parameters and then two three-parameter chapters, along with mechanics, make for a good week 6. Maybe also a time series?
+
+Week 7, we move to tidymodels.
+
+
+
+### Which Modeling Package Should We Use?
+
+* I really want to switch to using tidymodels since it is the core supported way of creating models in R. The sooner students start to learn it the better. The problem is that, although one can use rstanarm and brms as "engines" in tidymodels, the resulting fitted objects lack the cool Bayesian stuff, like posterior_predict(), which is one of the whole points of using Bayesian models in the first place.
+
+* I had hoped that the bayesian package would solve all my problems, since it promises to allow use within a tiydmodel pipeline along with "bindings" to Bayesian packages like rstanarm and brms. But it does not seem to be under active development and its current set of methods of objects with classes like c("_brmsfit", "model_fit") leaves much to be desired.
+
+* One possibility is to just use tidymodels and assert that it produces, more or less, the same answer as a Bayesian approach. And, when it doesn't, set engine to "rstanarm" or "brms" to get the right answer. The annoyance with that is that there are no easy accessor functions like posterior_predict() or posterior_epred() to work with. Perhaps the predict() method is more or less the same thing as the posterior_epred() (is it?), but that is not enough. We really want the full posterior_predict(). We don't want to have to add our own by combining predict() with a sample vector from residuals() in some hacky way, and I am not even sure that this works with categorical dependent variables.
+
+We need at least one time series forecasting chapter: https://otexts.com/fpp3/. Looks like brms has some simple time series models which will work well. Goal is to do something simple enough that a student who picks a simple time series data set can do at least a basic arima or whatever. As long as the brms works the same, and allows making a forecast, we are OK. Univariate only, of course. Should add the example data set to primer.data.
+
+There are real issues with our chapter names. Do we mention the number of parameters? Whether causal or predictive? The distribution of the dependent variable?
+
+Call the true DGM Preceptor's DGM, as a counterpart to the Preceptor Table.
+
+Could we roll our own pp_check? I would prefer more control of the resulting plots. How hard would it be? Maybe just one call to add_predictive_draws() with ndraws set to 10?
+
+Questions should be italicized and indented.
+
+Change sampling.qmd to samples.qmd?
+
+Split up 3 parameters into four chapters.
+
+Introduce tidy()? That requires **broom.mixed**. I don't like using so many packages. Could also move directly to gtsummary::tbl_regression(). Need to figure out how I want students to present regression summaries, and then teach them how to do so.
+
+https://citibikenyc.com/system-data is cool!
+
+
+Need to find a student to test out brms on Windows as soon as possible.
+
+We need a new structure to the entire book, sadly. The Probability and Rubin Causal Model chapters are good and should stay where they are. But the affectation of having the rest of the chapters be one parameter, two parameters and so on does not really work. Instead, we should just have 6 chapters, each of which takes us down the same path of the four Cardinal Virtues, each time with increasing complexity on all possible dimensions. It is true that the number of parameters will increase as we go along, but it is highly unlikely that this the best rate of increase is one parameter per chapter. In fact, we need to go much more quickly, adding much more complex models, much earlier. We might find it useful to use the TidyModels framework from the very start.
+
+
+## Quotes
+
+Ought to have a cool new quote about the virtues, starting off each section in each chapter. Here is one for Temperance, or Wisdom.
+
+Always use variable names, rather than y's and x's, in the math formulas.
+
+Get rid of graphs of parameters. Only confusing! Always use posterior_epred() and posterior_predict().
+
+Different questions lead to different variables in the Preceptor Table, even for cases in which the outcome is the same.
+
+In every realistic data science problem, the Preceptor Table and the data are not the same rows.
+
+Need a table which shows all 4 (?) languages for describing a model together: English, math, code, output.
+
+One of the key jobs of a data scientist is to guide people --- our colleagues, bosses and clients --- toward asking precise questions. We must help them to translate English into inference. That translation requires precision. 
+
+
+I am really annoyed by the default number of columns in the displayed code block in Quarto. Look at what happens in Chapter 3, for example. The code comments, all of which are fewer than 80 characters per line (I assume) look great in the qmd file. But, when rendered, they don't fit in a line and so need to be split into two lines in a very ugly and unreadable fashion. How many columns are displayed by default, and how can we cause that number to be the default wide in qmd documents so that comment lines can be wrapped automatically with CNTRL-Shift-/?
+
+
+Think more about whether not "mechanism" discussion could unify our discussion of potential problems. What is the sampling mechanism, the assignment mechanism and the missing data mechanism? Representativeness is about the sampling mechanism. Unconfoundedness is about the assignment mechanism. Hmmm. If your sampling mechanism creates a correlation between your outcome variable and other stuff, then you may have a problem.
+
+Think about the different categories of correlations (is this the right word?) which can arise. Example: the sampling mechanism of surveys, which old people don't like to fill out, means that old people are less likely to be in the sample. So what?
+
+Well, if age is your outcome, then you have one sort of problem. You want the distribution of the outcome variables in the sample to match the distribution in the population. Note the sloppiness here. Am I worried about the distribution of the data from the point in time from when the sample comes from? Or am I interested in the distribution of the outcome from the whole population? Answer: They are the same thing (I think).
+
+Third case: What if the sampling mechanism goes a bias among the independent variables?
+
+
+Even if the two outcome distributions are the same, then a second problem could be that the parameters of the model are different for different ranges of the independent variable.  (Grumpy people versus  non-grumpy people.)
+
+Difficult to understand what a geom_density shows, especially the meaning of the y-axis. Maybe we should have a section which walks students through the concepts of a distribution, ending with a smooth probability distribution. First, start with a geom_histogram example, but which looks like a standard plot. Or, maybe just use facet_wrap, stack them on top of each other. Raw counts of things are important. Second, use the same data, turns it into percentages using the after_stat() trickery. Third plot, use the same data, does this with geom_density(). Just an easier way of showing those shapes. Fourth plot, same data, use stat_slab().  BL: Is this already done?
+
+
+2) Fix this warning:
+
+[WARNING] Citeproc: Citation with no printed form:
+
+3) Need to list all packages used in the book. Not sure how.
+
+4) Should we replace knitr::include_graphics with the new Quarto stuff?
+
+
+Let's start using "data generating mechanism" everywhere. Maybe the DGM abbreviation is useful. The end of Justice is where we decide on  the "structure" (or "form") of the DGM. Right now, there are just two choices possible: gaussian or binary. (Note that there are many other possible structures. Take future courses to learn about them.) And, for now, we make our choice on the basis of the outcome variable. If it is continuous, we just linear, and if it is binary, we choose logistic.  Maybe show the formula each time? Or maybe this is where Courage starts, with the formula? 
+
+Concerns about representativeness and validity may cause us to make adjustments in our final posteriors in an ad hoc --- but still useful! --- manner, or they may cause us to make changes in our actual models.
+
+In functional form section, emphasize that we mostly choose our functional form on the basis of the left hand side variable. If it is continuous, we go linear. If it is 0/1, we go logistic. (May add one other option later.)
+
+Show posterior_interval()
+
+Figure out what quarto.yml settings are defaults and get rid of those. Explain others.
+
+Might be cool to figure out all the places which, implicitly, mention the current year (like 2022 in RCM chapter) as well as, implicitly, future years --- and then automatically generate them based on a default value given somewhere. Then, in four months, we change 2022 to 2023 --- maybe via "parameters" --- and everything just works.
+
+.packages() working.
+
+PDF version. Allowing students to read offline.
+
+More details _quarto.yml.
+
+Github Actions. Fourth, can we build it automatically on the web after accepting.
+
+https://github.com/features/actions
+
+Fifth, start pondering interactivity . . .
+
+https://bookdown.org/yihui/bookdown/
+https://bookdown.org/yihui/bookdown/configuration.html
+
+https://happygitwithr.com/usage-intro.html
+
+https://quarto.org/docs/projects/scripts.html#pre-and-post-render
+
+https://thomasmock.quarto.pub/quarto-curious/
+https://mine.quarto.pub/hello-quarto (watch movie)
+https://quarto.org/docs/books/
+https://www.njtierney.com/post/2022/04/11/rmd-to-qmd/
+https://tmb.njtierney.com/
+
+## Further projects
+
+* very nice approach to all model topics, especially the discussion of posterior predictive checks. https://methodmatters.github.io/steps-bayesian-rstanarm/ Check this out and then redo the later chapters.
+
+* Explore new render_book() improvements, Simplify the creation of the book. Make it a Github action upon pulling.
+
+* Use the ggdistribution package, perhaps. https://t.co/8ue1b7Drh2?amp=1
+
+* Check out Frank Herrell book: http://hbiostat.org/rflow/
+
+* Use rvar.
+
+* Get rid of after_stat(). Or, if can't, then teach it properly and earlier.
+
+* We need a "machine" which generates these predictions, which is the same thing as a machine which fills in all the question marks in the Actual Preceptor Table, which is the same thing as a machine which produces "fake data" which looks a lot like our actual data. This also leads directly to the concept of *posterior predictive checks*, which is just fancy terminology for helping to see if your model makes sense. If your model is reasonable, then you would expect to see Z (a feature of the real data) in either new data or in fake data generated by your model. If you see Z, then you should have more faith in your model. If you don't, then something is wrong.
+
+
+
+* Discuss: Should "posterior probability distribution" become "ppd" or "PPD" everywhere?
+
+## Other stuff
+
+* Upgrade to new version of bookdown. And check out this book with R and Python mixed together. https://peopleanalytics-regression-book.org/. Also: https://bookdown.org/
+
+* https://clauswilke.com/dataviz/
+
+* Guide to the packages themselves, especially magic like Github Actions. Connect to this: https://www.rostrum.blog/2020/08/09/ghactions-pkgs/
+
+
+
+
+
+* Preceptor's Posterior is a posterior for which all the assumptions are true. Just because the big Data Science Machine has spat out a posterior does not mean that you should believe it blindly.
+
+* Replace geom_histogram with ggdist throughout, although leave the first example and show how ggdist just makes everything easier.
+
+* Look to this for motivation: https://mc-stan.org/rstanarm/articles/continuous.html
+
+* Need to add fig.cap to any R code chunk for a figure which we want to reference. "If we assign a figure caption to a code chunk via the chunk option fig.cap, R plots will be put into figure environments, which will be automatically labeled and numbered, and can also be cross-referenced."
+
+* Use ragg? ragg can be used when knitting Rmarkdown files by setting dev="ragg_png" in the code chunk options
+
+https://www.tidyverse.org/blog/2021/02/modern-text-features/
+
+* Add the notion of Preceptor's Posterior earlier.
+
+
+* $ git reset --soft HEAD~1
+
+* The elipses should be vertical, not horizontal in all Preceptor Tables. fmt_markdown() would allow us to have vertical elipses in the Preceptor Tables.
+
+
+* Add grouping for line plots.
+
+* Think about the difference between the *posterior distribution* of average height and the *posterior probability distribution*. Right now, we only use the latter. But the draws which are produced from epred() and predict() are really more examples of the former. Aren't they? That is, 4,000 height values is a *distribution*, as are all vectors, and it is *posterior* since we created it with a function that starts with "posterior". But nor is it a probability distribution since we have not normalized it yet. Shouldn't we weave this connection throughout the book.
+
+* Should I use MAD_SD, MAD, mad or what? Should be consistent.
+
+* Standardize use of "tidyverse". Only two choices: Either Tidyverse, when referring to the concept and/or to the collection of packages, or **tidyverse**, when referring to the package itself. Never use "tidyverse."
+
+* Add ModernDive common problems isssues: https://moderndive.com/C-appendixC.html#data-wrangling
+
+* https://leanpub.com/markua/
+
+* https://education.rstudio.com/blog/2021/02/cbds/
+
+
+* Fix tools to include discussion of Git for Windows and setting up the Terminal correctly: https://happygitwithr.com/shell.html#windows-shell-hell.
+
+* Split maps into census and maps. Combine with ipums. Add code for making ipums graphics.
+
+* Every model should feature a plot of predicted values and true outcomes. The decomposition is fine as far as it goes, but it is not the key image.
+
+* Think harder about p() and Prob(). Which goes where?
+
+* Use fitted() or predict() or both?
+
+* Need testing in each chapter.
+
+* Find/remove all usage of "controlling for x, we see". Use "adjust" instead. Start using "When comparing" everywhere.
+
+* What do we think about the width of the code in the book? Sure seems like the comment lines go on for too long. Maybe? I don't like the way they care cut off in my Ipad, but . . . do many students read on Ipads?
+
+* https://xkcd.com/2048/
+
+
+
+* Include links to disputes about governors work:
+
+https://erikgahner.dk/2020/a-response-to-andrew-gelman/
+https://statmodeling.stat.columbia.edu/2020/07/02/no-i-dont-believe-that-claim-based-on-regression-discontinuity-analysis-that/
+https://github.com/jonspring/discontinuity/blob/master/fileb23c55435f90.gif
+
+
+
+
+## To Discuss Later
+
+
+
+* More discussion of what it means to "control for" something in a regression. Right now, we don't mention this until chapter 11. Needs to be covered earlier, especially in chapter 9. That sets the stage for later.
+
+* Standardize notation. What are predicted/fitted values? Use y_i everywhere, instead of using problem specific terms? That seems a bad (good?!) idea.
+
+
+
+# Appendices
+
+Appendices have information that either a) a prof might reasonably decide not to assign or b) often contain material that students already know.
+
+* Why Bayes?
+
+* Messed up research articles. We need to prepare case studies of messed up articles. Start with those that Gelman cites. The tricky part is trying to figure out how to include these in class. And during which week do we use them.
+
+* All the math you don't need to know. Bayes Theorem. Formulas. Normal distribution. Central limit theorem
+
+* Advanced graphics, especially a tour of cool packages, including ggplotly and leaflet. gghighlight. ggstream.
+
+* List of cool packages, googlesheet4 examples. : https://datavizm20.classes.andrewheiss.com/example/10-example/
+
+* How to make an Rpubs and gists and saveWidgets:
+https://datavizm20.classes.andrewheiss.com/example/10-example/
+
+* Tufte and other graphics luminaries
+
+* Leamer and other famous articles
+
+* rtweet
+
+* Making memes. Someone should figure out which meme maker is best for R. Or maybe we make our own. And then we make lots of memes for the book!
+
+
+
+
+## Other links of interest:
+
+https://r-charts.com/ (use these tutorials)
+https://www.youtube.com/watch?v=CQS4xxz-2s4 (marginal and conditional distributions; quite hard; maybe optional?)
+
+
+* Books
+
+https://rstudio4edu.github.io/rstudio4edu-book/
+https://ubc-dsci.github.io/introduction-to-datascience/
+https://monika76five.github.io/ProbBayes/
+https://bookdown.org/roback/bookdown-BeyondMLR/
+https://dtkaplan.github.io/DataComputingEbook/
+
+* Courses
+
+https://ubc-dsci.github.io/dsci-100/
+https://dataviz-2021.netlify.app/
+https://jmbuhr.de/dataIntro20/
+https://athanasiamo.github.io/tidyquintro/
+
+* Other
+
+https://evamaerey.github.io/flipbooks/about (use flipbooks for classroom exercises?)
+https://nickch-k.github.io/EconometricsSlides/
+https://holtzy.github.io/Pimp-my-rmd/
+
+https://fromthebottomoftheheap.net/2020/04/30/rendering-your-readme-with-github-actions/
+https://github.com/itsyaoyu/github_actions/blob/master/.github/workflows/main.yml
+https://www.willandskill.se/en/deleting-your-git-commit-history-without-removing-repo-on-github-bitbucket/
+
+https://mdbeckman.github.io/JSM2020-Virtual/
+
+* More cartoons like [xkcd](https://cran.r-project.org/package=RXKCD)
+
+styler package
+
+https://storywrangling.org/
+
+https://desiree.rbind.io/post/2019/making-tip-boxes-with-bookdown-and-rmarkdown/ for making pretty boxes in the book
+
+https://github.com/wikimedia/waxer for Wikipedia data
+
+http://zevross.com/blog/2017/06/19/tips-and-tricks-for-working-with-images-and-figures-in-r-markdown-documents/
+
+https://github.com/agmath/AppliedStatsInteractive
+
+https://github.com/moodymudskipper/flow
+
+https://github.com/ucbds-infra/ottr-sample
+
+https://github.com/allisonhorst/stats-illustrations
+
+https://bookdown.org/yihui/rmarkdown-cookbook/equatiomatic.html
+
+Consider Netifly: https://cerebralmastication.com/2019/05/11/publishing-bookdown-to-netlify-automagically/
+
+https://kieranhealy.org/categories/visualization/
+
+https://openintro-ims.netlify.app/
+
+https://education.rstudio.com/blog/2020/07/gtsummary/
+https://moderndive.github.io/moderndive_labs/index.html
+https://education.rstudio.com/blog/2020/07/learning-learnr/
+https://rmarkdown.rstudio.com/authoring_shiny_prerendered.HTML
+
+https://rstudio-education.github.io/tidyverse-cookbook/. I love this image: https://twitter.com/icymi_r/status/1407199200627113989/photo/1
+
+* Look at the **flair** package to format the code. Or does that require us to have two copies of code: working copy and colored copy? https://education.rstudio.com/blog/2020/05/flair/
+
+* Does using **flipbookr** make sense in the middle of a chapter?
+
+* https://github.com/yonicd/carbonate -- perhaps useful for some nicer formatting of source code.
+
+## Rcpp and cmath
+
+I had recurring problems with this error, associated with a brms::brm() call.
+
+```
+/Library/Frameworks/R.framework/Versions/4.4-arm64/Resources/library/RcppEigen/include/Eigen/src/Core/util/Macros.h:679:10: fatal error: 'cmath' file not found
+#include <cmath>
+         ^~~~~~~
+1 error generated.
+make: *** [foo.o] Error 1
+```
+
+Issue seems associated with Rcpp installation. It got so annoying that I stopped use renv. But even that was not enough. I had to fina all the `_cache` directories in the project that at Rcpp installed and delete them. No idea why this was necessary since .libpaths() did not include them. But, after deleting them, the error went away. Maybe I just had one bad version of Rcpp, or Rcpp itself was bad for a little wile. With luck, now that it works, this won't happen again.
+
+
+Make a 15 second video, put it on YouTube. "We don't estimate parameters because we care about parameters. Parameters are imaginary! Like unicorns! [Put finger on forehead and imitate unicorn.] We estimate parameters to build Data Generating Mechanisms. And with a DGM, you can move the world!"
+
+
+
+

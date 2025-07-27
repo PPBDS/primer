@@ -1,6 +1,6 @@
 # Set Up for Working on PPBDS Projects {-}
 
-This document provides a guide in setting up R/RStudio to work on *[The Primer](https://ppbds.github.io/primer/)*, both the book itself, [PPDBS/primer](https://github.com/PPBDS/primer), and the associated tutorial ([PPDBS/primer.tutorials](https://github.com/PPBDS/primer.tutorials)) and data ([PPDBS/primer.data](https://github.com/PPBDS/primer.data)) packages. The same procedures apply for working on other packages associated with the [PPBDS](https://github.com/PPBDS/) organization: [PPDBS/tutorial.helpers](https://github.com/PPBDS/tutorial.helpers),  [PPDBS/positron.tutorials](https://github.com/PPBDS/positron.tutorials), [PPDBS/r4ds.tutorials](https://github.com/PPBDS/r4ds.tutorials), [PPDBS/tidycensus.tutorials](https://github.com/PPBDS/tidycensus.tutorials), [PPDBS/tidymodels.tutorials](https://github.com/PPBDS/tidymodels.tutorials) and others. There are three steps:
+This document provides a guide in setting up R/Positron/Git/GitHub to work on *[The Primer](https://ppbds.github.io/primer/)*, both the book itself, [PPDBS/primer](https://github.com/PPBDS/primer), and the associated tutorials ([PPDBS/primer.tutorials](https://github.com/PPBDS/primer.tutorials)) and data ([PPDBS/primer.data](https://github.com/PPBDS/primer.data)) packages. The same procedures apply for working on other packages associated with the [PPBDS](https://github.com/PPBDS/) organization: [PPDBS/tutorial.helpers](https://github.com/PPBDS/tutorial.helpers),  [PPDBS/positron.tutorials](https://github.com/PPBDS/positron.tutorials), [PPDBS/r4ds.tutorials](https://github.com/PPBDS/r4ds.tutorials), [PPDBS/tidycensus.tutorials](https://github.com/PPBDS/tidycensus.tutorials), [PPDBS/tidymodels.tutorials](https://github.com/PPBDS/tidymodels.tutorials) and others. There are three steps:
 
 * The first part ensures that you have the knowledge and computer settings to be successful. With luck, you will only need to do this once. At the very least, you should upgrade your R version to the latest available and re-do the set up commands as specified in the [Getting Started](https://ppbds.github.io/primer/getting-started.html) chapter. 
 
@@ -14,7 +14,7 @@ The *test* which ensures that you have successfully completed this set up is to 
 
 ## Computer Set Up
 
-1) Read the [Getting Started](https://ppbds.github.io/primer/getting-started.html) chapter from [The Primer](https://ppbds.github.io/primer/). Follow the instructions, including installing [Rtools](https://cran.r-project.org/bin/windows/Rtools/) if you are using Windows. Read  (and watch the videos from) [*Getting Used to R, RStudio, and R Markdown*](https://ismayc.github.io/rbasics-book/) by Chester Ismay and Patrick C. Kennedy. Note that [R Markdown](https://rmarkdown.rstudio.com/) is the predecessor to [Quarto](https://quarto.org/). Check out [RStudio Essentials Videos](https://rstudio.com/collections/rstudio-essentials/). Most relevant for us are ["Writing code in RStudio"](https://resources.rstudio.com/wistia-rstudio-essentials-2/rstudioessentialsprogrammingpart1-2), ["Projects in RStudio"](https://rstudio.com/resources/webinars/managing-part-1-projects-in-rstudio/) and ["Github and RStudio"](https://rstudio.com/resources/webinars/managing-part-2-github-and-rstudio/). The best reference for R/RStudio/Git/Github issues is always [*Happy Git and GitHub for the useR*](https://happygitwithr.com/).
+1) Read the [Getting Started](https://ppbds.github.io/primer/getting-started.html) chapter from [The Primer](https://ppbds.github.io/primer/). Complete at least the first four tutorials in the **positron.tutorials** package. The best reference for R/Git/Github issues is always [*Happy Git and GitHub for the useR*](https://happygitwithr.com/).
 
 2) Make sure that your Git/Github connections are good. If you have gone through the key chapters in [Happy Git with R](https://happygitwithr.com/) --- as you should have --- then these may already be OK. If not (or, even if you have), then you need to run `usethis::git_sitrep()`.
 
@@ -55,7 +55,7 @@ usethis::create_github_token()
 
 and read about [Github credentials](https://usethis.r-lib.org/articles/articles/git-credentials.html). After you do, restart R and then run `git_sitrep()` again to make sure that things look like mine, more or less.
 
-3) Install the [**renv**](https://rstudio.github.io/renv/) package. Read about the **renv** package [here](https://rstudio.github.io/renv/articles/renv.html).
+3) Install the [**renv**](https://rstudio.github.io/renv/) package. Read about the **renv** package [here](https://rstudio.github.io/renv/articles/renv.html). Most of the PPBDS projects use **renv**. The most important exception is **primer**, which uses a DESCRIPTION file to keep track of the required R packages.
 
 It is not critical to understand all the details of how **renv** works. The big picture is that it creates a set of libraries which will be used just for this project and whose versions are kept in sync between you and me. 
 
@@ -84,13 +84,15 @@ create_from_github(repo_spec = "PPBDS/INSERT-NAME-OF-PROJECT",
 
 Obviously, you need to modify the string "INSERT-NAME-OF-PROJECT" to correspond to one of our projects. Most common options are **r4ds.tutorials**, **primer**, **primer.data**, and **primer.tutorials**. If, for some reason, you are working on a project which does not reside in the PPBDS organization, you should modify the first part of the `repo_spec` as well. 
 
-You must change `destdir` to be a location on your computer. Indeed, professionals will generally have several different RStudio sessions open, each working on a different R project/package, each of which is connected to its own Github repo.                     
+You must change `destdir` to be a location on your computer. Indeed, professionals will generally have several different Positron windows open, each working on a different project, each of which is connected to its own Github repo.                     
                     
 For your education, it is worth reading the help page for `create_from_github()`. The `fork`  and `protocal` arguments may not really be necessary and, obviously, you should place the project in the location on your computer in which your other projects live. The command first forks a copy of **PPBDS/primer** to your Github account and then clone/downloads that fork to your computer. 
 
 This may seem like overkill, but, as [*Pro Git*](https://git-scm.com/book/en/v2) explains, it is how (essentially) all large projects are organized. With luck, you only have to issue this command once. After that, you are always connected, both to your fork and to the true repos, which live at github/com/PPBDS. Also, note that, if something ever gets totally messed up on your computer, you can just delete the project folder on your computer and the repo on your Github account and then start again. (If you have made changes that you don't want to lose, just save the files with those changes to one side and then move them back after you have recreated the project.)
 
-Note that this command should automatically put you in a new RStudio session with the `primer` (or `primer.tutorials` or `primer.data`) RStudio project which resides on your computer
+Note that this command should automatically put you in a new Positron session within the `primer` (or `primer.tutorials` or `primer.data`) project which now resides on your computer.
+
+<!-- DK: The above description is left over from RStudio. Is that what happens in Positron? -->
 
 2) The next step is to get **renv** setup so that you are running the same package versions as everyone else. Run this once:
 
@@ -130,7 +132,7 @@ In more professional settings, you will often work on several different branches
 
 ## Daily Work
 
-0) Always use the "Source" view --- not the "Visual" view --- in RStudio to edit. The Visual view will often reformat your code, without you asking, in unhelpful ways. You don't want RStudio to make changes in your code. 
+0) Always use the "Source" view --- not the "Visual" view --- in Positron to edit. The Visual view will often reformat your code, without you asking, in unhelpful ways. You don't want Positron to make changes in your code. 
 
 1) Pull regularly:
 
@@ -143,7 +145,7 @@ Issue this command all the time. This is how you make sure that your repo and yo
 
 2) Make changes in the file you are editing. Knit to make sure the changes work. Commit with a message. Push to the repo on your Github account. And so on. 
 
-At some point, you will be ready to push to the PPBDS organization. However, you can't do this directly. Instead, you must submit a pull request (PR). Because you are part of a larger project, these commands are slightly different than what you have done before, which has usually just been clicking on the pull (blue) and push (green) arrows in the Git pane in RStudio.
+At some point, you will be ready to push to the PPBDS organization. However, you can't do this directly. Instead, you must submit a pull request (PR). Because you are part of a larger project, these commands are slightly different than what you have done before.
 
 3) Issue pull requests every few days, depending on how much work you have done and/or whether other people are waiting for something you have done.
 
@@ -167,7 +169,7 @@ This command bundles up a bunch of git commands (which you could do by hand) int
 
 1) In the immediate aftermath of this creation process, the blue/green arrows (in the Git panel) for pulling/pushing may be grayed out. This is a sign that the connection between your computer and your forked repo has not "settled in." (I am not sure of the cause or even if this is the right terminology.) I think that just issuing your first `pr_merge_main()` fixes it. If not, it always goes away. Until it does, however, you can't pull/push to your repo. That doesn't really matter, however, since the key commands you need are `pr_merge_main()` and `pr_push()`, both of which always work immediately.
 
-2) After running `pr_merge_main()`, *you will often see a bunch of files in your Git tab in the top right corner of Rstudio* marked with an M (for Modified), including files which you know you did not edit. These are the files that have been updated on the "truth" --- on **PPBDS/primer**, for example --- since your last `pr_merge_main()`. Since you pulled them directly from the **PPBDS/primer** repo, your forked repo sees all the changes other people have made and thinks that *you made them*. This is easily fixed, however — just commit all the changes to your forked repo. (Strangely, this seems to not always happen. If you don't see this effect, don't worry.)
+2) After running `pr_merge_main()`, *you will often see a bunch of files, in your Source Control pane, marked with an M (for Modified), including files which you know you did not edit. These are the files that have been updated on the "truth" --- on **PPBDS/primer**, for example --- since your last `pr_merge_main()`. Since you pulled them directly from the **PPBDS/primer** repo, your forked repo sees all the changes other people have made and thinks that *you made them*. This is easily fixed, however — just commit all the changes to your forked repo. (Strangely, this seems to not always happen. If you don't see this effect, don't worry.)
 
 3) Always run `pr_merge_main()` before committing a file. Otherwise, you may create lots of merge conflicts. If this happens, save a copy of the file(s) you personally were editing off to the side. Then, [nuke it from orbit](https://knowyourmeme.com/memes/nuke-it-from-orbit), following the instructions above. Repeat the Project Set Up process. Then move in your file(s) by hand into the new repo, and commit/push them as normal.
 
