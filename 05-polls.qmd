@@ -302,7 +302,7 @@ Load the [**brms**](https://paul-buerkner.github.io/brms/) package:
 ```{r}
 #| code-fold: false
 #| message: false
-library(brms)
+# library(brms)
 ```
 
 The **brms** package provides a user-friendly interface to work with the statistical language [Stan](https://mc-stan.org/), the leading tool for Bayesian model building.

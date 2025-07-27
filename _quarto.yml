@@ -21,7 +21,7 @@ book:
     - 02-sampling.qmd
     - 03-rubin-causal-model.qmd
     - 04-cardinal-virtues.qmd
-    - 05-polls.qmd
+    # - 05-polls.qmd Still filed with old nonsense
     - set-up.qmd
 format:
   html:
