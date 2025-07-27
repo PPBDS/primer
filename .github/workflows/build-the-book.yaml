@@ -31,11 +31,14 @@ jobs:
         
       - name: Render Book
         uses: quarto-dev/quarto-actions/render@v2
-        
-      - name: Commit and Push
-        run: |
-          git config --local user.email "actions@github.com"
-          git config --local user.name "GitHub Actions"
-          git add docs/
-          git diff --staged --quiet || git commit -m "Render book [skip ci]"
-          git push
+        with:
+          to: html  # Explicitly render to HTML
+          path: .  # Render the book in the root directory (where _quarto.yml is)
+
+      - name: Publish to GitHub Pages
+        if: github.event_name == 'push' && github.ref == 'refs/heads/main'  # Only deploy on push to main
+        uses: peaceiris/actions-gh-pages@v4
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./docs  # Deploy the contents of the docs/ directory
+          force_orphan: true  # Ensures a clean gh-pages branch
