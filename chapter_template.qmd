@@ -103,6 +103,8 @@ knitr::include_graphics("other/images/Justice.jpg")
 
 **Validity** is the consistency, or lack thereof, in the columns of the data set and the corresponding columns in the Preceptor Table. In order to consider the two data sets to be drawn from the same population, the columns from one must have a *valid correspondence* with the columns in the other. Validity, if true (or at least reasonable), allows us to construct the *Population Table*, which is the central result of Justice.
 
+<!-- IS: explore each of the concepts for each scenario? -->
+
 ### Population Table
 
 The **Population Table** includes a row for each unit/time combination in the underlying population from which both the Preceptor Table and the data are drawn.
