@@ -28,7 +28,7 @@ The **primer.data** package includes `nes`, a tibble with the data from the [Ame
 
 ### Scenarios
 
-1) What was the relationship between sex and voting in the 1992 US Presidential election?
+1) What was the relationship between sex and voting in the 1992 US Presidential election among supporters of the three leading candidates: Clinton, Bush and Perot?*
 
 2) Did a voter's sex cause them to be more likely to vote for Clinton, Bush, or Perot in the 1992 U.S. Presidential election?
 
@@ -106,46 +106,17 @@ A **Preceptor Table** is the smallest possible table of data with rows and colum
 
 #### Scenario 1
 
-*Units*: 
+*Units*: The rows of the Preceptor Table refer to individual US voters. The question suggests that we are not interested in people who did not vote, although one might explore if men were more or less likely to vote in the first place.
 
-*Outcome*: 
+*Outcome*: We want Presidential voting behavior in 1992. Such explorations are often restricted to just the two "major party" candidates, the nominees of the Democratic and the Republican parties, Bill Clinton and George HW Bush. But, in 1992, Ross Perot was a very successful "third party" candidate, winning almost 19% of the vote. Should he be included in the analysis? What about the 4th place finisher, Libertarian Andre Marrou? Again, the question does not specify. However, the outcome variable is certainly the candidate for whom an individual voted.
 
 *Causal or predictive model*: Predictive. 
 
 *Treatment*: There are no treatments since this model is predictive.
 
-*Covariates*: 
-
-*Moment in Time*: 
-
-<!-- XX: Insert Preceptor Table. -->
-
-#### Scenario 2
-
-*Units*: 
-
-*Outcome*: 
-
-*Treatment*: 
-
-*Causal or predictive model*: 
-
-*Covariates*: 
-
-*Moment in Time*: 
-
-<!-- XX: Insert Preceptor Table. -->
-
-*Causal or predictive model*: This model is predictive not causal. 
-
-*Units*: The rows of the Preceptor Table refer to individual US voters. The question suggests that we are not interested in people who did not vote, although one might explore if men were more or less likely to vote in the first place. As always, the initial question rarely specifies the Preceptor Table precisely.
-
-*Outcome*: We want Presidential voting behavior in 1992. Such explorations are often restricted to just the two "major party" candidates, the nominees of the Democratic and the Republican parties, Bill Clinton and George HW Bush. But, in 1992, Ross Perot was a very successful "third party" candidate, winning almost 19% of the vote. Should he be included in the analysis? What about the 4th place finisher, Libertarian Andre Marrou? Again, the question does not specify. However, the outcome variable is certainly the candidate for whom an individual voted.
-
 *Covariates*: The only covariate we will consider is sex, with two values: "male" and "female". Whatever your feelings about the contemporary limits of the sex binary, this is the only data collected in 1992s. In a full analysis, we would make use of more covariates, but the primary purpose of this chapter is to explore a categorical model with three possible outcomes.
 
 *Moment in Time*: The Preceptor Table refers to the election season in the fall of 1992. We make no claims about other US presidential elections, not least because few feature a third party candidate as popular as Perot. Our purpose here is historical. We want to better understand what happened in this election, not make claims about other time periods. The moment in time is, however, longer than just Election Day itself since mail-in votes were cast in the weeks proceeding the election.
-
 
 ```{r}
 #| echo: false
@@ -169,23 +140,33 @@ tibble(ID = c("1", "2", "...", "10", "11", "...", "103,754,865"),
   tab_spanner(label = "Covariate", columns = c(sex))
 ```
 
-As usual the ID column is irrelevant. We don't need to know exactly who voted for whom to answer our question. We just need to know the sex of each voter.
+#### Scenario 2
 
-There were 104,425,014 total votes cast in the 1992 Presidential election. But our table only has 103,754,865 rows because we are only modeling people who cast their votes for one of the three main candidates. Is that the "right" approach? It depends! As always, data science is a *dialogue* between the question with which we start and the data/tools we have available to answer it. In this case, we *choose* to simplify the question, to focus on only the three main candidates, mainly because we want to use a model with three outcomes. We could, instead, create a more complicated model which included votes cast for other candidates. Our new question is now:
+*Units*: Individual US voters.
 
-> *What was the relationship between sex and voting in the 1992 US Presidential election among supporters of the three leading candidates: Clinton, Bush and Perot?*
+*Outcome*: The presidential voting result of each individual voter.
 
-### Validity
+*Causal or predictive model*: Causal.
 
-Our Preceptor Table includes the 103,754,865 people who voted for one of the three leading candidates in the 1992 presidential election. Our data includes a (tiny) subset of those people. This is a standard aspect of a "historical" data science project, when the data we want (the Preceptor Table) and the data we have come from the same moment in time. This makes the assumptions of validity and stability much easier to maintain. Of course, there can always be problems. A response to the nice ANES surveyer about one's vote (or sex) is not the same thing as one's actual vote (or sex). Indeed, a standard artifact of political surveys is that more people claim to have voted for the winning candidate than actually did. In this case, however, we will assume that validity holds and that we can "stack" the columns from the Preceptor Table and the data on top of each other. In fact, validity allows us to assume that the rows in the data is actually a *subset* of the rows in the Preceptor Table. To summarize:
+*Treatment*: sex. Since we are studying how sex influences different voting behaviors, we must manipulate sex to see the outcomes.
 
-> *Using data from the National Election Studies survey of US citizens, we seek to understand the relationship between voter preference and sex in the 1992 Presidential election.*
+*Covariates*: 
 
+*Moment in Time*: The election season in the fall of 1992
 
+<!-- XX: Insert Preceptor Table. -->
 
 ## Justice
 
 Justice concerns four topics: the Population Table, stability, representativeness, and unconfoundedness.
+
+### Validity
+
+**Validity** is the consistency, or lack thereof, in the columns of the data set and the corresponding columns in the Preceptor Table. In order to consider the two data sets to be drawn from the same population, the columns from one must have a *valid correspondence* with the columns in the other. Validity, if true (or at least reasonable), allows us to construct the *Population Table*, which is the central result of Justice.
+
+Our Preceptor Table includes the 103,754,865 people who voted for one of the three leading candidates in the 1992 presidential election. Our data includes a (tiny) subset of those people. This is a standard aspect of a "historical" data science project, when the data we want (the Preceptor Table) and the data we have come from the same moment in time. This makes the assumptions of validity and stability much easier to maintain. Of course, there can always be problems. A response to the nice ANES surveyer about one's vote (or sex) is not the same thing as one's actual vote (or sex). Indeed, a standard artifact of political surveys is that more people claim to have voted for the winning candidate than actually did. In this case, however, we will assume that validity holds and that we can "stack" the columns from the Preceptor Table and the data on top of each other. In fact, validity allows us to assume that the rows in the data is actually a *subset* of the rows in the Preceptor Table. To summarize:
+
+> *Using data from the National Election Studies survey of US citizens, we seek to understand the relationship between voter preference and sex in the 1992 Presidential election.*
 
 ### Population Table
 
