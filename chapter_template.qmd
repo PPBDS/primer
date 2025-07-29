@@ -61,9 +61,9 @@ A **Preceptor Table** is the smallest possible table of data with rows and colum
 
 *Outcome*: 
 
-*Treatment*: 
-
 *Causal or predictive model*: 
+
+*Treatment*: 
 
 *Covariates*: 
 
@@ -78,9 +78,9 @@ A **Preceptor Table** is the smallest possible table of data with rows and colum
 
 *Outcome*: 
 
-*Treatment*: 
-
 *Causal or predictive model*: 
+
+*Treatment*: 
 
 *Covariates*: 
 
