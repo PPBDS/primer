@@ -20,7 +20,11 @@ library(gt)
 
 ## Introduction
 
+<!-- IS: should we have an overview of the packages here, like in other tutorials? or should we just give background information on the data? -->
+
 ### Scenarios
+
+<!-- IS: do we simply introduce them (like the section in the classwork recently) or explain them a little more? -->
 
 ## Wisdom
 
