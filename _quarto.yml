@@ -26,7 +26,7 @@ book:
     - set-up.qmd
 format:
   html:
-    code-fold: true
+    code-fold: false
     code-summary: "Show the code"
     theme: cosmo
     code-link: true

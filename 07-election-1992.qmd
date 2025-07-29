@@ -1,11 +1,12 @@
 # Four Parameters: Categorical 
 
-<!-- IS: should the title be the name of the tutorial or what we are studying (relating to the 07/1992 election) -->
 
 ```{r}
 #| label: hidden-libraries
 #| message: false
 #| echo: false
+#| code-fold: false    
+# DK: Is the code_fold invocation necessary?
 library(gt)
 ```
 
@@ -15,7 +16,6 @@ Packages:
 
 ```{r}
 #| message: false
-#| code-fold: false
 library(tidyverse)
 library(primer.data)
 library(tidymodels)
@@ -337,7 +337,7 @@ fit_nes |>
 
 ### Posterior Predictive Checks
 
-<!-- IS: what to include in this section? -->
+<!-- IS: what to include in this section? check_predictions() -->
 
 ### Tests
 

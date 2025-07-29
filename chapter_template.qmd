@@ -1,4 +1,6 @@
-# XX: Title
+# XX: Title 
+
+<!-- XX: The title is generally one word, referencing the main topic/data, like "Polls" or "Height". But more than one word is also fine, like "1992 Presidential Election". -->
 
 <!-- XX: The purpose of this document is to serve as a template for the "normal" chapter in the Primer, which is more or less chapters 5 and higher. To use this, take this file, save it as `NN-subject.qmd`, where NN is a number, like "06", which indicates its approximate order in the book. Then, find all the XX-labeled comments, read them and delete them. -->
 
@@ -20,11 +22,11 @@ library(gt)
 
 ## Introduction
 
-<!-- IS: should we have an overview of the packages here, like in other tutorials? or should we just give background information on the data? -->
+<!-- XX: Load all the packages which you will be using in the chapter and provide a bried discussion as to what we need them for. -->
 
 ### Scenarios
 
-<!-- IS: do we simply introduce them (like the section in the classwork recently) or explain them a little more? -->
+<!-- XX: There are always two scenarios, one requiring a predictive model and one a causal model. The order does not matter. Each scenario has a one sentence summary which is set out in its own paragraph and indented. That one sentence summary is followed by a paragraph with more detail. -->
 
 ## Wisdom
 
@@ -103,7 +105,7 @@ knitr::include_graphics("other/images/Justice.jpg")
 
 **Validity** is the consistency, or lack thereof, in the columns of the data set and the corresponding columns in the Preceptor Table. In order to consider the two data sets to be drawn from the same population, the columns from one must have a *valid correspondence* with the columns in the other. Validity, if true (or at least reasonable), allows us to construct the *Population Table*, which is the central result of Justice.
 
-<!-- IS: explore each of the concepts for each scenario? -->
+
 
 ### Population Table
 
