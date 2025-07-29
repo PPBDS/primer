@@ -1,80 +1,56 @@
 # Four Parameters: Categorical 
 
+<!-- IS: should the title be the name of the tutorial or what we are studying (relating to the 07/1992 election) -->
+
 ```{r}
 #| label: hidden-libraries
 #| message: false
 #| echo: false
-#| warning: false
 library(gt)
 ```
+
+## Introduction
 
 Packages:
 
 ```{r}
 #| message: false
 #| code-fold: false
-library(primer.data)
-library(brms)
-library(tidybayes)
 library(tidyverse)
+library(primer.data)
+library(tidymodels)
+library(broom)
+library(marginaleffects)
+library(easystats)
 ```
 
-The **primer.data** package includes `nes`, a tibble with the data from the [American National Election Studies](https://electionstudies.org/).  We use the **brms** and **tidybayes** packages to create and manipulate Bayesian models. As always, we use the **tidyverse** package.
+The **primer.data** package includes `nes`, a tibble with the data from the [American National Election Studies](https://electionstudies.org/).
 
-Consider:
+### Scenarios
 
-> *What was the relationship between sex and voting in the 1992 US Presidential election?*
+1) What was the relationship between sex and voting in the 1992 US Presidential election?
 
+2) Did a voter's sex cause them to be more likely to vote for Clinton, Bush, or Perot in the 1992 U.S. Presidential election?
 
 ## Wisdom
 
-Wisdom requires the creation of a Preceptor Table, an examination of our data, and a determination, using the concept of validity, as to whether or not we can (reasonably!) assume that the two come from the same population.
-
-### Preceptor Table
-
-A Preceptor Table is smallest possible table with rows and columns such that, if there is no missing data, our question is easy to answer.
-
-*Causal or predictive model*: This model is predictive not causal. Sex can not be a treatment because there is no (plausible) way to manipulate it. Recall the motto: "No causation without manipulation."
-
-*Units*: The rows of the Preceptor Table refer to individual US voters. The question suggests that we are not interested in people who did not vote, although one might explore if men were more or less likely to vote in the first place. As always, the initial question rarely specifies the Preceptor Table precisely.
-
-*Outcome*: We want Presidential voting behavior in 1992. Such explorations are often restricted to just the two "major party" candidates, the nominees of the Democratic and the Republican parties, Bill Clinton and George HW Bush. But, in 1992, Ross Perot was a very successful "third party" candidate, winning almost 19% of the vote. Should he be included in the analysis? What about the 4th place finisher, Libertarian Andre Marrou? Again, the question does not specify. However, the outcome variable is certainly the candidate for whom an individual voted.
-
-*Covariates*: The only covariate we will consider is sex, with two values: "male" and "female". Whatever your feelings about the contemporary limits of the sex binary, this is the only data collected in 1992s. In a full analysis, we would make use of more covariates, but the primary purpose of this chapter is to explore a categorical model with three possible outcomes.
-
-*Moment in Time*: The Preceptor Table refers to the election season in the fall of 1992. We make no claims about other US presidential elections, not least because few feature a third party candidate as popular as Perot. Our purpose here is historical. We want to better understand what happened in this election, not make claims about other time periods. The moment in time is, however, longer than just Election Day itself since mail-in votes were cast in the weeks proceeding the election.
-
-
 ```{r}
 #| echo: false
-tibble(ID = c("1", "2", "...", "10", "11", "...", "103,754,865"),
-       vote = c("Democrat", "Third Party", "...", "Republican", "Democrat", "...", "Republican"),
-       sex = c("M", "F", "...", "F", "F", "...", "M")) |>
-  
-  gt() |>
-  tab_header(title = "Preceptor Table") |> 
-  cols_label(ID = md("ID"),
-             vote = md("Vote"),
-             sex = md("Sex")) |>
-  tab_style(cell_borders(sides = "right"),
-            location = cells_body(columns = c(ID))) |>
-  tab_style(style = cell_text(align = "left", v_align = "middle", size = "large"), 
-            locations = cells_column_labels(columns = c(ID))) |>
-  cols_align(align = "center", columns = everything()) |>
-  cols_align(align = "left", columns = c(ID)) |>
-  fmt_markdown(columns = everything()) |>
-  tab_spanner(label = "Outcome", columns = c(vote)) |>
-  tab_spanner(label = "Covariate", columns = c(sex))
+knitr::include_graphics("other/images/Wisdom.jpg")
 ```
 
-As usual the ID column is irrelevant. We don't need to know exactly who voted for whom to answer our question. We just need to know the sex of each voter.
-
-There were 104,425,014 total votes cast in the 1992 Presidential election. But our table only has 103,754,865 rows because we are only modeling people who cast their votes for one of the three main candidates. Is that the "right" approach? It depends! As always, data science is a *dialogue* between the question with which we start and the data/tools we have available to answer it. In this case, we *choose* to simplify the question, to focus on only the three main candidates, mainly because we want to use a model with three outcomes. We could, instead, create a more complicated model which included votes cast for other candidates. Our new question is now:
-
-> *What was the relationship between sex and voting in the 1992 US Presidential election among supporters of the three leading candidates: Clinton, Bush and Perot?*
-
+**Wisdom** begins with a question and then moves on to the creation of a Preceptor Table and an examination of our data.
 
 ### EDA
+
+As (almost) always, we start by loading the **tidyverse** package.
+
+```{r}
+#| code-fold: false
+#| message: false
+
+library(tidyverse)
+```
 
 Our data comes from [American National Election Studies](https://electionstudies.org/). The **primer.data** package includes a version of the main data set with a selection of variables. The full ANES data is much richer than this relatively simple tibble.
 
@@ -124,7 +100,80 @@ nes_92 |>
          caption = "Source: American National Election Survey")
 ```
 
+### Preceptor Table
 
+A **Preceptor Table** is the smallest possible table of data with rows and columns such that, if there is no missing data, we can easily calculate the quantity of interest.
+
+#### Scenario 1
+
+*Units*: 
+
+*Outcome*: 
+
+*Treatment*: 
+
+*Causal or predictive model*: Predictive. 
+
+*Covariates*: 
+
+*Moment in Time*: 
+
+<!-- XX: Insert Preceptor Table. -->
+
+#### Scenario 2
+
+*Units*: 
+
+*Outcome*: 
+
+*Treatment*: 
+
+*Causal or predictive model*: 
+
+*Covariates*: 
+
+*Moment in Time*: 
+
+<!-- XX: Insert Preceptor Table. -->
+
+*Causal or predictive model*: This model is predictive not causal. 
+
+*Units*: The rows of the Preceptor Table refer to individual US voters. The question suggests that we are not interested in people who did not vote, although one might explore if men were more or less likely to vote in the first place. As always, the initial question rarely specifies the Preceptor Table precisely.
+
+*Outcome*: We want Presidential voting behavior in 1992. Such explorations are often restricted to just the two "major party" candidates, the nominees of the Democratic and the Republican parties, Bill Clinton and George HW Bush. But, in 1992, Ross Perot was a very successful "third party" candidate, winning almost 19% of the vote. Should he be included in the analysis? What about the 4th place finisher, Libertarian Andre Marrou? Again, the question does not specify. However, the outcome variable is certainly the candidate for whom an individual voted.
+
+*Covariates*: The only covariate we will consider is sex, with two values: "male" and "female". Whatever your feelings about the contemporary limits of the sex binary, this is the only data collected in 1992s. In a full analysis, we would make use of more covariates, but the primary purpose of this chapter is to explore a categorical model with three possible outcomes.
+
+*Moment in Time*: The Preceptor Table refers to the election season in the fall of 1992. We make no claims about other US presidential elections, not least because few feature a third party candidate as popular as Perot. Our purpose here is historical. We want to better understand what happened in this election, not make claims about other time periods. The moment in time is, however, longer than just Election Day itself since mail-in votes were cast in the weeks proceeding the election.
+
+
+```{r}
+#| echo: false
+tibble(ID = c("1", "2", "...", "10", "11", "...", "103,754,865"),
+       vote = c("Democrat", "Third Party", "...", "Republican", "Democrat", "...", "Republican"),
+       sex = c("M", "F", "...", "F", "F", "...", "M")) |>
+  
+  gt() |>
+  tab_header(title = "Preceptor Table") |> 
+  cols_label(ID = md("ID"),
+             vote = md("Vote"),
+             sex = md("Sex")) |>
+  tab_style(cell_borders(sides = "right"),
+            location = cells_body(columns = c(ID))) |>
+  tab_style(style = cell_text(align = "left", v_align = "middle", size = "large"), 
+            locations = cells_column_labels(columns = c(ID))) |>
+  cols_align(align = "center", columns = everything()) |>
+  cols_align(align = "left", columns = c(ID)) |>
+  fmt_markdown(columns = everything()) |>
+  tab_spanner(label = "Outcome", columns = c(vote)) |>
+  tab_spanner(label = "Covariate", columns = c(sex))
+```
+
+As usual the ID column is irrelevant. We don't need to know exactly who voted for whom to answer our question. We just need to know the sex of each voter.
+
+There were 104,425,014 total votes cast in the 1992 Presidential election. But our table only has 103,754,865 rows because we are only modeling people who cast their votes for one of the three main candidates. Is that the "right" approach? It depends! As always, data science is a *dialogue* between the question with which we start and the data/tools we have available to answer it. In this case, we *choose* to simplify the question, to focus on only the three main candidates, mainly because we want to use a model with three outcomes. We could, instead, create a more complicated model which included votes cast for other candidates. Our new question is now:
+
+> *What was the relationship between sex and voting in the 1992 US Presidential election among supporters of the three leading candidates: Clinton, Bush and Perot?*
 
 ### Validity
 
@@ -364,4 +413,3 @@ fit_nes |>
 *We can never know the truth.*
 
 ## Summary
-
