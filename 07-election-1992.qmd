@@ -170,6 +170,10 @@ Our Preceptor Table includes the 103,754,865 people who voted for one of the thr
 
 ### Population Table
 
+The **Population Table** includes a row for each unit/time combination in the underlying population from which both the Preceptor Table and the data are drawn.
+
+#### Scenario 1
+
 Because this project is historical, the Population Table has the same number of rows as the Preceptor Table.
 
 ```{r}
@@ -201,22 +205,25 @@ We are not interested in these voters outside of the 1992 election. So, this Pop
 
 ### Stability
 
+**Stability** means that the relationship between the columns in the Population Table is the same for three categories of rows: the data, the Preceptor Table, and the larger population from which both are drawn.
+
 If the assumption of stability holds, then the relationship between the columns in the Population Table is the same for three categories of rows: the data, the Preceptor Table, and the larger population from which both are drawn. In this case, there is no larger population. Or, rather, the Preceptor Table is the larger population. And, since the data and the Preceptor Table come from the same moment in time, stability holds by definition.
 
 ### Representativeness
+
+**Representativeness**, or the lack thereof, concerns two relationships among the rows in the Population Table. The first is between the data and the other rows. The second is between the other rows and the Preceptor Table. Ideally, we would like both the Preceptor Table *and* our data to be random samples from the population. Sadly, this is almost never the case.
 
 The NES is a highly professional organization so their survey does a good of capturing a random sample of all voters. But no real world survey is perfect! There are always problems. In particular, there are (somewhat) unobserved differences between the sort of people who respond to surveys and the sort of people who don't. NES is more likely to capture the votes of cooperative people than the votes of misanthropes. If, among misanthropes, the relationship between sex and Presidential candidate is different than the relationship among cooperative voters, we might have problems. The technical term for the problem of people who don't respond to surveys is "non-response."
 
 ### Unconfoundedness
 
+**Unconfoundedness** means that the treatment assignment is independent of the potential outcomes, when we condition on pre-treatment covariates. This assumption is only relevant for causal models. We describe a model as "confounded" if this is not true. The easiest way to ensure unconfoundedness is to assign treatment randomly.
+
 Because this is a predictive, not causal, model, the assumption of unconfoundedness is irrelevant.
 
 > *Using data from the National Election Studies (NES) survey of US citizens, we seek to understand the relationship between voter preference and sex in the 1992 Presidential election. Our results might be biased by differential non-response among different categories of voters.*
 
-
-## Courage
-
-Justice gave us the Population Table. Courage selects the data generating mechanism. We first specify the mathematical formula which connects the outcome variable we are interested in with the other data that we have.
+### Mathematics
 
 Because we have three possible outcomes, and because there is no natural ordering among the outcomes, a *categorical* model is the most natural choice. The binomial model which we used in @sec-models is just a special case of a categorical model, one in which there are only two outcomes. Recall:
 
@@ -264,6 +271,14 @@ $$
 
 There is no longer just one $\beta_0$ and one $\beta_1$. Instead, there is $\beta_0$ for Clinton, labeled as $\beta_{0, clinton}$ and a $\beta_0$ for Perot, labeled as $\beta_{0, perot}$. The same applies to $\beta_1$. These parameters need to be different because being male has a different connection to the probability for voting for Clinton than it does for the probability for voting for Perot. We can't have a separate $\beta_0$ and $\beta_1$ for Bush because $\rho_{bush}$ is fully defined once we know $\rho_{clinton}$ and $\rho_{perot}$.
 
+## Courage
+
+```{r}
+#| echo: false
+knitr::include_graphics("other/images/Courage.jpg")
+```
+
+**Courage** creates the data generating mechanism.
 
 ### Models
 
@@ -320,7 +335,9 @@ fit_nes |>
 
 <!-- Provide comparison of male voting probabilities. Relate this to overall voting probabilities. -->
 
+### Posterior Predictive Checks
 
+<!-- IS: what to include in this section? -->
 
 ### Tests
 
@@ -347,13 +364,14 @@ $$
 $$
 This is the last time we are going to go to the trouble of combining the mathematical formula of the DGM with the specific estimated values. First, these formulas are misleading! The value of $\beta_{0, clinton}$, for example, is not exactly 0.45. In fact, we don't know what the value is! Being Bayesians, we calculated a posterior probability distribution for $\beta_{0, clinton}$. We draw from that distribution when we calculate quantities of interest, as we did above with `add_epred_draws()`. Second, you probably did not even look that closely at these complex formulas. And we don't blame you! Being a good race car driver means focussing on how to drive better, not on the physics of carburetors. Similar, being a good data scientist means focusing on the Cardinal Virtues as a method for using data to answer questions. Leave the math to the computer.
 
-
-
-
 ## Temperance
 
-Courage produced the data generating mechanism. Temperance guides us in the use of the DGM --- or the "model" ---  we have created to answer the questions with which we began. We create posteriors for the quantities of interest. We should be modest in the claims we make. The posteriors we create are never the “truth.” The assumptions we made to create the model are never perfect. Yet decisions made with flawed posteriors are almost always better than decisions made without them.
+```{r}
+#| echo: false
+knitr::include_graphics("other/images/Temperance.jpg")
+```
 
+**Temperance** uses the data generating mechanism to answer the question with which we began. Humility reminds us that this answer is always a lie. We can also use the DGM to calculate many similar quantities of interest, displaying the results graphically.
 
 ### Questions and Answers
 
@@ -391,6 +409,4 @@ fit_nes |>
 
 ### Humility
 
-*We can never know the truth.*
-
-## Summary
+*The world is always more uncertain than our models would have us believe.*
