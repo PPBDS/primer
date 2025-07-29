@@ -4,7 +4,11 @@ Ivy Spratt
 
 ## Ivy
 
-Enjoy camp!
+Take a look at chapter_template.qmd. Edit/comment as you see fit.
+
+Start fixed chapter 7.  What changes to the chapter_template would make this process easier?
+
+Set up Zoom call to discuss with Aashna.
 
 ## Aashna
 
