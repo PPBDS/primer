@@ -1,5 +1,4 @@
-# Four Parameters: Categorical 
-
+# 1992 Election
 
 ```{r}
 #| label: hidden-libraries
@@ -46,7 +45,6 @@ knitr::include_graphics("other/images/Wisdom.jpg")
 As (almost) always, we start by loading the **tidyverse** package.
 
 ```{r}
-#| code-fold: false
 #| message: false
 
 library(tidyverse)
@@ -56,7 +54,6 @@ Our data comes from [American National Election Studies](https://electionstudies
 
 
 ```{r}
-#| code-fold: false
 nes
 ```
 
@@ -64,7 +61,6 @@ See the `?nes` for details. We only need a small subset of this data:
 
 
 ```{r}
-#| code-fold: false
 
 nes_92 <- nes |> 
   filter(year == 1992) |> 
@@ -88,8 +84,6 @@ As always, visualization is a useful tool. Plot your data! The outcome variable 
 
 
 ```{r}
-#| code-fold: false
-
 nes_92 |> 
   ggplot(aes(x = pres_vote, fill = sex)) +
     geom_bar(position = "dodge") +
@@ -158,7 +152,12 @@ tibble(ID = c("1", "2", "...", "10", "11", "...", "103,754,865"),
 
 ## Justice
 
-Justice concerns four topics: the Population Table, stability, representativeness, and unconfoundedness.
+```{r}
+#| echo: false
+knitr::include_graphics("other/images/Justice.jpg")
+```
+
+**Justice** concerns the Population Table and the four key assumptions which underlie it: validity, stability, representativeness, and unconfoundedness.
 
 ### Validity
 
@@ -202,6 +201,9 @@ tibble(source = c("PT/Data", "PT/Data", "PT", "PT", "PT", "PT", "...", "PT/Data"
 
 We are not interested in these voters outside of the 1992 election. So, this Population Table, unlike most, does not require a `Time` column. The Preceptor Table and the data come from the same moment in time. Of course, this is not literally true. Recall: **The `Time` column is always a lie.** Some voters cast their ballots weeks before Election Day. Some NES participants were surveyed right after the election. Some were survey later. We sweep all these complications under the mythical moment in time which we assert is the same for both the data and the Preceptor Table.
 
+#### Scenario 2
+
+<!-- XX: Insert Poulation Table -->
 
 ### Stability
 
@@ -219,57 +221,18 @@ The NES is a highly professional organization so their survey does a good of cap
 
 **Unconfoundedness** means that the treatment assignment is independent of the potential outcomes, when we condition on pre-treatment covariates. This assumption is only relevant for causal models. We describe a model as "confounded" if this is not true. The easiest way to ensure unconfoundedness is to assign treatment randomly.
 
-Because this is a predictive, not causal, model, the assumption of unconfoundedness is irrelevant.
+Since Scenario 1 is a predictive model, unconfoundedness can only apply to scenario 2. 
 
-> *Using data from the National Election Studies (NES) survey of US citizens, we seek to understand the relationship between voter preference and sex in the 1992 Presidential election. Our results might be biased by differential non-response among different categories of voters.*
+<!-- IS: having trouble thinking of unconfoundedness scenario -->
 
 ### Mathematics
 
-Because we have three possible outcomes, and because there is no natural ordering among the outcomes, a *categorical* model is the most natural choice. The binomial model which we used in @sec-models is just a special case of a categorical model, one in which there are only two outcomes. Recall:
+The link function, which defines the mathematical form of a regression model, is largely determined by the type of outcome variable. For a binary outcome, we typically use a binomial logistic model. But when our outcome variable has three or more unordered categories, we turn to the multinomial logistic regression model — sometimes also called the categorical model.
 
-$$ red_i  \sim Bernoulli(\rho) $$
-A more verbose way to present this same model would be:
+$$Y \sim \text{Mutinomial}(\rho_{bush}, \rho_{clinton}, \rho_{perot})$$
 
-$$ red_i  \sim Categorical(\rho_0, \rho_1) $$
-After all, there are two possible values for $red_i$, 0 and 1. There is, therefore, a probability that the bead comes back not-red and a probability that it comes back red. Label those probabilities $\rho_0$ and $\rho_1$. In a Bernoulli model, we don't bother to consider both $\rho_0$ and $\rho_1$ because of the mathematical relationship which must hold between them:
+where $$ \rho_{bush} + \rho_{clinton} + \rho_{perot} = 1 $$
 
-$$ \rho_0 + \rho_1 = 1 $$
-If you know the value of $\rho_1$, then you can calculate the value of $\rho_0$ easily. So, in Bernoulli models we don't bother to even consider both $\rho_0$ and $\rho_1$. We just worry about the value of $\rho_1$, and define it as $\rho$, with the 1 underscore understood by convention.
-
-Things get more complex, however, with more than two possible outcomes.
-
-$$ vote_i  \sim Categorical(\rho_{bush}, \rho_{clinton}, \rho_{perot}) $$
-The vote of person $i$ takes on one of three possible values: Bush (Republican), Clinton (Democrat) or Perot (Third Party). The probability of each outcome is given by the respective $\rho$. And, by definition:
-
-$$ \rho_{bush} + \rho_{clinton} + \rho_{perot} = 1 $$
-So, once we know two of the probabilities, we know the third. That means that we can't estimate them separately. If we do, we run the risk of violating this equality. We must estimate them together. Fortunately, **brms** takes care of all the details.
-
-Recall the logit link function from the Bernoulli model in @sec-models:
-
-$$
-\rho = \frac{e^{\beta_0}}{1 + e^{\beta_0}}
-$$
-
-We need to expand this in two ways: First, we have to allow for variables (in this case, the sex of the voter) to influence the probability. 
-
-<!-- DK: Should we have an logistic example like this in a previous chapter? Like four-parameters-binary (or Bernoulli)? -->
-
-$$
-\rho = \frac{e^{\beta_0 + \beta_1 {male}}}{1 + e^{\beta_0 + \beta_1 {male}}}
-$$
-The logit link function can be expanded just like a simple linear regression. We just add more terms, along with their associated coefficients. Regardless of how complex this term becomes, $\rho$ will remain bounded between 0 and 1.
-
-Second, we need to allow for three different $\rho$'s. This is the Categorical model:
-
-$$
-\begin{aligned}
-\rho_{clinton} &=& \frac{e^{\beta_{0, clinton} + \beta_{1, clinton} male}}{1 + e^{\beta_{0, clinton} + \beta_{1, clinton} male}}\\
-\rho_{perot} &=& \frac{e^{\beta_{0, perot} + \beta_{1, perot} male}}{1 + e^{\beta_{0, perot} + \beta_{1, perot} male}}\\
-\rho_{bush}  &=& 1 - \rho_{clinton} - \rho_{perot}
-\end{aligned}
-$$
-
-There is no longer just one $\beta_0$ and one $\beta_1$. Instead, there is $\beta_0$ for Clinton, labeled as $\beta_{0, clinton}$ and a $\beta_0$ for Perot, labeled as $\beta_{0, perot}$. The same applies to $\beta_1$. These parameters need to be different because being male has a different connection to the probability for voting for Clinton than it does for the probability for voting for Perot. We can't have a separate $\beta_0$ and $\beta_1$ for Bush because $\rho_{bush}$ is fully defined once we know $\rho_{clinton}$ and $\rho_{perot}$.
 
 ## Courage
 
