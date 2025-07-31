@@ -27,7 +27,9 @@ The **primer.data** package includes `nes`, a tibble with the data from the [Ame
 
 ### Scenarios
 
-1) What was the relationship between sex and voting in the 1992 US Presidential election among supporters of the three leading candidates: Clinton, Bush and Perot?*
+> *What was the relationship between sex and voting in the 1992 US Presidential election among supporters of the three leading candidates: Clinton, Bush and Perot?*
+
+This is the first scenario. The 1992 U.S. Presidential election provides a rich opportunity to explore how demographic characteristics, like sex, influenced voter behavior. By examining the relationship between sex and support for the three major candidates—Bill Clinton, George H. W. Bush, and Ross Perot—we can ask whether men and women showed different patterns of candidate preference. Did one gender lean more Democratic or Republican? Was Perot’s independent appeal stronger among men than women? Understanding these differences helps us assess how social identity may shape political choice.
 
 2) Did a voter's sex cause them to be more likely to vote for Clinton, Bush, or Perot in the 1992 U.S. Presidential election?
 
@@ -229,10 +231,33 @@ Since Scenario 1 is a predictive model, unconfoundedness can only apply to scena
 
 The link function, which defines the mathematical form of a regression model, is largely determined by the type of outcome variable. For a binary outcome, we typically use a binomial logistic model. But when our outcome variable has three or more unordered categories, we turn to the multinomial logistic regression model — sometimes also called the categorical model.
 
-$$Y \sim \text{Mutinomial}(\rho_{bush}, \rho_{clinton}, \rho_{perot})$$
+We start with a simple three-outcome version of the model:
 
-where $$ \rho_{bush} + \rho_{clinton} + \rho_{perot} = 1 $$
+$$
+\begin{aligned}
+\rho_{A} &= \frac{e^{\beta_{0, A} + \beta_{1, A} \cdot X}}{1 + e^{\beta_{0, A} + \beta_{1, A} \cdot X} + e^{\beta_{0, B} + \beta_{1, B} \cdot X}} \\\\
+\rho_{B} &= \frac{e^{\beta_{0, B} + \beta_{1, B} \cdot X}}{1 + e^{\beta_{0, A} + \beta_{1, A} \cdot X} + e^{\beta_{0, B} + \beta_{1, B} \cdot X}} \\\\
+\rho_{C} &= 1 - \rho_{A} - \rho_{B}
+\end{aligned}
+$$
 
+Each category (A, B, or C) gets its own linear predictor (a combination of coefficients and covariates), and the probabilities are constructed so that they all fall between 0 and 1 and sum to 1.
+
+This structure generalizes naturally to more than three outcomes and more than one covariate. The general form of the **multinomial logistic regression model** is:
+
+$$
+P(Y = k) = \frac{e^{\beta_{k0} + \beta_{k1} X_1 + \beta_{k2} X_2 + \cdots + \beta_{kn} X_n}}{\sum_{j=1}^{K} e^{\beta_{j0} + \beta_{j1} X_1 + \beta_{j2} X_2 + \cdots + \beta_{jn} X_n}}
+$$
+
+with
+
+$$
+Y \sim \text{Multinomial}(\boldsymbol{\rho}) \quad \text{where} \quad \boldsymbol{\rho} = (\rho_1, \rho_2, \ldots, \rho_K)
+$$
+
+and each $\rho_k$ corresponds to the predicted probability for category $k$.
+
+Each outcome class $k$ has its own set of regression parameters $\beta_{k0}, \beta_{k1}, \ldots, \beta_{kn}$, allowing the model to capture distinct patterns of association between the covariates and each outcome.
 
 ## Courage
 
@@ -245,71 +270,70 @@ knitr::include_graphics("other/images/Courage.jpg")
 
 ### Models
 
-Fitting a categorical model with **brms** is very similar to fitting the other models we have learned.
+Because our outcome variable has more than two unordered categories, we use a multinomial logistic regression model, using `multinom_reg(engine = "nnet")`. 
 
-```{r, cache = TRUE}
-#| code-fold: false
-fit_nes <- brm(formula = pres_vote ~ sex,
-               data = nes_92,
-               family = categorical(),
-               silent = 2,
-               refresh = 0,
-               seed = 76)
-```
+Multinomial logistic regression estimates the probability of each outcome category relative to a reference. In our case, the outcome `pres_vote` has three categories: Clinton, Bush, and Perot. The model uses one of these as a baseline (e.g., Bush), and then estimates how predictors such as `sex` influence the odds of choosing one of the other candidates relative to that baseline.
 
-We use `silent = 2` and `refresh = 0` to hide all the messages produced by `brm()`. We don't want to clutter the *Primer*. But those messages can be important. So, we constructing your models interactively, show the messages, at least until you confirm that there is nothing to worry about.
-
+We fit the model using the tidymodels framework:
 
 ```{r}
-#| code-fold: false
-fit_nes
+fit_nes <- multinom_reg(engine = "nnet") |>
+  fit(pres_vote ~ sex, data = nes_92)
 ```
 
-The most relevant parts of the fitted model are the parameter estimates.
+Categorical predictors like `sex` are automatically converted into 0/1 dummy variables. If `sex` includes levels "Male" and "Female", then the model creates a dummy variable like `sexMale`, with "Male" as the reference category. The model estimates one set of coefficients for each non-reference outcome, so we get two equations: one comparing Clinton vs. Bush and one comparing Perot vs. Bush.
+
+After fitting the model, we summarize it with
 
 ```{r}
-#| code-fold: false
-fixef(fit_nes)
+tidy(fit_nes, conf.int = TRUE)
 ```
 
-The term `muClinton_Intercept` refers to $\beta_{0, clinton}$. The term `muClinton_sexMale` refers to $\beta_{1, clinton}$. And so on. The more complex our models become, the less interested we are in the values of any particular parameter. Also, the parameters in more complex models rarely have simple interpretations, as they sometimes do in simple linear models. So, ignore the specific values. But do note how all 4 variables have confidence intervals which exclude zero. This suggests, but does not prove, that they are all worth including in our model.
+This returns estimates and 95% confidence intervals for the model's parameters. These coefficients are on the log-odds scale and tell us how being male (vs. female) affects the odds of voting for Clinton or Perot, relative to Bush.
 
 
-We can use `add_epred_draws()` to explore the posterior distribution of the expected values of $\rho_{clinton}$, $\rho_{bush}$, and $\rho_{perot}$ for women. 
+| Outcome | Term        | Estimate | 2.5%   | 97.5%  |
+|---------|-------------|----------|--------|--------|
+| Clinton | (Intercept) | 0.45     |  0.21  |  0.69  |
+| Clinton | sexMale     | -0.25    | -0.49  | -0.01  |
+| Perot   | (Intercept) | -0.85    | -1.10  | -0.60  |
+| Perot   | sexMale     | 0.42     |  0.17  |  0.67  |
 
+Each coefficient represents a **log-odds difference**. For example:
+- The intercept of **0.45** for Clinton indicates that, among **female** voters (since `sexMale = 0`), the log-odds of voting for Clinton rather than Bush is 0.45.
+- The **sexMale** coefficient of **-0.25** for Clinton indicates that **males** have lower log-odds of voting for Clinton relative to Bush compared to females, by 0.25 log-odds units.
+- For Perot, the **intercept** of **-0.85** suggests that females had a lower baseline likelihood of voting for Perot than Bush.
+- The **sexMale** coefficient of **0.42** for Perot implies that males were more likely than females to vote for Perot rather than Bush.
 
-```{r}
-#| code-fold: false
-fit_nes |> 
-  add_epred_draws(newdata = tibble(sex = "Female")) |> 
-  ggplot(aes(x = .epred, fill = .category)) +
-    geom_histogram(bins = 100) +
-    scale_x_continuous(labels = scales::percent_format()) +
-    labs(title = "Posterior for Expected Probability of Candidate Support Among Women",
-         subtitle = "Women are most likely to support Clinton",
-         x = "Posterior Probability of Expected Vote Probability",
-         y = "Count",
-         fill = "Candidate") +
-  scale_fill_manual(values = c("Clinton" = "blue", 
-                               "Bush" = "red", 
-                               "Perot" = "green"),
-                    limits = c("Perot", "Bush", "Clinton"))
-```
-
-<!-- Provide comparison of male voting probabilities. Relate this to overall voting probabilities. -->
 
 ### Posterior Predictive Checks
 
-<!-- IS: what to include in this section? check_predictions() -->
+Because our model is not Bayesian, we do not have full posterior distributions. But we can still ask: how well does our model reproduce the patterns in the data?
 
-### Tests
+To answer this, we compare our model’s predicted probabilities to the actual proportions in the data. If the predicted values are close to the observed ones, that’s a good sign. If not, the model may be missing something important.
 
-As usual, we use `pp_check()` to examine if the "fake data" created from our DGM matches our actual data.
+For instance, we might calculate the average predicted probability of voting for Clinton, Bush, or Perot within each sex group. We then compare those predicted probabilities to the actual proportions of each vote choice among males and females. These checks help confirm whether our fitted model provides a reasonable approximation of reality.
 
-```{r}
-#| code-fold: false
-pp_check(fit_nes, type = "bars")
-```
+This approach is more qualitative than quantitative, but it’s a crucial step in understanding what our model is doing—and whether we believe it.
+
+### Testing
+
+To interpret the coefficients from the model, we begin with the intercepts: these represent the log-odds of voting for Clinton or Perot (relative to Bush) for the reference group (females). The coefficients for `sexMale` tell us how those log-odds change for males. A negative coefficient means males are less likely than females to vote for that candidate (compared to Bush), while a positive coefficient means they are more likely.
+
+Importantly, each coefficient corresponds to a separate binary comparison. For example, the model estimates how sex influences the odds of voting for Clinton vs. Bush and separately how it influences the odds of voting for Perot vs. Bush. There is no single parameter that describes how sex affects the odds of voting for Bush directly — rather, Bush acts as the comparison point.
+
+After fitting and tidying the model, we examine the magnitude, direction, and statistical uncertainty (via confidence intervals) of each coefficient. This helps us assess whether sex had a statistically and practically significant effect on vote choice in 1992.
+
+To interpret these coefficients, remember that each one corresponds to a specific comparison relative to the reference category (Bush).
+
+- **Clinton vs. Bush:** The negative coefficient for `sexMale` (–0.25) means that males were **less likely** than females to vote for Clinton over Bush.
+- **Perot vs. Bush:** The positive coefficient for `sexMale` (+0.42) means that males were **more likely** than females to vote for Perot over Bush.
+
+The size of these coefficients helps us understand the magnitude of the difference:
+- A coefficient of –0.25 for Clinton translates into an odds ratio of approximately `exp(–0.25) ≈ 0.78`, meaning males had 22% lower odds than females of voting for Clinton (vs. Bush).
+- A coefficient of +0.42 for Perot gives an odds ratio of `exp(0.42) ≈ 1.52`, meaning males had 52% higher odds than females of voting for Perot (vs. Bush).
+
+These results support the idea that sex had a measurable and statistically significant impact on vote choice in the 1992 election. But this model is still simple—real voting behavior is likely influenced by many other variables. This model serves as a clear and interpretable first step.
 
 ### Data Generating Mechanism
 
@@ -338,9 +362,11 @@ knitr::include_graphics("other/images/Temperance.jpg")
 
 ### Questions and Answers
 
-Recall the question with which we began:
+Recall the questions with which we began:
 
-> *What was the relationship between sex and voting in the 1992 US Presidential election?*
+> *What was the relationship between sex and voting in the 1992 US Presidential election among supporters of the three leading candidates: Clinton, Bush and Perot?*
+
+> *Did a voter's sex cause them to be more likely to vote for Clinton, Bush, or Perot in the 1992 U.S. Presidential election?*
 
 The more you progress in your data science education, the more general the questions with which you will be expected to handle. There is no single answer to this question! There are many true things one could say in response. 
 
