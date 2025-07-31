@@ -33,6 +33,8 @@ This is the first scenario. The 1992 U.S. Presidential election provides a rich 
 
 2) Did a voter's sex cause them to be more likely to vote for Clinton, Bush, or Perot in the 1992 U.S. Presidential election?
 
+This question focuses on whether voting preferences differed systematically between men and women. Were male voters more drawn to one candidate than female voters, or vice versa? By looking at patterns in the data, we can begin to understand how gender may have shaped political preferences in this particular election.
+
 ## Wisdom
 
 ```{r}
@@ -368,33 +370,38 @@ Recall the questions with which we began:
 
 > *Did a voter's sex cause them to be more likely to vote for Clinton, Bush, or Perot in the 1992 U.S. Presidential election?*
 
-The more you progress in your data science education, the more general the questions with which you will be expected to handle. There is no single answer to this question! There are many true things one could say in response. 
+We answer these questions by using plot_predictions:
+
+```{r}
+plot_predictions(fit_nes,
+                 by = "sex", 
+                 type = "prob",
+                 draw = FALSE)
+```
+
+This code returns the estimated probabilities of voting for each candidate, for male and female. 
+
+The intercept coefficient from the fitted model (0.4553900) represents the log-odds, whereas the predicted probabilities from plot_predictions() represent the chances of a voter choosing Clinton based on sex, transformed from those log-odds.
 
 Often, the best answers to broad questions are graphics. Consider:
 
 ```{r}
-#| code-fold: false
-fit_nes |> 
-  add_epred_draws(newdata = tibble(sex = c("Female", "Male"))) |>
-  select(sex, .category, .epred) |> 
-  ggplot(aes(x = .epred, fill = sex)) +
-    geom_histogram(bins = 100) +
-    facet_grid(~ .category) +
-    scale_x_continuous(breaks = c(0.05, 0.3, 0.6),
-      labels = scales::percent_format())
-
-  #   labs(title = "Posterior for Expected Probability of Candidate Support Among Women",
-  #        subtitle = "Women are most likely to support Clinton",
-  #        x = "Posterior Probability of Expected Vote Probability",
-  #        y = "Count",
-  #        fill = "Candidate") +
-  # scale_fill_manual(values = c("Clinton" = "blue", 
-  #                              "Bush" = "red", 
-  #                              "Perot" = "green"),
-  #                   limits = c("Perot", "Bush", "Clinton"))
+plot_predictions(fit_nes, 
+                          by = "sex", 
+                          type = "prob", 
+                          draw = FALSE) |> 
+    ggplot(aes(x = group, y = estimate, color = sex)) +
+      geom_point(size = 3, position = position_dodge(width = 0.5)) +
+      geom_errorbar(aes(ymin = conf.low, 
+                        ymax = conf.high), 
+                    width = 0.2, 
+                    position = position_dodge(width = 0.5)) +
+      labs(title = "Voting Preferences by Candidate and Sex",
+           x = NULL,
+           y = "Estimated Proportion",
+           color = "Sex") +
+      theme_minimal()
 ```
-
-<!-- Make a plot of just male versus female differences, three histograms total. -->
 
 ### Humility
 
