@@ -2,6 +2,12 @@
 
 ## Ivy
 
+Figure out how to render an individual chapter. 
+
+Keep more variables in nes_92.
+
+Maybe first model is just sex. Second model is just race. Third model is maybe sex, race, education.
+
 Take a look at chapter_template.qmd. Edit/comment as you see fit.
 
 Start fixed chapter 7.  What changes to the chapter_template would make this process easier?

@@ -5,7 +5,6 @@
 #| message: false
 #| echo: false
 #| code-fold: false    
-# DK: Is the code_fold invocation necessary?
 library(gt)
 ```
 
@@ -65,6 +64,7 @@ See the `?nes` for details. We only need a small subset of this data:
 
 
 ```{r}
+# Create a new variable called college, TRUE for those with any college or above, FALSE otherwise.
 
 nes_92 <- nes |> 
   filter(year == 1992) |> 
@@ -74,7 +74,8 @@ nes_92 <- nes |>
     pres_vote == "Democrat" ~ "Clinton",
     pres_vote == "Republican" ~ "Bush",
     pres_vote == "Third Party" ~ "Perot",
-  ))
+  )) |> 
+    mutate(pres_vote = as.factor(pres_vote))
 
 ```
 
@@ -227,7 +228,7 @@ The NES is a highly professional organization so their survey does a good of cap
 
 Since Scenario 1 is a predictive model, unconfoundedness can only apply to scenario 2. 
 
-<!-- IS: having trouble thinking of unconfoundedness scenario -->
+
 
 ### Mathematics
 
