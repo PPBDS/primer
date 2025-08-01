@@ -63,7 +63,7 @@ It is not critical to understand all the details of how **renv** works. The big 
 
 Again, with luck, you will only have to do these steps once.
 
-5) Prove to yourself (and to me) that your set up is working by submitting a pull request to me which simply adds your name to the top of the **primer.tutorials** `TODO.txt` file. (See below for how to do this.) Email me to set up our next meeting after you do this.
+5) Prove to yourself (and to me) that your set up is working by submitting a pull request to me which simply adds your name to the top of the `TODO.txt` file in whichever PPBDS project you are working. (See below for how to do this.) Email me to set up our next meeting after you do this.
 
 ## Project Set Up
 
