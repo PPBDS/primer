@@ -12,6 +12,7 @@ Depends:
 Imports:
     broom,
     downlit,
+    easystats,
     gt,
     knitr,
     marginaleffects,
