@@ -289,7 +289,7 @@ Categorical predictors like `sex` are automatically converted into 0/1 dummy var
 After fitting the model, we summarize it with
 
 ```{r}
-tidy(fit_nes, conf.int = TRUE)
+tidy(fit_sex, conf.int = TRUE)
 ```
 
 This returns estimates and 95% confidence intervals for the model's parameters. These coefficients are on the log-odds scale and tell us how being male (vs. female) affects the odds of voting for Clinton or Perot, relative to Bush.
@@ -359,14 +359,6 @@ This returns estimates and 95% confidence intervals for the model's parameters. 
 | Perot   | raceWhite   | 0.28     | 0.02  | 0.53  |
 
 Each coefficient represents a log-odds difference, holding the other predictor constant. For Clinton, the intercept of 0.60 tells us that among Black female voters (the reference levels for both variables), the log-odds of voting for Clinton rather than Bush is 0.60. The `sexMale` coefficient of -0.22 means that male voters have slightly lower log-odds of voting for Clinton over Bush compared to females, controlling for race. The `raceWhite` coefficient of -0.50 indicates that white voters were less likely than Black voters to vote for Clinton over Bush, adjusting for sex. For Perot, the `sexMale` coefficient of 0.39 shows that men were more likely than women to vote for Perot rather than Bush. The `raceWhite` coefficient of 0.28 suggests that white voters were also more likely than Black voters to vote for Perot rather than Bush.
-
-
-
-
-```{r}
-fit_nes <- multinom_reg(engine = "nnet") |>
-  fit(pres_vote ~ sex, data = nes_92)
-```
 
 
 
