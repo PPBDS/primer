@@ -362,14 +362,6 @@ Each coefficient represents a log-odds difference, holding the other predictor c
 
 
 
-
-```{r}
-fit_nes <- multinom_reg(engine = "nnet") |>
-  fit(pres_vote ~ sex, data = nes_92)
-```
-
-
-
 ### Posterior Predictive Checks
 
 Because our model is not Bayesian, we do not have full posterior distributions. But we can still ask: how well does our model reproduce the patterns in the data?
