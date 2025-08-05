@@ -4,15 +4,11 @@
 
 Figure out how to render an individual chapter. 
 
-Keep more variables in nes_92.
+Keep more variables in nes_92. IS: Done!
 
-Maybe first model is just sex. Second model is just race. Third model is maybe sex, race, education.
+Maybe first model is just sex. Second model is just race. Third model is maybe sex, race. IS: Done!
 
-Take a look at chapter_template.qmd. Edit/comment as you see fit.
-
-Start fixed chapter 7.  What changes to the chapter_template would make this process easier?
-
-Set up Zoom call to discuss with Aashna.
+Take a look at chapter_template.qmd. Edit/comment as you see fit. IS: Didn't find anything to change.
 
 ## Aashna
 

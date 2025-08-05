@@ -45,12 +45,13 @@ knitr::include_graphics("other/images/Wisdom.jpg")
 
 ### EDA
 
-As (almost) always, we start by loading the **tidyverse** package.
+As (almost) always, we start by loading the **tidyverse** package and the **primer.data** package.
 
 ```{r}
 #| message: false
 
 library(tidyverse)
+library(primer.data)
 ```
 
 Our data comes from [American National Election Studies](https://electionstudies.org/). The **primer.data** package includes a version of the main data set with a selection of variables. The full ANES data is much richer than this relatively simple tibble.
@@ -64,11 +65,10 @@ See the `?nes` for details. We only need a small subset of this data:
 
 
 ```{r}
-# Create a new variable called college, TRUE for those with any college or above, FALSE otherwise.
 
 nes_92 <- nes |> 
   filter(year == 1992) |> 
-  select(sex, pres_vote) |> 
+  select(sex, pres_vote, race, education) |> 
   drop_na() |> 
   mutate(pres_vote = case_when(
     pres_vote == "Democrat" ~ "Clinton",
@@ -277,10 +277,10 @@ Because our outcome variable has more than two unordered categories, we use a mu
 
 Multinomial logistic regression estimates the probability of each outcome category relative to a reference. In our case, the outcome `pres_vote` has three categories: Clinton, Bush, and Perot. The model uses one of these as a baseline (e.g., Bush), and then estimates how predictors such as `sex` influence the odds of choosing one of the other candidates relative to that baseline.
 
-We fit the model using the tidymodels framework:
+We fit the model using the tidymodels framework, using only sex as a predictor:
 
 ```{r}
-fit_nes <- multinom_reg(engine = "nnet") |>
+fit_sex <- multinom_reg(engine = "nnet") |>
   fit(pres_vote ~ sex, data = nes_92)
 ```
 
@@ -307,6 +307,67 @@ Each coefficient represents a **log-odds difference**. For example:
 - The **sexMale** coefficient of **-0.25** for Clinton indicates that **males** have lower log-odds of voting for Clinton relative to Bush compared to females, by 0.25 log-odds units.
 - For Perot, the **intercept** of **-0.85** suggests that females had a lower baseline likelihood of voting for Perot than Bush.
 - The **sexMale** coefficient of **0.42** for Perot implies that males were more likely than females to vote for Perot rather than Bush.
+
+We then study race individually:
+
+```{r}
+fit_race <- multinom_reg(engine = "nnet") |>
+  fit(pres_vote ~ race, data = nes_92)
+```
+
+In this model, we include only race as a predictor of vote choice. Race is a categorical variable (e.g., White, Black, Other), so the model creates dummy variables for each level, using one group—such as Black—as the reference category. The model estimates how racial identity influences the likelihood of voting for Clinton or Perot relative to Bush.
+
+Because sex is not included in this model, the estimates reflect average differences in vote choice across racial groups, without accounting for potential gender effects. For instance, the model might show that White voters were significantly less likely than Black voters to support Clinton over Bush, or more likely to vote for Perot rather than Bush. This provides insight into how voting behavior in 1992 varied by race, on average, across the electorate.
+
+We can then summarize it with tidy, this time on `fit_race`.
+
+```{r}
+tidy(fit_race, conf.int = TRUE)
+```
+
+This command returns the estimated coefficients and 95% confidence intervals for each term in the multinomial logistic regression model that includes race as a predictor. The output shows how belonging to a particular racial group, compared to the reference group (e.g., Black voters), affects the log-odds of voting for Clinton or Perot relative to Bush.
+
+Each row in the output corresponds to one term in one of the two comparisons: Clinton vs. Bush and Perot vs. Bush. The intercept represents the baseline log-odds of voting for each candidate among the reference group (e.g., Black voters), while the race terms indicate how those log-odds shift for White and Other racial groups. For example, a negative coefficient for `raceWhite` in the Clinton row would suggest that White voters had lower odds of voting for Clinton (vs. Bush) than Black voters.
+
+We finally add sex to race as a final predictor:
+
+```{r}
+fit_sex_race <- multinom_reg(engine = "nnet") |>
+  fit(pres_vote ~ sex + race, data = nes_92)
+
+```
+
+In this model, we include both sex and race as predictors of vote choice. Race is a categorical variable (e.g., White, Black, Other), so the model creates dummy variables for each level, with one group as the reference (e.g., Black). The model now tells us how sex affects vote choice within each racial group, along with how race affects vote choice, controlling for sex.
+
+By including both variables, we can see whether racial identity influenced voting patterns independently of gender. For example, this model might show that White voters were more likely to vote for Perot relative to Bush than Black voters, even after accounting for sex.
+
+We can now summarize it again with tidy, this time on `fit_sex_race`.
+
+```{r}
+tidy(fit_sex_race, conf.int = TRUE)
+```
+
+This returns estimates and 95% confidence intervals for the model's parameters. These coefficients are on the log-odds scale and tell us how being male (vs. female) and being white (vs. Black) affect the odds of voting for Clinton or Perot, relative to Bush.
+
+| Outcome | Term        | Estimate | 2.5%  | 97.5% |
+| ------- | ----------- | -------- | ----- | ----- |
+| Clinton | (Intercept) | 0.60     | 0.35  | 0.86  |
+| Clinton | sexMale     | -0.22    | -0.46 | 0.02  |
+| Clinton | raceWhite   | -0.50    | -0.77 | -0.24 |
+| Perot   | (Intercept) | -0.70    | -0.94 | -0.46 |
+| Perot   | sexMale     | 0.39     | 0.15  | 0.63  |
+| Perot   | raceWhite   | 0.28     | 0.02  | 0.53  |
+
+Each coefficient represents a log-odds difference, holding the other predictor constant. For Clinton, the intercept of 0.60 tells us that among Black female voters (the reference levels for both variables), the log-odds of voting for Clinton rather than Bush is 0.60. The `sexMale` coefficient of -0.22 means that male voters have slightly lower log-odds of voting for Clinton over Bush compared to females, controlling for race. The `raceWhite` coefficient of -0.50 indicates that white voters were less likely than Black voters to vote for Clinton over Bush, adjusting for sex. For Perot, the `sexMale` coefficient of 0.39 shows that men were more likely than women to vote for Perot rather than Bush. The `raceWhite` coefficient of 0.28 suggests that white voters were also more likely than Black voters to vote for Perot rather than Bush.
+
+
+
+
+```{r}
+fit_nes <- multinom_reg(engine = "nnet") |>
+  fit(pres_vote ~ sex, data = nes_92)
+```
+
 
 
 ### Posterior Predictive Checks
