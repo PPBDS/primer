@@ -289,7 +289,7 @@ Categorical predictors like `sex` are automatically converted into 0/1 dummy var
 After fitting the model, we summarize it with
 
 ```{r}
-tidy(fit_nes, conf.int = TRUE)
+tidy(fit_sex, conf.int = TRUE)
 ```
 
 This returns estimates and 95% confidence intervals for the model's parameters. These coefficients are on the log-odds scale and tell us how being male (vs. female) affects the odds of voting for Clinton or Perot, relative to Bush.
