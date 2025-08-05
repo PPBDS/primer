@@ -13,6 +13,9 @@
 <!-- 2) Same one sentence versus one paragraph distinction applies to other terms, like validity below. -->
 
 
+<!-- DK: Clarify sections without example. Ivy: Start with the tutorial. Expand off that tutorial, but creating more models, trying more variables and so on. -->
+
+
 ```{r}
 #| label: hidden-libraries
 #| message: false

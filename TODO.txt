@@ -1,14 +1,3 @@
-# Priorities
-
-## Ivy
-
-Figure out how to render an individual chapter. 
-
-Keep more variables in nes_92. IS: Done!
-
-Maybe first model is just sex. Second model is just race. Third model is maybe sex, race. IS: Done!
-
-Take a look at chapter_template.qmd. Edit/comment as you see fit. IS: Didn't find anything to change.
 
 ## Aashna
 

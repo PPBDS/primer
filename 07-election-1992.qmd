@@ -427,7 +427,7 @@ Recall the questions with which we began:
 We answer these questions by using plot_predictions:
 
 ```{r}
-plot_predictions(fit_nes,
+plot_predictions(fit_sex_race,
                  by = "sex", 
                  type = "prob",
                  draw = FALSE)
@@ -440,7 +440,7 @@ The intercept coefficient from the fitted model (0.4553900) represents the log-o
 Often, the best answers to broad questions are graphics. Consider:
 
 ```{r}
-plot_predictions(fit_nes, 
+plot_predictions(fit_sex_race, 
                           by = "sex", 
                           type = "prob", 
                           draw = FALSE) |> 
