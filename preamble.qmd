@@ -52,6 +52,9 @@ knitr::include_graphics("other/images/summer-2024.png")
 
 Also Tongyan Ban, Anish Bellamkonda, Tejas Mundhe, Vaangmaya Rebba, Luit Deka, Aadhira Satheesh, Ethan Xiao, Nosa Lawani, Alan Cai, Adi Chaudhary, Atharva Bir Dutta, Monish Malla, Navya Joshi, Mihir Kaushal, Sanaka Dash, Gia Khang, and Tanay Janmanchi.
 
+
+Also Navya Joshi, Aadhira Satheesh, Luit Deka, Aashna Patel, Jamie Dongwan Seoh, Ivy Spratt, Anish Talla, Amogh Patil, Sophia Yao, Thomas Seoh, Lowell Ethan, Sruthi Gandhi, Aaditya Gupta, Gia Khang, and John Stepher Sabio. 
+
 I would like to gratefully acknowledge funding from [The Derek Bok Center for Teaching and Learning](https://bokcenter.harvard.edu/) at Harvard University, via its [Digital Teaching Fellows](https://bokcenter.harvard.edu/graduate-fellows-0) and [Learning Lab Undergraduate Fellows](https://bokcenter.harvard.edu/undergraduate-fellows) programs.
 
 ```{r, echo = FALSE}
