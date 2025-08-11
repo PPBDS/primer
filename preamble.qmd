@@ -52,6 +52,9 @@ knitr::include_graphics("other/images/summer-2024.png")
 
 Also Tongyan Ban, Anish Bellamkonda, Tejas Mundhe, Vaangmaya Rebba, Luit Deka, Aadhira Satheesh, Ethan Xiao, Nosa Lawani, Alan Cai, Adi Chaudhary, Atharva Bir Dutta, Monish Malla, Navya Joshi, Mihir Kaushal, Sanaka Dash, Gia Khang, and Tanay Janmanchi.
 
+```{r, echo = FALSE, fig.align='center'}
+knitr::include_graphics("other/images/summer_2025.png") 
+```
 
 Also Navya Joshi, Aadhira Satheesh, Luit Deka, Aashna Patel, Jamie Dongwan Seoh, Ivy Spratt, Anish Talla, Amogh Patil, Sophia Yao, Thomas Seoh, Lowell Ethan, Sruthi Gandhi, Aaditya Gupta, Gia Khang, Luke Li, and John Stepher Sabio. 
 
