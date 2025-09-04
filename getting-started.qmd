@@ -6,10 +6,6 @@ The world confronts us. Make decisions we must.
 
 ### Installing R and Positron {.unnumbered}
 
-<!-- Add images -->
-
-<!-- Need to figure out how to run with set_positron_settings(). -->
-
 We use [**R**](https://www.r-project.org/about.html) via [**Positron**](https://positron.posit.co). R is to Positron as a car's engine is to its dashboard.
 
 More precisely, R is a programming language that runs computations, while Positron is an *integrated development environment (IDE)* that provides an interface with many convenient features. Just as having access to a speedometer, rearview mirrors, and a navigation system makes driving much easier, using Positron's interface makes working with R much easier.
@@ -157,7 +153,7 @@ Let's *install* a useful package. At the Console within Positron, type:
 ```{r}
 #| eval: false
 #| code-fold: false
-install.packages("remotes")
+install.packages("pak")
 ```
 
 And press `Enter` on your keyboard. You must include the quotation marks around the name of the package. A package can depend on other packages, which will be automatically installed if needed.
@@ -177,23 +173,23 @@ R packages generally live in one of two places:
 
 -   CRAN (rhymes with "clan") for more mature, popular packages. Use `install.packages()`, as you did above.
 
--   Github for more experimental, less stable packages. Use `remotes::install_github()`.
+-   Github for more experimental, less stable packages. Use `pak::pak()`.
 
 ### Package loading {.unnumbered}
 
-After you install a package, you need to "load" it by using the `library()` command. To load the **remotes** package, run the following code in the Console. 
+After you install a package, you need to "load" it by using the `library()` command. To load the **pak** package, run the following code in the Console. 
 
 ```{r}
 #| eval: false
 #| code-fold: false
-library(remotes)
+library(pak)
 ```
 
-After running this code, a blinking cursor should appear next to the `>` symbol. (The `>` is the "prompt.") This means you were successful and the **remotes** package is now loaded and ready to use. However, you might get a red "error message" which reads:
+After running this code, a blinking cursor should appear next to the `>` symbol. (The `>` is the "prompt.") This means you were successful and the **pak** package is now loaded and ready to use. However, you might get a red "error message" which reads:
 
-<span style="color: red;">Error in library(remotes) : there is no package called 'remotes'</span>
+<span style="color: red;">Error in library(pak) : there is no package called 'pak'</span>
 
-This error message means that you haven't successfully installed the package. If you get this error message, make sure to install the **remotes** package before proceeding.
+This error message means that you haven't successfully installed the package. If you get this error message, make sure to install the **pak** package before proceeding.
 
 For historical reasons, *packages* are also known as *libraries*, which is why the relevant command for loading them is `library()`.
 
@@ -222,7 +218,7 @@ Let's install another package:
 ```{r}
 #| eval: false
 #| code-fold: false
-install.packages("tidyverse")
+pak::pak("tidyverse")
 ```
 
 ### Package use {.unnumbered}
@@ -238,8 +234,8 @@ Let's install three other packages: **positron.tutorials**, **r4ds.tutorials** a
 ```{r}
 #| eval: false
 #| code-fold: false
-library(remotes)
-install_github("PPBDS/positron.tutorials")
+library(pak)
+pak("PPBDS/positron.tutorials")
 ```
 
 This should install easily. 
@@ -249,10 +245,10 @@ Next, copy and paste the following to the Console:
 ```{r}
 #| eval: false
 #| code-fold: false
-remotes::install_github("PPBDS/r4ds.tutorials")
+pak("PPBDS/r4ds.tutorials")
 ```
 
-Instead of loading the **remotes** package explicitly, we used the double colon notation --- `::` --- to refer directly to the `install_github()` function which resides in the **remotes** package.
+Instead of loading the **pak** package explicitly, we used the double colon notation --- `::` --- to refer directly to the `pak()` function which resides, somewhat confusingly, in the **pak** package.
 
 There is a version of **r4ds.tutorials** available on CRAN, but we want to get the latest version, often called the "development" version.
 
@@ -261,7 +257,7 @@ Then:
 ```{r}
 #| eval: false
 #| code-fold: false
-remotes::install_github("PPBDS/primer.tutorials")
+pak("PPBDS/primer.tutorials")
 ```
 
 If the download fails, try
@@ -273,15 +269,6 @@ options("timeout" = 600)
 ```
 
 This gives the download more time to complete. Try it again.
-
-If that fails, try:
-
-```{r}
-#| eval: false
-#| code-fold: false
-install.packages("pak")
-pak::pak("PPBDS/primer.tutorials")
-```
 
 Some other new packages will be installed as well, most importantly **primer.data**, which includes most of the data we use in the *Primer*. It may take a few minutes. If something gets messed up, it is often useful to read the error messages and see if a specific package is at fault. If so, use the `remove.packages()` function to remove the problematic package and then install it again.
 
@@ -362,14 +349,14 @@ You should have done the following:
 
   - Installed the latest versions of R and Positron.
   
-  - Installed, from CRAN, the **remotes**, **tutorial.helpers** and **tidyverse** packages:
+  - Installed, from CRAN, the **pak**, **tutorial.helpers** and **tidyverse** packages:
 
 ```{r}
 #| eval: false
 #| code-fold: false
 # Only run this options() line if NOT on Cloud platform
 # options("pkgType" = "binary"). 
-install.packages("remotes")
+install.packages("pak")
 install.packages("tidyverse")
 install.packages("tutorial.helpers")
 ```
@@ -379,17 +366,17 @@ install.packages("tutorial.helpers")
 ```{r}
 #| eval: false
 #| code-fold: false
-remotes::install_github("PPBDS/positron.tutorials")
-remotes::install_github("PPBDS/r4ds.tutorials")
-remotes::install_github("PPBDS/primer.tutorials")
+pak("PPBDS/positron.tutorials")
+pak("PPBDS/r4ds.tutorials")
+pak("PPBDS/primer.tutorials")
 ```
 
-  - Complete the "Tutorials in Positron" tutorial from the **tutorial.helpers** package:
+  - Complete the "Getting Started" tutorial from the **tutorial.helpers** package:
   
 ```{r}
 #| eval: false
 #| code-fold: false
-learnr::run_tutorial("positron", package = "tutorial.helpers")
+learnr::run_tutorial("getting-started", package = "tutorial.helpers")
 ```
 
 As part of that tutorial, you will also run:
