@@ -1,5 +1,8 @@
 # Getting Started {.unnumbered}
 
+<!-- DK: Once we have stable versions of all our packages, except perhaps, for primer.tutorials, we should get them all from CRAN, perhaps in just one call to pak(). -->
+
+
 *You can never look at the data too much.* -- Mark Engerman
 
 The world confronts us. Make decisions we must.
@@ -200,7 +203,19 @@ Let's install another package:
 ```{r}
 #| eval: false
 #| code-fold: false
-install.packages("tutorial.helpers")
+pak("tidyverse")
+```
+
+We could have used `install.packages()` instead of `pak()` to install the **tutorial.helpers** and **tidyverse** package, but the latter is much faster. 
+
+Instead of loading the **pak** package explicitly with `library(pak)`, we could have just used the "double colon" notation to call the `pak()` function directly: `pak::pak("tidyverse")`.
+
+Let's install another package:
+
+```{r}
+#| eval: false
+#| code-fold: false
+pak("tutorial.helpers")
 ```
 
 This package provides infrastructure for doing tutorials, a common approach for learning R. After you install this package, run this command in the Console:
@@ -213,13 +228,6 @@ tutorial.helpers::set_positron_settings()
 
 `set_positron_settings()` makes some sensible changes to your Positron settings file and to your `.Rprofile`.
 
-Let's install another package:
-
-```{r}
-#| eval: false
-#| code-fold: false
-pak::pak("tidyverse")
-```
 
 ### Package use {.unnumbered}
 
@@ -234,7 +242,6 @@ Let's install three other packages: **positron.tutorials**, **r4ds.tutorials** a
 ```{r}
 #| eval: false
 #| code-fold: false
-library(pak)
 pak("PPBDS/positron.tutorials")
 ```
 
@@ -248,7 +255,7 @@ Next, copy and paste the following to the Console:
 pak("PPBDS/r4ds.tutorials")
 ```
 
-Instead of loading the **pak** package explicitly, we used the double colon notation --- `::` --- to refer directly to the `pak()` function which resides, somewhat confusingly, in the **pak** package.
+Instead of loading the **pak** package explicitly, we could have used the double colon notation --- `::` --- to refer directly to the `pak()` function which resides, somewhat confusingly, in the **pak** package.
 
 There is a version of **r4ds.tutorials** available on CRAN, but we want to get the latest version, often called the "development" version.
 
@@ -283,7 +290,7 @@ Because Positron is still evolving, there is no easy way to start a tutorial. In
 ```{r}
 #| eval: false
 #| code-fold: false
-learnr::run_tutorial(name = "positron", 
+learnr::run_tutorial(name = "geting-started", 
                      package = "tutorial.helpers")
 ```
 
@@ -332,12 +339,12 @@ You now have two R sessions running. The first is maintaining the tutorial itsel
 
 **Your work will automatically be saved between Positron sessions**. You can complete the tutorial in multiple sittings.
 
-Complete the "Tutorials in Positron" tutorial from the **tutorial.helpers** package. Recall that you start this tutorial by issuing this command in the Console:
+Complete the "Getting Started" tutorial from the **tutorial.helpers** package. Recall that you start this tutorial by issuing this command in the Console:
 
 ```{r}
 #| eval: false
 #| code-fold: false
-learnr::run_tutorial(name = "positron", 
+learnr::run_tutorial(name = "getting-started", 
                      package = "tutorial.helpers")
 ```
 
@@ -357,9 +364,19 @@ You should have done the following:
 # Only run this options() line if NOT on Cloud platform
 # options("pkgType" = "binary"). 
 install.packages("pak")
-install.packages("tidyverse")
-install.packages("tutorial.helpers")
+library(pak)
+pak("tidyverse")
+pak("tutorial.helpers")
 ```
+
+  - Run `tutorial.helpers::set_positron_settings()` at the Console in order to make some sensible changes to your Positron settings.
+
+```{r}
+#| eval: false
+#| code-fold: false
+tutorial.helpers::set_positron_settings()
+```
+
 
   - Installed, from Github, the **positron.tutorials**, **r4ds.tutorials**, and **primer.tutorials** packages:
 
@@ -377,14 +394,6 @@ pak("PPBDS/primer.tutorials")
 #| eval: false
 #| code-fold: false
 learnr::run_tutorial("getting-started", package = "tutorial.helpers")
-```
-
-As part of that tutorial, you will also run:
-
-```{r}
-#| eval: false
-#| code-fold: false
-tutorial.helpers::set_positron_settings()
 ```
 
 Let's get started.
