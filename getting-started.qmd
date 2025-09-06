@@ -343,7 +343,7 @@ You should have done the following:
 
   - Installed the latest versions of R and Positron.
   
-  - Installed, from CRAN, the **pak**, **tutorial.helpers** and **tidyverse** packages:
+  - Installed, from CRAN, these packages:
 
 ```{r}
 #| eval: false
@@ -378,7 +378,7 @@ pak::pak("PPBDS/primer.tutorials")
 learnr::run_tutorial("getting-started", package = "tutorial.helpers")
 ```
 
-Let's get started.
+Let's get started!
 
 ```{r}
 #| echo: false
