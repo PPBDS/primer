@@ -1,7 +1,6 @@
 # Getting Started {.unnumbered}
 
-<!-- DK: Once we have stable versions of all our packages, except perhaps, for primer.tutorials, we should get them all from CRAN, perhaps in just one call to pak(). -->
-
+<!-- DK: Get rid of r4ds.tutorials? -->
 
 *You can never look at the data too much.* -- Mark Engerman
 
@@ -21,7 +20,9 @@ Download and install R and Positron on your computer.
 
 3. If you are using Windows, you **must** also do two things:
 
-  + Install [Git for Windows](https://gitforwindows.org/). Make sure to check the option which installs "Git Bash."
+  + Install [Git for Windows](https://gitforwindows.org/). Make sure to check the option which installs "Git Bash." 
+
+  <!-- DK: What does the Bash check box look like? Is it on by default? -->
 
   + Install RTools. See [here](https://cran.r-project.org/bin/windows/Rtools/) for the latest version. Currently, the Rtools45 installer is what you want, assuming that your installed R version is at least 4.5.0. The link is in the seventh paragraph of [this page](https://cran.r-project.org/bin/windows/Rtools/rtools45/rtools.html). Use your favorite AI to help determine whether to use the Rtools45 installer or 64-bit ARM Rtools45 installer. Again, this is not required, but if you have problems installing packages later in this chapter, you **must** install RTools. If not, you are all set.
 
@@ -159,7 +160,7 @@ Let's *install* a useful package. At the Console within Positron, type:
 install.packages("pak")
 ```
 
-And press `Enter` on your keyboard. You must include the quotation marks around the name of the package. A package can depend on other packages, which will be automatically installed if needed.
+And press `return` or `enter` on your keyboard. You must include the quotation marks around the name of the package. A package can depend on other packages, which will be automatically installed if needed.
 
 One tricky aspect of this process is that R will occasionally ask you:
 
@@ -174,9 +175,9 @@ Unless you have a good reason not to, always answer "no" to this question.
 
 R packages generally live in one of two places:
 
--   CRAN (rhymes with "clan") for more mature, popular packages. Use `install.packages()`, as you did above.
+-   CRAN (rhymes with "clan") for more mature, popular packages. 
 
--   Github for more experimental, less stable packages. Use `pak::pak()`.
+-   Github for more experimental, less stable packages. 
 
 ### Package loading {.unnumbered}
 
@@ -206,9 +207,9 @@ Let's install another package:
 pak("tidyverse")
 ```
 
-We could have used `install.packages()` instead of `pak()` to install the **tutorial.helpers** and **tidyverse** package, but the latter is much faster. 
+We could have used `install.packages()` instead of `pak()` to install the **tidyverse** package, but the latter is much faster. 
 
-Instead of loading the **pak** package explicitly with `library(pak)`, we could have just used the "double colon" notation to call the `pak()` function directly: `pak::pak("tidyverse")`.
+Instead of loading the **pak** package explicitly with `library(pak)`, we could have just used the "double colon" notation to call the `pak()` function directly: `pak::pak("tidyverse")`. (It is somewhat confusing, although not that uncommon, that `pak()` is the name of the main function in the **pak** package.)
 
 Let's install another package:
 
@@ -237,29 +238,17 @@ tutorial.helpers::set_positron_settings()
 
 This is a different error message than the one about a package not having been installed yet. R is telling you that you are trying to use a function in a package that has not yet been loaded. R doesn't know where to "find" the function you want to use.
 
-Let's install three other packages: **positron.tutorials**, **r4ds.tutorials** and **primer.tutorials**. Copy and paste the following to the Console:
+Let's install two other packages: **positron.tutorials** and **r4ds.tutorials**. Copy and paste the following to the Console:
 
 ```{r}
 #| eval: false
 #| code-fold: false
-pak("PPBDS/positron.tutorials")
+pak(c("positron.tutorials", "r4ds.tutorials"))
 ```
 
 This should install easily. 
 
-Next, copy and paste the following to the Console:
-
-```{r}
-#| eval: false
-#| code-fold: false
-pak("PPBDS/r4ds.tutorials")
-```
-
-Instead of loading the **pak** package explicitly, we could have used the double colon notation --- `::` --- to refer directly to the `pak()` function which resides, somewhat confusingly, in the **pak** package.
-
-There is a version of **r4ds.tutorials** available on CRAN, but we want to get the latest version, often called the "development" version.
-
-Then:
+So far, all the packages we have installed have come from CRAN. To install a package from GitHub, we need to provide both its repository and its name. Copy and paste the following to the Console:
 
 ```{r}
 #| eval: false
@@ -267,7 +256,7 @@ Then:
 pak("PPBDS/primer.tutorials")
 ```
 
-If the download fails, try
+If the install fails, try
 
 ```{r}
 #| eval: false
@@ -301,8 +290,6 @@ The first argument to `run_tutorial()` is the `name` of the tutorial and the sec
 #| code-fold: false
 learnr::run_tutorial("01-code", "positron.tutorials")
 ```
-
-This is how you will start the next tutorial you are likely to be assigned, the `01-code` tutorial from the **positron.tutorials** package.
 
 You may notice that the Console will show output as the tutorial is starting up. This is because Positron is running the code to create the tutorial.
 
@@ -364,9 +351,7 @@ You should have done the following:
 # Only run this options() line if NOT on Cloud platform
 # options("pkgType" = "binary"). 
 install.packages("pak")
-library(pak)
-pak("tidyverse")
-pak("tutorial.helpers")
+pak::pak(c("tidyverse", "tutorial.helpers", "positron.tutorials", "r4ds.tutorials"))
 ```
 
   - Run `tutorial.helpers::set_positron_settings()` at the Console in order to make some sensible changes to your Positron settings.
@@ -377,15 +362,12 @@ pak("tutorial.helpers")
 tutorial.helpers::set_positron_settings()
 ```
 
-
-  - Installed, from Github, the **positron.tutorials**, **r4ds.tutorials**, and **primer.tutorials** packages:
+  - Installed, from Github, **primer.tutorials** packages:
 
 ```{r}
 #| eval: false
 #| code-fold: false
-pak("PPBDS/positron.tutorials")
-pak("PPBDS/r4ds.tutorials")
-pak("PPBDS/primer.tutorials")
+pak::pak("PPBDS/primer.tutorials")
 ```
 
   - Complete the "Getting Started" tutorial from the **tutorial.helpers** package:
