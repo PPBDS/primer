@@ -1,7 +1,5 @@
 # Getting Started {.unnumbered}
 
-<!-- DK: Get rid of r4ds.tutorials? -->
-
 *You can never look at the data too much.* -- Mark Engerman
 
 The world confronts us. Make decisions we must.
@@ -238,12 +236,12 @@ tutorial.helpers::set_positron_settings()
 
 This is a different error message than the one about a package not having been installed yet. R is telling you that you are trying to use a function in a package that has not yet been loaded. R doesn't know where to "find" the function you want to use.
 
-Let's install two other packages: **positron.tutorials** and **r4ds.tutorials**. Copy and paste the following to the Console:
+Let's install another package: **positron.tutorials**. Copy and paste the following to the Console:
 
 ```{r}
 #| eval: false
 #| code-fold: false
-pak(c("positron.tutorials", "r4ds.tutorials"))
+pak("positron.tutorials")
 ```
 
 This should install easily. 
@@ -268,11 +266,11 @@ This gives the download more time to complete. Try it again.
 
 Some other new packages will be installed as well, most importantly **primer.data**, which includes most of the data we use in the *Primer*. It may take a few minutes. If something gets messed up, it is often useful to read the error messages and see if a specific package is at fault. If so, use the `remove.packages()` function to remove the problematic package and then install it again.
 
-If **primer.tutorials** does not install correctly, don't worry about it for now. This package is much less important than **positron.tutorials** and **r4ds.tutorials**.
+If **primer.tutorials** does not install correctly, don't worry about it for now. This package is much less important than **positron.tutorials**.
 
 ### Tutorials {.unnumbered}
 
-There are many tutorials available in the **positron.tutorials**, **r4ds.tutorials**, and **primer.tutorials** packages. 
+There are many tutorials available in the **positron.tutorials** and **primer.tutorials** packages. 
 
 Because Positron is still evolving, there is no easy way to start a tutorial. Instead, we must issue a command like this from the Console:
 
@@ -351,7 +349,7 @@ You should have done the following:
 # Only run this options() line if NOT on Cloud platform
 # options("pkgType" = "binary"). 
 install.packages("pak")
-pak::pak(c("tidyverse", "tutorial.helpers", "positron.tutorials", "r4ds.tutorials"))
+pak::pak(c("tidyverse", "tutorial.helpers", "positron.tutorials"))
 ```
 
   - Run `tutorial.helpers::set_positron_settings()` at the Console in order to make some sensible changes to your Positron settings.
