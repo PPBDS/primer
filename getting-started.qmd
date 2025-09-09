@@ -4,11 +4,15 @@
 
 The world confronts us. Make decisions we must.
 
+<!-- DK: Can we get rid of RTools? -->
+
+<!-- DK: Instead of +, use Positron new window. -->
+
 ### Installing R and Positron {.unnumbered}
 
 We use [**R**](https://www.r-project.org/about.html) via [**Positron**](https://positron.posit.co). R is to Positron as a car's engine is to its dashboard.
 
-More precisely, R is a programming language that runs computations, while Positron is an *integrated development environment (IDE)* that provides an interface with many convenient features. Just as having access to a speedometer, rearview mirrors, and a navigation system makes driving much easier, using Positron's interface makes working with R much easier.
+More precisely, R is a programming language that runs computations, while Positron is an *integrated development environment (IDE)* that provides an interface with many convenient features. Just as having access to a speedometer and navigation system makes driving much easier, using Positron's interface makes working with R much easier.
 
 Download and install R and Positron on your computer.
 
@@ -37,9 +41,9 @@ Open up Positron.
 knitr::include_graphics("getting-started/images/positron-window.png")
 ```
 
-Look at the Console tab in the Panel at the lower left. At start up, the Console gives you some information about your version of R. The Console is where you can type and run R code. For example, if you type `1 + 1` and hit `Enter`, the Console returns 2.
+Look at the Console tab in the Panel at the lower left. At start up, the Console gives you some information about your version of R. The Console is where you can type and run R code. For example, if you type `1 + 1` and hit `enter` (on Windows) or `return` (on Mac), the Console returns 2. 
 
-We often use the phrase "run the following code." This means that you should type or copy-and-paste the code into the Console and then hit the `Enter` key. (Note that `Return` is the name of a Mac key and `Enter` the name of the corresponding Windows key. We use `Enter` throughout the *Primer*.)
+We often use the phrase "run the following code." This means that you should type or copy-and-paste the code into the Console and then hit the `Enter` key. (Note that `return` is the name of a Mac key and `enter` the name of the corresponding Windows key. We use `Enter` throughout the *Primer*.)
 
 The right side of the Positron window is the Secondary Side Bar.
 
@@ -87,9 +91,9 @@ The Console is where we talk to R. The Terminal is where we talk to the computer
 knitr::include_graphics("getting-started/images/terminal-1.png")
 ```
 
-`dkane@macbook ~ % ` is the "prompt," the place where we type commands, just like the `>` in the Console. Your prompt will be different from mine, especially if you are using Windows. 
+`dkane@macbook ~ % ` is the "prompt," the place where we type commands, just like `>` in the Console. Your prompt will be different from mine, especially if you are using Windows. 
 
-We often want a new Terminal with a different "shell," the program which serves as the interface between you and the computer. On a Mac, the default shell is referred to as "[Unix-like](https://en.wikipedia.org/wiki/Unix-like)" since it acts very much like the tradition UNIX command line. In Windows, the default shell is [PowerShell](https://en.wikipedia.org/wiki/PowerShell), an older technology which is not worth learning. To start a new Terminal with a specific shell, press the downward arrow next to the `+` sign. This is the "Launch Profile ..." arrow. See the red arrow above.
+We often want a new Terminal with a different "shell," the program which serves as the interface between you and the computer. On a Mac, the default shell is referred to as "[Unix-like](https://en.wikipedia.org/wiki/Unix-like)" since it acts very much like the traditional Unix command line. In Windows, the default shell is [PowerShell](https://en.wikipedia.org/wiki/PowerShell), an older technology which is not worth learning. To start a new Terminal with a specific shell, press the downward arrow next to the `+` sign. This is the "Launch Profile ..." arrow. See the red arrow above.
 
 ```{r}
 #| echo: false
@@ -158,7 +162,7 @@ Let's *install* a useful package. At the Console within Positron, type:
 install.packages("pak")
 ```
 
-And press `return` or `enter` on your keyboard. You must include the quotation marks around the name of the package. A package can depend on other packages, which will be automatically installed if needed.
+And press `Enter`. You must include the quotation marks around the name of the package. A package can depend on other packages, which will be automatically installed if needed.
 
 One tricky aspect of this process is that R will occasionally ask you:
 
@@ -205,7 +209,7 @@ Let's install another package:
 pak("tidyverse")
 ```
 
-We could have used `install.packages()` instead of `pak()` to install the **tidyverse** package, but the latter is much faster. 
+We could have used `install.packages()` instead of `pak()` to install the **tidyverse** package, but `pak()` is much faster. 
 
 Instead of loading the **pak** package explicitly with `library(pak)`, we could have just used the "double colon" notation to call the `pak()` function directly: `pak::pak("tidyverse")`. (It is somewhat confusing, although not that uncommon, that `pak()` is the name of the main function in the **pak** package.)
 
@@ -246,13 +250,15 @@ pak("positron.tutorials")
 
 This should install easily. 
 
-So far, all the packages we have installed have come from CRAN. To install a package from GitHub, we need to provide both its repository and its name. Copy and paste the following to the Console:
+So far, all the packages we have installed have come from CRAN. To install a package from GitHub, we need to provide both the owner name and the repository (or "repo") name. Copy and paste the following to the Console:
 
 ```{r}
 #| eval: false
 #| code-fold: false
 pak("PPBDS/primer.tutorials")
 ```
+
+The owner here is `PPBDS`, which is the GitHub organization for this *Primer* and its related tutorials. `PPBDS` stands for *Preceptor's Primer for Bayesian Data Science*.
 
 If the install fails, try
 
@@ -289,7 +295,7 @@ The first argument to `run_tutorial()` is the `name` of the tutorial and the sec
 learnr::run_tutorial("01-code", "positron.tutorials")
 ```
 
-You may notice that the Console will show output as the tutorial is starting up. This is because Positron is running the code to create the tutorial.
+The Console will show output as the tutorial is starting up because Positron is running the code which creates the tutorial.
 
 In most cases, the newly created tutorial will appear in the Viewer tab. Sometimes, especially on Windows machines, it won't, and your screen will look like this:
 
@@ -333,13 +339,15 @@ learnr::run_tutorial(name = "getting-started",
                      package = "tutorial.helpers")
 ```
 
-Once you have done so, or if you already know R, you can start to learn about data science.
+Once you have done so, you can start to learn about data science.
 
 ## Summary {.unnumbered}
 
 You should have done the following:
 
   - Installed the latest versions of R and Positron.
+
+  - If using Windows, install Git for Windows and RTools.
   
   - Installed, from CRAN, these packages:
 
@@ -352,7 +360,7 @@ install.packages("pak")
 pak::pak(c("tidyverse", "tutorial.helpers", "positron.tutorials"))
 ```
 
-  - Run `tutorial.helpers::set_positron_settings()` at the Console in order to make some sensible changes to your Positron settings.
+  - Run `tutorial.helpers::set_positron_settings()` at the Console in order to make some sensible changes to your Positron and Rprofile settings.
 
 ```{r}
 #| eval: false
@@ -360,7 +368,7 @@ pak::pak(c("tidyverse", "tutorial.helpers", "positron.tutorials"))
 tutorial.helpers::set_positron_settings()
 ```
 
-  - Installed, from Github, **primer.tutorials** packages:
+  - Installed, from Github, the **primer.tutorials** package:
 
 ```{r}
 #| eval: false
@@ -368,7 +376,7 @@ tutorial.helpers::set_positron_settings()
 pak::pak("PPBDS/primer.tutorials")
 ```
 
-  - Complete the "Getting Started" tutorial from the **tutorial.helpers** package:
+  - Completed the "Getting Started" tutorial from the **tutorial.helpers** package:
   
 ```{r}
 #| eval: false
