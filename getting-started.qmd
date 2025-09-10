@@ -22,9 +22,9 @@ Download and install R and Positron on your computer.
 
 3. If you are using Windows, you **must** also do two things:
 
-  + Install [Git for Windows](https://gitforwindows.org/). Make sure to check the option which installs "Git Bash." 
+  + Install [Git for Windows](https://gitforwindows.org/). 
 
-  <!-- DK: What does the Bash check box look like? Is it on by default? -->
+  <!-- FYI: There is no way to avoid installing Git Bash when you use Git for Windows. -->
 
   + Install RTools. See [here](https://cran.r-project.org/bin/windows/Rtools/) for the latest version. Currently, the Rtools45 installer is what you want, assuming that your installed R version is at least 4.5.0. The link is in the seventh paragraph of [this page](https://cran.r-project.org/bin/windows/Rtools/rtools45/rtools.html). Use your favorite AI to help determine whether to use the Rtools45 installer or 64-bit ARM Rtools45 installer. Again, this is not required, but if you have problems installing packages later in this chapter, you **must** install RTools. If not, you are all set.
 
@@ -345,9 +345,9 @@ Once you have done so, you can start to learn about data science.
 
 You should have done the following:
 
-  - Installed the latest versions of R and Positron.
+  - Installed the latest versions of [R](https://cloud.r-project.org/) and [Positron](https://github.com/posit-dev/positron/releases).
 
-  - If using Windows, installed Git for Windows and RTools.
+  - If using Windows, installed [Git for Windows](https://gitforwindows.org/) and [RTools](https://cran.r-project.org/bin/windows/Rtools/).
   
   - Installed, from CRAN, these packages:
 
@@ -360,20 +360,20 @@ install.packages("pak")
 pak::pak(c("tidyverse", "tutorial.helpers", "positron.tutorials"))
 ```
 
-  - Run `tutorial.helpers::set_positron_settings()` at the Console in order to make some sensible changes to your Positron and Rprofile settings.
-
-```{r}
-#| eval: false
-#| code-fold: false
-tutorial.helpers::set_positron_settings()
-```
-
   - Installed, from Github, the **primer.tutorials** package:
 
 ```{r}
 #| eval: false
 #| code-fold: false
 pak::pak("PPBDS/primer.tutorials")
+```
+
+  - Run `tutorial.helpers::set_positron_settings()` at the Console in order to make some sensible changes to your Positron and Rprofile settings.
+
+```{r}
+#| eval: false
+#| code-fold: false
+tutorial.helpers::set_positron_settings()
 ```
 
   - Completed the "Getting Started" tutorial from the **tutorial.helpers** package:
