@@ -102,7 +102,7 @@ knitr::include_graphics("getting-started/images/terminal-2.png")
 
 If you are using Windows, you should see an option for "Git Bash" (or maybe just "bash"), at least if your have installed Git for Windows as we told you to do above. If you did, and you don't see a bash option, try restarting Positron.
 
-Wth luck, bash will also be the default every time you open the Terminal on Windows. But, if that does not work, you should select it by hand. One way to make it the default choice is to use the "Select Default Profile" tool:
+Wth luck, bash will also be the default every time you open the Terminal on Windows. But, if not, you should select it by hand. One way to make it the default choice is to use the "Select Default Profile" tool:
 
 ```{r}
 #| echo: false
