@@ -347,7 +347,7 @@ You should have done the following:
 
   - Installed the latest versions of R and Positron.
 
-  - If using Windows, install Git for Windows and RTools.
+  - If using Windows, installed Git for Windows and RTools.
   
   - Installed, from CRAN, these packages:
 
