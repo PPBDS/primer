@@ -240,22 +240,12 @@ tutorial.helpers::set_positron_settings()
 
 This is a different error message than the one about a package not having been installed yet. R is telling you that you are trying to use a function in a package that has not yet been loaded. R doesn't know where to "find" the function you want to use.
 
-Let's install another package: **positron.tutorials**. Copy and paste the following to the Console:
-
-```{r}
-#| eval: false
-#| code-fold: false
-pak("positron.tutorials")
-```
-
-This should install easily. 
-
 So far, all the packages we have installed have come from CRAN. To install a package from GitHub, we need to provide both the owner name and the repository (or "repo") name. Copy and paste the following to the Console:
 
 ```{r}
 #| eval: false
 #| code-fold: false
-pak("PPBDS/primer.tutorials")
+pak(c("PPBDS/positron.tutorials", "PPBDS/primer.tutorials"))
 ```
 
 The owner here is `PPBDS`, which is the GitHub organization for this *Primer* and its related tutorials. `PPBDS` stands for *Preceptor's Primer for Bayesian Data Science*.
@@ -357,15 +347,15 @@ You should have done the following:
 # Only run this options() line if NOT on Cloud platform
 # options("pkgType" = "binary"). 
 install.packages("pak")
-pak::pak(c("tidyverse", "tutorial.helpers", "positron.tutorials"))
+pak::pak(c("tidyverse", "tutorial.helpers"))
 ```
 
-  - Installed, from Github, the **primer.tutorials** package:
+  - Installed, from Github, the **positron.tutorials** and **primer.tutorials** packages:
 
 ```{r}
 #| eval: false
 #| code-fold: false
-pak::pak("PPBDS/primer.tutorials")
+pak::pak(c("PPBDS/positron.tutorials", "PPBDS/primer.tutorials"))
 ```
 
   - Run `tutorial.helpers::set_positron_settings()` at the Console in order to make some sensible changes to your Positron and Rprofile settings.
