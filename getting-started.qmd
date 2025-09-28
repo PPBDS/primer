@@ -113,7 +113,7 @@ Again, this is only useful for Windows users. But they should click on that tool
 
 Click the `+` button to start a second Terminal and see if it works! Restarting Positron may help.
 
-### Package installation {.unnumbered}
+### R packages {.unnumbered}
 
 To install packages, we work with the Console, not the Terminal.
 
@@ -181,8 +181,6 @@ R packages generally live in one of two places:
 
 -   Github for more experimental, less stable packages. 
 
-### Package loading {.unnumbered}
-
 After you install a package, you need to "load" it by using the `library()` command. To load the **pak** package, run the following code in the Console. 
 
 ```{r}
@@ -231,9 +229,6 @@ tutorial.helpers::set_positron_settings()
 
 `set_positron_settings()` makes some sensible changes to your Positron settings file and to your `.Rprofile`.
 
-
-### Package use {.unnumbered}
-
 *You have to load each package you want to use every time you start Positron.* If you don't load a package before attempting to use one of its features, you will see an error message like:
 
 <span style="color: red;">Error: could not find function</span>
@@ -263,6 +258,8 @@ This gives the download more time to complete. Try it again.
 Some other new packages will be installed as well, most importantly **primer.data**, which includes most of the data we use in the *Primer*. It may take a few minutes. If something gets messed up, it is often useful to read the error messages and see if a specific package is at fault. If so, use the `remove.packages()` function to remove the problematic package and then install it again.
 
 If **primer.tutorials** does not install correctly, don't worry about it for now. This package is much less important than **positron.tutorials**.
+
+<!-- SU: Put Python packages here. -->
 
 ### Tutorials {.unnumbered}
 
