@@ -8,19 +8,21 @@ The world confronts us. Make decisions we must.
 
 <!-- DK: Instead of +, use Positron new window. -->
 
-### Installing R and Positron {.unnumbered}
+### Installing R, Python and Positron {.unnumbered}
 
-We use [**R**](https://www.r-project.org/about.html) via [**Positron**](https://positron.posit.co). R is to Positron as a car's engine is to its dashboard.
+We use [**R**](https://www.r-project.org/about.html) and [Python](https://www.python.org/) via [**Positron**](https://positron.posit.co). R and Pythin are to Positron as a car's engine is to its dashboard.
 
-More precisely, R is a programming language that runs computations, while Positron is an *integrated development environment (IDE)* that provides an interface with many convenient features. Just as having access to a speedometer and navigation system makes driving much easier, using Positron's interface makes working with R much easier.
+More precisely, R and Python are a programming languages that runs computations, while Positron is an *integrated development environment (IDE)* that provides an interface with many convenient features. Just as having access to a speedometer and navigation system makes driving much easier, using Positron's interface makes working with R and Pythom much easier.
 
-Download and install R and Positron on your computer.
+Download and install R, Python and Positron on your computer.
 
 1. [Download and install R](https://cloud.r-project.org/). If you are using a Mac, make sure to use the correct installation, depending on whether you are using newer Apple silicon "M1-3 Macs" (first option) or older "Intel Macs" (second option). You can look up the chip used in your Mac by checking "About This Mac" under the Apple menu.
 
-2. [Download and install Positron](https://github.com/posit-dev/positron/releases). Use the latest release at the top.
+2. [Download and install Python](https://www.python.org/downloads/).
 
-3. If you are using Windows, you **must** also do two things:
+3. [Download and install Positron](https://github.com/posit-dev/positron/releases). Use the latest release at the top.
+
+4. If you are using Windows, you **must** also do two things:
 
   + Install [Git for Windows](https://gitforwindows.org/). 
 
