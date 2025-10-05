@@ -378,5 +378,11 @@ knitr::include_graphics("getting-started/images/ending.gif")
 
 
 ## Python Appendix
-
+<!-- SU: may want to take this out so everybody uses the uv version? -->
 You also have the option of [downloading and installing Python](https://www.python.org/downloads/).
+
+1. https://docs.astral.sh/uv/getting-started/installation/ at this link, go to the installation section in the appendix, and execute the specified code in Positrons terminal, based on the device you are using.
+
+2. Go to the installing Python section in the appendix, and execute the code specified there in terminal as well.
+
+3. Reload Positron back up, and you will see Python as an option for an interpreter
