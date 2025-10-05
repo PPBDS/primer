@@ -381,7 +381,7 @@ knitr::include_graphics("getting-started/images/ending.gif")
 <!-- SU: may want to take this out so everybody uses the uv version? -->
 You also have the option of [downloading and installing Python](https://www.python.org/downloads/).
 
-There are many ways to install Python, but we will install it through uv, an extremely fast Python package and project manager written in rust.
+There are many ways to install Python but we will install it through uv, an extremely fast Python package and project manager written in rust.
 
 Here are some simple and easy to follow steps but if you would like more info check out this video[https://www.youtube.com/watch?v=mru9z50IOhI]
 
