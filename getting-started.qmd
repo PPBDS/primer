@@ -382,10 +382,11 @@ knitr::include_graphics("getting-started/images/ending.gif")
 You also have the option of [downloading and installing Python](https://www.python.org/downloads/).
 
 There are many ways to install Python, but we will install it through uv, an extremely fast Python package and project manager written in rust.
-Here are some simple and easy to follow steps, but if you would like more info, check out this video[https://www.youtube.com/watch?v=mru9z50IOhI]
 
-1. https://docs.astral.sh/uv/getting-started/installation/ at this link, go to the installation section in the appendix, and execute the specified code in Positrons terminal, based on the device you are using.
+Here are some simple and easy to follow steps but if you would like more info check out this video[https://www.youtube.com/watch?v=mru9z50IOhI]
 
-2. Go to the installing Python section in the appendix, and execute the code specified there in terminal as well.
+1. https://docs.astral.sh/uv/getting-started/installation/ at this link, go to the installation section in the appendix, and execute the specified code based on the device you are using. in Positrons terminal.
 
-3. Reload Positron back up, and you will see Python as an option for an interpreter
+2. Go to the installing Python section in the appendix and execute the code specified there in terminal as well.
+
+3. Reload Positron back up and you will see Python as an option for an interpreter
