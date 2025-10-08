@@ -18,7 +18,7 @@ Download and install R and Positron on your computer.
 
 1. [Download and install R](https://cloud.r-project.org/). If you are using a Mac, make sure to use the correct installation, depending on whether you are using newer Apple silicon "M1-3 Macs" (first option) or older "Intel Macs" (second option). You can look up the chip used in your Mac by checking "About This Mac" under the Apple menu.
 
-2. [Download and install Positron](https://github.com/posit-dev/positron/releases). Use the latest release at the top.
+2. [Download and install Positron](https://positron.posit.co/download.html). 
 
 3. If you are using Windows, you **must** also do two things:
 
