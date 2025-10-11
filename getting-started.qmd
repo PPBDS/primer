@@ -12,7 +12,7 @@ The world confronts us. Make decisions we must.
 
 We use [**R**](https://www.r-project.org/about.html) via [**Positron**](https://positron.posit.co). R is to Positron as a car's engine is to its dashboard.
 
-More precisely, R is a programming languages that runs computations, while Positron is an *integrated development environment (IDE)* that provides an interface with many convenient features. Just as having access to a speedometer and navigation system makes driving much easier, using Positron's interface makes working with R and Pythom much easier.
+More precisely, R is a programming languages that runs computations, while Positron is an *integrated development environment (IDE)* that provides an interface with many convenient features. Just as having access to a speedometer and navigation system makes driving much easier, using Positron's interface makes working with R and Python much easier.
 
 Download and install R and Positron on your computer.
 
@@ -381,7 +381,11 @@ knitr::include_graphics("getting-started/images/ending.gif")
 <!-- SU: may want to take this out so everybody uses the uv version? -->
 You also have the option of [downloading and installing Python](https://www.python.org/downloads/).
 
-There are many ways to install Python but we will install it through uv, an extremely fast Python package and project manager written in rust.
+**What is  Python?**
+Python is a flexible and high level object oriented programming language. What does this mean? As a language, Python is closer to human language than machine code, making it a great starting point for beginners. In a lower level language you might have to say every little step like “Move your right hand 5 inches to the flour jar, open the lid, pick up exactly 250 grains of flour...”, while in a higher level language like Python you can just say "Add 2 cups of flour". In a programming perspective lower level languages would get very tedious and arcane for beginners: dealing with things like managing memory, manual data types, and complicated syntax. Thats why we are starting Python. Additionally Python supports modules and packages, like R, enabling users to utilize tools that have already been coded by other people. 
+
+**Installing Python**
+There are many ways to install Python but we will install it through **uv**, an extremely fast Python package and project manager written in Rust.
 
 Here are some simple and easy to follow steps but if you would like more info check out this video[https://www.youtube.com/watch?v=mru9z50IOhI]
 
