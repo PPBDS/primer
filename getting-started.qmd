@@ -434,4 +434,4 @@ knitr::include_graphics("getting-started/images/python-location.jpg")
 then ask ChatGPT for a solution.
 So when it asks you to find, go to 'Users' then click on your name, find and go into '.local' and then 'bin' and within bin will whatever version of Python that was installed.
 
-After following these steps, a console of Python will automatically open. It may say unsupported, but this is just because Positron may not yet have been updated to support the newest version of Python. Regardless the funciton is the same.
+After following these steps, a console of Python will automatically open. It may say unsupported, but this is just because Positron may not yet have been updated to support the newest version of Python. Regardless the function is the same.
