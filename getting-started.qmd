@@ -378,16 +378,17 @@ knitr::include_graphics("getting-started/images/ending.gif")
 
 
 ## Python Appendix
+
 <!-- SU: may want to take this out so everybody uses the uv version? -->
-You also have the option of [downloading and installing Python](https://www.python.org/downloads/).
 
-**What is  Python?**
-Python is a flexible and high level object oriented programming language. What does this mean? As a language, Python is closer to human language than machine code, making it a great starting point for beginners. In a lower level language you might have to say every little step like “Move your right hand 5 inches to the flour jar, open the lid, pick up exactly 250 grains of flour...”, while in a higher level language like Python you can just say "Add 2 cups of flour". In a programming perspective lower level languages would get very tedious and arcane for beginners: dealing with things like managing memory, manual data types, and complicated syntax. Thats why we are starting Python. Additionally Python supports modules and packages, like R, enabling users to utilize tools that have already been coded by other people. 
+You also have the option of [downloading and installing Python](https://www.python.org/downloads/). Python is a flexible and high level object oriented programming language.
 
-**Installing Python**
+### Installing Python
+
 There are many ways to install Python but we will install it through **uv**, an extremely fast Python package and project manager written in Rust. 
 
 This is the homepage of the documentation of [uv](https://docs.astral.sh/uv/). Access the link, and go to the installing Python section in the appendix. It looks like this 
+
 ```{r}
 #| echo: false
 knitr::include_graphics("getting-started/images/uv-installation.png")
@@ -395,26 +396,32 @@ knitr::include_graphics("getting-started/images/uv-installation.png")
 
 There are different installation instructions for Mac/Linux and Windows, so choose the correct tab.
 
-**Mac/Linux**
-There are 2 different installation prompts specified in the documentation, however if you are a Mac, just go with the first one. All Macs have curl pre-installed. In terminal run the first installation prompt. 
-For reference: 
-```{r}
-#| echo: false
-knitr::include_graphics("getting-started/images/curl-installation.png")
+### Mac/Linux
+
+There are 2 different installation prompts [specified in the documentation](https://docs.astral.sh/uv/getting-started/installation/), however if you are a Mac, just go with the first one. All Macs have `curl` pre-installed. In Terminal, run:
+
+```
+curl -LsSf https://astral.sh/uv/install.sh | sh
 ```
 
-Most Linux devices come installed with curl, but if you would like to check if curl is installed on your device, run `curl --version` in terminal. If no error pops up, it is installed on your device, and you can proceed with the step above. If your device does not have curl, check if it has wget using `wget --version` in terminal. Again, most Linux devices have wget but if the command give you an error, then you do not have wget or curl and will have to install one of the two. Please reference this short [article](https://help.ubidots.com/en/articles/2165289-learn-how-to-install-run-curl-on-windows-macosx-linux) to install curl.
+### Windows
 
-**Windows**
-The installation prompt for Windows uses powershell, but it works on Git Bash regardless, so do not worry. Run the prompt in terminal like so:
+<!-- DK: Give the command. Delete the pictures. -->
+
+<!-- DK: Get details, like capitalization correct. -->
+
+The installation prompt for Windows uses PowerShell, but it works on Git Bash regardless, so do not worry. Run the prompt in terminal like so:
+
 ```{r}
 #| echo: false
 knitr::include_graphics("getting-started/images/windows-installation.jpg")
 ```
- This will temporarily revert the terminal to powershell to install uv, and then back to git bash once again.
+ This will temporarily revert the Terminal to PowerShell to install uv, and then back to git bash once again.
 
+ 
  **uv Python**
-After uv has been succesfully installed on your device, run `uv python install` in terminal.
+
+After uv has been successfully installed on your device, run `uv python install` in terminal.
 
 **Mac**
 Python has been installed through uv, and all you need to do is go to the search bar, and search ">Python: Select Interpreter", and python 3.14 or whatever version of python you have installed will be an option, and you will be able to open a Python console.
