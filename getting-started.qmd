@@ -379,26 +379,19 @@ knitr::include_graphics("getting-started/images/ending.gif")
 
 ## Python Appendix
 
-<!-- SU: may want to take this out so everybody uses the uv version? -->
-
 You also have the option of [downloading and installing Python](https://www.python.org/downloads/). Python is a flexible and high level object oriented programming language.
 
 ### Installing Python
 
 There are many ways to install Python but we will install it through **uv**, an extremely fast Python package and project manager written in Rust. 
 
-This is the homepage of the documentation of [uv](https://docs.astral.sh/uv/). Access the link, and go to the installing Python section in the appendix. It looks like this 
-
-```{r}
-#| echo: false
-knitr::include_graphics("getting-started/images/uv-installation.png")
-```
+This is the installation section of the documentation of **[uv](https://docs.astral.sh/uv/)**. Access the link.
 
 There are different installation instructions for Mac/Linux and Windows, so choose the correct tab.
 
 ### Mac/Linux
 
-There are 2 different installation prompts [specified in the documentation](https://docs.astral.sh/uv/getting-started/installation/), however if you are a Mac, just go with the first one. All Macs have `curl` pre-installed. In Terminal, run:
+There are 2 different installation prompts [specified in the documentation](https://docs.astral.sh/uv/getting-started/installation/), we will go with the first one. All Macs have `curl` pre-installed. In Terminal, run:
 
 ```
 curl -LsSf https://astral.sh/uv/install.sh | sh
@@ -406,42 +399,61 @@ curl -LsSf https://astral.sh/uv/install.sh | sh
 
 ### Windows
 
-<!-- DK: Give the command. Delete the pictures. -->
+<!-- DK: Give the command. Delete the pictures. SU: yes-->
 
-<!-- DK: Get details, like capitalization correct. -->
+<!-- DK: Get details, like capitalization correct. SU: yes -->
 
-The installation prompt for Windows uses PowerShell, but it works on Git Bash regardless, so do not worry. Run the prompt in terminal like so:
-
-```{r}
-#| echo: false
-knitr::include_graphics("getting-started/images/windows-installation.jpg")
+The installation prompt for Windows uses PowerShell, but it works on Git Bash regardless, so do not worry. In Terminal, run:
 ```
- This will temporarily revert the Terminal to PowerShell to install uv, and then back to git bash once again.
-
+powershell -ExecutionPolicy ByPass -c "irm https://astral.sh/uv/install.ps1 | iex"
+```
  
- **uv Python**
+ ### uv Python
 
 After uv has been successfully installed on your device, run `uv python install` in terminal.
 
-**Mac**
-Python has been installed through uv, and all you need to do is go to the search bar, and search ">Python: Select Interpreter", and python 3.14 or whatever version of python you have installed will be an option, and you will be able to open a Python console.
+### Starting up the Python Console
+#### Mac
+Python has been installed through uv, and all you need to do is go to the search bar and search ">Python: Select Interpreter" 
+```{r}
+#| echo: false
+knitr::include_graphics("getting-started/images/mac-terminal.png")
+```
 
-**Windows**
-*Its a bit more complicated for Windows users compared to Mac
-In the search bar type ">Python: Select Interpreter" and this is what you will see
+Python 3.14 or whatever version of Python you have installed will show up as an option, click it and your brand new Python console will be started. Like so:
+```{r}
+#| echo: false
+knitr::include_graphics("getting-started/images/python-console.png")
+```
+
+#### Windows
+In the search bar type ">Python: Select Interpreter"
+```{r}
+#| echo: false
+knitr::include_graphics("getting-started/images/mac-terminal.png")
+```
+
+This is what you will see
+
 ```{r}
 #| echo: false
 knitr::include_graphics("getting-started/images/windows-interpreter.jpg")
 ```
-Click on the "Enter interpreter path" option and press "Find...". This will bring you to a version of your File Explorer. Almost always the path that your Python will be installed in is OS(C:) and Users/YOUR NAME/.local/bin. If you cannot find a version of Python in that location, like so:
+Click on the "Enter interpreter path" option and press "Find...". This will bring you to a version of your File Explorer. Almost always the path that your Python will be installed in is OS(C:) and Users/YOUR NAME/.local/bin. You will be able to find a version of Python in that path like so:
+
 ```{r}
 #| echo: false
 knitr::include_graphics("getting-started/images/python-location.jpg")
 ```
-then ask ChatGPT for a solution.
-So when it asks you to find, go to 'Users' then click on your name, find and go into '.local' and then 'bin' and within bin will whatever version of Python that was installed.
 
-After following these steps, a console of Python will automatically open. It may say unsupported, but this is just because Positron may not yet have been updated to support the newest version of Python. Regardless the function is the same.
+So when it asks you to find, go to 'Users' then click on your name, find and go into '.local' and then 'bin' and within bin click whatever version of Python that was installed.
+
+After following these steps, a console of Python will automatically open. It may say unsupported, but this is just because Positron may not yet have been updated to support the newest version of Python. Like this: 
+
+```{r}
+#| echo: false
+knitr::include_graphics("getting-started/images/python-console.png")
+```
 
 ## AI Appendix
 
