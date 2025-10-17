@@ -393,7 +393,8 @@ There are different installation instructions for Mac/Linux and Windows, so choo
 
 There are 2 different installation prompts [specified in the documentation](https://docs.astral.sh/uv/getting-started/installation/), we will go with the first one. All Macs have `curl` pre-installed. In Terminal, run:
 
-```
+```{bash}
+#| eval: false
 curl -LsSf https://astral.sh/uv/install.sh | sh
 ```
 
@@ -404,29 +405,43 @@ curl -LsSf https://astral.sh/uv/install.sh | sh
 <!-- DK: Get details, like capitalization correct. SU: yes -->
 
 The installation prompt for Windows uses PowerShell, but it works on Git Bash regardless, so do not worry. In Terminal, run:
-```
+
+```{bash}
+#| eval: false
 powershell -ExecutionPolicy ByPass -c "irm https://astral.sh/uv/install.ps1 | iex"
 ```
  
- ### uv Python
+### uv Python
 
-After uv has been successfully installed on your device, run `uv python install` in terminal.
+After uv has been successfully installed on your device, run this command in the Terminal.
+
+```{bash}
+#| eval: false
+uv python install
+```
+
 
 ### Starting up the Python Console
 #### Mac
-Python has been installed through uv, and all you need to do is go to the search bar and search ">Python: Select Interpreter" 
+
+Python has been installed through uv, and all you need to do is go to the search bar and search `>Python: Select Interpreter`. Make sure to include the greater than sign `>` in your search. 
+
 ```{r}
 #| echo: false
 knitr::include_graphics("getting-started/images/mac-terminal.png")
 ```
 
 Python 3.14 or whatever version of Python you have installed will show up as an option, click it and your brand new Python console will be started. Like so:
+
 ```{r}
 #| echo: false
 knitr::include_graphics("getting-started/images/python-console.png")
 ```
 
 #### Windows
+
+<!-- DK: Check video and see if their approach to sharing R paths is what we should do here. -->
+
 In the search bar type ">Python: Select Interpreter"
 ```{r}
 #| echo: false
