@@ -77,12 +77,13 @@ Key steps:
 #| code-fold: false
 library(usethis)  
 create_from_github(repo_spec = "PPBDS/INSERT-NAME-OF-PROJECT",   
-                   fork = TRUE,   
+                   fork = TRUE, 
+                   rstudio = FALSE,   
                    destdir = "/Users/davidkane/Desktop/projects/",   
                    protocol = "https")  
 ```
 
-Obviously, you need to modify the string "INSERT-NAME-OF-PROJECT" to correspond to one of our projects. Most common options are **r4ds.tutorials**, **primer**, **primer.data**, and **primer.tutorials**. If, for some reason, you are working on a project which does not reside in the PPBDS organization, you should modify the first part of the `repo_spec` as well. 
+Obviously, you need to modify the string "INSERT-NAME-OF-PROJECT" to correspond to one of our projects. Most common options are **positron.tutorials**, **primer**, **primer.data**, and **primer.tutorials**. If, for some reason, you are working on a project which does not reside in the PPBDS organization, you should modify the first part of the `repo_spec` as well. 
 
 You must change `destdir` to be a location on your computer. Indeed, professionals will generally have several different Positron windows open, each working on a different project, each of which is connected to its own Github repo.                     
                     
