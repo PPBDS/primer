@@ -6,7 +6,8 @@ The world confronts us. Make decisions we must.
 
 <!-- DK: Can we get rid of RTools? -->
 
-<!-- DK: Instead of +, use Positron new window. -->
+<!-- DK: Do we still get failures when starting tutorial in Windows? -->
+
 
 ### Installing R and Positron {.unnumbered}
 
@@ -16,9 +17,9 @@ More precisely, R is a programming languages that runs computations, while Posit
 
 Download and install R and Positron on your computer.
 
-1. [Download and install R](https://cloud.r-project.org/). If you are using a Mac, make sure to use the correct installation, depending on whether you are using newer Apple silicon "M1-3 Macs" (first option) or older "Intel Macs" (second option). You can look up the chip used in your Mac by checking "About This Mac" under the Apple menu.
+1. [Download and install R](https://cloud.r-project.org/). If you are using a Mac, make sure to use the correct installation, depending on whether you are using newer "Apple silicon (M1,2,..) Mac" (first option) or "older Intel Macs" (second option). You can look up the chip used in your Mac by checking "About This Mac" under the Apple menu.
 
-2. [Download and install Positron](https://positron.posit.co/download.html). If using a Mac, figure out if you should use the "arm64" or "x64" version. If your Mac is not too old, you want "arm64." Avoid the universal installer.
+2. [Download and install Positron](https://positron.posit.co/download.html). If using a Mac, figure out if you should use the "arm64" (which is for the newer Macs) or "x64" version. If your Mac is not too old, you want "arm64." Avoid the universal installer.
 
 3. If you are using Windows, you **must** also do two things:
 
@@ -32,7 +33,7 @@ Download and install R and Positron on your computer.
 
 ### The Console {.unnumbered}
 
-Much as we don't drive a car by interacting directly with the engine but rather by interacting with elements of the car's dashboard, we won't be using R directly. Instead, we will work through Positron's interface. After you install R and Positron on your computer, you'll have two new *programs* (also called *applications*) you can open. Always work in Positron and not directly in the R application.
+Much as we don't drive a car by interacting directly with the engine but rather by interacting with elements of the car's dashboard, we won't be using R directly. Instead, we will work through Positron's interface. After you install R and Positron on your computer, you'll have two new *programs* (also called *applications*) you can open. Always work in Positron, not directly in the R application.
 
 Open up Positron. 
 
@@ -43,7 +44,7 @@ knitr::include_graphics("getting-started/images/positron-window.png")
 
 Look at the Console tab in the Panel at the lower left. At start up, the Console gives you some information about your version of R. The Console is where you can type and run R code. For example, if you type `1 + 1` and hit `enter` (on Windows) or `return` (on Mac), the Console returns 2. 
 
-We often use the phrase "run the following code." This means that you should type or copy-and-paste the code into the Console and then hit the `Enter` key. (Note that `return` is the name of a Mac key and `enter` the name of the corresponding Windows key. We use `Enter` throughout the *Primer*.)
+We often use the phrase "run the following code." This means that you should type or copy-and-paste the code into the Console and then hit the `Enter` key. (Note that `return` is the name of a Mac key and `enter` the name of the corresponding Windows key. We use `Enter` throughout the *Primer* to refer to both.)
 
 The right side of the Positron window is the Secondary Side Bar.
 
@@ -84,7 +85,7 @@ The far left of the Positron window is the Activity Bar. The area in which the W
 
 ### The Terminal {.unnumbered}
 
-The Console is where we talk to R. The Terminal is where we talk to the computer. The Console behaves almost identically regardless of the kind of computer you use. The Terminal, sadly, is different. Windows and Mac are very different. Next to "Console" on the Panel menu is "Terminal." See the red oval below. Click on the word "Terminal" to access it.
+The Console is where we talk to R. The Terminal is where we talk to the computer. The Console behaves almost identically regardless of the kind of computer you use. The Terminal, sadly, is different for Windows versus Mac. Next to "Console" on the Panel menu is "Terminal." See the red oval below. Click on the word "Terminal" to access it.
 
 ```{r}
 #| echo: false
@@ -115,7 +116,7 @@ Click the `+` button to start a second Terminal and see if it works! Restarting 
 
 ### R packages {.unnumbered}
 
-To install packages, we work with the Console, not the Terminal.
+To install packages, we work in the Console, not the Terminal.
 
 R *packages*, also known as *libraries*, extend the power of R by providing additional functions and data.
 
@@ -125,7 +126,7 @@ R *packages*, also known as *libraries*, extend the power of R by providing addi
 knitr::include_graphics("getting-started/images/r-versus-r-packages.png")
 ```
 
-R is like a new phone. While it has a certain amount of features when you use it for the first time, it doesn't have everything. R packages are like the apps you download onto your phone.
+R is like a new phone. While it has a certain number of features when you use it for the first time, it doesn't have everything. R packages are like the apps you download onto your phone.
 
 Consider an analogy to Instagram. If you have a new phone and want to share a photo with friends. You need to:
 
@@ -233,14 +234,14 @@ tutorial.helpers::set_positron_settings()
 
 <span style="color: red;">Error: could not find function</span>
 
-This is a different error message than the one about a package not having been installed yet. R is telling you that you are trying to use a function in a package that has not yet been loaded. R doesn't know where to "find" the function you want to use.
+This is a different error message from the one about a package not having been installed yet. R is telling you that you are trying to use a function in a package that has not yet been loaded. R doesn't know where to "find" the function you want to use.
 
 So far, all the packages we have installed have come from CRAN. To install a package from GitHub, we need to provide both the owner name and the repository (or "repo") name. Copy and paste the following to the Console:
 
 ```{r}
 #| eval: false
 #| code-fold: false
-pak(c("PPBDS/positron.tutorials", "PPBDS/primer.tutorials"))
+pak("PPBDS/positron.tutorials")
 ```
 
 The owner here is `PPBDS`, which is the GitHub organization for this *Primer* and its related tutorials. `PPBDS` stands for *Preceptor's Primer for Bayesian Data Science*.
@@ -253,7 +254,15 @@ If the install fails, try
 options("timeout" = 600)
 ```
 
-This gives the download more time to complete. Try it again.
+This gives the download more time to complete. Try it again. 
+
+If you do more work with this *Primer*, then you will probably want to install the **primer.tutorials** package, but you don't need to do that now. When you do, run:
+
+```{r}
+#| eval: false
+#| code-fold: false
+pak("PPBDS/primer.tutorials")
+```
 
 Some other new packages will be installed as well, most importantly **primer.data**, which includes most of the data we use in the *Primer*. It may take a few minutes. If something gets messed up, it is often useful to read the error messages and see if a specific package is at fault. If so, use the `remove.packages()` function to remove the problematic package and then install it again.
 
@@ -277,7 +286,7 @@ The first argument to `run_tutorial()` is the `name` of the tutorial and the sec
 ```{r}
 #| eval: false
 #| code-fold: false
-learnr::run_tutorial("01-code", "positron.tutorials")
+learnr::run_tutorial("getting-started", "tutorial.helpers")
 ```
 
 The Console will show output as the tutorial is starting up because Positron is running the code which creates the tutorial.
@@ -297,19 +306,14 @@ But, for most people, the tutorial will appear in the Viewer tab:
 
 ```{r}
 #| echo: false
-knitr::include_graphics("getting-started/images/positron-tutorial-1.png")
+knitr::include_graphics("getting-started/images/positron-tutorial-2.png")
 ```
 
 You can "pop" the tutorial into a browser by clicking the "Open the current URL in the default browser" button. (See where the red arrow points in the image below.) 
 
 We think that working with the tutorial in the browser is more convenient than using the Viewer tab. If a tutorial becomes "greyed out," you can usually just "refresh" it with the "Reload the current URL" swirly arrow button, just to the left of the "Open the current URL in the default browser" button.
 
-Because the current Console is now being used to run the tutorial, we sometimes need to start up a new Console by pressing the "Start a New Session" button --- the `+` symbol --- on the Console menu. See the red arrow above. Choose the R option.
-
-```{r}
-#| echo: false
-knitr::include_graphics("getting-started/images/positron-tutorial-2.png")
-```
+Because the current Console is now being used to run the tutorial, we sometimes need to start up a new session by selecting `File -> New Window`. This creates a new Positron session with an unused R session running in the Console.
 
 You now have two R sessions running. The first is maintaining the tutorial itself, recording your answers. The second allows you to run R commands. You will spend almost all your time with the second session since many tutorials require you to issue some R commands directly to the Console.
 
@@ -345,12 +349,12 @@ install.packages("pak")
 pak::pak(c("tidyverse", "tutorial.helpers"))
 ```
 
-  - Installed, from Github, the **positron.tutorials** and **primer.tutorials** packages:
+  - Installed, from Github, the **positron.tutorials** package:
 
 ```{r}
 #| eval: false
 #| code-fold: false
-pak::pak(c("PPBDS/positron.tutorials", "PPBDS/primer.tutorials"))
+pak::pak("PPBDS/positron.tutorials")
 ```
 
   - Run `tutorial.helpers::set_positron_settings()` at the Console in order to make some sensible changes to your Positron and Rprofile settings.
