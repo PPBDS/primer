@@ -18,7 +18,7 @@ Download and install R and Positron on your computer.
 
 1. [Download and install R](https://cloud.r-project.org/). If you are using a Mac, make sure to use the correct installation, depending on whether you are using newer Apple silicon "M1-3 Macs" (first option) or older "Intel Macs" (second option). You can look up the chip used in your Mac by checking "About This Mac" under the Apple menu.
 
-2. [Download and install Positron](https://positron.posit.co/download.html). 
+2. [Download and install Positron](https://positron.posit.co/download.html). If using a Mac, figure out if you should use the "arm64" or "x64" version. If your Mac is not too old, you want "arm64." Avoid the universal installer.
 
 3. If you are using Windows, you **must** also do two things:
 
@@ -377,98 +377,6 @@ knitr::include_graphics("getting-started/images/ending.gif")
 ```
 
 
-## Python Appendix
-
-You also have the option of [downloading and installing Python](https://www.python.org/downloads/). Python is a flexible and high level object oriented programming language.
-
-### Installing Python
-
-There are many ways to install Python but we will install it through **uv**, an extremely fast Python package and project manager written in Rust. 
-
-This is the installation section of the documentation of **[uv](https://docs.astral.sh/uv/)**. Access the link.
-
-There are different installation instructions for Mac/Linux and Windows, so choose the correct tab.
-
-### Mac/Linux
-
-There are 2 different installation prompts [specified in the documentation](https://docs.astral.sh/uv/getting-started/installation/), we will go with the first one. All Macs have `curl` pre-installed. In Terminal, run:
-
-```{bash}
-#| eval: false
-curl -LsSf https://astral.sh/uv/install.sh | sh
-```
-
-### Windows
-
-<!-- DK: Give the command. Delete the pictures. SU: yes-->
-
-<!-- DK: Get details, like capitalization correct. SU: yes -->
-
-The installation prompt for Windows uses PowerShell, but it works on Git Bash regardless, so do not worry. In Terminal, run:
-
-```{bash}
-#| eval: false
-powershell -ExecutionPolicy ByPass -c "irm https://astral.sh/uv/install.ps1 | iex"
-```
- 
-### uv Python
-
-After uv has been successfully installed on your device, run this command in the Terminal.
-
-```{bash}
-#| eval: false
-uv python install
-```
-
-
-### Starting up the Python Console
-#### Mac
-
-Python has been installed through uv, and all you need to do is go to the search bar and search `>Python: Select Interpreter`. Make sure to include the greater than sign `>` in your search. 
-
-```{r}
-#| echo: false
-knitr::include_graphics("getting-started/images/mac-terminal.png")
-```
-
-Python 3.14 or whatever version of Python you have installed will show up as an option, click it and your brand new Python console will be started. Like so:
-
-```{r}
-#| echo: false
-knitr::include_graphics("getting-started/images/python-console.png")
-```
-
-#### Windows
-
-<!-- DK: Check video and see if their approach to sharing R paths is what we should do here. -->
-
-In the search bar type ">Python: Select Interpreter"
-```{r}
-#| echo: false
-knitr::include_graphics("getting-started/images/mac-terminal.png")
-```
-
-This is what you will see
-
-```{r}
-#| echo: false
-knitr::include_graphics("getting-started/images/windows-interpreter.jpg")
-```
-Click on the "Enter interpreter path" option and press "Find...". This will bring you to a version of your File Explorer. Almost always the path that your Python will be installed in is OS(C:) and Users/YOUR NAME/.local/bin. You will be able to find a version of Python in that path like so:
-
-```{r}
-#| echo: false
-knitr::include_graphics("getting-started/images/python-location.jpg")
-```
-
-So when it asks you to find, go to 'Users' then click on your name, find and go into '.local' and then 'bin' and within bin click whatever version of Python that was installed.
-
-After following these steps, a console of Python will automatically open. It may say unsupported, but this is just because Positron may not yet have been updated to support the newest version of Python. Like this: 
-
-```{r}
-#| echo: false
-knitr::include_graphics("getting-started/images/python-console.png")
-```
 
 ## AI Appendix
 
