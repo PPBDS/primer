@@ -1,0 +1,1922 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.8.26">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+<title>2&nbsp; Sampling – Preceptor's Primer for Bayesian Data Science: Using the Cardinal Virtues for Inference</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+html { -webkit-text-size-adjust: 100%; }
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+</style>
+
+<script src="site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="site_libs/quarto-nav/headroom.min.js"></script>
+<script src="site_libs/clipboard/clipboard.min.js"></script>
+<script src="site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="site_libs/quarto-search/fuse.min.js"></script>
+<script src="site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="./">
+<link href="./03-rubin-causal-model.html" rel="next">
+<link href="./01-probability.html" rel="prev">
+<script src="site_libs/quarto-html/quarto.js" type="module"></script>
+<script src="site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
+<script src="site_libs/quarto-html/axe/axe-check.js" type="module"></script>
+<script src="site_libs/quarto-html/popper.min.js"></script>
+<script src="site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="site_libs/quarto-html/anchor.min.js"></script>
+<link href="site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting-587c61ba64f3a5504c4d52d930310e48.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="site_libs/bootstrap/bootstrap-7e5f63976465591361e97e8384fb2699.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light"><script id="quarto-search-options" type="application/json">{
+  "location": "sidebar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "start",
+  "type": "textbox",
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "show-item-context": false,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-text-placeholder": "",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit",
+    "search-label": "Search"
+  }
+}</script><script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script><script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script><script type="text/javascript">
+const typesetMath = (el) => {
+  if (window.MathJax) {
+    // MathJax Typeset
+    window.MathJax.typeset([el]);
+  } else if (window.katex) {
+    // KaTeX Render
+    var mathElements = el.getElementsByClassName("math");
+    var macros = [];
+    for (var i = 0; i < mathElements.length; i++) {
+      var texText = mathElements[i].firstChild;
+      if (mathElements[i].tagName == "SPAN" && texText && texText.data) {
+        window.katex.render(texText.data, mathElements[i], {
+          displayMode: mathElements[i].classList.contains('display'),
+          throwOnError: false,
+          macros: macros,
+          fleqn: false
+        });
+      }
+    }
+  }
+}
+window.Quarto = {
+  typesetMath
+};
+</script>
+</head>
+<body class="nav-sidebar floating quarto-light">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top"><nav class="quarto-secondary-nav"><div class="container-fluid d-flex">
+      <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+        <i class="bi bi-layout-text-sidebar-reverse"></i>
+      </button>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./02-sampling.html"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">Sampling</span></a></li></ol></nav>
+        <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
+        </a>
+      <button type="button" class="btn quarto-search-button" aria-label="Search" onclick="window.quartoOpenSearch();">
+        <i class="bi bi-search"></i>
+      </button>
+    </div>
+  </nav></header><!-- content --><div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article">
+<!-- sidebar -->
+  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal quarto-sidebar-collapse-item sidebar-navigation floating overflow-auto"><div class="pt-lg-2 mt-2 text-left sidebar-header">
+    <div class="sidebar-title mb-0 py-0">
+      <a href="./">Preceptor’s Primer for Bayesian Data Science: Using the Cardinal Virtues for Inference</a> 
+        <div class="sidebar-tools-main">
+    <a href="https://github.com/PPBDS/primer/" title="Source Code" class="quarto-navigation-tool px-1" aria-label="Source Code"><i class="bi bi-github"></i></a>
+</div>
+    </div>
+      </div>
+        <div class="mt-2 flex-shrink-0 align-items-center">
+        <div class="sidebar-search">
+        <div id="quarto-search" class="" title="Search"></div>
+        </div>
+        </div>
+    <div class="sidebar-menu-container"> 
+    <ul class="list-unstyled mt-1">
+<li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Welcome</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./preamble.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Preamble</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./getting-started.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Getting Started</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./01-probability.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">Probability</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./02-sampling.html" class="sidebar-item-text sidebar-link active">
+ <span class="menu-text"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">Sampling</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./03-rubin-causal-model.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">Rubin Causal Model</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./04-cardinal-virtues.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">Cardinal Virtues</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./07-election-1992.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">1992 Election</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./set-up.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Set Up for Working on PPBDS Projects</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./ai.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">AI</span></a>
+  </div>
+</li>
+    </ul>
+</div>
+</nav><div id="quarto-sidebar-glass" class="quarto-sidebar-collapse-item" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item"></div>
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active"><h2 id="toc-title">Table of contents</h2>
+   
+  <ul>
+<li>
+<a href="#sec-sampling-activity" id="toc-sec-sampling-activity" class="nav-link active" data-scroll-target="#sec-sampling-activity"><span class="header-section-number">2.1</span> Real sampling activity</a>
+  <ul class="collapse">
+<li><a href="#using-the-shovel-method-once" id="toc-using-the-shovel-method-once" class="nav-link" data-scroll-target="#using-the-shovel-method-once"><span class="header-section-number">2.1.1</span> Using the shovel method once</a></li>
+  <li><a href="#student-shovels" id="toc-student-shovels" class="nav-link" data-scroll-target="#student-shovels"><span class="header-section-number">2.1.2</span> Using the shovel 33 times</a></li>
+  <li><a href="#what-did-we-just-do" id="toc-what-did-we-just-do" class="nav-link" data-scroll-target="#what-did-we-just-do"><span class="header-section-number">2.1.3</span> What did we just do?</a></li>
+  </ul>
+</li>
+  <li>
+<a href="#sec-virtual-sampling" id="toc-sec-virtual-sampling" class="nav-link" data-scroll-target="#sec-virtual-sampling"><span class="header-section-number">2.2</span> Virtual sampling</a>
+  <ul class="collapse">
+<li><a href="#shovel-one-time" id="toc-shovel-one-time" class="nav-link" data-scroll-target="#shovel-one-time"><span class="header-section-number">2.2.1</span> Using the virtual shovel once</a></li>
+  <li><a href="#shovel-33-times" id="toc-shovel-33-times" class="nav-link" data-scroll-target="#shovel-33-times"><span class="header-section-number">2.2.2</span> Using the virtual shovel 33 times</a></li>
+  <li><a href="#shovel-1000-times" id="toc-shovel-1000-times" class="nav-link" data-scroll-target="#shovel-1000-times"><span class="header-section-number">2.2.3</span> Using the virtual shovel 10,000 times</a></li>
+  <li><a href="#different-shovels" id="toc-different-shovels" class="nav-link" data-scroll-target="#different-shovels"><span class="header-section-number">2.2.4</span> The effect of different shovel sizes</a></li>
+  </ul>
+</li>
+  <li>
+<a href="#sec-standard-errors" id="toc-sec-standard-errors" class="nav-link" data-scroll-target="#sec-standard-errors"><span class="header-section-number">2.3</span> Standard error</a>
+  <ul class="collapse">
+<li><a href="#sec-terminology-and-notation" id="toc-sec-terminology-and-notation" class="nav-link" data-scroll-target="#sec-terminology-and-notation"><span class="header-section-number">2.3.1</span> Terminology and notation</a></li>
+  <li><a href="#sec-sampling-definitions" id="toc-sec-sampling-definitions" class="nav-link" data-scroll-target="#sec-sampling-definitions"><span class="header-section-number">2.3.2</span> Statistical definitions</a></li>
+  <li><a href="#what-is-a-standard-error" id="toc-what-is-a-standard-error" class="nav-link" data-scroll-target="#what-is-a-standard-error"><span class="header-section-number">2.3.3</span> What is a standard error?</a></li>
+  <li><a href="#moral-of-the-story" id="toc-moral-of-the-story" class="nav-link" data-scroll-target="#moral-of-the-story"><span class="header-section-number">2.3.4</span> The moral of the story</a></li>
+  </ul>
+</li>
+  </ul><div class="toc-actions"><ul><li><a href="https://github.com/PPBDS/primer/edit/main/02-sampling.qmd" class="toc-action"><i class="bi bi-github"></i>Edit this page</a></li></ul></div></nav>
+    </div>
+<!-- main -->
+<main class="content" id="quarto-document-content"><header id="title-block-header" class="quarto-title-block default"><div class="quarto-title">
+<h1 class="title"><span id="sec-sampling" class="quarto-section-identifier"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">Sampling</span></span></h1>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    
+  
+    
+  </div>
+  
+
+
+</header><!-- Our current urn is 40% red. We need to adjust the commentary accordingly, since it seems to assume that the true value is between 35% and 40%. --><!-- Stopped proof read at standard error section. --><!-- What are the goals of this chapter? Students need to know: --><!-- 1) Your posterior for (almost) any population parameter is normally distributed with a mean equal to the sample mean and a standard deviation equal to the standard error. And that means that your posterior has the same shape as the sampling distribution. --><!-- 2) Confidence/credible/uncertainty intervals. --><!-- Practice the Cardinal Virtues. --><!-- DK: Key question. Should our question for Cardinal Virtues be something like: "What are the chances of getting 10 red beads with a shovel of size 20?" Or should we just stick with rho? --><!-- Redo the excellent standard error knowledge pyramid. No more MAD stuff. Add "standard deviation of data" to the bottom. --><!-- Explain in a comment the reason for  fun = function(.x) 1/(2 * sqrt(.x)) in the plot. I don't know why we need the 2. We would probably use geom_function(). Maybe using geom_function with the function for a standard error will just magically work! --><!-- Do we know or not know that the urn has 1,000 beads. --><p>“The most important aspect of a statistical analysis is not what you do with the data, it’s what data you use.” – Hal Stern</p>
+<div class="quarto-video ratio ratio-16x9"><iframe data-external="1" src="https://www.youtube.com/embed/e3PJ3Du_zDc" title="" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen=""></iframe></div>
+<p><em>The Hunger Games</em> is a dystopian novel in which children are chosen via lottery to fight to the death. Primrose Everdeen is selected from the urn. Why does she have the misfortune of being selected? Or, as we data scientists say, <em>sampled</em>?</p>
+<p>In <a href="01-probability.html" class="quarto-xref"><span>Chapter 1</span></a>, we learned about probability, the framework for quantifying uncertainty. In this chapter, we will learn about <em>sampling</em>, the beginning of our journey toward inference. When we sample, we take some <em>units</em> from a <em>population</em>. With the data collected via sampling, we use inference to create statistical models. With such models, we can answer questions.</p>
+<p>We always use the Cardinal Virtues. Wisdom helps us to clarify the questions with which we begin. We build the Preceptor Table which, if no data were missing, would allow us to answer the question. We check for validity. Justice creates the Population Table and examines the assumptions of stability, representativeness, and unconfoundedness. With Courage, we create a data generating mechanism. Temperance helps us to use that DGM to answer the question with which we began.</p>
+<section id="sec-sampling-activity" class="level2" data-number="2.1"><h2 data-number="2.1" class="anchored" data-anchor-id="sec-sampling-activity">
+<span class="header-section-number">2.1</span> Real sampling activity</h2>
+<p>The urn below has a certain number of red and a certain number of white beads all of equal size, mixed well together. What proportion, <span class="math inline">\(\rho\)</span>, of this urn’s beads are red?</p>
+<div class="cell">
+<div class="cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure"><p><img src="sampling/images/sampling_bowl_1.jpg" class="img-fluid figure-img"></p>
+<figcaption>An urn with red and white beads.</figcaption></figure>
+</div>
+</div>
+</div>
+<p>One way to answer this question would be to perform an exhaustive count: remove each bead, count the number of red beads, count the number of white beads, and divide the number of red beads by the total number of beads. Call that ratio <span class="math inline">\(\rho\)</span>, the proportion of red beads in the urn. However, this would be a long and tedious process. Therefore, we will use sampling!</p>
+<p>To begin this chapter, we will look at a real sampling activity: the urn. Then, we will simulate the urn example using R code. This will help us to understand the <em>standard error</em> and the ways in which uncertainty factors into our predictions.</p>
+<p>Use the <strong>tidyverse</strong> package.</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb1"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://tidyverse.tidyverse.org">tidyverse</a></span><span class="op">)</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<section id="using-the-shovel-method-once" class="level3" data-number="2.1.1"><h3 data-number="2.1.1" class="anchored" data-anchor-id="using-the-shovel-method-once">
+<span class="header-section-number">2.1.1</span> Using the shovel method once</h3>
+<p>Instead of performing an exhaustive count, let’s insert a shovel into the urn and remove <span class="math inline">\(5 \cdot 10 = 50\)</span> beads. We are taking a <em>sample</em> of the total population of beads.</p>
+<div class="cell">
+<div class="cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure"><p><img src="sampling/images/sampling_bowl_2.jpg" class="img-fluid figure-img"></p>
+<figcaption>Inserting a shovel into the urn.</figcaption></figure>
+</div>
+</div>
+</div>
+<div class="cell">
+<div class="cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure"><p><img src="sampling/images/sampling_bowl_3_cropped.jpg" class="img-fluid figure-img"></p>
+<figcaption>Removing 50 beads from the urn.</figcaption></figure>
+</div>
+</div>
+</div>
+<p>Observe that 17 of the 50 sampled beads are red and thus <span class="math inline">\(17/50 = 0.34 = 34\%\)</span> of the shovel’s beads are red. We can view the proportion of beads that are red in this shovel as a guess at the proportion of beads that are red in the entire urn. While not as exact as doing an exhaustive count of all the beads in the urn, our guess of 34% took much less time and energy to make.</p>
+<p>Recall that <span class="math inline">\(\rho\)</span> is the true value of the proportion of red beads. There is only one <span class="math inline">\(\rho\)</span>. A guess at the proportion of red beads is known as <span class="math inline">\(\hat{\rho}\)</span> (pronounced p hat), where <span class="math inline">\(\hat{\rho}\)</span> is the estimated value of <span class="math inline">\(\rho\)</span>. There are many ways to estimate <span class="math inline">\(\rho\)</span>, each leading to a (potentially) different <span class="math inline">\(\hat{\rho}\)</span>. The 34% value for <span class="math inline">\(\hat{\rho}\)</span> came from taking this sample. But, if we used the shovel again, we would probably come up with a different <span class="math inline">\(\hat{\rho}\)</span>. There are many possible <span class="math inline">\(\hat{\rho}\)</span>’s. You and I will often differ in our estimates. We might each have a different <span class="math inline">\(\hat{\rho}\)</span> even though we agree that there is only one <span class="math inline">\(\rho\)</span>.</p>
+<p>Start this activity over again from the beginning, placing the 50 beads back into the urn. Would a second sample include exactly 17 red beads? Maybe, but probably not.</p>
+<p>What if we repeated this activity <em>many</em> times? Would our guess at the proportion of the urn’s beads that are red, <span class="math inline">\(\hat{\rho}\)</span>, be exactly 34% every time? Surely not.</p>
+<p>Let’s repeat this exercise with the help of 33 groups of friends to understand how the value of <span class="math inline">\(\hat{\rho}\)</span> varies across 33 independent trials.</p>
+</section><section id="student-shovels" class="level3" data-number="2.1.2"><h3 data-number="2.1.2" class="anchored" data-anchor-id="student-shovels">
+<span class="header-section-number">2.1.2</span> Using the shovel 33 times</h3>
+<p>Each of our 33 groups of friends will do the following:</p>
+<ul>
+<li>Use the shovel to remove 50 beads each.</li>
+<li>Count the number of red beads and compute the proportion of the 50 beads that are red.</li>
+<li>Return the beads into the urn.</li>
+<li>Mix the contents of the urn to not let a previous group’s results influence the next group’s.</li>
+</ul>
+<p>Each of our 33 groups of friends make note of their proportion of red beads from their sample collected. Each group then marks their proportion of their 50 beads that were red in the appropriate bin in a hand-drawn histogram as seen below.</p>
+<div class="cell">
+<div class="cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure"><p><img src="sampling/images/tactile_3_a.jpg" class="img-fluid figure-img"></p>
+<figcaption>Constructing a histogram of proportions.</figcaption></figure>
+</div>
+</div>
+</div>
+<p>Histograms allow us to visualize the <em>distribution</em> of a numerical variable. In particular, where the center of the values falls and how the values vary. A partially completed histogram of the first 10 out of 33 groups of friends’ results can be seen in the figure below.</p>
+<div class="cell">
+<div class="cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure"><p><img src="sampling/images/tactile_3_c.jpg" class="img-fluid figure-img"></p>
+<figcaption>Hand-drawn histogram of first 10 out of 33 proportions.</figcaption></figure>
+</div>
+</div>
+</div>
+<p>Observe the following details in the histogram:</p>
+<ul>
+<li>At the low end, one group removed 50 beads from the urn with proportion red between 0.20 and 0.25.</li>
+<li>At the high end, another group removed 50 beads from the urn with proportion red between 0.45 and 0.5 red.</li>
+<li>However, the most commonly occurring proportions were around 0.4 red, right in the middle of the distribution.</li>
+<li>The distribution is somewhat bell-shaped.</li>
+</ul>
+<p><code>tactile_sample_urn</code> saves the results from our 33 groups of friends.</p>
+<div class="cell">
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 33 × 4
+   group          red_beads prop_red group_ID
+   &lt;chr&gt;              &lt;dbl&gt;    &lt;dbl&gt;    &lt;int&gt;
+ 1 Griffin, Mary         18     0.36        1
+ 2 Ilyas, Yohan          21     0.42        2
+ 3 Dohyun, Estel         18     0.36        3
+ 4 Sophie, Brian         21     0.42        4
+ 5 Claire, Cloud         16     0.32        5
+ 6 Mal, Francis          17     0.34        6
+ 7 Siobhan, Jane         11     0.22        7
+ 8 Morgan, Emily         21     0.42        8
+ 9 Yao, Kate             23     0.46        9
+10 Caroline, Edna        15     0.3        10
+# ℹ 23 more rows</code></pre>
+</div>
+</div>
+<p>For each <code>group</code>, we are given their names, the number of <code>red_beads</code> they obtained, and the corresponding proportion out of 50 beads that were red, called <code>prop_red</code>. We also have a <code>group_ID</code> variable which gives each of the 33 groups a unique identifier. Each row can be viewed as one instance of a replicated activity: using the shovel to remove 50 beads and computing the proportion of those beads that were red.</p>
+<p>Let’s visualize the distribution of these 33 proportions using <code><a href="https://ggplot2.tidyverse.org/reference/geom_histogram.html">geom_histogram()</a></code> with <code>binwidth = 0.05</code>. This is a computerized and complete version of the partially completed hand-drawn histogram you saw earlier.</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb3"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">tactile_sample_urn</span> <span class="op">|&gt;</span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html">ggplot</a></span><span class="op">(</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html">aes</a></span><span class="op">(</span>x <span class="op">=</span> <span class="va">prop_red</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  </span>
+<span>  <span class="co"># Setting `boundary = 0.4` indicates that we want a binning scheme such that</span></span>
+<span>  <span class="co"># one of the bins' boundary is at 0.4. `color = "white"` modifies the color of</span></span>
+<span>  <span class="co"># the boundary for visual clarity.</span></span>
+<span>  </span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_histogram.html">geom_histogram</a></span><span class="op">(</span>binwidth <span class="op">=</span> <span class="fl">0.05</span>, </span>
+<span>                 boundary <span class="op">=</span> <span class="fl">0.4</span>, </span>
+<span>                 color <span class="op">=</span> <span class="st">"white"</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  </span>
+<span>  <span class="co"># Add scale_y_continuous with breaks by 1, as the default shows the y-axis</span></span>
+<span>  <span class="co"># from 1 to 10 with breaks at .5. Breaks by 1 is better for this plot, as all</span></span>
+<span>  <span class="co"># resulting values are integers.</span></span>
+<span>  </span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/scale_continuous.html">scale_y_continuous</a></span><span class="op">(</span>breaks <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/seq.html">seq</a></span><span class="op">(</span>from <span class="op">=</span> <span class="fl">0</span>, to <span class="op">=</span> <span class="fl">10</span>, by <span class="op">=</span> <span class="fl">1</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  </span>
+<span>  <span class="co"># The call expression() is used to insert a mathematical expression, like</span></span>
+<span>  <span class="co"># p-hat. The paste after expression allows us to paste text prior to said</span></span>
+<span>  <span class="co"># expression.</span></span>
+<span>  </span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html">labs</a></span><span class="op">(</span>x <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/expression.html">expression</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/paste.html">paste</a></span><span class="op">(</span><span class="st">"Proportion, "</span>, <span class="fu"><a href="https://rdrr.io/r/stats/influence.measures.html">hat</a></span><span class="op">(</span><span class="va">rho</span><span class="op">)</span>, <span class="st">", of 50 beads that were red"</span><span class="op">)</span><span class="op">)</span>,</span>
+<span>       y <span class="op">=</span> <span class="st">"Count"</span>,</span>
+<span>       title <span class="op">=</span> <span class="st">"Proportions Red in 33 Samples"</span><span class="op">)</span> </span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure"><p><img src="02-sampling_files/figure-html/unnamed-chunk-8-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+</section><section id="what-did-we-just-do" class="level3" data-number="2.1.3"><h3 data-number="2.1.3" class="anchored" data-anchor-id="what-did-we-just-do">
+<span class="header-section-number">2.1.3</span> What did we just do?</h3>
+<p>What we just demonstrated in this activity is the statistical concept of <strong>sampling</strong>. We want to know the proportion of red beads in the urn, with the urn being our <strong>population</strong>. Performing an exhaustive count of the red and white beads would be too time consuming. Therefore, it is much more practical to extract a <em>sample</em> of 50 beads using the shovel. Using this sample of 50 beads, we estimated the proportion of the urn’s beads that are red to be about 34%.</p>
+<p>Moreover, because we mixed the beads before each use of the shovel, the samples were random and independent. Because each sample was drawn at random, the samples were different from each other. This is an example of <em>sampling variation</em>. For example, what if instead of selecting 17 beads in our first sample we had selected just 11? Does that mean that the population proportion of the beads is 11/50 or 22%? No! Because we performed 33 trials we can look to our histogram, and see that the peak of the distribution occurs when <span class="math inline">\(.35 &lt; \hat{\rho} &lt; .4\)</span> , so it is <em>likely</em> that the proportion of red beads in the entire population will also fall in or near this range.</p>
+</section></section><section id="sec-virtual-sampling" class="level2" data-number="2.2"><h2 data-number="2.2" class="anchored" data-anchor-id="sec-virtual-sampling">
+<span class="header-section-number">2.2</span> Virtual sampling</h2>
+<p>We just performed a <em>tactile</em> sampling activity. We used a physical urn of beads and a physical shovel. We did this by hand so that we could develop our intuition about the ideas behind sampling. In this section, we mimic this physical sampling with <em>virtual</em> sampling, using a computer.</p>
+<section id="shovel-one-time" class="level3" data-number="2.2.1"><h3 data-number="2.2.1" class="anchored" data-anchor-id="shovel-one-time">
+<span class="header-section-number">2.2.1</span> Using the virtual shovel once</h3>
+<p>Virtual sampling requires a virtual urn and a virtual shovel. Create a tibble named <code>urn</code>. The rows of <code>urn</code> correspond exactly to the contents of the actual urn.</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb4"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="co"># set.seed() ensures that the beads in our virtual urn are always in the same</span></span>
+<span><span class="co"># order. This ensures that the figures in the book match their written</span></span>
+<span><span class="co"># descriptions. We want 40% of the beads to be red.</span></span>
+<span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/Random.html">set.seed</a></span><span class="op">(</span><span class="fl">8</span><span class="op">)</span></span>
+<span></span>
+<span><span class="va">urn</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://tibble.tidyverse.org/reference/tibble.html">tibble</a></span><span class="op">(</span>color <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/rep.html">rep</a></span><span class="op">(</span><span class="st">"red"</span>, <span class="fl">400</span><span class="op">)</span>, </span>
+<span>                        <span class="fu"><a href="https://rdrr.io/r/base/rep.html">rep</a></span><span class="op">(</span><span class="st">"white"</span>, <span class="fl">600</span><span class="op">)</span><span class="op">)</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>  </span>
+<span>  <span class="co"># sample_frac() keeps all the rows in the tibble but rearranges their order.</span></span>
+<span>  <span class="co"># We don't need to do this. A virtual urn does not care about the order of the</span></span>
+<span>  <span class="co"># beads. But we find it aesthetically pleasing to mix them up.</span></span>
+<span>  </span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/sample_n.html">sample_frac</a></span><span class="op">(</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html">mutate</a></span><span class="op">(</span>bead_ID <span class="op">=</span> <span class="fl">1</span><span class="op">:</span><span class="fl">1000</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html">select</a></span><span class="op">(</span><span class="va">bead_ID</span>, <span class="va">color</span><span class="op">)</span></span>
+<span></span>
+<span><span class="va">urn</span>  </span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 1,000 × 2
+   bead_ID color
+     &lt;int&gt; &lt;chr&gt;
+ 1       1 white
+ 2       2 red  
+ 3       3 red  
+ 4       4 white
+ 5       5 white
+ 6       6 red  
+ 7       7 white
+ 8       8 white
+ 9       9 red  
+10      10 red  
+# ℹ 990 more rows</code></pre>
+</div>
+</div>
+<p>Observe that <code>urn</code> has 1,000 rows, meaning that the urn contains 1,000 beads. The first variable <code>bead_ID</code> is used as an <em>identification variable</em>. None of the beads in the actual urn are marked with numbers. The second variable <code>color</code> indicates whether a particular virtual bead is red or white.</p>
+<p>Our virtual urn needs a virtual shovel. We use <code><a href="https://dplyr.tidyverse.org/reference/slice.html">slice_sample()</a></code> and some list-column mapping wizardry to take a sample of 50 beads from our virtual urn.</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb6"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="co"># Define trial_ID as one instance of us sampling 50 beads from the urn. When</span></span>
+<span><span class="co"># trial_ID is called within map(), we are performing slice_sample() upon our urn</span></span>
+<span><span class="co"># once, and taking a sample of 50 beads. </span></span>
+<span></span>
+<span><span class="fu"><a href="https://tibble.tidyverse.org/reference/tibble.html">tibble</a></span><span class="op">(</span>trial_ID <span class="op">=</span> <span class="fl">1</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html">mutate</a></span><span class="op">(</span>shovel <span class="op">=</span> <span class="fu"><a href="https://purrr.tidyverse.org/reference/map.html">map</a></span><span class="op">(</span><span class="va">trial_ID</span>, <span class="op">~</span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/slice.html">slice_sample</a></span><span class="op">(</span><span class="va">urn</span>, n <span class="op">=</span> <span class="fl">50</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 1 × 2
+  trial_ID shovel           
+     &lt;dbl&gt; &lt;list&gt;           
+1        1 &lt;tibble [50 × 2]&gt;</code></pre>
+</div>
+</div>
+<p>As usual, map functions and list-columns are powerful but confusing. The <code><a href="https://rdrr.io/r/utils/str.html">str()</a></code> function is a good way to explore a tibble with a list-column.</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb8"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu"><a href="https://tibble.tidyverse.org/reference/tibble.html">tibble</a></span><span class="op">(</span>trial_ID <span class="op">=</span> <span class="fl">1</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html">mutate</a></span><span class="op">(</span>shovel <span class="op">=</span> <span class="fu"><a href="https://purrr.tidyverse.org/reference/map.html">map</a></span><span class="op">(</span><span class="va">trial_ID</span>, <span class="op">~</span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/slice.html">slice_sample</a></span><span class="op">(</span><span class="va">urn</span>, n <span class="op">=</span> <span class="fl">50</span><span class="op">)</span><span class="op">)</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
+<span>  <span class="fu"><a href="https://rdrr.io/r/utils/str.html">str</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>tibble [1 × 2] (S3: tbl_df/tbl/data.frame)
+ $ trial_ID: num 1
+ $ shovel  :List of 1
+  ..$ : tibble [50 × 2] (S3: tbl_df/tbl/data.frame)
+  .. ..$ bead_ID: int [1:50] 391 171 24 703 399 404 134 145 272 487 ...
+  .. ..$ color  : chr [1:50] "white" "white" "white" "white" ...</code></pre>
+</div>
+</div>
+<p>There are two levels. There is one row in the tibble for each sample. So far, we have only drawn one sample. Within each row, there is a second level, the tibble which is the sample. That tibble has two variables: <code>trial_ID</code> and <code>color</code>. This is the advantage to using <code><a href="https://dplyr.tidyverse.org/reference/slice.html">slice_sample()</a></code>, because it selects all columns of our urn, whereas <code><a href="https://rdrr.io/r/base/sample.html">sample()</a></code> can only sample from a single column. While identifying each individual bead may be irrelevant in our urn scenario, with other problems it could be very useful to have additional data about each individual.</p>
+<p>Now let’s add a column which indicates the number of red beads in the sample taken from the shovel.</p>
+<!-- Explain .$color in a code comment. -->
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb10"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu"><a href="https://tibble.tidyverse.org/reference/tibble.html">tibble</a></span><span class="op">(</span>trial_ID <span class="op">=</span> <span class="fl">1</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html">mutate</a></span><span class="op">(</span>shovel <span class="op">=</span> <span class="fu"><a href="https://purrr.tidyverse.org/reference/map.html">map</a></span><span class="op">(</span><span class="va">trial_ID</span>, <span class="op">~</span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/slice.html">slice_sample</a></span><span class="op">(</span><span class="va">urn</span>, n <span class="op">=</span> <span class="fl">50</span><span class="op">)</span><span class="op">)</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
+<span>  </span>
+<span>  <span class="co"># To count the number of red beads in each shovel, we can use a lesser </span></span>
+<span>  <span class="co"># known property of the sum() function: By passing in a comparison </span></span>
+<span>  <span class="co"># expression, sum() will count the number of occurrences within a vector. </span></span>
+<span>  <span class="co"># In this case, we count the total number occurrences of the word red</span></span>
+<span>  <span class="co"># in the color column of shovel.</span></span>
+<span></span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html">mutate</a></span><span class="op">(</span>numb_red <span class="op">=</span> <span class="fu"><a href="https://purrr.tidyverse.org/reference/map.html">map_int</a></span><span class="op">(</span><span class="va">shovel</span>, <span class="op">~</span> <span class="fu"><a href="https://rdrr.io/r/base/sum.html">sum</a></span><span class="op">(</span><span class="va">.</span><span class="op">$</span><span class="va">color</span> <span class="op">==</span> <span class="st">"red"</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 1 × 3
+  trial_ID shovel            numb_red
+     &lt;dbl&gt; &lt;list&gt;               &lt;int&gt;
+1        1 &lt;tibble [50 × 2]&gt;       17</code></pre>
+</div>
+</div>
+<p>How does this work? R evaluates if <code>color == red</code>, and treats <code>TRUE</code> values like the number <code>1</code> and <code>FALSE</code> values like the number <code>0</code>. So summing the number of <code>TRUE</code>s and <code>FALSE</code>s is equivalent to summing <code>1</code>’s and <code>0</code>’s. In the end, this operation counts the number of beads where <code>color</code> equals “red”.</p>
+<p>Finally, calculate the proportion red by dividing <code>numb_red</code> (the number of red beads observed in the shovel) by the shovel size (which is 50 in this example).</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb12"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu"><a href="https://tibble.tidyverse.org/reference/tibble.html">tibble</a></span><span class="op">(</span>trial_ID <span class="op">=</span> <span class="fl">1</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html">mutate</a></span><span class="op">(</span>shovel <span class="op">=</span> <span class="fu"><a href="https://purrr.tidyverse.org/reference/map.html">map</a></span><span class="op">(</span><span class="va">trial_ID</span>, <span class="op">~</span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/slice.html">slice_sample</a></span><span class="op">(</span><span class="va">urn</span>, n <span class="op">=</span> <span class="fl">50</span><span class="op">)</span><span class="op">)</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html">mutate</a></span><span class="op">(</span>numb_red <span class="op">=</span> <span class="fu"><a href="https://purrr.tidyverse.org/reference/map.html">map_int</a></span><span class="op">(</span><span class="va">shovel</span>, <span class="op">~</span> <span class="fu"><a href="https://rdrr.io/r/base/sum.html">sum</a></span><span class="op">(</span><span class="va">.</span><span class="op">$</span><span class="va">color</span> <span class="op">==</span> <span class="st">"red"</span><span class="op">)</span><span class="op">)</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html">mutate</a></span><span class="op">(</span>prop_red <span class="op">=</span> <span class="va">numb_red</span> <span class="op">/</span> <span class="fl">50</span><span class="op">)</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 1 × 4
+  trial_ID shovel            numb_red prop_red
+     &lt;dbl&gt; &lt;list&gt;               &lt;int&gt;    &lt;dbl&gt;
+1        1 &lt;tibble [50 × 2]&gt;       17     0.34</code></pre>
+</div>
+</div>
+<p>Careful readers will note that the <code>numb_red</code> is changing in each example above. The reason, of course, is that each block re-runs the shovel exercise, and <code><a href="https://dplyr.tidyverse.org/reference/slice.html">slice_sample()</a></code> will return a random number of red beads. If we wanted the same number in each block, we would need to use the <code><a href="https://rdrr.io/r/base/Random.html">set.seed()</a></code> function and then set the same <code>seed</code> each time.</p>
+<p>Let’s now perform the virtual analog of having 33 groups of students use the sampling shovel.</p>
+</section><section id="shovel-33-times" class="level3" data-number="2.2.2"><h3 data-number="2.2.2" class="anchored" data-anchor-id="shovel-33-times">
+<span class="header-section-number">2.2.2</span> Using the virtual shovel 33 times</h3>
+<p>In our tactile sampling exercise in <a href="#sec-sampling-activity" class="quarto-xref"><span>Section 2.1</span></a>, we had 33 groups of students use the shovel, yielding 33 samples of size 50 beads. We then used these 33 samples to compute 33 proportions.</p>
+<p>Let’s use our virtual sampling to replicate the tactile sampling activity in a virtual format. We’ll save these results in a data frame called <code>virtual_samples</code>.</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb14"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/Random.html">set.seed</a></span><span class="op">(</span><span class="fl">13</span><span class="op">)</span></span>
+<span></span>
+<span> <span class="va">virtual_samples</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://tibble.tidyverse.org/reference/tibble.html">tibble</a></span><span class="op">(</span>trial_ID <span class="op">=</span> <span class="fl">1</span><span class="op">:</span><span class="fl">33</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>    <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html">mutate</a></span><span class="op">(</span>shovel <span class="op">=</span> <span class="fu"><a href="https://purrr.tidyverse.org/reference/map.html">map</a></span><span class="op">(</span><span class="va">trial_ID</span>, <span class="op">~</span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/slice.html">slice_sample</a></span><span class="op">(</span><span class="va">urn</span>, n <span class="op">=</span> <span class="fl">50</span><span class="op">)</span><span class="op">)</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
+<span>    <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html">mutate</a></span><span class="op">(</span>numb_red <span class="op">=</span> <span class="fu"><a href="https://purrr.tidyverse.org/reference/map.html">map_int</a></span><span class="op">(</span><span class="va">shovel</span>, <span class="op">~</span> <span class="fu"><a href="https://rdrr.io/r/base/sum.html">sum</a></span><span class="op">(</span><span class="va">.</span><span class="op">$</span><span class="va">color</span> <span class="op">==</span> <span class="st">"red"</span><span class="op">)</span><span class="op">)</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>    <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html">mutate</a></span><span class="op">(</span>prop_red <span class="op">=</span> <span class="va">numb_red</span> <span class="op">/</span> <span class="fl">50</span><span class="op">)</span> </span>
+<span></span>
+<span><span class="va">virtual_samples</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 33 × 4
+   trial_ID shovel            numb_red prop_red
+      &lt;int&gt; &lt;list&gt;               &lt;int&gt;    &lt;dbl&gt;
+ 1        1 &lt;tibble [50 × 2]&gt;       21     0.42
+ 2        2 &lt;tibble [50 × 2]&gt;       21     0.42
+ 3        3 &lt;tibble [50 × 2]&gt;       20     0.4 
+ 4        4 &lt;tibble [50 × 2]&gt;       17     0.34
+ 5        5 &lt;tibble [50 × 2]&gt;       20     0.4 
+ 6        6 &lt;tibble [50 × 2]&gt;       18     0.36
+ 7        7 &lt;tibble [50 × 2]&gt;       24     0.48
+ 8        8 &lt;tibble [50 × 2]&gt;       21     0.42
+ 9        9 &lt;tibble [50 × 2]&gt;       17     0.34
+10       10 &lt;tibble [50 × 2]&gt;       21     0.42
+# ℹ 23 more rows</code></pre>
+</div>
+</div>
+<p>Let’s visualize this variation in a histogram:</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb16"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">virtual_samples</span> <span class="op">|&gt;</span> </span>
+<span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html">ggplot</a></span><span class="op">(</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html">aes</a></span><span class="op">(</span>x <span class="op">=</span> <span class="va">prop_red</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_histogram.html">geom_histogram</a></span><span class="op">(</span>binwidth <span class="op">=</span> <span class="fl">0.05</span>, </span>
+<span>                 boundary <span class="op">=</span> <span class="fl">0.4</span>, </span>
+<span>                 color <span class="op">=</span> <span class="st">"white"</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  </span>
+<span>  <span class="co"># To use mathematical symbols in titles and labels, use the expression()</span></span>
+<span>  <span class="co"># function, as here.</span></span>
+<span>  </span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html">labs</a></span><span class="op">(</span>x <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/expression.html">expression</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/paste.html">paste</a></span><span class="op">(</span><span class="st">"Proportion, "</span>, <span class="fu"><a href="https://rdrr.io/r/stats/influence.measures.html">hat</a></span><span class="op">(</span><span class="va">rho</span><span class="op">)</span>, <span class="st">", of 50 beads that were red"</span><span class="op">)</span><span class="op">)</span>,</span>
+<span>       y <span class="op">=</span> <span class="st">"Count"</span>,</span>
+<span>       title <span class="op">=</span> <span class="st">"Distribution of 33 proportions red"</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  </span>
+<span>  <span class="co"># Label the y-axis in an attractive fashion. Without this code, the axis</span></span>
+<span>  <span class="co"># labels would include 2.5, which makes no sense because all the values are</span></span>
+<span>  <span class="co"># integers.</span></span>
+<span>  </span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/scale_continuous.html">scale_y_continuous</a></span><span class="op">(</span>breaks <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/seq.html">seq</a></span><span class="op">(</span><span class="fl">2</span>, <span class="fl">10</span>, <span class="fl">2</span><span class="op">)</span><span class="op">)</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure"><p><img src="02-sampling_files/figure-html/unnamed-chunk-15-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>Since <code>binwidth = 0.05</code>, this will create bins with boundaries at 0.30, 0.35, 0.45, and so on. Recall that <span class="math inline">\(\hat{\rho}\)</span> is equal to the proportion of beads which are red in each sample.</p>
+<p>Observe that we occasionally obtained proportions red that are less than 30%. On the other hand, we occasionally obtained proportions that are greater than 45%. However, the most frequently occurring proportions were between 35% and 45%. Why do we have these differences in proportions red? Because of <em>sampling variation</em>.</p>
+<p>Now we will compare our virtual results with our tactile results from the previous section. Observe that both histograms are somewhat similar in their center and variation, although not identical. These slight differences are again due to random sampling variation. Furthermore, observe that both distributions are somewhat bell-shaped.</p>
+<div class="cell">
+<div class="cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure"><p><img src="02-sampling_files/figure-html/unnamed-chunk-16-1.png" class="img-fluid figure-img" width="672"></p>
+<figcaption>Comparing 33 virtual and 33 tactile proportions red. Note that, though the figures differ slightly, both are centered around .35 to .45. This shows that, in both sampling distributions, the most frequently occuring proportion red is between 35% and 45%.</figcaption></figure>
+</div>
+</div>
+</div>
+<p>This visualization allows us to see how our results differed between our tactile and virtual urn results. As we can see, there is some variation between our results. This is not a cause for concern, as there is always sampling variation across results.</p>
+</section><section id="shovel-1000-times" class="level3" data-number="2.2.3"><h3 data-number="2.2.3" class="anchored" data-anchor-id="shovel-1000-times">
+<span class="header-section-number">2.2.3</span> Using the virtual shovel 10,000 times</h3>
+<div class="cell">
+<div class="cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure"><p><img src="sampling/images/sample_bernie.png" class="img-fluid figure-img"></p>
+<figcaption>So much sampling, so little time.</figcaption></figure>
+</div>
+</div>
+</div>
+<p>Although we took 33 samples from the urn in the previous section, we should not use so few samples. Instead, in this section we’ll examine the effects of sampling from the urn 10,000 times.</p>
+<p>We can reuse our code from above, making sure to replace 33 trials with 10,000.</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb17"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/Random.html">set.seed</a></span><span class="op">(</span><span class="fl">9</span><span class="op">)</span></span>
+<span></span>
+<span> <span class="va">virtual_samples</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://tibble.tidyverse.org/reference/tibble.html">tibble</a></span><span class="op">(</span>trial_ID <span class="op">=</span> <span class="fl">1</span><span class="op">:</span><span class="fl">10000</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>    <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html">mutate</a></span><span class="op">(</span>shovel <span class="op">=</span> <span class="fu"><a href="https://purrr.tidyverse.org/reference/map.html">map</a></span><span class="op">(</span><span class="va">trial_ID</span>, <span class="op">~</span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/slice.html">slice_sample</a></span><span class="op">(</span><span class="va">urn</span>, n <span class="op">=</span> <span class="fl">50</span><span class="op">)</span><span class="op">)</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
+<span>    <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html">mutate</a></span><span class="op">(</span>numb_red <span class="op">=</span> <span class="fu"><a href="https://purrr.tidyverse.org/reference/map.html">map_int</a></span><span class="op">(</span><span class="va">shovel</span>, <span class="op">~</span> <span class="fu"><a href="https://rdrr.io/r/base/sum.html">sum</a></span><span class="op">(</span><span class="va">.</span><span class="op">$</span><span class="va">color</span> <span class="op">==</span> <span class="st">"red"</span><span class="op">)</span><span class="op">)</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>    <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html">mutate</a></span><span class="op">(</span>numb_beads <span class="op">=</span> <span class="fu"><a href="https://purrr.tidyverse.org/reference/map.html">map_int</a></span><span class="op">(</span><span class="va">shovel</span>, <span class="op">~</span> <span class="fu"><a href="https://rdrr.io/r/base/length.html">length</a></span><span class="op">(</span><span class="va">.</span><span class="op">$</span><span class="va">color</span><span class="op">)</span><span class="op">)</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
+<span>    <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html">mutate</a></span><span class="op">(</span>prop_red <span class="op">=</span> <span class="va">numb_red</span> <span class="op">/</span> <span class="va">numb_beads</span><span class="op">)</span> </span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<p>Now we have 10,000 values for <code>prop_red</code>, each representing the proportion of 50 beads that are red in a sample. Using the same code as earlier, let’s visualize the distribution of these 10,000 replicates of <code>prop_red</code> in a histogram:</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb18"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">virtual_samples</span> <span class="op">|&gt;</span> </span>
+<span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html">ggplot</a></span><span class="op">(</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html">aes</a></span><span class="op">(</span>x <span class="op">=</span> <span class="va">prop_red</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_histogram.html">geom_histogram</a></span><span class="op">(</span>binwidth <span class="op">=</span> <span class="fl">0.01</span>, </span>
+<span>                 boundary <span class="op">=</span> <span class="fl">0.4</span>, </span>
+<span>                 color <span class="op">=</span> <span class="st">"white"</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html">labs</a></span><span class="op">(</span>x <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/expression.html">expression</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/stats/influence.measures.html">hat</a></span><span class="op">(</span><span class="va">rho</span><span class="op">)</span><span class="op">)</span>,</span>
+<span>       y <span class="op">=</span> <span class="st">"Count"</span>,</span>
+<span>       title <span class="op">=</span> <span class="st">"Distribution of 10,000 proportions red"</span><span class="op">)</span> </span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure"><p><img src="02-sampling_files/figure-html/unnamed-chunk-19-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>Why the empty spaces among the bars? Recall that, with only 50 beads, there are only 51 possible values for <span class="math inline">\(\hat{\rho}\)</span>: 0, 0.02, 0.04, …, 0.98, 1. A value of 0.31 or 0.47 is impossible, hence the gaps.</p>
+<p>The most frequently occurring proportions of red beads occur, again, between 35% and 45%. Every now and then we observe proportions much higher or lower. This occurs because as we increase the number of trials, tails develop on our distribution as we are more likely to witness extreme <span class="math inline">\(\hat{\rho}\)</span> values. The symmetric, bell-shaped distribution shown in the histogram is well approximated by the <em>normal distribution</em>.</p>
+<p>Now that we have a good understanding of virtual sampling, we can apply our knowledge to examine the effects of changing our virtual shovel size.</p>
+</section><section id="different-shovels" class="level3" data-number="2.2.4"><h3 data-number="2.2.4" class="anchored" data-anchor-id="different-shovels">
+<span class="header-section-number">2.2.4</span> The effect of different shovel sizes</h3>
+<div class="cell">
+<div class="cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure"><p><img src="sampling/images/three_shovels.png" class="img-fluid figure-img"></p>
+<figcaption>What happens if we use different sized shovels to sample?</figcaption></figure>
+</div>
+</div>
+</div>
+<p>Instead of just one shovel, imagine we have three choices of shovels with which to extract a sample of beads: shovels of size 25, 50, and 100. Using our newly developed tools for virtual sampling, let’s unpack the effect of having different sample sizes. Start by creating a tibble with 10,000 rows, each row representing an instance of us sampling from the urn with our chosen shovel size. Then, compute the resulting 10,000 replicates of proportion red. Finally, plot the distribution using a histogram.</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb19"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="co"># Within slice_sample(), n = 25 represents our shovel of size 25. We also divide</span></span>
+<span><span class="co"># by 25 to compute the proportion red.</span></span>
+<span></span>
+<span><span class="va">virtual_samples_25</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://tibble.tidyverse.org/reference/tibble.html">tibble</a></span><span class="op">(</span>trial_ID <span class="op">=</span> <span class="fl">1</span><span class="op">:</span><span class="fl">10000</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html">mutate</a></span><span class="op">(</span>shovel <span class="op">=</span> <span class="fu"><a href="https://purrr.tidyverse.org/reference/map.html">map</a></span><span class="op">(</span><span class="va">trial_ID</span>, <span class="op">~</span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/slice.html">slice_sample</a></span><span class="op">(</span><span class="va">urn</span>, n <span class="op">=</span> <span class="fl">25</span><span class="op">)</span><span class="op">)</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html">mutate</a></span><span class="op">(</span>numb_red <span class="op">=</span> <span class="fu"><a href="https://purrr.tidyverse.org/reference/map.html">map_int</a></span><span class="op">(</span><span class="va">shovel</span>, <span class="op">~</span> <span class="fu"><a href="https://rdrr.io/r/base/sum.html">sum</a></span><span class="op">(</span><span class="va">.</span><span class="op">$</span><span class="va">color</span> <span class="op">==</span> <span class="st">"red"</span><span class="op">)</span><span class="op">)</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html">mutate</a></span><span class="op">(</span>prop_red <span class="op">=</span> <span class="va">numb_red</span> <span class="op">/</span> <span class="fl">25</span><span class="op">)</span></span>
+<span></span>
+<span><span class="va">virtual_samples_25</span> <span class="op">|&gt;</span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html">ggplot</a></span><span class="op">(</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html">aes</a></span><span class="op">(</span>x <span class="op">=</span> <span class="va">prop_red</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_histogram.html">geom_histogram</a></span><span class="op">(</span>binwidth <span class="op">=</span> <span class="fl">0.04</span>, </span>
+<span>                 boundary <span class="op">=</span> <span class="fl">0.4</span>, </span>
+<span>                 color <span class="op">=</span> <span class="st">"white"</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html">labs</a></span><span class="op">(</span>x <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/expression.html">expression</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/paste.html">paste</a></span><span class="op">(</span><span class="st">"Proportion, "</span>, <span class="fu"><a href="https://rdrr.io/r/stats/influence.measures.html">hat</a></span><span class="op">(</span><span class="va">rho</span><span class="op">)</span>, <span class="st">", of 25 beads that were red"</span><span class="op">)</span><span class="op">)</span>, </span>
+<span>       title <span class="op">=</span> <span class="st">"25"</span><span class="op">)</span> </span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure"><p><img src="02-sampling_files/figure-html/unnamed-chunk-21-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>We will repeat this process with a shovel size of <strong>50</strong>.</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb20"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">virtual_samples_50</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://tibble.tidyverse.org/reference/tibble.html">tibble</a></span><span class="op">(</span>trial_ID <span class="op">=</span> <span class="fl">1</span><span class="op">:</span><span class="fl">10000</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html">mutate</a></span><span class="op">(</span>shovel <span class="op">=</span> <span class="fu"><a href="https://purrr.tidyverse.org/reference/map.html">map</a></span><span class="op">(</span><span class="va">trial_ID</span>, <span class="op">~</span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/slice.html">slice_sample</a></span><span class="op">(</span><span class="va">urn</span>, n <span class="op">=</span> <span class="fl">50</span><span class="op">)</span><span class="op">)</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html">mutate</a></span><span class="op">(</span>numb_red <span class="op">=</span> <span class="fu"><a href="https://purrr.tidyverse.org/reference/map.html">map_int</a></span><span class="op">(</span><span class="va">shovel</span>, <span class="op">~</span> <span class="fu"><a href="https://rdrr.io/r/base/sum.html">sum</a></span><span class="op">(</span><span class="va">.</span><span class="op">$</span><span class="va">color</span> <span class="op">==</span> <span class="st">"red"</span><span class="op">)</span><span class="op">)</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html">mutate</a></span><span class="op">(</span>prop_red <span class="op">=</span> <span class="va">numb_red</span> <span class="op">/</span> <span class="fl">50</span><span class="op">)</span></span>
+<span></span>
+<span></span>
+<span><span class="va">virtual_samples_50</span>  <span class="op">|&gt;</span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html">ggplot</a></span><span class="op">(</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html">aes</a></span><span class="op">(</span>x <span class="op">=</span> <span class="va">prop_red</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_histogram.html">geom_histogram</a></span><span class="op">(</span>binwidth <span class="op">=</span> <span class="fl">0.04</span>, </span>
+<span>                 boundary <span class="op">=</span> <span class="fl">0.4</span>, </span>
+<span>                 color <span class="op">=</span> <span class="st">"white"</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html">labs</a></span><span class="op">(</span>x <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/expression.html">expression</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/paste.html">paste</a></span><span class="op">(</span><span class="st">"Proportion, "</span>, <span class="fu"><a href="https://rdrr.io/r/stats/influence.measures.html">hat</a></span><span class="op">(</span><span class="va">rho</span><span class="op">)</span>, <span class="st">", of 50 beads that were red"</span><span class="op">)</span><span class="op">)</span>, </span>
+<span>       title <span class="op">=</span> <span class="st">"50"</span><span class="op">)</span>  </span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure"><p><img src="02-sampling_files/figure-html/unnamed-chunk-22-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>We choose a bin width of .04 for all histograms to more easily compare different shovel sizes. Using a smaller bin size would result in gaps between the bars, as a shovel of size 50 has more possible <span class="math inline">\(\hat{\rho}\)</span> values than a shovel of size 25.</p>
+<p>Finally, we will perform the same process with 10,000 replicates to map the histogram using a shovel size of <strong>100</strong>.</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb21"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">virtual_samples_100</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://tibble.tidyverse.org/reference/tibble.html">tibble</a></span><span class="op">(</span>trial_ID <span class="op">=</span> <span class="fl">1</span><span class="op">:</span><span class="fl">10000</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html">mutate</a></span><span class="op">(</span>shovel <span class="op">=</span> <span class="fu"><a href="https://purrr.tidyverse.org/reference/map.html">map</a></span><span class="op">(</span><span class="va">trial_ID</span>, <span class="op">~</span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/slice.html">slice_sample</a></span><span class="op">(</span><span class="va">urn</span>, n <span class="op">=</span> <span class="fl">100</span><span class="op">)</span><span class="op">)</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html">mutate</a></span><span class="op">(</span>numb_red <span class="op">=</span> <span class="fu"><a href="https://purrr.tidyverse.org/reference/map.html">map_int</a></span><span class="op">(</span><span class="va">shovel</span>, <span class="op">~</span> <span class="fu"><a href="https://rdrr.io/r/base/sum.html">sum</a></span><span class="op">(</span><span class="va">.</span><span class="op">$</span><span class="va">color</span> <span class="op">==</span> <span class="st">"red"</span><span class="op">)</span><span class="op">)</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html">mutate</a></span><span class="op">(</span>prop_red <span class="op">=</span> <span class="va">numb_red</span> <span class="op">/</span> <span class="fl">100</span><span class="op">)</span></span>
+<span></span>
+<span></span>
+<span><span class="va">virtual_samples_100</span> <span class="op">|&gt;</span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html">ggplot</a></span><span class="op">(</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html">aes</a></span><span class="op">(</span>x <span class="op">=</span> <span class="va">prop_red</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_histogram.html">geom_histogram</a></span><span class="op">(</span>binwidth <span class="op">=</span> <span class="fl">0.04</span>, </span>
+<span>                 boundary <span class="op">=</span> <span class="fl">0.4</span>, </span>
+<span>                 color <span class="op">=</span> <span class="st">"white"</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html">labs</a></span><span class="op">(</span>x <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/expression.html">expression</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/paste.html">paste</a></span><span class="op">(</span><span class="st">"Proportion, "</span>, <span class="fu"><a href="https://rdrr.io/r/stats/influence.measures.html">hat</a></span><span class="op">(</span><span class="va">rho</span><span class="op">)</span>, <span class="st">", of 100 beads that were red"</span><span class="op">)</span><span class="op">)</span>, </span>
+<span>       title <span class="op">=</span> <span class="st">"100"</span><span class="op">)</span> </span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure"><p><img src="02-sampling_files/figure-html/unnamed-chunk-23-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>For easy comparison, we present the three resulting histograms in a single row with matching x and y axes:</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb22"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="co"># Use bind_rows to combine the data from our three saved virtual sampling</span></span>
+<span><span class="co"># objects. Use mutate() in each to clarify the n as the necessary number</span></span>
+<span><span class="co"># of samples taken. This makes our data easier to interpret and prevents</span></span>
+<span><span class="co"># duplicate elements.</span></span>
+<span></span>
+<span><span class="va">virtual_prop</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/bind_rows.html">bind_rows</a></span><span class="op">(</span><span class="va">virtual_samples_25</span> <span class="op">|&gt;</span> </span>
+<span>                            <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html">mutate</a></span><span class="op">(</span>n <span class="op">=</span> <span class="fl">25</span><span class="op">)</span>, </span>
+<span>                          <span class="va">virtual_samples_50</span> <span class="op">|&gt;</span> </span>
+<span>                            <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html">mutate</a></span><span class="op">(</span>n <span class="op">=</span> <span class="fl">50</span><span class="op">)</span>, </span>
+<span>                          <span class="va">virtual_samples_100</span> <span class="op">|&gt;</span> </span>
+<span>                            <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html">mutate</a></span><span class="op">(</span>n <span class="op">=</span> <span class="fl">100</span><span class="op">)</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># Plot our new object with the x-axis showing prop_red. Add elements binwidth,</span></span>
+<span><span class="co"># boundary, and color for stylistic clarity. Use labs() to add an x-axis label</span></span>
+<span><span class="co"># and title. Facet_wrap() splits the graph into multiple plots by the variable</span></span>
+<span><span class="co"># (~n).</span></span>
+<span></span>
+<span><span class="va">comparing_sampling_distributions</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html">ggplot</a></span><span class="op">(</span><span class="va">virtual_prop</span>, <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html">aes</a></span><span class="op">(</span>x <span class="op">=</span> <span class="va">prop_red</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_histogram.html">geom_histogram</a></span><span class="op">(</span>binwidth <span class="op">=</span> <span class="fl">0.04</span>, boundary <span class="op">=</span> <span class="fl">0.4</span>, color <span class="op">=</span> <span class="st">"white"</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html">labs</a></span><span class="op">(</span>x <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/expression.html">expression</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/paste.html">paste</a></span><span class="op">(</span><span class="st">"Proportion, "</span>, <span class="fu"><a href="https://rdrr.io/r/stats/influence.measures.html">hat</a></span><span class="op">(</span><span class="va">rho</span><span class="op">)</span>, <span class="st">", of the beads that were red"</span><span class="op">)</span><span class="op">)</span>, </span>
+<span>       title <span class="op">=</span> <span class="st">"Comparing distributions of proportions red for three different shovel sizes."</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/facet_wrap.html">facet_wrap</a></span><span class="op">(</span><span class="op">~</span> <span class="va">n</span><span class="op">)</span> </span>
+<span></span>
+<span><span class="co"># Inspect our new faceted graph. </span></span>
+<span></span>
+<span><span class="va">comparing_sampling_distributions</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure"><p><img src="02-sampling_files/figure-html/unnamed-chunk-24-1.png" class="img-fluid figure-img" width="672"></p>
+<figcaption>Comparing the distributions of proportion red for different sample sizes (25, 50, 100). The important takeaway is that our center becomes more concentrated as our sample size increases, indicating a smaller standard deviation between our guesses.</figcaption></figure>
+</div>
+</div>
+</div>
+<p>Observe that as the sample size increases, the histogram becomes taller and narrower. This is because the <em>variation</em> of the proportion red for each sample decreases. Remember: A large variation means there are a wide range of values that might occur, while smaller variations are more concentrated around the central value.</p>
+<p>The <a href="https://en.wikipedia.org/wiki/Central_limit_theorem"><em>Central Limit Theorem</em></a> states, more or less, that when sample means are based on larger and larger sample sizes, the sampling distribution of these sample means becomes both narrower and more bell-shaped. In other words, the sampling distribution increasingly follows a <em>normal distribution</em> and the variation of this sampling distribution gets smaller.</p>
+<p>Why does variation decrease as sample size increases? If we use a large sample size like 100 or 500, our sample is much more representative of the population. As a result, the proportion red in our sample (<span class="math inline">\(\hat{\rho}\)</span>) will be closer to the true population proportion (<span class="math inline">\(\rho\)</span>). On the other hand, smaller samples have much more variation because of chance. We are much more likely to have extreme estimates that are not representative of our population when the sample size is small.</p>
+<p>Let’s attempt to visualize the concept of <em>variation</em> a different way. For each sample size, let’s plot the proportion red for <em>all</em> 10,000 samples. With 3 different shovel sizes, we will have 30,000 total points, with each point representing an instance of sampling from the urn with a specific shovel size.</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb23"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">virtual_prop</span> <span class="op">|&gt;</span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html">ggplot</a></span><span class="op">(</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html">aes</a></span><span class="op">(</span>x <span class="op">=</span> <span class="va">n</span>, y <span class="op">=</span> <span class="va">prop_red</span>, color <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/factor.html">as.factor</a></span><span class="op">(</span><span class="va">n</span><span class="op">)</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_jitter.html">geom_jitter</a></span><span class="op">(</span>alpha <span class="op">=</span> <span class="fl">.15</span><span class="op">)</span> <span class="op">+</span> </span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html">labs</a></span><span class="op">(</span>title <span class="op">=</span> <span class="st">"Results of 10,000 samples for 3 different shovel sizes."</span>,</span>
+<span>       subtitle <span class="op">=</span> <span class="st">"As shovel size increases, variation decreases."</span>,</span>
+<span>       y <span class="op">=</span> <span class="st">"Proportion red in sample"</span>,</span>
+<span>       color <span class="op">=</span> <span class="st">"Shovel size"</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  </span>
+<span>  <span class="co"># We do not need an x axis, because the color of the points denotes the shovel size. </span></span>
+<span>   </span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/theme.html">theme</a></span><span class="op">(</span>axis.title.x <span class="op">=</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/element.html">element_blank</a></span><span class="op">(</span><span class="op">)</span>,</span>
+<span>        axis.text.x <span class="op">=</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/element.html">element_blank</a></span><span class="op">(</span><span class="op">)</span>,</span>
+<span>        axis.ticks.x <span class="op">=</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/element.html">element_blank</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure"><p><img src="02-sampling_files/figure-html/unnamed-chunk-25-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>This graph illustrates the exact same concept as the histogram. With the smallest shovel size, there is significant variance from sample to sample, as samples feature, by chance, some extreme results. However, as we increase the sample size, the points become more concentrated, i.e., they demonstrate less variance.</p>
+<p>There is also a third way to understand variation. We can be numerically explicit about the amount of variation in our three sets of 10,000 values of <code>prop_red</code> by using the <em>standard deviation</em>. A standard deviation is a summary statistic that measures the amount of variation within a numeric vector. For all three sample sizes, let’s compute the standard deviation of the 10,000 proportions red.</p>
+<div class="cell">
+<div class="cell-output-display">
+<div id="nykcbvvilg" style="padding-left:0px;padding-right:0px;padding-top:10px;padding-bottom:10px;overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
+<style>#nykcbvvilg table {
+  font-family: system-ui, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+#nykcbvvilg thead, #nykcbvvilg tbody, #nykcbvvilg tfoot, #nykcbvvilg tr, #nykcbvvilg td, #nykcbvvilg th {
+  border-style: none;
+}
+
+#nykcbvvilg p {
+  margin: 0;
+  padding: 0;
+}
+
+#nykcbvvilg .gt_table {
+  display: table;
+  border-collapse: collapse;
+  line-height: normal;
+  margin-left: auto;
+  margin-right: auto;
+  color: #333333;
+  font-size: 16px;
+  font-weight: normal;
+  font-style: normal;
+  background-color: #FFFFFF;
+  width: auto;
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #A8A8A8;
+  border-right-style: none;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #A8A8A8;
+  border-left-style: none;
+  border-left-width: 2px;
+  border-left-color: #D3D3D3;
+}
+
+#nykcbvvilg .gt_caption {
+  padding-top: 4px;
+  padding-bottom: 4px;
+}
+
+#nykcbvvilg .gt_title {
+  color: #333333;
+  font-size: 125%;
+  font-weight: initial;
+  padding-top: 4px;
+  padding-bottom: 4px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-bottom-color: #FFFFFF;
+  border-bottom-width: 0;
+}
+
+#nykcbvvilg .gt_subtitle {
+  color: #333333;
+  font-size: 85%;
+  font-weight: initial;
+  padding-top: 3px;
+  padding-bottom: 5px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-top-color: #FFFFFF;
+  border-top-width: 0;
+}
+
+#nykcbvvilg .gt_heading {
+  background-color: #FFFFFF;
+  text-align: center;
+  border-bottom-color: #FFFFFF;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+}
+
+#nykcbvvilg .gt_bottom_border {
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+}
+
+#nykcbvvilg .gt_col_headings {
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+}
+
+#nykcbvvilg .gt_col_heading {
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: normal;
+  text-transform: inherit;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+  vertical-align: bottom;
+  padding-top: 5px;
+  padding-bottom: 6px;
+  padding-left: 5px;
+  padding-right: 5px;
+  overflow-x: hidden;
+}
+
+#nykcbvvilg .gt_column_spanner_outer {
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: normal;
+  text-transform: inherit;
+  padding-top: 0;
+  padding-bottom: 0;
+  padding-left: 4px;
+  padding-right: 4px;
+}
+
+#nykcbvvilg .gt_column_spanner_outer:first-child {
+  padding-left: 0;
+}
+
+#nykcbvvilg .gt_column_spanner_outer:last-child {
+  padding-right: 0;
+}
+
+#nykcbvvilg .gt_column_spanner {
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  vertical-align: bottom;
+  padding-top: 5px;
+  padding-bottom: 5px;
+  overflow-x: hidden;
+  display: inline-block;
+  width: 100%;
+}
+
+#nykcbvvilg .gt_spanner_row {
+  border-bottom-style: hidden;
+}
+
+#nykcbvvilg .gt_group_heading {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: initial;
+  text-transform: inherit;
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+  vertical-align: middle;
+  text-align: left;
+}
+
+#nykcbvvilg .gt_empty_group_heading {
+  padding: 0.5px;
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: initial;
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  vertical-align: middle;
+}
+
+#nykcbvvilg .gt_from_md > :first-child {
+  margin-top: 0;
+}
+
+#nykcbvvilg .gt_from_md > :last-child {
+  margin-bottom: 0;
+}
+
+#nykcbvvilg .gt_row {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  margin: 10px;
+  border-top-style: solid;
+  border-top-width: 1px;
+  border-top-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+  vertical-align: middle;
+  overflow-x: hidden;
+}
+
+#nykcbvvilg .gt_stub {
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: initial;
+  text-transform: inherit;
+  border-right-style: solid;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+#nykcbvvilg .gt_stub_row_group {
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: initial;
+  text-transform: inherit;
+  border-right-style: solid;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+  padding-left: 5px;
+  padding-right: 5px;
+  vertical-align: top;
+}
+
+#nykcbvvilg .gt_row_group_first td {
+  border-top-width: 2px;
+}
+
+#nykcbvvilg .gt_row_group_first th {
+  border-top-width: 2px;
+}
+
+#nykcbvvilg .gt_summary_row {
+  color: #333333;
+  background-color: #FFFFFF;
+  text-transform: inherit;
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+#nykcbvvilg .gt_first_summary_row {
+  border-top-style: solid;
+  border-top-color: #D3D3D3;
+}
+
+#nykcbvvilg .gt_first_summary_row.thick {
+  border-top-width: 2px;
+}
+
+#nykcbvvilg .gt_last_summary_row {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+}
+
+#nykcbvvilg .gt_grand_summary_row {
+  color: #333333;
+  background-color: #FFFFFF;
+  text-transform: inherit;
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+#nykcbvvilg .gt_first_grand_summary_row {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-top-style: double;
+  border-top-width: 6px;
+  border-top-color: #D3D3D3;
+}
+
+#nykcbvvilg .gt_last_grand_summary_row_top {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-bottom-style: double;
+  border-bottom-width: 6px;
+  border-bottom-color: #D3D3D3;
+}
+
+#nykcbvvilg .gt_striped {
+  background-color: rgba(128, 128, 128, 0.05);
+}
+
+#nykcbvvilg .gt_table_body {
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+}
+
+#nykcbvvilg .gt_footnotes {
+  color: #333333;
+  background-color: #FFFFFF;
+  border-bottom-style: none;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 2px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+}
+
+#nykcbvvilg .gt_footnote {
+  margin: 0px;
+  font-size: 90%;
+  padding-top: 4px;
+  padding-bottom: 4px;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+#nykcbvvilg .gt_sourcenotes {
+  color: #333333;
+  background-color: #FFFFFF;
+  border-bottom-style: none;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 2px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+}
+
+#nykcbvvilg .gt_sourcenote {
+  font-size: 90%;
+  padding-top: 4px;
+  padding-bottom: 4px;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+#nykcbvvilg .gt_left {
+  text-align: left;
+}
+
+#nykcbvvilg .gt_center {
+  text-align: center;
+}
+
+#nykcbvvilg .gt_right {
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+}
+
+#nykcbvvilg .gt_font_normal {
+  font-weight: normal;
+}
+
+#nykcbvvilg .gt_font_bold {
+  font-weight: bold;
+}
+
+#nykcbvvilg .gt_font_italic {
+  font-style: italic;
+}
+
+#nykcbvvilg .gt_super {
+  font-size: 65%;
+}
+
+#nykcbvvilg .gt_footnote_marks {
+  font-size: 75%;
+  vertical-align: 0.4em;
+  position: initial;
+}
+
+#nykcbvvilg .gt_asterisk {
+  font-size: 100%;
+  vertical-align: 0;
+}
+
+#nykcbvvilg .gt_indent_1 {
+  text-indent: 5px;
+}
+
+#nykcbvvilg .gt_indent_2 {
+  text-indent: 10px;
+}
+
+#nykcbvvilg .gt_indent_3 {
+  text-indent: 15px;
+}
+
+#nykcbvvilg .gt_indent_4 {
+  text-indent: 20px;
+}
+
+#nykcbvvilg .gt_indent_5 {
+  text-indent: 25px;
+}
+
+#nykcbvvilg .katex-display {
+  display: inline-flex !important;
+  margin-bottom: 0.75em !important;
+}
+
+#nykcbvvilg div.Reactable > div.rt-table > div.rt-thead > div.rt-tr.rt-tr-group-header > div.rt-th-group:after {
+  height: 0px !important;
+}
+</style>
+<table class="gt_table caption-top table table-sm table-striped small" data-quarto-bootstrap="false">
+<thead>
+<tr class="gt_heading header">
+<td colspan="2" class="gt_heading gt_title gt_font_normal gt_bottom_border">Comparing standard deviations of proportions red for three different shovels</td>
+</tr>
+<tr class="gt_col_headings even">
+<th id="Number-of-slots-in-shovel" class="gt_col_heading gt_columns_bottom_border gt_right" data-quarto-table-cell-role="th" scope="col">Number of slots in shovel</th>
+<th id="Standard-deviation-of-proportions-red" class="gt_col_heading gt_columns_bottom_border gt_right" data-quarto-table-cell-role="th" scope="col">Standard deviation of proportions red</th>
+</tr>
+</thead>
+<tbody class="gt_table_body">
+<tr class="odd">
+<td class="gt_row gt_right" headers="Number of slots in shovel">25</td>
+<td class="gt_row gt_right" headers="Standard deviation of proportions red">0.098</td>
+</tr>
+<tr class="even">
+<td class="gt_row gt_right" headers="Number of slots in shovel">50</td>
+<td class="gt_row gt_right" headers="Standard deviation of proportions red">0.068</td>
+</tr>
+<tr class="odd">
+<td class="gt_row gt_right" headers="Number of slots in shovel">100</td>
+<td class="gt_row gt_right" headers="Standard deviation of proportions red">0.046</td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>Comparing the number of slots in the shovel with the standard deviation of proportions red. Here, we see that standard deviation decreases with higher sample sizes. Larger sample sizes yield more precise estimates.</p>
+</div>
+</div>
+<p>&nbsp;</p>
+<p>As the sample size increases, the sample-to-sample variation decreases, and our guesses at the true proportion of the urn’s beads that are red get more precise. The larger the shovel, the more precise the result.</p>
+<div class="cell">
+<div class="cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure"><p><img src="sampling/images/variance_everywhere_meme.jpeg" class="img-fluid figure-img"></p>
+<figcaption>Variance appears everywhere in data science.</figcaption></figure>
+</div>
+</div>
+</div>
+<p>Let’s take a step back from all the variance. The reality is that our code needs to be better optimized, as it is bad practice to make a separate tibble for each sample size. To make comparisons easier, let’s attempt to put all 3 shovel sizes in the same tibble using mapping.</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb24"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu"><a href="https://tibble.tidyverse.org/reference/tibble.html">tibble</a></span><span class="op">(</span>trial_ID <span class="op">=</span> <span class="fl">1</span><span class="op">:</span><span class="fl">10000</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html">mutate</a></span><span class="op">(</span>shovel_ID <span class="op">=</span> <span class="fu"><a href="https://purrr.tidyverse.org/reference/map.html">map</a></span><span class="op">(</span><span class="va">trial_ID</span>, <span class="op">~</span><span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">25</span>, <span class="fl">50</span>, <span class="fl">100</span><span class="op">)</span><span class="op">)</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>  <span class="fu"><a href="https://tidyr.tidyverse.org/reference/unnest.html">unnest</a></span><span class="op">(</span><span class="va">shovel_ID</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html">mutate</a></span><span class="op">(</span>samples <span class="op">=</span> <span class="fu"><a href="https://purrr.tidyverse.org/reference/map.html">map</a></span><span class="op">(</span><span class="va">shovel_ID</span>, <span class="op">~</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/slice.html">slice_sample</a></span><span class="op">(</span><span class="va">urn</span>, n <span class="op">=</span> <span class="va">.</span><span class="op">)</span><span class="op">)</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html">mutate</a></span><span class="op">(</span>num_red <span class="op">=</span> <span class="fu"><a href="https://purrr.tidyverse.org/reference/map.html">map_int</a></span><span class="op">(</span><span class="va">samples</span>, <span class="op">~</span><span class="fu"><a href="https://rdrr.io/r/base/sum.html">sum</a></span><span class="op">(</span><span class="va">.</span><span class="op">$</span><span class="va">color</span> <span class="op">==</span> <span class="st">"red"</span><span class="op">)</span><span class="op">)</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html">mutate</a></span><span class="op">(</span>prop_red <span class="op">=</span> <span class="va">num_red</span><span class="op">/</span><span class="va">shovel_ID</span><span class="op">)</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 30,000 × 5
+   trial_ID shovel_ID samples            num_red prop_red
+      &lt;int&gt;     &lt;dbl&gt; &lt;list&gt;               &lt;int&gt;    &lt;dbl&gt;
+ 1        1        25 &lt;tibble [25 × 2]&gt;       13     0.52
+ 2        1        50 &lt;tibble [50 × 2]&gt;       27     0.54
+ 3        1       100 &lt;tibble [100 × 2]&gt;      49     0.49
+ 4        2        25 &lt;tibble [25 × 2]&gt;       12     0.48
+ 5        2        50 &lt;tibble [50 × 2]&gt;       22     0.44
+ 6        2       100 &lt;tibble [100 × 2]&gt;      33     0.33
+ 7        3        25 &lt;tibble [25 × 2]&gt;       11     0.44
+ 8        3        50 &lt;tibble [50 × 2]&gt;       16     0.32
+ 9        3       100 &lt;tibble [100 × 2]&gt;      33     0.33
+10        4        25 &lt;tibble [25 × 2]&gt;       13     0.52
+# ℹ 29,990 more rows</code></pre>
+</div>
+</div>
+<p>To those of us who do not completely understand mapping, do not fret! The <strong>tidyr</strong> package provides the <code><a href="https://tidyr.tidyverse.org/reference/expand_grid.html">expand_grid()</a></code> function as a neat alternative. We can use <code><a href="https://tidyr.tidyverse.org/reference/expand_grid.html">expand_grid()</a></code> and a new variable, <code>shovel_size</code>, to create a tibble which will organize our results. Instead of using 1,000 trials, let’s use 3 to get a feel for the function.</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb26"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu"><a href="https://tidyr.tidyverse.org/reference/expand_grid.html">expand_grid</a></span><span class="op">(</span>trial_ID <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">1</span><span class="op">:</span><span class="fl">3</span><span class="op">)</span>, shovel_size <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">25</span>, <span class="fl">50</span>, <span class="fl">100</span><span class="op">)</span><span class="op">)</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 9 × 2
+  trial_ID shovel_size
+     &lt;int&gt;       &lt;dbl&gt;
+1        1          25
+2        1          50
+3        1         100
+4        2          25
+5        2          50
+6        2         100
+7        3          25
+8        3          50
+9        3         100</code></pre>
+</div>
+</div>
+<p>The above sets the stage for simulating three samples for each of three different shovel sizes. Similar code as above can be used.</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb28"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu"><a href="https://tidyr.tidyverse.org/reference/expand_grid.html">expand_grid</a></span><span class="op">(</span>trial_ID <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">1</span><span class="op">:</span><span class="fl">3</span><span class="op">)</span>, shovel_size <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">25</span>, <span class="fl">50</span>, <span class="fl">100</span><span class="op">)</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html">mutate</a></span><span class="op">(</span>shovel <span class="op">=</span> <span class="fu"><a href="https://purrr.tidyverse.org/reference/map.html">map</a></span><span class="op">(</span><span class="va">shovel_size</span>, <span class="op">~</span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/slice.html">slice_sample</a></span><span class="op">(</span><span class="va">urn</span>, n <span class="op">=</span> <span class="va">.</span><span class="op">)</span><span class="op">)</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html">mutate</a></span><span class="op">(</span>numb_red <span class="op">=</span> <span class="fu"><a href="https://purrr.tidyverse.org/reference/map.html">map_int</a></span><span class="op">(</span><span class="va">shovel</span>, <span class="op">~</span> <span class="fu"><a href="https://rdrr.io/r/base/sum.html">sum</a></span><span class="op">(</span><span class="va">.</span><span class="op">$</span><span class="va">color</span> <span class="op">==</span> <span class="st">"red"</span><span class="op">)</span><span class="op">)</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html">mutate</a></span><span class="op">(</span>prop_red <span class="op">=</span> <span class="va">numb_red</span><span class="op">/</span><span class="va">shovel_size</span><span class="op">)</span> </span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 9 × 5
+  trial_ID shovel_size shovel             numb_red prop_red
+     &lt;int&gt;       &lt;dbl&gt; &lt;list&gt;                &lt;int&gt;    &lt;dbl&gt;
+1        1          25 &lt;tibble [25 × 2]&gt;         9     0.36
+2        1          50 &lt;tibble [50 × 2]&gt;        20     0.4 
+3        1         100 &lt;tibble [100 × 2]&gt;       46     0.46
+4        2          25 &lt;tibble [25 × 2]&gt;         7     0.28
+5        2          50 &lt;tibble [50 × 2]&gt;        12     0.24
+6        2         100 &lt;tibble [100 × 2]&gt;       35     0.35
+7        3          25 &lt;tibble [25 × 2]&gt;        14     0.56
+8        3          50 &lt;tibble [50 × 2]&gt;        16     0.32
+9        3         100 &lt;tibble [100 × 2]&gt;       34     0.34</code></pre>
+</div>
+</div>
+<p>Again, we changed the second line to use <code>shovel_size</code> rather than <code>trial_ID</code> as the mapping variable since we can no longer hard code the shovel size into the call to <code><a href="https://dplyr.tidyverse.org/reference/slice.html">slice_sample()</a></code>. Expand to 1,000 simulations for each value of <code>shovel_size</code> and finish with a calculation of standard deviation.</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb30"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu"><a href="https://tidyr.tidyverse.org/reference/expand_grid.html">expand_grid</a></span><span class="op">(</span>trial_ID <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">1</span><span class="op">:</span><span class="fl">10000</span><span class="op">)</span>, shovel_size <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">25</span>, <span class="fl">50</span>, <span class="fl">100</span><span class="op">)</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html">mutate</a></span><span class="op">(</span>shovel <span class="op">=</span> <span class="fu"><a href="https://purrr.tidyverse.org/reference/map.html">map</a></span><span class="op">(</span><span class="va">shovel_size</span>, <span class="op">~</span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/slice.html">slice_sample</a></span><span class="op">(</span><span class="va">urn</span>, n <span class="op">=</span> <span class="va">.</span><span class="op">)</span><span class="op">)</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html">mutate</a></span><span class="op">(</span>numb_red <span class="op">=</span> <span class="fu"><a href="https://purrr.tidyverse.org/reference/map.html">map_int</a></span><span class="op">(</span><span class="va">shovel</span>, <span class="op">~</span> <span class="fu"><a href="https://rdrr.io/r/base/sum.html">sum</a></span><span class="op">(</span><span class="va">.</span><span class="op">$</span><span class="va">color</span> <span class="op">==</span> <span class="st">"red"</span><span class="op">)</span><span class="op">)</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html">mutate</a></span><span class="op">(</span>prop_red <span class="op">=</span> <span class="va">numb_red</span><span class="op">/</span><span class="va">shovel_size</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/summarise.html">summarize</a></span><span class="op">(</span>st_dev_p_hat <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/sd.html">sd</a></span><span class="op">(</span><span class="va">prop_red</span><span class="op">)</span>,</span>
+<span>            .by <span class="op">=</span> <span class="va">shovel_size</span><span class="op">)</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 3 × 2
+  shovel_size st_dev_p_hat
+        &lt;dbl&gt;        &lt;dbl&gt;
+1          25       0.0964
+2          50       0.0675
+3         100       0.0465</code></pre>
+</div>
+</div>
+<p>This is, approximately, the same result as we saw above, but with one re-factored tibble instead of three separate ones. Use functions like <code><a href="https://tidyr.tidyverse.org/reference/expand_grid.html">expand_grid()</a></code> in the future to make your code more concise.</p>
+<p>Now that we have this framework, there’s no need to limit ourselves to the sizes 25, 50, and 100. Why not try all integers from 1 to 100? We can use the same code, except we’ll now set <code>shovel_size = 1:100</code>. (We also decrease the number of replications from 10,000 to 1,000 in order to save time.)</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb32"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">shovels_100</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://tidyr.tidyverse.org/reference/expand_grid.html">expand_grid</a></span><span class="op">(</span>trial_ID <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">1</span><span class="op">:</span><span class="fl">1000</span><span class="op">)</span>, shovel_size <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">1</span><span class="op">:</span><span class="fl">100</span><span class="op">)</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html">mutate</a></span><span class="op">(</span>shovel <span class="op">=</span> <span class="fu"><a href="https://purrr.tidyverse.org/reference/map.html">map</a></span><span class="op">(</span><span class="va">shovel_size</span>, <span class="op">~</span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/slice.html">slice_sample</a></span><span class="op">(</span><span class="va">urn</span>, n <span class="op">=</span> <span class="va">.</span><span class="op">)</span><span class="op">)</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html">mutate</a></span><span class="op">(</span>numb_red <span class="op">=</span> <span class="fu"><a href="https://purrr.tidyverse.org/reference/map.html">map_int</a></span><span class="op">(</span><span class="va">shovel</span>, <span class="op">~</span> <span class="fu"><a href="https://rdrr.io/r/base/sum.html">sum</a></span><span class="op">(</span><span class="va">.</span><span class="op">$</span><span class="va">color</span> <span class="op">==</span> <span class="st">"red"</span><span class="op">)</span><span class="op">)</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html">mutate</a></span><span class="op">(</span>prop_red <span class="op">=</span> <span class="va">numb_red</span> <span class="op">/</span> <span class="va">shovel_size</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/summarise.html">summarize</a></span><span class="op">(</span>st_dev_p_hat <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/sd.html">sd</a></span><span class="op">(</span><span class="va">prop_red</span><span class="op">)</span>,</span>
+<span>            .by <span class="op">=</span> <span class="va">shovel_size</span><span class="op">)</span></span>
+<span></span>
+<span><span class="fu"><a href="https://pillar.r-lib.org/reference/glimpse.html">glimpse</a></span><span class="op">(</span><span class="va">shovels_100</span><span class="op">)</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Rows: 100
+Columns: 2
+$ shovel_size  &lt;int&gt; 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17…
+$ st_dev_p_hat &lt;dbl&gt; 0.49207941, 0.33817764, 0.27815410, 0.24720459, 0.2187414…</code></pre>
+</div>
+</div>
+<p>Now, we have the standard deviation of <code>prop_red</code> for all shovel sizes from 1 to 100. Let’s plot that value to see how it changes as the shovel gets larger:</p>
+<div class="cell">
+<div class="cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure"><p><img src="02-sampling_files/figure-html/unnamed-chunk-33-1.png" class="img-fluid figure-img" width="672"></p>
+<figcaption>Comparing standard deviations of proportions red for 100 different shovels. The standard deviation decreases at the same rate as the square root of shovel size. The red line shows the standard error.</figcaption></figure>
+</div>
+</div>
+</div>
+<p>The red line here represents an important statistical concept: standard error (SE). As the shovel size increases, and thus our sample size increases, we find that the standard error decreases.</p>
+<div class="cell">
+<div class="cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure"><p><img src="sampling/images/meme_math.png" class="img-fluid figure-img"></p>
+<figcaption>To any poets and philosophers confused about this: don’t worry! It won’t be on a problem set.</figcaption></figure>
+</div>
+</div>
+</div>
+<p>This is the power of running many analyses at once using map functions and list columns: before, we could tell that the standard deviation was decreasing as the shovel size increased, but when only looking at shovel sizes of 25, 50, and 100, it wasn’t clear <em>how quickly</em> it was decreasing.</p>
+</section></section><section id="sec-standard-errors" class="level2" data-number="2.3"><h2 data-number="2.3" class="anchored" data-anchor-id="sec-standard-errors">
+<span class="header-section-number">2.3</span> Standard error</h2>
+<div class="cell" data-layout-align="center">
+<div class="cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure"><p><img src="sampling/images/old_man_SE.png" class="img-fluid figure-img"></p>
+<figcaption>Standard errors are just the way old people talk about confidence intervals.</figcaption></figure>
+</div>
+</div>
+</div>
+<p><em>Standard errors (SE) quantify the effect of sampling variation on our estimates.</em> In other words, they quantify how much we can expect the calculated proportions of a shovel’s beads that are red <em>to vary</em> from one sample to another sample to another sample. As sample size increases, the standard error decreases.</p>
+<p><em>The standard error is the standard deviation of a sample statistic such as the estimated proportion.</em> For example, the <em>standard error of the mean</em> refers to the standard deviation of the distribution of sample means taken from a population.</p>
+<p>The relationship between the standard error and the standard deviation is that, for a given sample size, <em>the standard error equals the standard deviation of the data divided by the square root of the sample size</em>. Accordingly, the standard error is inversely proportional to the square root of the sample size. The larger the sample size, the smaller the standard error.</p>
+<section id="sec-terminology-and-notation" class="level3" data-number="2.3.1"><h3 data-number="2.3.1" class="anchored" data-anchor-id="sec-terminology-and-notation">
+<span class="header-section-number">2.3.1</span> Terminology and notation</h3>
+<div class="cell">
+<div class="cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure"><p><img src="sampling/images/yoda.png" class="img-fluid figure-img"></p>
+<figcaption>Let Yoda’s wisdom dull the pain of this terminology section.</figcaption></figure>
+</div>
+</div>
+</div>
+<p>A <strong>population</strong> is the set of relevant units. The population’s size is upper-case <span class="math inline">\(N\)</span>. In our sampling activities, the population is the collection of <span class="math inline">\(N\)</span> = 1,000 identically-sized red and white beads in the urn. This is about the simplest possible population. Other examples are all the adult men in the US, all the classrooms in a school, all the wheelbarrows in Massachusetts, all the values of your blood pressure, read at five minute intervals, for your entire life. Often, the population extends over time, as with your blood pressure readings and is, therefore, more amorphous. Consider all the people who have run for governor of a US state since 1900, or all the people who will run for governor through 2050. Those are also populations.</p>
+<p>A <strong>population parameter</strong> is a numeric statistic about the population that is unknown, but you wish you knew. For example, when this quantity is the mean, the population parameter of interest is the <em>population mean</em>. This is mathematically denoted with the Greek letter <span class="math inline">\(\mu\)</span> pronounced “mu.” In our earlier sampling-from-the-urn activity, however, since we were interested in the <em>proportion</em> of the urn’s beads that were red, the population parameter is the <em>population proportion</em> of interest, denoted by <span class="math inline">\(\rho\)</span>. Different academic fields often use different Greek letters to denote the same population parameter.</p>
+<p>A <strong>census</strong> is an exhaustive enumeration or counting of all <span class="math inline">\(N\)</span> units in the population in order to compute the population parameter’s value <em>exactly</em>. In our sampling activity, this would correspond to counting the number of red beads out of the <span class="math inline">\(N\)</span> total in the urn and then computing the red <em>population proportion</em>, <span class="math inline">\(\rho\)</span>, <em>exactly</em>. When the number <span class="math inline">\(N\)</span> of individuals or observations in our population is large as was the case with our urn, a census can be quite expensive in terms of time, energy, and money. A census is impossible for any population which includes the future, like our blood pressure next year or candidates for governor in 2050. There is a <em>truth</em>, but we could not, even in theory, determine it.</p>
+<p><strong>Sampling</strong> is the act of collecting a sample from the population when we can not, or do not want to, perform a census. The sample size is lower case <span class="math inline">\(n\)</span>, as opposed to upper case <span class="math inline">\(N\)</span> for the population’s size. Typically the sample size <span class="math inline">\(n\)</span> is much smaller than the population size <span class="math inline">\(N\)</span>. In our sampling activities, we used shovels with varying slots to extract samples of size <span class="math inline">\(n = 1\)</span> through <span class="math inline">\(n = 100\)</span>.</p>
+<p>A <strong>point estimate</strong>, also known as a <strong>sample statistic</strong>, is a measure computed from a sample that <em>estimates</em> an unknown population parameter. In our sampling activities, recall that the unknown population parameter was the proportion of red beads and that this is denoted by <span class="math inline">\(\rho\)</span>. Our point estimate is the <em>sample proportion</em>: the proportion of the shovel’s beads that are red. In other words, it is our guess at the proportion of the urn’s beads that are red. The point estimate of the parameter <span class="math inline">\(\rho\)</span> is <span class="math inline">\(\hat{\rho}\)</span>. The “hat” on top of the <span class="math inline">\(\rho\)</span> indicates that it is an estimate of the unknown population proportion <span class="math inline">\(\rho\)</span>.</p>
+<p>A sample is said to be <strong>representative</strong> if it roughly <em>looks like</em> the population. In other words, are the sample’s characteristics a good representation of the population’s characteristics? In our sampling activity, are the samples of <span class="math inline">\(n\)</span> beads extracted using our shovels representative of the urn’s <span class="math inline">\(N = 1,000\)</span> beads?</p>
+<p>A sample is <strong>generalizable</strong> if any results based on the sample can generalize to the population. In our sampling activity, can we generalize the sample proportion from our shovels to the entire urn? Using our mathematical notation, this is akin to asking if <span class="math inline">\(\hat{\rho}\)</span> is a “good guess” of <span class="math inline">\(\rho\)</span>.</p>
+<p><strong>Biased sampling</strong> occurs if certain individuals or observations in a population have a higher chance of being included in a sample than others. We say a sampling procedure is <strong>unbiased</strong> if every observation in a population had an equal chance of being sampled. Had the red beads been much smaller than the white beads, and therefore more prone to falling out of the shovel, our sample would have been <strong>biased</strong>. In our sampling activities, since we mixed all <span class="math inline">\(N = 1,000\)</span> beads prior to each group’s sampling and since each of the beads had an equal chance of being sampled, our samples were unbiased.</p>
+<p>A sampling procedure is <em>random</em> if we sample randomly from the population in an unbiased fashion. With random sampling, each unit has an equal chance of being selected into the sample. This condition entails, among other things, sufficiently mixing the urn before each use of the shovel.</p>
+<div class="cell" data-layout-align="center">
+<div class="cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure"><p><img src="sampling/images/cant_breathe_sponge.png" class="img-fluid figure-img"></p>
+<figcaption>Fear not if you look like Spongebob after reading this section. We will re-cap right now!</figcaption></figure>
+</div>
+</div>
+</div>
+<p><strong>In general:</strong></p>
+<ul>
+<li>If the sampling of a sample of size <span class="math inline">\(n\)</span> is done at <strong>random</strong>, then</li>
+<li>the sample is <strong>unbiased</strong> and <strong>representative</strong> of the population of size <span class="math inline">\(N\)</span>, thus</li>
+<li>any result based on the sample can <strong>generalize</strong> to the population, thus</li>
+<li>the point estimate is a <strong>“good guess”</strong> of the unknown population parameter, thus</li>
+<li>instead of performing a <strong>census</strong>, we can draw inferences about the population using <strong>sampling</strong>.</li>
+</ul>
+<p><strong>Specific to our sampling activity:</strong></p>
+<ul>
+<li>If we extract a sample of <span class="math inline">\(n=50\)</span> beads at <strong>random</strong>, in other words, we mix all of the equally-sized beads before using the shovel, then</li>
+<li>the contents of the shovel are an <strong>unbiased representation</strong> of the contents of the urn’s 1,000 beads, thus</li>
+<li>any result based on the shovel’s beads can <strong>generalize</strong> to the urn, thus</li>
+<li>the sample proportion <span class="math inline">\(\hat{\rho}\)</span> of the <span class="math inline">\(n=50\)</span> beads in the shovel that are red is a <strong>“good guess”</strong> of the population proportion <span class="math inline">\(\rho\)</span> of the <span class="math inline">\(N=1,000\)</span> beads that are red, thus</li>
+<li>instead of manually going over all 1,000 beads in the urn, we can make <strong>inferences</strong> about the urn by using the results from the shovel.</li>
+</ul></section><section id="sec-sampling-definitions" class="level3" data-number="2.3.2"><h3 data-number="2.3.2" class="anchored" data-anchor-id="sec-sampling-definitions">
+<span class="header-section-number">2.3.2</span> Statistical definitions</h3>
+<p>For our 1,000 repeated/replicated virtual samples of size <span class="math inline">\(n = 25\)</span>, <span class="math inline">\(n = 50\)</span>, and <span class="math inline">\(n = 100\)</span> in <a href="#sec-virtual-sampling" class="quarto-xref"><span>Section 2.2</span></a>, let’s display our figure showing the difference in proportions red according to different shovel sizes.</p>
+<div class="cell">
+<div class="cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure"><p><img src="02-sampling_files/figure-html/unnamed-chunk-38-1.png" class="img-fluid figure-img" width="672"></p>
+<figcaption>Previously seen three distributions of the sample proportion <span class="math inline">\(\hat{\rho}\)</span>.</figcaption></figure>
+</div>
+</div>
+</div>
+<p>These types of distributions have a special name: <strong>sampling distributions</strong>. The visualization displays the effect of sampling variation on the distribution of a point estimate: the sample proportion <span class="math inline">\(\hat{\rho}\)</span>. Using these sampling distributions, for a given sample size <span class="math inline">\(n\)</span>, we can make statements about what range of values we typically expect.</p>
+<p>For example, observe the centers of all three sampling distributions: all around <span class="math inline">\(0.4 = 40\%\)</span>. Furthermore, observe that while we are somewhat likely to observe sample proportions of red beads of <span class="math inline">\(0.2 = 20\%\)</span> when using the shovel with 25 slots, we will almost never observe a proportion of 20% when using the shovel with 100 slots. Observe also the effect of sample size on the sampling variation. As the sample size <span class="math inline">\(n\)</span> increases from 25 to 50 to 100, the variation of the sampling distributions decreases and thus the values cluster more and more tightly around the same center: about 40%.</p>
+<div class="cell">
+<div class="cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure"><p><img src="02-sampling_files/figure-html/unnamed-chunk-39-1.png" class="img-fluid figure-img" width="672"></p>
+<figcaption>Previously seen comparing standard deviations of proportions red from 100 different shovel sizes</figcaption></figure>
+</div>
+</div>
+</div>
+<p>As the sample size increases, the standard deviation of the proportion of red beads across the 1,000 replications decreases. This type of standard deviation has another special name: <strong>standard error</strong></p>
+</section><section id="what-is-a-standard-error" class="level3" data-number="2.3.3"><h3 data-number="2.3.3" class="anchored" data-anchor-id="what-is-a-standard-error">
+<span class="header-section-number">2.3.3</span> What is a standard error?</h3>
+<p>The <em>standard error</em> (SE) is the standard deviation of a sample statistic (aka point estimate), such as the mean or median. For example, the “standard error of the mean” refers to the standard deviation of the distribution of sample means taken from a population.</p>
+<blockquote class="blockquote">
+<p>In statistics, a sample mean deviates from the actual mean of a population; this deviation is the standard error of the mean.</p>
+</blockquote>
+<p>Many students struggle to differentiate the standard error from the standard deviation. The relationship between the standard error and the standard deviation is such that, for a given sample size, the standard error equals the standard deviation divided by the square root of the sample size.</p>
+<!-- Insert visual aid for students who are not mathematically inclined showing that larger sample sizes = closer to actual value -->
+<p>Larger sample size = smaller standard error = more representative of the truth.</p>
+<p>To help reinforce these concepts, let’s re-display our previous figure but using our new sampling terminology, notation, and definitions:</p>
+<div class="cell">
+<div class="cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure"><p><img src="02-sampling_files/figure-html/unnamed-chunk-40-1.png" class="img-fluid figure-img" width="672"></p>
+<figcaption>Three sampling distributions of the sample proportion <span class="math inline">\(\hat{\rho}\)</span>. Note the increased concentration on the bins around .4 as our sample size increases.</figcaption></figure>
+</div>
+</div>
+</div>
+<p>Furthermore, let’s display the graph of standard errors for <span class="math inline">\(n = 1\)</span> to <span class="math inline">\(n = 100\)</span> using our new terminology, notation, and definitions relating to sampling.</p>
+<div class="cell">
+<div class="cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure"><p><img src="02-sampling_files/figure-html/unnamed-chunk-41-1.png" class="img-fluid figure-img" width="672"></p>
+<figcaption>Standard errors of the sample proportion based on sample sizes of 1 to 100</figcaption></figure>
+</div>
+</div>
+</div>
+<p>As the sample size <span class="math inline">\(n\)</span> goes up, the “typical” error of your point estimate will go down, as quantified by the <em>standard error</em>.</p>
+</section><section id="moral-of-the-story" class="level3" data-number="2.3.4"><h3 data-number="2.3.4" class="anchored" data-anchor-id="moral-of-the-story">
+<span class="header-section-number">2.3.4</span> The moral of the story</h3>
+<p>Standard error is just a fancy term for your uncertainty about something you don’t know. Standard error is the precision of our (uncertain) beliefs.</p>
+<div class="cell" data-layout-align="center">
+<div class="cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure"><p><img src="sampling/images/final_preceptor.png" class="img-fluid figure-img"></p>
+<figcaption>If you are wondering how much you need to know, follow this helpful guide of the information we have learned this chapter!</figcaption></figure>
+</div>
+</div>
+</div>
+<p>This hierarchy represents the knowledge we need to understand standard errors. At the bottom, we have math. It’s the foundation for our understanding, but it doesn’t need to be what we take away from this lesson. As we go up, we simplify the topic. The top of the pyramid are the most basic levels of understanding.</p>
+<p>If I know your estimate plus or minus <em>two</em> standard errors, I know your 95% confidence interval. This is valuable information. Standard error is really just a measure for how uncertain we are about something we do not know, the thing we are estimating. Speaking snarkily, standard error is the way old people talk about confidence intervals.</p>
+<p>Recall that <span class="math inline">\(\hat{\rho}\)</span> is the estimated value of p which comes from taking a sample. There can be billions and billions of <span class="math inline">\(\hat{\rho}\)</span>’s. We look at a large group of <span class="math inline">\(\hat{\rho}\)</span>’s, create a distribution of results to represent the possible values of <span class="math inline">\(\rho\)</span> based on our findings, and then we compute a standard error to account for our own uncertainty about our estimates. Our 95% confidence interval for our prediction is our estimate plus or minus <strong>two</strong> standard errors.</p>
+<p>You must understand what the standard error of <span class="math inline">\(\hat{\rho}\)</span> means. You do not need to understand why.</p>
+<p><strong>Central lesson: Your posterior for (almost) any population parameter is normally distributed with a mean equal to the sample mean and a standard deviation equal to the standard error. And that means that your posterior has the same shape as the sampling distribution.</strong></p>
+<div class="cell">
+<div class="cell-output-display">
+<div>
+<figure class="figure"><p><img src="sampling/images/posterior_effie.png" class="img-fluid figure-img"></p>
+</figure>
+</div>
+</div>
+</div>
+
+
+</section></section></main><!-- /main --><script id="quarto-html-after-body" type="application/javascript">
+  window.document.addEventListener("DOMContentLoaded", function (event) {
+    const icon = "";
+    const anchorJS = new window.AnchorJS();
+    anchorJS.options = {
+      placement: 'right',
+      icon: icon
+    };
+    anchorJS.add('.anchored');
+    const isCodeAnnotation = (el) => {
+      for (const clz of el.classList) {
+        if (clz.startsWith('code-annotation-')) {                     
+          return true;
+        }
+      }
+      return false;
+    }
+    const onCopySuccess = function(e) {
+      // button target
+      const button = e.trigger;
+      // don't keep focus
+      button.blur();
+      // flash "checked"
+      button.classList.add('code-copy-button-checked');
+      var currentTitle = button.getAttribute("title");
+      button.setAttribute("title", "Copied!");
+      let tooltip;
+      if (window.bootstrap) {
+        button.setAttribute("data-bs-toggle", "tooltip");
+        button.setAttribute("data-bs-placement", "left");
+        button.setAttribute("data-bs-title", "Copied!");
+        tooltip = new bootstrap.Tooltip(button, 
+          { trigger: "manual", 
+            customClass: "code-copy-button-tooltip",
+            offset: [0, -8]});
+        tooltip.show();    
+      }
+      setTimeout(function() {
+        if (tooltip) {
+          tooltip.hide();
+          button.removeAttribute("data-bs-title");
+          button.removeAttribute("data-bs-toggle");
+          button.removeAttribute("data-bs-placement");
+        }
+        button.setAttribute("title", currentTitle);
+        button.classList.remove('code-copy-button-checked');
+      }, 1000);
+      // clear code selection
+      e.clearSelection();
+    }
+    const getTextToCopy = function(trigger) {
+      const outerScaffold = trigger.parentElement.cloneNode(true);
+      const codeEl = outerScaffold.querySelector('code');
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+    }
+    const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+      text: getTextToCopy
+    });
+    clipboard.on('success', onCopySuccess);
+    if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+      const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+        text: getTextToCopy,
+        container: window.document.getElementById('quarto-embedded-source-code-modal')
+      });
+      clipboardModal.on('success', onCopySuccess);
+    }
+      var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+      var mailtoRegex = new RegExp(/^mailto:/);
+        var filterRegex = new RegExp('/' + window.location.host + '/');
+      var isInternal = (href) => {
+          return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+      }
+      // Inspect non-navigation links and adorn them if external
+     var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+      for (var i=0; i<links.length; i++) {
+        const link = links[i];
+        if (!isInternal(link.href)) {
+          // undo the damage that might have been done by quarto-nav.js in the case of
+          // links that we want to consider external
+          if (link.dataset.originalHref !== undefined) {
+            link.href = link.dataset.originalHref;
+          }
+        }
+      }
+    function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+      const config = {
+        allowHTML: true,
+        maxWidth: 500,
+        delay: 100,
+        arrow: false,
+        appendTo: function(el) {
+            return el.parentElement;
+        },
+        interactive: true,
+        interactiveBorder: 10,
+        theme: 'quarto',
+        placement: 'bottom-start',
+      };
+      if (contentFn) {
+        config.content = contentFn;
+      }
+      if (onTriggerFn) {
+        config.onTrigger = onTriggerFn;
+      }
+      if (onUntriggerFn) {
+        config.onUntrigger = onUntriggerFn;
+      }
+      window.tippy(el, config); 
+    }
+    const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+    for (var i=0; i<noterefs.length; i++) {
+      const ref = noterefs[i];
+      tippyHover(ref, function() {
+        // use id or data attribute instead here
+        let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+        try { href = new URL(href).hash; } catch {}
+        const id = href.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note) {
+          return note.innerHTML;
+        } else {
+          return "";
+        }
+      });
+    }
+    const xrefs = window.document.querySelectorAll('a.quarto-xref');
+    const processXRef = (id, note) => {
+      // Strip column container classes
+      const stripColumnClz = (el) => {
+        el.classList.remove("page-full", "page-columns");
+        if (el.children) {
+          for (const child of el.children) {
+            stripColumnClz(child);
+          }
+        }
+      }
+      stripColumnClz(note)
+      if (id === null || id.startsWith('sec-')) {
+        // Special case sections, only their first couple elements
+        const container = document.createElement("div");
+        if (note.children && note.children.length > 2) {
+          container.appendChild(note.children[0].cloneNode(true));
+          for (let i = 1; i < note.children.length; i++) {
+            const child = note.children[i];
+            if (child.tagName === "P" && child.innerText === "") {
+              continue;
+            } else {
+              container.appendChild(child.cloneNode(true));
+              break;
+            }
+          }
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(container);
+          }
+          return container.innerHTML
+        } else {
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(note);
+          }
+          return note.innerHTML;
+        }
+      } else {
+        // Remove any anchor links if they are present
+        const anchorLink = note.querySelector('a.anchorjs-link');
+        if (anchorLink) {
+          anchorLink.remove();
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        if (note.classList.contains("callout")) {
+          return note.outerHTML;
+        } else {
+          return note.innerHTML;
+        }
+      }
+    }
+    for (var i=0; i<xrefs.length; i++) {
+      const xref = xrefs[i];
+      tippyHover(xref, undefined, function(instance) {
+        instance.disable();
+        let url = xref.getAttribute('href');
+        let hash = undefined; 
+        if (url.startsWith('#')) {
+          hash = url;
+        } else {
+          try { hash = new URL(url).hash; } catch {}
+        }
+        if (hash) {
+          const id = hash.replace(/^#\/?/, "");
+          const note = window.document.getElementById(id);
+          if (note !== null) {
+            try {
+              const html = processXRef(id, note.cloneNode(true));
+              instance.setContent(html);
+            } finally {
+              instance.enable();
+              instance.show();
+            }
+          } else {
+            // See if we can fetch this
+            fetch(url.split('#')[0])
+            .then(res => res.text())
+            .then(html => {
+              const parser = new DOMParser();
+              const htmlDoc = parser.parseFromString(html, "text/html");
+              const note = htmlDoc.getElementById(id);
+              if (note !== null) {
+                const html = processXRef(id, note);
+                instance.setContent(html);
+              } 
+            }).finally(() => {
+              instance.enable();
+              instance.show();
+            });
+          }
+        } else {
+          // See if we can fetch a full url (with no hash to target)
+          // This is a special case and we should probably do some content thinning / targeting
+          fetch(url)
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.querySelector('main.content');
+            if (note !== null) {
+              // This should only happen for chapter cross references
+              // (since there is no id in the URL)
+              // remove the first header
+              if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+                note.children[0].remove();
+              }
+              const html = processXRef(null, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      }, function(instance) {
+      });
+    }
+        let selectedAnnoteEl;
+        const selectorForAnnotation = ( cell, annotation) => {
+          let cellAttr = 'data-code-cell="' + cell + '"';
+          let lineAttr = 'data-code-annotation="' +  annotation + '"';
+          const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+          return selector;
+        }
+        const selectCodeLines = (annoteEl) => {
+          const doc = window.document;
+          const targetCell = annoteEl.getAttribute("data-target-cell");
+          const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+          const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+          const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+          const lineIds = lines.map((line) => {
+            return targetCell + "-" + line;
+          })
+          let top = null;
+          let height = null;
+          let parent = null;
+          if (lineIds.length > 0) {
+              //compute the position of the single el (top and bottom and make a div)
+              const el = window.document.getElementById(lineIds[0]);
+              top = el.offsetTop;
+              height = el.offsetHeight;
+              parent = el.parentElement.parentElement;
+            if (lineIds.length > 1) {
+              const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+              const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+              height = bottom - top;
+            }
+            if (top !== null && height !== null && parent !== null) {
+              // cook up a div (if necessary) and position it 
+              let div = window.document.getElementById("code-annotation-line-highlight");
+              if (div === null) {
+                div = window.document.createElement("div");
+                div.setAttribute("id", "code-annotation-line-highlight");
+                div.style.position = 'absolute';
+                parent.appendChild(div);
+              }
+              div.style.top = top - 2 + "px";
+              div.style.height = height + 4 + "px";
+              div.style.left = 0;
+              let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+              if (gutterDiv === null) {
+                gutterDiv = window.document.createElement("div");
+                gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+                gutterDiv.style.position = 'absolute';
+                const codeCell = window.document.getElementById(targetCell);
+                const gutter = codeCell.querySelector('.code-annotation-gutter');
+                gutter.appendChild(gutterDiv);
+              }
+              gutterDiv.style.top = top - 2 + "px";
+              gutterDiv.style.height = height + 4 + "px";
+            }
+            selectedAnnoteEl = annoteEl;
+          }
+        };
+        const unselectCodeLines = () => {
+          const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+          elementsIds.forEach((elId) => {
+            const div = window.document.getElementById(elId);
+            if (div) {
+              div.remove();
+            }
+          });
+          selectedAnnoteEl = undefined;
+        };
+          // Handle positioning of the toggle
+      window.addEventListener(
+        "resize",
+        throttle(() => {
+          elRect = undefined;
+          if (selectedAnnoteEl) {
+            selectCodeLines(selectedAnnoteEl);
+          }
+        }, 10)
+      );
+      function throttle(fn, ms) {
+      let throttle = false;
+      let timer;
+        return (...args) => {
+          if(!throttle) { // first call gets through
+              fn.apply(this, args);
+              throttle = true;
+          } else { // all the others get throttled
+              if(timer) clearTimeout(timer); // cancel #2
+              timer = setTimeout(() => {
+                fn.apply(this, args);
+                timer = throttle = false;
+              }, ms);
+          }
+        };
+      }
+        // Attach click handler to the DT
+        const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+        for (const annoteDlNode of annoteDls) {
+          annoteDlNode.addEventListener('click', (event) => {
+            const clickedEl = event.target;
+            if (clickedEl !== selectedAnnoteEl) {
+              unselectCodeLines();
+              const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+              if (activeEl) {
+                activeEl.classList.remove('code-annotation-active');
+              }
+              selectCodeLines(clickedEl);
+              clickedEl.classList.add('code-annotation-active');
+            } else {
+              // Unselect the line
+              unselectCodeLines();
+              clickedEl.classList.remove('code-annotation-active');
+            }
+          });
+        }
+    const findCites = (el) => {
+      const parentEl = el.parentElement;
+      if (parentEl) {
+        const cites = parentEl.dataset.cites;
+        if (cites) {
+          return {
+            el,
+            cites: cites.split(' ')
+          };
+        } else {
+          return findCites(el.parentElement)
+        }
+      } else {
+        return undefined;
+      }
+    };
+    var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+    for (var i=0; i<bibliorefs.length; i++) {
+      const ref = bibliorefs[i];
+      const citeInfo = findCites(ref);
+      if (citeInfo) {
+        tippyHover(citeInfo.el, function() {
+          var popup = window.document.createElement('div');
+          citeInfo.cites.forEach(function(cite) {
+            var citeDiv = window.document.createElement('div');
+            citeDiv.classList.add('hanging-indent');
+            citeDiv.classList.add('csl-entry');
+            var biblioDiv = window.document.getElementById('ref-' + cite);
+            if (biblioDiv) {
+              citeDiv.innerHTML = biblioDiv.innerHTML;
+            }
+            popup.appendChild(citeDiv);
+          });
+          return popup.innerHTML;
+        });
+      }
+    }
+  });
+  </script><nav class="page-navigation"><div class="nav-page nav-page-previous">
+      <a href="./01-probability.html" class="pagination-link" aria-label="Probability">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">Probability</span></span>
+      </a>          
+  </div>
+  <div class="nav-page nav-page-next">
+      <a href="./03-rubin-causal-model.html" class="pagination-link" aria-label="Rubin Causal Model">
+        <span class="nav-page-text"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">Rubin Causal Model</span></span> <i class="bi bi-arrow-right-short"></i>
+      </a>
+  </div>
+</nav>
+</div> <!-- /content -->
+
+
+
+<footer class="footer"><div class="nav-footer"><div class="nav-footer-center"><div class="toc-actions d-sm-block d-md-none"><ul><li><a href="https://github.com/PPBDS/primer/edit/main/02-sampling.qmd" class="toc-action"><i class="bi bi-github"></i>Edit this page</a></li></ul></div></div></div></footer></body></html>

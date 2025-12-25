@@ -1,0 +1,2265 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.8.26">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+<title>5&nbsp; 1992 Election – Preceptor's Primer for Bayesian Data Science: Using the Cardinal Virtues for Inference</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+html { -webkit-text-size-adjust: 100%; }
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+</style>
+
+<script src="site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="site_libs/quarto-nav/headroom.min.js"></script>
+<script src="site_libs/clipboard/clipboard.min.js"></script>
+<script src="site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="site_libs/quarto-search/fuse.min.js"></script>
+<script src="site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="./">
+<link href="./set-up.html" rel="next">
+<link href="./04-cardinal-virtues.html" rel="prev">
+<script src="site_libs/quarto-html/quarto.js" type="module"></script>
+<script src="site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
+<script src="site_libs/quarto-html/axe/axe-check.js" type="module"></script>
+<script src="site_libs/quarto-html/popper.min.js"></script>
+<script src="site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="site_libs/quarto-html/anchor.min.js"></script>
+<link href="site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting-587c61ba64f3a5504c4d52d930310e48.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="site_libs/bootstrap/bootstrap-7e5f63976465591361e97e8384fb2699.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light"><script id="quarto-search-options" type="application/json">{
+  "location": "sidebar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "start",
+  "type": "textbox",
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "show-item-context": false,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-text-placeholder": "",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit",
+    "search-label": "Search"
+  }
+}</script><script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script><script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script><script type="text/javascript">
+const typesetMath = (el) => {
+  if (window.MathJax) {
+    // MathJax Typeset
+    window.MathJax.typeset([el]);
+  } else if (window.katex) {
+    // KaTeX Render
+    var mathElements = el.getElementsByClassName("math");
+    var macros = [];
+    for (var i = 0; i < mathElements.length; i++) {
+      var texText = mathElements[i].firstChild;
+      if (mathElements[i].tagName == "SPAN" && texText && texText.data) {
+        window.katex.render(texText.data, mathElements[i], {
+          displayMode: mathElements[i].classList.contains('display'),
+          throwOnError: false,
+          macros: macros,
+          fleqn: false
+        });
+      }
+    }
+  }
+}
+window.Quarto = {
+  typesetMath
+};
+</script>
+</head>
+<body class="nav-sidebar floating quarto-light">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top"><nav class="quarto-secondary-nav"><div class="container-fluid d-flex">
+      <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+        <i class="bi bi-layout-text-sidebar-reverse"></i>
+      </button>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./07-election-1992.html"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">1992 Election</span></a></li></ol></nav>
+        <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
+        </a>
+      <button type="button" class="btn quarto-search-button" aria-label="Search" onclick="window.quartoOpenSearch();">
+        <i class="bi bi-search"></i>
+      </button>
+    </div>
+  </nav></header><!-- content --><div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article">
+<!-- sidebar -->
+  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal quarto-sidebar-collapse-item sidebar-navigation floating overflow-auto"><div class="pt-lg-2 mt-2 text-left sidebar-header">
+    <div class="sidebar-title mb-0 py-0">
+      <a href="./">Preceptor’s Primer for Bayesian Data Science: Using the Cardinal Virtues for Inference</a> 
+        <div class="sidebar-tools-main">
+    <a href="https://github.com/PPBDS/primer/" title="Source Code" class="quarto-navigation-tool px-1" aria-label="Source Code"><i class="bi bi-github"></i></a>
+</div>
+    </div>
+      </div>
+        <div class="mt-2 flex-shrink-0 align-items-center">
+        <div class="sidebar-search">
+        <div id="quarto-search" class="" title="Search"></div>
+        </div>
+        </div>
+    <div class="sidebar-menu-container"> 
+    <ul class="list-unstyled mt-1">
+<li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Welcome</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./preamble.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Preamble</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./getting-started.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Getting Started</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./01-probability.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">Probability</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./02-sampling.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">Sampling</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./03-rubin-causal-model.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">Rubin Causal Model</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./04-cardinal-virtues.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">Cardinal Virtues</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./07-election-1992.html" class="sidebar-item-text sidebar-link active">
+ <span class="menu-text"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">1992 Election</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./set-up.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Set Up for Working on PPBDS Projects</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./ai.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">AI</span></a>
+  </div>
+</li>
+    </ul>
+</div>
+</nav><div id="quarto-sidebar-glass" class="quarto-sidebar-collapse-item" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item"></div>
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active"><h2 id="toc-title">Table of contents</h2>
+   
+  <ul>
+<li>
+<a href="#introduction" id="toc-introduction" class="nav-link active" data-scroll-target="#introduction"><span class="header-section-number">5.1</span> Introduction</a>
+  <ul class="collapse">
+<li><a href="#scenarios" id="toc-scenarios" class="nav-link" data-scroll-target="#scenarios"><span class="header-section-number">5.1.1</span> Scenarios</a></li>
+  </ul>
+</li>
+  <li>
+<a href="#wisdom" id="toc-wisdom" class="nav-link" data-scroll-target="#wisdom"><span class="header-section-number">5.2</span> Wisdom</a>
+  <ul class="collapse">
+<li><a href="#eda" id="toc-eda" class="nav-link" data-scroll-target="#eda"><span class="header-section-number">5.2.1</span> EDA</a></li>
+  <li><a href="#preceptor-table" id="toc-preceptor-table" class="nav-link" data-scroll-target="#preceptor-table"><span class="header-section-number">5.2.2</span> Preceptor Table</a></li>
+  </ul>
+</li>
+  <li>
+<a href="#justice" id="toc-justice" class="nav-link" data-scroll-target="#justice"><span class="header-section-number">5.3</span> Justice</a>
+  <ul class="collapse">
+<li><a href="#validity" id="toc-validity" class="nav-link" data-scroll-target="#validity"><span class="header-section-number">5.3.1</span> Validity</a></li>
+  <li><a href="#population-table" id="toc-population-table" class="nav-link" data-scroll-target="#population-table"><span class="header-section-number">5.3.2</span> Population Table</a></li>
+  <li><a href="#stability" id="toc-stability" class="nav-link" data-scroll-target="#stability"><span class="header-section-number">5.3.3</span> Stability</a></li>
+  <li><a href="#representativeness" id="toc-representativeness" class="nav-link" data-scroll-target="#representativeness"><span class="header-section-number">5.3.4</span> Representativeness</a></li>
+  <li><a href="#unconfoundedness" id="toc-unconfoundedness" class="nav-link" data-scroll-target="#unconfoundedness"><span class="header-section-number">5.3.5</span> Unconfoundedness</a></li>
+  <li><a href="#mathematics" id="toc-mathematics" class="nav-link" data-scroll-target="#mathematics"><span class="header-section-number">5.3.6</span> Mathematics</a></li>
+  </ul>
+</li>
+  <li>
+<a href="#courage" id="toc-courage" class="nav-link" data-scroll-target="#courage"><span class="header-section-number">5.4</span> Courage</a>
+  <ul class="collapse">
+<li><a href="#models" id="toc-models" class="nav-link" data-scroll-target="#models"><span class="header-section-number">5.4.1</span> Models</a></li>
+  <li><a href="#posterior-predictive-checks" id="toc-posterior-predictive-checks" class="nav-link" data-scroll-target="#posterior-predictive-checks"><span class="header-section-number">5.4.2</span> Posterior Predictive Checks</a></li>
+  <li><a href="#testing" id="toc-testing" class="nav-link" data-scroll-target="#testing"><span class="header-section-number">5.4.3</span> Testing</a></li>
+  <li><a href="#data-generating-mechanism" id="toc-data-generating-mechanism" class="nav-link" data-scroll-target="#data-generating-mechanism"><span class="header-section-number">5.4.4</span> Data Generating Mechanism</a></li>
+  </ul>
+</li>
+  <li>
+<a href="#temperance" id="toc-temperance" class="nav-link" data-scroll-target="#temperance"><span class="header-section-number">5.5</span> Temperance</a>
+  <ul class="collapse">
+<li><a href="#questions-and-answers" id="toc-questions-and-answers" class="nav-link" data-scroll-target="#questions-and-answers"><span class="header-section-number">5.5.1</span> Questions and Answers</a></li>
+  <li><a href="#humility" id="toc-humility" class="nav-link" data-scroll-target="#humility"><span class="header-section-number">5.5.2</span> Humility</a></li>
+  </ul>
+</li>
+  </ul><div class="toc-actions"><ul><li><a href="https://github.com/PPBDS/primer/edit/main/07-election-1992.qmd" class="toc-action"><i class="bi bi-github"></i>Edit this page</a></li></ul></div></nav>
+    </div>
+<!-- main -->
+<main class="content" id="quarto-document-content"><header id="title-block-header" class="quarto-title-block default"><div class="quarto-title">
+<h1 class="title">
+<span class="chapter-number">5</span>&nbsp; <span class="chapter-title">1992 Election</span>
+</h1>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    
+  
+    
+  </div>
+  
+
+
+</header><section id="introduction" class="level2" data-number="5.1"><h2 data-number="5.1" class="anchored" data-anchor-id="introduction">
+<span class="header-section-number">5.1</span> Introduction</h2>
+<p>Packages:</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb1"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://tidyverse.tidyverse.org">tidyverse</a></span><span class="op">)</span></span>
+<span><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va">primer.data</span><span class="op">)</span></span>
+<span><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://tidymodels.tidymodels.org">tidymodels</a></span><span class="op">)</span></span>
+<span><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://broom.tidymodels.org/">broom</a></span><span class="op">)</span></span>
+<span><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://marginaleffects.com/">marginaleffects</a></span><span class="op">)</span></span>
+<span><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://easystats.github.io/easystats/">easystats</a></span><span class="op">)</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<p>The <strong>primer.data</strong> package includes <code>nes</code>, a tibble with the data from the <a href="https://electionstudies.org/">American National Election Studies</a>.</p>
+<section id="scenarios" class="level3" data-number="5.1.1"><h3 data-number="5.1.1" class="anchored" data-anchor-id="scenarios">
+<span class="header-section-number">5.1.1</span> Scenarios</h3>
+<blockquote class="blockquote">
+<p><em>What was the relationship between sex and voting in the 1992 US Presidential election among supporters of the three leading candidates: Clinton, Bush and Perot?</em></p>
+</blockquote>
+<p>This is the first scenario. The 1992 U.S. Presidential election provides a rich opportunity to explore how demographic characteristics, like sex, influenced voter behavior. By examining the relationship between sex and support for the three major candidates—Bill Clinton, George H. W. Bush, and Ross Perot—we can ask whether men and women showed different patterns of candidate preference. Did one gender lean more Democratic or Republican? Was Perot’s independent appeal stronger among men than women? Understanding these differences helps us assess how social identity may shape political choice.</p>
+<ol start="2" type="1">
+<li>Did a voter’s sex cause them to be more likely to vote for Clinton, Bush, or Perot in the 1992 U.S. Presidential election?</li>
+</ol>
+<p>This question focuses on whether voting preferences differed systematically between men and women. Were male voters more drawn to one candidate than female voters, or vice versa? By looking at patterns in the data, we can begin to understand how gender may have shaped political preferences in this particular election.</p>
+</section></section><section id="wisdom" class="level2" data-number="5.2"><h2 data-number="5.2" class="anchored" data-anchor-id="wisdom">
+<span class="header-section-number">5.2</span> Wisdom</h2>
+<div class="cell">
+<div class="cell-output-display">
+<div>
+<figure class="figure"><p><img src="other/images/Wisdom.jpg" class="img-fluid figure-img"></p>
+</figure>
+</div>
+</div>
+</div>
+<p><strong>Wisdom</strong> begins with a question and then moves on to the creation of a Preceptor Table and an examination of our data.</p>
+<section id="eda" class="level3" data-number="5.2.1"><h3 data-number="5.2.1" class="anchored" data-anchor-id="eda">
+<span class="header-section-number">5.2.1</span> EDA</h3>
+<p>As (almost) always, we start by loading the <strong>tidyverse</strong> package and the <strong>primer.data</strong> package.</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb2"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://tidyverse.tidyverse.org">tidyverse</a></span><span class="op">)</span></span>
+<span><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va">primer.data</span><span class="op">)</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<p>Our data comes from <a href="https://electionstudies.org/">American National Election Studies</a>. The <strong>primer.data</strong> package includes a version of the main data set with a selection of variables. The full ANES data is much richer than this relatively simple tibble.</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb3"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">nes</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 52,359 × 19
+    year state sex    income    age education    race  ideology ideology_numeric
+   &lt;int&gt; &lt;chr&gt; &lt;chr&gt;  &lt;fct&gt;   &lt;int&gt; &lt;fct&gt;        &lt;chr&gt; &lt;fct&gt;               &lt;dbl&gt;
+ 1  1952 NY    Female 68 - 95    25 Highschool   White Weak Re…                6
+ 2  1952 NY    Female 68 - 95    33 Elementary   White Indepen…                5
+ 3  1952 NY    Female 34 - 67    26 Highschool   White Indepen…                4
+ 4  1952 NY    Male   34 - 67    63 Some Highsc… White Strong …                7
+ 5  1952 OH    Female 0 - 16     66 Highschool + White Strong …                7
+ 6  1952 OH    Female 68 - 95    48 Some Highsc… White Indepen…                3
+ 7  1952 ID    Female 0 - 16     70 Elementary   White Indepen…                4
+ 8  1952 MI    Male   17 - 33    25 Highschool + Black Weak De…                2
+ 9  1952 GA    Female 0 - 16     30 Some Highsc… White &lt;NA&gt;                   NA
+10  1952 OH    Female 68 - 95    35 Elementary   White Weak Re…                6
+# ℹ 52,349 more rows
+# ℹ 10 more variables: voted &lt;chr&gt;, region &lt;fct&gt;, pres_appr &lt;chr&gt;,
+#   influence &lt;chr&gt;, equality &lt;chr&gt;, religion &lt;chr&gt;, better_alone &lt;chr&gt;,
+#   therm_black &lt;int&gt;, therm_white &lt;int&gt;, pres_vote &lt;chr&gt;</code></pre>
+</div>
+</div>
+<p>See the <code><a href="https://rdrr.io/pkg/primer.data/man/nes.html">?nes</a></code> for details. We only need a small subset of this data:</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb5"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">nes_92</span> <span class="op">&lt;-</span> <span class="va">nes</span> <span class="op">|&gt;</span> </span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html">filter</a></span><span class="op">(</span><span class="va">year</span> <span class="op">==</span> <span class="fl">1992</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html">select</a></span><span class="op">(</span><span class="va">sex</span>, <span class="va">pres_vote</span>, <span class="va">race</span>, <span class="va">education</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
+<span>  <span class="fu"><a href="https://tidyr.tidyverse.org/reference/drop_na.html">drop_na</a></span><span class="op">(</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html">mutate</a></span><span class="op">(</span>pres_vote <span class="op">=</span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/case_when.html">case_when</a></span><span class="op">(</span></span>
+<span>    <span class="va">pres_vote</span> <span class="op">==</span> <span class="st">"Democrat"</span> <span class="op">~</span> <span class="st">"Clinton"</span>,</span>
+<span>    <span class="va">pres_vote</span> <span class="op">==</span> <span class="st">"Republican"</span> <span class="op">~</span> <span class="st">"Bush"</span>,</span>
+<span>    <span class="va">pres_vote</span> <span class="op">==</span> <span class="st">"Third Party"</span> <span class="op">~</span> <span class="st">"Perot"</span>,</span>
+<span>  <span class="op">)</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
+<span>    <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html">mutate</a></span><span class="op">(</span>pres_vote <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/factor.html">as.factor</a></span><span class="op">(</span><span class="va">pres_vote</span><span class="op">)</span><span class="op">)</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb6"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">nes_92</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 1,612 × 4
+   sex    pres_vote race  education      
+   &lt;chr&gt;  &lt;fct&gt;     &lt;chr&gt; &lt;fct&gt;          
+ 1 Female Bush      White Highschool     
+ 2 Female Bush      White Some College   
+ 3 Female Clinton   Black Some Highschool
+ 4 Male   Bush      White College        
+ 5 Female Clinton   White Highschool     
+ 6 Female Clinton   White Some College   
+ 7 Female Perot     White Some College   
+ 8 Male   Bush      White Some College   
+ 9 Female Bush      White Adv. Degree    
+10 Male   Perot     White Highschool     
+# ℹ 1,602 more rows</code></pre>
+</div>
+</div>
+<p>It is worth thinking about the quality of this data. How did NES, how do we, know for whom a surveyed individual voted? The answer is that we don’t. NES does not check the voting records and, even if it did, it could not determine a person’s vote.</p>
+<p>As always, visualization is a useful tool. Plot your data! The outcome variable usually goes on the y-axis.</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb8"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">nes_92</span> <span class="op">|&gt;</span> </span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html">ggplot</a></span><span class="op">(</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html">aes</a></span><span class="op">(</span>x <span class="op">=</span> <span class="va">pres_vote</span>, fill <span class="op">=</span> <span class="va">sex</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
+<span>    <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_bar.html">geom_bar</a></span><span class="op">(</span>position <span class="op">=</span> <span class="st">"dodge"</span><span class="op">)</span> <span class="op">+</span></span>
+<span>    <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html">labs</a></span><span class="op">(</span>title <span class="op">=</span> <span class="st">"Survey of 1992 Presidential Election Votes"</span>,</span>
+<span>         subtitle <span class="op">=</span> <span class="st">"Men were much more likely to support Ross Perot"</span>,</span>
+<span>         x <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>         y <span class="op">=</span> <span class="st">"Count"</span>,</span>
+<span>         caption <span class="op">=</span> <span class="st">"Source: American National Election Survey"</span><span class="op">)</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure"><p><img src="07-election-1992_files/figure-html/unnamed-chunk-7-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+</section><section id="preceptor-table" class="level3" data-number="5.2.2"><h3 data-number="5.2.2" class="anchored" data-anchor-id="preceptor-table">
+<span class="header-section-number">5.2.2</span> Preceptor Table</h3>
+<p>A <strong>Preceptor Table</strong> is the smallest possible table of data with rows and columns such that, if there is no missing data, we can easily calculate the quantity of interest.</p>
+<section id="scenario-1" class="level4" data-number="5.2.2.1"><h4 data-number="5.2.2.1" class="anchored" data-anchor-id="scenario-1">
+<span class="header-section-number">5.2.2.1</span> Scenario 1</h4>
+<p><em>Units</em>: The rows of the Preceptor Table refer to individual US voters. The question suggests that we are not interested in people who did not vote, although one might explore if men were more or less likely to vote in the first place.</p>
+<p><em>Outcome</em>: We want Presidential voting behavior in 1992. Such explorations are often restricted to just the two “major party” candidates, the nominees of the Democratic and the Republican parties, Bill Clinton and George HW Bush. But, in 1992, Ross Perot was a very successful “third party” candidate, winning almost 19% of the vote. Should he be included in the analysis? What about the 4th place finisher, Libertarian Andre Marrou? Again, the question does not specify. However, the outcome variable is certainly the candidate for whom an individual voted.</p>
+<p><em>Causal or predictive model</em>: Predictive.</p>
+<p><em>Treatment</em>: There are no treatments since this model is predictive.</p>
+<p><em>Covariates</em>: The only covariate we will consider is sex, with two values: “male” and “female”. Whatever your feelings about the contemporary limits of the sex binary, this is the only data collected in 1992s. In a full analysis, we would make use of more covariates, but the primary purpose of this chapter is to explore a categorical model with three possible outcomes.</p>
+<p><em>Moment in Time</em>: The Preceptor Table refers to the election season in the fall of 1992. We make no claims about other US presidential elections, not least because few feature a third party candidate as popular as Perot. Our purpose here is historical. We want to better understand what happened in this election, not make claims about other time periods. The moment in time is, however, longer than just Election Day itself since mail-in votes were cast in the weeks proceeding the election.</p>
+<div class="cell">
+<div class="cell-output-display">
+<div id="gxduppgioz" style="padding-left:0px;padding-right:0px;padding-top:10px;padding-bottom:10px;overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
+<style>#gxduppgioz table {
+  font-family: system-ui, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+#gxduppgioz thead, #gxduppgioz tbody, #gxduppgioz tfoot, #gxduppgioz tr, #gxduppgioz td, #gxduppgioz th {
+  border-style: none;
+}
+
+#gxduppgioz p {
+  margin: 0;
+  padding: 0;
+}
+
+#gxduppgioz .gt_table {
+  display: table;
+  border-collapse: collapse;
+  line-height: normal;
+  margin-left: auto;
+  margin-right: auto;
+  color: #333333;
+  font-size: 16px;
+  font-weight: normal;
+  font-style: normal;
+  background-color: #FFFFFF;
+  width: auto;
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #A8A8A8;
+  border-right-style: none;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #A8A8A8;
+  border-left-style: none;
+  border-left-width: 2px;
+  border-left-color: #D3D3D3;
+}
+
+#gxduppgioz .gt_caption {
+  padding-top: 4px;
+  padding-bottom: 4px;
+}
+
+#gxduppgioz .gt_title {
+  color: #333333;
+  font-size: 125%;
+  font-weight: initial;
+  padding-top: 4px;
+  padding-bottom: 4px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-bottom-color: #FFFFFF;
+  border-bottom-width: 0;
+}
+
+#gxduppgioz .gt_subtitle {
+  color: #333333;
+  font-size: 85%;
+  font-weight: initial;
+  padding-top: 3px;
+  padding-bottom: 5px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-top-color: #FFFFFF;
+  border-top-width: 0;
+}
+
+#gxduppgioz .gt_heading {
+  background-color: #FFFFFF;
+  text-align: center;
+  border-bottom-color: #FFFFFF;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+}
+
+#gxduppgioz .gt_bottom_border {
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+}
+
+#gxduppgioz .gt_col_headings {
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+}
+
+#gxduppgioz .gt_col_heading {
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: normal;
+  text-transform: inherit;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+  vertical-align: bottom;
+  padding-top: 5px;
+  padding-bottom: 6px;
+  padding-left: 5px;
+  padding-right: 5px;
+  overflow-x: hidden;
+}
+
+#gxduppgioz .gt_column_spanner_outer {
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: normal;
+  text-transform: inherit;
+  padding-top: 0;
+  padding-bottom: 0;
+  padding-left: 4px;
+  padding-right: 4px;
+}
+
+#gxduppgioz .gt_column_spanner_outer:first-child {
+  padding-left: 0;
+}
+
+#gxduppgioz .gt_column_spanner_outer:last-child {
+  padding-right: 0;
+}
+
+#gxduppgioz .gt_column_spanner {
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  vertical-align: bottom;
+  padding-top: 5px;
+  padding-bottom: 5px;
+  overflow-x: hidden;
+  display: inline-block;
+  width: 100%;
+}
+
+#gxduppgioz .gt_spanner_row {
+  border-bottom-style: hidden;
+}
+
+#gxduppgioz .gt_group_heading {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: initial;
+  text-transform: inherit;
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+  vertical-align: middle;
+  text-align: left;
+}
+
+#gxduppgioz .gt_empty_group_heading {
+  padding: 0.5px;
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: initial;
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  vertical-align: middle;
+}
+
+#gxduppgioz .gt_from_md > :first-child {
+  margin-top: 0;
+}
+
+#gxduppgioz .gt_from_md > :last-child {
+  margin-bottom: 0;
+}
+
+#gxduppgioz .gt_row {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  margin: 10px;
+  border-top-style: solid;
+  border-top-width: 1px;
+  border-top-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+  vertical-align: middle;
+  overflow-x: hidden;
+}
+
+#gxduppgioz .gt_stub {
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: initial;
+  text-transform: inherit;
+  border-right-style: solid;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+#gxduppgioz .gt_stub_row_group {
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: initial;
+  text-transform: inherit;
+  border-right-style: solid;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+  padding-left: 5px;
+  padding-right: 5px;
+  vertical-align: top;
+}
+
+#gxduppgioz .gt_row_group_first td {
+  border-top-width: 2px;
+}
+
+#gxduppgioz .gt_row_group_first th {
+  border-top-width: 2px;
+}
+
+#gxduppgioz .gt_summary_row {
+  color: #333333;
+  background-color: #FFFFFF;
+  text-transform: inherit;
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+#gxduppgioz .gt_first_summary_row {
+  border-top-style: solid;
+  border-top-color: #D3D3D3;
+}
+
+#gxduppgioz .gt_first_summary_row.thick {
+  border-top-width: 2px;
+}
+
+#gxduppgioz .gt_last_summary_row {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+}
+
+#gxduppgioz .gt_grand_summary_row {
+  color: #333333;
+  background-color: #FFFFFF;
+  text-transform: inherit;
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+#gxduppgioz .gt_first_grand_summary_row {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-top-style: double;
+  border-top-width: 6px;
+  border-top-color: #D3D3D3;
+}
+
+#gxduppgioz .gt_last_grand_summary_row_top {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-bottom-style: double;
+  border-bottom-width: 6px;
+  border-bottom-color: #D3D3D3;
+}
+
+#gxduppgioz .gt_striped {
+  background-color: rgba(128, 128, 128, 0.05);
+}
+
+#gxduppgioz .gt_table_body {
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+}
+
+#gxduppgioz .gt_footnotes {
+  color: #333333;
+  background-color: #FFFFFF;
+  border-bottom-style: none;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 2px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+}
+
+#gxduppgioz .gt_footnote {
+  margin: 0px;
+  font-size: 90%;
+  padding-top: 4px;
+  padding-bottom: 4px;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+#gxduppgioz .gt_sourcenotes {
+  color: #333333;
+  background-color: #FFFFFF;
+  border-bottom-style: none;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 2px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+}
+
+#gxduppgioz .gt_sourcenote {
+  font-size: 90%;
+  padding-top: 4px;
+  padding-bottom: 4px;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+#gxduppgioz .gt_left {
+  text-align: left;
+}
+
+#gxduppgioz .gt_center {
+  text-align: center;
+}
+
+#gxduppgioz .gt_right {
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+}
+
+#gxduppgioz .gt_font_normal {
+  font-weight: normal;
+}
+
+#gxduppgioz .gt_font_bold {
+  font-weight: bold;
+}
+
+#gxduppgioz .gt_font_italic {
+  font-style: italic;
+}
+
+#gxduppgioz .gt_super {
+  font-size: 65%;
+}
+
+#gxduppgioz .gt_footnote_marks {
+  font-size: 75%;
+  vertical-align: 0.4em;
+  position: initial;
+}
+
+#gxduppgioz .gt_asterisk {
+  font-size: 100%;
+  vertical-align: 0;
+}
+
+#gxduppgioz .gt_indent_1 {
+  text-indent: 5px;
+}
+
+#gxduppgioz .gt_indent_2 {
+  text-indent: 10px;
+}
+
+#gxduppgioz .gt_indent_3 {
+  text-indent: 15px;
+}
+
+#gxduppgioz .gt_indent_4 {
+  text-indent: 20px;
+}
+
+#gxduppgioz .gt_indent_5 {
+  text-indent: 25px;
+}
+
+#gxduppgioz .katex-display {
+  display: inline-flex !important;
+  margin-bottom: 0.75em !important;
+}
+
+#gxduppgioz div.Reactable > div.rt-table > div.rt-thead > div.rt-tr.rt-tr-group-header > div.rt-th-group:after {
+  height: 0px !important;
+}
+</style>
+<table class="gt_table caption-top table table-sm table-striped small" data-quarto-bootstrap="false">
+<colgroup>
+<col style="width: 33%">
+<col style="width: 33%">
+<col style="width: 33%">
+</colgroup>
+<thead>
+<tr class="gt_heading header">
+<td colspan="3" class="gt_heading gt_title gt_font_normal gt_bottom_border">Preceptor Table</td>
+</tr>
+<tr class="gt_col_headings gt_spanner_row even">
+<th rowspan="2" id="ID" class="gt_col_heading gt_columns_bottom_border gt_left" data-quarto-table-cell-role="th" style="text-align: left; font-size: large; vertical-align: middle;" scope="col">ID</th>
+<th id="Outcome" class="gt_center gt_columns_top_border gt_column_spanner_outer" data-quarto-table-cell-role="th" scope="col"><div class="gt_column_spanner">
+Outcome
+</div></th>
+<th id="Covariate" class="gt_center gt_columns_top_border gt_column_spanner_outer" data-quarto-table-cell-role="th" scope="col"><div class="gt_column_spanner">
+Covariate
+</div></th>
+</tr>
+<tr class="gt_col_headings header">
+<th id="vote" class="gt_col_heading gt_columns_bottom_border gt_center" data-quarto-table-cell-role="th" scope="col">Vote</th>
+<th id="sex" class="gt_col_heading gt_columns_bottom_border gt_center" data-quarto-table-cell-role="th" scope="col">Sex</th>
+</tr>
+</thead>
+<tbody class="gt_table_body">
+<tr class="odd">
+<td class="gt_row gt_left" headers="ID" style="border-right-width: 1px; border-right-style: solid; border-right-color: #000000">1</td>
+<td class="gt_row gt_center" headers="vote">Democrat</td>
+<td class="gt_row gt_center" headers="sex">M</td>
+</tr>
+<tr class="even">
+<td class="gt_row gt_left" headers="ID" style="border-right-width: 1px; border-right-style: solid; border-right-color: #000000">2</td>
+<td class="gt_row gt_center" headers="vote">Third Party</td>
+<td class="gt_row gt_center" headers="sex">F</td>
+</tr>
+<tr class="odd">
+<td class="gt_row gt_left" headers="ID" style="border-right-width: 1px; border-right-style: solid; border-right-color: #000000">…</td>
+<td class="gt_row gt_center" headers="vote">…</td>
+<td class="gt_row gt_center" headers="sex">…</td>
+</tr>
+<tr class="even">
+<td class="gt_row gt_left" headers="ID" style="border-right-width: 1px; border-right-style: solid; border-right-color: #000000">10</td>
+<td class="gt_row gt_center" headers="vote">Republican</td>
+<td class="gt_row gt_center" headers="sex">F</td>
+</tr>
+<tr class="odd">
+<td class="gt_row gt_left" headers="ID" style="border-right-width: 1px; border-right-style: solid; border-right-color: #000000">11</td>
+<td class="gt_row gt_center" headers="vote">Democrat</td>
+<td class="gt_row gt_center" headers="sex">F</td>
+</tr>
+<tr class="even">
+<td class="gt_row gt_left" headers="ID" style="border-right-width: 1px; border-right-style: solid; border-right-color: #000000">…</td>
+<td class="gt_row gt_center" headers="vote">…</td>
+<td class="gt_row gt_center" headers="sex">…</td>
+</tr>
+<tr class="odd">
+<td class="gt_row gt_left" headers="ID" style="border-right-width: 1px; border-right-style: solid; border-right-color: #000000">103,754,865</td>
+<td class="gt_row gt_center" headers="vote">Republican</td>
+<td class="gt_row gt_center" headers="sex">M</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+</section><section id="scenario-2" class="level4" data-number="5.2.2.2"><h4 data-number="5.2.2.2" class="anchored" data-anchor-id="scenario-2">
+<span class="header-section-number">5.2.2.2</span> Scenario 2</h4>
+<p><em>Units</em>: Individual US voters.</p>
+<p><em>Outcome</em>: The presidential voting result of each individual voter.</p>
+<p><em>Causal or predictive model</em>: Causal.</p>
+<p><em>Treatment</em>: sex. Since we are studying how sex influences different voting behaviors, we must manipulate sex to see the outcomes.</p>
+<p><em>Covariates</em>:</p>
+<p><em>Moment in Time</em>: The election season in the fall of 1992</p>
+<!-- XX: Insert Preceptor Table. -->
+</section></section></section><section id="justice" class="level2" data-number="5.3"><h2 data-number="5.3" class="anchored" data-anchor-id="justice">
+<span class="header-section-number">5.3</span> Justice</h2>
+<div class="cell">
+<div class="cell-output-display">
+<div>
+<figure class="figure"><p><img src="other/images/Justice.jpg" class="img-fluid figure-img"></p>
+</figure>
+</div>
+</div>
+</div>
+<p><strong>Justice</strong> concerns the Population Table and the four key assumptions which underlie it: validity, stability, representativeness, and unconfoundedness.</p>
+<section id="validity" class="level3" data-number="5.3.1"><h3 data-number="5.3.1" class="anchored" data-anchor-id="validity">
+<span class="header-section-number">5.3.1</span> Validity</h3>
+<p><strong>Validity</strong> is the consistency, or lack thereof, in the columns of the data set and the corresponding columns in the Preceptor Table. In order to consider the two data sets to be drawn from the same population, the columns from one must have a <em>valid correspondence</em> with the columns in the other. Validity, if true (or at least reasonable), allows us to construct the <em>Population Table</em>, which is the central result of Justice.</p>
+<p>Our Preceptor Table includes the 103,754,865 people who voted for one of the three leading candidates in the 1992 presidential election. Our data includes a (tiny) subset of those people. This is a standard aspect of a “historical” data science project, when the data we want (the Preceptor Table) and the data we have come from the same moment in time. This makes the assumptions of validity and stability much easier to maintain. Of course, there can always be problems. A response to the nice ANES surveyer about one’s vote (or sex) is not the same thing as one’s actual vote (or sex). Indeed, a standard artifact of political surveys is that more people claim to have voted for the winning candidate than actually did. In this case, however, we will assume that validity holds and that we can “stack” the columns from the Preceptor Table and the data on top of each other. In fact, validity allows us to assume that the rows in the data is actually a <em>subset</em> of the rows in the Preceptor Table. To summarize:</p>
+<blockquote class="blockquote">
+<p><em>Using data from the National Election Studies survey of US citizens, we seek to understand the relationship between voter preference and sex in the 1992 Presidential election.</em></p>
+</blockquote>
+</section><section id="population-table" class="level3" data-number="5.3.2"><h3 data-number="5.3.2" class="anchored" data-anchor-id="population-table">
+<span class="header-section-number">5.3.2</span> Population Table</h3>
+<p>The <strong>Population Table</strong> includes a row for each unit/time combination in the underlying population from which both the Preceptor Table and the data are drawn.</p>
+<section id="scenario-1-1" class="level4" data-number="5.3.2.1"><h4 data-number="5.3.2.1" class="anchored" data-anchor-id="scenario-1-1">
+<span class="header-section-number">5.3.2.1</span> Scenario 1</h4>
+<p>Because this project is historical, the Population Table has the same number of rows as the Preceptor Table.</p>
+<div class="cell">
+<div class="cell-output-display">
+<div id="silhzvfcqj" style="padding-left:0px;padding-right:0px;padding-top:10px;padding-bottom:10px;overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
+<style>#silhzvfcqj table {
+  font-family: system-ui, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+#silhzvfcqj thead, #silhzvfcqj tbody, #silhzvfcqj tfoot, #silhzvfcqj tr, #silhzvfcqj td, #silhzvfcqj th {
+  border-style: none;
+}
+
+#silhzvfcqj p {
+  margin: 0;
+  padding: 0;
+}
+
+#silhzvfcqj .gt_table {
+  display: table;
+  border-collapse: collapse;
+  line-height: normal;
+  margin-left: auto;
+  margin-right: auto;
+  color: #333333;
+  font-size: 16px;
+  font-weight: normal;
+  font-style: normal;
+  background-color: #FFFFFF;
+  width: auto;
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #A8A8A8;
+  border-right-style: none;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #A8A8A8;
+  border-left-style: none;
+  border-left-width: 2px;
+  border-left-color: #D3D3D3;
+}
+
+#silhzvfcqj .gt_caption {
+  padding-top: 4px;
+  padding-bottom: 4px;
+}
+
+#silhzvfcqj .gt_title {
+  color: #333333;
+  font-size: 125%;
+  font-weight: initial;
+  padding-top: 4px;
+  padding-bottom: 4px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-bottom-color: #FFFFFF;
+  border-bottom-width: 0;
+}
+
+#silhzvfcqj .gt_subtitle {
+  color: #333333;
+  font-size: 85%;
+  font-weight: initial;
+  padding-top: 3px;
+  padding-bottom: 5px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-top-color: #FFFFFF;
+  border-top-width: 0;
+}
+
+#silhzvfcqj .gt_heading {
+  background-color: #FFFFFF;
+  text-align: center;
+  border-bottom-color: #FFFFFF;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+}
+
+#silhzvfcqj .gt_bottom_border {
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+}
+
+#silhzvfcqj .gt_col_headings {
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+}
+
+#silhzvfcqj .gt_col_heading {
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: normal;
+  text-transform: inherit;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+  vertical-align: bottom;
+  padding-top: 5px;
+  padding-bottom: 6px;
+  padding-left: 5px;
+  padding-right: 5px;
+  overflow-x: hidden;
+}
+
+#silhzvfcqj .gt_column_spanner_outer {
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: normal;
+  text-transform: inherit;
+  padding-top: 0;
+  padding-bottom: 0;
+  padding-left: 4px;
+  padding-right: 4px;
+}
+
+#silhzvfcqj .gt_column_spanner_outer:first-child {
+  padding-left: 0;
+}
+
+#silhzvfcqj .gt_column_spanner_outer:last-child {
+  padding-right: 0;
+}
+
+#silhzvfcqj .gt_column_spanner {
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  vertical-align: bottom;
+  padding-top: 5px;
+  padding-bottom: 5px;
+  overflow-x: hidden;
+  display: inline-block;
+  width: 100%;
+}
+
+#silhzvfcqj .gt_spanner_row {
+  border-bottom-style: hidden;
+}
+
+#silhzvfcqj .gt_group_heading {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: initial;
+  text-transform: inherit;
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+  vertical-align: middle;
+  text-align: left;
+}
+
+#silhzvfcqj .gt_empty_group_heading {
+  padding: 0.5px;
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: initial;
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  vertical-align: middle;
+}
+
+#silhzvfcqj .gt_from_md > :first-child {
+  margin-top: 0;
+}
+
+#silhzvfcqj .gt_from_md > :last-child {
+  margin-bottom: 0;
+}
+
+#silhzvfcqj .gt_row {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  margin: 10px;
+  border-top-style: solid;
+  border-top-width: 1px;
+  border-top-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+  vertical-align: middle;
+  overflow-x: hidden;
+}
+
+#silhzvfcqj .gt_stub {
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: initial;
+  text-transform: inherit;
+  border-right-style: solid;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+#silhzvfcqj .gt_stub_row_group {
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: initial;
+  text-transform: inherit;
+  border-right-style: solid;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+  padding-left: 5px;
+  padding-right: 5px;
+  vertical-align: top;
+}
+
+#silhzvfcqj .gt_row_group_first td {
+  border-top-width: 2px;
+}
+
+#silhzvfcqj .gt_row_group_first th {
+  border-top-width: 2px;
+}
+
+#silhzvfcqj .gt_summary_row {
+  color: #333333;
+  background-color: #FFFFFF;
+  text-transform: inherit;
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+#silhzvfcqj .gt_first_summary_row {
+  border-top-style: solid;
+  border-top-color: #D3D3D3;
+}
+
+#silhzvfcqj .gt_first_summary_row.thick {
+  border-top-width: 2px;
+}
+
+#silhzvfcqj .gt_last_summary_row {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+}
+
+#silhzvfcqj .gt_grand_summary_row {
+  color: #333333;
+  background-color: #FFFFFF;
+  text-transform: inherit;
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+#silhzvfcqj .gt_first_grand_summary_row {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-top-style: double;
+  border-top-width: 6px;
+  border-top-color: #D3D3D3;
+}
+
+#silhzvfcqj .gt_last_grand_summary_row_top {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-bottom-style: double;
+  border-bottom-width: 6px;
+  border-bottom-color: #D3D3D3;
+}
+
+#silhzvfcqj .gt_striped {
+  background-color: rgba(128, 128, 128, 0.05);
+}
+
+#silhzvfcqj .gt_table_body {
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+}
+
+#silhzvfcqj .gt_footnotes {
+  color: #333333;
+  background-color: #FFFFFF;
+  border-bottom-style: none;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 2px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+}
+
+#silhzvfcqj .gt_footnote {
+  margin: 0px;
+  font-size: 90%;
+  padding-top: 4px;
+  padding-bottom: 4px;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+#silhzvfcqj .gt_sourcenotes {
+  color: #333333;
+  background-color: #FFFFFF;
+  border-bottom-style: none;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 2px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+}
+
+#silhzvfcqj .gt_sourcenote {
+  font-size: 90%;
+  padding-top: 4px;
+  padding-bottom: 4px;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+#silhzvfcqj .gt_left {
+  text-align: left;
+}
+
+#silhzvfcqj .gt_center {
+  text-align: center;
+}
+
+#silhzvfcqj .gt_right {
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+}
+
+#silhzvfcqj .gt_font_normal {
+  font-weight: normal;
+}
+
+#silhzvfcqj .gt_font_bold {
+  font-weight: bold;
+}
+
+#silhzvfcqj .gt_font_italic {
+  font-style: italic;
+}
+
+#silhzvfcqj .gt_super {
+  font-size: 65%;
+}
+
+#silhzvfcqj .gt_footnote_marks {
+  font-size: 75%;
+  vertical-align: 0.4em;
+  position: initial;
+}
+
+#silhzvfcqj .gt_asterisk {
+  font-size: 100%;
+  vertical-align: 0;
+}
+
+#silhzvfcqj .gt_indent_1 {
+  text-indent: 5px;
+}
+
+#silhzvfcqj .gt_indent_2 {
+  text-indent: 10px;
+}
+
+#silhzvfcqj .gt_indent_3 {
+  text-indent: 15px;
+}
+
+#silhzvfcqj .gt_indent_4 {
+  text-indent: 20px;
+}
+
+#silhzvfcqj .gt_indent_5 {
+  text-indent: 25px;
+}
+
+#silhzvfcqj .katex-display {
+  display: inline-flex !important;
+  margin-bottom: 0.75em !important;
+}
+
+#silhzvfcqj div.Reactable > div.rt-table > div.rt-thead > div.rt-tr.rt-tr-group-header > div.rt-th-group:after {
+  height: 0px !important;
+}
+</style>
+<table class="gt_table caption-top table table-sm table-striped small" data-quarto-bootstrap="false">
+<colgroup>
+<col style="width: 25%">
+<col style="width: 25%">
+<col style="width: 25%">
+<col style="width: 25%">
+</colgroup>
+<thead>
+<tr class="gt_heading header">
+<td colspan="4" class="gt_heading gt_title gt_font_normal gt_bottom_border">Population Table</td>
+</tr>
+<tr class="gt_col_headings gt_spanner_row even">
+<th rowspan="2" id="source" class="gt_col_heading gt_columns_bottom_border gt_center" data-quarto-table-cell-role="th" scope="col">Source</th>
+<th rowspan="2" id="ID" class="gt_col_heading gt_columns_bottom_border gt_left" data-quarto-table-cell-role="th" style="text-align: left; font-size: large; vertical-align: middle;" scope="col">ID</th>
+<th id="Outcome" class="gt_center gt_columns_top_border gt_column_spanner_outer" data-quarto-table-cell-role="th" scope="col"><div class="gt_column_spanner">
+Outcome
+</div></th>
+<th id="Covariate" class="gt_center gt_columns_top_border gt_column_spanner_outer" data-quarto-table-cell-role="th" scope="col"><div class="gt_column_spanner">
+Covariate
+</div></th>
+</tr>
+<tr class="gt_col_headings header">
+<th id="vote" class="gt_col_heading gt_columns_bottom_border gt_center" data-quarto-table-cell-role="th" scope="col">Vote</th>
+<th id="sex" class="gt_col_heading gt_columns_bottom_border gt_center" data-quarto-table-cell-role="th" scope="col">Sex</th>
+</tr>
+</thead>
+<tbody class="gt_table_body">
+<tr class="odd">
+<td class="gt_row gt_center" headers="source">PT/Data</td>
+<td class="gt_row gt_left" headers="ID" style="border-right-width: 1px; border-right-style: solid; border-right-color: #000000">1</td>
+<td class="gt_row gt_center" headers="vote">Democrat</td>
+<td class="gt_row gt_center" headers="sex">M</td>
+</tr>
+<tr class="even">
+<td class="gt_row gt_center" headers="source">PT/Data</td>
+<td class="gt_row gt_left" headers="ID" style="border-right-width: 1px; border-right-style: solid; border-right-color: #000000">2</td>
+<td class="gt_row gt_center" headers="vote">Third Party</td>
+<td class="gt_row gt_center" headers="sex">F</td>
+</tr>
+<tr class="odd">
+<td class="gt_row gt_center" headers="source">PT</td>
+<td class="gt_row gt_left" headers="ID" style="border-right-width: 1px; border-right-style: solid; border-right-color: #000000">3</td>
+<td class="gt_row gt_center" headers="vote">Republican</td>
+<td class="gt_row gt_center" headers="sex">M</td>
+</tr>
+<tr class="even">
+<td class="gt_row gt_center" headers="source">PT</td>
+<td class="gt_row gt_left" headers="ID" style="border-right-width: 1px; border-right-style: solid; border-right-color: #000000">4</td>
+<td class="gt_row gt_center" headers="vote">Democrat</td>
+<td class="gt_row gt_center" headers="sex">F</td>
+</tr>
+<tr class="odd">
+<td class="gt_row gt_center" headers="source">PT</td>
+<td class="gt_row gt_left" headers="ID" style="border-right-width: 1px; border-right-style: solid; border-right-color: #000000">5</td>
+<td class="gt_row gt_center" headers="vote">Democrat</td>
+<td class="gt_row gt_center" headers="sex">F</td>
+</tr>
+<tr class="even">
+<td class="gt_row gt_center" headers="source">PT</td>
+<td class="gt_row gt_left" headers="ID" style="border-right-width: 1px; border-right-style: solid; border-right-color: #000000">6</td>
+<td class="gt_row gt_center" headers="vote">Democrat</td>
+<td class="gt_row gt_center" headers="sex">M</td>
+</tr>
+<tr class="odd">
+<td class="gt_row gt_center" headers="source">…</td>
+<td class="gt_row gt_left" headers="ID" style="border-right-width: 1px; border-right-style: solid; border-right-color: #000000">…</td>
+<td class="gt_row gt_center" headers="vote">…</td>
+<td class="gt_row gt_center" headers="sex">…</td>
+</tr>
+<tr class="even">
+<td class="gt_row gt_center" headers="source">PT/Data</td>
+<td class="gt_row gt_left" headers="ID" style="border-right-width: 1px; border-right-style: solid; border-right-color: #000000">10</td>
+<td class="gt_row gt_center" headers="vote">Republican</td>
+<td class="gt_row gt_center" headers="sex">F</td>
+</tr>
+<tr class="odd">
+<td class="gt_row gt_center" headers="source">PT/Data</td>
+<td class="gt_row gt_left" headers="ID" style="border-right-width: 1px; border-right-style: solid; border-right-color: #000000">11</td>
+<td class="gt_row gt_center" headers="vote">Democrat</td>
+<td class="gt_row gt_center" headers="sex">F</td>
+</tr>
+<tr class="even">
+<td class="gt_row gt_center" headers="source">PT</td>
+<td class="gt_row gt_left" headers="ID" style="border-right-width: 1px; border-right-style: solid; border-right-color: #000000">12</td>
+<td class="gt_row gt_center" headers="vote">Democrat</td>
+<td class="gt_row gt_center" headers="sex">…</td>
+</tr>
+<tr class="odd">
+<td class="gt_row gt_center" headers="source">PT</td>
+<td class="gt_row gt_left" headers="ID" style="border-right-width: 1px; border-right-style: solid; border-right-color: #000000">13</td>
+<td class="gt_row gt_center" headers="vote">Republican</td>
+<td class="gt_row gt_center" headers="sex">F</td>
+</tr>
+<tr class="even">
+<td class="gt_row gt_center" headers="source">…</td>
+<td class="gt_row gt_left" headers="ID" style="border-right-width: 1px; border-right-style: solid; border-right-color: #000000">…</td>
+<td class="gt_row gt_center" headers="vote">…</td>
+<td class="gt_row gt_center" headers="sex">…</td>
+</tr>
+<tr class="odd">
+<td class="gt_row gt_center" headers="source">PT/Data</td>
+<td class="gt_row gt_left" headers="ID" style="border-right-width: 1px; border-right-style: solid; border-right-color: #000000">103,754,865</td>
+<td class="gt_row gt_center" headers="vote">Republican</td>
+<td class="gt_row gt_center" headers="sex">M</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+<p>We are not interested in these voters outside of the 1992 election. So, this Population Table, unlike most, does not require a <code>Time</code> column. The Preceptor Table and the data come from the same moment in time. Of course, this is not literally true. Recall: <strong>The <code>Time</code> column is always a lie.</strong> Some voters cast their ballots weeks before Election Day. Some NES participants were surveyed right after the election. Some were survey later. We sweep all these complications under the mythical moment in time which we assert is the same for both the data and the Preceptor Table.</p>
+</section><section id="scenario-2-1" class="level4" data-number="5.3.2.2"><h4 data-number="5.3.2.2" class="anchored" data-anchor-id="scenario-2-1">
+<span class="header-section-number">5.3.2.2</span> Scenario 2</h4>
+<!-- XX: Insert Poulation Table -->
+</section></section><section id="stability" class="level3" data-number="5.3.3"><h3 data-number="5.3.3" class="anchored" data-anchor-id="stability">
+<span class="header-section-number">5.3.3</span> Stability</h3>
+<p><strong>Stability</strong> means that the relationship between the columns in the Population Table is the same for three categories of rows: the data, the Preceptor Table, and the larger population from which both are drawn.</p>
+<p>If the assumption of stability holds, then the relationship between the columns in the Population Table is the same for three categories of rows: the data, the Preceptor Table, and the larger population from which both are drawn. In this case, there is no larger population. Or, rather, the Preceptor Table is the larger population. And, since the data and the Preceptor Table come from the same moment in time, stability holds by definition.</p>
+</section><section id="representativeness" class="level3" data-number="5.3.4"><h3 data-number="5.3.4" class="anchored" data-anchor-id="representativeness">
+<span class="header-section-number">5.3.4</span> Representativeness</h3>
+<p><strong>Representativeness</strong>, or the lack thereof, concerns two relationships among the rows in the Population Table. The first is between the data and the other rows. The second is between the other rows and the Preceptor Table. Ideally, we would like both the Preceptor Table <em>and</em> our data to be random samples from the population. Sadly, this is almost never the case.</p>
+<p>The NES is a highly professional organization so their survey does a good of capturing a random sample of all voters. But no real world survey is perfect! There are always problems. In particular, there are (somewhat) unobserved differences between the sort of people who respond to surveys and the sort of people who don’t. NES is more likely to capture the votes of cooperative people than the votes of misanthropes. If, among misanthropes, the relationship between sex and Presidential candidate is different than the relationship among cooperative voters, we might have problems. The technical term for the problem of people who don’t respond to surveys is “non-response.”</p>
+</section><section id="unconfoundedness" class="level3" data-number="5.3.5"><h3 data-number="5.3.5" class="anchored" data-anchor-id="unconfoundedness">
+<span class="header-section-number">5.3.5</span> Unconfoundedness</h3>
+<p><strong>Unconfoundedness</strong> means that the treatment assignment is independent of the potential outcomes, when we condition on pre-treatment covariates. This assumption is only relevant for causal models. We describe a model as “confounded” if this is not true. The easiest way to ensure unconfoundedness is to assign treatment randomly.</p>
+<p>Since Scenario 1 is a predictive model, unconfoundedness can only apply to scenario 2.</p>
+</section><section id="mathematics" class="level3" data-number="5.3.6"><h3 data-number="5.3.6" class="anchored" data-anchor-id="mathematics">
+<span class="header-section-number">5.3.6</span> Mathematics</h3>
+<p>The link function, which defines the mathematical form of a regression model, is largely determined by the type of outcome variable. For a binary outcome, we typically use a binomial logistic model. But when our outcome variable has three or more unordered categories, we turn to the multinomial logistic regression model — sometimes also called the categorical model.</p>
+<p>We start with a simple three-outcome version of the model:</p>
+<p><span class="math display">\[
+\begin{aligned}
+\rho_{A} &amp;= \frac{e^{\beta_{0, A} + \beta_{1, A} \cdot X}}{1 + e^{\beta_{0, A} + \beta_{1, A} \cdot X} + e^{\beta_{0, B} + \beta_{1, B} \cdot X}} \\\\
+\rho_{B} &amp;= \frac{e^{\beta_{0, B} + \beta_{1, B} \cdot X}}{1 + e^{\beta_{0, A} + \beta_{1, A} \cdot X} + e^{\beta_{0, B} + \beta_{1, B} \cdot X}} \\\\
+\rho_{C} &amp;= 1 - \rho_{A} - \rho_{B}
+\end{aligned}
+\]</span></p>
+<p>Each category (A, B, or C) gets its own linear predictor (a combination of coefficients and covariates), and the probabilities are constructed so that they all fall between 0 and 1 and sum to 1.</p>
+<p>This structure generalizes naturally to more than three outcomes and more than one covariate. The general form of the <strong>multinomial logistic regression model</strong> is:</p>
+<p><span class="math display">\[
+P(Y = k) = \frac{e^{\beta_{k0} + \beta_{k1} X_1 + \beta_{k2} X_2 + \cdots + \beta_{kn} X_n}}{\sum_{j=1}^{K} e^{\beta_{j0} + \beta_{j1} X_1 + \beta_{j2} X_2 + \cdots + \beta_{jn} X_n}}
+\]</span></p>
+<p>with</p>
+<p><span class="math display">\[
+Y \sim \text{Multinomial}(\boldsymbol{\rho}) \quad \text{where} \quad \boldsymbol{\rho} = (\rho_1, \rho_2, \ldots, \rho_K)
+\]</span></p>
+<p>and each <span class="math inline">\(\rho_k\)</span> corresponds to the predicted probability for category <span class="math inline">\(k\)</span>.</p>
+<p>Each outcome class <span class="math inline">\(k\)</span> has its own set of regression parameters <span class="math inline">\(\beta_{k0}, \beta_{k1}, \ldots, \beta_{kn}\)</span>, allowing the model to capture distinct patterns of association between the covariates and each outcome.</p>
+</section></section><section id="courage" class="level2" data-number="5.4"><h2 data-number="5.4" class="anchored" data-anchor-id="courage">
+<span class="header-section-number">5.4</span> Courage</h2>
+<div class="cell">
+<div class="cell-output-display">
+<div>
+<figure class="figure"><p><img src="other/images/Courage.jpg" class="img-fluid figure-img"></p>
+</figure>
+</div>
+</div>
+</div>
+<p><strong>Courage</strong> creates the data generating mechanism.</p>
+<section id="models" class="level3" data-number="5.4.1"><h3 data-number="5.4.1" class="anchored" data-anchor-id="models">
+<span class="header-section-number">5.4.1</span> Models</h3>
+<p>Because our outcome variable has more than two unordered categories, we use a multinomial logistic regression model, using <code>multinom_reg(engine = "nnet")</code>.</p>
+<p>Multinomial logistic regression estimates the probability of each outcome category relative to a reference. In our case, the outcome <code>pres_vote</code> has three categories: Clinton, Bush, and Perot. The model uses one of these as a baseline (e.g., Bush), and then estimates how predictors such as <code>sex</code> influence the odds of choosing one of the other candidates relative to that baseline.</p>
+<p>We fit the model using the tidymodels framework, using only sex as a predictor:</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb9"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">fit_sex</span> <span class="op">&lt;-</span> <span class="fu">multinom_reg</span><span class="op">(</span>engine <span class="op">=</span> <span class="st">"nnet"</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>  <span class="fu">fit</span><span class="op">(</span><span class="va">pres_vote</span> <span class="op">~</span> <span class="va">sex</span>, data <span class="op">=</span> <span class="va">nes_92</span><span class="op">)</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<p>Categorical predictors like <code>sex</code> are automatically converted into 0/1 dummy variables. If <code>sex</code> includes levels “Male” and “Female”, then the model creates a dummy variable like <code>sexMale</code>, with “Male” as the reference category. The model estimates one set of coefficients for each non-reference outcome, so we get two equations: one comparing Clinton vs.&nbsp;Bush and one comparing Perot vs.&nbsp;Bush.</p>
+<p>After fitting the model, we summarize it with</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb10"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu"><a href="https://generics.r-lib.org/reference/tidy.html">tidy</a></span><span class="op">(</span><span class="va">fit_sex</span>, conf.int <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 4 × 8
+  y.level term        estimate std.error statistic  p.value conf.low conf.high
+  &lt;chr&gt;   &lt;chr&gt;          &lt;dbl&gt;     &lt;dbl&gt;     &lt;dbl&gt;    &lt;dbl&gt;    &lt;dbl&gt;     &lt;dbl&gt;
+1 Clinton (Intercept)    0.477    0.0757      6.30 2.90e-10    0.329    0.625 
+2 Clinton sexMale       -0.267    0.113      -2.37 1.77e- 2   -0.488   -0.0465
+3 Perot   (Intercept)   -0.858    0.109      -7.88 3.39e-15   -1.07    -0.644 
+4 Perot   sexMale        0.429    0.147       2.92 3.48e- 3    0.141    0.717 </code></pre>
+</div>
+</div>
+<p>This returns estimates and 95% confidence intervals for the model’s parameters. These coefficients are on the log-odds scale and tell us how being male (vs.&nbsp;female) affects the odds of voting for Clinton or Perot, relative to Bush.</p>
+<table class="caption-top table">
+<thead><tr class="header">
+<th>Outcome</th>
+<th>Term</th>
+<th>Estimate</th>
+<th>2.5%</th>
+<th>97.5%</th>
+</tr></thead>
+<tbody>
+<tr class="odd">
+<td>Clinton</td>
+<td>(Intercept)</td>
+<td>0.45</td>
+<td>0.21</td>
+<td>0.69</td>
+</tr>
+<tr class="even">
+<td>Clinton</td>
+<td>sexMale</td>
+<td>-0.25</td>
+<td>-0.49</td>
+<td>-0.01</td>
+</tr>
+<tr class="odd">
+<td>Perot</td>
+<td>(Intercept)</td>
+<td>-0.85</td>
+<td>-1.10</td>
+<td>-0.60</td>
+</tr>
+<tr class="even">
+<td>Perot</td>
+<td>sexMale</td>
+<td>0.42</td>
+<td>0.17</td>
+<td>0.67</td>
+</tr>
+</tbody>
+</table>
+<p>Each coefficient represents a <strong>log-odds difference</strong>. For example: - The intercept of <strong>0.45</strong> for Clinton indicates that, among <strong>female</strong> voters (since <code>sexMale = 0</code>), the log-odds of voting for Clinton rather than Bush is 0.45. - The <strong>sexMale</strong> coefficient of <strong>-0.25</strong> for Clinton indicates that <strong>males</strong> have lower log-odds of voting for Clinton relative to Bush compared to females, by 0.25 log-odds units. - For Perot, the <strong>intercept</strong> of <strong>-0.85</strong> suggests that females had a lower baseline likelihood of voting for Perot than Bush. - The <strong>sexMale</strong> coefficient of <strong>0.42</strong> for Perot implies that males were more likely than females to vote for Perot rather than Bush.</p>
+<p>We then study race individually:</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb12"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">fit_race</span> <span class="op">&lt;-</span> <span class="fu">multinom_reg</span><span class="op">(</span>engine <span class="op">=</span> <span class="st">"nnet"</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>  <span class="fu">fit</span><span class="op">(</span><span class="va">pres_vote</span> <span class="op">~</span> <span class="va">race</span>, data <span class="op">=</span> <span class="va">nes_92</span><span class="op">)</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<p>In this model, we include only race as a predictor of vote choice. Race is a categorical variable (e.g., White, Black, Other), so the model creates dummy variables for each level, using one group—such as Black—as the reference category. The model estimates how racial identity influences the likelihood of voting for Clinton or Perot relative to Bush.</p>
+<p>Because sex is not included in this model, the estimates reflect average differences in vote choice across racial groups, without accounting for potential gender effects. For instance, the model might show that White voters were significantly less likely than Black voters to support Clinton over Bush, or more likely to vote for Perot rather than Bush. This provides insight into how voting behavior in 1992 varied by race, on average, across the electorate.</p>
+<p>We can then summarize it with tidy, this time on <code>fit_race</code>.</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb13"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu"><a href="https://generics.r-lib.org/reference/tidy.html">tidy</a></span><span class="op">(</span><span class="va">fit_race</span>, conf.int <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 10 × 8
+   y.level term          estimate std.error statistic p.value conf.low conf.high
+   &lt;chr&gt;   &lt;chr&gt;            &lt;dbl&gt;     &lt;dbl&gt;     &lt;dbl&gt;   &lt;dbl&gt;    &lt;dbl&gt;     &lt;dbl&gt;
+ 1 Clinton (Intercept)     -0.693     0.548    -1.27  2.06e-1   -1.77     0.380 
+ 2 Clinton raceBlack        3.61      0.646     5.59  2.32e-8    2.34     4.87  
+ 3 Clinton raceHispanic     1.29      0.588     2.20  2.77e-2    0.142    2.45  
+ 4 Clinton raceNative A…    1.20      0.913     1.32  1.87e-1   -0.585    2.99  
+ 5 Clinton raceWhite        0.794     0.551     1.44  1.50e-1   -0.286    1.87  
+ 6 Perot   (Intercept)     -1.61      0.775    -2.08  3.77e-2   -3.13    -0.0914
+ 7 Perot   raceBlack        0.799     0.980     0.815 4.15e-1   -1.12     2.72  
+ 8 Perot   raceHispanic     0.386     0.854     0.452 6.51e-1   -1.29     2.06  
+ 9 Perot   raceNative A…    1.20      1.20      1.01  3.15e-1   -1.14     3.55  
+10 Perot   raceWhite        1.03      0.778     1.32  1.88e-1   -0.500    2.55  </code></pre>
+</div>
+</div>
+<p>This command returns the estimated coefficients and 95% confidence intervals for each term in the multinomial logistic regression model that includes race as a predictor. The output shows how belonging to a particular racial group, compared to the reference group (e.g., Black voters), affects the log-odds of voting for Clinton or Perot relative to Bush.</p>
+<p>Each row in the output corresponds to one term in one of the two comparisons: Clinton vs.&nbsp;Bush and Perot vs.&nbsp;Bush. The intercept represents the baseline log-odds of voting for each candidate among the reference group (e.g., Black voters), while the race terms indicate how those log-odds shift for White and Other racial groups. For example, a negative coefficient for <code>raceWhite</code> in the Clinton row would suggest that White voters had lower odds of voting for Clinton (vs.&nbsp;Bush) than Black voters.</p>
+<p>We finally add sex to race as a final predictor:</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb15"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">fit_sex_race</span> <span class="op">&lt;-</span> <span class="fu">multinom_reg</span><span class="op">(</span>engine <span class="op">=</span> <span class="st">"nnet"</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>  <span class="fu">fit</span><span class="op">(</span><span class="va">pres_vote</span> <span class="op">~</span> <span class="va">sex</span> <span class="op">+</span> <span class="va">race</span>, data <span class="op">=</span> <span class="va">nes_92</span><span class="op">)</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<p>In this model, we include both sex and race as predictors of vote choice. Race is a categorical variable (e.g., White, Black, Other), so the model creates dummy variables for each level, with one group as the reference (e.g., Black). The model now tells us how sex affects vote choice within each racial group, along with how race affects vote choice, controlling for sex.</p>
+<p>By including both variables, we can see whether racial identity influenced voting patterns independently of gender. For example, this model might show that White voters were more likely to vote for Perot relative to Bush than Black voters, even after accounting for sex.</p>
+<p>We can now summarize it again with tidy, this time on <code>fit_sex_race</code>.</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb16"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu"><a href="https://generics.r-lib.org/reference/tidy.html">tidy</a></span><span class="op">(</span><span class="va">fit_sex_race</span>, conf.int <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 12 × 8
+   y.level term          estimate std.error statistic p.value conf.low conf.high
+   &lt;chr&gt;   &lt;chr&gt;            &lt;dbl&gt;     &lt;dbl&gt;     &lt;dbl&gt;   &lt;dbl&gt;    &lt;dbl&gt;     &lt;dbl&gt;
+ 1 Clinton (Intercept)     -0.528     0.555    -0.951 3.41e-1  -1.62      0.560 
+ 2 Clinton sexMale         -0.220     0.118    -1.86  6.23e-2  -0.451     0.0113
+ 3 Clinton raceBlack        3.53      0.647     5.46  4.75e-8   2.27      4.80  
+ 4 Clinton raceHispanic     1.21      0.590     2.06  3.94e-2   0.0589    2.37  
+ 5 Clinton raceNative A…    1.08      0.916     1.18  2.39e-1  -0.716     2.87  
+ 6 Clinton raceWhite        0.729     0.553     1.32  1.87e-1  -0.354     1.81  
+ 7 Perot   (Intercept)     -1.96      0.785    -2.50  1.24e-2  -3.50     -0.424 
+ 8 Perot   sexMale          0.439     0.148     2.97  2.96e-3   0.149     0.728 
+ 9 Perot   raceBlack        0.933     0.982     0.950 3.42e-1  -0.993     2.86  
+10 Perot   raceHispanic     0.532     0.857     0.621 5.34e-1  -1.15      2.21  
+11 Perot   raceNative A…    1.45      1.20      1.21  2.27e-1  -0.905     3.81  
+12 Perot   raceWhite        1.14      0.780     1.47  1.43e-1  -0.386     2.67  </code></pre>
+</div>
+</div>
+<p>This returns estimates and 95% confidence intervals for the model’s parameters. These coefficients are on the log-odds scale and tell us how being male (vs.&nbsp;female) and being white (vs.&nbsp;Black) affect the odds of voting for Clinton or Perot, relative to Bush.</p>
+<table class="caption-top table">
+<thead><tr class="header">
+<th>Outcome</th>
+<th>Term</th>
+<th>Estimate</th>
+<th>2.5%</th>
+<th>97.5%</th>
+</tr></thead>
+<tbody>
+<tr class="odd">
+<td>Clinton</td>
+<td>(Intercept)</td>
+<td>0.60</td>
+<td>0.35</td>
+<td>0.86</td>
+</tr>
+<tr class="even">
+<td>Clinton</td>
+<td>sexMale</td>
+<td>-0.22</td>
+<td>-0.46</td>
+<td>0.02</td>
+</tr>
+<tr class="odd">
+<td>Clinton</td>
+<td>raceWhite</td>
+<td>-0.50</td>
+<td>-0.77</td>
+<td>-0.24</td>
+</tr>
+<tr class="even">
+<td>Perot</td>
+<td>(Intercept)</td>
+<td>-0.70</td>
+<td>-0.94</td>
+<td>-0.46</td>
+</tr>
+<tr class="odd">
+<td>Perot</td>
+<td>sexMale</td>
+<td>0.39</td>
+<td>0.15</td>
+<td>0.63</td>
+</tr>
+<tr class="even">
+<td>Perot</td>
+<td>raceWhite</td>
+<td>0.28</td>
+<td>0.02</td>
+<td>0.53</td>
+</tr>
+</tbody>
+</table>
+<p>Each coefficient represents a log-odds difference, holding the other predictor constant. For Clinton, the intercept of 0.60 tells us that among Black female voters (the reference levels for both variables), the log-odds of voting for Clinton rather than Bush is 0.60. The <code>sexMale</code> coefficient of -0.22 means that male voters have slightly lower log-odds of voting for Clinton over Bush compared to females, controlling for race. The <code>raceWhite</code> coefficient of -0.50 indicates that white voters were less likely than Black voters to vote for Clinton over Bush, adjusting for sex. For Perot, the <code>sexMale</code> coefficient of 0.39 shows that men were more likely than women to vote for Perot rather than Bush. The <code>raceWhite</code> coefficient of 0.28 suggests that white voters were also more likely than Black voters to vote for Perot rather than Bush.</p>
+</section><section id="posterior-predictive-checks" class="level3" data-number="5.4.2"><h3 data-number="5.4.2" class="anchored" data-anchor-id="posterior-predictive-checks">
+<span class="header-section-number">5.4.2</span> Posterior Predictive Checks</h3>
+<p>Because our model is not Bayesian, we do not have full posterior distributions. But we can still ask: how well does our model reproduce the patterns in the data?</p>
+<p>To answer this, we compare our model’s predicted probabilities to the actual proportions in the data. If the predicted values are close to the observed ones, that’s a good sign. If not, the model may be missing something important.</p>
+<p>For instance, we might calculate the average predicted probability of voting for Clinton, Bush, or Perot within each sex group. We then compare those predicted probabilities to the actual proportions of each vote choice among males and females. These checks help confirm whether our fitted model provides a reasonable approximation of reality.</p>
+<p>This approach is more qualitative than quantitative, but it’s a crucial step in understanding what our model is doing—and whether we believe it.</p>
+</section><section id="testing" class="level3" data-number="5.4.3"><h3 data-number="5.4.3" class="anchored" data-anchor-id="testing">
+<span class="header-section-number">5.4.3</span> Testing</h3>
+<p>To interpret the coefficients from the model, we begin with the intercepts: these represent the log-odds of voting for Clinton or Perot (relative to Bush) for the reference group (females). The coefficients for <code>sexMale</code> tell us how those log-odds change for males. A negative coefficient means males are less likely than females to vote for that candidate (compared to Bush), while a positive coefficient means they are more likely.</p>
+<p>Importantly, each coefficient corresponds to a separate binary comparison. For example, the model estimates how sex influences the odds of voting for Clinton vs.&nbsp;Bush and separately how it influences the odds of voting for Perot vs.&nbsp;Bush. There is no single parameter that describes how sex affects the odds of voting for Bush directly — rather, Bush acts as the comparison point.</p>
+<p>After fitting and tidying the model, we examine the magnitude, direction, and statistical uncertainty (via confidence intervals) of each coefficient. This helps us assess whether sex had a statistically and practically significant effect on vote choice in 1992.</p>
+<p>To interpret these coefficients, remember that each one corresponds to a specific comparison relative to the reference category (Bush).</p>
+<ul>
+<li>
+<strong>Clinton vs.&nbsp;Bush:</strong> The negative coefficient for <code>sexMale</code> (–0.25) means that males were <strong>less likely</strong> than females to vote for Clinton over Bush.</li>
+<li>
+<strong>Perot vs.&nbsp;Bush:</strong> The positive coefficient for <code>sexMale</code> (+0.42) means that males were <strong>more likely</strong> than females to vote for Perot over Bush.</li>
+</ul>
+<p>The size of these coefficients helps us understand the magnitude of the difference: - A coefficient of –0.25 for Clinton translates into an odds ratio of approximately <code>exp(–0.25) ≈ 0.78</code>, meaning males had 22% lower odds than females of voting for Clinton (vs.&nbsp;Bush). - A coefficient of +0.42 for Perot gives an odds ratio of <code>exp(0.42) ≈ 1.52</code>, meaning males had 52% higher odds than females of voting for Perot (vs.&nbsp;Bush).</p>
+<p>These results support the idea that sex had a measurable and statistically significant impact on vote choice in the 1992 election. But this model is still simple—real voting behavior is likely influenced by many other variables. This model serves as a clear and interpretable first step.</p>
+</section><section id="data-generating-mechanism" class="level3" data-number="5.4.4"><h3 data-number="5.4.4" class="anchored" data-anchor-id="data-generating-mechanism">
+<span class="header-section-number">5.4.4</span> Data Generating Mechanism</h3>
+<p>Putting the mathematics together with the parameter estimates gives us the data generating mechanism</p>
+<p><span class="math display">\[ vote_i  \sim Categorical(\rho_{bush}, \rho_{clinton}, \rho_{perot}) \]</span></p>
+<p><span class="math display">\[
+\begin{aligned}
+\rho_{bush}  &amp;=&amp; 1 - \rho_{clinton} - \rho_{perot}\\
+\rho_{clinton} &amp;=&amp; \frac{e^{0.45 - 0.25 male}}{1 + e^{0.45 - 0.25 male}}\\
+\rho_{perot} &amp;=&amp; \frac{e^{-0.86 + 0.42 male}}{1 + e^{-0.86 + 0.42 male}}\\
+\end{aligned}
+\]</span> This is the last time we are going to go to the trouble of combining the mathematical formula of the DGM with the specific estimated values. First, these formulas are misleading! The value of <span class="math inline">\(\beta_{0, clinton}\)</span>, for example, is not exactly 0.45. In fact, we don’t know what the value is! Being Bayesians, we calculated a posterior probability distribution for <span class="math inline">\(\beta_{0, clinton}\)</span>. We draw from that distribution when we calculate quantities of interest, as we did above with <code>add_epred_draws()</code>. Second, you probably did not even look that closely at these complex formulas. And we don’t blame you! Being a good race car driver means focussing on how to drive better, not on the physics of carburetors. Similar, being a good data scientist means focusing on the Cardinal Virtues as a method for using data to answer questions. Leave the math to the computer.</p>
+</section></section><section id="temperance" class="level2" data-number="5.5"><h2 data-number="5.5" class="anchored" data-anchor-id="temperance">
+<span class="header-section-number">5.5</span> Temperance</h2>
+<div class="cell">
+<div class="cell-output-display">
+<div>
+<figure class="figure"><p><img src="other/images/Temperance.jpg" class="img-fluid figure-img"></p>
+</figure>
+</div>
+</div>
+</div>
+<p><strong>Temperance</strong> uses the data generating mechanism to answer the question with which we began. Humility reminds us that this answer is always a lie. We can also use the DGM to calculate many similar quantities of interest, displaying the results graphically.</p>
+<section id="questions-and-answers" class="level3" data-number="5.5.1"><h3 data-number="5.5.1" class="anchored" data-anchor-id="questions-and-answers">
+<span class="header-section-number">5.5.1</span> Questions and Answers</h3>
+<p>Recall the questions with which we began:</p>
+<blockquote class="blockquote">
+<p><em>What was the relationship between sex and voting in the 1992 US Presidential election among supporters of the three leading candidates: Clinton, Bush and Perot?</em></p>
+</blockquote>
+<blockquote class="blockquote">
+<p><em>Did a voter’s sex cause them to be more likely to vote for Clinton, Bush, or Perot in the 1992 U.S. Presidential election?</em></p>
+</blockquote>
+<p>We answer these questions by using plot_predictions:</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb18"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu"><a href="https://marginaleffects.com/man/r/plot_predictions.html">plot_predictions</a></span><span class="op">(</span><span class="va">fit_sex_race</span>,</span>
+<span>                 by <span class="op">=</span> <span class="st">"sex"</span>, </span>
+<span>                 type <span class="op">=</span> <span class="st">"prob"</span>,</span>
+<span>                 draw <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>    group    sex  estimate  std.error statistic       p.value  s.value
+1    Bush Female 0.3294549 0.01559268  21.12881  4.322640e-99 326.7590
+2    Bush   Male 0.3466157 0.01696772  20.42795  9.438735e-93 305.7007
+3 Clinton Female 0.5308494 0.01613187  32.90687 1.752638e-237 786.4874
+4 Clinton   Male 0.4276229 0.01703860  25.09729 5.323373e-139 459.3357
+5   Perot Female 0.1396957 0.01169067  11.94933  6.544824e-33 106.9133
+6   Perot   Male 0.2257615 0.01501235  15.03838  4.114672e-51 167.3776
+   conf.low conf.high  df
+1 0.2988938 0.3600160 Inf
+2 0.3133595 0.3798718 Inf
+3 0.4992315 0.5624673 Inf
+4 0.3942278 0.4610179 Inf
+5 0.1167824 0.1626090 Inf
+6 0.1963378 0.2551851 Inf</code></pre>
+</div>
+</div>
+<p>This code returns the estimated probabilities of voting for each candidate, for male and female.</p>
+<p>The intercept coefficient from the fitted model (0.4553900) represents the log-odds, whereas the predicted probabilities from plot_predictions() represent the chances of a voter choosing Clinton based on sex, transformed from those log-odds.</p>
+<p>Often, the best answers to broad questions are graphics. Consider:</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb20"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu"><a href="https://marginaleffects.com/man/r/plot_predictions.html">plot_predictions</a></span><span class="op">(</span><span class="va">fit_sex_race</span>, </span>
+<span>                          by <span class="op">=</span> <span class="st">"sex"</span>, </span>
+<span>                          type <span class="op">=</span> <span class="st">"prob"</span>, </span>
+<span>                          draw <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
+<span>    <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html">ggplot</a></span><span class="op">(</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html">aes</a></span><span class="op">(</span>x <span class="op">=</span> <span class="va">group</span>, y <span class="op">=</span> <span class="va">estimate</span>, color <span class="op">=</span> <span class="va">sex</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
+<span>      <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_point.html">geom_point</a></span><span class="op">(</span>size <span class="op">=</span> <span class="fl">3</span>, position <span class="op">=</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/position_dodge.html">position_dodge</a></span><span class="op">(</span>width <span class="op">=</span> <span class="fl">0.5</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
+<span>      <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_linerange.html">geom_errorbar</a></span><span class="op">(</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html">aes</a></span><span class="op">(</span>ymin <span class="op">=</span> <span class="va">conf.low</span>, </span>
+<span>                        ymax <span class="op">=</span> <span class="va">conf.high</span><span class="op">)</span>, </span>
+<span>                    width <span class="op">=</span> <span class="fl">0.2</span>, </span>
+<span>                    position <span class="op">=</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/position_dodge.html">position_dodge</a></span><span class="op">(</span>width <span class="op">=</span> <span class="fl">0.5</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
+<span>      <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html">labs</a></span><span class="op">(</span>title <span class="op">=</span> <span class="st">"Voting Preferences by Candidate and Sex"</span>,</span>
+<span>           x <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>           y <span class="op">=</span> <span class="st">"Estimated Proportion"</span>,</span>
+<span>           color <span class="op">=</span> <span class="st">"Sex"</span><span class="op">)</span> <span class="op">+</span></span>
+<span>      <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggtheme.html">theme_minimal</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure"><p><img src="07-election-1992_files/figure-html/unnamed-chunk-20-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+</section><section id="humility" class="level3" data-number="5.5.2"><h3 data-number="5.5.2" class="anchored" data-anchor-id="humility">
+<span class="header-section-number">5.5.2</span> Humility</h3>
+<p><em>The world is always more uncertain than our models would have us believe.</em></p>
+
+
+</section></section></main><!-- /main --><script id="quarto-html-after-body" type="application/javascript">
+  window.document.addEventListener("DOMContentLoaded", function (event) {
+    const icon = "";
+    const anchorJS = new window.AnchorJS();
+    anchorJS.options = {
+      placement: 'right',
+      icon: icon
+    };
+    anchorJS.add('.anchored');
+    const isCodeAnnotation = (el) => {
+      for (const clz of el.classList) {
+        if (clz.startsWith('code-annotation-')) {                     
+          return true;
+        }
+      }
+      return false;
+    }
+    const onCopySuccess = function(e) {
+      // button target
+      const button = e.trigger;
+      // don't keep focus
+      button.blur();
+      // flash "checked"
+      button.classList.add('code-copy-button-checked');
+      var currentTitle = button.getAttribute("title");
+      button.setAttribute("title", "Copied!");
+      let tooltip;
+      if (window.bootstrap) {
+        button.setAttribute("data-bs-toggle", "tooltip");
+        button.setAttribute("data-bs-placement", "left");
+        button.setAttribute("data-bs-title", "Copied!");
+        tooltip = new bootstrap.Tooltip(button, 
+          { trigger: "manual", 
+            customClass: "code-copy-button-tooltip",
+            offset: [0, -8]});
+        tooltip.show();    
+      }
+      setTimeout(function() {
+        if (tooltip) {
+          tooltip.hide();
+          button.removeAttribute("data-bs-title");
+          button.removeAttribute("data-bs-toggle");
+          button.removeAttribute("data-bs-placement");
+        }
+        button.setAttribute("title", currentTitle);
+        button.classList.remove('code-copy-button-checked');
+      }, 1000);
+      // clear code selection
+      e.clearSelection();
+    }
+    const getTextToCopy = function(trigger) {
+      const outerScaffold = trigger.parentElement.cloneNode(true);
+      const codeEl = outerScaffold.querySelector('code');
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+    }
+    const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+      text: getTextToCopy
+    });
+    clipboard.on('success', onCopySuccess);
+    if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+      const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+        text: getTextToCopy,
+        container: window.document.getElementById('quarto-embedded-source-code-modal')
+      });
+      clipboardModal.on('success', onCopySuccess);
+    }
+      var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+      var mailtoRegex = new RegExp(/^mailto:/);
+        var filterRegex = new RegExp('/' + window.location.host + '/');
+      var isInternal = (href) => {
+          return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+      }
+      // Inspect non-navigation links and adorn them if external
+     var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+      for (var i=0; i<links.length; i++) {
+        const link = links[i];
+        if (!isInternal(link.href)) {
+          // undo the damage that might have been done by quarto-nav.js in the case of
+          // links that we want to consider external
+          if (link.dataset.originalHref !== undefined) {
+            link.href = link.dataset.originalHref;
+          }
+        }
+      }
+    function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+      const config = {
+        allowHTML: true,
+        maxWidth: 500,
+        delay: 100,
+        arrow: false,
+        appendTo: function(el) {
+            return el.parentElement;
+        },
+        interactive: true,
+        interactiveBorder: 10,
+        theme: 'quarto',
+        placement: 'bottom-start',
+      };
+      if (contentFn) {
+        config.content = contentFn;
+      }
+      if (onTriggerFn) {
+        config.onTrigger = onTriggerFn;
+      }
+      if (onUntriggerFn) {
+        config.onUntrigger = onUntriggerFn;
+      }
+      window.tippy(el, config); 
+    }
+    const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+    for (var i=0; i<noterefs.length; i++) {
+      const ref = noterefs[i];
+      tippyHover(ref, function() {
+        // use id or data attribute instead here
+        let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+        try { href = new URL(href).hash; } catch {}
+        const id = href.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note) {
+          return note.innerHTML;
+        } else {
+          return "";
+        }
+      });
+    }
+    const xrefs = window.document.querySelectorAll('a.quarto-xref');
+    const processXRef = (id, note) => {
+      // Strip column container classes
+      const stripColumnClz = (el) => {
+        el.classList.remove("page-full", "page-columns");
+        if (el.children) {
+          for (const child of el.children) {
+            stripColumnClz(child);
+          }
+        }
+      }
+      stripColumnClz(note)
+      if (id === null || id.startsWith('sec-')) {
+        // Special case sections, only their first couple elements
+        const container = document.createElement("div");
+        if (note.children && note.children.length > 2) {
+          container.appendChild(note.children[0].cloneNode(true));
+          for (let i = 1; i < note.children.length; i++) {
+            const child = note.children[i];
+            if (child.tagName === "P" && child.innerText === "") {
+              continue;
+            } else {
+              container.appendChild(child.cloneNode(true));
+              break;
+            }
+          }
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(container);
+          }
+          return container.innerHTML
+        } else {
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(note);
+          }
+          return note.innerHTML;
+        }
+      } else {
+        // Remove any anchor links if they are present
+        const anchorLink = note.querySelector('a.anchorjs-link');
+        if (anchorLink) {
+          anchorLink.remove();
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        if (note.classList.contains("callout")) {
+          return note.outerHTML;
+        } else {
+          return note.innerHTML;
+        }
+      }
+    }
+    for (var i=0; i<xrefs.length; i++) {
+      const xref = xrefs[i];
+      tippyHover(xref, undefined, function(instance) {
+        instance.disable();
+        let url = xref.getAttribute('href');
+        let hash = undefined; 
+        if (url.startsWith('#')) {
+          hash = url;
+        } else {
+          try { hash = new URL(url).hash; } catch {}
+        }
+        if (hash) {
+          const id = hash.replace(/^#\/?/, "");
+          const note = window.document.getElementById(id);
+          if (note !== null) {
+            try {
+              const html = processXRef(id, note.cloneNode(true));
+              instance.setContent(html);
+            } finally {
+              instance.enable();
+              instance.show();
+            }
+          } else {
+            // See if we can fetch this
+            fetch(url.split('#')[0])
+            .then(res => res.text())
+            .then(html => {
+              const parser = new DOMParser();
+              const htmlDoc = parser.parseFromString(html, "text/html");
+              const note = htmlDoc.getElementById(id);
+              if (note !== null) {
+                const html = processXRef(id, note);
+                instance.setContent(html);
+              } 
+            }).finally(() => {
+              instance.enable();
+              instance.show();
+            });
+          }
+        } else {
+          // See if we can fetch a full url (with no hash to target)
+          // This is a special case and we should probably do some content thinning / targeting
+          fetch(url)
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.querySelector('main.content');
+            if (note !== null) {
+              // This should only happen for chapter cross references
+              // (since there is no id in the URL)
+              // remove the first header
+              if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+                note.children[0].remove();
+              }
+              const html = processXRef(null, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      }, function(instance) {
+      });
+    }
+        let selectedAnnoteEl;
+        const selectorForAnnotation = ( cell, annotation) => {
+          let cellAttr = 'data-code-cell="' + cell + '"';
+          let lineAttr = 'data-code-annotation="' +  annotation + '"';
+          const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+          return selector;
+        }
+        const selectCodeLines = (annoteEl) => {
+          const doc = window.document;
+          const targetCell = annoteEl.getAttribute("data-target-cell");
+          const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+          const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+          const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+          const lineIds = lines.map((line) => {
+            return targetCell + "-" + line;
+          })
+          let top = null;
+          let height = null;
+          let parent = null;
+          if (lineIds.length > 0) {
+              //compute the position of the single el (top and bottom and make a div)
+              const el = window.document.getElementById(lineIds[0]);
+              top = el.offsetTop;
+              height = el.offsetHeight;
+              parent = el.parentElement.parentElement;
+            if (lineIds.length > 1) {
+              const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+              const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+              height = bottom - top;
+            }
+            if (top !== null && height !== null && parent !== null) {
+              // cook up a div (if necessary) and position it 
+              let div = window.document.getElementById("code-annotation-line-highlight");
+              if (div === null) {
+                div = window.document.createElement("div");
+                div.setAttribute("id", "code-annotation-line-highlight");
+                div.style.position = 'absolute';
+                parent.appendChild(div);
+              }
+              div.style.top = top - 2 + "px";
+              div.style.height = height + 4 + "px";
+              div.style.left = 0;
+              let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+              if (gutterDiv === null) {
+                gutterDiv = window.document.createElement("div");
+                gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+                gutterDiv.style.position = 'absolute';
+                const codeCell = window.document.getElementById(targetCell);
+                const gutter = codeCell.querySelector('.code-annotation-gutter');
+                gutter.appendChild(gutterDiv);
+              }
+              gutterDiv.style.top = top - 2 + "px";
+              gutterDiv.style.height = height + 4 + "px";
+            }
+            selectedAnnoteEl = annoteEl;
+          }
+        };
+        const unselectCodeLines = () => {
+          const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+          elementsIds.forEach((elId) => {
+            const div = window.document.getElementById(elId);
+            if (div) {
+              div.remove();
+            }
+          });
+          selectedAnnoteEl = undefined;
+        };
+          // Handle positioning of the toggle
+      window.addEventListener(
+        "resize",
+        throttle(() => {
+          elRect = undefined;
+          if (selectedAnnoteEl) {
+            selectCodeLines(selectedAnnoteEl);
+          }
+        }, 10)
+      );
+      function throttle(fn, ms) {
+      let throttle = false;
+      let timer;
+        return (...args) => {
+          if(!throttle) { // first call gets through
+              fn.apply(this, args);
+              throttle = true;
+          } else { // all the others get throttled
+              if(timer) clearTimeout(timer); // cancel #2
+              timer = setTimeout(() => {
+                fn.apply(this, args);
+                timer = throttle = false;
+              }, ms);
+          }
+        };
+      }
+        // Attach click handler to the DT
+        const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+        for (const annoteDlNode of annoteDls) {
+          annoteDlNode.addEventListener('click', (event) => {
+            const clickedEl = event.target;
+            if (clickedEl !== selectedAnnoteEl) {
+              unselectCodeLines();
+              const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+              if (activeEl) {
+                activeEl.classList.remove('code-annotation-active');
+              }
+              selectCodeLines(clickedEl);
+              clickedEl.classList.add('code-annotation-active');
+            } else {
+              // Unselect the line
+              unselectCodeLines();
+              clickedEl.classList.remove('code-annotation-active');
+            }
+          });
+        }
+    const findCites = (el) => {
+      const parentEl = el.parentElement;
+      if (parentEl) {
+        const cites = parentEl.dataset.cites;
+        if (cites) {
+          return {
+            el,
+            cites: cites.split(' ')
+          };
+        } else {
+          return findCites(el.parentElement)
+        }
+      } else {
+        return undefined;
+      }
+    };
+    var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+    for (var i=0; i<bibliorefs.length; i++) {
+      const ref = bibliorefs[i];
+      const citeInfo = findCites(ref);
+      if (citeInfo) {
+        tippyHover(citeInfo.el, function() {
+          var popup = window.document.createElement('div');
+          citeInfo.cites.forEach(function(cite) {
+            var citeDiv = window.document.createElement('div');
+            citeDiv.classList.add('hanging-indent');
+            citeDiv.classList.add('csl-entry');
+            var biblioDiv = window.document.getElementById('ref-' + cite);
+            if (biblioDiv) {
+              citeDiv.innerHTML = biblioDiv.innerHTML;
+            }
+            popup.appendChild(citeDiv);
+          });
+          return popup.innerHTML;
+        });
+      }
+    }
+  });
+  </script><nav class="page-navigation"><div class="nav-page nav-page-previous">
+      <a href="./04-cardinal-virtues.html" class="pagination-link" aria-label="Cardinal Virtues">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">Cardinal Virtues</span></span>
+      </a>          
+  </div>
+  <div class="nav-page nav-page-next">
+      <a href="./set-up.html" class="pagination-link" aria-label="Set Up for Working on PPBDS Projects">
+        <span class="nav-page-text">Set Up for Working on PPBDS Projects</span> <i class="bi bi-arrow-right-short"></i>
+      </a>
+  </div>
+</nav>
+</div> <!-- /content -->
+
+
+
+<footer class="footer"><div class="nav-footer"><div class="nav-footer-center"><div class="toc-actions d-sm-block d-md-none"><ul><li><a href="https://github.com/PPBDS/primer/edit/main/07-election-1992.qmd" class="toc-action"><i class="bi bi-github"></i>Edit this page</a></li></ul></div></div></div></footer></body></html>
