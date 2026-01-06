@@ -4,10 +4,7 @@
 
 The world confronts us. Make decisions we must.
 
-<!-- DK: Can we get rid of RTools? -->
-
-<!-- DK: Do we still get failures when starting tutorial in Windows? -->
-
+<!-- DK: Can we get rid of RTools? Only if we install our packages from CRAN. -->
 
 ### Installing R and Positron {.unnumbered}
 
@@ -176,6 +173,8 @@ need compilation? (Yes/no/cancel)
 
 Unless you have a good reason not to, always answer "no" to this question.
 
+**If you are using Windows, there may be a permission problem.** In particular, R may not have permission to install packages in the common area. In that case, it will ask you if you want to create a "Personal" library. You do And then installation should work fine. **But Positron sometimes blocks this message.** In that case, you need quit Positron and start up the R application by itself. In R itself, run `install.packages("pak")`. The message box about creating a personal library should appear. You say "Yes," and all should be well. You can then quit R, restart Positron and continue with the next steps below. 
+
 R packages generally live in one of two places:
 
 -   CRAN (rhymes with "clan") for more mature, popular packages. 
@@ -194,7 +193,7 @@ After running this code, a blinking cursor should appear next to the `>` symbol.
 
 <span style="color: red;">Error in library(pak) : there is no package called 'pak'</span>
 
-This error message means that you haven't successfully installed the package. If you get this error message, make sure to install the **pak** package before proceeding.
+This error message means that you haven't successfully installed the package. If you get this error message, make sure to install the **pak** package before proceeding. See the above discussion if you are using Windows and you can't seem to install **pak**.
 
 For historical reasons, *packages* are also known as *libraries*, which is why the relevant command for loading them is `library()`.
 
