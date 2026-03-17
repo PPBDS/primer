@@ -136,7 +136,7 @@ A variable in a tibble is a column, a vector of values. We sometimes refer to th
 
 ### Scaling distributions
 
-Consider the vector which is the result of rolling one dice 10 times.
+Consider the vector which is the result of rolling one die 10 times.
 
 ```{r}
 #| echo: true
@@ -267,6 +267,7 @@ Again, people (including us!) will often be sloppy and use the same word, "distr
 #| fig.align: center
 #| fig.cap: Bruno de Finetti, an Italian statistician who wrote a famous treatise on
 #|   the theory of probability that began with the statement "PROBABILITY DOES NOT EXIST."
+#| echo: false
 
 knitr::include_graphics("probability/images/de_finetti.jpg")
 ```
@@ -282,7 +283,7 @@ The key difference between a *distribution*, as we have explored them in @sec-di
 
 <!-- DK: Should we be using the symbol rho and then speaking "PT"? Need to look at how we discuss things later in the book, and then set the stage for that here. -->
 
-Pay attention to notation. Recall that when we are talking about a specific probability (represented by a single value), we will use $\rho$ (the Greek letter "rho") with a *subscript* which specifies the exact outcome of which it is the probability. For instance, $\rho_h = 0.5$ denotes the probability of getting heads on a coin toss when the coin is fair. $\rho_t$ --- spoken as "PT" or "P sub T" or "P tails" --- denotes the probability of getting tails on a coin toss. However, when we are referring to the entire probability distribution over a set of outcomes, we will use $P()$. For example, the probability distribution of a coin toss is $P(\text{coin})$. That is, $P(\text{coin})$ is composed of the two specific probabilities (e.g., 60% and 40% for a biased coin) mapped from the two values in the domain (heads and tails). Similarly, $P(\text{sum of two dice})$ is the probability distribution over the set of 11 outcomes (2 through 12) which are possible when you take the sum of two dice. $P(\text{sum of two dice})$ is made up of 11 numbers --- $\rho_2$,  $\rho_3$, ..., $\rho_{12}$ --- each representing the unknown probability that the sum will equal their value. That is, $\rho_2$ is the probability of rolling a 2.
+Pay attention to notation. Recall that we use $\rho$ (the Greek letter "rho") with a *subscript* to represent the specific probability of the outcome associated with the subscript. For instance, $\rho_h = 0.5$ denotes the probability of getting heads on a coin toss when the coin is fair. $\rho_t$ --- spoken as "PT" or "P sub T" or "P tails" --- denotes the probability of getting tails on a coin toss. However, when we are referring to the entire probability distribution over a set of outcomes, we will use $P()$. For example, the probability distribution of a coin toss is $P(\text{coin})$. That is, $P(\text{coin})$ is composed of the two specific probabilities (e.g., 60% and 40% for a biased coin) mapped from the two values in the domain (heads and tails). Similarly, $P(\text{sum of two dice})$ is the probability distribution over the set of 11 outcomes (2 through 12) which are possible when you take the sum of two dice. $P(\text{sum of two dice})$ is made up of 11 numbers --- $\rho_2$,  $\rho_3$, ..., $\rho_{12}$ --- each representing the unknown probability that the sum will equal their value. That is, $\rho_2$ is the probability of rolling a 2.
 
 *A distribution is a function that shows the possible values of a variable and how often they occur.* 
 
@@ -295,7 +296,7 @@ Data science problems start with a question. Example:
 Questions are answered with the help of probability distributions.
 
 
-An *empirical distribution* is based on data. Think of this as the probability distribution created by collecting data in the real world or by running a simulation on your computer. In theory, if we increase the number of coins we flip (either in reality or via simulation), the empirical distribution will look more and more similar to the mathematical distribution. The mathematical distribution is the Platonic form. The empirical distribution will often look like the mathematical probability distribution, but it will rarely be exactly the same.
+An *empirical distribution* is based on data. Think of this as the probability distribution created by collecting data in the real world or by running a simulation on your computer. In theory, if we increase the number of coins we flip (either in reality or via simulation), the empirical distribution will look more and more similar to the mathematical distribution. The mathematical distribution is the [Platonic form](https://en.wikipedia.org/wiki/Theory_of_forms). The empirical distribution will often look like the mathematical probability distribution, but it will rarely be exactly the same.
 
 In this simulation, there are 44 heads and 56 tails. The outcome will vary every time we run the simulation, but the proportion of heads to tails should not be too different if the coin is fair.
 
@@ -373,6 +374,7 @@ If the mathematical assumptions are correct, then, as your sample size increases
 
 A *posterior distribution* is based on beliefs and expectations. It displays your beliefs about things you can't see right now. You may have posterior distributions for outcomes in the past, present, or future.
 
+<!-- AR: I don't understand how we get this posterior distribution from this scenario. -->
 In the case of the coin toss, the posterior distribution changes depending on your beliefs. For instance, let's say your friend brought a coin to school and asked to bet you. If the result is heads, you have to pay them $5. In that case, your posterior probability distribution might look like this:
 
 
@@ -594,7 +596,7 @@ mydata <- tibble(electoral_votes = c(486, 191,  17, 297, 49, 13, 111,
                                      370, 379, 266, 251, 365, 332, 
                                      227, 306, 226))
 
-# 226 is electoral votes for Joe Biden in 2024 presidential election.
+# 226 is electoral votes for Democrats in 2024 presidential election.
 
 ggplot(mydata, aes(x = electoral_votes)) +
   geom_histogram(aes(y = after_stat(count/sum(count))), 
@@ -717,6 +719,7 @@ These two models, built by smart people using similar data sources, have reached
 
 ```{r}
 #| out.width: 100%
+#| echo: false
 #| fig.cap: Watch the makers of these two models throw shade at each other on Twitter!
 #|   Eliot Morris is one of the primary authors of the Economist model. Nate Silver is
 #|   in charge of 538. They don't seem to be too impressed with each other's work! More
@@ -971,8 +974,10 @@ jd_disease <- tibble(ID = 1:sims, have_disease = rep(c(TRUE, FALSE), 5000)) |>
 jd_disease
 ```
 
+<!-- AR: Does this description matche the code above? -->
 The first step is to simply create an tibble that consists of the simulated data we need to plot our distribution. Keep in mind that in the setting we have two different probabilities and they are completely separate from each other and we want to keep the two probabilities and the disease results in two and only two columns so that we can graph using the `ggplot()` function. And that's why we used the `rep` and `seq` functions when creating the table, we used the `seq` function to set the sequence we want, which in this case is only two numbers, 0.01 (99% accuracy for testing negative if no disease, therefore 1% for testing positive if no disease) and 0.5 (50% accuracy for testing positive/negative if have disease), then we used the `rep` functions to repeat the process 10,000 times for each probability, in total 20,000 times. Note that this number "20,000" also represents the number of observations in our simulated data, we simulated 20,000 results from testing, where 10,000 results from the have-disease group and 10,000 for the no-disease group, we often use the capital N to represent the population, in this simulated data $N=20,000$.
 
+<!-- AR: Wouldn't a table be a better depiction -->
 Plot the joint distribution:
 
 ```{r}
@@ -1118,7 +1123,7 @@ By looking at the posterior graph we just create, we can answer this question ea
 *With a positive test, you can be almost 70% sure that you have Probophobia, however there is a good chance of about 30% that you receive a false positive, so don't worry too much, there is still about a third of hope that you get the wrong result*
 
 Now let's consider the manipulation of this posterior, here is another question.
-Question : *10 people walks up to testing center, 5 of them tested negative, 5 of them tested positive, what is the probability of at least 6 people are actually healthy? *
+Question : *10 people walk up to testing center, 5 of them test negative, 5 of them test positive, what is the probability that at least 6 people are actually healthy? *
 
 ```{r}
 #| cache: true
@@ -1156,6 +1161,7 @@ tibble(test = 1:100000) |>
 
 
 <!-- DK: Insert a use of this posterior? How many positive tests before you have at least 10 sick people? -->
+<!-- AR: Answer the question with a calculation, not just a view of the posterior. -->
 
 ## Three models
 
@@ -1173,7 +1179,7 @@ Question: *What is the chance of the bag contains exactly two white marbles, giv
 $$ P(\text{2 White Marbles in bag | White Marbles Sampled = 3} ) $$
 Just as during the *Probophobia* models, in order to answer this question, we need to start up with the simulated data and then graph out the joint distribution of this scenario because we need to consider all possible outcomes of this model, and then based on the joint distribution we can slice out the the part we want (the conditional distribution) in the end making a posterior graph as well as normalizing it to see the probability.
 
-Step 1: Simulate the data into an tibble
+### Step 1: Simulate the data into an tibble
 
 Let's say you take a marble out of the bag, record whether it's black or white, then return it to the bag. You repeat this three times, observing the number of white marbles you see out of three trials. You could get three whites, two whites, one white, or zero whites as a result of this trial. We have three models (three different proportions of white marbles in the bag) and four possible experimental results. Let's create 3,000 draws from this joint distribution:
 
@@ -1211,7 +1217,7 @@ jd_marbles <- tibble(ID = 1:sims) |>
 jd_marbles
 ```
 
-Step 2: Plot the joint distribution:
+### Step 2: Plot the joint distribution
 
 ```{r}
 # The distribution is unnormalized. All we see is the number of outcomes in each
@@ -1282,9 +1288,9 @@ knitr::include_graphics("probability/images/marbles.png")
 
 The y-axes of both the scatterplot and the 3D visualization are labeled "Number of White Marbles in the Bag." *Each value on the y-axis is a model, a belief about the world.* For instance, when the model is 0, we have no white marbles in the bag, meaning that none of the marbles we pull out in the sample will be white.
 
-Now recalls the question, we essentially only care about the fourth column in the joint distribution (x-axis=3) because the question is asking us to create a conditional distribution *given* that fact that 3 marbles were selected. Therefore, we could isolate the slice where the result of the simulation involves three white marbles and zero black ones. Here is the unnormalized probability distribution.
+Now recall the question, we essentially only care about the fourth column in the joint distribution (x-axis=3) because the question is asking us to create a conditional distribution *given* that fact that 3 marbles were selected. Therefore, we could isolate the slice where the result of the simulation involves three white marbles and zero black ones. Here is the unnormalized probability distribution.
 
-Step 3: Plot the unnormalized conditional distribution.
+### Step 3: Plot the unnormalized conditional distribution
 
 ```{r}
 # The key step is the filter. Creating a conditional distribution from a joint
@@ -1306,7 +1312,7 @@ jd_marbles |>
 
 ```
 
-Step 4: Plot the normalize posterior distribution.
+### Step 4: Plot the normalized posterior distribution
 Next, let's normalize the distribution.
 
 ```{r}
@@ -1519,8 +1525,9 @@ Solution:
 
 You might be wondering: what is the use of a model? Well, let's say we toss the coin 20 times and get 8 heads again. Given this result, we can ask: *What is the probability that future samples of 20 flips will result in 10 or more heads?*
 
-There are three main ways you could go about solving this problem with simulations.
+There are two main ways you could go about solving this problem with simulations.
 
+<!-- AR: Starting with the wrong way was confusing to me. -->
 The first *wrong* way to do this is assuming that $\rho_h$ is certain because we observed 8 heads after 20 tosses. We would conclude that 8/20 gives us 0.4. The big problem with this is that you are ignoring your uncertainty when estimating $\rho_h$. This would lead us to the following code.
 
 ```{r}
