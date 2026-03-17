@@ -78,7 +78,7 @@ A *predictive model* involves exactly one outcome which, in this case, is height
 
 
 ### Preceptor Table
-
+<!-- AR: Why do we call it the "Preceptor Table"? -->
 A **Preceptor Table**^[The term Preceptor Table is, perhaps unsurprisingly, unique to this textbook. We hope you find it useful.] is the smallest possible table with rows and columns such that, if none of the data is missing, then the things we want to know are easy to calculate. Consider:
 
 ```{r}
@@ -518,7 +518,7 @@ tibble(source = c("...", "...",  "Data", "Data",
 
 Again, all the rows in the Preceptor Table are, by definition, included in the Population Table. The later includes two sorts of extra rows. The first corresponds to our data set. The second corresponds to other unit/time combinations in the population which are neither part of the Preceptor Table nor part of the data.
 
-All of the variables calculated in the Preceptor and Population Tables are examples of estimands we might be interested in. One estimand is important enough that it has its own name: the **average treatment effect**, often abbreviated as **ATE**. The average treatment effect is the mean of all the individual causal effects. Here, the mean is $+1.6$.
+All of the variables calculated in the Preceptor and Population Tables are examples of estimands we might be interested in. One estimand is important enough that it has its own name: the **average treatment effect**, often abbreviated as **ATE**. The average treatment effect is the mean of all the individual causal effects. In the Preceptor Table above, the mean is $+1.6$.
 
 <!-- What does our real world Preceptor Table look like? -->
 
@@ -696,7 +696,7 @@ Consider the "Perfect Doctor" as an example of the problems caused by confounded
 tibble(subject = c("Yao", "Emma", "Cassidy", "Tahmid", "Diego", "MEAN"),
        ytreat = c("130", "120", "100", "115", "135", "120"),
        ycontrol = c("105", "140", "170", "125", "100", "128"),
-       ydiff = c("+25", "-20", "-70", "-10", "35", "-8")) |>
+       ydiff = c("+25", "-20", "-70", "-10", "+35", "-8")) |>
   
   gt() |>
     tab_header(title = "Holy Grail of Information") |> 
@@ -829,7 +829,7 @@ Now we need to find an estimate for $\tau$ in order to fill in the missing value
 
 Or, in other words, we use this formula:
 
-$$\frac{\Sigma Y_t(u)}{n_t} + \frac{\Sigma Y_c(u)}{n_c} = \widehat{ATE}$$
+$$\frac{\Sigma Y_t(u)}{n_t} - \frac{\Sigma Y_c(u)}{n_c} = \widehat{ATE}$$
 
 $\Sigma$ represents the sum of the outcomes under treatment or control, with $n_t$ and $n_c$ being the number of units assigned to treatment and control, respectively. This is the formula for $\widehat{ATE}$, our estimate of the average causal (or treatment) effect.
 
@@ -901,7 +901,7 @@ If we make the assumption that there is a single value for $\tau$ *and* that $1$
 
 ### Two values for tau
 
-A second model might assume that the causal effect is different between levels of a category but the same within those levels. For example, perhaps there is a $\tau_F$ for females and $\tau_M$ for males where $\tau_F might not equal \tau_M$. We are making this assumption to give us a different model with which we can fill in the missing values in our Preceptor Table. We can't make any progress unless we make some assumptions. That is an inescapable consequence of the *Fundamental Problem of Causal Inference*.
+A second model might assume that the causal effect is different between levels of a category but the same within those levels. For example, perhaps there is a $\tau_F$ for females and $\tau_M$ for males where $\tau_F$ might not equal $\tau_M$. We are making this assumption to give us a different model with which we can fill in the missing values in our Preceptor Table. We can't make any progress unless we make some assumptions. That is an inescapable consequence of the *Fundamental Problem of Causal Inference*.
 
 A covariate is any variable outside of the (potential) outcomes. In this case, possible covariates include, but are not limited to, sex, age, political party and almost everything else which might be associated with attitudes toward immigration. Consider a model in which causal effects differ based on sex. (Don't forget that "causal effect" means, by convention, the same thing as *average* causal effect when we are discussing the results of a data science project.) 
 
