@@ -36,6 +36,7 @@ library(gt)
 
 In @sec-probability, we learned about probability, the framework for quantifying uncertainty. In this chapter, we will learn about *sampling*, the beginning of our journey toward inference. When we sample, we take some *units* from a *population*. With the data collected via sampling, we use inference to create statistical models. With such models, we can answer questions.
 
+<!-- AR: On the first pass, this is a lot and is confusing. I know there's this connects to the Cardinal Virtues section but I'm not sure it adds much here. Maybe connect just the virtues associated with sampling?  -->
 We always use the Cardinal Virtues. Wisdom helps us to clarify the questions with which we begin. We build the Preceptor Table which, if no data were missing, would allow us to answer the question. We check for validity. Justice creates the Population Table and examines the assumptions of stability, representativeness, and unconfoundedness. With Courage, we create a data generating mechanism. Temperance helps us to use that DGM to answer the question with which we began.
 
 ## Real sampling activity {#sec-sampling-activity}
@@ -692,7 +693,7 @@ This is the power of running many analyses at once using map functions and list 
 #| fig.align: center
 knitr::include_graphics("sampling/images/old_man_SE.png")
 ```
-
+<!-- AR: Why use the standard error versus standard deviation? -->
 *Standard errors (SE) quantify the effect of sampling variation on our estimates.* In other words, they quantify how much we can expect the calculated proportions of a shovel's beads that are red *to vary* from one sample to another sample to another sample. As sample size increases, the standard error decreases.
 
 *The standard error is the standard deviation of a sample statistic such as the estimated proportion.* For example, the *standard error of the mean* refers to the standard deviation of the distribution of sample means taken from a population. 
@@ -779,6 +780,7 @@ shovels_100 |>
 
 As the sample size increases, the standard deviation of the proportion of red beads across the 1,000 replications decreases. This type of standard deviation has another special name: **standard error**
 
+<!-- AR: combine with standard error section above? This seems to repeat information. I'm still wondering why I would use std error vs deviation. Maybe connect it more to the normal distribution? -->
 ### What is a standard error?
 
 The *standard error* (SE) is the standard deviation of a sample statistic (aka point estimate), such as the mean or median. For example, the "standard error of the mean" refers to the standard deviation of the distribution of sample means taken from a population. 
