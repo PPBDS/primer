@@ -1,3 +1,9 @@
+## questions
+
+Maybe set echo: false in _quarto.yml since we are no longer teaching coding?
+
+
+
 
 ## Aashna
 
