@@ -20,7 +20,7 @@
 # need to spend more time on it now!
 
 # library(rayshader)
-suppressPackageStartupMessages(tidyverse))
+suppressPackageStartupMessages(library(tidyverse))
 library(gt)
 library(patchwork)
 library(primer.data)
