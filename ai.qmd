@@ -9,33 +9,28 @@ Second, see [here](https://positron.posit.co/assistant.html) for the latest info
 Third, to use Positron Assistant, you need an API account from Athropic. 
 
 ```{r}
-#| echo: false
 knitr::include_graphics("ai/images/claude-1.png")
 ```
 
 Go [here](https://console.anthropic.com/) and follow the instructions. We recommend buying $5 worth of credits. This is plenty to get started, and also prevents you from inadvertantly spending too much money. Once you are more experienced, you can adjust your account settings.
 
 ```{r}
-#| echo: false
 knitr::include_graphics("ai/images/claude-2.png")
 ```
 
 You want to use the API. Click the button to create an API key.
 
 ```{r}
-#| echo: false
 knitr::include_graphics("ai/images/claude-3.png")
 ```
 
 Note that the interface for Claude, and other generative AIs, is always changing. So, these images may not match what you see. The goal is to get an API key. 
 
 ```{r}
-#| echo: false
 knitr::include_graphics("ai/images/claude-4.png")
 ```
 
 ```{r}
-#| echo: false
 knitr::include_graphics("ai/images/claude-5.png")
 ```
 
@@ -46,7 +41,6 @@ Note that these instructions largely mimic the [instructions which Positron prov
 The last step is to click on Positron Assistant button and provide the API key. You need to click "Sign In" after providing your API key. Be careful in pasting in your API key since something as simple as an extra space at the end will cause an error.
 
 ```{r}
-#| echo: false
 knitr::include_graphics("ai/images/claude-6.png")
 ```
 

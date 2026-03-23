@@ -4,7 +4,39 @@
 
 The world confronts us. Make decisions we must.
 
-<!-- DK: Can we get rid of RTools? Only if we install our packages from CRAN. -->
+We provide two different computing approaches for doing data science: first, working in the cloud using GitHub Codespaces and, second, using your local machine.
+
+## GitHub Codespaces
+
+### GitHub
+
+The first step in becoming a data scientist is to sign up for a GitHub account by following the instructions at the [GitHub homepage](https://github.com/). 
+
+**Follow [this advice](https://happygitwithr.com/github-acct.html#username-advice) when choosing your username.** 
+
+Use a permanent email address for this account, not one to which you lose access when, for example, you change schools or jobs.
+
+### First codespace
+
+Instead of working on your computer, you will work in a [GitHub codespace](https://github.com/features/codespaces).
+
+Once you are logged on to your GitHub account, go to this URL in your browser:
+
+https://github.com/PPBDS/codespace-starter
+
+Click on the "Use this template" green rectangle in the upper right. Select the "Open in a codespace" option.
+
+This will take a few minutes to run. Read the rest of this chapter while you are waiting. Behind the scenes, GitHub is creating a virtual machine in the cloud with all the necessary tools for doing data science. That machine is called a "codespace." GitHub allows for free usage of codespaces for 60 hours a month, and probably more if you join [GitHub education](https://github.com/education), which we highly recommend for students.
+
+Once your codespace starts up, it should look like this:
+
+```{r}
+
+```
+
+## Your local machine
+
+As long as you have a not-too-old computer--almost always a Mac or Windows laptop--you can do data science locally, without going to the cloud. 
 
 ### Installing R and Positron {.unnumbered}
 
@@ -35,7 +67,6 @@ Much as we don't drive a car by interacting directly with the engine but rather 
 Open up Positron. 
 
 ```{r}
-#| echo: false
 knitr::include_graphics("getting-started/images/positron-window.png")
 ```
 
@@ -46,7 +77,6 @@ We often use the phrase "run the following code." This means that you should typ
 The right side of the Positron window is the Secondary Side Bar.
 
 ```{r}
-#| echo: false
 knitr::include_graphics("getting-started/images/positron-window-2.png")
 ```
 
@@ -60,21 +90,18 @@ x <- 5
 This code assigns the value 5 to an object, `x`. `<-` is the operator used to assign values to objects in R. Now, hit `Enter` and you should see a variable `x` equal to 5 under Values. You must always hit `Enter` after typing a command, otherwise Positron will not realize that you want R to execute the command.
 
 ```{r}
-#| echo: false
 knitr::include_graphics("getting-started/images/x-gets-5.png")
 ```
 
 The Secondary Side Bar contains different tabs in the top half and a display area for plots in the bottom half. 
 
 ```{r}
-#| echo: false
 knitr::include_graphics("getting-started/images/secondary-side-bar.png")
 ```
 
 In the Console, type `plot(1:10)` and hit `Enter`.
 
 ```{r}
-#| echo: false
 knitr::include_graphics("getting-started/images/positron-plot.png")
 ```
 
@@ -85,7 +112,6 @@ The far left of the Positron window is the Activity Bar. The area in which the W
 The Console is where we talk to R. The Terminal is where we talk to the computer. The Console behaves almost identically regardless of the kind of computer you use. The Terminal, sadly, is different for Windows versus Mac. Next to "Console" on the Panel menu is "Terminal." See the red oval below. Click on the word "Terminal" to access it.
 
 ```{r}
-#| echo: false
 knitr::include_graphics("getting-started/images/terminal-1.png")
 ```
 
@@ -94,7 +120,6 @@ knitr::include_graphics("getting-started/images/terminal-1.png")
 We often want a new Terminal with a different "shell," the program which serves as the interface between you and the computer. On a Mac, the default shell is referred to as "[Unix-like](https://en.wikipedia.org/wiki/Unix-like)" since it acts very much like the traditional Unix command line. In Windows, the default shell is [PowerShell](https://en.wikipedia.org/wiki/PowerShell), an older technology which is not worth learning. To start a new Terminal with a specific shell, press the downward arrow next to the `+` sign. This is the "Launch Profile ..." arrow. See the red arrow above.
 
 ```{r}
-#| echo: false
 knitr::include_graphics("getting-started/images/terminal-2.png")
 ```
 
@@ -103,7 +128,6 @@ If you are using Windows, you should see an option for "Git Bash" (or maybe just
 Wth luck, bash will also be the default every time you open the Terminal on Windows. But, if not, you should select it by hand. One way to make it the default choice is to use the "Select Default Profile" tool:
 
 ```{r}
-#| echo: false
 knitr::include_graphics("getting-started/images/terminal-3.png")
 ```
 
@@ -118,7 +142,6 @@ To install packages, we work in the Console, not the Terminal.
 R *packages*, also known as *libraries*, extend the power of R by providing additional functions and data.
 
 ```{r}
-#| echo: false
 #| fig.cap: R is to R packages as a new phone is to apps for that phone.
 knitr::include_graphics("getting-started/images/r-versus-r-packages.png")
 ```
@@ -133,7 +156,6 @@ Consider an analogy to Instagram. If you have a new phone and want to share a ph
 The process is very similar for an R package. You need to:
 
 ```{r}
-#| echo: false
 #| fig.cap: Installing versus loading an R package
 knitr::include_graphics("getting-started/images/install-versus-load.jpg")
 ```
@@ -293,7 +315,6 @@ The Console will show output as the tutorial is starting up because Positron is 
 In most cases, the newly created tutorial will appear in the Viewer tab. Sometimes, especially on Windows machines, it won't, and your screen will look like this:
 
 ```{r}
-#| echo: false
 knitr::include_graphics("getting-started/images/tutorial-failure.png")
 ```
 
@@ -304,7 +325,6 @@ Just paste that URL into your browser and start the tutorial.
 But, for most people, the tutorial will appear in the Viewer tab: 
 
 ```{r}
-#| echo: false
 knitr::include_graphics("getting-started/images/positron-tutorial-2.png")
 ```
 
@@ -375,7 +395,6 @@ learnr::run_tutorial("getting-started", package = "tutorial.helpers")
 Let's get started!
 
 ```{r}
-#| echo: false
 knitr::include_graphics("getting-started/images/ending.gif")
 ```
 

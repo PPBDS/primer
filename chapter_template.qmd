@@ -19,7 +19,7 @@
 ```{r}
 #| label: hidden-libraries
 #| message: false
-#| echo: false
+
 library(gt)
 ```
 
@@ -34,7 +34,6 @@ library(gt)
 ## Wisdom
 
 ```{r}
-#| echo: false
 knitr::include_graphics("other/images/Wisdom.jpg")
 ```
 
@@ -96,7 +95,6 @@ A **Preceptor Table** is the smallest possible table of data with rows and colum
 ## Justice
 
 ```{r}
-#| echo: false
 knitr::include_graphics("other/images/Justice.jpg")
 ```
 
@@ -143,7 +141,6 @@ The *sampling mechanism* is the technical term for the process by which some peo
 ## Courage
 
 ```{r}
-#| echo: false
 knitr::include_graphics("other/images/Courage.jpg")
 ```
 
@@ -161,7 +158,6 @@ knitr::include_graphics("other/images/Courage.jpg")
 ## Temperance
 
 ```{r}
-#| echo: false
 knitr::include_graphics("other/images/Temperance.jpg")
 ```
 

@@ -3,7 +3,7 @@
 ```{r}
 #| label: hidden-libraries
 #| message: false
-#| echo: false
+
 #| warning: false
 library(gt)
 ```
@@ -44,7 +44,6 @@ We always use the Cardinal Virtues. Wisdom helps us to clarify the questions wit
 The urn below has a certain number of red and a certain number of white beads all of equal size, mixed well together. What proportion, $\rho$, of this urn's beads are red? 
 
 ```{r}
-#| echo: false
 #| fig.cap: An urn with red and white beads.
 knitr::include_graphics("sampling/images/sampling_bowl_1.jpg")
 ```
@@ -66,14 +65,12 @@ library(tidyverse)
 Instead of performing an exhaustive count, let's insert a shovel into the urn and remove $5 \cdot 10 = 50$ beads. We are taking a *sample* of the total population of beads. 
 
 ```{r}
-#| echo: false
 #| fig.cap: Inserting a shovel into the urn.
 knitr::include_graphics("sampling/images/sampling_bowl_2.jpg")
 ```
 
 
 ```{r}
-#| echo: false
 #| fig.cap: Removing 50 beads from the urn.
 knitr::include_graphics("sampling/images/sampling_bowl_3_cropped.jpg")
 ```
@@ -100,7 +97,6 @@ Each of our 33 groups of friends will do the following:
 Each of our 33 groups of friends make note of their proportion of red beads from their sample collected. Each group then marks their proportion of their 50 beads that were red in the appropriate bin in a hand-drawn histogram as seen below.
 
 ```{r}
-#| echo: false
 #| fig.cap: Constructing a histogram of proportions.
 knitr::include_graphics("sampling/images/tactile_3_a.jpg")
 ```
@@ -108,7 +104,6 @@ knitr::include_graphics("sampling/images/tactile_3_a.jpg")
 Histograms allow us to visualize the *distribution* of a numerical variable. In particular, where the center of the values falls and how the values vary. A partially completed histogram of the first 10 out of 33 groups of friends' results can be seen in the figure below.
 
 ```{r}
-#| echo: false
 #| fig.cap: Hand-drawn histogram of first 10 out of 33 proportions.
 knitr::include_graphics("sampling/images/tactile_3_c.jpg")
 ```
@@ -124,7 +119,6 @@ Observe the following details in the histogram:
 
 
 ```{r}
-#| echo: false
 tactile_sample_urn <- tibble(group = c("Ilyas, Yohan", "Ellie, Terrance", "Mark, Ramses", 
                                       "Sophie, Brian", "Maeve, Josh", "Sanjana, Yuko", 
                                       "Nam, Joshua", "Siobhan, Jane", "Caroline, Edna",
@@ -321,7 +315,6 @@ Now we will compare our virtual results with our tactile results from the previo
 
 
 ```{r}
-#| echo: false
 #| fig.cap: Comparing 33 virtual and 33 tactile proportions red. Note that, though the
 #|   figures differ slightly, both are centered around .35 to .45. This shows that, in
 #|   both sampling distributions, the most frequently occuring proportion red is between
@@ -380,7 +373,6 @@ This visualization allows us to see how our results differed between our tactile
 ### Using the virtual shovel 10,000 times {#shovel-1000-times}
 
 ```{r}
-#| echo: false
 #| fig.cap: So much sampling, so little time.
 knitr::include_graphics("sampling/images/sample_bernie.png")
 ```
@@ -421,7 +413,6 @@ Now that we have a good understanding of virtual sampling, we can apply our know
 ### The effect of different shovel sizes {#different-shovels}
 
 ```{r}
-#| echo: false
 #| fig.cap: What happens if we use different sized shovels to sample?
 knitr::include_graphics("sampling/images/three_shovels.png")
 ```
@@ -551,7 +542,6 @@ There is also a third way to understand variation. We can be numerically explici
 
 
 ```{r}
-#| echo: false
 #| fig.cap: Comparing the number of slots in the shovel with the standard deviation of
 #|   proportions red. Here, we see that standard deviation decreases with higher sample
 #|   sizes. Larger sample sizes yield more precise estimates.
@@ -594,7 +584,6 @@ comparing_n_table  |>
 As the sample size increases, the sample-to-sample variation decreases, and our guesses at the true proportion of the urn's beads that are red get more precise. The larger the shovel, the more precise the result. 
 
 ```{r}
-#| echo: false
 #| fig.cap: Variance appears everywhere in data science.
 knitr::include_graphics("sampling/images/variance_everywhere_meme.jpeg")
 ```
@@ -658,7 +647,6 @@ glimpse(shovels_100)
 Now, we have the standard deviation of `prop_red` for all shovel sizes from 1 to 100.  Let's plot that value to see how it changes as the shovel gets larger:
 
 ```{r}
-#| echo: false
 #| cache: true
 #| fig.cap: Comparing standard deviations of proportions red for 100 different shovels.
 #|   The standard deviation decreases at the same rate as the square root of shovel size.
@@ -677,7 +665,6 @@ shovels_100 |>
 The red line here represents an important statistical concept: standard error (SE). As the shovel size increases, and thus our sample size increases, we find that the standard error decreases.
 
 ```{r}
-#| echo: false
 #| fig.cap: 'To any poets and philosophers confused about this: don''t worry! It won''t
 #|   be on a problem set.'
 knitr::include_graphics("sampling/images/meme_math.png")
@@ -688,12 +675,11 @@ This is the power of running many analyses at once using map functions and list 
 ## Standard error {#sec-standard-errors}
 
 ```{r}
-#| echo: false
 #| fig.cap: Standard errors are just the way old people talk about confidence intervals.
 #| fig.align: center
 knitr::include_graphics("sampling/images/old_man_SE.png")
 ```
-<!-- AR: Why use the standard error versus standard deviation? -->
+
 *Standard errors (SE) quantify the effect of sampling variation on our estimates.* In other words, they quantify how much we can expect the calculated proportions of a shovel's beads that are red *to vary* from one sample to another sample to another sample. As sample size increases, the standard error decreases.
 
 *The standard error is the standard deviation of a sample statistic such as the estimated proportion.* For example, the *standard error of the mean* refers to the standard deviation of the distribution of sample means taken from a population. 
@@ -703,7 +689,6 @@ The relationship between the standard error and the standard deviation is that, 
 ### Terminology and notation {#sec-terminology-and-notation}
 
 ```{r}
-#| echo: false
 #| fig.cap: Let Yoda's wisdom dull the pain of this terminology section.
 knitr::include_graphics("sampling/images/yoda.png")
 ```
@@ -727,7 +712,6 @@ A sample is **generalizable** if any results based on the sample can generalize 
 A sampling procedure is *random* if we sample randomly from the population in an unbiased fashion. With random sampling, each unit has an equal chance of being selected into the sample. This condition entails, among other things, sufficiently mixing the urn before each use of the shovel. 
 
 ```{r}
-#| echo: false
 #| fig.align: center
 #| fig.cap: Fear not if you look like Spongebob after reading this section. We will re-cap
 #|   right now!
@@ -757,7 +741,6 @@ knitr::include_graphics("sampling/images/cant_breathe_sponge.png")
 For our 1,000 repeated/replicated virtual samples of size $n = 25$, $n = 50$, and $n = 100$ in @sec-virtual-sampling, let's display our figure showing the difference in proportions red according to different shovel sizes.  
 
 ```{r}
-#| echo: false
 #| fig.cap: "Previously seen three distributions of the sample proportion $\\hat{\\rho}$."
 comparing_sampling_distributions
 ```
@@ -767,7 +750,6 @@ These types of distributions have a special name: **sampling distributions**. Th
 For example, observe the centers of all three sampling distributions: all around $0.4 = 40\%$. Furthermore, observe that while we are somewhat likely to observe sample proportions of red beads of $0.2 = 20\%$ when using the shovel with 25 slots, we will almost never observe a proportion of 20% when using the shovel with 100 slots. Observe also the effect of sample size on the sampling variation. As the sample size $n$ increases from 25 to 50 to 100, the variation of the sampling distributions decreases and thus the values cluster more and more tightly around the same center: about 40%. 
 
 ```{r}
-#| echo: false
 #| fig.cap: Previously seen comparing standard deviations of proportions red from 100
 #|   different shovel sizes
 
@@ -797,7 +779,6 @@ To help reinforce these concepts, let's re-display our previous figure but using
 
 
 ```{r}
-#| echo: false
 #| fig.cap: "Three sampling distributions of the sample proportion $\\hat{\\rho}$. Note
 #|   the increased concentration on the bins around .4 as our sample size increases."
 
@@ -819,7 +800,6 @@ p_hat_compare
 Furthermore, let's display the graph of standard errors for $n = 1$ to $n = 100$ using our new terminology, notation, and definitions relating to sampling.
 
 ```{r}
-#| echo: false
 #| fig.cap: Standard errors of the sample proportion based on sample sizes of 1 to 100
 
 shovels_100 |>
@@ -836,7 +816,6 @@ As the sample size $n$ goes up, the "typical" error of your point estimate will 
 Standard error is just a fancy term for your uncertainty about something you don't know. Standard error is the precision of our (uncertain) beliefs. 
 
 ```{r}
-#| echo: false
 #| fig.cap: If you are wondering how much you need to know, follow this helpful guide
 #|   of the information we have learned this chapter!
 #| fig.align: center
@@ -856,7 +835,6 @@ You must understand what the standard error of $\hat{\rho}$ means. You do not ne
 
 
 ```{r}
-#| echo: false
 knitr::include_graphics("sampling/images/posterior_effie.png")
 ```
 

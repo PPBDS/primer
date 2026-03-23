@@ -17,7 +17,6 @@ The four [Cardinal Virtues](https://en.wikipedia.org/wiki/Cardinal_virtues) are 
 ## Wisdom
 
 ```{r}
-#| echo: false
 #| fig.cap: Wisdom.
 knitr::include_graphics("other/images/Wisdom.jpg")
 ```
@@ -60,7 +59,6 @@ If we assume that the data we have is drawn from the same population as the data
 ## Justice
 
 ```{r}
-#| echo: false
 #| fig.cap: Justice.
 knitr::include_graphics("other/images/Justice.jpg")
 ```
@@ -84,7 +82,6 @@ Never forget the *temporal* nature of almost all real data science problems. Our
 ## Courage
 
 ```{r}
-#| echo: false
 #| fig.cap: Courage.
 knitr::include_graphics("other/images/Courage.jpg")
 ```
@@ -114,7 +111,6 @@ The final step of Courage is to select the final model, the Data Generating Mech
 ## Temperance
 
 ```{r}
-#| echo: false
 #| fig.cap: Temperance.
 knitr::include_graphics("other/images/Temperance.jpg")
 ```
@@ -131,7 +127,6 @@ Sadly, our models are never as good as we would like them to be. First, the worl
 
 
 ```{r}
-#| echo: false
 #| fig.cap: Donald Rumsfeld.
 knitr::include_graphics("probability/images/donald_rumsfeld.jpg")
 ```

@@ -3,7 +3,7 @@
 ```{r}
 #| label: hidden-libraries
 #| message: false
-#| echo: false
+
 #| code-fold: false    
 library(gt)
 ```
@@ -37,7 +37,6 @@ This question focuses on whether voting preferences differed systematically betw
 ## Wisdom
 
 ```{r}
-#| echo: false
 knitr::include_graphics("other/images/Wisdom.jpg")
 ```
 
@@ -65,7 +64,6 @@ See the `?nes` for details. We only need a small subset of this data:
 
 
 ```{r}
-
 nes_92 <- nes |> 
   filter(year == 1992) |> 
   select(sex, pres_vote, race, education) |> 
@@ -118,7 +116,6 @@ A **Preceptor Table** is the smallest possible table of data with rows and colum
 *Moment in Time*: The Preceptor Table refers to the election season in the fall of 1992. We make no claims about other US presidential elections, not least because few feature a third party candidate as popular as Perot. Our purpose here is historical. We want to better understand what happened in this election, not make claims about other time periods. The moment in time is, however, longer than just Election Day itself since mail-in votes were cast in the weeks proceeding the election.
 
 ```{r}
-#| echo: false
 tibble(ID = c("1", "2", "...", "10", "11", "...", "103,754,865"),
        vote = c("Democrat", "Third Party", "...", "Republican", "Democrat", "...", "Republican"),
        sex = c("M", "F", "...", "F", "F", "...", "M")) |>
@@ -158,7 +155,6 @@ tibble(ID = c("1", "2", "...", "10", "11", "...", "103,754,865"),
 ## Justice
 
 ```{r}
-#| echo: false
 knitr::include_graphics("other/images/Justice.jpg")
 ```
 
@@ -181,7 +177,6 @@ The **Population Table** includes a row for each unit/time combination in the un
 Because this project is historical, the Population Table has the same number of rows as the Preceptor Table.
 
 ```{r}
-#| echo: false
 tibble(source = c("PT/Data", "PT/Data", "PT", "PT", "PT", "PT", "...", "PT/Data", "PT/Data", "PT",  "PT",  "...", "PT/Data"),
        ID = c("1", "2", "3", "4", "5", "6", "...", "10", "11", "12", "13", "...", "103,754,865"),
        vote = c("Democrat", "Third Party", "Republican", "Democrat", "Democrat", "Democrat",  "...", "Republican", "Democrat", "Democrat", "Republican", "...", "Republican"),
@@ -265,7 +260,6 @@ Each outcome class $k$ has its own set of regression parameters $\beta_{k0}, \be
 ## Courage
 
 ```{r}
-#| echo: false
 knitr::include_graphics("other/images/Courage.jpg")
 ```
 
@@ -410,7 +404,6 @@ This is the last time we are going to go to the trouble of combining the mathema
 ## Temperance
 
 ```{r}
-#| echo: false
 knitr::include_graphics("other/images/Temperance.jpg")
 ```
 

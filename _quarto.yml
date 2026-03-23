@@ -32,3 +32,5 @@ format:
     theme: cosmo
     code-link: true
     code-overflow: wrap
+execute:
+  echo: false

@@ -2,7 +2,7 @@
 
 ```{r}
 #| label: hidden-libraries
-#| echo: false
+
 #| message: false
 #| warning: false
  
@@ -267,7 +267,7 @@ Again, people (including us!) will often be sloppy and use the same word, "distr
 #| fig.align: center
 #| fig.cap: Bruno de Finetti, an Italian statistician who wrote a famous treatise on
 #|   the theory of probability that began with the statement "PROBABILITY DOES NOT EXIST."
-#| echo: false
+
 
 knitr::include_graphics("probability/images/de_finetti.jpg")
 ```
@@ -719,7 +719,7 @@ These two models, built by smart people using similar data sources, have reached
 
 ```{r}
 #| out.width: 100%
-#| echo: false
+
 #| fig.cap: Watch the makers of these two models throw shade at each other on Twitter!
 #|   Eliot Morris is one of the primary authors of the Economist model. Nate Silver is
 #|   in charge of 538. They don't seem to be too impressed with each other's work! More
@@ -892,7 +892,6 @@ rgl::close3d()
 ```
 
 ```{r}
-#| echo: false
 knitr::include_graphics("probability/images/die.png")
 ```
 
@@ -904,7 +903,6 @@ Imagine that 60% of people in a community have a disease. A doctor develops a te
 The probability of a random person having the disease is 0.6. Since each person either has the disease or doesn't (those are the only two possibilities), the probability that a person does not have the disease is $1 - 0.6 =  0.4$.
 
 ```{r}
-#| echo: false
 knitr::include_graphics("probability/images/tree-2.png")
 ```
 
@@ -1049,7 +1047,6 @@ rgl::close3d()
 ```
 
 ```{r}
-#| echo: false
 knitr::include_graphics("probability/images/disease.png")
 ```
 
@@ -1168,7 +1165,6 @@ tibble(test = 1:100000) |>
 <!-- DK: Should this be in terms of p or number of white marbles or both? -->
 
 ```{r}
-#| echo: false
 knitr::include_graphics("probability/images/marble.jpg")
 ```
 
@@ -1281,7 +1277,6 @@ rgl::close3d()
 ```
 
 ```{r}
-#| echo: false
 knitr::include_graphics("probability/images/marbles.png")
 ```
 
@@ -1352,7 +1347,6 @@ Answer:
 <!-- DK: Should we cut out p = 0 and p = 1 as too annoying to deal with? -->
 
 ```{r}
-#| echo: false
 knitr::include_graphics("probability/images/heads.jpg")
 ```
 
@@ -1472,7 +1466,6 @@ rgl::close3d()
 ```
 
 ```{r}
-#| echo: false
 knitr::include_graphics("probability/images/coin.png")
 ```
 
@@ -1652,7 +1645,6 @@ As you may have noticed, if you calculated the value using the first method, you
 <!-- DeGroot (p. 97): "Consider an experiment for which the sample space us denoted by S. A real-valued function that is defined on the space S is called a random variable. In other words, in a particular experiment a random variable X would be some function that assigns a real number X(s) to each possible outcome s \subset S. -->
 
 ```{r}
-#| echo: false
 #| warning: false
 knitr::write_bib(.packages(), "packages.bib")
 ```
