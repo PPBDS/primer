@@ -2,7 +2,6 @@
 
 ```{r}
 #| label: hidden-libraries
-
 #| message: false
 #| warning: false
  
@@ -21,7 +20,7 @@
 # need to spend more time on it now!
 
 # library(rayshader)
-library(tidyverse)
+suppressPackageStartupMessages(tidyverse))
 library(gt)
 library(patchwork)
 library(primer.data)
@@ -973,9 +972,11 @@ jd_disease
 ```
 
 <!-- AR: Does this description matche the code above? -->
+
 The first step is to simply create an tibble that consists of the simulated data we need to plot our distribution. Keep in mind that in the setting we have two different probabilities and they are completely separate from each other and we want to keep the two probabilities and the disease results in two and only two columns so that we can graph using the `ggplot()` function. And that's why we used the `rep` and `seq` functions when creating the table, we used the `seq` function to set the sequence we want, which in this case is only two numbers, 0.01 (99% accuracy for testing negative if no disease, therefore 1% for testing positive if no disease) and 0.5 (50% accuracy for testing positive/negative if have disease), then we used the `rep` functions to repeat the process 10,000 times for each probability, in total 20,000 times. Note that this number "20,000" also represents the number of observations in our simulated data, we simulated 20,000 results from testing, where 10,000 results from the have-disease group and 10,000 for the no-disease group, we often use the capital N to represent the population, in this simulated data $N=20,000$.
 
 <!-- AR: Wouldn't a table be a better depiction -->
+
 Plot the joint distribution:
 
 ```{r}

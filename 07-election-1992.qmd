@@ -3,7 +3,6 @@
 ```{r}
 #| label: hidden-libraries
 #| message: false
-
 #| code-fold: false    
 library(gt)
 ```
@@ -48,7 +47,6 @@ As (almost) always, we start by loading the **tidyverse** package and the **prim
 
 ```{r}
 #| message: false
-
 library(tidyverse)
 library(primer.data)
 ```

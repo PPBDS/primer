@@ -19,7 +19,6 @@
 ```{r}
 #| label: hidden-libraries
 #| message: false
-
 library(gt)
 ```
 
@@ -51,7 +50,6 @@ As (almost) always, we start by loading the **tidyverse** package.
 ```{r}
 #| code-fold: false
 #| message: false
-
 library(tidyverse)
 ```
 
