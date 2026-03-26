@@ -4,37 +4,204 @@
 
 The world confronts us. Make decisions we must.
 
-We provide two different computing approaches for doing data science: first, working in the cloud using GitHub Codespaces and, second, using your local machine.
+We provide two different computing approaches for doing data science: first, working in the cloud using GitHub Codespaces with Visual Studio Code (VS Code) and, second, using your local machine with Positron.
 
-## GitHub Codespaces
+## GitHub Codespaces with Visual Studio Code  {.unnumbered}
 
-### GitHub
+### GitHub  {.unnumbered}
 
-The first step in becoming a data scientist is to sign up for a GitHub account by following the instructions at the [GitHub homepage](https://github.com/). 
+Sign up for a GitHub account by following the instructions at the [GitHub homepage](https://github.com/). **Follow [this advice](https://happygitwithr.com/github-acct.html#username-advice) when choosing your username.** 
 
-**Follow [this advice](https://happygitwithr.com/github-acct.html#username-advice) when choosing your username.** 
+Use a permanent email address for this account, not one to which you lose access when, for example, you change schools or jobs. On GitHub, your projects are organized into "repositories," usually called "repos."
 
-Use a permanent email address for this account, not one to which you lose access when, for example, you change schools or jobs.
-
-### First codespace
+### Your first codespace  {.unnumbered}
 
 Instead of working on your computer, you will work in a [GitHub codespace](https://github.com/features/codespaces).
 
-Once you are logged on to your GitHub account, go to this URL in your browser:
+Once you are logged on to your GitHub account, go to [this URL](https://github.com/PPBDS/codespace-starter) in your browser:
 
-https://github.com/PPBDS/codespace-starter
+`https://github.com/PPBDS/codespace-starter`
 
-Click on the "Use this template" green rectangle in the upper right. Select the "Open in a codespace" option.
+Your screen should look something like this:
 
-This will take a few minutes to run. Read the rest of this chapter while you are waiting. Behind the scenes, GitHub is creating a virtual machine in the cloud with all the necessary tools for doing data science. That machine is called a "codespace." GitHub allows for free usage of codespaces for 60 hours a month, and probably more if you join [GitHub education](https://github.com/education), which we highly recommend for students.
+```{r}
+knitr::include_graphics("getting-started/images/cs-1.png")
+```
+
+You can also create your own codespace from scratch. But, since this all very new, we have created the basic setup files, mainly `devcontainer.json`, in a sensible fashion in this GitHub repositary. In particular, we ensure that R is installed along with some important packages and some useful extensions for VS Code.
+
+Click on the "Use this template" green rectangle in the upper right. Select the "Create a new repository" option.
+
+```{r}
+knitr::include_graphics("getting-started/images/cs-2.png")
+```
+
+VS Code takes you to this next screen, allowing you to name the new repository, which will be a copy of the `PPBDS/codespaces-starter` repo, but under your control because it is located on your GitHub account instead of under the `PPBDS` account. Note that `davidkane9` in the screenshot, which is my GitHub account.
+
+Use `my-repo` as the name of the new repository. Click the green "Create repository" button.
+
+**When completing tutorials, you should usually give the repo the same name as the tutorial you are working on.**
+
+The next screnshot shows that you are now on your GitHub account in the newly created repo, `my-repo`. 
+
+```{r}
+knitr::include_graphics("getting-started/images/cs-2b.png")
+```
+
+Click on the green "Code" button. It shows two options: "Local" and "Codespaces". You use "Local" if you want to work on your own machine. Select "Codespaces" to work in the cloud.
+
+
+```{r}
+knitr::include_graphics("getting-started/images/cs-2c.png")
+```
+
+Click on the green "Create codespace on main" button.
+
+
+This will take a few minutes to run. Read the rest of this chapter while you are waiting. Behind the scenes, GitHub is creating a virtual machine in the cloud with all the necessary tools for doing data science. That machine is called a "codespace." GitHub allows for free usage of codespaces for 60 hours a month, and probably more if you join [GitHub education](https://github.com/education), an option which we highly recommend for students.
 
 Once your codespace starts up, it should look like this:
 
 ```{r}
-
+knitr::include_graphics("getting-started/images/cs-3.png")
 ```
 
-## Your local machine
+This is Visual Studio Code--aka "VS Code" or even "VScode"--an integrated developement environment (IDE) for coding and data science. Highlights:
+
+* This codespace is in the cloud. The URL will be a combination of the GitHub determined human-readable but somewhat nonsensical name--`special-couscous` in this case--and a bunch of letters and numbers. There is no need to remember this URL. GitHub keeps track of things. You can see all your current codespaces [here](https://github.com/codespaces).
+
+* In the upper righthand corner are the "Customize Layout ..." buttons. These are part of the VS Code "Title Bar." Since we aren't using the AI tools right now, it often makes sense to close the "Chat" window, which is the right side of the screen. You can close this in two ways: Click the "X" mark or click the "Toggle Secondary Side Bar" button, the furthest righthand button. You can then bring the Chat window back by clicking the "Toggle Secondary Side Bar" button again. Try it now.
+
+* The "Activity Bar" is the narrow vertical strip on the far left with icons for Explorer, Search, Source Control, Extensions, etc.  By default, the "Explorer" button is selected, showing that the only thing in the project is a (hidden) folder called `.devcontainer`. Click on that folder to show its contents.
+
+Your screen should now look like this:
+
+```{r}
+knitr::include_graphics("getting-started/images/cs-4.png")
+```
+
+* The "Editor" is the large central area where you edit files. If you click on the `devcontainer.json` file in the `.devcontainer` folder, the file will be opened in the editor. Do that now.
+
+* The "Panel" is the horizontal area below the Editor, containing the Terminal, Output, Problems, Debug Console, and Ports tabs. Our main focus is in the Terminal tab. This is where we "talk" to both the (cloud) computer itself and to the R program which it provides. 
+
+* The Terminal currently shows a "bash" shell. We will learn more about shells later. Click on the `+` sign to the right of the "Ports" tab. This will start a second bash shell. Your screen should now look like this:
+
+```{r}
+knitr::include_graphics("getting-started/images/cs-5.png")
+```
+
+* Note the two bash shells on the right side of the Panel. We can click on each to move back and forth between them. 
+
+* In addition to shells, we can also start R under the Terminal. Instead of clicking the `+` sign, click the small downward pointing arrow next to it. This will show a variety of options.
+
+```{r}
+knitr::include_graphics("getting-started/images/cs-6.png")
+```
+
+* Select "R Terminal."" This will start an R session via which you can "talk" to R in the same way that a bash shell allows you to talk to the computer.
+
+* Click on the "R Interactive" option which should appear beneath the two bash lines on the right side of the Panel.
+
+* Type in `2 + 2` at the R prompt and hit `enter` (Windows) or `return` (Mac). (Going forward we will just use `enter` to refer to this action. Mac users should hit `return`.)
+
+* Type in `plot(1:10)` at the R prompt. Hit `enter`. Your screen should look like:
+
+```{r}
+knitr::include_graphics("getting-started/images/cs-7.png")
+```
+
+An IDE like VS Code is designed to organize all the different work we do as data scientists. We need to talk to the computer via the shell, talk to R, see plots and so on.
+
+### Tutorials {.unnumbered}
+
+If you hover your cursor over the Activity Bar on the far lefthand side, you can see the names of the different options. The second from the bottom is labeled "R Tutorials." Click on it. (You might need to click twice.)
+
+```{r}
+knitr::include_graphics("getting-started/images/cs-8.png")
+```
+
+This shows all the R tutorials which are currently installed. If you hover your cursor over a tutorial, a rightward pointing arrow appears. Clicking that arrow starts the tutorial. Start the "Getting Started" tutorial from the **tutorial.helpers** package. Do so now.
+
+```{r}
+knitr::include_graphics("getting-started/images/cs-9.png")
+```
+
+Clicking the tutorial arrow starts a new R session, labeled "R Tutorial" on the rightside of the panel. We now have 4 different terminals: two bash and two R. In this case, a "terminal" is any connection to the (cloud) computer itself or two a program running on it, like R. In fact, the bash shell is just another program which runs in the computer. 
+
+The R Tutorial session shows the tutorial being built and its current state, which is "listening," i.e., waiting for you to complete the tutorial.  While the tutorial is running, this R session is unavailable for other work.
+
+You should also have been given an option to open the tutorial in the browser. You should take that option. If it does not appear, or if you missed it, you can also open the tutorial by hand:
+
+```{r}
+knitr::include_graphics("getting-started/images/cs-10.png")
+```
+
+The `http` address refers to a file located in your GitHub codespace but which is still visible on your local machine via the magic of "port forwarding," meaning that the codespace is allowing your browser to open it. Opening it in your browser shows:
+
+```{r}
+knitr::include_graphics("getting-started/images/cs-11.png")
+```
+
+Read and follow the instructions. At the end of the tutorial, you should download your answers. 
+
+### Stopping and deleting a codespace {.unnumbered}
+
+You can see all your codespaces [here](https://github.com/codespaces). Although GitHub provides you with lots of free hours, "lots" is not endless. It is your responsibility to keep track of your usage. GitHub helps by stopping any codespace which has been inactive for 30 minutes. (You can change this default if you like. I use 15 minutes.)
+
+You can stop a codespace by hand by clicking on the blue codespace button in the lower lefthad corner, thereby bring up a variety of possible commads. Type "stop" in the search bar and one of the options will be "Stop Current Codespace." Select it.
+
+This codespace will be stopped. However, you can restart it at anytime by going to your [codespaces page](https://github.com/codespaces):
+
+```{r}
+knitr::include_graphics("getting-started/images/cs-12.png")
+```
+
+I only have one codespace. It was started from one of my repos, as we know. Selecting it, and also clicking on the three dots--`...`--in the upper left, we have some options:
+
+
+```{r}
+knitr::include_graphics("getting-started/images/cs-13.png")
+```
+
+We can restart the codespace by selecting "Open in Browser." As you might expect, click on "Delete" deletes the codespace permanently.
+
+
+Your data science journey begins now!
+
+### Summary for cloud {.unnumbered}
+
+You should have done the following:
+
+  - Signed up for a GitHub account.
+
+  - Created a codespace using https://github.com/PPBDS/codespace-starter as a template.
+
+  - Completed your first tutorial.
+
+  - Stopped and deleted the codespace.
+
+Let's get started!
+
+```{r}
+knitr::include_graphics("getting-started/images/ending.gif")
+```
+
+
+<!-- 
+
+Should our devcontainer set some sensible defaults for Git, especially with regard to automatic staging and the like?
+
+Probably need to change the starting tutorial from Getting Started to Codespaces.
+
+Note: if the codespace stops, you lose the R session. And other stuff?
+
+Talk about, and show, how the Toggle button changed to all empty once we closed the chat window.
+
+Consider simplifying the Terminal choices.
+
+-->
+
+## Local machine with Positron
 
 As long as you have a not-too-old computer--almost always a Mac or Windows laptop--you can do data science locally, without going to the cloud. 
 
@@ -349,7 +516,7 @@ learnr::run_tutorial(name = "getting-started",
 
 Once you have done so, you can start to learn about data science.
 
-## Summary {.unnumbered}
+## Summary for local {.unnumbered}
 
 You should have done the following:
 
