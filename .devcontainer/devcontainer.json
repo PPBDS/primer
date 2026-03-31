@@ -1,0 +1,27 @@
+{
+  "name": "R Data Science",
+  "image": "ghcr.io/rocker-org/devcontainer/tidyverse:4",
+  "features": {
+    "ghcr.io/devcontainers/features/github-cli:1": {}
+  },
+  "remoteEnv": {
+    "BROWSER": "/usr/bin/true"
+  },
+  "customizations": {
+    "vscode": {
+      "extensions": [
+        "reditorsupport.r",
+        "rdebugger.r-debugger",
+        "quarto.quarto"
+      ],
+      "settings": {
+        "r.rterm.linux": "/usr/local/bin/radian",
+        "r.bracketedPaste": true,
+        "r.plot.useHttpgd": true,
+        "terminal.integrated.environmentChangesRelaunch": false,
+        "workbench.startupEditor": "none"
+      }
+    }
+  },
+  "postCreateCommand": "printf '#!/bin/sh\\nexit 0' | sudo tee /usr/local/bin/xdg-open > /dev/null && sudo chmod +x /usr/local/bin/xdg-open"
+}
