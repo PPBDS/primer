@@ -36,7 +36,7 @@ Click on the "Use this template" green rectangle in the upper right. Select the 
 knitr::include_graphics("getting-started/images/cs-2.png")
 ```
 
-VS Code takes you to this next screen, allowing you to name the new repository, which will be a copy of the `PPBDS/codespaces-starter` repo, but under your control because it is located on your GitHub account instead of under the `PPBDS` account. Note that `davidkane9` in the screenshot, which is my GitHub account.
+VS Code takes you to this next screen, allowing you to name the new repository, which will be a copy of the `PPBDS/codespaces-starter` repo, but under your control because it is located on your GitHub account instead of under the `PPBDS` account. Note the `davidkane9` in the screenshot, which is my GitHub account.
 
 Use `my-repo` as the name of the new repository. Click the green "Create repository" button.
 
@@ -58,13 +58,15 @@ knitr::include_graphics("getting-started/images/cs-2c.png")
 Click on the green "Create codespace on main" button.
 
 
-This will take a few minutes to run. Read the rest of this chapter while you are waiting. Behind the scenes, GitHub is creating a virtual machine in the cloud with all the necessary tools for doing data science. That machine is called a "codespace." GitHub allows for free usage of codespaces for 60 hours a month, and probably more if you join [GitHub education](https://github.com/education), an option which we highly recommend for students.
+This will take a few minutes to run. Read the rest of this chapter while you are waiting. Behind the scenes, GitHub is creating a virtual machine in the cloud with all the necessary tools for doing data science. That machine is called a "codespace." GitHub allows for free usage of codespaces for 60 hours a month, and probably more if you join [GitHub Education](https://github.com/education), an option which we highly recommend for students.
 
 Once your codespace starts up, it should look like this:
 
 ```{r}
 knitr::include_graphics("getting-started/images/cs-3.png")
 ```
+
+<!-- DK: Need another image.  -->
 
 This is Visual Studio Code--aka "VS Code" or even "VScode"--an integrated developement environment (IDE) for coding and data science. Highlights:
 
