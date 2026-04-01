@@ -28,7 +28,7 @@ Your screen should look something like this:
 knitr::include_graphics("getting-started/images/cs-1.png")
 ```
 
-You can also create your own codespace from scratch. But, since this all very new, we have created the basic setup files, mainly `devcontainer.json`, in a sensible fashion in this GitHub repositary. In particular, we ensure that R is installed along with some important packages and some useful extensions for VS Code.
+You can also create your own codespace from scratch. But, since this all very new, we have created the basic setup files, mainly `devcontainer.json`, in a sensible fashion in this GitHub repository. In particular, we ensure that R is installed along with some important packages and some useful extensions for VS Code.
 
 Click on the "Use this template" green rectangle in the upper right. Select the "Create a new repository" option.
 
@@ -36,13 +36,13 @@ Click on the "Use this template" green rectangle in the upper right. Select the 
 knitr::include_graphics("getting-started/images/cs-2.png")
 ```
 
-VS Code takes you to this next screen, allowing you to name the new repository, which will be a copy of the `PPBDS/codespaces-starter` repo, but under your control because it is located on your GitHub account instead of under the `PPBDS` account. Note the `davidkane9` in the screenshot, which is my GitHub account.
+VS Code takes you to this next screen, allowing you to name the new repository, which will be a copy of the `PPBDS/codespace-starter` repo, but under your control because it is located on your GitHub account instead of under the `PPBDS` account. Note the `davidkane9` in the screenshot, which is my GitHub account.
 
 Use `my-repo` as the name of the new repository. Click the green "Create repository" button.
 
 **When completing tutorials, you should usually give the repo the same name as the tutorial you are working on.**
 
-The next screnshot shows that you are now on your GitHub account in the newly created repo, `my-repo`. 
+The next screenshot shows that you are now on your GitHub account in the newly created repo, `my-repo`. 
 
 ```{r}
 knitr::include_graphics("getting-started/images/cs-2b.png")
@@ -68,7 +68,7 @@ knitr::include_graphics("getting-started/images/cs-3.png")
 
 <!-- DK: Need another image.  -->
 
-This is Visual Studio Code--aka "VS Code" or even "VScode"--an integrated developement environment (IDE) for coding and data science. Highlights:
+This is Visual Studio Code--aka "VS Code" or even "VScode"--an integrated development environment (IDE) for coding and data science. Highlights:
 
 * This codespace is in the cloud. The URL will be a combination of the GitHub determined human-readable but somewhat nonsensical name--`special-couscous` in this case--and a bunch of letters and numbers. There is no need to remember this URL. GitHub keeps track of things. You can see all your current codespaces [here](https://github.com/codespaces).
 
@@ -100,7 +100,7 @@ knitr::include_graphics("getting-started/images/cs-5.png")
 knitr::include_graphics("getting-started/images/cs-6.png")
 ```
 
-* Select "R Terminal."" This will start an R session via which you can "talk" to R in the same way that a bash shell allows you to talk to the computer.
+* Select "R Terminal." This will start an R session via which you can "talk" to R in the same way that a bash shell allows you to talk to the computer.
 
 * Click on the "R Interactive" option which should appear beneath the two bash lines on the right side of the Panel.
 
@@ -294,7 +294,7 @@ knitr::include_graphics("getting-started/images/terminal-2.png")
 
 If you are using Windows, you should see an option for "Git Bash" (or maybe just "bash"), at least if your have installed Git for Windows as we told you to do above. If you did, and you don't see a bash option, try restarting Positron.
 
-Wth luck, bash will also be the default every time you open the Terminal on Windows. But, if not, you should select it by hand. One way to make it the default choice is to use the "Select Default Profile" tool:
+With luck, bash will also be the default every time you open the Terminal on Windows. But, if not, you should select it by hand. One way to make it the default choice is to use the "Select Default Profile" tool:
 
 ```{r}
 knitr::include_graphics("getting-started/images/terminal-3.png")
