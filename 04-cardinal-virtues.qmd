@@ -52,7 +52,7 @@ Third, the (almost always imaginary) *population* is key. We need the data we *w
 
 Mechanically, assuming that the Preceptor Table and the data are drawn from the same population is the same thing as "stacking" the two on top of each other. For that to make sense, the variables must mean the same thing --- at least mostly --- in both cases. This is the assumption of *validity*. 
 
-If we assume that the data we have is drawn from the same population as the data in the Preceptor Table is drawn from, then we can use information about the former to make inferences about the latter. We can combine the Preceptor Table and the data into a single *Population Table*. If we can't do that, if we can't assume that the two sources come from the same population, then we can't use our data to answer our questions. The heart of Wisdom is knowing when to walk away. As John Tukey noted: 
+If our data and the Preceptor Table share a similar-enough population, then we can use information about the former to make inferences about the latter. We can combine the Preceptor Table and the data into a single *Population Table*. If we can't do that, if we can't assume that the two sources come from the same population, then we can't use our data to answer our questions. The heart of Wisdom is knowing when to walk away. As John Tukey noted: 
 
 > The combination of some data and an aching desire for an answer does not ensure that a reasonable answer can be extracted from a given body of data.
 
@@ -133,7 +133,7 @@ knitr::include_graphics("probability/images/donald_rumsfeld.jpg")
 
 > There are known knowns. There are things we know we know. We also know there are known unknowns. That is to say, we know there are some things we do not know. But there are also unknown unknowns, the ones we do not know we do not know. -- Donald Rumsfeld
 
-What we really care about is data we haven't seen yet, mostly data from tomorrow. But what if the world changes, as it always does? If it doesn't change much, maybe we are OK. If it changes a lot, then what good will our model be? In general, the world changes some. That means that *our forecasts are more uncertain that a naive use of our model might suggest.* 
+What we really care about is data we haven't seen yet, mostly data from tomorrow. But what if the world changes, as it always does? If it doesn't change much, maybe we are OK. If it changes a lot, then what good will our model be? In general, the world changes some. That means that *our forecasts are more uncertain than a naive use of our model might suggest.* 
 
 In Temperance, the key distinction is between the *true* posterior distribution --- what we will call "Preceptor's Posterior" --- and the estimated posterior distribution. Recall our discussion from @sec-distributions. Imagine that every assumption we made in Wisdom and Justice were correct, that we correctly understand every aspect of how the world works. We still would not know the unknown value we are trying to estimate --- recall the Fundamental Problem of Causal Inference --- but the posterior we created would be perfect. That is Preceptor's Posterior. Sadly, even if our estimated posterior is, very close to Preceptor's Posterior, we can never be sure of that fact, because we can never know the truth, never be certain that all the assumptions we made are correct. 
 
