@@ -1,5 +1,25 @@
 ## Priorities
 
+Next two months . . .
+
+1) Update teaching material to use VS Code and GitHub spaces. 
+
+    * Start with Getting Started tutorial, or something like it
+    in tutorial.helpers.
+
+    * Update show_file() so that it looks for the target file recursively.
+
+    * Material in positron.tutorials needs a VS code option or companion.
+
+2) Update Getting Started chapter, VS code section. Add more material.
+
+3) Fix primer.tutorials and the associated chapters.
+
+4) Get way better at Claude Code. Consider incorporating Claude Code in the class.
+
+### Alec
+
+
 
 ## Aashna
 
