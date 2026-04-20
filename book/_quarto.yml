@@ -12,6 +12,7 @@ book:
   author: "David Kane"
   search: true
   repo-url: https://github.com/PPBDS/primer/
+  repo-subdir: book
   repo-actions: [edit]
   chapters:
     - index.qmd

@@ -42,6 +42,7 @@ jobs:
       - name: Install book dependencies
         uses: r-lib/actions/setup-r-dependencies@v2
         with:
+          working-directory: book
           cache-version: 1
 
       - name: Install tutorial package dependencies
@@ -56,13 +57,13 @@ jobs:
         uses: quarto-dev/quarto-actions/render@v2
         with:
           to: html
-          path: .
+          path: book
 
-      - name: Build pkgdown site into docs/tutorials
+      - name: Build pkgdown site into book/docs/tutorials
         run: |
           pkgdown::build_site_github_pages(
             pkg        = ".",
-            dest_dir   = "../docs/tutorials",
+            dest_dir   = "../book/docs/tutorials",
             new_process = FALSE,
             install     = FALSE
           )
@@ -74,5 +75,5 @@ jobs:
         uses: peaceiris/actions-gh-pages@v4
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: ./docs
+          publish_dir: ./book/docs
           force_orphan: true

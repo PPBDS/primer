@@ -12,7 +12,7 @@ The goal is that this file is the only reference either of us needs when startin
 
 The *Primer* teaches students how to do data science: given a question and some data, complete a series of steps that, with luck, yield an answer — presented graphically, and including a measure of uncertainty.
 
-The steps are organized around the [Cardinal Virtues](https://en.wikipedia.org/wiki/Cardinal_virtues) — Wisdom, Justice, Courage, Temperance. References and allusions to the virtues are a feature, not a bug. Use them liberally. The main images we use for these virtues are currently located in `other/images/`. Each file is the first letter capitalized virtue with ``jpg` suffix. We would like to include these images at the start of the relevant section in all three artifacts.
+The steps are organized around the [Cardinal Virtues](https://en.wikipedia.org/wiki/Cardinal_virtues) — Wisdom, Justice, Courage, Temperance. References and allusions to the virtues are a feature, not a bug. Use them liberally. The main images we use for these virtues are currently located in `book/other/images/`. Each file is the first letter capitalized virtue with ``jpg` suffix. We would like to include these images at the start of the relevant section in all three artifacts.
 
 A data science project has three potential artifacts:
 

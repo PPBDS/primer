@@ -7,10 +7,8 @@ Source for the book *Preceptor's Primer for Bayesian Data Science: Using the Car
 
 ## Repository layout
 
-- `*.qmd` at the root — book chapter sources
-- `_quarto.yml` — Quarto book configuration
+- `book/` — Quarto book source (`*.qmd` chapters, `_quarto.yml`, supporting images and data)
 - `primer.tutorials/` — R package providing the learnr tutorials
-- `other/images/` — figures used by the book
 - `.github/workflows/` — CI: R CMD check for the package, combined render and deploy for the book + pkgdown site
 
 ## Installing the R package
@@ -24,7 +22,7 @@ remotes::install_github("PPBDS/primer", subdir = "primer.tutorials")
 Render the book:
 
 ```bash
-quarto render
+quarto render book
 ```
 
 Check the R package (from the repo root):
