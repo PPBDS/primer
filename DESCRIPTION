@@ -1,13 +1,16 @@
-Package: pp
-Title: Preceptor's Primer
+Package: primer.book
+Title: Preceptor's Primer for Bayesian Data Science (book dependencies)
 Version: 0.1
-Authors@R: 
+Authors@R:
     person(given = "David",
            family = "Kane",
            role = c("aut", "cre", "cph"),
            email = "dave.kane@gmail.com",
            comment = c(ORCID = "0000-0002-6660-3934"))
-Depends: 
+Description: Not a real R package. This DESCRIPTION declares the R
+    dependencies required to render the Preceptor's Primer Quarto book,
+    so that pak and setup-r-dependencies on CI can install them.
+Depends:
     R (>= 4.5.0)
 Imports:
     broom,
