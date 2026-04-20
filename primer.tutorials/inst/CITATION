@@ -8,8 +8,8 @@ citEntry(
                     role = c("aut", "cre"),
                     email = "dave.kane@gmail.com"),
   year = "2023",
-  url      = "https://github.com/PPBDS/primer.tutorials",
-  textVersion = paste("David Kane. 2023. 'primer.tutorials'. R package version 1.2.2, <https://github.com/PPBDS/primer.tutorials>."
+  url      = "https://github.com/PPBDS/primer",
+  textVersion = paste("David Kane. 2023. 'primer.tutorials'. R package version 1.2.2, <https://github.com/PPBDS/primer>."
 
   )
 )

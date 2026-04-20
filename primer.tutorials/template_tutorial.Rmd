@@ -79,7 +79,7 @@ fit_XX <- linear_reg(engine = "lm") |>
 
 <!-- This is the template tutorial for creating any tutorial which uses the Cardinal Virtues to answer a question given a data set. Although its primary use is for the chapters after 4 in the Primer, it could be used for independent tutorials as well. The letters `XX` are used to indicate locations which require editing. Comments with instructions are interspersed. -->
 
-<!-- Read The Cardinal Virtues vignette in the package for background: https://ppbds.github.io/primer.tutorials/articles/cardinal_virtues.html  -->
+<!-- Read The Cardinal Virtues vignette in the package for background: https://ppbds.github.io/primer/tutorials/articles/cardinal_virtues.html  -->
 
 <!-- Delete all these instructions as you go. Once you are done with the tutorial, none of them should remain. The only comments left should be ones that you wrote, comments specific to your tutorial --- like modeling approaches that you tried but did not use, other approaches that might be considered in the future and so on. -->
 
@@ -1325,7 +1325,7 @@ Continue the pipe with `tidy(conf.int = TRUE)`.
 
 ### 
 
-<!-- XX: Discuss the meaning of the intercept and beta_1. Use the actual results. DK: Add some examples here. See https://ppbds.github.io/primer.tutorials/articles/cardinal_virtues.html for detailed examples. This is a good document to show to Claude. Actually, looks like lots of the knowledge drops below come from this document. -->
+<!-- XX: Discuss the meaning of the intercept and beta_1. Use the actual results. DK: Add some examples here. See https://ppbds.github.io/primer/tutorials/articles/cardinal_virtues.html for detailed examples. This is a good document to show to Claude. Actually, looks like lots of the knowledge drops below come from this document. -->
 
 ### Exercise 5
 
@@ -1686,7 +1686,7 @@ Courage gave us the data generating mechanism. Temperance guides us in the use o
 
 <!-- XX: Add at least three questions which involve the interpretation of numbers in the table. We have created three empty questions below this commentary block for you. The first question --- and maybe all the questions? --- shows a table of the parameter values at the start. For models with lots of parameters, you need to restrict what the table displays. See the Cardinal Virtues vignette for detailed discussion:
 
-https://ppbds.github.io/primer.tutorials/articles/cardinal_virtues.html#interpreting-parameters
+https://ppbds.github.io/primer/tutorials/articles/cardinal_virtues.html#interpreting-parameters
 
  You must provide an excellent answer to each of the questions. -->
 

@@ -32,7 +32,7 @@ These tables are designed to support both **causal** and **predictive** modeling
 
 **Preceptor Tables** and **Population Tables** help represent structured information about observational units, treatment status, potential or predicted outcomes, and covariates in a standardized format. They are especially useful in modeling workflows, particularly in education or social science contexts where modeling assumptions should be made transparent.
 
-This format draws inspiration from the [Cardinal Virtues](https://ppbds.github.io/primer.tutorials/articles/cardinal_virtues.html#preceptor-table) article, and aims to make tables interpretable in isolation by including both clear labeling and explanatory footnotes.
+This format draws inspiration from the [Cardinal Virtues](https://ppbds.github.io/primer/tutorials/articles/cardinal_virtues.html#preceptor-table) article, and aims to make tables interpretable in isolation by including both clear labeling and explanatory footnotes.
 
 ### Preceptor Table
 
@@ -588,4 +588,4 @@ This workflow supports better modeling documentation and instructional design, w
 
 For more on how and why to use these tables, see:
 
-* [The Cardinal Virtues](https://ppbds.github.io/primer.tutorials/articles/cardinal_virtues.html) article from *primer.tutorials*
+* [The Cardinal Virtues](https://ppbds.github.io/primer/tutorials/articles/cardinal_virtues.html) article from *primer.tutorials*

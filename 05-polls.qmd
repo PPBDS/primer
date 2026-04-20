@@ -96,7 +96,7 @@ The important point is that the Preceptor Table has the fewest rows and columns 
 
 ### EDA
 
-The data we have come from a [YouGov](https://today.yougov.com/) poll ([pdf](https://github.com/PPBDS/primer/blob/master/sources/you-gov-2024-03-12.pdf)) of 1,559 US adult citizens, conducted March 10 - 12, 2024.  There are many questions in the poll. For the purpose of answering our question, the most relevant one is:
+The data we have come from a [YouGov](https://today.yougov.com/) poll ([pdf](https://github.com/PPBDS/primer/blob/main/sources/you-gov-2024-03-12.pdf)) of 1,559 US adult citizens, conducted March 10 - 12, 2024.  There are many questions in the poll. For the purpose of answering our question, the most relevant one is:
 
 > If an election for president were going to be held now and the Democratic nominee was  oe Biden and the Republican nominee was Donald Trump, would you vote for...
 

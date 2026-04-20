@@ -6,7 +6,7 @@
 <!-- badges: start -->
 
 [![R build
-status](https://github.com/PPBDS/primer.tutorials/workflows/R-CMD-check/badge.svg)](https://github.com/PPBDS/primer.tutorials/actions)
+status](https://github.com/PPBDS/primer/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/PPBDS/primer/actions)
 <!-- badges: end -->
 
 ## About this package
@@ -21,7 +21,7 @@ You can install the development version from
 
 ``` r
 # install.packages("remotes")
-remotes::install_github("PPBDS/primer.tutorials")
+remotes::install_github("PPBDS/primer", subdir = "primer.tutorials")
 ```
 
 For suggested updates during installation, though you do not have to
@@ -91,7 +91,7 @@ running the following 2 lines of code in your **R Console**:
 
 ``` r
 remove.packages("primer.tutorials")
-remotes::install_github("PPBDS/primer.tutorials")
+remotes::install_github("PPBDS/primer", subdir = "primer.tutorials")
 ```
 
 For version updates for dependency packages please follow the same

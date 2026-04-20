@@ -454,7 +454,7 @@ If you do more work with this *Primer*, then you will probably want to install t
 ```{r}
 #| eval: false
 #| code-fold: false
-pak("PPBDS/primer.tutorials")
+pak("PPBDS/primer/primer.tutorials")
 ```
 
 Some other new packages will be installed as well, most importantly **primer.data**, which includes most of the data we use in the *Primer*. It may take a few minutes. If something gets messed up, it is often useful to read the error messages and see if a specific package is at fault. If so, use the `remove.packages()` function to remove the problematic package and then install it again.
