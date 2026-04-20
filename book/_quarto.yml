@@ -23,7 +23,7 @@ book:
     - 03-rubin-causal-model.qmd
     - 04-cardinal-virtues.qmd
     - 07-election-1992.qmd
-    # - 05-polls.qmd Still filed with old nonsense
+    # - 06-models.qmd Still filed with old nonsense
     - set-up.qmd
     - ai.qmd
 format:

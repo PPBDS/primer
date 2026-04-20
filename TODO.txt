@@ -65,7 +65,7 @@ Or try with curl or wininet (on Windows):
 
 r
 options(download.file.method = "wininet")  # Windows only
-remotes::install_github("PPBDS/primer", subdir = "primer.tutorials") When I used this command and than ran the command learnr::run_tutorial("021-probability", "primer.tutorials") as suggested by ChatGPT for Windows, this issue was quickly resolved for me.
+remotes::install_github("PPBDS/primer", subdir = "primer.tutorials") When I used this command and than ran the command learnr::run_tutorial("01-probability", "primer.tutorials") as suggested by ChatGPT for Windows, this issue was quickly resolved for me.
 ----
 
 

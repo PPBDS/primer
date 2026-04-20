@@ -8,7 +8,7 @@ output:
     progressive: yes
     allow_skip:: yes
 runtime: shiny_prerendered
-description: 'Chapter 1 Tutorial: Rubin causal Model'
+description: "Tutorial #03 for Preceptor's Primer"
 ---
 
 ```{r setup, include = FALSE}

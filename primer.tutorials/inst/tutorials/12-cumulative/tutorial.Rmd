@@ -2,13 +2,13 @@
 title: Cumulative
 author: David Kane and Aashna Patel
 tutorial:
-  id: 121-cumulative
+  id: 12-cumulative
 output:
   learnr::tutorial:
     progressive: yes
     allow_skip: yes
 runtime: shiny_prerendered
-description: "Tutorial #11 for Preceptor's Primer"
+description: "Tutorial #12 for Preceptor's Primer"
 ---
 
 ```{r setup, include = FALSE}

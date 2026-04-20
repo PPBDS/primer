@@ -8,7 +8,7 @@ output:
     progressive: yes
     allow_skip: yes
 runtime: shiny_prerendered
-description: "Tutorial #8 for Preceptor's Primer"
+description: "Tutorial #09 for Preceptor's Primer"
 ---
 
 ```{r setup, include = FALSE}

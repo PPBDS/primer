@@ -60,6 +60,36 @@ The exception is when a concept is being introduced for the first time. The Easy
 
 Note that the definition shifts only between Easy and Medium, then stays fixed. That is the typical pattern: a temporary intro framing in Easy, the canonical §11 form from Medium onward, and the discussion deepening continuously across all three.
 
+**Worked example: validity across three levels.**
+
+- **Easy.** Canonical §11 wording from the start. Scope is restricted to the **outcome column** and obvious measurement mismatches. Counter-examples: unit mismatches (cm vs. inches, years vs. months), scale mismatches (1–7 Likert vs. 0–10), timing mismatches (income last year vs. income at treatment time), naming collisions (household income vs. personal income). Remedies: identify, document, and adjust either the Preceptor Table's concept or the question to match what the data actually measures.
+
+- **Medium.** Same canonical definition. Scope expands to **covariates and (in causal models) the treatment**, and introduces **derived variables** — columns constructed from raw data. Counter-examples: treatment operationalization mismatch (e.g., Enos's platform-confederate experiment as one operationalization of "Spanish exposure" vs. a different instantiation in the Preceptor Table), covariate encoding (education as years completed vs. as highest degree), concept drift over time ("Republican" in 1990 vs. 2024), derived columns (a "partisanship" index built from three survey items). Remedies expand: rescaling or redefining outcome and covariates, adjusting the question to match what is truly measurable, folding measurement error into how the DGM is specified.
+
+- **Difficult.** Same canonical definition. Discussion moves to **construct validity** — subtle conceptual mismatches rather than obvious ones. Counter-examples: psychological constructs (is a three-item "attitude toward immigration" scale really measuring what the question means by "attitude"?), economic constructs (BLS-defined unemployment vs. colloquial usage; "wealth" as self-reported assets minus debts), policy constructs that drift across jurisdictions ("arrested" across different states' definitions). Advanced remedies to name, not teach: measurement invariance testing, item response theory, cross-walking between instruments, cognitive interviewing, instrumental variables when the proxy is known to be biased.
+
+Unlike representativeness, validity's definition does not shift between Easy and Medium. The canonical §11 wording — "consistency, or lack thereof, in the columns of the data set and the corresponding columns in the Preceptor Table" — is plain-English enough for a first-chapter student, so no intro framing is needed. What deepens across the three levels is entirely the scope (outcome → covariates/treatment → constructs), the sophistication of the counter-examples, and the remedies named. Use this as the guide for other concepts: only introduce an Easy-specific framing when the §11 wording would genuinely obstruct a new student.
+
+**Worked example: stability across three levels.**
+
+- **Easy.** Simplified intro framing. Scope is a single temporal link — the data's era vs. the Preceptor Table's era. Frame: *"Stability means the relationship between the outcome and the covariates doesn't change over time. If the world in the data's era behaves differently from the world in the Preceptor Table's era, stability fails."* Counter-examples stay close to student intuition: survey data from 2015 used to answer a 2025 question, pre- vs. post-pandemic consumer behavior, interest-rate behavior in 2007 vs. 2020, data collected before a new competitor entered a market. Remedies: narrow the time gap, use the most recent subset of the data, adjust the Preceptor Table's time scope.
+
+- **Medium.** Switch to canonical §11 wording and keep it. Scope broadens to the **three row categories** — data, Preceptor Table, and the intermediate population from which both are drawn. Introduces the load-bearing Medium-level insight: **stability is about parameters, not distributions.** A change in the distribution of any single variable over time does not, by itself, constitute a stability violation; what matters is whether β₀, β₁, and so on are the same across the three row categories. Counter-examples: Enos Metra 2012 → MBTA 2026, where the effect *parameter* of Spanish exposure on attitude may have shifted over 14 years even if the rider distribution hasn't; education's coefficient in an income model across decades; intercepts drifting while slopes hold, or the reverse. Remedies expand: include year as a covariate, estimate coefficients year-by-year, compare parameter estimates across time-split subsets.
+
+- **Difficult.** Same canonical definition. Discussion moves to **structural breaks, regime shifts, and the Lucas critique** — cases where the pattern doesn't merely drift but changes in kind. Counter-examples: a new law that redefines "arrested" and thus pivots its relationship with covariates; agents optimizing against a published model so its coefficients decay once the model is known (Lucas critique); interaction terms whose sign flips across regimes (education's effect on income for men vs. women in 1950 vs. 2020); heteroscedasticity that is itself non-stationary. Advanced remedies to name, not teach: time-varying coefficients, state-space models, changepoint or regime-switching analysis, difference-in-differences with time fixed effects, Chow tests for structural breaks.
+
+Like representativeness, stability has an Easy → Medium definitional shift and then fixes the canonical form from Medium onward. Unlike representativeness, the real Medium-level upgrade is not "more relationships to consider" but a different *kind* of insight — parameters, not distributions. Expect this insight to take more than one tutorial to stick; plan to revisit "distribution change ≠ stability violation" in several Medium-tier knowledge drops before moving on.
+
+**Worked example: unconfoundedness across three levels.** Unlike the other three assumptions, unconfoundedness is causal-only — tutorials with predictive models skip it entirely, so every reappearance is in a causal context. A predictive tutorial between two causal tutorials means the next causal one may need to spend a half-exercise re-grounding why the assumption applies here and did not last time.
+
+- **Easy.** Intuition-level framing. Scope: binary treatment, surface-level confounding. Frame: *"Unconfoundedness asks: could something other than the treatment explain why the treated and untreated groups have different outcomes? If not — if nothing else is driving the difference — the treatment is unconfounded. The easiest way to guarantee this is to assign treatment randomly."* Counter-examples stay at student-intuition level: voters who self-select into volunteering with a campaign differ from those who don't; smokers differ from non-smokers in many ways besides smoking; people who choose college differ from those who don't in ability, family income, and geography. Remedies: randomize when you can; if you cannot, name the confounders you are worried about and check whether they are in your data.
+
+- **Medium.** Switch to canonical §11 wording and keep it. Introduces two pieces of apparatus: **conditioning on pre-treatment covariates**, with the critical distinction between *pre-treatment* and *post-treatment* covariates (only the former belong in the model; controlling for post-treatment variables that sit on the causal path induces bias); and **selection on observables**, the formal name for the assumption that all relevant confounders are measurable and present in your data. Also distinguishes randomized experiments (unconfoundedness guaranteed by design) from observational data (unconfoundedness is an assumption you defend). Counter-examples: Enos's Metra platform experiment and the Shaming experiment as "good" randomized cases that make the observational contrast vivid; education's effect on income as the classic ability-bias story; the post-treatment trap of controlling for "occupation" when estimating education → income. Remedies expand: identify and include measurable confounders, be strict about the pre-treatment cutoff, reason explicitly about which variables sit on the causal path between treatment and outcome.
+
+- **Difficult.** Same canonical definition. Discussion moves to **selection on unobservables** — confounders that cannot be measured even in principle — and the **research designs built to work around them**. Counter-examples: ability bias that no test captures; voluntary-program selection (job training, welfare-to-work) where the people who sign up differ in ways that are not in the data; time-varying confounding when past outcomes affect future treatment decisions. Advanced designs and remedies to name, not teach: instrumental variables, regression discontinuity, difference-in-differences with its own parallel-trends assumption, natural experiments, propensity-score matching and weighting, sensitivity analysis (how much unmeasured confounding would overturn the result?).
+
+Like stability, unconfoundedness has an Easy → Medium definitional shift and then fixes the canonical form from Medium onward. The Medium upgrade is heavy — the conditioning apparatus plus pre-vs-post-treatment plus the observables/unobservables framing — so plan to revisit these pieces across several Medium-tier tutorials rather than dropping them all at once. The Difficult upgrade is mostly about named designs (IV, RDD, DiD, propensity methods), which the Primer does not teach but names so students know the menu exists when they face unmeasured confounders in practice.
+
 ---
 
 ## 2. Working with David
@@ -83,7 +113,7 @@ When you pause to ask, make it easy for David to answer: short list of options, 
 
 Chapters are Quarto files with the top-level `#` already set by the book structure; use `##` for virtue-level sections. Filename convention: `NN-topic-name.qmd` where `NN` is the chapter number (e.g. `04-cardinal-virtues.qmd`, `09-logistic-regression.qmd`).
 
-Tutorials are R Markdown files with `learnr::tutorial` output. They live in the `primer.tutorials` package under `inst/tutorials/NNN-topic-name/tutorial.Rmd`, where `NNN` is the three-digit tutorial number (e.g. `051-models`, `141-stops`). The tutorial's `id` in the YAML is `NNN-topic-name`, lowercase, dashes for spaces.
+Tutorials are R Markdown files with `learnr::tutorial` output. They live in the `primer.tutorials` package under `inst/tutorials/NN-topic-name/tutorial.Rmd`, where `NN` is the two-digit chapter number (e.g. `06-models`, `14-stops`). The tutorial's `id` in the YAML is `NN-topic-name`, lowercase, dashes for spaces.
 
 For new chapters, produce a single `.qmd` file. For new tutorials, produce a single `.Rmd` file with the structure described in §5. Do not emit partial diffs; produce complete files David can drop in place.
 
@@ -1468,18 +1498,18 @@ This section is a registry. It tracks what chapters exist, what datasets they us
 
 **Status: not yet populated.** Before writing a new tutorial, David and Claude should fill in the rows for existing tutorials so that Claude knows what has and has not been asked recently.
 
-Chapter numbers below use a clean two-digit convention (01, 02, …); the corresponding tutorial directories use a three-digit convention (`011-probability`, `041-cardinal-virtues`, `141-stops`, …). The chapter number is the tutorial number's first two digits.
+Chapter and tutorial numbers share a single two-digit convention (01, 02, …). Tutorial directories are named `NN-topic-name` (e.g. `01-probability`, `05-cardinal-virtues`, `14-stops`) — same NN as the chapter.
 
 | Chapter | Type | Topic | Dataset | Model (tutorial) | Canonical exercises used |
 |--------:|------|-------|---------|------------------|--------------------------|
 | 01 | misc | Probability | — | — | TBD |
 | 02 | misc | Sampling | — | — | TBD |
 | 03 | misc | Rubin Causal Model | — | — | TBD |
-| 04 | misc | Cardinal Virtues | — | — | TBD |
-| 05 | example | Models | YouGov poll (constructed) | `logistic_reg`, `biden ~ 1` | TBD |
-| 06 | example | Two Parameters | NHANES (`primer.data`) | `linear_reg`, `height ~ sex` | TBD |
-| 07 | example | Three Parameters: Causal | `trains` (Enos 2014) | `linear_reg`, `att_end ~ treatment` | TBD |
-| 08 | misc | Mechanics | — | — | TBD |
+| 04 | misc | Mechanics | — | — | TBD |
+| 05 | misc | Cardinal Virtues | — | — | TBD |
+| 06 | example | Models | YouGov poll (constructed) | `logistic_reg`, `biden ~ 1` | TBD |
+| 07 | example | Two Parameters | NHANES (`primer.data`) | `linear_reg`, `height ~ sex` | TBD |
+| 08 | example | Three Parameters: Causal | `trains` (Enos 2014) | `linear_reg`, `att_end ~ treatment` | TBD |
 | 09 | example | Four Parameters: Categorical | NES 1992 (`primer.data`) | `multinom_reg`, `pres_vote ~ sex` | TBD |
 | 10 | example | Five Parameters | `governors` (`primer.data`) | `linear_reg`, `lived_after ~ election_age*sex` | TBD |
 | 11 | example | N Parameters | `shaming` (GGL 2008) | `logistic_reg`, `voted ~ age + sex + treatment*voter_class` | TBD |

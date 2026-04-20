@@ -87,7 +87,7 @@ Think harder about where the data for these tutorials comes from. Does it all re
 Consider adding data used in class sessions, like resumes, to primer.data.
 
 
-031-sampling exercises take too long time to  process. either shorten them or delete them.
+02-sampling exercises take too long time to  process. either shorten them or delete them.
 
 Do we need some simulation tutorials?
 

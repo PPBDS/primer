@@ -8,31 +8,37 @@ Preceptor Table and Population Table columns are listed by spanner in order. Pop
 
 ---
 
-## 011 — Probability
+## 01 — Probability
 
 - **Type:** miscellaneous
 
 ---
 
-## 021 — Sampling
+## 02 — Sampling
 
 - **Type:** miscellaneous
 
 ---
 
-## 031 — Rubin Causal Model
+## 03 — Rubin Causal Model
 
 - **Type:** miscellaneous
 
 ---
 
-## 041 — Cardinal Virtues
+## 04 — Mechanics
 
 - **Type:** miscellaneous
 
 ---
 
-## 051 — Models
+## 05 — Cardinal Virtues
+
+- **Type:** miscellaneous
+
+---
+
+## 06 — Models
 
 - **Type:** example
 - **"Imagine":** You are the chair of the Democratic National Committee in early 2024 deciding where to devote time and money.
@@ -50,7 +56,7 @@ Preceptor Table and Population Table columns are listed by spanner in order. Pop
 
 ---
 
-## 061 — Two Parameters
+## 07 — Two Parameters
 
 - **Type:** example
 - **"Imagine":** You are in charge of ordering uniforms for next year's Marine Corps bootcamp recruits.
@@ -68,7 +74,7 @@ Preceptor Table and Population Table columns are listed by spanner in order. Pop
 
 ---
 
-## 071 — Three Parameters: Causal
+## 08 — Three Parameters: Causal
 
 - **Type:** example
 - **"Imagine":** You are a campaign manager for a Republican congressional candidate in Georgia who wants to increase anti-immigration sentiment among voters.
@@ -86,13 +92,7 @@ Preceptor Table and Population Table columns are listed by spanner in order. Pop
 
 ---
 
-## 081 — Mechanics
-
-- **Type:** miscellaneous
-
----
-
-## 091 — Four Parameters: Categorical
+## 09 — Four Parameters: Categorical
 
 - **Type:** example
 - **"Imagine":** You are a political scientist studying the 1992 presidential election, curious whether men and women differed in their support for Clinton, Bush, and Perot. There are many decisions to make.
@@ -110,7 +110,7 @@ Preceptor Table and Population Table columns are listed by spanner in order. Pop
 
 ---
 
-## 101 — Five Parameters
+## 10 — Five Parameters
 
 - **Type:** example
 - **"Imagine":** You are considering a run for governor and wonder how long you are likely to live afterward.
@@ -128,7 +128,7 @@ Preceptor Table and Population Table columns are listed by spanner in order. Pop
 
 ---
 
-## 111 — N Parameters
+## 11 — N Parameters
 
 - **Type:** example
 - **"Imagine":** You are running for Governor of Texas and must decide how to allocate campaign resources.
@@ -146,7 +146,7 @@ Preceptor Table and Population Table columns are listed by spanner in order. Pop
 
 ---
 
-## 121 — Cumulative
+## 12 — Cumulative
 
 - **Type:** example
 - **"Imagine":** You are a pollster preparing for an upcoming election, exploring 2020 Trump approval patterns across ideology and education levels.
@@ -164,7 +164,7 @@ Preceptor Table and Population Table columns are listed by spanner in order. Pop
 
 ---
 
-## 131 — Ordered Factors
+## 13 — Ordered Factors
 
 - **Type:** example
 - **"Imagine":** You are a data scientist at a non-profit helping students find the best college.
@@ -182,7 +182,7 @@ Preceptor Table and Population Table columns are listed by spanner in order. Pop
 
 ---
 
-## 141 — Stops
+## 14 — Stops
 
 - **Type:** example
 - **"Imagine":** You are a member of your city's police department who wants to ensure race doesn't unfairly affect arrest chances during traffic stops.

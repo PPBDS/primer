@@ -2,13 +2,13 @@
 title: Stops
 author: David Kane and Aashna Patel
 tutorial:
-  id: 141-stops
+  id: 14-stops
 output:
   learnr::tutorial:
     progressive: yes
     allow_skip: yes
 runtime: shiny_prerendered
-description: "Tutorial #13 for Preceptor's Primer"
+description: "Tutorial #14 for Preceptor's Primer"
 ---
 
 ```{r setup, include = FALSE}

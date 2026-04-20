@@ -12,7 +12,7 @@
 #' \code{learnr::available_tutorials("primer.tutorials")}
 #'
 #' To start a tutorial, run:
-#' \code{learnr::run_tutorial("141-stops", package = "primer.tutorials")}
+#' \code{learnr::run_tutorial("14-stops", package = "primer.tutorials")}
 #'
 #' @section About the Primer:
 #' These tutorials are designed to complement "Preceptor's Primer for Bayesian 

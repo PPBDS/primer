@@ -2,13 +2,13 @@
 title: Cardinal Virtues
 author: David Kane
 tutorial:
-  id: 041-cardinal-virtues
+  id: 05-cardinal-virtues
 output:
   learnr::tutorial:
     progressive: yes
     allow_skip: yes
 runtime: shiny_prerendered
-description: "Tutorial #04 for Preceptor's Primer"
+description: "Tutorial #05 for Preceptor's Primer"
 ---
 
 ```{r setup, include = FALSE}

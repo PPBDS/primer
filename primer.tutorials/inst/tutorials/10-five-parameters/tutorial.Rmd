@@ -2,13 +2,13 @@
 title: Five Parameters
 author: David Kane and Aashna Patel
 tutorial:
-  id: 101-five-parameters
+  id: 10-five-parameters
 output:
   learnr::tutorial:
     progressive: yes
     allow_skip: yes
 runtime: shiny_prerendered
-description: "Tutorial #091 for Preceptor's Primer"
+description: "Tutorial #10 for Preceptor's Primer"
 ---
 
 ```{r setup, include = FALSE}
