@@ -1,0 +1,2627 @@
+---
+title: Sampling
+author: David Kane and Anish Talla
+tutorial:
+  id: sampling
+output:
+  learnr::tutorial:
+    progressive: yes
+    allow_skip:: yes
+runtime: shiny_prerendered
+description: 'Chapter 3 Tutorial: Sampling'
+---
+
+```{r setup, include = FALSE}
+library(learnr)
+library(tutorial.helpers)
+library(gt)
+
+library(tidyverse)
+library(tidymodels)
+library(broom)
+library(marginaleffects)
+
+library(easystats)
+library(scales)
+
+knitr::opts_chunk$set(echo = FALSE)
+options(tutorial.exercise.timelimit = 600, 
+        tutorial.storage = "local") 
+
+# Key Data
+
+set.seed(10)
+urn <- tibble(
+  color = c(rep("red", 400), rep("white", 600))) |> 
+  sample_frac() |> 
+  mutate(bead_ID = 1:1000) |> 
+  mutate(color = factor(color))
+
+virtual_samples <- tibble(trial_ID = 1:1000) |> 
+  mutate(shovel = map(trial_ID, ~ sample_n(urn, size = 50))) |> 
+  mutate(numb_red = map_int(shovel, ~ sum(.$color == "red"))) |> 
+  mutate(numb_beads = map_int(shovel, ~ length(.$color))) |> 
+  mutate(prop_red = numb_red / numb_beads)
+
+shovels_100 <- expand_grid(trial_ID = 1:100, shovel_size = 1:100) |> 
+  mutate(shovel = map(shovel_size, ~ slice_sample(urn, n = .))) |> 
+  mutate(numb_red = map_int(shovel, ~ sum(.$color == "red"))) |> 
+  mutate(prop_red = numb_red / shovel_size) |> 
+  summarize(st_dev_p_hat = sd(prop_red),
+            .by = shovel_size)
+
+set.seed(9)
+shovel <- tibble(color = as.factor(
+	sample(c(rep("red", 17), 
+	         rep("white", 33)))))
+
+shovel <- shovel |> mutate(color = relevel(color, ref = "white"))
+
+fit_color <- logistic_reg(engine = "glm") |>
+  fit(color ~ 1, data = shovel)
+
+
+
+```
+
+```{r copy-code-chunk, child = system.file("child_documents/copy_button.Rmd", package = "tutorial.helpers")}
+```
+
+```{r info-section, child = system.file("child_documents/info_section.Rmd", package = "tutorial.helpers")}
+```
+
+
+<!-- DK: Not sure what to do with the Sampling Distribution and Standard error sections. Leave them alone for now. -->
+
+<!-- DK: There is a conflict in that the chapter does 1,000 replications when examining the results for 100 shovel sizes while we only do 100 replications here, because otherwise the code takes too long to run. Revisit this. -->
+
+## Introduction
+### 
+
+This tutorial supports [*Preceptor’s Primer for Bayesian Data Science: Using the Cardinal Virtues for Inference*](https://ppbds.github.io/primer/) by [David Kane](https://davidkane.info/). 
+
+The world confronts us. Make decisions we must.
+
+Imagine you and your friend are at a factory that mixes thousands of red and white beads in a giant urn. You make a bet: before you scoop out a handful of beads, can you guess how many will be red and how many will be white? You can’t see or count every bead—so you have to make your prediction based on your sample. There are many decisions to make.
+
+### Exercise 1
+
+What are the four [Cardinal Virtues](https://en.wikipedia.org/wiki/Cardinal_virtues), in order, which we use to guide our data science work?
+
+```{r introduction-1}
+question_text(NULL,
+	message = "Wisdom, Justice, Courage, and Temperance.",
+	answer(NULL, correct = TRUE),
+	allow_retry = FALSE,
+	incorrect = NULL,
+	rows = 2)
+```
+
+###
+
+Why do we ask this, and a score more other questions, in each tutorial? Because the best way to (try to) ensure that students remember these concepts more than a few months after the course ends is [spaced repetition](https://en.wikipedia.org/wiki/Spaced_repetition), although we focus more on the repetition than on the spacing.
+
+
+## Sampling distribution
+### 
+
+In [Chapter 3: Sampling](https://ppbds.github.io/primer/sampling.html) of the *Primer*, we described a tactile sampling activity. We used a physical urn of beads and a physical shovel. We did this by hand so that we could develop our intuition about the ideas behind sampling. In this section, we mimic this physical sampling with virtual sampling, using a computer.
+
+### 
+
+We begin this chapter with a specific problem: 
+
+> Given an urn consists of 1,000 identically sized red and white beads in the urn, mixed well together. What proportion, $p$, of this urn's beads are red?
+
+In this section, we will create the following plot to answer this question.
+
+```{r}
+plot_vs <- virtual_samples |> 
+  ggplot(aes(x = prop_red)) +
+    geom_histogram(binwidth = 0.02, 
+                   boundary = 0.4, 
+                   color = "white") +
+    labs(x = expression(hat(p)), 
+         y = "Count",
+         title = "Distribution of 1,000 proportions red") 
+
+plot_vs
+```
+
+### Exercise 1
+
+Define the **population** in this problem.
+
+```{r sampling-distribution-1}
+question_text(NULL,
+	message = "In our sampling activities, the population is the collection 1,000 identically sized red and white beads in the urn.",
+	answer(NULL, correct = TRUE),
+	allow_retry = FALSE,
+	incorrect = NULL,
+	rows = 6)
+```
+
+### 
+
+The urn is basically a container where we put all the beads in. We will be using the two terms "urn" and "population" interchangeably because they both mean the same thing in this example.
+
+### Exercise 2
+
+Just by counting each bead in the urn, explain how we can answer the question we have.
+
+```{r sampling-distribution-2}
+question_text(NULL,
+	message = "We can answer our question by counting the number of red beads out of the total 1,000 beads in the urn and then computing the proportion of red beads.",
+	answer(NULL, correct = TRUE),
+	allow_retry = FALSE,
+	incorrect = NULL,
+	rows = 6)
+```
+
+### 
+
+We refer to this method as a census which, assuming zero error when counting, will return the **exact** portion of red beads in the urn. However, it can be quite expensive in terms of time, energy and money, or even impossible when the population is large. 
+
+### Exercise 3
+
+In your own words, describe the act of **sampling** and how it relates to our activity with the beads. 
+
+<!-- DK: Bad question! -->
+
+
+```{r sampling-distribution-3}
+question_text(NULL,
+	message = "Sampling is the act of collecting a sample from the population. In our sampling activity, we use the shovels to collect a certain number of beads from the urn.",
+	answer(NULL, correct = TRUE),
+	allow_retry = FALSE,
+	incorrect = NULL,
+	rows = 6)
+```
+
+### 
+
+What if we did not insert a shovel deep enough that only beads in the surface were collected, or what if the white beads are slightly smoother than the red beads that they just kept falling out of the shovel, or what if someone put in some beads before we take another shovel? Similar problems like these will affect the quality of our sample, which will be discussed shortly. 
+
+### Exercise 4
+
+In your own words, define what is necessary for a sample to be **representative** in our sampling activity?
+
+```{r sampling-distribution-4}
+question_text(NULL,
+	message = 'Within a sample, the proportion of the red and white beads need to look "roughly" like the distribution inside the urn.',
+	answer(NULL, correct = TRUE),
+	allow_retry = FALSE,
+	incorrect = NULL,
+	rows = 6)
+```
+
+### 
+
+Consider the case in which we insert the shovel on the surface of the urn and take out a sample of beads that contains 40 red beads and only 10 white beds, can we say that the sample of red and white beads is representative of the beads in the urn? The answer is no. 
+
+<!-- AC: It might be better to go even more extreme to like 45 or 50 red beads. 
+But also I think that it may be better to include some info on what might be in the urn (as currently we are only assuming that the distribution is the same as the urn in the Primer) -->
+
+### Exercise 5
+
+In your own words, define what is necessary for a sample to be **generalizable** in our activity? 
+
+<!-- DK: Bad question! -->
+
+<!-- AC: I changed it to be more specific to our activity. Uhm, please change it back if y'all think this doesn't work.  -->
+
+```{r sampling-distribution-5}
+question_text(NULL,
+	message = "The sample is generalizable if any results based on the sample of 50 beads can generalize to the broader population of 1,000 beads in the urn.",
+	answer(NULL, correct = TRUE),
+	allow_retry = FALSE,
+	incorrect = NULL,
+	rows = 6)
+```
+
+### 
+
+We take a sample and compute the proportion of red beads, which is our guess of the proportion of red beads within the urn. This question considers whether the proportion we just computed from the sample is a "good guess". 
+
+### Exercise 6
+
+In your own words, define **biased sampling**. 
+
+```{r sampling-distribution-6}
+question_text(NULL,
+	message = "Biased sampling occurs if certain individuals or observations in a population have a higher chance of being included in a sample than others.",
+	answer(NULL, correct = TRUE),
+	allow_retry = FALSE,
+	incorrect = NULL,
+	rows = 6)
+```
+
+### 
+
+We can tell that our guess is a good guess by sampling several times and noticing how the results vary slightly around our estimate. Sadly, multiple biased samplings can also give us the same pattern, but obviously, this result is incorrect. 
+
+### Exercise 7
+
+<!-- AC: It might be good to merge this with the previous exercise -->
+
+Provide one example for this problem where the sampling could be **biased**.
+
+```{r sampling-distribution-7}
+question_text(NULL,
+	message = "Had the red beads been much smaller than the white beads, and therefore more prone to falling out of the shovel, our sample would have been biased.",
+	answer(NULL, correct = TRUE),
+	allow_retry = FALSE,
+	incorrect = NULL,
+	rows = 6)
+```
+
+### 
+
+Note that all of the above discussion refers back to our sampling activity and the way we do it. Such small changes in this process can cause lots of changes in the outcome.
+
+### Exercise 8
+
+In your own words, define when a sampling procedure is *random* in this specific problem. 
+
+```{r sampling-distribution-8}
+question_text(NULL,
+	message = "The sampling procedure is random if we sample randomly from the population in an unbiased fashion. In our sampling activity, this would correspond to sufficiently mixing the urn before each use of the shovel and assuring that the red and white beads are identitical save for their differing colours.",
+	answer(NULL, correct = TRUE),
+	allow_retry = FALSE,
+	incorrect = NULL,
+	rows = 6)
+```
+
+### 
+
+How can we tell if the urn is "sufficiently mixed"? Can we ensure that the urn is sufficiently mixed in the same way each round? The answer is no and thus we can never fully assume randomness in our sampling. 
+
+### Exercise 9
+
+<!-- AC: It may be good to call urn at the end so that we can see the tibble develop over the exercises (or assign it to `urn` after everything's done) -->
+
+Create a `urn` variable on the second line that is set to a `tibble()`. Within the `tibble()` set `color` to the combination of `rep("red", 400)` and `rep("white", 600)`.
+
+```{r sampling-distribution-9, exercise = TRUE}
+set.seed(10)
+
+```
+
+```{r sampling-distribution-9-hint-1, eval = FALSE}
+set.seed(10)
+urn <- tibble(... = c(rep("...", ...), 
+                        rep("...", ...)))
+```
+
+```{r sampling-distribution-9-test, include = FALSE}
+set.seed(10)
+urn <- tibble(color = c(rep("red", 400), 
+                        rep("white", 600)))
+```
+
+### 
+
+`set.seed()` ensures that the beads in our virtual urn are always in the same order. This ensures that the figures in the book match their written descriptions. We want 40% of the beads to be red. The `rep()` function will repeat the first argument a number of times specified by the second argument. We then combine our 400 red beads and 600 white beads using `c()`.
+
+### Exercise 10
+
+With the `urn` variable start a pipe into `sample_frac()`.
+
+```{r sampling-distribution-10, exercise = TRUE}
+
+```
+
+<button onclick = "transfer_code(this)">Copy previous code</button>
+
+```{r sampling-distribution-10-hint-1, eval = FALSE}
+urn <- ... |>
+          sample_frac()
+```
+
+```{r sampling-distribution-10-test, include = FALSE}
+urn <- tibble(color = c(rep("red", 400), 
+                        rep("white", 600))) |> 
+  sample_frac()
+```
+
+### 
+
+`sample_frac()` keeps all the rows in the tibble but rearranges their order. We don't need to do this. A virtual urn does not care about the order of the beads. But we find it aesthetically pleasing to mix them up.
+
+### Exercise 11
+
+Finish the pipe with `mutate()` and set `bead_ID` to 1 through 1000.
+
+```{r sampling-distribution-11, exercise = TRUE}
+
+```
+
+<button onclick = "transfer_code(this)">Copy previous code</button>
+
+```{r sampling-distribution-11-hint-1, eval = FALSE}
+urn <- ... |>
+          mutate(... = 1:1000)
+```
+
+```{r sampling-distribution-11-test, include = FALSE}
+urn <- tibble(color = c(rep("red", 400), 
+                        rep("white", 600))) |> 
+  sample_frac() |> 
+  mutate(bead_ID = 1:1000)
+```
+
+### 
+
+The first variable `bead_ID` is used as an identification variable. None of the beads in the actual urn are marked with numbers. The second variable `color` indicates whether a particular virtual bead is red or white.
+
+### Exercise 12
+
+Run the command `slice_sample()` with the first argument is `urn` and the second argument is `n = 1`. Hit "Run Code"
+
+```{r sampling-distribution-12, exercise = TRUE}
+
+```
+
+```{r sampling-distribution-12-hint-1, eval = FALSE}
+slice_sample(..., ... = 1)
+```
+
+```{r sampling-distribution-12-test, include = FALSE}
+slice_sample(urn, n = 1)
+```
+
+### 
+
+The `slice_sample()` function is like the shovel in real sampling in which it goes into the `urn` and takes out a desired number of samples. In this case, as we set `n` equals to 1, the output creates a 1x1 tibble.
+
+### Exercise 13
+
+Run the above command again, but this time change `n` to `10`. Hit "Run Code"
+
+```{r sampling-distribution-13, exercise = TRUE}
+
+```
+
+<button onclick = "transfer_code(this)">Copy previous code</button>
+
+```{r sampling-distribution-13-hint-1, eval = FALSE}
+slice_sample(..., ... = 10)
+```
+
+```{r sampling-distribution-13-test, include = FALSE}
+slice_sample(urn, n = 1)
+```
+
+### 
+
+Setting `n` equal 10 means that we want to take a sample of 10 beads from the `urn` and thus it will return a 10x1 tibble. Note that each time we run this command, we always get a different tibble, this is exactly similar to inserting the shovel into the real urn to take out samples several times.
+
+### Exercise 14
+
+To simulate the process of real-world sampling, let’s take a sample of 50 beads from our virtual urn. To do so, create a `tibble()` that has one variable `trial_ID` that takes on the values 1 to 1000.
+
+```{r sampling-distribution-14, exercise = TRUE}
+
+```
+
+```{r sampling-distribution-14-hint-1, eval = FALSE}
+tibble(trial_ID = ...)
+```
+
+```{r sampling-distribution-14-test, include = FALSE}
+tibble(trial_ID = 1:1000)
+```
+
+### 
+
+By this we are actually creating 1,000 virtual urns that we can take the sample from. For each urn, we sampling to get 50 beads and calculate the proportion of red beads per each sample. Note that if we conduct 10,000 trials as in [Chapter 3](https://ppbds.github.io/primer/sampling.html#shovel-1000-times), we will notice some extreme values (can be much higher or lower) of the proportion of red beads. 
+
+
+### Exercise 15
+
+<!-- DK: Split into 2 or 3 questions. Before creating the tibble, have a question which does slice_sample(urn, n = 1). And then one which does slice_sample(urn, n = 10).  Highlight that slice_sample(urn, n = 10) returns a shovel. DONE-->
+
+Now pipe your results to the function `mutate()` to create the variable `shovel`, which is set to the function `map()`. The first argument to `map()` is `trial_ID`. The second argument is `slice_sample(urn, n = 50)`
+
+```{r sampling-distribution-15, exercise = TRUE}
+
+```
+
+<button onclick = "transfer_code(this)">Copy previous code</button>
+
+```{r sampling-distribution-15-hint-1, eval = FALSE}
+... |> 
+  mutate(shovel = map(..., ~ ...))
+```
+
+```{r sampling-distribution-15-test, include = FALSE}
+tibble(trial_ID = 1:1000) |> 
+  mutate(shovel = map(trial_ID, ~ slice_sample(urn, n = 50)))
+```
+
+### 
+
+The `slice_sample()` helps us take a sample of 50 beads from the urn, we then use the `map()` function to map that result to each virtual urn we created.
+
+### Exercise 16
+
+Continue your pipe with `mutate()` to create the variable `numb_red`. Set `numb_red` to the function `map_int()`. The first argument to `map_int()` should be `shovel`. The second argument should take the `sum()` of where `.$color` is equal to `"red"`.
+
+
+```{r sampling-distribution-16, exercise = TRUE}
+
+```
+
+<button onclick = "transfer_code(this)">Copy previous code</button>
+
+```{r sampling-distribution-16-hint-1, eval = FALSE}
+... |> 
+  mutate(... = map_int(..., ~...))
+```
+
+```{r sampling-distribution-16-hint-2, eval = FALSE}
+... |> 
+  mutate(... = map_int(..., ~ sum(.$color == "red")))
+```
+
+```{r sampling-distribution-16-test, include = FALSE}
+tibble(trial_ID = 1:1000) |> 
+  mutate(shovel = map(trial_ID, ~ slice_sample(urn, n = 50))) |> 
+  mutate(numb_red = map_int(shovel, ~sum(.$color == "red")))
+```
+
+### 
+
+R evaluates if `color == "red"`, and treats `TRUE` values like the number `1` and `FALSE` values like the number `0`. So summing the number of `TRUE`s and `FALSE`s is equivalent to summing `1`’s and `0`’s. In the end, this operation counts the number of beads where `color` equals `“red”`.
+
+### Exercise 17
+
+Use `mutate()` one last time to create the variable `prop_red`. Set `prop_red` to `numb_red` divided by the sample size (in this exercise we are using a set sample size of 50).
+
+```{r sampling-distribution-17, exercise = TRUE}
+
+```
+
+<button onclick = "transfer_code(this)">Copy previous code</button>
+
+```{r sampling-distribution-17-hint-1, eval = FALSE}
+... |> 
+   mutate(prop_red = ... / ...)
+```
+
+```{r sampling-distribution-17-test, include = FALSE}
+tibble(trial_ID = 1:1000) |> 
+  mutate(shovel = map(trial_ID, ~ slice_sample(urn, n = 50))) |> 
+  mutate(numb_red = map_int(shovel, ~sum(.$color == "red"))) |> 
+  mutate(prop_red = numb_red / 50)
+```
+
+### 
+
+`prop_red` estimates our proportion of red beads in the urn. We will have 1,000 proportions of red beads, which we refer to as a sampling distribution.
+
+### Exercise 18
+
+Behind the scenes, we have assigned the results of that pipe to a new object: `virtual_samples`. Type `virtual_samples` and hit "Run Code."
+
+```{r sampling-distribution-18, exercise = TRUE}
+
+```
+
+```{r sampling-distribution-18-hint-1, eval = FALSE}
+virtual_samples
+```
+
+```{r sampling-distribution-18-test, include = FALSE}
+virtual_samples
+```
+
+### 
+
+Recall the difference between taking 1,000 trials versus 10,000 trials, as the number of trials increases, the sample mean will tend to get closer to the population mean, but it also makes room for the occurrence of rare and extreme values.
+
+### Exercise 19
+
+Now start a pipe with `virtual_samples`. Use `ggplot()` to map `prop_red` to the x-axis.
+
+```{r sampling-distribution-19, exercise = TRUE}
+
+```
+
+```{r sampling-distribution-19-hint-1, eval = FALSE}
+virtual_samples |> 
+  ggplot(aes(...))
+```
+
+```{r sampling-distribution-19-test, include = FALSE}
+virtual_samples |> 
+  ggplot(aes(x = prop_red))
+```
+
+### Exercise 20
+
+Add the layer `geom_histogram()` to create a histogram of our data.
+
+```{r sampling-distribution-20, exercise = TRUE}
+
+```
+
+<button onclick = "transfer_code(this)">Copy previous code</button>
+
+```{r sampling-distribution-20-hint-1, eval = FALSE}
+... +
+  geom_histogram()
+```
+
+```{r sampling-distribution-20-test, include = FALSE}
+virtual_samples |> 
+  ggplot(aes(x = prop_red)) + 
+  geom_histogram()
+```
+
+### Exercise 21
+
+Within `geom_histrogram()` set `binwidth` to .02, `boundary` to .4, and `color` to "white".
+
+```{r sampling-distribution-21, exercise = TRUE}
+
+```
+
+<button onclick = "transfer_code(this)">Copy previous code</button>
+
+```{r sampling-distribution-21-hint-1, eval = FALSE}
+... +
+  geom_histrogram(binwidth = ..., boundary = ..., color = ...)
+```
+
+```{r sampling-distribution-21-test, include = FALSE}
+virtual_samples |> 
+ggplot(aes(x = prop_red)) +
+  geom_histogram(binwidth = 0.02, 
+                 boundary = 0.4, 
+                 color = "white")
+```
+
+### 
+
+Recall that `p` is equal to the proportion of beads which are red in each sample.
+
+### Exercise 22
+
+To finish, use `labs()` to give your graph the appropriate title and axis labels. See **hint** for guidance to create the symbol $\hat{p}$.
+
+```{r sampling-distribution-22, exercise = TRUE}
+
+```
+
+<button onclick = "transfer_code(this)">Copy previous code</button>
+
+Reminder: This is what your plot should look like. 
+
+```{r}
+plot_vs
+```
+
+```{r sampling-distribution-22-hint-1, eval = FALSE}
+Within labs(), set x to expression(hat(p))
+```
+
+```{r sampling-distribution-22-test, include = FALSE}
+virtual_samples |> 
+ggplot(aes(x = prop_red)) +
+  geom_histogram(binwidth = 0.01, 
+                 boundary = 0.4, 
+                 color = "white") +
+  labs(x = expression(hat(p)),
+       y = "Count",
+       title = "Distribution of 1,000 proportions red") 
+```
+
+### 
+
+This visualization allows us to see how our results differed between our tactile and virtual urn results. As we can see, there is some variation between our results. This is not a cause for concern, as there is always expected sampling variation between results.
+
+
+## Standard error
+### 
+
+<!-- MT: add questions about the definitions/important concepts of standard error -->
+
+Standard errors (SE) quantify the effect of sampling variation on our estimates. In other words, they quantify how much we can expect the calculated proportions of a shovel’s beads that are red to vary from one sample to another sample to another sample, and so on. As a general rule, as sample size increases, the standard error decreases.
+
+### 
+
+In this section, we will create the following plot that displays different standard deviations of red bead proportions for 100 different shovel sizes.
+
+```{r}
+shovel_p <- shovels_100 |>
+ ggplot(aes(x = shovel_size, y = st_dev_p_hat)) +
+ geom_point() +
+ labs(title = "Sampling Variation",
+      subtitle = "Larger samples have less variation",
+      x = "Shovel size",
+      y = "Standard deviation of the proportion red")
+
+shovel_p
+```
+
+### Exercise 1
+
+In your own words, define *standard error*.
+
+```{r standard-error-1}
+question_text(NULL,
+	message = "The standard error is the standard deviation of a sample statistic (aka point estimate), such as the proportion.",
+	answer(NULL, correct = TRUE),
+	allow_retry = FALSE,
+	incorrect = NULL,
+	rows = 6)
+```
+
+### 
+
+The standard error equals the standard deviation of the data divided by the square root of the sample size. Accordingly, the standard error is inversely proportional to the square root of the sample size. The larger the sample size, the smaller the standard error.
+
+### Exercise 2
+
+<!-- AC: In both the example graph and the graph we'll make, we only do 100 trials, not 1000 -->
+
+Run `expand_grid()` with two arguments. The first argument is `trial_ID = c(1:100)`. The second argument is `shovel_size = c(1:100)`. We need a hundred trials to draw reasonable conclusions about what happens when the size of the shovel varies between 1 and 100.
+
+
+```{r standard-error-2, exercise = TRUE}
+
+```
+
+```{r standard-error-2-hint-1, eval = FALSE}
+expand_grid(trial_ID = ..., shovel_size = ...)
+```
+
+```{r standard-error-2-test, include = FALSE}
+expand_grid(trial_ID = c(1:100), 
+            shovel_size = c(1:100))
+```
+
+### 
+
+The resulting tibble has 10,000 rows because 100 trials times 100 shovel sizes equals 10,000. In other words, for each shovel size, we will perform 100 simulations.
+
+### Exercise 3
+
+Continue the pipe with `mutate()`, creating a new column called `shovel`. Set `shovel` equal to a `map()` function, passing in `shovel_size` as the first argument, and the `slice_sample()` function as the second argument. Within `slice_sample()`, the first argument should be `urn` (the data we want to sample from), and then set `n` equal to `.` (we want to pass in the `shovel_size` using `map()`). Don't forget the `~`.
+
+
+```{r standard-error-3, exercise = TRUE}
+
+```
+
+<button onclick = "transfer_code(this)">Copy previous code</button>
+
+```{r standard-error-3-hint-1, eval = FALSE}
+... |>
+  mutate(shovel = map(..., ~ ... ))
+```
+
+```{r standard-error-3-hint-2, eval = FALSE}
+... |>
+  mutate(shovel = map(... , ~ slice_sample(..., n = ...)))
+```
+
+```{r standard-error-3-test, include = FALSE}
+expand_grid(trial_ID = c(1:100), 
+            shovel_size = c(1:100)) |> 
+  mutate(shovel = map(shovel_size, ~ slice_sample(urn, n = .)))
+```
+
+### 
+
+In the second line, we use `shovel_size` rather than `trial_ID` as the mapping variable since we can no longer hard code the shovel size into the call to `slice_sample()`.
+
+### Exercise 4
+
+Continue your pipe with `mutate()` to create the variable `numb_red`, which will tells us the number of red beads present. Set `numb_red` to the function `map_int()`. The first argument to `map_int()` should be `shovel`. The second argument should take the `sum()` of where the column `color` of `shovel` is equal to red.
+
+
+```{r standard-error-4, exercise = TRUE}
+
+```
+
+<button onclick = "transfer_code(this)">Copy previous code</button>
+
+```{r standard-error-4-hint-1, eval = FALSE}
+... |> 
+  mutate(... = map_int(..., ~ ...))
+```
+
+```{r standard-error-4-hint-2, eval = FALSE}
+... |> 
+  mutate(... = map_int(..., ~ sum(.$color == "red")))
+```
+
+```{r standard-error-4-test, include = FALSE}
+expand_grid(trial_ID = c(1:100),  
+            shovel_size = c(1:100)) |> 
+  mutate(shovel = map(shovel_size, ~ slice_sample(urn, n = .))) |> 
+  mutate(numb_red = map_int(shovel, ~ sum(.$color == "red")))
+```
+
+### 
+
+The purpose of setting the `shovel_size` from 1 to 100 is that we want to illustrate the relationship between the sample size and the sample variation. Specifically, as the sample size increases, the sample-to-sample variation decreases, and our guesses at the true proportion of the urn’s beads that are red get more precise. 
+
+### Exercise 5
+
+Continue your pipe from above, using `mutate()` to create one final column called `prop_red` which represents the proportion of red beads in a sample. Set `prop_red` to `numb_red` divided by the `shovel_size` column. 
+
+```{r standard-error-5, exercise = TRUE}
+
+```
+
+<button onclick = "transfer_code(this)">Copy previous code</button>
+
+```{r standard-error-5-hint-1, eval = FALSE}
+... |>
+  mutate(prop_red = ... / ...)
+```
+
+```{r standard-error-5-test, include = FALSE}
+expand_grid(trial_ID = c(1:100), 
+            shovel_size = c(1:100)) |> 
+  mutate(shovel = map(shovel_size, ~ slice_sample(urn, n = .))) |> 
+  mutate(numb_red = map_int(shovel, ~ sum(.$color == "red"))) |> 
+  mutate(prop_red = numb_red / shovel_size)
+```
+
+### 
+
+Why does variation decrease as sample size increases? If we use a large sample size like 100 or 500, our sample is much more representative of the population. As a result, the proportion red in our sample ($\hat{p}$) will be closer to the true population proportion ($p$).
+
+### Exercise 6
+
+Continue the pipe with `summarize()` to create a new column named `st_dev_p_hat` which is equal to the standard deviation of `prop_red`. (`sd()` calculates standard deviation). The second argument is `.by` equal `shovel_size` to group the `st_dev_p_hat` based on the shovel size. 
+ 
+```{r standard-error-6, exercise = TRUE}
+
+```
+
+<button onclick = "transfer_code(this)">Copy previous code</button>
+
+```{r standard-error-6-hint-1, eval = FALSE}
+... |> 
+  summarize(st_dev_p_hat = sd(...))
+```
+
+```{r standard-error-6-test, include = FALSE}
+expand_grid(trial_ID = c(1:100), 
+            shovel_size = c(1:100)) |> 
+  mutate(shovel = map(shovel_size, ~ slice_sample(urn, n = .))) |> 
+  mutate(numb_red = map_int(shovel, ~ sum(.$color == "red"))) |> 
+  mutate(prop_red = numb_red / shovel_size) |> 
+  summarize(st_dev_p_hat = sd(prop_red),
+            .by = shovel_size)
+```
+
+
+### 
+
+<!-- DK: After you have finished a pipe which creates X, the knowledge drop should give an overview of what X is and why we care. Also, the next question should be "Behind the scenes, we have assigned the result of the pipe to `cool-object`. Type `cool-object` and hit "Run Code." -->
+<!-- I think it's better to keep the same name as `shovels_100` not only because we dont have to change every exercise that use the `shovels_100` but also the `shovels_100` makes more sense than the random name `cool-object`. -->
+
+This will return a tibble with 2 columns, `shovel_size` and `st_dev_p_hat`, with 100 rows associated to 100 shovel sizes. By looking at the output we can tell that as the shovel size increases, the standard deviation decreases.
+
+### Exercise 7
+
+Behind the scenes, we have assigned the result of the pipe to `shovels_100`. Type `shovels_100` and hit "Run Code."
+
+```{r standard-error-7, exercise = TRUE}
+
+```
+
+```{r standard-error-7-hint-1, eval = FALSE}
+shovels_100
+```
+
+```{r standard-error-7-test, include = FALSE}
+shovels_100 
+```
+
+### 
+
+The Central Limit Theorem states, more or less, that when sample means are based on larger and larger sample sizes, the sampling distribution of these sample means becomes both narrower and more bell-shaped. In other words, the sampling distribution increasingly follows a normal distribution and the variation of this sampling distribution gets smaller, meaning smaller standard errors. 
+
+### Exercise 8
+
+Start a new pipe from `shovels_100`. Use `ggplot()`to map `shovel_size` to the x-axis and `st_dev_p_hat` to the y axis. Also, add the layer `geom_point()` to create a scatterplot.
+
+```{r standard-error-8, exercise = TRUE}
+
+```
+
+```{r standard-error-8-hint-1, eval = FALSE}
+shovels_100 |> 
+  ggplot(aes(x = ..., y = ...)) + 
+  geom_point()
+```
+
+```{r standard-error-8-test, include = FALSE}
+shovels_100 |> 
+  ggplot(aes(x = shovel_size, y = st_dev_p_hat)) + 
+  geom_point()
+```
+
+### 
+
+Each point in the graph is the shovel size and its associated standard deviation of the proportion red. Note that when the shovel size is 1, the standard deviation is highest, and the standard deviation decreases as the shovel size increases, as we saw in the output above.
+
+### Exercise 9
+
+Now use `labs()` to label the x-axis "Shovel size" and the y-axis 
+"Standard deviation of the proportion red". You should also provide a title and subtitle.
+
+```{r standard-error-9, exercise = TRUE}
+
+```
+
+<button onclick = "transfer_code(this)">Copy previous code</button>
+
+Reminder: This is what your plot should look like.
+
+```{r}
+shovel_p
+```
+
+```{r standard-error-9-hint-1, eval = FALSE}
+... +
+   labs(title = "Sampling Variation",
+      subtitle = "Larger samples have less variation",
+      x = "Shovel size",
+      y = "Standard deviation of the proportion red")
+```
+
+```{r standard-error-9-test, include = FALSE}
+shovels_100 |> 
+  ggplot(aes(x = shovel_size, y = st_dev_p_hat)) + 
+  geom_point() + 
+  labs(title = "Sampling Variation",
+      subtitle = "Larger samples have less variation",
+      x = "Shovel size",
+      y = "Standard deviation of the proportion red")
+```
+
+### 
+
+This is the power of running many analyses at once using map functions and list columns: before, we could tell that the standard deviation was decreasing as the shovel size increased, but when only looking at shovel sizes of 25, 50, and 100, it wasn’t clear how quickly it was decreasing.
+
+### Exercise 10
+
+In one sentence, describe the relationship between standard error and the sample size.
+
+
+```{r standard-error-10}
+question_text(NULL,
+	message = "The standard error of an estimate decreases at the rate of the square root of the sample size.",
+	answer(NULL, correct = TRUE),
+	allow_retry = FALSE,
+	incorrect = NULL,
+	rows = 6)
+```
+
+<!-- Need a couple of questions which highlight what we really care about:  -->
+
+<!-- **Central lesson: Your posterior for (almost) any population parameter is normally distributed with a mean equal to the sample mean and a standard deviation equal to the standard error. And that means that your posterior has the same shape as the sampling distribution.** -->
+
+
+<!-- NOTES -->
+
+<!-- Question: There are 1,00 beads in the urn. How many are red? -->
+
+## Wisdom
+### 
+
+*The only true wisdom is in knowing you know nothing.* - Socrates
+
+Our question:
+
+> *If you scoop a certain number of beads from the urn, what proportion of your scoop will be red beads?*
+
+### Exercise 1
+
+In your own words, describe the key components of Wisdom when working on a data science problem.
+
+```{r wisdom-1}
+question_text(NULL,
+	message = "Wisdom requires the creation of a Preceptor Table, an examination of our data, and a determination, using the concept of validity, as to whether or not we can (reasonably!) assume that the two come from the same population.",
+	answer(NULL, correct = TRUE),
+	allow_retry = FALSE,
+	incorrect = NULL,
+	rows = 6)
+```
+
+### 
+
+The central problem for Wisdom is: Can we use data from our shovel samples of beads to predict the proportion of red beads in the entire urn, as described in our Preceptor Table of all possible beads?
+
+### Exercise 2
+
+Create a Github repo called `urn_beads`. Make sure to click the "Add a README file" check box.
+
+Connect the repo to a project on your computer using `File -> New Folder from Git ...`. Make sure to select the "Open in a new window" box. 
+
+You need two Positon windows: this one for running the tutorial and the one you just created for writing your code and interacting with the Console.
+
+Select `File -> New File -> Quarto Document ...`. Provide a title -- `"Proportion of Red Beads"` -- and an author (you). Render the document and save it as `urn_simulation.qmd`.
+
+Create a `.gitignore` file with `*_files` on the first line and then a blank line. Save and push.
+
+In the Console, run:
+
+```         
+show_file(".gitignore")
+```
+
+If that fails, it is probably because you have not yet loaded `library(tutorial.helpers)` in the Console.
+
+CP/CR.
+
+```{r wisdom-2}
+question_text(NULL,
+	answer(NULL, correct = TRUE),
+	allow_retry = TRUE,
+	try_again_button = "Edit Answer",
+	incorrect = NULL,
+	rows = 3)
+```
+
+### 
+
+Professionals keep their data science work in the cloud because laptops fail.
+
+### Exercise 3
+
+In your QMD, put `library(tidyverse)` in a new code chunk. Render the file.
+
+Notice that the file does not look good because the code is visible and there are annoying messages. To take care of this, add `#| message: false` to remove all the messages in this `setup` chunk. Also add the following to the YAML header to remove all code echos from the HTML:
+
+```         
+execute: 
+  echo: false
+```
+
+In the Console, run:
+
+```         
+show_file("urn_simulation.qmd", chunk = "Last")
+```
+
+CP/CR.
+
+```{r wisdom-3}
+question_text(NULL,
+	answer(NULL, correct = TRUE),
+	allow_retry = TRUE,
+	try_again_button = "Edit Answer",
+	incorrect = NULL,
+	rows = 6)
+```
+
+### 
+
+Render again. Everything looks nice, albeit empty, because we have added code to make the file look better and more professional.
+
+### Exercise 4
+
+Place your cursor in the QMD file on the `library(tidyverse)` line. Use `Cmd/Ctrl + Enter` to execute that line.
+
+Note that this causes `library(tidyverse)` to be copied down to the Console and then executed. 
+
+CP/CR.
+
+```{r wisdom-4}
+question_text(NULL,
+	answer(NULL, correct = TRUE),
+	allow_retry = TRUE,
+	try_again_button = "Edit Answer",
+	incorrect = NULL,
+	rows = 3)
+```
+
+###
+
+In this case, the data comes from taking a random sample of beads from a large mixed urn in the factory. Each bead is either red or white.
+
+### Exercise 5
+
+In this tutorial, we generate the urn data directly in R.
+Run the following code to create the `urn` tibble with 400 red beads and 600 white beads.
+
+`urn <- tibble(color = c(rep("red", 400), rep("white", 600)))`
+
+```{r wisdom-5, exercise = TRUE}
+
+```
+
+```{r wisdom-5-hint-1, eval = FALSE}
+urn <- tibble(color = c(rep("red", 400), rep("white", 600)))
+```
+
+```{r wisdom-5-test, include = FALSE}
+urn <- tibble(color = c(rep("red", 400), rep("white", 600)))
+```
+
+### 
+
+A version of the data from the simulated urn is available in the `urn` tibble.
+
+### Exercise 6
+
+Run the code below to inspect the data contained in the `shovel` tibble.
+
+```{r wisdom-6, exercise = TRUE}
+
+```
+
+```{r wisdom-6-test, include = FALSE}
+shovel
+```
+
+###
+
+Always inspect your data immediately after creating it. Checking that your data matches your expectations helps identify potential problems early and ensures that subsequent analyses are valid.
+
+### Exercise 7
+
+Define a causal effect.
+
+```{r wisdom-7}
+question_text(NULL,
+	message = "A causal effect is the difference between two potential outcomes.",
+	answer(NULL, correct = TRUE),
+	allow_retry = FALSE,
+	incorrect = NULL,
+	rows = 6)
+```
+
+### 
+
+According to the Rubin Causal Model, there must be two (or more) potential outcomes for any discussion of causation to make sense. This is simplest to discuss when the treatment only has two different values, thereby generating only two potential outcomes. 
+
+### Exercise 8
+
+What is the fundamental problem of causal inference?
+
+```{r wisdom-8}
+question_text(NULL,
+	message = "The fundamental problem of causal inference is that we can only observe one potential outcome.",
+	answer(NULL, correct = TRUE),
+	allow_retry = FALSE,
+	incorrect = NULL,
+	rows = 6)
+```
+
+### 
+
+If the treatment variable is continuous (like a lottery payment), then there are lots and lots of potential outcomes, one for each possible value of the treatment variable. 
+
+### Exercise 9
+
+Sampling is the broad topic of this tutorial. Given that topic, which variable in `urn` should we use as our outcome variable?
+
+```{r wisdom-9}
+question_text(NULL,
+	message = "The outcome variable we will use is `color`, which indicates whether each bead in the urn is red or white.",
+	answer(NULL, correct = TRUE),
+	allow_retry = FALSE,
+	incorrect = NULL,
+	rows = 2)
+```
+
+### 
+
+We will use `color` as our outcome variable.
+
+```{r}
+urn |> 
+  ggplot(aes(x = color)) +
+  geom_bar(fill = "red", alpha = 0.7) +
+  labs(
+    title = "Distribution of Bead Colors in the Urn",
+    subtitle = "There are more white beads than red beads.",
+    x = "Bead Color",
+    y = "Count"
+  ) +
+  theme_minimal()
+```
+
+### Exercise 10
+
+Let's imagine a brand new variable which **does not exists** in the data. This variable should be binary, meaning that it only takes on one of two values. It should also, at least in theory, be manipulable. In other words, if the value of the variable is "3," or whatever, then it generates one potential outcome and if it is "9," or whatever, it generates another potential outcome.
+
+
+Describe this imaginary variable and how might we manipulate its value.
+
+```{r wisdom-10}
+question_text(NULL,
+	message = "Imagine a variable called `coating` which is `1` if a bead is coated with a slippery substance and `0` if it is not. We could manipulate this by deciding which beads to coat, then see if coating changes the likelihood of a bead being scooped up in the sample. This sets up a treatment group (`coating = 1`) and a control group (`coating = 0`).",
+	answer(NULL, correct = TRUE),
+	allow_retry = FALSE,
+	incorrect = NULL,
+	rows = 6)
+```
+
+### 
+
+Any data set can be used to construct a causal model as long as there is at least one covariate that we can, at least in theory, manipulate. It does not matter whether or not anyone did, in fact, manipulate it. 
+
+### Exercise 11
+
+Given our (imaginary) treatment variable `coating`, how many potential outcomes are there for each bead? Explain why.
+
+```{r wisdom-11}
+question_text(NULL,
+	message = "There are two potential outcomes because the treatment variable `coating` takes on two possible values: `1` (bead is coated) and `0` (bead is not coated). Each bead could have an outcome if it is coated and an outcome if it is not coated.",
+	answer(NULL, correct = TRUE),
+	allow_retry = FALSE,
+	incorrect = NULL,
+	rows = 6)
+```
+
+### 
+
+The same data set can be used to create, separately, lots and lots of different models, both causal and predictive. We can just use different outcome variables and/or specify different treatment variables. This is a *conceptual* framework we apply to the data. It is never inherent in the data itself.
+
+### Exercise 12
+
+In a few sentences, specify the two different values for the imaginary treatment variable `coating`, for a single bead, guess at the potential outcomes which would result, and then determine the causal effect for that bead given those guesses.
+
+```{r wisdom-12}
+question_text(NULL,
+	message = "For a given bead, the treatment variable `coating` can be `1` (coated) or `0` (not coated). If coated, the chance of being sampled might be 0.3; if not coated, it might be 0.1. The causal effect is 0.3 - 0.1 = 0.2 for this bead.",
+	answer(NULL, correct = TRUE),
+	allow_retry = FALSE,
+	incorrect = NULL,
+	rows = 6)
+```
+
+### 
+
+A causal effect is defined as the *difference* between two potential outcomes. Keep two things in mind.
+
+First, *difference* does not necessarily mean *subtraction*. Many potential outcome are not numbers. For example, it makes no sense to subtract a potential outcome, like who you would vote for if you saw a Facebook ad, from another potential outcome, like who you vote for if you did not see the ad.
+
+Second, even in the case of numeric outcomes, you can’t simply say the effect is 10 without specifying the order of subtraction, although there is, perhaps, a default sense in which the causal effect is defined as potential outcome under treatment minus potential outcome under control.
+
+### Exercise 13
+
+Let's consider a predictive model. Which variable in `urn` do you think might have an important connection to `color`? 
+
+```{r wisdom-13}
+question_text(NULL,
+	message = "The size of the bead might be an important covariate to explore, as it could affect the likelihood of being sampled.",
+	answer(NULL, correct = TRUE),
+	allow_retry = FALSE,
+	incorrect = NULL,
+	rows = 2)
+```
+
+### 
+
+With a predictive model, each individual unit has only one observed outcome. There are no two potential outcomes because none of the covariates are treated as treatment variables. Instead, all covariates are assumed to be "fixed."
+
+Predictive models have no "treatments"—only covariates.
+
+### Exercise 14
+
+Specify two different groups of **beads** which have different values for **size** and which might have different average values for the color.  
+
+```{r wisdom-14}
+question_text(NULL,
+	message = "One group with size 'small' and another with size 'large.' These groups might have different average values for the outcome variable `color` (for example, small beads may be more likely to be red).",
+	answer(NULL, correct = TRUE),
+	allow_retry = FALSE,
+	incorrect = NULL,
+	rows = 6)
+```
+
+### 
+
+In predictive models, do not use words like "cause," "influence," "impact," or anything else which suggests causation. The best phrasing is in terms of "differences" between groups of units with different values for a covariate of interest.
+
+Any causal connection means exploring the *within row* difference between two potential outcomes. There's no need to consider other rows.
+
+### Exercise 15
+
+Write a predictive question which connects the outcome variable `color` to `size`, the covariate of interest.
+
+```{r wisdom-15}
+question_text(NULL,
+	message = "What is the difference in the proportion of red beads between small and large beads?",
+	answer(NULL, correct = TRUE),
+	allow_retry = FALSE,
+	incorrect = NULL,
+	rows = 6)
+```
+
+### 
+
+This is the first version of the question. We will now create a Preceptor Table to answer the question. We may then revise the question given complexities discovered in the data. We then update the question and the Preceptor Table. And so on.
+
+### Exercise 16
+
+Define a Preceptor Table.
+
+```{r wisdom-16}
+question_text(NULL,
+	message = "A Preceptor Table is the smallest possible table of data with rows and columns such that, if there is no missing data, we can easily calculate the quantity of interest.",
+	answer(NULL, correct = TRUE),
+	allow_retry = FALSE,
+	incorrect = NULL,
+	rows = 6)
+```
+
+### 
+
+The Preceptor Table does not include all the covariates which you will eventually include in your model. It only includes covariates which you need to answer your question.
+
+### Exercise 17
+
+Describe the key components of Preceptor Tables in general, without worrying about this specific problem. Use words like "units," "outcomes," and "covariates."
+
+```{r wisdom-17}
+question_text(NULL,
+	message = "The rows of the Preceptor Table are the units. The outcome is at least one of the columns. If the problem is causal, there will be at least two (potential) outcome columns. The other columns are covariates. If the problem is causal, at least one of the covariates will considered a treatment.",
+	answer(NULL, correct = TRUE),
+	allow_retry = FALSE,
+	incorrect = NULL,
+	rows = 6)
+```
+
+### 
+
+This problem is predictive, so we are interested in how the outcome (the proportion of red beads) changes when we compare scoops (shovels) of different sizes taken from the urn.
+
+### Exercise 18
+
+What are the units for this problem?
+
+```{r wisdom-18}
+question_text(NULL,
+	message = "The units are individual beads in the urn that are scooped up by the shovel",
+	answer(NULL, correct = TRUE),
+	allow_retry = FALSE,
+	incorrect = NULL,
+	rows = 6)
+```
+
+### 
+
+Specifying the Preceptor Table forces us to think clearly about the units and outcomes implied by the question. The resulting discussion sometimes leads us to modify the question with which we started. No data science project follows a single direction. We always backtrack. There is always dialogue.
+
+### Exercise 19
+
+What is the outcome variable for this problem?
+
+```{r wisdom-19}
+question_text(NULL,
+	message = "The outcome variable for this problem is the color of each bead (whether it is red or white).",
+	answer(NULL, correct = TRUE),
+	allow_retry = FALSE,
+	incorrect = NULL,
+	rows = 6)
+```
+
+### 
+
+The outcome variable we truly care about is often not exactly what’s available in our data. In practice, we work with what we have—not always what we want. This is a common part of real-world data science.
+
+
+### Exercise 20
+
+What is a covariate which you think might be useful for this problem, regardless of whether or not it might be included in the data?
+
+```{r wisdom-20}
+question_text(NULL,
+	message = "The position of a bead in the urn (for example, top vs. bottom) might be a useful covariate, as it could affect the chance of being sampled.",
+	answer(NULL, correct = TRUE),
+	allow_retry = FALSE,
+	incorrect = NULL,
+	rows = 6)
+```
+
+### 
+
+The term "covariates" is used in at least three ways in data science. First, it is all the variables which might be useful, regardless of whether or not we have the data. Second, it is all the variables for which we have data. Third, it is the set of variables in the data which we end up using in the model.
+
+### Exercise 21
+
+What are the treatments, if any, for this problem?
+
+```{r wisdom-21}
+question_text(NULL,
+	message = "There are no treatments in this problem, since we are only predicting the proportion of red beads in the urn.",
+	answer(NULL, correct = TRUE),
+	allow_retry = FALSE,
+	incorrect = NULL,
+	rows = 6)
+```
+
+### 
+
+Remember that a treatment is just another covariate which, for the purposes of this specific problem, we are assuming can be manipulated, thereby, creating two or more different potential outcomes for each unit.
+
+### Exercise 22
+
+What moment in time does the Preceptor Table refer to?
+
+```{r wisdom-22}
+question_text(NULL,
+	message = "The Preceptor Table refers to the state of all beads in the urn at the moment the sample is taken.",
+	answer(NULL, correct = TRUE),
+	allow_retry = FALSE,
+	incorrect = NULL,
+	rows = 6)
+```
+
+### 
+
+A Preceptor Table can never really refer to an exact instant in time since nothing is instantaneous in this fallen world.
+
+In almost all practical problems, the data was gathered at a time other than that to which the Preceptor Table refers.
+
+```{r}
+shovels_100 |>
+  ggplot(aes(x = shovel_size, y = st_dev_p_hat)) +
+  geom_line() +
+  labs(
+    title = "Estimate Stability Improves With Larger Shovel Size",
+    subtitle = "Standard deviation of red proportion decreases as shovel size increases",
+    x = "Shovel Size (Number of Beads Sampled)",
+    y = "Standard Deviation of Proportion Red"
+  ) +
+  theme_minimal()
+```
+
+> *You can never look at the data too much. -- Mark Engerman*
+
+### Exercise 23
+
+Describe in words the Preceptor Table for this problem.
+
+```{r wisdom-23}
+question_text(NULL,
+	message = "The Preceptor Table has one row for each bead in the urn (the units). It includes a column for the outcome variable, which is bead color (red or white). Covariates could include features like bead position or batch, but for this problem, the focus is on the color outcome.",
+	answer(NULL, correct = TRUE),
+	allow_retry = FALSE,
+	incorrect = NULL,
+	rows = 6)
+```
+
+### 
+
+The Preceptor Table for this problem looks something like this:
+
+```{r}
+tibble(
+  bead_ID = c(1, 2, "...", 999, 1000),
+  color = c("red", "white", "...", "red", "white")
+) |>
+  gt() |>
+  tab_header(title = "Preceptor Table") |>
+  cols_label(
+    bead_ID = md("Bead ID"),
+    color = md("Color")
+  ) |>
+  tab_style(cell_borders(sides = "right"),
+            location = cells_body(columns = c(bead_ID))) |>
+  tab_style(style = cell_text(align = "left", v_align = "middle", size = "large"),
+            locations = cells_column_labels(columns = c(bead_ID))) |>
+  cols_align(align = "center", columns = everything()) |>
+  cols_align(align = "left", columns = c(bead_ID)) |>
+  fmt_markdown(columns = everything()) |>
+  tab_spanner(label = "Outcome", columns = c(color))
+```
+  
+
+Like all aspects of a data science problem, the Preceptor Table evolves as we continue our work. 
+
+### Exercise 24
+
+What is the narrow, specific question we will try to answer?
+
+```{r wisdom-24}
+question_text(NULL,
+	message = "If you scoop a certain number of beads from the urn, what proportion of your scoop will be red beads?",
+	answer(NULL, correct = TRUE),
+	allow_retry = FALSE,
+	incorrect = NULL,
+	rows = 6)
+```
+
+###
+
+The answer to this question is your "Quantity of Interest." It is OK if your question differs from ours. Many similar questions lead to the creation of the same model. For the purpose of this tutorial, let's use our question.
+
+Our Quantity of Interest might appear too specific, too narrow to capture the full complexity of the topic. There are many, many numbers in which we are interested, many numbers that we want to know. But we don't need to list them all here! We just need to choose one of them since our goal is just to have a specific question which helped to guide us in the creation of the Preceptor Table and, soon, the model. 
+
+### Exercise 25
+
+Over the course of this tutorial, we will be creating a summary paragraph. The purpose of this exercise is to write the first two sentences of that paragraph.
+
+The first sentence is a general statement about the overall topic, mentioning both the general class of the outcome variable and of at least one of the covariates. It is **not** connected to the initial "Imagine that you are XX" which set the stage for this project. That sentence can be rhetorical. It can be trite, or even a platitude. The purpose of the sentence is to let the reader know, gently, about our topic.
+
+The second sentence does two things. First, it introduces the data source. Second, it introduces the specific question. The sentence can't be that long. Important aspects of the data include when/where it was gathered, how many observations it includes and the organization (if famous) which collected it.
+
+Type your two sentences below.
+
+```{r wisdom-25}
+question_text(NULL,
+	message = "Estimating proportions is a common goal in statistics, especially when dealing with categorical outcomes. Using a simulated urn of 1,000 beads, we investigate what proportion of beads are red.",
+	answer(NULL, correct = TRUE),
+	allow_retry = FALSE,
+	incorrect = NULL,
+	rows = 6)
+```
+
+### 
+
+Read our answer. It will not be the same as yours. You can, if you want, change your answer to incorporate some of our ideas. Do not copy/paste our answer exactly. Add your two sentences, edited or otherwise, to your QMD, `Cmd/Ctrl + Shift + K`, and then commit/push.
+
+## Justice
+### 
+
+*Justice is truth in action.* - Benjamin Disraeli
+
+### Exercise 1
+
+In your own words, name the four key components of Justice when working on a data science problem.
+
+```{r justice-1}
+question_text(NULL,
+	message = "Justice concerns four topics: the Population Table, stability, representativeness, and unconfoundedness.",
+	answer(NULL, correct = TRUE),
+	allow_retry = FALSE,
+	incorrect = NULL,
+	rows = 6)
+```
+
+###
+
+Justice is about concerns that you (or your critics) might have, reasons why the model you create might not work as well as you hope. 
+
+### Exercise 2
+
+In your own words, define "validity" as we use the term.
+
+```{r justice-2}
+question_text(NULL,
+	message = "Validity is the consistency, or lack thereof, in the columns of the data set and the corresponding columns in the Preceptor Table.",
+	answer(NULL, correct = TRUE),
+	allow_retry = FALSE,
+	incorrect = NULL,
+	rows = 6)
+```
+
+### 
+
+Validity is always about the *columns* in the Preceptor Table and the data. Just because columns from these two different tables have the same *name* does not mean that they are the same *thing*.
+
+### Exercise 3
+
+Provide one reason why the assumption of validity might not hold for the outcome variable `color` or for one of the covariates. Use the words "column" or "columns" in your answer.
+
+```{r justice-3}
+question_text(NULL,
+	message = "The `color` column in our data might not match the `color` column in the Preceptor Table if, for example, some red beads have faded over time and are recorded as not red. In that case, the data column and the Preceptor Table column would not be measuring the same thing.",
+	answer(NULL, correct = TRUE),
+	allow_retry = FALSE,
+	incorrect = NULL,
+	rows = 6)
+```
+
+### 
+
+In order to consider the Preceptor Table and the data to be drawn from the same population, the columns from one must have a *valid correspondence* with the columns in the other. Validity, if true (or at least reasonable), allows us to construct the Population Table, which is the first step in Justice.
+
+Because we control the Preceptor Table and, to a lesser extent, the original question, we can adjust those variables to be “closer” to the data that we actually have. This is another example of the iterative nature of data science. If the data is not close enough to the question, then we check with our boss/colleague/customer to see if we can modify the question in order to make the match between the data and the Preceptor Table close enough for validity to hold.
+
+Despite these potential problems, we will assume that validity holds since it, mostly (?), does.
+
+### Exercise 4
+
+In your own words, define a Population Table.
+
+```{r justice-4}
+question_text(NULL,
+	message = "The Population Table includes a row for each unit/time combination in the underlying population from which both the Preceptor Table and the data are drawn.",
+	answer(NULL, correct = TRUE),
+	allow_retry = FALSE,
+	incorrect = NULL,
+	rows = 6)
+```
+
+### 
+
+The Population Table is almost always much bigger than the combination of the Preceptor Table and the data because, if we can really assume that both the Preceptor Table and the data are part of the same population, than that population must cover a broad universe of time and units since the Preceptor Table and the data are, themselves, often far apart from each other.
+
+### Exercise 5
+
+Specify the unit/time combinations which define each row in this Population Table.
+
+```{r justice-5}
+question_text(NULL,
+	message = "Each row in the Population Table represents a unique combination of a bead (unit) and a time (batch or date). These combinations include examples like Bead 1 at Factory Batch 1, Bead 999 at Today, and Bead 200 at Next Month. Together, they define the full population from which the sample and Preceptor Table are drawn.",
+	answer(NULL, correct = TRUE),
+	allow_retry = FALSE,
+	incorrect = NULL,
+	rows = 6)
+```
+
+### 
+
+The exact time period used --- whether hour, day, month, year, or whatever --- is relatively arbitrary. The important thing to note is that the Population Table, unlike the Preceptor Table, covers a period of time over which things may change.
+
+```{r}
+tibble(
+  source = c("...", "...", "...", "...",  
+             "Sample", "Sample", "Sample", "Sample", "...",
+             "...", "...", "...", "...",
+             "Preceptor Table", "Preceptor Table", "Preceptor Table", "...",
+             "...", "...", "..."),
+  time = c("Factory Batch 1", "Factory Batch 1", "Factory Batch 1", "...",
+           "Factory Batch 2", "Factory Batch 2", "Factory Batch 2", "Factory Batch 2", "...",
+           "Factory Batch 3", "Factory Batch 3", "Factory Batch 3", "...",
+           "Today", "Today", "Today", "...",
+           "Next Month", "Next Month", "Next Month"),
+  bead_ID = c("1", "45", "400", "...",
+              "3", "180", "...", "999", "...",
+              "5", "60", "800", "...",
+              "1", "150", "999", "...",
+              "2", "200", "1000"),
+  color = c("?", "?", "?", "...",
+            "red", "white", "...", "red", "...",
+            "?", "?", "?", "...",
+            "red", "white", "red", "...",
+            "?", "?", "?")
+) |>
+  gt() |>
+  cols_label(source = md("Source"),
+             time = md("Batch/Time"),
+             bead_ID = md("Bead ID"),
+             color = md("Color")) |>
+  tab_style(cell_borders(sides = "right"),
+            location = cells_body(columns = c(source))) |>
+  tab_style(style = cell_text(align = "left", v_align = "middle", size = "large"),
+            locations = cells_column_labels(columns = c(source))) |>
+  cols_align(align = "center", columns = everything()) |>
+  cols_align(align = "left", columns = c(source)) |>
+  fmt_markdown(columns = everything())
+```
+
+### Exercise 6
+
+In your own words, define the assumption of "stability" when employed in the context of data science.
+
+```{r justice-6}
+question_text(NULL,
+	message = "Stability means that the relationship between the columns in the Population Table is the same for three categories of rows: the data, the Preceptor Table, and the larger population from which both are drawn.",
+	answer(NULL, correct = TRUE),
+	allow_retry = FALSE,
+	incorrect = NULL,
+	rows = 6)
+```
+
+### 
+
+Stability is all about *time*. Is the relationship among the columns in the Population Table stable over time? In particular, is the relationship --- which is another way of saying "mathematical formula" --- at the time the data was gathered the same as the relationship at the (generally later) time referenced by the Preceptor Table.
+
+### Exercise 7
+
+Provide one reason why the assumption of stability might not be true in this case.
+
+```{r justice-7}
+question_text(NULL,
+	message = "The assumption of stability might not hold if the factory changes the ratio of red to white beads over time. For example, if more red beads are produced after our sample is taken, the proportion of red beads in future urns will be different than in our current sample.",
+	answer(NULL, correct = TRUE),
+	allow_retry = FALSE,
+	incorrect = NULL,
+	rows = 6)
+```
+
+### 
+
+A change in time or the distribution of the data does not, in and of itself, demonstrate a violation of stability. Stability is about the parameters: $\beta_0$, $\beta_1$ and so on. Stability means these parameters are the same in the data as they are in the population as they are in the Preceptor Table.
+
+### Exercise 8
+
+We use our data to make inferences about the overall population. We use information about the population to make inferences about the Preceptor Table: `Data -> Population -> Preceptor Table`. In your own words, define the assumption of "representativeness" when employed in the context of data science.
+
+```{r justice-8}
+question_text(NULL,
+	message = "Representativeness, or the lack thereof, concerns two relationships among the rows in the Population Table. The first is between the data and the other rows. The second is between the other rows and the Preceptor Table.",
+	answer(NULL, correct = TRUE),
+	allow_retry = FALSE,
+	incorrect = NULL,
+	rows = 6)
+```
+
+### 
+
+Ideally, we would like both the Preceptor Table *and* our data to be random samples from the population. Sadly, this is almost never the case.
+
+### Exercise 9
+
+We do not use the data, directly, to estimate missing values in the Preceptor Table. Instead, we use the data to learn about the overall population. Provide one reason, involving the relationship between the data and the population, for why the assumption of representativeness might not be true in this case. 
+
+```{r justice-9}
+question_text(NULL,
+	message = "The data might not be representative if certain beads are more likely to be sampled than others, for example, if larger beads tend to be on top and are easier to scoop. This would mean our sample overrepresents one type of bead and does not reflect the true makeup of the urn.",
+	answer(NULL, correct = TRUE),
+	allow_retry = FALSE,
+	incorrect = NULL,
+	rows = 6)
+```
+
+### 
+
+The reason that representativeness is important is because, when it is violated, the estimates for the model parameters might be biased. 
+
+### Exercise 10
+
+We use information about the population to make inferences about the Preceptor Table. Provide one reason, involving the relationship between the Population and the Preceptor Table, for why the assumption of representativeness might not be true in this case.
+
+```{r justice-10}
+question_text(NULL,
+	message = "The Preceptor Table might not be representative of the population if it only includes beads from the top of the urn, or if some colors are less likely to be sampled. This would mean the Preceptor Table does not capture the true variety of beads present in the population at that moment.",
+	answer(NULL, correct = TRUE),
+	allow_retry = FALSE,
+	incorrect = NULL,
+	rows = 6)
+```
+
+### 
+
+Stability looks across time periods. Representativeness looks within time periods, for the most part. 
+
+Of course, it is sometimes the case that the Preceptor Table includes every row from the Population Table for that moment in time. In that case, the assumption of representativeness is met, by definition, if we only consider that moment. So, in that case, the only possible violation of representativeness must involve a claim that this moment in time is not representative of the rest of the Population Table. 
+
+### Exercise 11
+
+In your own words, define the assumption of "unconfoundedness" when employed in the context of data science.
+
+```{r justice-11}
+question_text(NULL,
+	message = "Unconfoundedness means that the treatment assignment is independent of the potential outcomes, when we condition on pre-treatment covariates.",
+	answer(NULL, correct = TRUE),
+	allow_retry = FALSE,
+	incorrect = NULL,
+	rows = 6)
+```
+
+### 
+
+This assumption is only relevant for causal models. We describe a model as "confounded" if this is not true. The easiest way to ensure unconfoundedness is to assign treatment randomly.
+
+### Exercise 12
+
+A statistical model consists of two parts: the *probability family* and the *link function*. The probability family is the probability distribution which generates the randomness in our data. The link function is the mathematical formula which links our data to the unknown parameters in the probability distribution. 
+
+<!-- XX: Only use tidymodels if you are actually using it. Or load the modeling package that you are using, like ordinal. Or, if you are just using something built in like glm(), delete this question but move the knowledge drop back to the previous question. -->
+
+Add `library(tidymodels)` to the QMD file.
+
+Place your cursor in the QMD file on the `library(tidymodels)` line. Use `Cmd/Ctrl + Enter` to execute that line.
+
+Note that this causes `library(tidymodels)` to be copied down to the Console and then executed. 
+
+CP/CR.
+
+```{r justice-12}
+question_text(NULL,
+	answer(NULL, correct = TRUE),
+	allow_retry = TRUE,
+	try_again_button = "Edit Answer",
+	incorrect = NULL,
+	rows = 3)
+```
+
+###
+
+The probability family is determined by the outcome variable $Y$. 
+
+Since $Y$ is a binary variable (with exactly two possible values), the probability family is Bernoulli.
+
+$$Y \sim \text{Bernoulli}(\rho)$$
+
+where $\rho$ is the probability that one of the two possible values --- conventionally referred to as `1` or `TRUE` --- occurs. By definition, $1 - \rho$ is the probability of the other value.
+
+### Exercise 13
+
+Add `library(broom)` to the QMD file.
+
+Place your cursor in the QMD file on the `library(broom)` line. Use `Cmd/Ctrl + Enter` to execute that line.
+
+Note that this causes `library(broom)` to be copied down to the Console and then executed. 
+
+CP/CR.
+
+```{r justice-13}
+question_text(NULL,
+	answer(NULL, correct = TRUE),
+	allow_retry = TRUE,
+	try_again_button = "Edit Answer",
+	incorrect = NULL,
+	rows = 3)
+```
+
+###
+
+The link function, the basic mathematical structure of the model, is (mostly) determined by the type of outcome variable. 
+
+For a binary outcome variable, we use a log-odds model:
+
+$$
+\log\left[ \frac { \rho }{ 1 - \rho } \right] = \beta_0 + \beta_1 X_1 + \beta_2 X_2 + \ldots 
+$$
+
+The link functions for categorical and cumulative variables are also built out of a log-odds link functions.
+
+### Exercise 14
+
+Use AI to come up with a $\LaTeX$ representation of the mathematical structure of the model, with $Y$ as the dependent variable and $X_1$, $X_2$ and so on as the independent variables. This version will not have the values of any parameters since we have not, yet, estimated them. Confirm that the code works by placing it in your QMD and then rendering. Paste that $\LaTeX$ code below.
+
+```{r justice-14}
+question_text(NULL,
+	answer(NULL, correct = TRUE),
+	allow_retry = TRUE,
+	try_again_button = "Edit Answer",
+	incorrect = NULL,
+	rows = 5)
+```
+
+###
+
+$$P(Y = 1) = \frac{1}{1 + e^{-(\beta_0 + \beta_1 X_1 + \beta_2 X_2 + \cdots + \beta_n X_n)}}$$
+
+with $Y \sim \text{Bernoulli}(\rho)$ where $\rho$ is the probability above.
+
+Which we created with $\LaTeX$ code that looks like this:
+
+````
+$$P(Y = 1) = \frac{1}{1 + e^{-(\beta_0 + \beta_1 X_1 + \beta_2 X_2 + \cdots + \beta_n X_n)}}$$
+
+with $Y \sim \text{Bernoulli}(\rho)$ where $\rho$ is the probability above.
+````
+
+This follows the logistic regression form for binary data, where the $\beta$ coefficients represent the effect of predictors on the log-odds of the outcome.
+
+We use generic variables --- $Y$, $X_1$ and so on --- because our purpose is to describe the general mathematical structure of the model, independent of the specific variables we will eventually choose to use.
+
+### Exercise 15
+
+Write one sentence which highlights a potential weakness in your model. This will almost always be derived from possible problems with the assumptions discussed above. We will add this sentence to our summary paragraph. So far, our version of the summary paragraph looks like this:
+
+Estimating proportions is a common goal in statistics, especially when dealing with categorical outcomes. Using a simulated urn of 1,000 beads, we investigate what proportion of beads are red.
+
+Of course, your version will be somewhat different.
+
+```{r justice-15}
+question_text(NULL,
+	message = "A potential weakness is that our sample of beads might not be perfectly representative of the entire urn, especially if some beads are more likely to be scooped than others.",
+	answer(NULL, correct = TRUE),
+	allow_retry = FALSE,
+	incorrect = NULL,
+	rows = 6)
+```
+
+### 
+
+Add a weakness sentence to the summary paragraph in your QMD. You can modify your paragraph as you see fit, but do not copy/paste our answer exactly. `Cmd/Ctrl + Shift + K`, and then commit/push.
+
+## Courage
+### 
+
+*Courage is going from failure to failure without losing enthusiasm.* - Winston Churchill
+
+### Exercise 1
+
+In your own words, describe the components of the virtue of Courage for analyzing data.
+
+```{r courage-1}
+question_text(NULL,
+	message = "Courage starts with math, explores models, and then creates the data generating mechanism.",
+	answer(NULL, correct = TRUE),
+	allow_retry = FALSE,
+	incorrect = NULL,
+	rows = 6)
+```
+
+### 
+
+A statistical model consists of two parts: the *probability family* and the *link function*. The probability family is the probability distribution which generates the randomness in our data. The link function is the mathematical formula which links our data to the unknown parameters in the probability distribution. 
+
+### Exercise 2
+
+Because our outcome variable is binary, start to create the model by entering `logistic_reg(engine = "glm")`.
+
+```{r courage-2, exercise = TRUE}
+
+```
+
+```{r courage-2-hint-1, eval = FALSE}
+logistic_reg(engine = "glm")
+```
+
+```{r courage-2-test, include = FALSE}
+logistic_reg(engine = "glm")
+```
+
+### 
+
+The *[tidymodels](https://www.tidymodels.org/)* framework is the most popular one in the R world for estimating models. *[Tidy Modeling with R](https://www.tmwr.org/)* by Max Kuhn and Julia Silge is a great introduction.
+
+### Exercise 3
+
+Continue the pipe to `fit(color ~ 1, data = shovel)`.
+
+```{r courage-3, exercise = TRUE}
+
+```
+
+<button onclick = "transfer_code(this)">Copy previous code</button>
+
+```{r courage-3-hint-1, eval = FALSE}
+... |> 
+  fit(..., data = ...)
+```
+
+```{r courage-3-test, include = FALSE}
+logistic_reg(engine = "glm") |>
+  fit(color ~ 1, data = shovel)
+```
+
+### 
+
+Recall that a categorical variable (whether character or factor) like `color` is turned into a $0/1$ "dummy" variable. For example, “red” might be coded as 1 and “white” as 0. Since we can't have words—like "red" or "white"—in a mathematical formula, we use dummy variables to represent these categories.
+
+### Exercise 4
+
+Continue the pipe with `tidy(conf.int = TRUE)`.
+
+```{r courage-4, exercise = TRUE}
+
+```
+
+<button onclick = "transfer_code(this)">Copy previous code</button>
+
+```{r courage-4-hint-1, eval = FALSE}
+...
+  tidy(... = TRUE)
+```
+
+```{r courage-4-test, include = FALSE}
+logistic_reg(engine = "glm") |>
+  fit(color ~ 1, data = shovel) |>
+  tidy(conf.int = TRUE)
+```
+
+### 
+
+The intercept shows the log-odds of selecting a red bead when all predictors are at their baseline.
+If present, $\beta_1$ would indicate how the log-odds of selecting a red bead change with a one-unit increase in that covariate.
+
+### Exercise 5
+
+Behind the scenes of this tutorial, an object called `fit_color` has been created which is the result of the code above. Type `fit_color` and hit "Run Code." This generates the same results as using `print(fit_color)`.
+
+```{r courage-5, exercise = TRUE}
+
+```
+
+```{r courage-5-hint-1, eval = FALSE}
+fit_color
+```
+
+```{r courage-5-test, include = FALSE}
+fit_color
+```
+
+### 
+
+In data science, **we deal with words, math, and code, but the most important of these is code.** We created the mathematical structure of the model and then wrote a model formula in order to estimate the unknown parameters. 
+
+### Exercise 6
+
+<!-- DK: Should this happen in the QMD first, before it is `Cmd/Ctrl + Enter`'d to the Console? -->
+
+We need `fit_color` to exit in Console World. Copy/paste this code into the Console and execute it.
+
+````
+fit_color <- logistic_reg(engine = "glm") |>
+  fit(color ~ 1, data = shovel)
+````
+
+CP/CR.
+
+```{r courage-6}
+question_text(NULL,
+	answer(NULL, correct = TRUE),
+	allow_retry = TRUE,
+	try_again_button = "Edit Answer",
+	incorrect = NULL,
+	rows = 3)
+```
+
+###
+
+Just because something exists in the tutorial (or in the QMD) does not mean that it is in the Console. You should be aware of what exists in Console World, which is generally called your "workspace."
+
+### Exercise 7
+
+Load the **[easystats](https://easystats.github.io/easystats/)** package.
+
+```{r courage-7, exercise = TRUE}
+
+```
+
+```{r courage-7-hint-1, eval = FALSE}
+library(...)
+```
+
+```{r courage-7-test, include = FALSE}
+library(easystats)
+```
+
+###
+
+We don't add **easystats** to the QMD because we are only using it for an interactive check of our fitted model. However, the [easystats ecosystem](https://easystats.github.io/easystats/) has a variety of interesting functions and packages which you might want to explore.
+
+### Exercise 8
+
+Run `check_predictions(extract_fit_engine(fit_color))`. 
+
+```{r courage-8, exercise = TRUE}
+
+```
+
+```{r courage-8-hint-1, eval = FALSE}
+check_predictions(extract_fit_engine(fit_color))
+```
+
+```{r courage-8-test, include = FALSE}
+check_predictions(extract_fit_engine(fit_color))
+```
+
+###
+
+The purpose of `check_predictions()` is to compare your actual data (in green) with data that has been simulated from your fitted model, i.e., from your data generating mechanism. If your DGM is reasonable, then data simulated from it should not look too dissimilar from your actual data. Of course, it won't look exactly the same because of randomness, both in the world and in your simulation. But the actual data should be within the range of outcomes that your DGM simulates with `check_predictions()`.
+
+### Exercise 9
+
+Ask AI to create $\LaTeX$ code for this model, including our variable names and estimates for all the coefficients. Because this is a fitted model, the dependent variable will have a "hat" and the formula will not include an error term. 
+
+Add the code to your QMD. `Cmd/Ctrl + Shift + K`.
+
+Make sure the resulting display looks good. For example, you don't want an absurd number of figures to the right of the decimal. If the model is too long, you will need to spread it across several lines. You may need to go back-and-forth with the AI a few times.
+
+Once the $\LaTeX$ code looks good, paste it below.
+
+```{r courage-9}
+question_text(NULL,
+	answer(NULL, correct = TRUE),
+	allow_retry = TRUE,
+	try_again_button = "Edit Answer",
+	incorrect = NULL,
+	rows = 3)
+```
+
+###
+
+Our formula looks like:
+
+$$\widehat{\text{logit}(P(\text{color} = \text{red}))} = -0.66$$
+
+It was created with:
+
+````
+$$\widehat{\text{logit}(P(\text{color} = \text{red}))} = -0.66$$
+````
+
+Note the differences. First, we have replaced the parameters with our best estimates. Second, we have dropped the error term because this is a formula for predicting the value for our outcome variable. Third, the left-hand side variable is $\widehat{\text{logit}(P(\text{color} = \text{red}))}$ instead of $\text{logit}(P(\text{color} = \text{red}))$ because this formula generates our estimated probability. A hat indicates an estimated value.
+
+**This is our data generating mechanism.**
+
+A data generating mechanism is just a formula, something which we can write down and implement with computer code.
+
+### Exercise 10
+
+Create a new code chunk in your QMD. Add a code chunk option: `#| cache: true`. Copy/paste the R code for the final model into the code chunk, assigning the result to `fit_color`. (This will include the call to `fit()` but not the call to `tidy()` because we want the entire fitted model, not just a table of the estimated parameter values.)
+
+Place your cursor in the QMD file on the `fit_color` line. Use `Cmd/Ctrl + Enter` to execute that line. Strictly speaking, this step is unnecessary because we already added `fit_color` to our workspace above. But ensuring that everything in the QMD is also in the Console is a good habit.
+
+`Cmd/Ctrl + Shift + K`. It may take some time to render your QMD, depending on how complex your model is. But, by including `#| cache: true` you cause Quarto to cache the results of the chunk. The next time you render your QMD, as long as you have not changed the code, Quarto will just load up the saved fitted object.
+
+At the Console, run:
+
+```
+tutorial.helpers::show_file("urn_simulation.qmd", chunk = "Last")
+```
+
+CP/CR.
+
+```{r courage-10}
+question_text(NULL,
+	answer(NULL, correct = TRUE),
+	allow_retry = TRUE,
+	try_again_button = "Edit Answer",
+	incorrect = NULL,
+	rows = 8)
+```
+
+### 
+
+To confirm, `Cmd/Ctrl + Shift + K` again. It should be quick.
+
+### Exercise 11
+
+Add `*_cache` to `.gitignore` file. Cached objects are often large. They don't belong on Github.
+
+At the Console, run:
+
+```
+tutorial.helpers::show_file(".gitignore")
+```
+
+CP/CR.
+
+```{r courage-11}
+question_text(NULL,
+	answer(NULL, correct = TRUE),
+	allow_retry = TRUE,
+	try_again_button = "Edit Answer",
+	incorrect = NULL,
+	rows = 6)
+```
+
+###
+
+Because of the change in your `.gitignore` (assuming that you saved it), the cache directory should not appear in the Source Control panel because Git is ignoring it, as instructed. Commit and push. 
+
+### Exercise 12
+
+Run `tidy()` on `fit_color` with the argument `conf.int` set equal to `TRUE`. The returns 95% intervals for all the parameters in our model.
+
+```{r courage-12, exercise = TRUE}
+
+```
+
+```{r courage-12-hint-1, eval = FALSE}
+tidy(fit_color, conf.int = TRUE)
+```
+
+```{r courage-12-test, include = FALSE}
+tidy(fit_color, conf.int = TRUE)
+```
+
+### 
+
+`tidy()` is part of the [**broom**](https://broom.tidymodels.org/) package, used to summarize information from a wide variety of models.
+
+### Exercise 13
+
+Create a new code chunk in your QMD. Ask AI to help you make a nice looking table from the tibble which is returned by `tidy()`. You don't have to include all the variables which `tidy()` produces. We often just show the estimate and the confidence intervals.
+
+Insert that code into the QMD. 
+
+`Cmd/Ctrl + Shift + K`. 
+
+Make sure it works. You might need to add some new libraries, e.g., **[tinytable](https://vincentarelbundock.github.io/tinytable/)**, **[knitr](https://yihui.org/knitr/)**, **[gt](https://gt.rstudio.com/)**, **[kableExtra](https://haozhu233.github.io/kableExtra/)**, **[flextable](https://davidgohel.github.io/flextable/)**, **[modelsummary](https://modelsummary.com/)**, et cetera, to the `setup` code chunk, if you use any functions from these packages, all of which have strengths and weaknesses for making tables.
+
+At the Console, run:
+
+```
+tutorial.helpers::show_file("urn_simulation.qmd", chunk = "Last")
+```
+
+CP/CR.
+
+```{r courage-13}
+question_text(NULL,
+	answer(NULL, correct = TRUE),
+	allow_retry = TRUE,
+	try_again_button = "Edit Answer",
+	incorrect = NULL,
+	rows = 12)
+```
+
+###
+
+This chart uses the `gt` package to create a nicely formatted table displaying the estimated log-odds and confidence intervals for red beads in the shovel sample. It adds a clear title, a data source note, and rounds the numbers for readability.
+
+```{r}
+tidy(fit_color, conf.int = TRUE) |>
+  select(term, estimate, conf.low, conf.high) |>
+  gt() |>
+  tab_header(
+    title = "Estimated Log-Odds of Red Beads in the Shovel Sample"
+  ) |>
+  tab_source_note(
+    source_note = "Data source: Beads sampled from the urn using a shovel"
+  ) |>
+  fmt_number(
+    columns = c(estimate, conf.low, conf.high),
+    decimals = 2
+  ) |>
+  cols_label(
+    term = "Term",
+    estimate = "Estimate",
+    conf.low = "Lower 95% CI",
+    conf.high = "Upper 95% CI"
+  )
+
+```
+
+###
+
+It was made using this code:
+
+```
+tidy(fit_color, conf.int = TRUE) |>
+  select(term, estimate, conf.low, conf.high) |>
+  gt() |>
+  tab_header(
+    title = "Estimated Log-Odds of Red Beads in the Shovel Sample"
+  ) |>
+  tab_source_note(
+    source_note = "Data source: Beads sampled from the urn using a shovel"
+  ) |>
+  fmt_number(
+    columns = c(estimate, conf.low, conf.high),
+    decimals = 2
+  ) |>
+  cols_label(
+    term = "Term",
+    estimate = "Estimate",
+    conf.low = "Lower 95% CI",
+    conf.high = "Upper 95% CI"
+  )
+
+```
+
+At the very least, your table should include a title and a caption with the data source. The more you use AI, the better you will get at doing so.
+
+### Exercise 14
+
+Add a sentence to your project summary. 
+
+Explain the structure of the model. Something like: "I/we model XX [the concept of the outcome, not the variable name], [insert description of values of XX], as a [linear/logistic/multinomial/ordinal] function of XX [and maybe other covariates]." 
+
+Recall the beginning of our version of the summary:
+
+Estimating proportions is a common goal in statistics, especially when dealing with categorical outcomes. Using a simulated urn of 1,000 beads, we investigate what proportion of beads are red. A potential weakness is that our sample of beads might not be perfectly representative of the entire urn, especially if some beads are more likely to be scooped than others.
+
+```{r courage-14}
+question_text(NULL,
+	message = "I model the probability of a bead being red, which is a binary outcome, as a logistic function based on the observed distribution of red and white beads in the urn or in shovel samples.",
+	answer(NULL, correct = TRUE),
+	allow_retry = FALSE,
+	incorrect = NULL,
+	rows = 6)
+```
+
+### 
+
+Read our answer. It will not be the same as yours. You can, if you want, change your answer to incorporate some of our ideas. Do not copy/paste our answer exactly. Add your two sentences, edited or otherwise, to the summary paragraph portion of your QMD. `Cmd/Ctrl + Shift + K`, and then commit/push.
+
+## Temperance
+### 
+
+*Temperance is a tree which has for its root very little contentment, and for its fruit calm and peace.* 
+
+### Exercise 1
+
+In your own words, describe the use of Temperance in data science.
+
+```{r temperance-1}
+question_text(NULL,
+	message = "Temperance uses the data generating mechanism to answer the question with which we began. Humility reminds us that this answer is always a lie. We can also use the DGM to calculate many similar quantities of interest, displaying the results graphically.",
+	answer(NULL, correct = TRUE),
+	allow_retry = FALSE,
+	incorrect = NULL,
+	rows = 6)
+```
+
+### 
+
+Courage gave us the data generating mechanism. Temperance guides us in the use of the DGM — or the “model” — we have created to answer the question(s) with which we began. We create posteriors for the quantities of interest. 
+
+### Exercise 2
+
+Before using the DGM, we should make sure that we can interpret it.
+
+Interpret the parameter estimate for the intercept in the model below, including its confidence interval. What does this value represent in the context of our bead and shovel example?
+
+Recall the values for the parameters in our data generating mechanism:
+
+```{r}
+fit_color |> 
+  tidy(conf.int = TRUE) |> 
+  select(term, estimate, conf.low, conf.high)
+```
+
+```{r temperance-2}
+question_text(NULL,
+	message = "The parameter estimate for the intercept is -0.66, with a 95% confidence interval from -1.27 to -0.09. This represents the log-odds of scooping a red bead with the shovel sample.",
+	answer(NULL, correct = TRUE),
+	allow_retry = FALSE,
+	incorrect = NULL,
+	rows = 6)
+```
+
+###
+
+Most of the time, parameters in a model have no direct relationship with any population value in which we might be interested. However, in this simple model, the intercept does correspond to the underlying log-odds (and thus probability) of drawing a red bead in similar shovel samples.
+
+### Exercise 3
+
+What does the 95% confidence interval for the intercept tell us about our estimate for scooping red beads?
+
+```{r}
+fit_color |> 
+  tidy(conf.int = TRUE) |> 
+  select(term, estimate, conf.low, conf.high)
+```
+
+```{r temperance-3}
+question_text(NULL,
+	message = "The 95% confidence interval for the intercept ranges from -1.27 to -0.09. This means we are fairly confident that the true log-odds of scooping a red bead with the shovel falls within this range.",
+	answer(NULL, correct = TRUE),
+	allow_retry = FALSE,
+	incorrect = NULL,
+	rows = 6)
+```
+
+###
+
+We look for two things in the confidence interval. First, does it exclude zero? If not, then we can't be sure if the relationship is positive or negative. Second, converting the interval from log-odds to probabilities helps us understand the likely range for the proportion of red beads in similar samples.
+
+### Exercise 4
+
+What does the confidence interval for the intercept tell us about the precision of our estimate for the log-odds of drawing a red bead?
+
+```{r}
+fit_color |> 
+  tidy(conf.int = TRUE) |> 
+  select(term, estimate, conf.low, conf.high)
+```
+
+```{r temperance-4}
+question_text(NULL,
+	message = "The confidence interval shows the range of likely values for the log-odds of drawing a red bead; the relatively wide range reflects the uncertainty from using a small sample.",
+	answer(NULL, correct = TRUE),
+	allow_retry = FALSE,
+	incorrect = NULL,
+	rows = 6)
+```
+
+###
+
+The confidence interval around our estimate reflects the variability we would expect if we repeated the sampling process many times. This uncertainty is an essential part of inference: even with the same model, results can vary from sample to sample.
+
+### Exercise 5
+
+In the end, we don't really care about parameters, much less how to interpret them. Parameters are *imaginary*, like unicorns. We care about answers to our questions. Parameters are tools for answering questions. They aren't interesting in-and-of themselves. *In the modern world, all parameters are nuisance parameters.* 
+
+
+Add `library(marginaleffects)` to the QMD file.
+
+Place your cursor in the QMD file on the `library(marginaleffects)` line. Use `Cmd/Ctrl + Enter` to execute that line.
+
+Note that this causes `library(marginaleffects)` to be copied down to the Console and then executed. 
+
+CP/CR.
+
+```{r temperance-5}
+question_text(NULL,
+	answer(NULL, correct = TRUE),
+	allow_retry = TRUE,
+	try_again_button = "Edit Answer",
+	incorrect = NULL,
+	rows = 3)
+```
+
+### 
+
+We should be modest in the claims we make. The posteriors we create are never the “truth.” The assumptions we made to create the model are never perfect. Yet decisions made with flawed posteriors are almost always better than decisions made without them.
+
+### Exercise 6
+
+What is the specific question we are trying to answer? 
+
+```{r temperance-6}
+question_text(NULL,
+	message = "What proportion of beads in the urn are red, and how well can we estimate that proportion by scooping a random sample with a shovel?",
+	answer(NULL, correct = TRUE),
+	allow_retry = FALSE,
+	incorrect = NULL,
+	rows = 6)
+```
+
+### 
+
+Data science projects almost always begin with a broad topic of interest. Yet, in order to make progress, we need to drill down to a specific question. This leads to the creation of a data generating mechanism, which can now be used to answer lots of questions, thus allowing us to explore the original topic more broadly.
+
+### Exercise 7
+
+In the Console, `predictions()` on `fit_color`, with `type` set to `"probs"`.
+
+CP/CR.
+
+```{r temperance-7}
+question_text(NULL,
+	answer(NULL, correct = TRUE),
+	allow_retry = TRUE,
+	try_again_button = "Edit Answer",
+	incorrect = NULL,
+	rows = 3)
+```
+
+```{r temperance-7-test, include = FALSE}
+predictions(fit_color, type = "prob")
+```
+
+###
+
+`predictions()` returns a data frame with one row for each combination of observation and outcome class in the data used to fit the model. In this case, because there are 50 beads in the sample and two possible outcomes (`red` and `white`), the result has 100 rows—two for each bead. For an intercept-only logistic regression, these probabilities are the same for every observation, but split across the two outcome groups.
+
+### Exercise 8
+
+Run `avg_predictions()` on `fit_color` with `type = "prob"`. Recall that you always need to set the `type` explicitly with a logistic model.
+
+```{r temperance-8, exercise = TRUE}
+
+```
+
+
+```{r temperance-8-hint-1, eval = FALSE}
+
+```
+
+```{r temperance-8-test, include = FALSE}
+avg_predictions(fit_color, type = "prob")
+```
+
+###
+
+`avg_predictions()` simple takes the average over the values from `predictions()` for each group.
+
+<!-- DK: Is the above true? Explain better! -->
+
+### Exercise 9
+
+Run `plot_predictions()` on `fit_color` with `type = "prob"` and `condition = "color"`.
+
+```{r temperance-9, exercise = TRUE}
+
+```
+
+```{r temperance-9-test, include = FALSE}
+plot_predictions(fit_color, type = "prob", condition = "color")
+```
+
+### 
+
+This plot shows the model’s estimate for the probability that a scooped bead is red, along with a visual display of its uncertainty (the confidence interval). By reading the height of the point and the range of the error bars, we can quickly see both the predicted proportion and how precise our estimate is.
+
+### Exercise 10
+
+Run this code to get the underlying predicted probabilities as a tibble instead of a plot. The argument `draw = FALSE` tells R not to make a graph, but to return the raw prediction values you can use or inspect.
+
+```
+plot_predictions(fit_color, type = "prob", condition = "color", draw = FALSE)
+```       
+
+```{r temperance-10, exercise = TRUE}
+
+```
+
+```{r temperance-10-test, include = FALSE}
+
+```
+
+### 
+
+The output shows that we expect about 34% of the beads in a shovel sample to be red, with a 95% confidence interval from 0.21% to 0.47%, and about 66% to be white, with a 95% confidence interval from 0.53% to 0.79%. These intervals reflect the uncertainty in our estimated proportions.
+
+### Exercise 11
+
+Work with AI to create a beautiful plot starting with the output to the above call to `plot_predictions()`. Do this in your QMD since that is much easier than working in the Console directly.
+
+Your title should highlight the key variables. Your subtitle should describe an important takeaway, the sentence/conclusion which readers will, you hope, remember. Your caption should mention the data source. Your axis labels should look nice.
+
+This plot is not directly connected to your question. It answers lots of questions! It might be used by lots of different people. 
+
+Copy the code for your plot here:
+
+```{r temperance-11}
+question_text(NULL,
+	answer(NULL, correct = TRUE),
+	allow_retry = TRUE,
+	try_again_button = "Edit Answer",
+	incorrect = NULL,
+	rows = 20)
+```
+
+###
+
+Our plot:
+
+```{r}
+preds <- plot_predictions(fit_color, type = "prob", condition = "color", draw = FALSE)
+library(ggplot2)
+preds |>
+  filter(color == "red", group == "red") |>
+  ggplot(aes(x = color, y = estimate, ymin = conf.low, ymax = conf.high)) +
+  geom_pointrange(size = 0.9) +
+  labs(
+    title = "Estimated Percentage of Red Beads in the Urn",
+    subtitle = "Based on predictions from a logistic regression using shovel samples",
+    y = "Estimated Percentage of Red Beads",
+    x = NULL
+  ) +
+  scale_y_continuous(labels = percent_format(accuracy = 1), limits = c(0, 1)) +
+  theme_minimal()
+```
+
+Our code:
+
+```
+preds <- plot_predictions(fit_color, type = "prob", condition = "color", draw = FALSE)
+library(ggplot2)
+preds |>
+  filter(color == "red", group == "red") |>
+  ggplot(aes(x = color, y = estimate, ymin = conf.low, ymax = conf.high)) +
+  geom_pointrange(size = 0.9) +
+  labs(
+    title = "Estimated Percentage of Red Beads in the Urn",
+    subtitle = "Based on predictions from a logistic regression using shovel samples",
+    y = "Estimated Percentage of Red Beads",
+    x = NULL
+  ) +
+  scale_y_continuous(labels = percent_format(accuracy = 1), limits = c(0, 1)) +
+  theme_minimal()
+```
+
+Data science often involves this-back-and-forth style of work. First, we need to make a single chunk of code, in this case, a new plot, work well. This requires interactive work between the QMD and the Console. Second, we need to ensure that the entire QMD runs correctly on its own.
+
+### Exercise 12
+
+Finalize the new graphics code chunk in your QMD.
+
+`Cmd/Ctrl + Shift + K` to ensure that it all works as intended. Don't forget to add `library(marginaleffects)` to your `setup` code chunk.
+
+At the Console, run:
+
+```
+tutorial.helpers::show_file("urn_simulation.qmd", start = -8)
+```
+
+CP/CR.
+
+```{r temperance-12}
+question_text(NULL,
+	answer(NULL, correct = TRUE),
+	allow_retry = TRUE,
+	try_again_button = "Edit Answer",
+	incorrect = NULL,
+	rows = 10)
+```
+
+
+### 
+
+Always [remember](https://en.wikipedia.org/wiki/Map%E2%80%93territory_relation): *The map is not the territory.* A beautiful graphic tells a story, but that story is always an imperfect representation of reality. Our models depend on assumptions, assumptions which are never completely true.
+
+### Exercise 13
+
+Write the last sentence of your summary paragraph. It describes at least one quantity of interest (QoI) and provides a measure of uncertainty about that QoI. (It is OK if this QoI is not the one that you began with. The focus of a data science project often changes over time.)
+
+```{r temperance-13}
+question_text(NULL,
+	message = "Based on our analysis, we estimate that about 34% of beads scooped with the shovel will be red, with a 95% confidence interval ranging from 21% to 47%.",
+	answer(NULL, correct = TRUE),
+	allow_retry = FALSE,
+	incorrect = NULL,
+	rows = 6)
+```
+
+### 
+
+Add a final sentence to your summary paragraph in your QMD as you see fit, but do not copy/paste our answer exactly. `Cmd/Ctrl + Shift + K`.
+
+### Exercise 14
+
+Write a few sentences which explain why the estimates for the quantities of interest, and the uncertainty thereof, might be wrong. Suggest an alternative estimate and confidence interval, if you think either might be warranted.
+
+```{r temperance-14}
+question_text(NULL,
+	message = "The estimate and confidence interval for the probability of scooping a red bead could be off if our sample isn’t truly representative of the urn. Real-world sampling often adds more uncertainty than our model accounts for, so it’s safer to use a wider confidence interval.",
+	answer(NULL, correct = TRUE),
+	allow_retry = FALSE,
+	incorrect = NULL,
+	rows = 6)
+```
+
+### 
+
+Always go back to your Preceptor Table, the information which, if you had it, would make answering your question easy. In almost all real world cases, the Preceptor Table and the data are fairly different, not least because validity never holds perfectly. So, even a perfectly estimated statistical model is rarely as useful as we might like.
+
+### Exercise 15
+
+Rearrange the material in your QMD so that the order is graphic, followed by the paragraph. Doing so, of course, requires sensible judgment. For example, the code chunk which creates the fitted model must occur before the chunk which creates the graphic. You can keep or discard the math and any other material at your own discretion.
+
+`Cmd/Ctrl + Shift + K` to ensure that everything works.
+
+At the Console, run:
+
+```
+tutorial.helpers::show_file("urn_simulation.qmd")
+```
+
+CP/CR.
+
+```{r temperance-15}
+question_text(NULL,
+	answer(NULL, correct = TRUE),
+	allow_retry = TRUE,
+	try_again_button = "Edit Answer",
+	incorrect = NULL,
+	rows = 30)
+```
+
+### 
+
+This is the version of your QMD file which your teacher is most likely to take a close look at.
+
+### Exercise 16
+
+Publish your rendered QMD to GitHub Pages. Copy/paste the resulting url below.
+
+```{r temperance-16}
+question_text(NULL,
+	answer(NULL, correct = TRUE),
+	allow_retry = TRUE,
+	try_again_button = "Edit Answer",
+	incorrect = NULL,
+	rows = 3)
+```
+
+### 
+
+Commit/push everything.
+
+### Exercise 17
+
+Copy/paste the url to your Github repo.
+
+```{r temperance-17}
+question_text(NULL,
+	answer(NULL, correct = TRUE),
+	allow_retry = TRUE,
+	try_again_button = "Edit Answer",
+	incorrect = NULL,
+	rows = 3)
+```
+
+### 
+
+We can never know all the entries in the Preceptor Table. That knowledge is reserved for God. If all our assumptions are correct, then our DGM is true, it accurately describes the way in which the world works. There is no better way to predict the future, or to model the past, than to use it. Sadly, this will only be the case with toy examples involving things like coins and dice. We hope that our DGM is close to the true DGM but, since our assumptions are never perfectly correct, our DGM will always be different. The estimated magnitude and importance of that difference is a matter of judgment.
+
+The world confronts us. Make decisions we must.
+
+## Summary
+### 
+
+This tutorial covered [Chapter 3: Sampling](https://ppbds.github.io/primer/sampling.html) of [*Preceptor’s Primer for Bayesian Data Science: Using the Cardinal Virtues for Inference*](https://ppbds.github.io/primer/) by [David Kane](https://davidkane.info/). 
+ 
+
+```{r download-answers, child = system.file("child_documents/download_answers.Rmd", package = "tutorial.helpers")}
+```

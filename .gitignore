@@ -8,3 +8,10 @@ docs
 *_cache
 *_files
 site_libs
+
+# R package build artifacts (primer.tutorials)
+primer.tutorials/*.Rcheck/
+primer.tutorials/.Rproj.user/
+primer.tutorials/renv/library/
+primer.tutorials/renv/staging/
+primer.tutorials/renv/python/

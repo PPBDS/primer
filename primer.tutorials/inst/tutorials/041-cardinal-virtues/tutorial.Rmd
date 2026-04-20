@@ -1,0 +1,44 @@
+---
+title: Cardinal Virtues
+author: David Kane
+tutorial:
+  id: 041-cardinal-virtues
+output:
+  learnr::tutorial:
+    progressive: yes
+    allow_skip: yes
+runtime: shiny_prerendered
+description: "Tutorial #04 for Preceptor's Primer"
+---
+
+```{r setup, include = FALSE}
+library(learnr)
+library(tutorial.helpers)
+library(gt)
+
+library(tidyverse)
+
+knitr::opts_chunk$set(echo = FALSE)
+options(tutorial.exercise.timelimit = 600,
+        tutorial.storage = "local")
+```
+
+```{r copy-code-chunk, child = system.file("child_documents/copy_button.Rmd", package = "tutorial.helpers")}
+```
+
+```{r info-section, child = system.file("child_documents/info_section.Rmd", package = "tutorial.helpers")}
+```
+
+
+## Introduction
+
+<!-- Placeholder. Tutorial content to be authored. -->
+
+
+## Summary
+
+<!-- Placeholder. -->
+
+
+```{r download-answers, child = system.file("child_documents/download_answers.Rmd", package = "tutorial.helpers")}
+```

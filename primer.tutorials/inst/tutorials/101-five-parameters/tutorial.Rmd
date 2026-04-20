@@ -1,0 +1,1937 @@
+---
+title: Five Parameters
+author: David Kane and Aashna Patel
+tutorial:
+  id: 101-five-parameters
+output:
+  learnr::tutorial:
+    progressive: yes
+    allow_skip: yes
+runtime: shiny_prerendered
+description: "Tutorial #091 for Preceptor's Primer"
+---
+
+```{r setup, include = FALSE}
+library(learnr)
+library(tutorial.helpers)
+library(gt)
+
+library(tidyverse)
+library(tidymodels)
+library(marginaleffects)
+library(primer.data)
+library(knitr)
+
+library(easystats)
+
+knitr::opts_chunk$set(echo = FALSE)
+options(tutorial.exercise.timelimit = 600, 
+        tutorial.storage = "local") 
+
+x <- governors |> 
+  filter(year > 1945) |> 
+  select(last_name, year, state, sex, lived_after, election_age, region)
+
+fit_years <- linear_reg(engine = "lm") |> 
+  fit(lived_after ~ election_age*sex, data = x)
+```
+
+```{r copy-code-chunk, child = system.file("child_documents/copy_button.Rmd", package = "tutorial.helpers")}
+```
+
+```{r info-section, child = system.file("child_documents/info_section.Rmd", package = "tutorial.helpers")}
+```
+
+
+## Introduction
+### 
+
+This tutorial supports [*Preceptor’s Primer for Bayesian Data Science: Using the Cardinal Virtues for Inference*](https://ppbds.github.io/primer/) by [David Kane](https://davidkane.info/). 
+
+The world confronts us. Make decisions we must.
+
+Imagine that you are considering a run for mayor. You know politics can be intense and demanding, and you start to wonder what kind of toll it might take on your future. You’re curious: if you run for office, how long are you likely to live afterward? Could the stress shorten your lifespan, or might public service have no real impact at all? There are many decisions to make.
+
+### Exercise 1
+
+What are the four [Cardinal Virtues](https://en.wikipedia.org/wiki/Cardinal_virtues), in order, which we use to guide our data science work?
+
+```{r introduction-1}
+question_text(NULL,
+	message = "Wisdom, Justice, Courage, and Temperance.",
+	answer(NULL, correct = TRUE),
+	allow_retry = FALSE,
+	incorrect = NULL,
+	rows = 2)
+```
+
+###
+
+Why do we ask this, and a score more other questions, in each tutorial? Because the best way to (try to) ensure that students remember these concepts more than a few months after the course ends is [spaced repetition](https://en.wikipedia.org/wiki/Spaced_repetition), although we focus more on the repetition than on the spacing.
+
+### Exercise 2
+
+Create a Github repo called `life-expectancy`. Make sure to click the "Add a README file" check box.
+
+Connect the repo to a project on your computer using `File -> New Folder from Git ...`. Make sure to select the "Open in a new window" box. 
+
+You need two Positon windows: this one for running the tutorial and the one you just created for writing your code and interacting with the Console.
+
+Select `File -> New File -> Quarto Document ...`. Provide a title -- `"Life Expectancy for Political Candidates"` -- and an author (you). Render the document and save it as `candidates.qmd`.
+
+Create a `.gitignore` file with `candidates_files` on the first line and then a blank line. Save and push.
+
+In the Console, run:
+
+```         
+show_file(".gitignore")
+```
+
+If that fails, it is probably because you have not yet loaded `library(tutorial.helpers)` in the Console.
+
+CP/CR.
+
+```{r introduction-2}
+question_text(NULL,
+	answer(NULL, correct = TRUE),
+	allow_retry = TRUE,
+	try_again_button = "Edit Answer",
+	incorrect = NULL,
+	rows = 3)
+```
+
+### 
+
+Professionals keep their data science work in the cloud because laptops fail.
+
+### Exercise 3
+
+In your QMD, put `library(tidyverse)` and  `library(primer.data)` in a new code chunk. Render the file.
+
+Notice that the file does not look good because the code is visible and there are annoying messages. To take care of this, add `#| message: false` to remove all the messages in this `setup` chunk. Also add the following to the YAML header to remove all code echos from the HTML:
+
+```         
+execute: 
+  echo: false
+```
+
+In the Console, run:
+
+```         
+show_file("candidates.qmd", start = -5)
+```
+
+CP/CR.
+
+```{r introduction-3}
+question_text(NULL,
+	answer(NULL, correct = TRUE),
+	allow_retry = TRUE,
+	try_again_button = "Edit Answer",
+	incorrect = NULL,
+	rows = 6)
+```
+
+### 
+
+Render again. Everything looks nice, albeit empty, because we have added code to make the file look better and more professional.
+
+### Exercise 4
+
+Place your cursor in the QMD file on the `library(tidyverse)` line. Use `Cmd/Ctrl + Enter` to execute that line.
+
+Note that this causes `library(tidyverse)` to be copied down to the Console and then executed. 
+
+CP/CR.
+
+```{r introduction-4}
+question_text(NULL,
+	answer(NULL, correct = TRUE),
+	allow_retry = TRUE,
+	try_again_button = "Edit Answer",
+	incorrect = NULL,
+	rows = 3)
+```
+
+###
+
+The [tidyverse](https://www.tidyverse.org/) is a collection of R packages designed for data science. All packages share an underlying design philosophy, grammar, and data structures.
+
+### Exercise 5
+
+Place your cursor in the QMD file on the next line on `library(primer.data)` . Use `Cmd/Ctrl + Enter` to execute that line.
+
+This work flow --- writing things in the QMD so that you have a permanent copy and then executing them in the Console with `Cmd/Ctrl + Enter` --- is the most common approach to data science. 
+
+There is QMD World and Console World. It is your responsibility to keep them in sync.
+
+CP/CR.
+
+```{r introduction-5}
+question_text(NULL,
+	answer(NULL, correct = TRUE),
+	allow_retry = TRUE,
+	try_again_button = "Edit Answer",
+	incorrect = NULL,
+	rows = 3)
+```
+
+###
+
+A version of the data from Barfort et al (2020) is available in the `governors` tibble.
+
+### Exercise 6
+
+In the Console, type `?governors`, and paste the Description below.
+
+```{r introduction-6}
+question_text(NULL,
+	answer(NULL, correct = TRUE),
+	allow_retry = TRUE,
+	try_again_button = "Edit Answer",
+	incorrect = NULL,
+	rows = 8)
+```
+
+### 
+
+We will be working with information about candidates for governor in the United States. The data was collected for “[Longevity Returns to Political Office](https://doi.org/10.1017/psrm.2019.63)” by Sebastian Barfort, Robert Klemmensen, and Erik Gahner Larsen ([pdf](https://github.com/PPBDS/primer.data/blob/master/inst/papers/governors.pdf)).
+
+### Exercise 7
+
+Define a causal effect.
+
+```{r introduction-7}
+question_text(NULL,
+	message = "A causal effect is the difference between two potential outcomes.",
+	answer(NULL, correct = TRUE),
+	allow_retry = FALSE,
+	incorrect = NULL,
+	rows = 6)
+```
+
+### 
+
+According to the Rubin Causal Model, there must be two (or more) potential outcomes for any discussion of causation to make sense. This is simplest to discuss when the treatment only has two different values, thereby generating only two potential outcomes. 
+
+### Exercise 8
+
+What is the fundamental problem of causal inference?
+
+```{r introduction-8}
+question_text(NULL,
+	message = "The fundamental problem of causal inference is that we can only observe one potential outcome.",
+	answer(NULL, correct = TRUE),
+	allow_retry = FALSE,
+	incorrect = NULL,
+	rows = 6)
+```
+
+### 
+
+If the treatment variable is continuous (like a lottery payment), then there are lots and lots of potential outcomes, one for each possible value of the treatment variable. 
+
+## Wisdom
+### 
+
+*It is not the answer that enlightens, but the question.* - Eugene Ionesco
+
+Our question:
+
+> *How long do political candidates live after the election?*
+
+Note that this question is not exactly the same as the question with which we ended the previous section. And that is OK! Your data science workflow needs to be flexible, to adjust to the data as you work with it and the models as you create them.
+
+### Exercise 1
+
+In your own words, describe the key components of Wisdom when working on a data science problem.
+
+```{r wisdom-1}
+question_text(NULL,
+    message = "Wisdom requires a question, the creation of a Preceptor Table, and an examination of our data.",
+    answer(NULL, correct = TRUE),
+    allow_retry = FALSE,
+    incorrect = NULL,
+    rows = 3)
+```
+
+###
+
+*The combination of some data and an aching desire for an answer does not ensure that a reasonable answer can be extracted from a given body of data.* -- John W. Tukey
+
+
+### Exercise 2
+
+Longevity i.e., how long people live, is the broad topic of this tutorial. Given this topic, which variable in `governors` should we use as our outcome variable? 
+
+```{r wisdom-2}
+question_text(NULL,
+	message = "It would be most logical to use `lived_after`.",
+	answer(NULL, correct = TRUE),
+	allow_retry = FALSE,
+	incorrect = NULL,
+	rows = 2)
+```
+
+### 
+
+We will use `lived_after` as our outcome variable. Behind the scenes, we have also filtered the data to only include elections after 1945, removing earlier elections where data quality is less relevant.
+
+```{r}
+ggplot(x, aes(x = lived_after)) +
+  geom_histogram(fill = "steelblue", color = "black", bins = 30) +  # Adjusting the colors and bin size
+  labs(
+    title = "Distribution of Years Lived After Election",
+    x = "Years Lived After Election",
+    y = "Count"
+  ) +
+  theme_minimal(base_size = 15) +  # Increasing the base text size for readability
+  theme(
+    plot.title = element_text(hjust = 0.5, face = "bold", size = 18),  # Centering and styling the title
+    axis.title.x = element_text(size = 14),  # Adjusting x-axis label size
+    axis.title.y = element_text(size = 14),  # Adjusting y-axis label size
+    axis.text = element_text(size = 12)  # Adjusting axis text size
+  ) +
+  scale_x_continuous(breaks = seq(0, max(x$lived_after, na.rm = TRUE), by = 5))  # Custom breaks for x-axis
+```
+
+### Exercise 3
+
+Let's imagine a brand new variable which **does not exist** in the data. This variable should be binary, meaning that it only takes on one of two values. It should also, at least in theory, be manipulable. In other words, if the value of the variable is "3," or whatever, then it generates one potential outcome and if it is "9," or whatever, it generates another potential outcome.
+
+Describe this imaginary variable and how might we manipulate its value.
+
+For now, ignore the actual treatment variable `win_margin` which we will be using later in the analysis. The point of this exercise is to reinforce our understanding of the [Rubin Causal Model](https://ppbds.github.io/primer/rubin-causal-model.html).
+
+
+```{r wisdom-3}
+question_text(NULL,
+	message = "Imagine a variable called `health_screening` which has a value of `1` if the candidate received annual preventive health screenings and `0` if they did not. In a policy experiment, an employer or insurer could randomly offer this benefit to some employees — in our case, politicians — and track longevity outcomes.",
+	answer(NULL, correct = TRUE),
+	allow_retry = FALSE,
+	incorrect = NULL,
+	rows = 6)
+```
+
+### 
+
+Any data set can be used to construct a causal model as long as there is at least one covariate that we can, at least in theory, manipulate. It does not matter whether or not anyone did, in fact, manipulate it. 
+
+### Exercise 4
+
+Given our (imaginary) treatment variable `health_screening`, how many potential outcomes are there for each candidate? Explain why.
+
+```{r wisdom-4}
+question_text(NULL,
+	message = "There are two potential outcomes because the treatment variable `health_screening` takes on two possible values: receiving annual preventive health screenings (1) or not receiving them (0).",
+	answer(NULL, correct = TRUE),
+	allow_retry = FALSE,
+	incorrect = NULL,
+	rows = 6)
+```
+
+### 
+
+The same data set can be used to create, separately, lots and lots of different models, both causal and predictive. We can just use different outcome variables and/or specify different treatment variables. This is a *conceptual* framework we apply to the data. It is never inherent in the data itself.
+
+### Exercise 5
+
+In a few sentences, specify the two different values for the imaginary treatment variable `health_screening`, for a single unit, guess at the potential outcomes which would result, and then determine the causal effect for that unit given those guesses.
+
+```{r wisdom-5}
+question_text(NULL,
+	message = "For a given candidate, assume that the value of the treatment variable might be 1, meaning they received annual preventive health screenings, or 0, meaning they did not. If the candidate gets 1, then years lived after the election would be 27. If the candidate gets 0, then years lived would be 22. The causal effect on the outcome of a treatment of 1 versus 0 is 27 - 22 --- i.e., the difference between two potential outcomes --- which equals 5, which is the causal effect for this candidate.",
+	answer(NULL, correct = TRUE),
+	allow_retry = FALSE,
+	incorrect = NULL,
+	rows = 6)
+```
+
+### 
+
+A causal effect is defined as the *difference* between two potential outcomes. Keep two things in mind.
+
+First, *difference* does not necessarily mean *subtraction*. Many potential outcome are not numbers. For example, it makes no sense to subtract a potential outcome, like who you would vote for if you saw a Facebook ad, from another potential outcome, like who you vote for if you did not see the ad.
+
+Second, even in the case of numeric outcomes, you can’t simply say the effect is 10 without specifying the order of subtraction, although there is, perhaps, a default sense in which the causal effect is defined as potential outcome under treatment minus potential outcome under control.
+
+### Exercise 6
+
+Let's consider a *predictive* model. Which variable in `governors` do you think might have an important connection to `lived_after`? 
+
+```{r wisdom-6}
+question_text(NULL,
+	message = "The covariate that is the most connected to `lived_after` is probably `election_age`. If this were a predictive model, we would seek to predict how long a governor would live based, among other things, on what age they were when the election happened.",
+	answer(NULL, correct = TRUE),
+	allow_retry = FALSE,
+	incorrect = NULL,
+	rows = 2)
+```
+
+### 
+
+With a predictive model, each individual unit has only one observed outcome. There are not two potential outcomes because none of the covariates are treated as treatment variables. Instead, all covariates are assumed to be "fixed."
+
+Predictive models have no "treatments" -—- only covariates.
+
+### Exercise 7
+
+Specify two different groups of governors which have specific values for `election_age` and which might have different average values for the `lived_after`.  
+
+```{r wisdom-7}
+question_text(NULL,
+	message = "For governors, the covariate age can be used to define two distinct groups. Group 1 consists of younger candidates aged 40-50. This group is expected to have a higher average `lived_after`, perhaps around 40 years. Group 2 includes older candidates aged 60-70. This group is expected to have a lower average `lived_after`, probably closer to 20 years. ",
+	answer(NULL, correct = TRUE),
+	allow_retry = FALSE,
+	incorrect = NULL,
+	rows = 6)
+```
+
+### 
+
+In predictive models, do not use words like "cause," "influence," "impact," or anything else which suggests causation. The best phrasing is in terms of "differences" between groups of units with different values for a covariate of interest.
+
+Any causal connection means exploring the *within row* difference between two potential outcomes. There's no need to consider other rows.
+
+### Exercise 8
+
+Write a predictive question which connects the outcome variable `lived_after` to `election_age`, the covariate of interest. 
+
+```{r wisdom-8}
+question_text(NULL,
+	message = "What is the difference is years lived after the election between younger candidates and older candidates?",
+	answer(NULL, correct = TRUE),
+	allow_retry = FALSE,
+	incorrect = NULL,
+	rows = 6)
+```
+
+### 
+
+This is the first version of the question. We will now create a Preceptor Table to answer the question. We may then revise the question given complexities discovered in the data. We then update the question and the Preceptor Table. And so on.
+
+### Exercise 9
+
+Define a Preceptor Table.
+
+```{r wisdom-9}
+question_text(NULL,
+	message = "A Preceptor Table is the smallest possible table of data with rows and columns such that, if there is no missing data, we can easily calculate the quantity of interest.",
+	answer(NULL, correct = TRUE),
+	allow_retry = FALSE,
+	incorrect = NULL,
+	rows = 6)
+```
+
+### 
+
+The Preceptor Table does not include all the covariates which you will eventually include in your model. It only includes covariates which you need to answer your question.
+
+### Exercise 10
+
+Describe the key components of Preceptor Tables in general, without worrying about this specific problem. Use words like "units," "outcomes," and "covariates."
+
+```{r wisdom-10}
+question_text(NULL,
+	message = "The rows of the Preceptor Table are the units. The outcome is at least one of the columns. If the problem is causal, there will be at least two (potential) outcome columns. The other columns are covariates. If the problem is causal, at least one of the covariates will be considered a treatment.",
+	answer(NULL, correct = TRUE),
+	allow_retry = FALSE,
+	incorrect = NULL,
+	rows = 6)
+```
+
+### 
+
+This problem is predictive, at least at first blush. We are trying to determine how long candidates live after the election, knowing that different sorts of candidates, as defined by various covariates, have different life expectancies.
+
+### Exercise 11
+
+What are the units for this problem?
+
+```{r wisdom-11}
+question_text(NULL,
+	message = "The units are individual gubernatorial candidates.",
+	answer(NULL, correct = TRUE),
+	allow_retry = FALSE,
+	incorrect = NULL,
+	rows = 6)
+```
+
+### 
+
+Specifying the Preceptor Table forces us to think clearly about the units and outcomes implied by the question. The resulting discussion sometimes leads us to modify the question with which we started. No data science project follows a single direction. We always backtrack. There is always dialogue.
+
+We model units, but we only really care about aggregates.
+
+### Exercise 12
+
+What is the outcome variable for this problem?
+
+```{r wisdom-12}
+question_text(NULL,
+	message = "The outcome variable is `lived_after`, which measures how many years a governor lived after the election.",
+	answer(NULL, correct = TRUE),
+	allow_retry = FALSE,
+	incorrect = NULL,
+	rows = 6)
+```
+
+### 
+
+The outcome variable that we really care about is often not the outcome variable which our data includes. This compromise --- working with what we *have* rather than what we really *want* --- is a part of most data science work in the real world.
+
+### Exercise 13
+<!-- Differentiate from exercise 6? It asks "Let’s consider a predictive model. Which variable in governors do you think might have an important connection to lived_after?" Here I propose making the student imagine a covariate not in the data But, not sure if that's a great idea. Change in template_tutorial?? -->
+Imagine a covariate which you think might be useful for this problem that is not included in the data?
+
+```{r wisdom-13}
+question_text(NULL,
+	message = "Longevity of someone's parents is a good predictor of their own lifespan. A polygenic risk score for longevity might also be useful.",
+	answer(NULL, correct = TRUE),
+	allow_retry = FALSE,
+	incorrect = NULL,
+	rows = 6)
+```
+
+### 
+
+The term "covariates" is used in at least three ways in data science. First, it is all the variables which might be useful, regardless of whether or not we have the data. Second, it is all the variables for which we have data. Third, it is the set of variables in the data which we end up using in the model.
+
+### Exercise 14
+
+What are the treatments, if any, for this problem?
+
+```{r wisdom-14}
+question_text(NULL,
+	message = "Since this is a predictive model, there are no treatments.",
+	answer(NULL, correct = TRUE),
+	allow_retry = FALSE,
+	incorrect = NULL,
+	rows = 6)
+```
+
+### 
+
+Remember that a treatment is just another covariate which, for the purposes of this specific problem, we are assuming can be manipulated, thereby, creating two or more different potential outcomes for each unit.
+
+### Exercise 15
+
+What moment in time does the Preceptor Table refer to?
+
+```{r wisdom-15}
+question_text(NULL,
+	message = "The Preceptor Table refers to now, today, because we are trying to help someone make a decision about running for office. We want to help them better understand the likelihood of various outcomes.",
+	answer(NULL, correct = TRUE),
+	allow_retry = FALSE,
+	incorrect = NULL,
+	rows = 6)
+```
+
+### 
+
+A Preceptor Table can never really refer to an exact instant in time since nothing is instantaneous in this fallen world.
+
+In almost all practical problems, the data was gathered at a time other than that to which the Preceptor Table refers.
+
+```{r}
+ggplot(x, aes(x = election_age, y = lived_after, color = sex)) +
+  geom_point() + 
+  labs(title = "Years Lived After Election vs. Election Age",
+       x = "Election Age",
+       y = "Years Lived After Election") +
+  theme_minimal()
+```
+
+> *You can never look at the data too much. -- Mark Engerman*
+
+### Exercise 16
+
+Describe in words the Preceptor Table for this problem.
+
+```{r wisdom-16}
+question_text(NULL,
+	message = "The rows (units) are individual candidates for political office. The outcome is the number of years lived after the election. Key covariates include sex, age at the election, and party.",
+	answer(NULL, correct = TRUE),
+	allow_retry = FALSE,
+	incorrect = NULL,
+	rows = 6)
+```
+
+### 
+
+The Preceptor Table for this problem looks something like this:
+
+```{r}
+#| echo: false
+
+tibble(ID = c("Candidate 1", "Candidate 2", "...", "Candidate 10", "Candidate 11", "...", "Candidate N"),
+       lived_after = c("12", "7", "...", "10", "11", "...", "6"),
+       year_elected = c("2000", "2012", "...", "2012", "2024", "...", "2050"),
+       election_age = c("63", "47", "...", "52", "75", "...", "68"),
+       sex = c("Female", "Male", "...", "Female", "Female", "...", "Male")) |>
+  gt() |>
+  tab_header(title = "Preceptor Table") |>
+  cols_label(ID = md("ID"),
+             lived_after = md("Years Lived After"),
+             year_elected = md("Year of Election"),
+             election_age = md("Age at Election"),
+             sex = md("Sex")) |>
+  tab_style(cell_borders(sides = "right"),
+            location = cells_body(columns = c(ID))) |>
+  tab_style(style = cell_text(align = "left", v_align = "middle", size = "large"), 
+            locations = cells_column_labels(columns = c(ID))) |>
+  cols_align(align = "center", columns = everything()) |>
+  cols_align(align = "left", columns = c(ID)) |>
+  fmt_markdown(columns = everything()) |>
+  tab_spanner(label = "Outcome", columns = c(lived_after)) |>
+  tab_spanner(label = "Covariates", columns = c(sex, year_elected, election_age))
+```
+
+Like all aspects of a data science problem, the Preceptor Table evolves as we continue our work. 
+
+### Exercise 17
+
+What is the narrow, specific question we will try to answer?
+
+```{r wisdom-17}
+question_text(NULL,
+	message = "How many years do gubernatorial candidates live after thier election?",
+	answer(NULL, correct = TRUE),
+	allow_retry = FALSE,
+	incorrect = NULL,
+	rows = 6)
+```
+
+###
+
+The answer to this question is your "Quantity of Interest." It is OK if your question differs from ours. Many similar questions lead to the creation of the same model. For the purpose of this tutorial, let's use our question.
+
+Our Quantity of Interest might appear too specific, too narrow to capture the full complexity of the topic. There are many, many numbers in which we are interested, many numbers that we want to know. But we don't need to list them all here! We just need to choose one of them since our goal is just to have a specific question which helped to guide us in the creation of the Preceptor Table and, soon, the model. 
+
+### Exercise 18
+
+Over the course of this tutorial, we will be creating a summary paragraph. The purpose of this exercise is to write the first two sentences of that paragraph.
+
+The first sentence is a general statement about the overall topic, mentioning both the general class of the outcome variable and of at least one of the covariates. It is **not** connected to the initial "Imagine that you are XX" which set the stage for this project. That sentence can be rhetorical. It can be trite, or even a platitude. The purpose of the sentence is to let the reader know, gently, about our topic.
+
+The second sentence does two things. First, it introduces the data source. Second, it introduces the specific question. The sentence can't be that long. Important aspects of the data include when/where it was gathered, how many observations it includes and the organization (if famous) which collected it.
+
+Type your two sentences below.
+
+```{r wisdom-18}
+question_text(NULL,
+	message = "Running for political office is stressful. Using data from over 1,000 candidates for governor since 1945 in the United States, we seek to create a model for forecasting longevity for gubernatorial candidates.",
+	answer(NULL, correct = TRUE),
+	allow_retry = FALSE,
+	incorrect = NULL,
+	rows = 6)
+```
+
+### 
+
+Read our answer. It will not be the same as yours. You can, if you want, change your answer to incorporate some of our ideas. Do not copy/paste our answer exactly. Add your two sentences, edited or otherwise, to your QMD, `Cmd/Ctrl + Shift + K`, and then commit/push.
+
+## Justice
+### 
+
+*The arc of the moral universe is long, but it bends toward justice.* - Theodore Parker
+
+### Exercise 1
+
+In your own words, name the five key components of Justice when working on a data science problem.
+
+```{r justice-1}
+question_text(NULL,
+	message = "Justice concerns the Population Table and the four key assumptions which underlie it: validity, stability, representativeness, and unconfoundedness.",
+	answer(NULL, correct = TRUE),
+	allow_retry = FALSE,
+	incorrect = NULL,
+	rows = 6)
+```
+
+### 
+
+Justice is about concerns that you (or your critics) might have, reasons why the model you create might not work as well as you hope. 
+
+### Exercise 2
+
+In your own words, define "validity" as we use the term.
+
+```{r justice-2}
+question_text(NULL,
+	message = "Validity is the consistency, or lack thereof, in the columns of the data set and the corresponding columns in the Preceptor Table.",
+	answer(NULL, correct = TRUE),
+	allow_retry = FALSE,
+	incorrect = NULL,
+	rows = 6)
+```
+
+### 
+
+Validity is always about the *columns* in the Preceptor Table and the data. Just because columns from these two different tables have the same *name* does not mean that they are the same *thing*.
+
+### Exercise 3
+
+Provide one reason why the assumption of validity might not hold for the outcome variable or for one of the covariates. Use the words "column" or "columns" in your answer.
+
+```{r justice-3}
+question_text(NULL,
+	message = "The outcome column in our data records the actual number of years each historical candidate lived after their election — a value we can only know for candidates who have already died. But the outcome column in the Preceptor Table represents the longevity of present-day candidates, who benefit from modern medicine. These two columns may not be measuring the same underlying concept.",
+	answer(NULL, correct = TRUE),
+	allow_retry = FALSE,
+	incorrect = NULL,
+	rows = 6)
+```
+
+### 
+
+In order to consider the Preceptor Table and the data to be drawn from the same population, the columns from one must have a *valid correspondence* with the columns in the other. Validity, if true (or at least reasonable), allows us to construct the Population Table, which is the first step in Justice.
+
+Because we control the Preceptor Table and, to a lesser extent, the original question, we can adjust those variables to be “closer” to the data that we actually have. This is another example of the iterative nature of data science. If the data is not close enough to the question, then we check with our boss/colleague/customer to see if we can modify the question in order to make the match between the data and the Preceptor Table close enough for validity to hold.
+
+Despite these potential problems, we will assume that validity holds since it, mostly (?), does.
+
+### Exercise 4
+
+Provide one reason why the assumption of stability might not be true in this case.
+
+```{r justice-4}
+question_text(NULL,
+	message = "Running for election as a woman was a very different proposition in 1950 than it is today, so the relationship between sex and years lived after the election may have changed.",
+	answer(NULL, correct = TRUE),
+	allow_retry = FALSE,
+	incorrect = NULL,
+	rows = 6)
+```
+
+###
+
+The longer the time period covered by the Preceptor Table and the data, the more suspect the assumption of stability becomes.
+
+### Exercise 5
+
+In your own words, define a Population Table.
+
+```{r justice-5}
+question_text(NULL,
+	message = "The Population Table includes a row for each unit/time combination in the underlying population from which both the Preceptor Table and the data are drawn.",
+	answer(NULL, correct = TRUE),
+	allow_retry = FALSE,
+	incorrect = NULL,
+	rows = 6)
+```
+
+### 
+
+The Population Table is almost always much bigger than the combination of the Preceptor Table and the data because, if we can really assume that both the Preceptor Table and the data are part of the same population, then that population must cover a broad universe of time and units since the Preceptor Table and the data are, themselves, often far apart from each other.
+
+### Exercise 6
+
+Specify the unit/time combinations which define each row in this Population Table.
+
+```{r justice-6}
+question_text(NULL,
+	message = "Each row in the Population Table represents one political candidate in one specific election year. This means the unit is a candidate, and the time is defined by the year they ran for office. If a candidate runs in multiple elections, they will appear in the table once for each year they ran.",
+	answer(NULL, correct = TRUE),
+	allow_retry = FALSE,
+	incorrect = NULL,
+	rows = 6)
+```
+
+### 
+
+The exact time period used --- whether hour, day, month, year, or whatever --- is relatively arbitrary. The important thing to note is that the Population Table, unlike the Preceptor Table, covers a period of time over which things may change.
+
+Here is our Population Table:
+
+```{r}
+x |> 
+  head() |> 
+  gt()
+```
+
+It was created with:
+
+```
+x |> 
+  head() |> 
+  gt()
+```
+
+
+### Exercise 7
+
+In your own words, define the assumption of "stability" when employed in the context of data science.
+
+```{r justice-7}
+question_text(NULL,
+	message = "Stability means that the relationship between the columns in the Population Table is the same for three categories of rows: the data, the Preceptor Table, and the larger population from which both are drawn.",
+	answer(NULL, correct = TRUE),
+	allow_retry = FALSE,
+	incorrect = NULL,
+	rows = 6)
+```
+
+### 
+
+*The longer the time period covered by the Preceptor Table (and the data), the more suspect the assumption of stability becomes.* This is why we have removed elections from before 1945 from our data — the further back in time we go, the less stable the relationship between our covariates and longevity becomes.
+
+### Exercise 8
+
+Provide one reason why the assumption of stability might not be true in this case.
+
+```{r justice-8}
+question_text(NULL,
+	message = "Running for election as a woman was a very different proposition in 1950 than it is today, so the relationship between sex and years lived after the election may have changed.",
+	answer(NULL, correct = TRUE),
+	allow_retry = FALSE,
+	incorrect = NULL,
+	rows = 6)
+```
+
+### 
+
+A change in time or the distribution of the data does not, in and of itself, demonstrate a violation of stability. Stability is about the parameters: $\beta_0$, $\beta_1$ and so on. Stability means these parameters are the same in the data as they are in the population as they are in the Preceptor Table.
+
+### Exercise 9
+
+We use our data to make inferences about the overall population. We use information about the population to make inferences about the Preceptor Table: `Data -> Population -> Preceptor Table`. In your own words, define the assumption of "representativeness" when employed in the context of data science.
+
+```{r justice-9}
+question_text(NULL,
+	message = "Representativeness concerns two relationships in the Population Table: between the data and the population, and between the population and the Preceptor Table. Both depend on the *selection mechanism* — how units end up in each. Representativeness holds when neither mechanism systematically excludes certain types of units.",
+	answer(NULL, correct = TRUE),
+	allow_retry = FALSE,
+	incorrect = NULL,
+	rows = 6)
+```
+
+### 
+
+Ideally, we would like both the Preceptor Table *and* our data to be random samples from the population. Sadly, this is almost never the case.
+
+### Exercise 10
+
+We do not use the data, directly, to estimate missing values in the Preceptor Table. Instead, we use the data to learn about the overall population. Provide one reason, involving the relationship between the data and the population, for why the assumption of representativeness might not be true in this case. 
+
+```{r justice-10}
+question_text(NULL,
+	message = "We are interested in all sorts of political offices: mayors, governors, senators and so on. Ideally, we would like our data to include people who have run for all these positions. But our data only includes candidates for governor. It is not representative of the larger population.",
+	answer(NULL, correct = TRUE),
+	allow_retry = FALSE,
+	incorrect = NULL,
+	rows = 6)
+```
+
+### 
+
+The reason that representativeness is important is because, when it is violated, the estimates for the model parameters might be biased. 
+
+### Exercise 11
+
+We use information about the population to make inferences about the Preceptor Table. Provide one reason, involving the relationship between the Population and the Preceptor Table, for why the assumption of representativeness might not be true in this case.
+
+```{r justice-11}
+question_text(NULL,
+	message = "Even if our data about governors is representative of the larger population of all political offices, our Preceptor Table is not a random draw from that population. We are only interested in mayors because the person who came to us is considering a mayoral campaign. Mayors are not a representative sample of all candidates.",
+	answer(NULL, correct = TRUE),
+	allow_retry = FALSE,
+	incorrect = NULL,
+	rows = 6)
+```
+
+### 
+
+Stability looks across time periods. Representativeness looks within time periods, for the most part. 
+
+### Exercise 12
+
+In your own words, define the assumption of "unconfoundedness" when employed in the context of data science.
+
+```{r justice-12}
+question_text(NULL,
+	message = "Unconfoundedness means that the treatment assignment is independent of the potential outcomes, when we condition on pre-treatment covariates.",
+	answer(NULL, correct = TRUE),
+	allow_retry = FALSE,
+	incorrect = NULL,
+	rows = 6)
+```
+
+### 
+
+This assumption is only relevant for causal models. We describe a model as "confounded" if this is not true. The easiest way to ensure unconfoundedness is to assign treatment randomly.
+
+### Exercise 13
+
+A statistical model consists of two parts: the *probability family* and the *link function*. The probability family is the probability distribution which generates the randomness in our data. The link function is the mathematical formula which links our data to the unknown parameters in the probability distribution. 
+
+Add `library(tidymodels)` to the QMD file.
+
+Place your cursor in the QMD file on the `library(tidymodels)` line. Use `Cmd/Ctrl + Enter` to execute that line.
+
+Note that this causes `library(tidymodels)` to be copied down to the Console and then executed. 
+
+CP/CR.
+
+```{r justice-13}
+question_text(NULL,
+	answer(NULL, correct = TRUE),
+	allow_retry = TRUE,
+	try_again_button = "Edit Answer",
+	incorrect = NULL,
+	rows = 3)
+```
+
+###
+
+The probability family is determined by the outcome variable $Y$. 
+
+Since $Y$ is a continuous variable, the probability family is Normal, also known as Gaussian.
+
+$$Y \sim N(\mu, \sigma^2)$$
+
+### Exercise 14
+
+Add `library(broom)` to the QMD file.
+
+Place your cursor in the QMD file on the `library(broom)` line. Use `Cmd/Ctrl + Enter` to execute that line.
+
+Note that this causes `library(broom)` to be copied down to the Console and then executed. 
+
+CP/CR.
+
+```{r justice-14}
+question_text(NULL,
+	answer(NULL, correct = TRUE),
+	allow_retry = TRUE,
+	try_again_button = "Edit Answer",
+	incorrect = NULL,
+	rows = 3)
+```
+
+###
+
+The link function, the basic mathematical structure of the model, is (mostly) determined by the type of outcome variable. 
+
+For a continuous outcome variable, we use a linear model for the link function:
+
+$$\mu = \beta_0 + \beta_1 X_1 + \beta_2 X_2 + \ldots$$
+
+### Exercise 15
+
+Use AI to come up with a $\LaTeX$ representation of the mathematical structure of the model, with $Y$ as the dependent variable and $X_1$, $X_2$ and so on as the independent variables. This version will not have the values of any parameters since we have not, yet, estimated them. Confirm that the $\LaTeX$ code works by placing it in your QMD and then rendering. Paste that $\LaTeX$ code below.
+
+```{r justice-15}
+question_text(NULL,
+	answer(NULL, correct = TRUE),
+	allow_retry = TRUE,
+	try_again_button = "Edit Answer",
+	incorrect = NULL,
+	rows = 5)
+```
+
+###
+
+Our answer:
+
+$$Y = \beta_0 + \beta_1 X_1 + \beta_2 X_2 + \cdots + \beta_n X_n + \epsilon$$
+
+with $\epsilon \sim \mathcal{N}(0, \sigma^2)$.
+
+Which we created with $\LaTeX$ code that looks like this:
+
+````
+$$Y = \beta_0 + \beta_1 X_1 + \beta_2 X_2 + \cdots + \beta_n X_n + \epsilon$$
+
+with $\epsilon \sim \mathcal{N}(0, \sigma^2)$.
+````
+
+We use generic variables --- $Y$, $X_1$ and so on --- because our purpose is to describe the general mathematical structure of the model, independent of the specific variables we will eventually choose to use.
+
+Having decided on the basic mathematical structure of the model, a choice mostly driven by the distribution of our outcome variable, we now turn toward estimating the model.
+
+### Exercise 16
+
+Write one sentence which highlights a potential weakness in your model. This will almost always be derived from possible problems with the assumptions discussed above. We will add this sentence to our summary paragraph. So far, our version of the summary paragraph looks like this:
+
+> Running for political office is stressful. Using data from over 1,000 candidates for governor since 1945 in the United States, we seek to create a model for forecasting longevity for political candidates.
+
+Of course, your version will be somewhat different.
+
+```{r justice-16}
+question_text(NULL,
+	message = "Because our data includes only candidates for governor, our estimated model might not work well when applied to candidates for other positions, like mayor.",
+	answer(NULL, correct = TRUE),
+	allow_retry = FALSE,
+	incorrect = NULL,
+	rows = 6)
+```
+
+### 
+
+Add a weakness sentence to the summary paragraph in your QMD. You can modify your paragraph as you see fit, but do not copy/paste our answer exactly. `Cmd/Ctrl + Shift + K`, and then commit/push.
+
+
+## Courage
+### 
+
+*Courage is being scared to death, but saddling up anyway.* - John Wayne
+
+### Exercise 1
+
+In your own words, describe the components of the virtue of Courage for analyzing data.
+
+```{r courage-1}
+question_text(NULL,
+	message = "Courage creates the data generating mechanism.",
+	answer(NULL, correct = TRUE),
+	allow_retry = FALSE,
+	incorrect = NULL,
+	rows = 6)
+```
+
+### 
+
+Having decided on the basic mathematical structure of the model at the end of *Justice*, a choice mostly driven by the distribution of our outcome variable, we now turn toward estimating the model.
+
+### Exercise 2
+
+Because our outcome variable is continuous, start to create the model by using `linear_reg(engine = "lm")`.
+
+```{r courage-2, exercise = TRUE}
+
+```
+
+```{r courage-2-hint-1, eval = FALSE}
+linear_reg(engine = "lm")
+```
+
+```{r courage-2-test, include = FALSE}
+linear_reg(engine = "lm")
+```
+
+### 
+
+The *[tidymodels](https://www.tidymodels.org/)* framework is the most popular one in the R world for estimating models. *[Tidy Modeling with R](https://www.tmwr.org/)* by Max Kuhn and Julia Silge is a great introduction.
+
+### Exercise 3
+
+Continue the pipe to `fit(lived_after ~ sex, data = x)`.
+
+```{r courage-3, exercise = TRUE}
+
+```
+
+<button onclick = "transfer_code(this)">Copy previous code</button>
+
+```{r courage-3-hint-1, eval = FALSE}
+... |> 
+  fit(... ~ sex, ... = x)
+```
+
+```{r courage-3-test, include = FALSE}
+linear_reg(engine = "lm") |> 
+  fit(lived_after ~ sex, data = x)
+```
+
+### 
+
+````
+Call:
+stats::lm(formula = lived_after ~ sex, data = data)
+
+Coefficients:
+(Intercept)      sexMale  
+      16.00        12.45  
+````
+
+Recall that a categorical variable (whether character or factor) like `sex` is turned into a $0/1$ "dummy" variable which is then re-named something like $sexMale$. After all, we can't have words --- like "Male" or "Female" --- in a mathematical formula, hence the need for dummy variables.
+
+### Exercise 4
+
+Continue the pipe with `tidy(conf.int = TRUE)`.
+
+```{r courage-4, exercise = TRUE}
+
+```
+
+<button onclick = "transfer_code(this)">Copy previous code</button>
+
+```{r courage-4-hint-1, eval = FALSE}
+...
+  tidy(... = TRUE)
+```
+
+```{r courage-4-test, include = FALSE}
+linear_reg(engine = "lm")|> 
+  fit(lived_after ~ sex, data = x) |> 
+  tidy(conf.int = TRUE)
+```
+
+### 
+
+````
+  term        estimate std.error statistic      p.value conf.low conf.high
+  <chr>          <dbl>     <dbl>     <dbl>        <dbl>    <dbl>     <dbl>
+1 (Intercept)     16.0      2.90      5.52 0.0000000419    10.3       21.7
+2 sexMale         12.4      2.93      4.25 0.0000228        6.71      18.2
+````
+
+If the candidate is female, then the value of `sexMale` is 0, meaning that the expected value for years lived after the election is about 16. However, if the candidate is male, then `sexMale` equals 1 and the expected years lived is 28.4.
+
+And that is surprising! Normally, we think of women as living longer than men. Perhaps there is something that this model leaves out?
+
+### Exercise 5
+
+Change the call to `fit()` to `fit(lived_after ~ region, data = x)` and drop the call to `tidy()`.
+
+```{r courage-5, exercise = TRUE}
+
+```
+
+<button onclick = "transfer_code(this)">Copy previous code</button>
+
+```{r courage-5-hint-1, eval = FALSE}
+... |> 
+  fit(... ~ region, ... = x)
+```
+
+```{r courage-5-test, include = FALSE}
+linear_reg(engine = "lm") |> 
+  fit(lived_after ~ region, data = x) 
+```
+
+### 
+
+````
+Call:
+stats::lm(formula = lived_after ~ region, data = data)
+
+Coefficients:
+    (Intercept)  regionNortheast      regionSouth       regionWest  
+        28.3983          -0.2544          -0.2685          -0.2426  
+````
+
+The same dummy variable approach applies to a categorical covariate with $N$ values. Such cases produce $N-1$ dummy $0/1$ variables. The presence of an intercept in most models means that we can't have $N$ categories. The "missing" category is incorporated into the intercept. Since `region` has four values --- "Midwest," "Northeast," "South," and "West"  --- the model creates three 0/1 dummy variables, giving them names like $regionNortheast$ and $regionSouth$. The results for the *first* category (which is "Midwest" in this case)  are included in the intercept, which becomes the reference case, relative to which the other coefficients are applied.
+
+### Exercise 6
+
+Add back the call to `tidy(conf.int = TRUE)`.
+
+```{r courage-6, exercise = TRUE}
+
+```
+
+<button onclick = "transfer_code(this)">Copy previous code</button>
+
+```{r courage-6-hint-1, eval = FALSE}
+... |> 
+  fit(lived_after ~ region, data = x) |> 
+  tidy(... = TRUE)
+```
+
+```{r courage-6-test, include = FALSE}
+linear_reg(engine = "lm")|> 
+  fit(lived_after ~ region, data = x) |> 
+  tidy(conf.int = TRUE)
+```
+
+### 
+
+````
+ term            estimate std.error statistic   p.value conf.low conf.high
+  <chr>              <dbl>     <dbl>     <dbl>     <dbl>    <dbl>     <dbl>
+1 (Intercept)       28.4       0.769    36.9   3.90e-194    26.9      29.9 
+2 regionNortheast   -0.254     1.18     -0.216 8.29e-  1    -2.56      2.05
+3 regionSouth       -0.269     1.10     -0.244 8.07e-  1    -2.43      1.89
+4 regionWest        -0.243     1.12     -0.216 8.29e-  1    -2.44      1.96
+````
+
+Candidates from the Midwest, the category for which a dummy variable is not created (because it is the first alphabetically), live 28.4 years on average after the election. But candidates from other regions live about that long as well. Notice how the 95% confidence intervals for those coefficients include 0. So, we probably don't need to include `region` in the model.
+
+### Exercise 7
+
+Change the call to `fit()` to `fit(lived_after ~ sex + election_age, data = x)`.
+
+```{r courage-7, exercise = TRUE}
+
+```
+
+<button onclick = "transfer_code(this)">Copy previous code</button>
+
+```{r courage-7-hint-1, eval = FALSE}
+... |> 
+  fit(... ~ sex + election_age, ... = x) |>
+  ...
+```
+
+```{r courage-7-test, include = FALSE}
+linear_reg(engine = "lm") |> 
+  fit(lived_after ~ sex + election_age, data = x) |> 
+  tidy(conf.int = TRUE)
+```
+
+### 
+
+````
+term         estimate std.error statistic  p.value conf.low conf.high
+(Intercept)    66.0      3.33       19.8  6.15e-75   59.4      72.5  
+sexMale         6.21     2.46        2.53 1.16e- 2    1.39     11.0  
+election_age   -0.848    0.0388    -21.9  4.44e-88   -0.924    -0.772
+````
+
+The more variables we add, the more difficult it is to interpret the meaning of any particular coefficient. But interpretation also becomes less important. We don't really care about coefficients. We care about using our model to estimate quantities of interest.
+
+In this case, the coefficient of `sexMale` is 50% lower than before, presumably because female candidates tend to be older and, by including `election_age`, we have adjusted for that difference.
+
+### Exercise 8
+
+Behind the scenes of this tutorial, an object called `fit_years` has been created which is the result of the code above. Type `fit_years` and hit "Run Code." This generates the same results as using `print(fit_years)`.
+
+<!-- DK: AR: please fix. fit years has age_lived = sex * age_election instead of age_lived = sex + age_election -->
+
+```{r courage-8, exercise = TRUE}
+
+```
+
+```{r courage-8-hint-1, eval = FALSE}
+fit_years
+```
+
+```{r courage-8-test, include = FALSE}
+fit_years
+```
+
+
+### 
+
+In data science, **we deal with words, math, and code, but the most important of these is code.** We created the mathematical structure of the model and then wrote a model formula in order to estimate the unknown parameters. 
+
+### Exercise 9
+
+We need `fit_years` to exit in Console World. Copy/paste this code into the Console and execute it.
+
+<!-- DK: Fix. AR: following code does not work in student's candidates.qmd since they do not yet have `x` -->
+
+````
+fit_years <- linear_reg(engine = "lm") |> 
+  fit(lived_after ~ sex + election_age, data = x) |> 
+  tidy(conf.int = TRUE)
+````
+
+CP/CR.
+
+```{r courage-9}
+question_text(NULL,
+	answer(NULL, correct = TRUE),
+	allow_retry = TRUE,
+	try_again_button = "Edit Answer",
+	incorrect = NULL,
+	rows = 3)
+```
+
+###
+
+Just because something exists in the tutorial (or in the QMD) does not mean that it is in the Console. You should be aware of what exists in Console World, which is generally called your "workspace."
+
+
+### Exercise 10
+
+In the Console, load the **[easystats](https://easystats.github.io/easystats/)** package. CP/CR.
+
+```{r courage-10}
+question_text(NULL,
+	answer(NULL, correct = TRUE),
+	allow_retry = TRUE,
+	try_again_button = "Edit Answer",
+	incorrect = NULL,
+	rows = 5)
+```
+
+###
+
+We don't add **easystats** to the QMD because we are only using it for an interactive check of our fitted model. However, the [easystats ecosystem](https://easystats.github.io/easystats/) has a variety of interesting functions and packages which you might want to explore.
+
+### Exercise 11
+
+In the Console, run `check_predictions(extract_fit_engine(fit_years))`. CP/CR.
+
+```{r courage-11}
+question_text(NULL,
+	answer(NULL, correct = TRUE),
+	allow_retry = TRUE,
+	try_again_button = "Edit Answer",
+	incorrect = NULL,
+	rows = 5)
+```
+
+###
+
+The purpose of `check_predictions()` is to compare your actual data (in green) with data that has been simulated from your fitted model, i.e., from your data generating mechanism. If your DGM is reasonable, then data simulated from it should not look too dissimilar from your actual data. Of course, it won't look exactly the same because of randomness, both in the world and in your simulation. But the actual data should be within the range of outcomes that your DGM simulates with `check_predictions()`.
+
+### Exercise 12
+
+Ask AI to create $\LaTeX$ code for this model, including our variable names and estimates for all the coefficients. Because this is a fitted model, the dependent variable will have a "hat" and the formula will not include an error term. 
+
+Add the code to your QMD. `Cmd/Ctrl + Shift + K`.
+
+Make sure the resulting display looks good. For example, you don't want an absurd number of figures to the right of the decimal. If the model is too long, you will need to spread it across several lines. You may need to go back-and-forth with the AI a few times.
+
+Once the $\LaTeX$ code looks good, paste it below.
+
+```{r courage-12}
+question_text(NULL,
+	answer(NULL, correct = TRUE),
+	allow_retry = TRUE,
+	try_again_button = "Edit Answer",
+	incorrect = NULL,
+	rows = 3)
+```
+
+<!--DK: Fix. AR: LaTeX is incorrect for current state of fit_years-->
+
+###
+
+Our formula looks like:
+
+$$
+\hat{Y}_i = 40 - 0.5 \cdot \text{age}_i - 2.3 \cdot \text{won}_i + 0.04 \cdot \text{year}_i
+$$
+
+It was created with:
+
+````
+$$
+\hat{Y}_i = 40 - 0.5 \cdot \text{age}_i - 2.3 \cdot \text{won}_i + 0.04 \cdot \text{year}_i
+$$
+```` 
+
+First, we have replaced the parameters with our best estimates. Second, the left-hand side variable is $\widehat{\text{years_lived}}$ instead of $\text{years_lived}$ because this formula generates our estimated `years_lived`. A hat indicates an estimated value.
+
+**This is our data generating mechanism.**
+
+Of course, there is randomness built into the DGM, but we won't worry about that detail for now.
+
+A data generating mechanism is just a formula, something which we can write down and implement with computer code.
+
+### Exercise 13
+
+Create a new code chunk in your QMD. Add a code chunk option: `#| cache: true`. Copy/paste the R code for the final model into the code chunk, assigning the result to `fit_years`. (This will include the call to `fit()` but not the call to `tidy()` because we want the entire fitted model, not just a table of the estimated parameter values.)
+
+Place your cursor in the QMD file on the `fit_years` line. Use `Cmd/Ctrl + Enter` to execute that line. Strictly speaking, this step is unnecessary because we already added `fit_years` to our workspace above. But ensuring that everything in the QMD is also in the Console is a good habit.
+
+`Cmd/Ctrl + Shift + K`. It may take some time to render your QMD, depending on how complex your model is. But, by including `#| cache: true` you cause Quarto to cache the results of the chunk. The next time you render your QMD, as long as you have not changed the code, Quarto will just load up the saved fitted object.
+
+At the Console, run:
+
+```
+tutorial.helpers::show_file("candidates.qmd", chunk = "Last")
+```
+
+CP/CR.
+
+```{r courage-13}
+question_text(NULL,
+	answer(NULL, correct = TRUE),
+	allow_retry = TRUE,
+	try_again_button = "Edit Answer",
+	incorrect = NULL,
+	rows = 8)
+```
+
+### 
+
+To confirm, `Cmd/Ctrl + Shift + K` again. It should be quick.
+
+### Exercise 14
+
+Add `*_cache` to `.gitignore` file. Cached objects are often large. They don't belong on Github.
+
+At the Console, run:
+
+```
+tutorial.helpers::show_file(".gitignore")
+```
+
+CP/CR.
+
+```{r courage-14}
+question_text(NULL,
+	answer(NULL, correct = TRUE),
+	allow_retry = TRUE,
+	try_again_button = "Edit Answer",
+	incorrect = NULL,
+	rows = 6)
+```
+
+###
+
+Because of the change in your `.gitignore` (assuming that you saved it), the cache directory should not appear in the Source Control panel because Git is ignoring it, as instructed. Commit and push. 
+
+### Exercise 15
+
+In the Console, run `tidy()` on `fit_years` with the argument `conf.int` set equal to `TRUE`. This returns 95% intervals for all the parameters in our model.
+
+`tidy()` is part of the [**broom**](https://broom.tidymodels.org/) package, used to summarize information from a wide variety of models.
+
+```{r courage-15, exercise = TRUE}
+
+```
+
+```{r courage-15-hint-1, eval = FALSE}
+tidy(..., conf.int = ...)
+```
+
+```{r courage-15-test, include = FALSE}
+tidy(fit_years, conf.int = TRUE)
+```
+
+
+### Exercise 16
+
+Create a new code chunk in your QMD. Ask AI to help you make a nice looking table from the tibble which is returned by `tidy()`. You don't have to include all the variables which `tidy()` produces. We often just show the estimate and the confidence intervals.
+
+You might need to add some new libraries, e.g., **[tinytable](https://vincentarelbundock.github.io/tinytable/)**, **[knitr](https://yihui.org/knitr/)**, **[gt](https://gt.rstudio.com/)**, **[kableExtra](https://haozhu233.github.io/kableExtra/)**, **[flextable](https://davidgohel.github.io/flextable/)**, **[modelsummary](https://modelsummary.com/)**, et cetera, to the `setup` code chunk, if you use any functions from these packages, all of which have strengths and weaknesses for making tables.
+
+Insert your table code into the QMD. (If you need a new library, and you probably will, place it in the `setup` code chunk along with the other libraries you have already loaded.)
+
+`Cmd/Ctrl + Shift + K`. 
+
+At the Console, run:
+
+```
+tutorial.helpers::show_file("candidates.qmd", chunk = "Last")
+```
+
+CP/CR.
+
+```{r courage-16}
+question_text(NULL,
+	answer(NULL, correct = TRUE),
+	allow_retry = TRUE,
+	try_again_button = "Edit Answer",
+	incorrect = NULL,
+	rows = 12)
+```
+
+###
+
+This is ours:
+
+```{r}
+tidy(fit_years, conf.int = TRUE) |>
+  select(term, estimate, conf.low, conf.high) |>
+  kable(digits = 2, col.names = c("Variable", "Estimate", "Lower CI", "Upper CI"))
+```
+
+
+It was created with:
+
+```
+library(knitr)
+
+tidy(fit_years, conf.int = TRUE) |>
+  select(term, estimate, conf.low, conf.high) |>
+  kable(digits = 2, col.names = c("Variable", "Estimate", "Lower CI", "Upper CI"))
+```
+
+At the very least, your table should include a title and a caption with the data source. The more you use AI, the better you will get at doing so.
+
+### Exercise 17
+
+Add a sentence to your project summary. 
+
+Explain the structure of the model. Something like: "I/we model XX [the concept of the outcome, not the variable name], [insert description of values of XX], as a [linear/logistic/multinomial/ordinal] function of XX [and maybe other covariates]." 
+
+
+Recall the beginning of our version of the summary:
+
+> Running for political office is stressful. Using data from over 1,000 candidates for governor since 1945 in the United States, we seek to create a model for forecasting longevity for political candidates. Because our data includes only candidates for governor, our estimated model might not work well when applied to candidates for other positions, like mayor.
+
+```{r courage-17}
+question_text(NULL,
+	message = "We model life expectancy (years lived after the election), measured in years, as a linear function of the candidate’s sex, age at election, and their interaction.",
+	answer(NULL, correct = TRUE),
+	allow_retry = FALSE,
+	incorrect = NULL,
+	rows = 6)
+```
+
+### 
+
+Read our answer. It will not be the same as yours. You can, if you want, change your answer to incorporate some of our ideas. Do not copy/paste our answer exactly. Add your two sentences, edited or otherwise, to the summary paragraph portion of your QMD. `Cmd/Ctrl + Shift + K`, and then commit/push.
+
+## Temperance
+### 
+
+*Temperance is the greatest of all virtues. It subdues every passion and emotion, and almost creates a Heaven upon Earth.* - Joseph Smith Jr.
+
+### Exercise 1
+
+In your own words, describe the use of Temperance in data science.
+
+```{r temperance-1}
+question_text(NULL,
+	message = "Temperance uses the data generating mechanism to answer the question with which we began. Humility reminds us that this answer is always a lie. We can also use the DGM to calculate many similar quantities of interest, displaying the results graphically.",
+	answer(NULL, correct = TRUE),
+	allow_retry = FALSE,
+	incorrect = NULL,
+	rows = 6)
+```
+
+### 
+
+Courage gave us the data generating mechanism. Temperance guides us in the use of the DGM — or the “model” — we have created to answer the question(s) with which we began. We create posteriors for the quantities of interest. 
+
+### Exercise 2
+
+Before using the DGM, we should make sure that we can interpret it.
+
+Recall the values for the parameters in our data generating mechanism:
+
+```{r}
+fit_years |> 
+	tidy(conf.int = TRUE) |> 
+	select(term, estimate, conf.low, conf.high)
+```
+
+Interpret 19.3, the estimate for the `(Intercept)`.
+
+```{r temperance-2}
+question_text(NULL,
+	message = "For female candidates, the terms which include `sexMale` and  `election_age:sexMale` are zeroed out. 19.3 would be the expected years lived after the election for candidates who are female and age 0 at the election, which is, of course, nonsense.",
+	answer(NULL, correct = TRUE),
+	allow_retry = FALSE,
+	incorrect = NULL,
+	rows = 6)
+```
+
+###
+
+Dummy variables must always be interpreted in the context of the base value for that variable, which is generally included in the intercept. For example, the base value here is "Female." (The base value is the first alphabetically by default for character variables. However, if it is a factor variable, you can change that by setting the order of the levels by hand.)
+
+### Exercise 3
+
+```{r}
+fit_years |> 
+	tidy(conf.int = TRUE) |> 
+	select(term, estimate, conf.low, conf.high)
+```
+
+Interpret -0.06, the estimate for the coefficient for `election_age`.
+
+```{r temperance-3}
+question_text(NULL,
+	message = "The older you are at the time of the election (i.e., the larger the value for `election_age`), the fewer years you can expect to live after the election. The negative value makes sense. The magnitude of 0.06 suggests that, if we compare two groups of female candidates --- so that `election_age:sexMale` is zeroed out --- who differ in age by twenty years, then the older group might live about one year less since -0.06 * 20 = -1.2. That seems much too small!",
+	answer(NULL, correct = TRUE),
+	allow_retry = FALSE,
+	incorrect = NULL,
+	rows = 6)
+```
+
+###
+
+Whenever we consider non-treatment variables, we must never use terms like "cause," "impact" and so on. We can't make any statement which implies the existence of more than one potential outcome based on changes in non-treatment variables. We can't make any claims about within row effects. Instead, we can only compare across rows. Always use the phrase "when comparing X and Y" or something very similar.
+
+### Exercise 4
+
+```{r}
+fit_years |> 
+	tidy(conf.int = TRUE) |> 
+	select(term, estimate, conf.low, conf.high)
+```
+
+Interpret -0.8, the estimate for the coefficient of `election_age:sexMale`.
+
+```{r temperance-4}
+question_text(NULL,
+	message = "Relative to female candidates, male candidates who are older die much earlier than younger candidates. The -0.8 estimate suggests that male candidates who are twenty years older, live 16 years less after the election, compared to their younger peers. This seems much more plausible than the 1 year estimate for female candidates.",
+	answer(NULL, correct = TRUE),
+	allow_retry = FALSE,
+	incorrect = NULL,
+	rows = 6)
+```
+
+###
+
+Numeric variables are harder to use in comparisons than binary variables because there are no longer just two well-defined groups to compare with each other. We must create those two groups ourselves. Fortunately, as long as there are no interaction terms, we can just pick two groups with any values for the variable. The most common two groups differ by one unit of the variable. But it is quite common to use groups which differ by more/less if doing so seems sensible and/or if it makes the math easier.
+
+### Exercise 5
+
+```{r}
+fit_years |> 
+	tidy(conf.int = TRUE) |> 
+	select(term, estimate, conf.low, conf.high)
+```
+
+Interpret [-1.5, -0.07], the confidence interval for the estimate of the coefficient of `election_age:sexMale`.
+
+<!-- DK: Fix. AR: Mismatch between covariate in the question versus answer message. Which to do? -->
+
+```{r temperance-5}
+question_text(NULL,
+	message = "Our best estimate is that male candidates who are 20 years younger will live 16 years longer than their older male peers. But that is just an estimate. We are uncertain. It would not be surprising if the true value were as low as 1.4 years or as high as 30 years.",
+	answer(NULL, correct = TRUE),
+	allow_retry = FALSE,
+	incorrect = NULL,
+	rows = 6)
+```
+
+###
+
+In looking at a confidence interval, we first check whether or not it excludes zero.  If not, then we can't be sure if the relationship is positive or negative. For female candidates, the confidence interval includes zero, so we are not sure (absurdly!) if younger candidates live longer. This is probably a sign that we don't have enough observations for females. 
+
+### Exercise 6
+
+In the end, we don't really care about parameters, much less how to interpret them. Parameters are *imaginary*, like unicorns. We care about answers to our questions. Parameters are tools for answering questions. They aren't interesting in-and-of themselves. *In the modern world, all parameters are nuisance parameters.* 
+
+Add `library(marginaleffects)` to the QMD file.
+
+Place your cursor in the QMD file on the `library(marginaleffects)` line. Use `Cmd/Ctrl + Enter` to execute that line.
+
+Note that this causes `library(marginaleffects)` to be copied down to the Console and then executed. 
+
+CP/CR.
+
+```{r temperance-6}
+question_text(NULL,
+	answer(NULL, correct = TRUE),
+	allow_retry = TRUE,
+	try_again_button = "Edit Answer",
+	incorrect = NULL,
+	rows = 3)
+```
+
+### 
+
+We should be modest in the claims we make. The posteriors we create are never the “truth.” The assumptions we made to create the model are never perfect. Yet decisions made with flawed posteriors are almost always better than decisions made without them.
+
+### Exercise 7
+
+What is the specific question we are trying to answer? 
+
+```{r temperance-7}
+question_text(NULL,
+	message = "How many years do gubernatorial candidates live after leaving office?",
+	answer(NULL, correct = TRUE),
+	allow_retry = FALSE,
+	incorrect = NULL,
+	rows = 6)
+```
+
+### 
+
+Data science projects begin with a decision which we face. To make that decision wisely, we would like to have good estimates of many unknown numbers. Yet, in order to make progress, we need to drill down to one specific question. This leads to the creation of a data generating mechanism, which can now be used to answer lots of questions, thus allowing us to explore the original decision more broadly.
+
+### Exercise 8
+
+Run this code:
+
+```
+plot_predictions(fit_years, 
+				 by = "sex")
+```             
+
+
+```{r temperance-8, exercise = TRUE}
+
+```
+
+
+```{r temperance-8-test, include = FALSE}
+plot_predictions(fit_years, 
+				 by = "sex")
+```
+
+### 
+
+This graphic shows our estimates for the number of years lived after the election for male and female candidates. 
+
+* The ?plot_predictions page notes that "The by argument is used to plot marginal predictions, that is, predictions made on the original data, but averaged by subgroups."
+
+* There is much more uncertainty for female candidates than for male candidates because there are so few females in the data.
+
+* Male candidates live longer than female candidates. That is surprising since, in general, women live longer than men. One explanation might be that, in our data, female candidates are older.
+
+### Exercise 9
+
+Run this code:
+
+```
+plot_predictions(fit_years,
+				condition = c("election_age"))
+```             
+
+```{r temperance-9, exercise = TRUE}
+
+```
+
+```{r temperance-9-test, include = FALSE}
+plot_predictions(fit_years, 
+				 condition = c("election_age"))
+```
+
+### 
+
+This graphic shows our estimates for the number of years lived after the election for candidates of different ages. 
+
+* The ?plot_predictions page notes that "The condition argument is used to plot conditional predictions."
+
+* The older you are at the election, the fewer years you can expect to live after the election.
+
+* Note that, when using the `by` argument, you can only use categorical predictors. 
+
+
+### Exercise 10
+
+Run this code:
+
+```
+plot_predictions(fit_years, 
+				 by = c("election_age", "sex"))
+```             
+
+```{r temperance-10, exercise = TRUE}
+
+```
+
+
+```{r temperance-10-test, include = FALSE}
+plot_predictions(fit_years, 
+				 by = c("election_age", "sex"))
+```
+
+### 
+
+This is a good example of a plot which provides answer to the question with which we started: 
+
+> *How long do political candidates live after the election?*
+
+For a specific values of the covariates `sex` and `election_age`, you can simply consult the graphic to see how many more years we would expect them to live, and the uncertainty associated with that estimate.
+
+
+### Exercise 11
+
+Work with AI to create a beautiful plot starting with the output to the above call to `plot_predictions()`. Do this in your QMD since that is much easier than working in the Console directly.
+
+Your title should highlight the key variables. Your subtitle should describe an important takeaway, the sentence/conclusion which readers will, you hope, remember. Your caption should mention the data source. Your axis labels should look nice.
+
+This plot is not directly connected to your question. It answers lots of questions! It might be used by lots of different people. 
+
+Copy the code for your plot here:
+
+```{r temperance-11}
+question_text(NULL,
+	answer(NULL, correct = TRUE),
+	allow_retry = TRUE,
+	try_again_button = "Edit Answer",
+	incorrect = NULL,
+	rows = 15)
+```
+
+### 
+
+Our plot:
+
+```{r}
+library(ggplot2)
+
+# Get predictions from the model on your data x
+predictions <- x %>%
+  mutate(.pred = predict(fit_years, new_data = x)$.pred)
+
+# Plot predicted years lived by age and sex
+ggplot(predictions, aes(x = election_age, y = .pred, color = sex)) +
+  geom_point(alpha = 0.3) +
+  geom_smooth(method = "loess", se = FALSE) +
+  labs(
+    title = "Predicted Years Lived After Election by Age and Sex",
+    subtitle = "Smoothed predictions from the fitted model",
+    x = "Age at Election",
+    y = "Predicted Years Lived",
+    color = "Sex"
+  )
+```
+
+
+
+Our code:
+
+````
+library(ggplot2)
+
+predictions <- x %>%
+  mutate(.pred = predict(fit_years, new_data = x)$.pred)
+
+ggplot(predictions, aes(x = election_age, y = .pred, color = sex)) +
+  geom_point(alpha = 0.3) +
+  geom_smooth(method = "loess", se = FALSE) +
+  labs(
+    title = "Predicted Years Lived After Election by Age and Sex",
+    subtitle = "Smoothed predictions from the fitted model",
+    x = "Age at Election",
+    y = "Predicted Years Lived",
+    color = "Sex"
+  )
+````
+
+Data science often involves this-back-and-forth style of work. First, we need to make a single chunk of code, in this case, a new plot, work well. This requires interactive work between the QMD and the Console. Second, we need to ensure that the entire QMD runs correctly on its own.
+
+### Exercise 12
+
+Finalize the new graphics code chunk in your QMD. `Cmd/Ctrl + Shift + K` to ensure that it all works as intended. 
+
+At the Console, run:
+
+```
+tutorial.helpers::show_file("candidates.qmd", chunk = "Last")
+```
+
+CP/CR.
+
+```{r temperance-12}
+question_text(NULL,
+	answer(NULL, correct = TRUE),
+	allow_retry = TRUE,
+	try_again_button = "Edit Answer",
+	incorrect = NULL,
+	rows = 10)
+```
+
+
+### 
+
+Always [remember](https://en.wikipedia.org/wiki/Map%E2%80%93territory_relation): *The map is not the territory.* A beautiful graphic tells a story, but that story is always an imperfect representation of reality. Our models depend on assumptions, assumptions which are never completely true.
+
+### Exercise 13
+
+Write the last sentence of your summary paragraph. It describes at least one quantity of interest (QoI) and provides a measure of uncertainty about that QoI. It is OK if this QoI is not the one that you began with. The focus of a data science project often changes over time. It is also OK to discuss more than one QoI. Do whatever seems reasonable, given the context.
+
+```{r temperance-13}
+question_text(NULL,
+	message = "A 50-year-old male political candidate can expect to live about 30 years after the election, plus-or-minus about 1 year.",
+	answer(NULL, correct = TRUE),
+	allow_retry = FALSE,
+	incorrect = NULL,
+	rows = 6)
+```
+
+### 
+
+Add a final sentence to your summary paragraph in your QMD as you see fit, but do not copy/paste our answer exactly. `Cmd/Ctrl + Shift + K`.
+
+### Exercise 14
+
+Write a few sentences which explain why the estimates for the quantities of interest, and the uncertainty thereof, might be wrong. Suggest an alternative estimate and confidence interval, if you think either might be warranted.
+
+```{r temperance-14}
+question_text(NULL,
+	message = "There is clearly something weird about the data for female candidates. But, at the same time, we are trying to make a claim for candidates in general, not just male candidates. So, I would change the conclusion to: a 50-year-old political candidates can expect to live another 18 years, plus-or-minus 4 years.",
+	answer(NULL, correct = TRUE),
+	allow_retry = FALSE,
+	incorrect = NULL,
+	rows = 6)
+```
+
+### 
+
+Always go back to your Preceptor Table, the information which, if you had it, would make answering your question easy. In almost all real world cases, the Preceptor Table and the data are fairly different, not least because validity never holds perfectly. So, even a perfectly estimated statistical model is rarely as useful as we might like.
+
+### Exercise 15
+
+Rearrange the material in your QMD so that the order is graphic, followed by the paragraph. Doing so, of course, requires sensible judgment. For example, the code chunk which creates the fitted model must occur before the chunk which creates the graphic. You can keep or discard the math and any other material at your own discretion.
+
+`Cmd/Ctrl + Shift + K` to ensure that everything works.
+
+At the Console, run:
+
+```
+tutorial.helpers::show_file("candidates.qmd")
+```
+
+CP/CR.
+
+```{r temperance-15}
+question_text(NULL,
+	answer(NULL, correct = TRUE),
+	allow_retry = TRUE,
+	try_again_button = "Edit Answer",
+	incorrect = NULL,
+	rows = 30)
+```
+
+### 
+
+This is the version of your QMD file at which your teacher is most likely to look closely.
+
+### Exercise 16
+
+Publish your rendered QMD to GitHub Pages. In the Terminal --- not the Console! --- run:
+
+````
+quarto publish gh-pages candidates.qmd
+````
+
+Copy/paste the resulting URL below.
+
+```{r temperance-16}
+question_text(NULL,
+	answer(NULL, correct = TRUE),
+	allow_retry = TRUE,
+	try_again_button = "Edit Answer",
+	incorrect = NULL,
+	rows = 3)
+```
+
+### 
+
+Commit/push everything.
+
+### Exercise 17
+
+Copy/paste the URL to your Github repo.
+
+```{r temperance-17}
+question_text(NULL,
+	answer(NULL, correct = TRUE),
+	allow_retry = TRUE,
+	try_again_button = "Edit Answer",
+	incorrect = NULL,
+	rows = 3)
+```
+
+### 
+
+We can never know all the entries in the Preceptor Table. That knowledge is reserved for God. If all our assumptions are correct, then our DGM is true, it accurately describes the way in which the world works. There is no better way to predict the future, or to model the past, than to use it. Sadly, this will only be the case with toy examples involving things like coins and dice. We hope that our DGM is close to the true DGM but, since our assumptions are never perfectly correct, our DGM will always be different. The estimated magnitude and importance of that difference is a matter of judgment.
+
+The world confronts us. Make decisions we must.
+
+## Summary
+### 
+
+This tutorial supports [*Preceptor’s Primer for Bayesian Data Science: Using the Cardinal Virtues for Inference*](https://ppbds.github.io/primer/) by [David Kane](https://davidkane.info/). 
+
+```{r}
+library(ggplot2)
+
+# Get predictions from the model on your data x
+predictions <- x %>%
+  mutate(.pred = predict(fit_years, new_data = x)$.pred)
+
+# Plot predicted years lived by age and sex
+ggplot(predictions, aes(x = election_age, y = .pred, color = sex)) +
+  geom_point(alpha = 0.3) +
+  geom_smooth(method = "loess", se = FALSE) +
+  labs(
+    title = "Predicted Years Lived After Election by Age and Sex",
+    subtitle = "Smoothed predictions from the fitted model",
+    x = "Age at Election",
+    y = "Predicted Years Lived",
+    color = "Sex"
+  )
+```
+
+Female candidates are predicted to live longer than male candidates at almost every age. The gap in expected years becomes more noticeable as age at election increases.
+
+```{r download-answers, child = system.file("child_documents/download_answers.Rmd", package = "tutorial.helpers")}
+```

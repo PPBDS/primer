@@ -1,0 +1,688 @@
+---
+title: Project
+author: David Kane
+tutorial:
+  id: project
+output:
+  learnr::tutorial:
+    progressive: yes
+    allow_skip: yes
+runtime: shiny_prerendered
+description: Walk through of how to complete and submit a project.
+---
+
+```{r setup, include = FALSE}
+library(learnr)
+library(tutorial.helpers)
+library(tidyverse)
+library(knitr)
+knitr::opts_chunk$set(echo = FALSE)
+options(tutorial.exercise.timelimit = 60, 
+        tutorial.storage = "local") 
+```
+
+```{r copy-code-chunk, child = system.file("child_documents/copy_button.Rmd", package = "tutorial.helpers")}
+```
+
+```{r info-section, child = system.file("child_documents/info_section.Rmd", package = "tutorial.helpers")}
+```
+
+<!-- Discuss publishing details, mention RStudio and Quarto website tutorial, and also Github Pages. -->
+
+<!-- Discuss the possibibility (maybe even make them?) of estimating the model once, saving the model object, and just loading it. -->
+
+<!-- Replace all the example sentences to make them much better, presumably using material from tutorials 8, 9, 10, which might also be improved. -->
+
+<!-- Breakup the model.qmd section into separate questions -->
+
+<!-- Obviously, if you model is more complex --- if, for example, it includes several right-hand side variables --- your sentence should be longer, within reason. -->
+
+<!-- With a statistical model, we would have: -->
+
+<!-- The prevalent emotions in mainstream music have been changing every decade. The following data was pulled from the spotifyr and billboard packages. Then, the relevant data frames were joined to analyze the relationship between the intensity and positivity of tracks from the 1960s to the 2010s. I estimated a Bayesian regression model with song positivity as the dependent variable and year as an independent variable. Each decade since the 1960s has been associated with a 5% increase in anger, plus or minus 1%. -->
+
+<!-- Covid-19 deaths vary tremendously by state. This was sourced from a data set which used data originally from the CDC. Mapping data was then used to visualize the Covid-19 deaths by state in an intuitive format. An extra million people in a state's population is associated with a 2% to 8% increase in Covid deaths. -->
+
+<!-- Make sure that the index.qmd page is cool, grabs the readers attention. Must show nice plot at top. -->
+
+<!-- Instruct how to make the plot labs() bigger, which is needed for nice viewing on the web. -->
+
+<!-- Discuss _publish.yml.  -->
+
+<!-- Tell them you should have as many lines of comments as you have lines of code. Something which shows you added some code comments. Something like grep "#" index.qmd -->
+
+
+## Introduction
+### 
+
+In my teaching, students complete two main projects. The first one, after 4 weeks of work, is a "data" project. The second one, after 8 weeks of work, is a "model" project, which involves building a statistical model. In an 8 week course, this second project is often referred to as the "final" project.
+
+This tutorial covers both types of projects, but many of the questions only apply to the model project. If you are doing a data project, just skip the model project questions.
+
+Your projects are the first entries in your professional portfolio. Few employers will ever ask to see your high school or college transcripts. They will want to see what you can **do**, what you can **make** with your own two hands. 
+
+### 
+
+Here is a long list of key elements for every project. Read through this list and then create a rough draft of your project. Only continue this tutorial *after* you have completed a rough draft.
+
+* The project is stored in a public repo under your Github account with a sensible name like `baseball-pitching` not a stupid name like `my-project-final`. This repo is clean and well-organized. It has a simple README which describes the project and, at the top, provides a link to your Quarto website. All junk files have been deleted. If there are a lot of individual files --- like a dozen csv files for the raw data --- then you should organize them sensibly, for example by storing them all in a `data/` directory.
+
+* There is a Quarto website. The home page, which is created from `index.qmd`, should grab the readers attention. It includes one plot, the most interesting/important plot which you have. It also includes your paragraph summary of the project. It is clean and professional looking. It does not show code or stupid R messages.
+
+* There is an About page, created from `about.qmd`. It includes at least three sentences, each separated by a blank line. This first sentence is about who you are, including a link to your Github account and an email address which people can use to contact you. (This can be more than one sentence, if you like.) The second sentence is about your project and includes a link to the Github repo for this project. The third sentence is "This project was created as a part of Kane's Data Science Bootcamp." linking the name of the course to the webpage: https://bootcamp.davidkane.info/. Feel free to word this sentence however you like.
+
+* There is a Sources page, created from `sources.qmd`, which provides a paragraph or two of prose about the data sources for your project. Where did you get the data from? What did you do to clean the data? Which observations, if any, did you remove?
+
+* **If this is a model project**, there should be a Model page, created from `model.qmd`, which includes details about your model, including the mathematics of your data generating mechanism (displayed nicely using $\LaTeX$ formatting) and a table showing your parameter estimates.
+
+* Optionally, you might have other pages, named however you like, that explore other aspects of the data. Think of these as "stories" which you might tell someone interested in your topic, each page a separate "exhibit" which tells the reader something interesting about the data and/or other models which you have created.
+
+### 
+
+Do not mention the Cardinal Virtues. No one else uses those as we do, as a map for tackling a data science project. Feel free to discuss topics like validity, stability and representativeness if this is a model project. Those concepts are used by everyone. But you don't have to discuss them. Moreover, it is usually better to use normal language, rather than not-well-known statistical terminology.
+
+### 
+
+**Finish at least a rough draft of your project before starting this tutorial.** This tutorial does not show you how to make a good project. Instead, it just allows us to confirm that you have done so.
+
+## Pimp Your GitHub Account
+### 
+
+Your GitHub account should look professional. This section will guide you. Read [this essay](https://davidkane.info/writings/pimp-my-github.html) for details about what that means.
+
+### Exercise 1
+
+Write a bio for your GitHub account. Once you have added it to your account, copy and paste the bio below.
+
+### 
+
+```{r pimp-your-github-account-1}
+question_text(NULL,
+    answer(NULL, correct = TRUE),
+    allow_retry = TRUE,
+    try_again_button = "Edit Answer",
+    incorrect = NULL,
+    rows = 6)
+```
+
+### Exercise 2
+
+Add a photo to your GitHub account. You do not have to use a photo of yourself — some people are shy — but you should use something other than the GitHub default.
+
+### 
+
+Once the photo is uploaded, go to your profile page (`github.com/your-username`). Right click your updated profile picture and press "Open image in new tab".
+
+```{r}
+include_graphics("images/open_profile.png")
+```
+
+Depending on your browser, "Copy Image Address" might also work.
+
+Either way, copy/paste the url of the page containing your photo here:
+
+```{r pimp-your-github-account-2}
+question_text(NULL,
+	answer(NULL, correct = TRUE),
+	allow_retry = TRUE,
+	try_again_button = "Edit Answer",
+	incorrect = NULL,
+	rows = 1)
+```
+
+### 
+
+Your answer should look something like:
+
+````
+https://avatars.githubusercontent.com/u/4552851?v=4
+````
+
+### Exercise 3
+
+Pin your project repo to your profile page following the instructions listed [here](https://docs.github.com/en/account-and-profile/setting-up-and-managing-your-github-profile/customizing-your-profile/pinning-items-to-your-profile).
+
+### 
+
+Paste the URL of your pimped GitHub account below. It should looks like `github.com/your-username`.
+
+```{r pimp-your-github-account-3}
+question_text(NULL,
+	answer(NULL, correct = TRUE),
+	allow_retry = TRUE,
+	try_again_button = "Edit Answer",
+	incorrect = NULL,
+	rows = 1)
+```
+
+## Create your project summary
+### 
+
+Every project needs a paragraph summary. This will be used in two places. First, it will go on your `index.qmd` page. Second, you will recite it at the beginning of your Demo Day presentation.
+
+### 
+
+If you have written a summary paragraph more in line with the ones we created for the tutorials, you should feel free to use that one instead.
+
+### Exercise 1
+
+The first sentence includes the key nouns used in the title of your project and/or the title of your key graphic, either as a simple statement or a rhetorical question.
+
+### 
+
+Enter your first sentence in the box below. For example, "The prevalent emotions in mainstream music have been changing every decade." or "Covid-19 deaths vary tremendously by state."
+
+```{r create-your-project-summary-1}
+question_text(NULL,
+	answer(NULL, correct = TRUE),
+	allow_retry = TRUE,
+	try_again_button = "Edit Answer",
+	incorrect = NULL,
+	rows = 2)
+```
+
+### 
+
+A good first sentence will set the foundation for the rest of the introduction while keeping the listener engaged. An example of a **bad** first sentence is "I studied Covid deaths in my project".
+
+### Exercise 2
+
+Next we'll be making our last sentence. (Yes, we're going out of order). This should include the key takeaway from your project that you want people to remember. 
+
+### 
+
+Enter your last sentence in the box below. For example, "Today's music is almost twice as angry as the music from the 1960's" or "The number of Covid-19 deaths in the 15 hardest hit states is greater than the rest combined". Those are good examples of statements for projects without a statistical model. 
+
+With a statistical model, we will have specific numbers to include. Examples: "Each decade since the 1960s has been associated with a 5% increase in anger, plus or minus 1%." "In comparing two states, one with an extra million people, the larger state has a 2% to 8% increase in Covid-19 deaths."
+
+```{r create-your-project-summary-2}
+question_text(NULL,
+	answer(NULL, correct = TRUE),
+	allow_retry = TRUE,
+	try_again_button = "Edit Answer",
+	incorrect = NULL,
+	rows = 2)
+```
+
+### 
+
+An example of a **bad** fourth sentence: "This study's analysis will provide answers to which factors cause more Covid-19 deaths to occur."
+
+
+### Exercise 3
+
+The second and third sentences are all about your data. Where did you get it? How did you clean it? How are variables X and Y measured and defined? 
+
+### 
+
+Enter your second and third sentences into the box below. For example, "I gathered data from the spotifyr and billboard R packages, covering the 100 most popular songs each year from 1950 through 2024." or "Data for Covid-19 deaths as of June 2023 comes from the Center for Disease Control."
+
+The sentences should almost always report the name of the organization which gathered/distributed the data (if it is a large/famous organization) as well as the date associated with the data. 
+
+The sentence(s) will also often mention the larger goal of the exercise. Examples:
+
+"Using data from a 2012 survey of Boston-area commuters, we seek to understand the relationship between income and political ideology in Chicago and similar cities in 2020." 
+ 
+"Using data from all deceased gubernatorial candidates in the United States between 1945 and 2012, we seek to forecast candidate longevity post-election."
+
+```{r create-your-project-summary-3}
+question_text(NULL,
+	answer(NULL, correct = TRUE),
+	allow_retry = TRUE,
+	try_again_button = "Edit Answer",
+	incorrect = NULL,
+	rows = 3)
+```
+
+### 
+
+A **bad** example of the second and third sentences is "I have used an online data set to show Covid in the country using fill. I wanted to do this in order to show the relationships in the data."
+
+### Exercise 4
+
+If your project includes a statistical model, the fourth and fifth sentences will generally discuss it.  
+
+The fourth sentence will specify the outcome variable, the type of model (generally either linear, logistic or categorial/multinomial) and at least some of the covariates. Do not use the names of the variables in your data. Use words. **Your audience understands words.** 
+
+Example:
+
+"We modeled liberal, a binary TRUE/FALSE variable, as a logistic function of income. Individuals with higher income were more likely to be liberal."
+
+If your project includes a model, write your relevant sentence(s) below. Otherwise, skip this question.
+
+```{r create-your-project-summary-4}
+question_text(NULL,
+	answer(NULL, correct = TRUE),
+	allow_retry = TRUE,
+	try_again_button = "Edit Answer",
+	incorrect = NULL,
+	rows = 6)
+```
+
+### Exercise 5
+
+Here are both of the example paragraphs in the case without a statistical model: 
+  
+"The prevalent emotions in mainstream music have been changing every decade. I gathered data from the spotifyr and billboard R packages, covering the 100 most popular songs each year from 1950 through 2024. The analysis found that today's music is almost twice as angry as the music from the 1960's."
+
+"Covid-19 deaths vary tremendously by state. Data for Covid-19 deaths as of June 2023 comes from the Center for Disease Control. The number of Covid-19 deaths in the 15 hardest hit states is greater than in the rest of the states combined." 
+
+###
+
+It's time to put all of the sentences together! Paste the compendium of your sentences from the exercises above into the answer box below. 
+
+
+```{r create-your-project-summary-5}
+question_text(NULL,
+	answer(NULL, correct = TRUE),
+	allow_retry = TRUE,
+	try_again_button = "Edit Answer",
+	incorrect = NULL,
+	rows = 5)
+```
+
+###
+
+Read your paragraph aloud to make sure it sounds right and makes sense to the listener as a paragraph. If needed, add transitions between sentences and extra information.
+
+### 
+
+You're ready to practice presenting your project in class!
+
+### Exercise 6
+
+Make sure that this tutorial is open in the same Positron instance as your project for the rest of this section.
+
+### 
+
+First, let's check whether you have the appropriate files in your project. Run `list.files()` in the Console (same instance as your project). CP/CR.
+
+```{r create-your-project-summary-6}
+question_text(NULL,
+	answer(NULL, correct = TRUE),
+	allow_retry = TRUE,
+	try_again_button = "Edit Answer",
+	incorrect = NULL,
+	rows = 4)
+```
+
+This should return files like "index.qmd", "about.qmd", "sources.qmd", and "_quarto.yml" at the bare minimum.
+
+## Github repository
+### 
+
+### Exercise 1
+
+Copy/paste the url for your project repo. It should look something like:
+
+```
+https://github.com/davidkane9/nra
+```
+
+```{r github-repository-1}
+question_text(NULL,
+	answer(NULL, correct = TRUE),
+	allow_retry = TRUE,
+	try_again_button = "Edit Answer",
+	incorrect = NULL,
+	rows = 3)
+```
+
+### 
+
+Do not use an unprofessional repo name like `my-project`. If you need to change your repo name, follow these steps:
+
+* Pull/push everything so that it is all on Github.
+
+* Delete the R project folder. At this point, the only existence of your project is the Github repo.
+
+* Click on "Settings" and change name of repo on Github. 
+
+* Clone it again (i.e., connect the repo to your computer) using the new url, connecting to a new R project on your computer.   
+
+<!-- DK: The above works, right? -->
+
+### Exercise 2
+
+The README for your Github repo describes the project and, at the top, provides a link to your Quarto website. It should be at least a paragraph. 
+
+In the Console, run:
+
+```
+show_file("README.md", pattern = "http")
+```
+
+CP/CR. 
+
+(Obviously, this command won't work unless you have loaded the **tutorial.helpers** package in the Console with `library(tutorial.helpers)`.)
+
+This should, at least, pull up the link to your Quarto website. It is OK if it pulls up other websites mentioned in the README.
+
+
+```{r github-repository-2}
+question_text(NULL,
+	answer(NULL, correct = TRUE),
+	allow_retry = TRUE,
+	try_again_button = "Edit Answer",
+	incorrect = NULL,
+	rows = 3)
+```
+
+### 
+
+Your Github README will often be the first (only?) thing a potential employer reads when she is considering the quality of your professional portfolio. Make it good.
+
+### Exercise 3
+
+In the Console, run:
+
+```
+show_file("README.md")
+```
+
+CP/CR.
+
+```{r github-repository-3}
+question_text(NULL,
+	answer(NULL, correct = TRUE),
+	allow_retry = TRUE,
+	try_again_button = "Edit Answer",
+	incorrect = NULL,
+	rows = 3)
+```
+
+### 
+
+You might think that there is no reason to a professional README for the repo. After all, the `about.qmd` page already explains the project. **You would be wrong.** Professionals care about documentation. A clean, complete README demonstrates your professionalism. Your README should be at least one paragraph, but not more than 4.
+
+
+## index.qmd
+### 
+
+<!-- DK: Split this up into a couple of questions? Sure would be nice if we could have them upload an image of their plot. -->
+
+The home page, which is created from `index.qmd`, should grab the readers attention. It includes one plot, the most interesting/important plot which you have. It also includes your paragraph summary of the project. It is clean and professional looking. It does not show code or stupid R messages.
+
+
+### Exercise 1
+
+In the Console, run:
+
+```
+show_file("index.qmd")
+```
+
+CP/CR.
+
+
+```{r indexqmd-1}
+question_text(NULL,
+	answer(NULL, correct = TRUE),
+	allow_retry = TRUE,
+	try_again_button = "Edit Answer",
+	incorrect = NULL,
+	rows = 4)
+```
+
+### 
+
+The result should include your summary paragraph and a cool looking graphic. Whether or not your graphic or your text is on top is up to you. We generally put the graphic on top.
+
+You might have the actual **ggplot2** code which creates the image here. Or, you might have a script elsewhere which creates the image and just load it up here. Either way, the purpose of the graphic is to cause people to say, "Hmm. That is interesting. Tell me more."
+
+
+## about.qmd
+### 
+
+There is an About page, created from `about.qmd`. It includes at least three sentences, each separated by a blank line. This first sentence is about who you are, including a link to your Github account and an email address which people can use to contact you. (This can be more than one sentence, if you like.) The second sentence is about your project and includes a link to the Github repo for this project. The third sentence is "This project was created as a part of Kane's Data Science Bootcamp." linking the name of the course to the webpage: https://bootcamp.davidkane.info/. Feel free to word this sentence however you like.
+
+### Exercise 1
+
+In the Console, run:
+
+```
+show_file("index.qmd", pattern = "About this site")
+```
+
+CP/CR. 
+
+```{r aboutqmd-1}
+question_text(NULL,
+	answer(NULL, correct = TRUE),
+	allow_retry = TRUE,
+	try_again_button = "Edit Answer",
+	incorrect = NULL,
+	rows = 3)
+```
+
+This should **not** return anything if you've correctly removed the default text.
+
+### Exercise 2
+
+Make sure if you added the required three sentences to the About page. (You can add more, if you like.)
+
+In the Console, run:
+
+```
+ show_file("about.qmd")
+```
+
+CP/CR.
+
+```{r aboutqmd-2}
+question_text(NULL,
+	answer(NULL, correct = TRUE),
+	allow_retry = TRUE,
+	try_again_button = "Edit Answer",
+	incorrect = NULL,
+	rows = 3)
+```
+
+### Exercise 3
+
+Make sure that you've added your email somewhere in your About Page so that visitors have the option to contact you regarding the project. 
+
+In the Console, run:
+
+```
+show_file("about.qmd", pattern = '@')
+```
+
+CP/CR.
+
+```{r aboutqmd-3}
+question_text(NULL,
+	answer(NULL, correct = TRUE),
+	allow_retry = TRUE,
+	try_again_button = "Edit Answer",
+	incorrect = NULL,
+	rows = 3)
+```
+
+### 
+
+This should return the line with your email. If nothing is returned, you haven't included an email address.
+
+### Exercise 4
+
+Make sure that you've added a link to your GitHub repo for this project as a hyperlink in your About page. 
+
+In the Console, run 
+
+```
+show_file("about.qmd", pattern = 'github')
+```
+
+CP/CR.
+
+```{r aboutqmd-4}
+question_text(NULL,
+	answer(NULL, correct = TRUE),
+	allow_retry = TRUE,
+	try_again_button = "Edit Answer",
+	incorrect = NULL,
+	rows = 3)
+```
+
+### 
+
+This should return the line with the link to your repo.
+
+### Exercise 5
+
+Make sure that you've added a link to the course homepage as a hyperlink in your About page. 
+
+In the Console, run 
+
+```
+show_file("about.qmd", pattern = 'davidkane')
+```
+
+CP/CR.
+
+
+```{r aboutqmd-5}
+question_text(NULL,
+	answer(NULL, correct = TRUE),
+	allow_retry = TRUE,
+	try_again_button = "Edit Answer",
+	incorrect = NULL,
+	rows = 3)
+```
+
+### 
+
+This should return the line which includes `[Kane's Free Data Science Bootcamp](https://bootcamp.davidkane.info/)`, or something similar.
+
+## model.qmd
+### 
+
+<!-- DK: Would be nice to, somehow, split this up into separate questions. -->
+
+This section only applies to projects with a statistical model. If you are just doing a data project, you can skip all these questions.
+
+The Models page, created from `models.qmd`, provides details about the model which you used. Do not show any code. Indeed, nowhere does the project show code. If someone wants to look at your code, they can go to your Github repo. 
+
+First, this page will include the mathematical formula of your final model. (See examples in the *Primer*.) Second, this page will include information about the model's parameters, generated from the fitted model. 
+
+
+### Exercise 1
+
+In the Console, run:
+
+```
+show_file("model.qmd")
+```
+
+CP/CR. 
+
+```{r modelqmd-1}
+question_text(NULL,
+	answer(NULL, correct = TRUE),
+	allow_retry = TRUE,
+	try_again_button = "Edit Answer",
+	incorrect = NULL,
+	rows = 8)
+```
+
+### 
+
+Optionally, you might have other pages, named however you like, that answer other questions and/or try other models. How would you answer change if you used a different model from the one you eventually settled on? Think of these as "stories" which you might tell someone interested in your topic, each page a separate "exhibit" which tells the reader something interesting about the data or the model or the answer.
+
+
+
+## Project spreadsheet
+### 
+
+To "submit" your project, you will be adding a row to a spreadsheet. Your instructor will distribute a link to the spreadsheet. This section will guide you through that process. The information you enter will be used to populate our [final project website](https://bootcamp.davidkane.info/projects.html).
+
+
+### Exercise 1
+
+Open the spreadsheet link. (Again, your instructor will distribute this to you separately.) In the first column enter your email. This should be your personal email (not associated with your school or organization). Enter your name in column "B" as well.
+
+Paste the email you entered in the spreadsheet below.
+
+```{r project-spreadsheet-1}
+question_text(NULL,
+	answer(NULL, correct = TRUE),
+	allow_retry = TRUE,
+	try_again_button = "Edit Answer",
+	incorrect = NULL,
+	rows = 2)
+```
+
+### 
+
+Keep in mind that this information will go directly into our [final project website](https://bootcamp.davidkane.info/projects.html). So, for example, enter your name (i.e., David or Dave) in the spreadsheet as you want it to appear in the permanent project listing.
+
+### Exercise 2
+
+In column "C" you should paste the link to your Github account. This should be the same page that you personalized when you "Pimped your Github". The link should **NOT** be the URL to your project's Github repo.
+
+Paste this Github account link in the answer box below.
+
+```{r project-spreadsheet-2}
+question_text(NULL,
+	answer(NULL, correct = TRUE),
+	allow_retry = TRUE,
+	try_again_button = "Edit Answer",
+	incorrect = NULL,
+	rows = 2)
+```
+
+### Exercise 3
+
+Next we'll enter your project name in column "D". This should be a relatively short title which describes your project's topic in [title case](https://en.wikipedia.org/wiki/Title_case).
+
+Enter your project title below.
+
+```{r project-spreadsheet-3}
+question_text(NULL,
+	answer(NULL, correct = TRUE),
+	allow_retry = TRUE,
+	try_again_button = "Edit Answer",
+	incorrect = NULL,
+	rows = 2)
+```
+
+### Exercise 4
+
+In column "E", you'll enter the link to your project website. It should look something like `https://bootcamp-2025-06.github.io/la-education/`. This should **NOT** be the URL to your GitHub repo.
+
+Enter this project URL in the box below.
+
+```{r project-spreadsheet-4}
+question_text(NULL,
+	answer(NULL, correct = TRUE),
+	allow_retry = TRUE,
+	try_again_button = "Edit Answer",
+	incorrect = NULL,
+	rows = 2)
+```
+
+### Exercise 5
+
+In the final column, you'll enter a one sentence takeaway of your project. This can be the last sentence from the project summary you created earlier, although you might modify it since the reader would not have seen the other sentences in the paragraph. Make sure you use proper spelling and grammar conventions.
+
+Enter your takeaway sentence below.
+
+```{r project-spreadsheet-5}
+question_text(NULL,
+	answer(NULL, correct = TRUE),
+	allow_retry = TRUE,
+	try_again_button = "Edit Answer",
+	incorrect = NULL,
+	rows = 2)
+```
+
+Make sure you have the same information in the tutorial and on the spreadsheet. 
+
+## Summary
+### 
+
+Your project is an entry in your professional portfolio. As long as you follow all the instructions in this tutorial, people (including professional data scientists) will be impressed.
+
+
+```{r download-answers, child = system.file("child_documents/download_answers.Rmd", package = "tutorial.helpers")}
+```

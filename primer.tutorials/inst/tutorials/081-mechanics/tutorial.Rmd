@@ -1,0 +1,2290 @@
+---
+title: Mechanics
+author: David Kane and Anish Talla
+tutorial:
+  id: mechanics
+output:
+  learnr::tutorial:
+    progressive: yes
+    allow_skip: yes
+runtime: shiny_prerendered
+description: 'Chapter 7 Tutorial: Mechanics'
+---
+
+```{r setup, include = FALSE}
+library(learnr)
+library(tutorial.helpers)
+library(tidyverse)
+library(primer.data)
+library(patchwork)
+library(tidymodels)
+library(glue)
+
+library(marginaleffects)
+library(easystats)
+
+knitr::opts_chunk$set(echo = FALSE)
+options(tutorial.exercise.timelimit = 600, 
+        tutorial.storage = "local") 
+
+x <- kenya |> 
+  filter(rv13 > 0)
+
+rv_p <- x |> 
+  ggplot(aes(rv13)) + 
+    geom_histogram(bins = 100) +
+    labs(x = "Registered Voters",
+         y = NULL) 
+
+log_rv_p <- x |> 
+  ggplot(aes(log(rv13))) + 
+    geom_histogram(bins = 100) +
+    labs(x = "Log of Registered Voters",
+         y = NULL) +
+    expand_limits(y = c(0, 175))
+
+# Create and save all the models we use.
+
+x <- trains |>
+  select(income, age, liberal, att_end, treatment, att_start) |>  
+  mutate(
+    c_age = age - mean(age),
+    s_age = age / sd(age),
+    z_age = as.numeric(scale(age))  
+  )
+
+fit_1 <- linear_reg() |>
+  fit(income ~ age, data = x)
+
+fit_1_c <- linear_reg() |>
+  fit(income ~ c_age, data = x)
+
+fit_1_s <- linear_reg() |>
+  fit(income ~ s_age, data = x)
+
+fit_1_z <- linear_reg() |>
+  fit(income ~ z_age, data = x)
+
+no_na_nhanes <- nhanes |> 
+  select(height, age) |> 
+  drop_na() 
+
+nhanes_1 <- linear_reg() |>
+  fit(height ~ age, data = no_na_nhanes)
+
+nhanes_2 <- linear_reg() |>
+  fit(height ~ age + I(age^2), data = no_na_nhanes)
+
+nhanes_3 <- linear_reg() |>
+  fit(height ~ I(ifelse(age > 18, 18, age)), data = no_na_nhanes)
+
+fit_1_model <- linear_reg() |>
+  fit(att_end ~ treatment + att_start, data = x)
+
+fit_2_model <- linear_reg() |>
+  fit(income ~ age + liberal, data = x)
+
+fit_liberal <- linear_reg() |> 
+  fit(att_end ~ liberal, data = x)
+
+ovrftng <- tibble(
+  x = 1:10,
+  y = c(1.9, 1.9, 4.9, 2.7, 2.6, 5.2, 6.8, 8.9, 9.0, 9.9)
+)
+
+fit_att_start <- linear_reg() |>
+  fit(att_end ~ att_start, data = x)
+
+```
+
+```{r copy-code-chunk, child = system.file("child_documents/copy_button.Rmd", package = "tutorial.helpers")}
+```
+
+```{r info-section, child = system.file("child_documents/info_section.Rmd", package = "tutorial.helpers")}
+```
+
+
+## Introduction
+### 
+
+This tutorial supports [*Preceptor’s Primer for Bayesian Data Science: Using the Cardinal Virtues for Inference*](https://ppbds.github.io/primer/) by [David Kane](https://davidkane.info/). 
+
+The world confronts us. Make decisions we must.
+
+In our haste to make progress --- to get all the way through the process of building, interpreting and using models --- we have given short shrift to some of the messy details of model building and evaluation. This chapter fills in those lacunae.
+
+## Scaling
+### 
+
+Scaling makes variables easier to compare and regression results easier to interpret by putting predictors on a common scale.
+
+### 
+
+Let's say we are interested in predicting a person's income based on their age. We have a model of `income` as a function of `age`: 
+
+$$ income_i = \beta_0  + \beta_1 age_i + \epsilon_i$$
+
+### Exercise 1
+
+Load the **tidymodels** package.
+
+```{r scaling-1, exercise = TRUE}
+
+```
+
+```{r scaling-1-hint-1, eval = FALSE}
+library(tidymodels)
+```
+
+```{r scaling-1-test, include = FALSE}
+library(tidymodels)
+```
+
+### 
+
+Since `income` is a continuous variable, we use the **tidymodels** framework to build linear regression models. A model that establishes the relationship between two variables is called a **simple regression** model.
+
+### Exercise 2
+
+Load the **tidyverse** package.
+
+```{r scaling-2, exercise = TRUE}
+
+```
+
+```{r scaling-2-hint-1, eval = FALSE}
+library(tidyverse)
+```
+
+```{r scaling-2-test, include = FALSE}
+library(tidyverse)
+```
+
+### 
+
+The general form of the **simple regression** model is: 
+
+$$ Y = \beta_0  + \beta_1 X + \epsilon_i$$
+
+The model is **simple** not only because there is only one variable on the right side of the equation, but also because $X$ is not an exponential variable and thus the relationship between $X$ and $Y$ is constant, or linear. Thus, we can also call it **linear regression**.
+
+### Exercise 3
+
+We will be using the `trains` data set from **primer.data** for our model. Load the **primer.data** package.
+
+```{r scaling-3, exercise = TRUE}
+
+```
+
+```{r scaling-3-hint-1, eval = FALSE}
+library(primer.data)
+```
+
+```{r scaling-3-test, include = FALSE}
+library(primer.data)
+```
+
+### 
+
+$\beta_0$ and $\beta_1$ are the coefficients. When we interpret coefficients, it is important to know the difference between *across unit* and *within unit comparisons*. The former refers to comparing two different units without looking at a causal relationship, while the latter looks at that one unit under treatment versus control.
+
+### Exercise 4
+
+We will also be using the **easystats** package collection, which provides tools for model checking, performance, and visualization. Load the **easystats** package.
+
+```{r scaling-4, exercise = TRUE}
+
+```
+
+```{r scaling-4-hint-1, eval = FALSE}
+library(easystats)
+```
+
+```{r scaling-4-test, include = FALSE}
+library(easystats)
+```
+
+### 
+
+The **easystats** collection offers tools for checking, comparing, and visualizing models. It simplifies extracting and tidying model results, helping you understand and communicate your analyses easily.
+
+### Exercise 5
+
+We will also be using a new package, **broom**, which allows us to tidy regression data for plotting. Load the **broom** package.
+
+```{r scaling-5, exercise = TRUE}
+
+```
+
+```{r scaling-5-hint-1, eval = FALSE}
+library(broom)
+```
+
+```{r scaling-5-test, include = FALSE}
+library(broom)
+```
+
+### 
+
+In terms of the Preceptor Tables, *within unit comparison* is looking at one **row** of data; we are comparing **one unit**, or (in this case) one person, to itself under two conditions (control versus treatment). Meanwhile, *across unit comparison* is looking at multiple rows of data, with a focus on differences across columns, without making any causal claims.
+
+### Exercise 6
+
+Type `trains` and hit "Run Code".
+
+```{r scaling-6, exercise = TRUE}
+
+```
+
+```{r scaling-6-hint-1, eval = FALSE}
+trains
+```
+
+```{r scaling-6-test, include = FALSE}
+trains
+```
+
+### 
+
+The model we are using only takes one variable, `age`, on the right hand side to predict `income`. However, are there any other variables in the data set that can also predict `income`, or potentially affect the relationship between `age` and `income`? We will discuss it in the following sections.
+
+### Exercise 7
+
+The data frame `x` is a modified version of `trains` that we’ll use for modeling going forward. When you see `data = x`, remember it contains the relevant columns from `trains` that we need for our analysis.
+
+Pipe `linear_reg()` to `fit()`, with the formula `income ~ age` and `data = x` as arguments. Run this code.
+
+```{r scaling-7, exercise = TRUE}
+
+```
+
+```{r scaling-7-hint-1, eval = FALSE}
+linear_reg() |>
+  fit(..., data = ...)
+```
+
+```{r scaling-7-test, include = FALSE}
+linear_reg() |>
+  fit(income ~ age, data = x)
+```
+
+### 
+
+Since the model is linear, we assume that the relationship between `income` and `age` is stable. However, this is not true in reality. The effect when age increases from 5 to 6 versus from 17 to 18, or 40 to 41, is not the same.
+
+### Exercise 8
+
+Now, pipe your previous code directly into `tidy()` to view the regression summary. Type the full pipe below and hit "Run Code."
+
+```{r scaling-8, exercise = TRUE}
+
+```
+
+<button onclick = "transfer_code(this)">Copy previous code</button>
+
+```{r scaling-8-hint-1, eval = FALSE}
+linear_reg() |>
+  fit(income ~ age, data = x) |>
+    tidy(conf.int = TRUE)
+```
+
+```{r scaling-8-test, include = FALSE}
+linear_reg() |>
+  fit(income ~ age, data = x) |>
+    tidy(conf.int = TRUE)
+```
+
+### 
+
+Adding `conf.int = TRUE` to `tidy()` shows confidence intervals for each coefficient, helping you judge the precision and significance of your estimates.
+
+### Exercise 9
+
+Interpret the intercept in your own words. What does it mean in this context? Is it a useful value?
+
+```{r scaling-9}
+question_text(NULL,
+  message = "The intercept is the estimated average income for a person with an age of zero. Since there are no zero-year-olds in our data, this value is not meaningful or useful in this context.",
+  answer(NULL, correct = TRUE),
+  allow_retry = FALSE,
+  incorrect = NULL,
+  rows = 6)
+
+```
+
+### 
+
+The intercept, $\beta_0$, represents the expected outcome when all predictors are zero. In many cases --- like age --- this isn’t meaningful, but it’s still required for the math of the model. Always check if the intercept makes sense for your context.
+
+### Exercise 10
+
+One way to make the intercept more meaningful is to transform `age`. Pipe `trains` to `mutate()` to create a new column `c_age = age - mean(age)`. 
+
+```{r scaling-10, exercise = TRUE}
+
+```
+
+```{r scaling-10-hint-1, eval = FALSE}
+trains |> 
+  mutate(... = age - ...(age))
+```
+
+```{r scaling-10-test, include = FALSE}
+trains |> 
+  mutate(c_age = age - mean(age))
+```
+
+### 
+
+By doing this, we are subtracting the mean of a variable `age` in the data set from each of its values. The new distribution will be centered around zero, meaning that it will have a mean of zero, but it will retain the same spread (standard deviation) and shape as the original distribution.
+
+### Exercise 11
+
+Pipe `linear_reg()` to `fit()`, with the formula `income ~ c_age` and `data = x` as arguments. Run this code.
+
+```{r scaling-11, exercise = TRUE}
+
+```
+
+```{r scaling-11-hint-1, eval = FALSE}
+linear_reg() |>
+  fit(... ~ ..., data = ...)
+```
+
+```{r scaling-11-test, include = FALSE}
+linear_reg() |>
+  fit(income ~ c_age, data = x)
+```
+
+### 
+
+Using this centered version of age does not change the predictions or residuals in the model, but it does make the intercept easier to interpret. 
+
+### Exercise 12
+
+Now, pipe your previous code directly into `tidy(conf.int = TRUE)` to see the regression summary with confidence intervals. Type the full pipe below and hit "Run Code."
+
+```{r scaling-12, exercise = TRUE}
+
+```
+
+<button onclick = "transfer_code(this)">Copy previous code</button>
+
+```{r scaling-12-hint-1, eval = FALSE}
+linear_reg() |>
+  fit(income ~ c_age, data = x) |>
+  tidy(conf.int = TRUE)
+```
+
+```{r scaling-12-test, include = FALSE}
+linear_reg() |>
+  fit(income ~ c_age, data = x) |>
+  tidy(conf.int = TRUE)
+```
+
+### 
+
+The intercept, `r scales::comma(round(tidy(fit_1_c) |> filter(term == "(Intercept)") |> pull(estimate), 0))`, is the expected income for someone with `c_age = 0`, i.e. someone of an average age in the data, which is around `r round(mean(trains$age), 0)`.
+
+### Exercise 13
+
+Interpret the intercept in your own words. What does it mean now? Is it more meaningful than before?
+
+```{r scaling-13}
+question_text(NULL,
+  message = "With centered age, the intercept is the predicted income for someone whose age is exactly average for this data set. This is usually much more meaningful than the predicted income for someone aged zero.",
+  answer(NULL, correct = TRUE),
+  allow_retry = FALSE,
+  incorrect = NULL,
+  rows = 6)
+
+```
+
+### 
+
+After centering, the intercept represents the expected outcome for an average case—making it much more interpretable than before.
+
+### Exercise 14
+
+The most common scaling method is to divide the variable by its standard deviation. Start a pipe with `trains` to `mutate()` with the argument `s_age = age / sd(age)`. 
+
+```{r scaling-14, exercise = TRUE}
+
+```
+
+```{r scaling-14-hint-1, eval = FALSE}
+trains |> 
+  mutate(... = age / ...(age))
+```
+
+```{r scaling-14-test, include = FALSE}
+trains |> 
+  mutate(s_age = age / sd(age))
+```
+
+### 
+
+By doing this, we are scaling the variable `age` so that its values are measured in terms of standard deviations from the mean. 
+
+### Exercise 15
+
+Pipe `linear_reg()` to `fit()`, with the formula `income ~ s_age` and `data = x` as arguments.
+
+```{r scaling-15, exercise = TRUE}
+
+```
+
+```{r scaling-15-hint-1, eval = FALSE}
+linear_reg() |>
+  fit(... ~ ..., data = ...)
+```
+
+```{r scaling-15-hint-2, eval = FALSE}
+linear_reg() |>
+  fit(income ~ s_age, data = x)
+```
+
+### 
+
+`s_age` is age scaled by its own standard deviation. A change in one unit of `s_age` is the same as a change in one standard deviation of the `age`, which is `r round(sd(x$age), 1)` years. As you can see, this transformation allows for easier interpretation of coefficients across predictors measured on different scales.
+
+### Exercise 16
+
+Pipe the model fitting code directly into `tidy()` to view the regression summary. Type the following and hit "Run Code."
+
+```{r scaling-16, exercise = TRUE}
+
+```
+
+<button onclick = "transfer_code(this)">Copy previous code</button>
+
+```{r scaling-16-hint-1, eval = FALSE}
+linear_reg() |>
+  fit(income ~ s_age, data = x) |>
+  ...
+```
+
+```{r scaling-16-test, include = FALSE}
+linear_reg() |>
+  fit(income ~ s_age, data = x) |>
+  tidy(conf.int = TRUE)
+```
+
+### 
+
+But, because we scaled without centering, the intercept is now back to the (nonsensical) meaning of the expected income for people of age 0.
+
+### Exercise 17
+
+Interpret the results in your own words. What does the estimate for `s_age` mean in this context? Is the coefficient statistically significant? Use the standard deviation of age and the output above in your explanation.
+
+```{r}
+
+s_age_coef <- broom::tidy(fit_1_s) |> dplyr::filter(term == "s_age") |> dplyr::pull(estimate)
+s_age_coef_comma <- scales::comma(round(s_age_coef, 0))
+s_age_sd   <- round(sd(x$age), 1)
+
+scaling_17_msg <- glue::glue(
+  "The coefficient for `s_age` is {s_age_coef_comma}, meaning that each increase of one standard deviation in age (about {s_age_sd} years) is associated with an ${s_age_coef_comma} increase in income."
+)
+```
+
+```{r scaling-17}
+question_text(NULL,
+  message = scaling_17_msg,
+  answer(NULL, correct = TRUE),
+  allow_retry = FALSE,
+  incorrect = NULL,
+  rows = 6)
+```
+
+###
+
+In a standardized form, the coefficients of a regression model can be interpreted as the effect of a one standard deviation change in the predictor variable on the outcome variable. The interpretation of $\beta_1$ is now: 
+
+> When comparing two people, one about 1 standard deviation (`r s_age_sd` years) older than the other, we expect the older person to earn $`r s_age_coef_comma` more on average.
+
+### Exercise 18
+
+The most common transformation applies both centering and scaling. Start a pipe with `trains` to `mutate` with the argument `z_age = scale(age)`. Assign the result to a new object called `x`.
+
+```{r scaling-18, exercise = TRUE}
+
+```
+
+```{r scaling-18-hint-1, eval = FALSE}
+... |> 
+  mutate(z_age = scale(...))
+```
+
+```{r scaling-18-test, include = FALSE}
+trains |> 
+  mutate(z_age = scale(age))
+```
+
+### 
+
+The base R function `scale()` subtracts the mean and divides by the standard deviation. A variable so transformed is a “z-score”, meaning a variable with a mean of zero and a standard deviation of one.
+
+### Exercise 19
+
+Pipe `linear_reg()` to `fit()`, with the formula `income ~ z_age` and `data = x` as arguments.
+
+```{r scaling-19, exercise = TRUE}
+
+```
+
+```{r scaling-19-hint-1, eval = FALSE}
+linear_reg() |>
+  fit(... ~ ..., data = ...)
+```
+
+```{r scaling-19-hint-2, eval = FALSE}
+linear_reg() |>
+  fit(income ~ z_age, data = x)
+```
+
+### 
+
+Using *z*-scores makes interpretation easier, especially when comparing the strength of different predictors. A value of `z_age = 1` means a person is one standard deviation older than average.
+
+### Exercise 20
+
+Now, pipe the model fitting code directly into `tidy()` to view the regression summary. Type the following and hit "Run Code."
+
+```{r scaling-20, exercise = TRUE}
+
+```
+
+<button onclick = "transfer_code(this)">Copy previous code</button>
+
+```{r scaling-20-hint-1, eval = FALSE}
+linear_reg() |>
+  fit(income ~ z_age, data = x) |>
+  ...
+```
+
+```{r scaling-20-test, include = FALSE}
+linear_reg() |>
+  fit(income ~ z_age, data = x) |>
+  tidy(conf.int = TRUE)
+```
+
+### 
+
+The two parameters are easy to interpret after this transformation.
+
+> The expected income of someone of average age, which is about `r round(mean(trains$age))` in this study, is about `r scales::comma(round(tidy(fit_1_z) |> filter(term == "(Intercept)") |> pull(estimate), -3))` dollars.
+
+> When comparing two individuals who differ in age by one standard deviation, which is about `r round(sd(trains$age))` years in this study, the older person is expected to earn about `r scales::comma(round(tidy(fit_1_z) |> filter(term == "z_age") |> pull(estimate), -3))` dollars more than the younger.
+
+### Exercise 21
+
+Interpret the results in your own words. What does the estimate for `z_age` mean in this context? Is the coefficient statistically significant? Use the standard deviation of age and the output above in your explanation.
+
+```{r}
+z_age_coef <- round(broom::tidy(fit_1_z) |> dplyr::filter(term == "z_age") |> dplyr::pull(estimate), 0)
+z_age_coef_comma <- scales::comma(round(z_age_coef, 0))
+z_age_sd   <- round(sd(x$age), 1) 
+
+z_age_msg <- glue::glue(
+  "The coefficient for z_age tells us the expected increase in income for each one-standard-deviation increase in age. For example, if the coefficient is {z_age_coef_comma}, then someone who is one standard deviation (about {z_age_sd} years) older than average is predicted to earn ${z_age_coef_comma} more than someone of average age."
+)
+```
+
+```{r scaling-21}
+question_text(NULL,
+  message = z_age_msg,
+  answer(NULL, correct = TRUE),
+  allow_retry = FALSE,
+  incorrect = NULL,
+  rows = 6)
+```
+
+### 
+
+Standardizing age as `z_age` lets us interpret the regression coefficient as the expected change in income for each one standard deviation increase in age. This makes it easy to compare the importance of different predictors, since all are measured in the same units: standard deviations from their mean.
+
+
+## Log Transformations
+### 
+
+Log transformations are a common way to handle variables that are highly skewed or span several orders of magnitude. By taking the logarithm of a variable, we can make patterns in the data easier to see, stabilize variance, and often improve model performance. 
+
+### Exercise 1
+
+It is often helpful to take the log of predictor variables, especially in cases in which their distribution is skewed. We will be using the `kenya` data set from **primer.data**. Type `kenya` and hit "Run Code".
+
+```{r log-transformations-1, exercise = TRUE}
+
+```
+
+```{r log-transformations-1-hint-1, eval = FALSE}
+kenya
+```
+
+```{r log-transformations-1-test, include = FALSE}
+kenya
+```
+
+### 
+
+Whether or not to take log of the variables may depend on the conventions in your field. If everyone does X, then you should probably do X, unless you have a good reason not to and need to explain it prominently.
+
+### Exercise 2
+
+Pipe `kenya` to `summary()` to return some statistics about the data.
+
+```{r log-transformations-2, exercise = TRUE}
+
+```
+
+<button onclick = "transfer_code(this)">Copy previous code</button>
+
+```{r log-transformations-2-hint-1, eval = FALSE}
+... |> 
+  summary()
+```
+
+```{r log-transformations-2-test, include = FALSE}
+kenya |> 
+  summary()
+```
+
+### 
+
+Let's say we are interested in the number of registered voters `rv13`. The summary shows that there are no missing values (NAs) in this column, however, there are rows with 0 voters, resulting in the min being 0.
+
+### Exercise 3
+
+To fix this, pipe `kenya` to the command `filter()` with the argument `rv13 > 0`. Assign the result to an object called `kenya_x`. 
+
+```{r log-transformations-3, exercise = TRUE}
+
+```
+
+```{r log-transformations-3-hint-1, eval = FALSE}
+... <- ... |> 
+  filter(... > 0)
+```
+
+```{r log-transformations-3-test, include = FALSE}
+kenya_x <- kenya |> 
+  filter(rv13 > 0)
+```
+
+### 
+
+You should generally only take the log of variables for which all the values are strictly positive. The log of a negative number is not defined.
+
+### Exercise 4
+
+Next, we will look at the distribution of `rv13` in the our data. Behind the scenes, we have created the graph for you. Type `rv_p` and hit "Run Code".
+
+```{r log-transformations-4, exercise = TRUE}
+
+```
+
+```{r log-transformations-4-hint-1, eval = FALSE}
+rv_p
+```
+
+```{r log-transformations-4-test, include = FALSE}
+rv_p
+```
+
+### 
+
+Using the raw data, the distribution is heavily skewed. However, we do not know the “true” model, who is to say that a model using the raw value is right or wrong?
+
+### Exercise 5
+
+Now let's see how the distribution looks after transforming `rv13` into the log version. Type `log_rv_p` and hit "Run Code".
+
+```{r log-transformations-5, exercise = TRUE}
+
+```
+
+```{r log-transformations-5-hint-1, eval = FALSE}
+log_rv_p
+```
+
+```{r log-transformations-5-test, include = FALSE}
+log_rv_p
+```
+
+### 
+
+The distribution after taking log is more symmetric and closer to a normal distribution. Check whether or not this choice meaningfully affects the answer to your question.
+
+### Exercise 6
+
+Let's put the two distributions next to each other to see the differences. Type `rv_p` and `log_rv_p`, connect them by `+`. Hit "Run Code"
+
+```{r log-transformations-6, exercise = TRUE}
+
+```
+
+```{r log-transformations-6-hint-1, eval = FALSE}
+... + ...
+```
+
+```{r log-transformations-6-test, include = FALSE}
+rv_p + log_rv_p
+```
+
+### 
+
+Our inferences are often fairly "robust" to small changes in the model. If you get the same answer with `rv13` as from `log_rv13`, then no one cares which you use.
+
+### Exercise 7
+
+Lastly, add `title`, `subtitle` for the graph using the command `plot_annotation()`. 
+
+```{r log-transformations-7, exercise = TRUE}
+
+```
+
+<button onclick = "transfer_code(this)">Copy previous code</button>
+
+```{r log-transformations-7-hint-1, eval = FALSE}
+... + ... + 
+  plot_annotation(title = ..., 
+                  subtitle = ...)
+```
+
+Remember that this is what your graph should look like. 
+
+```{r}
+rv_p + log_rv_p +
+  plot_annotation(title = 'Registered Votes In Kenya Communities',
+                  subtitle = "Taking logs helps us deal with outliers")
+```
+
+
+```{r log-transformations-7-test, include = FALSE}
+rv_p + log_rv_p +
+  plot_annotation(title = "Registered Votes In Kenya Communities",
+                  subtitle = "Taking logs helps us deal with outliers")
+```
+
+### 
+
+Most professionals, when presented with data distributed like `rv13`, would take the log. Professionals (irrationally?) hate outliers. Any transformation which makes a distribution look more normal is generally considered a good idea.
+
+### Exercise 8
+
+Instead of simply transforming variables, we can add more terms which are transformed versions of a variable. We will be using the `nhanes` data set. Type `nhanes` and hit "Run Code."
+
+```{r log-transformations-8, exercise = TRUE}
+
+```
+
+```{r log-transformations-8-hint-1, eval = FALSE}
+nhanes
+```
+
+```{r log-transformations-8-test, include = FALSE}
+nhanes
+```
+
+### 
+
+The following exercises are built up in the way that the more complex our model is, the better predictions they make and thus the better answers to our questions they give. Complexity in this case can be referred to as the number of variables we put into our formulas, whether we transform them or use their raw versions, etc.
+
+### Exercise 9
+
+Consider the relation of `height` to `age` in `nhanes`. Pipe `nhanes` to `select()` with `height` and `age` as the arguments. 
+
+```{r log-transformations-9, exercise = TRUE}
+
+```
+
+<button onclick = "transfer_code(this)">Copy previous code</button>
+
+```{r log-transformations-9-hint-1, eval = FALSE}
+... |> 
+  select(..., ...)
+```
+
+```{r log-transformations-9-test, include = FALSE}
+nhanes |> 
+  select(height, age)
+```
+
+### 
+
+Is `age` the best predictor of `height`? In the data set there are other potential variables such as `race` and `sex`, which one should we select, and which one should we discard? We will see in the later sections.
+
+### Exercise 10
+
+Let’s start by dropping the missing values. Copy your previous code, continue the pipe with `drop_na()`. Assign the result to an object called `no_na_nhanes`.
+
+```{r log-transformations-10, exercise = TRUE}
+
+```
+
+<button onclick = "transfer_code(this)">Copy previous code</button>
+
+```{r log-transformations-10-hint-1, eval = FALSE}
+... <- nhanes |> 
+  select(..., ...) |> 
+  ...
+```
+
+```{r log-transformations-10-test, include = FALSE}
+no_na_nhanes <- nhanes |> 
+  select(height, age) |> 
+  drop_na() 
+```
+
+### 
+
+When building models, we rely on assumptions to construct the mathematical formula to illustrate the relationship between variables. The less assumptions we need to make about our model, the more robust it gets in terms of reflecting the true underlying patterns in the data.
+
+### Exercise 11
+
+Let's create a model to study the relationship between `height` and `age`. Pipe `linear_reg()` to `fit()`, with the formula `height ~ age` and `data = no_na_nhanes` as arguments.
+
+```{r log-transformations-11, exercise = TRUE}
+
+```
+
+<button onclick = "transfer_code(this)">Copy previous code</button>
+
+```{r log-transformations-11-hint-1, eval = FALSE}
+linear_reg() |>
+  fit(... ~ ..., data = ...)
+```
+
+```{r log-transformations-11-test, include = FALSE}
+linear_reg() |>
+  fit(height ~ age, data = no_na_nhanes)
+```
+
+### 
+
+This model assumes the relationship between `age` and `height` is always constant, meaning that `height` always increases as `age` increases. That is not a very good model, obviously. We will see the reason why.
+
+### Exercise 12
+
+The accuracy of our model can be determined by whether it represents the pattern of our data. Hit "Run Code".
+
+```{r log-transformations-12, exercise = TRUE}
+no_na_nhanes |>
+  bind_cols(predict(nhanes_1, new_data = no_na_nhanes)) |>
+  ggplot(aes(x = age, y = height)) +
+  geom_point(alpha = 0.1) +
+  geom_line(aes(y = .pred), color = "red", linewidth = 2) +
+  labs(
+    title = "Age and Height",
+    subtitle = "Children are shorter, but a linear fit is poor",
+    x = "Age",
+    y = "Height (cm)",
+    caption = "Data source: NHANES"
+  )
+
+```
+
+```{r log-transformations-12-test, include = FALSE}
+no_na_nhanes |>
+  bind_cols(predict(nhanes_1, new_data = no_na_nhanes)) |>
+  ggplot(aes(x = age, y = height)) +
+  geom_point(alpha = 0.1) +
+  geom_line(aes(y = .pred), color = "red", linewidth = 2) +
+  labs(
+    title = "Age and Height",
+    subtitle = "Children are shorter, but a linear fit is poor",
+    x = "Age",
+    y = "Height (cm)",
+    caption = "Data source: NHANES"
+  )
+```
+
+### 
+
+From the graph, we see that before the age of 20, the data points gather and form a steep line, indicating that during this time period, people grow up really fast as their ages increase. However, after 20, there is little increase or even no increase in `height` as `age` increases. The red line created by the model does not capture this pattern. 
+
+### Exercise 13
+
+Pipe `linear_reg()` to `fit()`, with the formula `height ~ age + I(age^2)` and `data = no_na_nhanes` as arguments.
+
+```{r log-transformations-13, exercise = TRUE}
+
+```
+
+```{r log-transformations-13-hint-1, eval = FALSE}
+... <- linear_reg() |>
+  fit(... ~ ... + I(...^2), data = ...)
+```
+
+```{r log-transformations-13-test, include = FALSE}
+nhanes_2 <- linear_reg() |>
+  fit(height ~ age + I(age^2), data = no_na_nhanes)
+```
+
+### 
+
+Note the need for `I()` in creating the squared term within the `formula` argument. Adding a quadratic term makes it better since we allow our model to get rid of the assumption of a linear relationship, which is not true between the two variables. 
+
+### Exercise 14
+
+Let's see whether this model is better in terms of demonstrating the relationship between `age` and `height` in our data set. Hit "Run Code".
+
+```{r log-transformations-14, exercise = TRUE}
+no_na_nhanes |>
+  bind_cols(predict(nhanes_2, new_data = no_na_nhanes)) |>
+  arrange(age) |>    # sort after attaching predictions
+  ggplot(aes(x = age, y = height)) +
+    geom_point(alpha = 0.1) +
+    geom_line(aes(y = .pred), color = "red") +
+    labs(
+      title = "Age and Height",
+      subtitle = "Quadratic fit is much better, but still poor",
+      x = "Age",
+      y = "Height (cm)",
+      caption = "Data source: NHANES"
+    )
+```
+
+```{r log-transformations-14-test, include = FALSE}
+no_na_nhanes |>
+  bind_cols(predict(nhanes_2, new_data = no_na_nhanes)) |>
+  arrange(age) |>    # sort after attaching predictions
+  ggplot(aes(x = age, y = height)) +
+    geom_point(alpha = 0.1) +
+    geom_line(aes(y = .pred), color = "red") +
+    labs(
+      title = "Age and Height",
+      subtitle = "Quadratic fit is much better, but still poor",
+      x = "Age",
+      y = "Height (cm)",
+      caption = "Data source: NHANES"
+    )
+```
+
+### 
+
+This line looks better, but not the best we could do. We have not used our background knowledge that people don't get any taller after age 18 or so. 
+
+### Exercise 15
+
+Let's create variables that capture the break at age 18. Pipe `linear_reg()` to `fit()`, with the formula `height ~ I(ifelse(age > 18, 18, age))` and `data = no_na_nhanes` as arguments.
+
+```{r log-transformations-15, exercise = TRUE}
+
+```
+
+```{r log-transformations-15-hint-1, eval = FALSE}
+... <- linear_reg() |>
+  fit(height ~ ..., data = ...)
+```
+
+```{r log-transformations-15-test, include = FALSE}
+nhanes_3 <- linear_reg() |>
+  fit(height ~ I(ifelse(age > 18, 18, age)), data = no_na_nhanes)
+```
+
+### 
+
+Using the `ifelse()` command, we check every value of `age` in the data set, an original value is used if it is smaller than 18, every value greater than that threshold will be recorded as 18. The model does not understand the fact that people will (generally) not grow after the age of 18, so we need to manipulate this by "letting" it know that age-related changes in height are relevant only up to age 18.
+
+### Exercise 16
+
+Let's see how this model does in terms of demonstrating the relationship between the two variables. Hit "Run Code". 
+
+```{r log-transformations-16, exercise = TRUE}
+no_na_nhanes |>
+  bind_cols(predict(nhanes_3, new_data = no_na_nhanes)) |>
+  arrange(age) |>
+  ggplot(aes(x = age, y = height)) +
+    geom_point(alpha = 0.1) +
+    geom_line(aes(y = .pred), color = "red") +
+    labs(
+      title = "Age and Height",
+      subtitle = "Domain knowledge makes for better models",
+      x = "Age",
+      y = "Height (cm)",
+      caption = "Data source: NHANES"
+    )
+```
+
+```{r log-transformations-16-test, include = FALSE}
+no_na_nhanes |>
+  bind_cols(predict(nhanes_3, new_data = no_na_nhanes)) |>
+  arrange(age) |>
+  ggplot(aes(x = age, y = height)) +
+    geom_point(alpha = 0.1) +
+    geom_line(aes(y = .pred), color = "red") +
+    labs(
+      title = "Age and Height",
+      subtitle = "Domain knowledge makes for better models",
+      x = "Age",
+      y = "Height (cm)",
+      caption = "Data source: NHANES"
+    )
+```
+
+### 
+
+The new line correctly captures the pattern in our data. Note that models only do what we tell them to do. We are the captains of our souls and using the knowledge we have to transform variables as needed.
+
+## Selecting variables
+### 
+
+How do we decide which variables to include in a model? There is no one right answer to this question.
+
+### Exercise 1
+
+We will be using variables in the `trains` data set as an example. Type `trains` and hit "Run Code". The `trains` data set includes `gender`, `liberal`, `party`, `age`, `income`, `att_start`, `treatment`, `att_end`.
+
+```{r selecting-variables-1, exercise = TRUE}
+
+```
+
+```{r selecting-variables-1-hint-1, eval = FALSE}
+trains
+```
+
+```{r selecting-variables-1-test, include = FALSE}
+trains
+```
+
+### 
+
+Which variables would be best to include in a model depends on the question we are asking. For example, if we want to know if the ending attitude toward immigration differs between men and women, we need to include `gender` in the model.
+
+### Exercise 2
+
+Let's say we want to investigate the causal effect of exposing people to Spanish-speakers on their attitudes towards immigration. Pipe `trains` to `select()` with `att_end`, `treatment`, `att_start` as the arguments. 
+
+```{r selecting-variables-2, exercise = TRUE}
+
+```
+
+```{r selecting-variables-2-hint-1, eval = FALSE}
+... |> 
+  select(..., ..., ...)
+```
+
+```{r selecting-variables-2-test, include = FALSE}
+trains |> 
+  select(att_end, treatment, att_start)
+```
+
+### 
+
+We keep a variable in our analysis if theory, observation, or standard practice suggests it is meaningfully connected to the outcome. Sometimes, variables are also included due to convention or requirements, even if their connection is less clear.
+
+### Exercise 3
+
+Run a linear regression using the **tidymodels** framework. Use the formula `att_end ~ treatment + att_start` with the `x` data. Remember, `x` is just a transformed version of `trains.`
+
+```{r selecting-variables-3, exercise = TRUE}
+
+```
+
+```{r selecting-variables-3-hint-1, eval = FALSE}
+linear_reg() |>
+  fit(..., data = ...)
+```
+
+```{r selecting-variables-3-hint-2, eval = FALSE}
+linear_reg() |>
+  fit(att_end ~ treatment + att_start, data = x)
+```
+### 
+
+`att_end`, the variable before the tilde, is our outcome. The explanatory variables are `treatment`, which says whether a commuter received treatment or control conditions, and `att_start`, which measures attitude at the start of the study.
+
+### Exercise 4
+
+Behind the scenes, we have assigned the result of the previous code to an object named `fit_1_model`. Type `fit_1_model` and hit "Run Code." This will print a summary of the fitted model. 
+
+```{r selecting-variables-4, exercise = TRUE}
+
+```
+
+```{r selecting-variables-4-hint-1, eval = FALSE}
+fit_1_model
+```
+
+```{r selecting-variables-4-test, include = FALSE}
+fit_1_model
+```
+
+### 
+
+Deciding if a variable is worth including in our model depends on whether it has a large and well-estimated coefficient. This means, roughly, that the 95% confidence interval excludes zero.
+
+### Exercise 5
+
+Pipe the previous linear regression model directly into `tidy(conf.int = TRUE)` to view the regression summary with confidence intervals. Type the full pipe below and hit "Run Code." 
+
+```{r}
+confint_treatment <- fit_1_model |>
+  tidy(conf.int = TRUE) |>
+  dplyr::filter(term == "treatmentTreated")
+
+ci_low <- round(confint_treatment$conf.low, 2)
+ci_high <- round(confint_treatment$conf.high, 2) # Variables used in the knowledge drop below. 
+```
+
+```{r selecting-variables-5, exercise = TRUE}
+
+```
+
+```{r selecting-variables-5-hint-1, eval = FALSE}
+linear_reg() |>
+  fit(att_end ~ ... + ..., data = ...) |>
+  tidy(...)
+```
+
+```{r selecting-variables-5-test, include = FALSE}
+linear_reg() |>
+  fit(att_end ~ treatment + att_start, data = x) |>
+  tidy(conf.int = TRUE)
+
+```
+
+### 
+
+The 95% confidence interval for the coefficient of `treatmentTreated` is `r ci_low` to `r ci_high`. This means that, if I compare two people—one who received the treatment (i.e., heard Spanish speakers on the platform) and one who did not—we would expect the person who received the treatment (the "treated" participant) to have a higher score after the experiment than the one who was in the control group.
+
+### Exercise 6
+
+How do we decide which variables are useful? First, let’s interpret our coefficients. In your own words, describe the magnitude of the relationship between the variable `treatmentTreated` and our outcome variable, `att_end`, and what that means.
+
+(Hint: Look at the sign of the estimate for that coefficient.)
+
+```{r selecting-variables-6}
+question_text(NULL,
+	message = "The point estimate for `treatmentTreated` is 0.95, indicating that being in the treated group (exposed to Spanish speakers) is associated with a higher attitude towards immigration at the end of the experiment compared to being in the control group.",
+	answer(NULL, correct = TRUE),
+	allow_retry = FALSE,
+	incorrect = NULL,
+	rows = 6)
+```
+
+### 
+
+The variable `treatmentTreated` represents the *offset* in `att_end` from the estimate for our `Intercept`, which corresponds to the Control group. This means that, compared with the predicted `att_end` for those in the control group, those who received the treatment have a predicted attitude that is nearly one point higher.
+
+
+
+### Exercise 7
+
+In your own words, describe the magnitude of the relationship between `att_start` and `att_end`. Again, look at the sign of the estimated coefficient.
+
+```{r selecting-variables-7}
+question_text(NULL,
+	message = "The estimated coefficient for `att_start` is positive, indicating that the attitude at the end of the experiment is higher for every one unit increase in `att_start`.",
+	answer(NULL, correct = TRUE),
+	allow_retry = FALSE,
+	incorrect = NULL,
+	rows = 6)
+```
+
+### 
+
+Recall that we keep variables that have a "large" coefficient, which can only be defined in the context of the specific model. Speaking roughly, removing a variable with a large coefficient meaningfully changes the predictions of the model.
+
+### Exercise 8
+
+Referring back to our regression table for `fit_1_model`, what is the 95% Confidence Interval for `treatmentTreated`? Round it up to 2 decimal places.
+
+```{r}
+confint_treatment <- fit_1_model |>
+  tidy(conf.int = TRUE) |>
+  dplyr::filter(term == "treatmentTreated")
+
+ci_low <- round(confint_treatment$conf.low, 2)
+ci_high <- round(confint_treatment$conf.high, 2)
+
+ci_msg <- glue::glue(
+  "The 95% CI for `treatmentTreated` is [{ci_low}; {ci_high}]."
+)
+```
+
+```{r selecting-variables-8}
+question_text(NULL,
+	message = ci_msg,
+	answer(NULL, correct = TRUE),
+	allow_retry = FALSE,
+	incorrect = NULL,
+	rows = 6)
+```
+
+### 
+
+The 95% CI of this variable excludes zero, suggesting that it is a worthy variable to include in our model. 
+
+### Exercise 9
+
+What is the 95% Confidence Interval for `att_start`? Round it up to 2 decimal places.
+
+```{r}
+att_start_vals <- fit_1_model |>
+  tidy(conf.int = TRUE) |>
+  dplyr::filter(term == "att_start")
+
+att_start_low <- round(att_start_vals$conf.low, 2)
+att_start_high <- round(att_start_vals$conf.high, 2)
+
+att_start_msg <- glue::glue(
+  "The 95% CI for `att_start` is [{att_start_low}; {att_start_high}]."
+)
+```
+
+```{r selecting-variables-9}
+question_text(NULL,
+	message = att_start_msg,
+	answer(NULL, correct = TRUE),
+	allow_retry = FALSE,
+	incorrect = NULL,
+	rows = 6)
+```
+
+### 
+
+Applying the same requirement that the 95% Confidence Interval does NOT include zero, `att_start` is also a meaningful variable to our model. Therefore, our conclusion is to keep both variables, `treatment` and `att_start`. 
+
+### Exercise 10
+
+Let's now consider `income` as a function of `age` and `liberal`, a proxy for political party. Pipe `x` to `select()` with `income`, `age`, `liberal` as the arguments. 
+
+```{r selecting-variables-10, exercise = TRUE}
+
+```
+
+```{r selecting-variables-10-hint-1, eval = FALSE}
+... |> 
+  select(..., ..., ...)
+```
+
+```{r selecting-variables-10-test, include = FALSE}
+x |> 
+  select(income, age, liberal)
+```
+
+### 
+
+The rule of thumb is to keep variables for which the estimated coefficient is more than two standard errors away from zero. Some of these variables won’t “matter” much to the model since their coefficients, although well-estimated, are small enough that removing the variable from the model will not affect the model’s predictions very much.
+
+### Exercise 11
+
+Run a linear regression using the **tidymodels** framework. Use the formula `income ~ age + liberal` with the `x` data. 
+
+```{r selecting-variables-11, exercise = TRUE}
+
+```
+
+```{r selecting-variables-11-hint-1, eval = FALSE}
+linear_reg() |>
+  fit(... ~ ..., data = ...)
+```
+
+```{r selecting-variables-11-hint-2, eval = FALSE}
+linear_reg() |>
+  fit(income ~ age + liberal, data = x)
+```
+
+### 
+
+The variable before the tilde, `income`, is our outcome. The explanatory variables are `liberal`, a logical value of TRUE or FALSE, and `age`, a numeric variable. 
+
+### Exercise 12
+
+Type `fit_2_model` and hit "Run Code." 
+
+```{r selecting-variables-12, exercise = TRUE}
+
+```
+
+```{r selecting-variables-12-hint-1, eval = FALSE}
+fit_2_model
+```
+
+```{r selecting-variables-12-test, include = FALSE}
+fit_2_model
+```
+
+### 
+
+The `Intercept` is estimating income where `liberal == FALSE`. Therefore, it is the estimated income for commuters that are not liberals and who have `age = 0`. The estimate for `age` is showing the increase in income with every additional year of age.
+
+### Exercise 13
+
+Pipe the previous linear regression model directly into `tidy(conf.int = TRUE)` to view the regression summary with confidence intervals. Type the full pipe below and hit "Run Code."
+
+```{r selecting-variables-13, exercise = TRUE}
+
+```
+
+<button onclick = "transfer_code(this)">Copy previous code</button>
+
+```{r selecting-variables-13-hint-1, eval = FALSE}
+linear_reg() |>
+  fit(income ~ ..., data = ...) |>
+  tidy(conf.int = TRUE)
+```
+
+```{r selecting-variables-13-test, include = FALSE}
+linear_reg() |>
+  fit(income ~ age + liberal, data = x) |>
+  tidy(conf.int = TRUE)
+
+```
+
+### 
+
+The estimate for `liberalTRUE` represents the offset in predicted income for commuters who *are* liberal. To find the estimate, we must add the coefficient to our `Intercept` value. We see that, on average, liberal commuters make less money. 
+
+### Exercise 14
+
+In your own words, describe the magnitude of the relationship between `liberalTRUE` and `income`. Again, look at the sign of the estimated coefficient.
+
+```{r}
+coef_liberal <- fit_2_model |>
+  tidy(conf.int = TRUE) |>
+  filter(term == "liberalTRUE") |>
+  pull(estimate) |>
+  round(0)
+
+msg <- glue::glue(
+  "The coefficient for liberalTRUE is {coef_liberal} (negative), indicating that the liberals in our data set make less on average than non-liberals."
+)
+```
+
+```{r selecting-variables-14}
+question_text(NULL,
+	message = msg,
+	answer(NULL, correct = TRUE),
+	allow_retry = FALSE,
+	incorrect = NULL,
+	rows = 6)
+```
+
+### 
+
+It is important to note that we are not looking at a causal relationship for either `liberal` or `age`. We are noting the differences between two groups, without considering causality, recall the differences between *across unit* comparison and *within unit* comparison. 
+
+### Exercise 15
+
+What is the 95% Confidence Interval for `liberalTRUE`. Round it up to 2 decimal places.
+
+```{r}
+liberal_ci <- fit_2_model |>
+  tidy(conf.int = TRUE) |>
+  dplyr::filter(term == "liberalTRUE")
+
+liberal_low <- round(liberal_ci$conf.low, 2)
+liberal_high <- round(liberal_ci$conf.high, 2)
+
+liberal_msg <- glue::glue(
+  "The 95% CI for `liberalTRUE` is [{liberal_low}; {liberal_high}]."
+)
+```
+
+```{r selecting-variables-15}
+question_text(NULL,
+	message = liberal_msg,
+	answer(NULL, correct = TRUE),
+	allow_retry = FALSE,
+	incorrect = NULL,
+	rows = 6)
+```
+
+### 
+
+With rough mental math, we see that the 95% confidence interval excludes 0. Therefore, `liberal` is a helpful variable.
+
+### Exercise 16
+
+What is the 95% Confidence Interval for `age`. Round it up to 2 decimal places.
+
+```{r}
+age_ci <- fit_2_model |>
+  tidy(conf.int = TRUE) |>
+  dplyr::filter(term == "age")
+age_low <- round(age_ci$conf.low, 2)
+age_high <- round(age_ci$conf.high, 2)
+
+age_msg <- glue::glue(
+  "The 95% CI for `age` is [{age_low}; {age_high}]."
+)
+```
+
+```{r selecting-variables-16}
+question_text(NULL,
+	message = age_msg,
+	answer(NULL, correct = TRUE),
+	allow_retry = FALSE,
+	incorrect = NULL,
+	rows = 6)
+```
+
+### 
+
+The variable `age`, however, does not appear to have a meaningful impact on our `Intercept` since its coefficient is low and the 95% confidence interval *does not* exclude 0. Therefore, keep `liberal`, `age` is not that meaningful so it is really a matter of preference at this point. 
+
+## Comparing models in theory
+### 
+
+Deciding which variables to include in a model is a subset of the larger question: How do we decide which model, out of the set of possible models, to choose?
+
+### Exercise 1
+
+Consider the first model, which seeks to explain the attitudes towards immigration among Boston commuters, using political ideology (`liberal`) as the explanatory variable. Run a linear regression using the **tidymodels**. Use the formula `att_end ~ liberal` with the `x` data.
+
+```{r comparing-models-in-theory-1, exercise = TRUE}
+
+```
+
+```{r comparing-models-in-theory-1-hint-1, eval = FALSE}
+linear_reg() |>
+  fit(... ~ ..., data = ...)
+```
+
+```{r comparing-models-in-theory-1-test, include = FALSE}
+linear_reg() |>
+  fit(att_end ~ liberal, data = x)
+```
+
+### 
+
+A better model not only makes better predictions on the current data set but also makes better prediction on the new data. For instance, if we were to predict how someone’s attitude changes toward immigration among Boston commuters based on political affiliation, we would want to go out and test our theories on new Boston commuters.
+
+### Exercise 2
+
+Behind the scenes, we have assigned the result of the previous code to an object named `fit_liberal`. Type `fit_liberal` and hit "Run Code." This will print a summary of the fitted model.
+
+```{r comparing-models-in-theory-2, exercise = TRUE}
+
+```
+
+```{r comparing-models-in-theory-2-hint-1, eval = FALSE}
+fit_liberal
+
+```
+
+```{r comparing-models-in-theory-2-test, include = FALSE}
+fit_liberal
+
+```
+
+### 
+
+In this model, the intercept represents the predicted attitude toward immigration for non-liberal commuters. The coefficient for `liberalTRUE` shows the difference in average attitude between liberals and non-liberals.
+
+### Exercise 3
+
+Pipe your previous linear regression model directly into `tidy(conf.int = TRUE)` to view the regression summary with confidence intervals. Type the full pipe below and hit "Run Code."
+
+```{r comparing-models-in-theory-3, exercise = TRUE}
+
+```
+
+<button onclick = "transfer_code(this)">Copy previous code</button>
+
+```{r comparing-models-in-theory-3-hint-1, eval = FALSE}
+linear_reg() |>
+  fit(..., data = ...) |>
+  tidy(conf.int = TRUE)
+
+```
+
+```{r comparing-models-in-theory-3-test, include = FALSE}
+linear_reg() |>
+  fit(att_end ~ liberal, data = x) |>
+  tidy(conf.int = TRUE)
+
+```
+
+### 
+
+The magnitude between `liberalTRUE` and `att_end` is negative, which makes sense. People who are liberal have more liberal attitudes about immigration, so we would expect their `att_end` scores to be lower. 
+
+### Exercise 4
+
+Consider another model which seeks to explain the attitudes towards immigration among Boston commuters, using `att_start` as the explanatory variable. Run a linear regression using **tidymodels** . Use the formula `att_end ~ att_start` with the `x` data.
+
+```{r comparing-models-in-theory-4, exercise = TRUE}
+
+```
+
+```{r comparing-models-in-theory-4-hint-1, eval = FALSE}
+linear_reg() |>
+  fit(... ~ ..., data = ...)
+```
+
+```{r comparing-models-in-theory-4-test, include = FALSE}
+linear_reg() |>
+  fit(att_end ~ att_start, data = x)
+```
+
+###
+
+When thinking of generalizing our model's prediction to new data, it is important to consider what is relevant new data in the context of the modeling problem. Some models are used to predict the future and, in those cases, we can wait and eventually observe the future and check how good our model is for making predictions.
+
+### Exercise 5
+
+Behind the scenes, we have assigned the result of the previous code to an object named `fit_att_start`. Type `fit_att_start` and hit "Run Code." This will print a summary of the fitted model.
+
+```{r comparing-models-in-theory-5, exercise = TRUE}
+
+```
+
+```{r comparing-models-in-theory-5-hint-1, eval = FALSE}
+fit_att_start
+
+```
+
+```{r comparing-models-in-theory-5-test, include = FALSE}
+fit_att_start
+
+```
+
+###
+
+The intercept here is the predicted attitude toward immigration for someone whose starting attitude is zero. The coefficient for `att_start` shows how much the predicted ending attitude increases for each one-unit increase in the starting attitude.
+
+### Exercise 6
+
+Pipe your previous linear regression model directly into `tidy(conf.int = TRUE)` to view the regression summary with confidence intervals. Type the full pipe below and hit "Run Code."
+
+```{r comparing-models-in-theory-6, exercise = TRUE}
+
+```
+
+<button onclick = "transfer_code(this)">Copy previous code</button>
+
+```{r comparing-models-in-theory-6-hint-1, eval = FALSE}
+linear_reg() |>
+  fit(..., data = ...) |>
+  tidy(conf.int = TRUE)
+```
+
+```{r comparing-models-in-theory-6-test, include = FALSE}
+linear_reg() |>
+  fit(att_end ~ att_start, data = x) |>
+  tidy(conf.int = TRUE)
+```
+
+### 
+
+We would also expect people to provide similar answers in two surveys administered a week or two apart. It makes sense that those with higher (more conservative) values for `att_start` would also have higher values for `att_end`.
+
+### Exercise 7
+
+The `predict()` function in **tidymodels** generates predicted values from a fitted model using new or existing data. The output is always a tibble with a `.pred` column containing the model’s predictions. Let’s learn how to use it and understand its output.
+
+Use the `predict()` function to generate predictions from your `fit_liberal` model using the `x` data.
+Be sure to use the argument `new_data = x` in your code.
+
+```{r comparing-models-in-theory-7, exercise = TRUE}
+
+```
+
+<button onclick = "transfer_code(this)">Copy previous code</button>
+
+```{r comparing-models-in-theory-7-hint-1, eval = FALSE}
+predict(fit_..., new_data = ...)
+
+```
+
+```{r comparing-models-in-theory-7-test, include = FALSE}
+predict(fit_liberal, new_data = x)
+
+```
+
+### 
+
+The `predict()` function uses your fitted model to generate predicted values for every row in the new data you provide. The output is a tibble with a `.pred` column containing the model’s predictions.
+
+### Exercise 8
+
+Run `predict(fit_liberal, new_data = x)`, what is the name of the column in the resulting tibble that contains the predicted values?
+
+```{r comparing-models-in-theory-8}
+question_text(NULL,
+	message = "the name of the column is .pred",
+	answer(NULL, correct = TRUE),
+	allow_retry = FALSE,
+	incorrect = NULL,
+	rows = 6)
+```
+
+### 
+
+By default, the predicted values in **tidymodels** are stored in a column called `.pred.` You’ll use this column when adding predictions to your data or when plotting/model assessment. 
+
+### Exercise 9
+
+Extract just the vector of predicted values from the output of `predict(fit_liberal, new_data = x)` using the `$` operator. Run your code below. 
+
+```{r comparing-models-in-theory-9, exercise = TRUE}
+
+```
+
+<button onclick = "transfer_code(this)">Copy previous code</button>
+
+```{r comparing-models-in-theory-9-hint-1, eval = FALSE}
+predict(fit_..., new_data = ...)$.pred
+
+```
+
+```{r comparing-models-in-theory-9-test, include = FALSE}
+predict(fit_liberal, new_data = x)$.pred
+
+```
+
+### 
+
+Using `$` lets you extract a single column from a tibble. Here, `$.pred` pulls out just the predicted values as a vector, which is useful for calculations or plotting.
+
+### Exercise 10
+
+Use `mutate()` to add a new column called `pred_liberal` to the `x` data frame. The new column should contain the predicted values for `att_end` from your `fit_liberal` model, using the code `predict(fit_liberal, new_data = x)$.pred.`
+
+```{r comparing-models-in-theory-10, exercise = TRUE}
+
+```
+
+<button onclick = "transfer_code(this)">Copy previous code</button>
+
+```{r comparing-models-in-theory-10-hint-1, eval = FALSE}
+x |> 
+  mutate(pred_liberal = ...
+
+```
+
+```{r comparing-models-in-theory-10-test, include = FALSE}
+x |> 
+  mutate(pred_liberal = predict(fit_liberal, new_data = x)$.pred)
+
+```
+
+### 
+
+Adding predictions as a new column with `mutate()` lets you compare the predicted values to the actual values in your data --- this is the foundation for model evaluation and visualization.
+
+### Exercise 11
+
+In your own words, explain what `predict()` does and how adding predictions to your data can help you evaluate the performance of a model. Why is this step important in data science?
+
+```{r comparing-models-in-theory-11}
+question_text(NULL,
+  message = "The predict() function generates predicted values from my fitted model for each row of my data. By adding these predictions to my data frame, I can compare them directly to the actual outcomes. This is important because it lets me see how accurate my model’s predictions are, identify where the model performs well or poorly, and measure the overall quality of the model.",
+  answer(NULL, correct = TRUE),
+  allow_retry = FALSE,
+  incorrect = NULL,
+  rows = 2)
+```
+
+### 
+
+Evaluating your model’s predictions against real outcomes is essential for checking model accuracy and for improving your models over time.
+
+### Exercise 12
+
+Ask AI to help you create a plot using the `x` data. Add a column named `pred_liberal` with predicted values for `att_end` from your `fit_liberal` model. Be sure to use: `predict(fit_liberal, new_data = x)$.pred` inside `mutate()`. Plot `pred_liberal` on the x-axis and the actual `att_end` on the y-axis with `ggplot()`. Use `geom_jitter()` (with width and alpha for overlap), and use `annotate()` to add large red open circles at (8, 8) and (10, 10) to highlight perfect predictions. Make sure your graph includes clear axis labels and a title.
+
+Paste the code you used to make your plot into the answer box below.
+
+```{r comparing-models-in-theory-12}
+question_text(NULL,
+	answer(NULL, correct = TRUE),
+	allow_retry = TRUE,
+	try_again_button = "Edit Answer",
+	incorrect = NULL,
+	rows = 12)
+```
+
+### 
+
+Your graph should look something like this: 
+
+```{r}
+x |> 
+  mutate(pred_liberal = predict(fit_liberal, new_data = x)$.pred) |> 
+  ggplot(aes(x = pred_liberal, y = att_end)) +
+    geom_jitter(width = 0.05, height = 0.2, alpha = 0.5) +
+    annotate("point", x = 8, y = 8, size = 20, pch = 1, color = "red") +
+    annotate("point", x = 10, y = 10, size = 20, pch = 1, color = "red") +
+    labs(title = "Modeling Attitude Toward Immigration",
+         subtitle = "Liberals are less conservative",
+         x = "Predicted Attitude",
+         y = "True Attitude")
+```
+
+```{r comparing-models-in-theory-12-test, include = FALSE}
+x |> 
+  mutate(pred_liberal = predict(fit_liberal, new_data = x)$.pred) |> 
+  ggplot(aes(x = pred_liberal, y = att_end)) +
+    geom_jitter(width = 0.05, height = 0.2, alpha = 0.5) +
+    annotate("point", x = 8, y = 8, size = 20, pch = 1, color = "red") +
+    annotate("point", x = 10, y = 10, size = 20, pch = 1, color = "red") +
+    labs(title = "Modeling Attitude Toward Immigration",
+         subtitle = "Liberals are less conservative",
+         x = "Predicted Attitude",
+         y = "True Attitude")
+```
+
+### 
+
+The most sensible way to test a model is to use it to make predictions and compare those predictions to new data. After fitting the model using **tidymodels**, we use the `predict()` function to generate predicted values for new or existing cases.
+
+### Exercise 13
+
+Just as you visualized predictions from the `fit_liberal` model, you can do the same for the `fit_att_start` model. Comparing these plots helps you see which model produces predictions that more closely match the actual values of `att_end`. This is an important step in choosing the best model.
+
+###
+
+Ask AI to help you create a plot that compares model predictions from your `fit_att_start` model to the actual `att_end` values, using the `x` data. Add a column named `pred_as` to the data using `mutate()`. The predicted values should come from: `predict(fit_att_start, new_data = x)$.pred` Create a plot with `ggplot()`, using `pred_as` on the x-axis and `att_end` on the y-axis. Use `geom_jitter()` with reasonable `width`, `height`, and `alpha` settings to show overlapping points clearly. Add a red reference line using `geom_abline()` with `slope = 1` and `intercept = 0` to indicate where predictions equal actual values. Make sure your plot includes clear axis labels, a descriptive title, and a helpful subtitle.
+
+Paste the code you used to make your plot into the answer box below.
+
+```{r comparing-models-in-theory-13}
+question_text(NULL,
+	answer(NULL, correct = TRUE),
+	allow_retry = TRUE,
+	try_again_button = "Edit Answer",
+	incorrect = NULL,
+	rows = 12)
+```
+
+### 
+
+Your graph should look something like this: 
+
+```{r}
+x |> 
+  mutate(pred_as = predict(fit_att_start, new_data = x)$.pred) |> 
+  ggplot(aes(x = pred_as, y = att_end)) +
+    geom_jitter(width = 0.05, height = 0.2, alpha = 0.5) + 
+    geom_abline(intercept = 0, slope = 1, color = "red") +
+    labs(title = "Modeling Attitude Toward Immigration",
+         subtitle = "Survey responses are somewhat consistent",
+         x = "Predicted Attitude",
+         y = "True Attitude")
+```
+
+```{r comparing-models-in-theory-13-test, include = FALSE}
+x |> 
+  mutate(pred_as = predict(fit_att_start, new_data = x)$.pred) |> 
+  ggplot(aes(x = pred_as, y = att_end)) +
+    geom_jitter(width = 0.05, height = 0.2, alpha = 0.5) + 
+    geom_abline(intercept = 0, slope = 1, color = "red") +
+    labs(title = "Modeling Attitude Toward Immigration",
+         subtitle = "Survey responses are somewhat consistent",
+         x = "Predicted Attitude",
+         y = "True Attitude")
+```
+
+### 
+
+Rather than looking at individual cases, we need to look at the errors for all the predictions. Fortunately, a prediction error is the same thing as a residual, which is easy enough to calculate.
+
+### Exercise 14
+
+Pipe `x` to `select()` with `att_end`, `att_start`, and `liberal`. 
+
+```{r comparing-models-in-theory-14, exercise = TRUE}
+
+```
+
+```{r comparing-models-in-theory-14-hint-1, eval = FALSE}
+... |> 
+  ...(..., ..., ...)
+```
+
+```{r comparing-models-in-theory-14-test, include = FALSE}
+x |> 
+  select(att_end, att_start, liberal)
+```
+
+### 
+
+A residual is the difference between the observed value of the dependent variable (actual value) and the predicted value (fitted value) produced by a regression model.
+
+### Exercise 15
+
+Continue the pipe with `mutate()`. Set `pred_lib` equal to the predicted values from `predict(fit_liberal, new_data = x)`.
+
+```{r comparing-models-in-theory-15, exercise = TRUE}
+
+```
+
+<button onclick = "transfer_code(this)">Copy previous code</button>
+
+```{r comparing-models-in-theory-15-hint-1, eval = FALSE}
+... |> 
+  mutate(pred_lib = predict(..., new_data = x)$`.pred`)
+```
+
+```{r comparing-models-in-theory-15-test, include = FALSE}
+x |> 
+  select(att_end, att_start, liberal) |> 
+  mutate(pred_lib = predict(fit_liberal, new_data = x)$.pred)
+```
+
+### 
+
+In mathematical terms, for each observation $i$: 
+
+$$Residual = y_i - \hat{y_i} $$
+
+$y_i$ is the actual value of the dependent variable, which is `att_end` and $\hat{y_i}$ is the predicted value of `att_end` generated from the model.
+
+### Exercise 16
+
+<!-- Instructions for resid_lib do not match formula above. Code below is wrong. Please fix. -->
+
+Add another column `resid_lib` equal to `pred_lib - att_end` to the current tibble using the `mutate()` command. 
+
+```{r comparing-models-in-theory-16, exercise = TRUE}
+
+```
+
+<button onclick = "transfer_code(this)">Copy previous code</button>
+
+```{r comparing-models-in-theory-16-hint-1, eval = FALSE}
+...|> 
+  mutate(resid_lib = pred_lib - att_end)
+```
+
+```{r comparing-models-in-theory-16-test, include = FALSE}
+x |> 
+  select(att_end, att_start, liberal) |> 
+  mutate(pred_lib = predict(fit_liberal, new_data = x)$.pred) |> 
+  mutate(resid_lib = pred_lib - att_end)
+```
+
+### 
+
+Larger residuals mean larger deviations from the actual values. Smaller residuals indicate a model that fits the data well.
+
+### Exercise 17
+
+Continue the pipe with `mutate()`, create a new column called `pred_as` and set it equal to the predicted values from `fit_att_start` using the `predict()` function.
+
+```{r comparing-models-in-theory-17, exercise = TRUE}
+
+```
+
+<button onclick = "transfer_code(this)">Copy previous code</button>
+
+```{r comparing-models-in-theory-17-hint-1, eval = FALSE}
+... |> 
+  mutate(pred_as = predict(fit_att_start, new_data = x)$`.pred`)
+```
+
+```{r comparing-models-in-theory-17-test, include = FALSE}
+x |> 
+  select(att_end, att_start, liberal) |> 
+  mutate(pred_lib = predict(fit_liberal, new_data = x)$.pred) |> 
+  mutate(resid_lib = pred_lib - att_end) |> 
+  mutate(pred_as = predict(fit_att_start, new_data = x)$.pred)
+```
+
+### 
+
+Sadly, it is not wise to simply select the model which fits the data best because doing so can be misleading. We are using our data to select parameters and then, after using the data once, turning around and “checking” to see how well your model fits the data. It better fit! 
+
+### Exercise 18
+
+Finally, calculate the residual when using `att_start` to forecast `att_end`. Using `mutate()`, add `resid_as` and set it equal to `pred_as - att_end`.
+
+```{r comparing-models-in-theory-18, exercise = TRUE}
+
+```
+
+<button onclick = "transfer_code(this)">Copy previous code</button>
+
+```{r comparing-models-in-theory-18-hint-1, eval = FALSE}
+... |> 
+  mutate(resid_as = pred_as - att_end)
+```
+
+```{r comparing-models-in-theory-18-test, include = FALSE}
+x |> 
+  select(att_end, att_start, liberal) |> 
+  mutate(pred_lib = predict(fit_liberal, new_data = x)$.pred) |> 
+  mutate(resid_lib = pred_lib - att_end) |> 
+  mutate(pred_as = predict(fit_att_start, new_data = x)$.pred) |> 
+  mutate(resid_as = pred_as - att_end)
+```
+
+### 
+
+*If the only criteria we cared about was how well the model predicts using the data on which the parameters were estimated, then a model with more parameters will always be better*. But that is not what truly matters. What matters is how well the model works on data which was not used to create the model.
+
+### Exercise 19
+
+Let's look at the square root of the average squared error. Pipe `x` to `select` to take out `att_end`, `att_start` and `liberal`.
+
+```{r comparing-models-in-theory-19, exercise = TRUE}
+
+```
+
+```{r comparing-models-in-theory-19-hint-1, eval = FALSE}
+... |> 
+  ...(..., ..., ...) 
+```
+
+```{r comparing-models-in-theory-19-test, include = FALSE}
+x |> 
+  select(att_end, att_start, liberal) 
+```
+
+### 
+
+There are many different measures of the error which we might calculate. The squared difference is most common for historical reasons: it was the mathematically most tractable in the pre-computer age. 
+
+### Exercise 20
+
+Continue the pipe with `mutate()`. Create a column named `lib_err` and set it equal to `(pred_lib - att_end)^2`. First, get the predictions using `predict(fit_liberal, new_data = x)$.pred`.
+
+```{r comparing-models-in-theory-20, exercise = TRUE}
+
+```
+
+<button onclick = "transfer_code(this)">Copy previous code</button>
+
+```{r comparing-models-in-theory-20-hint-1, eval = FALSE}
+... |>
+  mutate(lib_err = (pred_lib - att_end)^2)
+```
+
+```{r comparing-models-in-theory-20-test, include = FALSE}
+x |> 
+  select(att_end, att_start, liberal) |> 
+  mutate(pred_lib = predict(fit_liberal, new_data = x)$.pred) |>
+  mutate(lib_err = (pred_lib - att_end)^2) 
+```
+
+###
+
+Since the residuals can be negative, we could get a zero value when trying to sum them up, or we might be unable to take the square root of the difference if it's negative. Thus, we square them up so that all values are positive.
+
+### Exercise 21
+
+Continue the pipe with `mutate()`. Create a column named `as_err` and set it equal to `(pred_as - att_end)^2`. First, get the predictions using `predict(fit_att_start, new_data = x)$.pred`.
+
+```{r comparing-models-in-theory-21, exercise = TRUE}
+
+```
+
+<button onclick = "transfer_code(this)">Copy previous code</button>
+
+```{r comparing-models-in-theory-21-hint-1, eval = FALSE}
+... |> 
+  mutate(as_err = (pred_as - att_end)^2)
+```
+
+```{r comparing-models-in-theory-21-test, include = FALSE}
+x |> 
+  select(att_end, att_start, liberal) |> 
+  mutate(pred_lib = predict(fit_liberal, new_data = x)$.pred) |>
+  mutate(lib_err = (pred_lib - att_end)^2) |>
+  mutate(pred_as = predict(fit_att_start, new_data = x)$.pred) |>
+  mutate(as_err = (pred_as - att_end)^2)
+```
+
+###
+
+Having calculated a squared difference for each observation, we can sum them or take their average or take the square root of their average. 
+
+### Exercise 22
+
+Continue the pipe with `summarize()`. The first argument is `lib_sigma` and set it equal to `sqrt(mean(lib_err))`, the second argument is `as_sigma` and set it equal to `sqrt(mean(as_err))`.
+
+```{r comparing-models-in-theory-22, exercise = TRUE}
+
+```
+
+<button onclick = "transfer_code(this)">Copy previous code</button>
+
+```{r comparing-models-in-theory-22-hint-1, eval = FALSE}
+... |> 
+  summarize(lib_sigma = sqrt(mean(lib_err)),
+            as_sigma = sqrt(mean(as_err)))
+```
+
+```{r comparing-models-in-theory-22-test, include = FALSE}
+x |> 
+  select(att_end, att_start, liberal) |> 
+  mutate(pred_lib = predict(fit_liberal, new_data = x)$.pred) |>
+  mutate(lib_err = (pred_lib - att_end)^2) |>
+  mutate(pred_as = predict(fit_att_start, new_data = x)$.pred) |>
+  mutate(as_err = (pred_as - att_end)^2) |>
+  summarize(lib_sigma = sqrt(mean(lib_err)),
+            as_sigma = sqrt(mean(as_err)))
+
+```
+
+###
+
+The better model is the one with a smaller square root of the residual. The `as_sigma` has a lower value compared to `lib_sigma` and thus it is a better model.
+
+
+## Beware overfitting
+### 
+
+One of the biggest dangers in data science is *overfitting*, using a model with too many parameters which fits the data we have too well and, therefore, works poorly on data we have yet to see. 
+
+### Exercise 1
+
+Consider a simple example with 10 data points. Run this code to see the plot it creates
+
+```{r beware-overfitting-1, exercise = TRUE}
+#| echo: false
+ovrftng <- tibble(x = 1:10,
+                  y = c(1.9, 1.9, 4.9, 2.7, 2.6, 
+                        5.2, 6.8, 8.9, 9.0, 9.9))
+
+ovrftng |> 
+  ggplot(aes(x, y)) +
+    geom_point() +
+    labs(title = "Create a Model which Predicts `y` Given `x`") +
+    scale_x_continuous(breaks = seq(2, 10, 2)) +
+    scale_y_continuous(breaks = seq(2, 10, 2)) 
+
+```
+
+###
+
+This plot is a starting point for discussing overfitting --- when a model fits the data too closely and fails to generalize to new data. The goal is to find a balance, capturing the main pattern without chasing every data point.
+
+### Exercise 2
+
+What happens when we fit a model with one predictor? Run the code below and take a look at the resulting plot.
+
+```{r beware-overfitting-2, exercise = TRUE}
+#| echo: false
+one_pred <- lm(y ~ x,
+               data = ovrftng)
+  
+newdata <- tibble(x = seq(1, 10, by = 0.01),
+                  y = predict(one_pred, 
+                              newdata = tibble(x = x)))
+
+ovrftng |> 
+  ggplot(aes(x, y)) +
+    geom_point() +
+    geom_line(data = newdata, 
+              aes(x, y)) +
+    labs(title = "`y` as a Linear Function of `x`") +
+    scale_x_continuous(breaks = seq(2, 10, 2)) +
+    scale_y_continuous(breaks = seq(2, 10, 2)) 
+
+```
+
+###
+
+This is a simple linear model. It doesn’t fit every point exactly, but it captures the overall trend: higher values of `x` usually mean higher values of `y`. Sometimes, a simple line is all you need.
+
+### Exercise 3
+
+You can also try fitting a quadratic model by including $x^2$ as a predictor. This allows for a curved fit, which might better capture the relationship between x and y if it's not strictly linear. Run the code and study the resulting graph to see the fit.
+
+```{r beware-overfitting-3, exercise = TRUE}
+#| echo: false
+two_pred <- lm(y ~ poly(x, 2),
+               data = ovrftng)
+
+newdata <- tibble(x = seq(1, 10, by = 0.01),
+                  y = predict(two_pred, 
+                              newdata = tibble(x = x)))
+
+ovrftng |> 
+  ggplot(aes(x, y)) +
+    geom_point() +
+    geom_line(data = newdata, 
+              aes(x, y)) +
+    labs(title = "`y` as a Quadratic Function of `x`") +
+    scale_x_continuous(breaks = seq(2, 10, 2)) +
+    scale_y_continuous(breaks = seq(2, 10, 2)) 
+```
+
+###
+
+A quadratic fit lets the model capture bends or curves in the data, not just straight-line trends. If the relationship between x and y isn’t perfectly linear, adding a squared term can improve how well the model describes the data. This can often reduce prediction error, but you should be careful. More complex models can also lead to overfitting if the data is limited.
+
+### Exercise 4
+
+The previous model with a quadratic term was a better fit than a simple line. But why stop at $x^2$? Why not add $x^3$, $x^4$, and even up to $x^9$ as predictors? When we do this, the fit looks much better --- at least on the surface. Right?
+
+Run the code below and look over the resulting plot.
+
+```{r beware-overfitting-4, exercise = TRUE}
+nine_pred <- lm(y ~ poly(x, 9),
+                       data = ovrftng)
+
+newdata <- tibble(x = seq(1, 10, by = 0.01),
+                  y = predict(nine_pred, 
+                              newdata = tibble(x = x)))
+
+ovrftng |> 
+  ggplot(aes(x, y)) +
+    geom_point() +
+    geom_line(data = newdata, 
+              aes(x, y)) +
+    labs(title = "`y` as a 9-Degree Polynomial Function of `x`") +
+    scale_x_continuous(breaks = seq(2, 10, 2)) +
+    scale_y_continuous(breaks = seq(2, 10, 2)) 
+```
+
+###
+
+Clearly, adding higher-degree terms (like $x^3$ to $x^9$) will make the model fit the current data almost perfectly. But just fitting the original data isn't the goal --- what matters is how well the model predicts new data. Too many terms can actually hurt future predictions, a problem called overfitting.
+
+## Comparing models in practice
+### 
+
+To choose the best model for predicting attitudes toward immigration, we need to compare their performance using reliable statistical tools. The **easystats** package, especially `performance()`, `compare_performance()`, and `compare_models()`, helps us evaluate, compare, and test our models. In this section, you’ll use these functions to review model quality metrics, compare models side by side, examine confidence intervals, and run formal statistical tests to decide which predictor is most useful.
+
+
+### Exercise 1
+
+Now, we will assess the performance of our model. Run the `performance()` function on `fit_liberal` and review the results.
+
+Type `performance(fit_liberal)` and hit "Run Code". 
+
+```{r comparing-models-in-practice-1, exercise = TRUE}
+
+```
+
+```{r comparing-models-in-practice-1-hint-1, eval = FALSE}
+performance(fit_liberal)
+```
+
+```{r comparing-models-in-practice-1-test, include = FALSE}
+performance(fit_liberal)
+```
+
+### 
+
+The `performance()` function from **easystats** summarizes how well your model fits the data. It reports key measures like AIC (Akaike Information Criterion), BIC (Bayesian Information Criterion), R² (explained variance), and RMSE (root mean squared error). These metrics help you compare models and decide which one provides the best fit or the most accurate predictions.
+
+### Exercise 2
+
+Now, let’s assess the performance of our second model. Run the `performance()` function on `fit_att_start` to see how well it fits the data.
+
+Type `performance(fit_att_start)` and hit "Run Code". 
+
+```{r comparing-models-in-practice-2, exercise = TRUE}
+
+```
+
+```{r comparing-models-in-practice-2-hint-1, eval = FALSE}
+
+performance(fit_att_start)
+
+```
+
+```{r comparing-models-in-practice-2-test, include = FALSE}
+
+performance(fit_att_start)
+
+```
+
+### 
+
+The `performance()` function summarizes model quality using statistics like R² (how much variance is explained), AIC and BIC (for model comparison), and RMSE (average prediction error). Models with higher R² and lower AIC/BIC/RMSE are generally better at explaining or predicting the outcome.
+
+### Exercise 3
+
+To directly compare our two models, use the `compare_performance()` function with `fit_att_start` and `fit_liberal` as arguments. This will show a table of model quality statistics for both models side by side.
+
+Type `compare_performance(fit_att_start, fit_liberal)` and hit "Run Code".
+
+```{r comparing-models-in-practice-3, exercise = TRUE}
+
+```
+
+```{r comparing-models-in-practice-3-hint-1, eval = FALSE}
+compare_performance(fit_att_start, fit_liberal)
+```
+
+```{r comparing-models-in-practice-3-test, include = FALSE}
+compare_performance(fit_att_start, fit_liberal)
+```
+
+### 
+
+The `compare_performance()` output shows that the `fit_att_start` model (AIC = 401.7, R² = 0.776, RMSE = 1.352) outperforms the `fit_liberal` model (AIC = 558.9, R² = 0.122, RMSE = 2.678) in every metric. The model with higher R² and lower AIC, BIC, and RMSE is usually preferred. In this case, `fit_att_start` is the more effective model.
+
+### Exercise 4
+
+You can also add a confidence interval for the performance metrics by setting the `ci` argument in `compare_performance()`. By default, the confidence interval is set to 0.95 (95%).
+
+Run `compare_performance()` again with `ci = 0.99` to get 99% confidence intervals for the model metrics.
+
+<!-- Does not work: Warning: model3 are not supported models and have been dropped.-->
+
+```{r comparing-models-in-practice-4, exercise = TRUE}
+
+```
+
+```{r comparing-models-in-practice-4-hint-1, eval = FALSE}
+compare_performance(fit_att_start, fit_liberal, ci = ...)
+```
+
+```{r comparing-models-in-practice-4-test, include = FALSE}
+compare_performance(fit_att_start, fit_liberal, ci = 0.99)
+```
+
+### 
+
+With `ci = 0.99`, `compare_performance()` shows 99% confidence intervals for model metrics, making the intervals wider and more conservative than the default 95%. If the intervals overlap, it means the models may not be meaningfully different in performance. Always prefer models with higher R² and lower AIC/BIC/RMSE. Confidence intervals show the uncertainty around each model metric. If intervals overlap, the models may not be truly different; if they do not, one model likely outperforms the other.
+
+### Exercise 5
+
+Now, let’s formally test whether the two models are statistically different in terms of fit. Run the `compare_models()` function with `fit_att_start` and `fit_liberal` as arguments to compare the two models. This will provide a hypothesis test to see if one model is significantly better than the other. 
+
+```{r comparing-models-in-practice-5, exercise = TRUE}
+
+```
+
+```{r comparing-models-in-practice-5-hint-1, eval = FALSE}
+compare_models(fit_..., fit_...)
+```
+
+```{r comparing-models-in-practice-5-test, include = FALSE}
+compare_models(fit_att_start, fit_liberal)
+```
+
+### 
+
+The `compare_models()` function runs a statistical test to assess whether the difference in model fit is significant. If the p-value is small (usually less than 0.05), you have evidence that one model is significantly better than the other. Always use both summary metrics and formal statistical tests to guide your model choice.
+
+### Exercise 6
+
+In one or two sentences, summarize our work so far, stating which model is better and conclude the better variable between `att_start` and `liberal` in terms of predicting the attitude towards immigration at the end of the experiment (`att_end`).
+
+```{r comparing-models-in-practice-6}
+question_text(NULL,
+	message = "`fit_att_start` is the stronger model. This means that a commuter's initial attitude (`att_start`) is a much better predictor of their final attitude (`att_end`) than their political ideology (`liberal`).",
+	answer(NULL, correct = TRUE),
+	allow_retry = FALSE,
+	incorrect = NULL,
+	rows = 6)
+```
+
+###
+
+When comparing models, always check metrics like R² and RMSE. The model with higher R² and lower RMSE fits and predicts better. Here, `att_start` is a much more useful predictor than `liberal`. 
+
+
+## Summary
+### 
+
+This tutorial covers [Chapter 7: Mechanics](https://ppbds.github.io/primer/mechanics.html) of [*Preceptor’s Primer for Bayesian Data Science: Using the Cardinal Virtues for Inference*](https://ppbds.github.io/primer/) by [David Kane](https://davidkane.info/). 
+
+
+ 
+
+```{r download-answers, child = system.file("child_documents/download_answers.Rmd", package = "tutorial.helpers")}
+```

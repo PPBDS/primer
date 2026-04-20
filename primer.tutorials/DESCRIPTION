@@ -1,0 +1,52 @@
+Package: primer.tutorials
+Title: Tutorials for Preceptor's Primer for Bayesian Data Science
+Version: 1.5.0
+Authors@R: 
+    c(
+    person(given = "David",
+           family = "Kane",
+           role = c("aut", "cre"),
+           email = "dave.kane@gmail.com",
+           comment = c(ORCID = "0000-0002-6660-3934")))    
+Description: Collection of tutorials for use with Preceptor's Primer for
+    Bayesian Data Science. Makes extensive use of the tools in 'tutorial.helpers'
+    package. 
+Depends: R (>= 3.5.0) 
+License: MIT + file LICENSE
+Encoding: UTF-8
+Roxygen: list(markdown = TRUE)
+RoxygenNote: 7.3.3
+Imports:
+    primer.data,
+    tutorial.helpers,
+    dplyr,
+    glue,
+    gt,
+    tibble
+Suggests: 
+    broom,
+    easystats,
+    glmnet,
+    katex,
+    learnr,
+    marginaleffects,
+    openintro,
+    patchwork,
+    quarto,
+    ranger,
+    rsconnect,
+    rstudioapi,
+    rvest,
+    scales,
+    testthat (>= 3.0.0),
+    tidymodels,
+    tidytext,
+    tidyverse,
+    MASS
+VignetteBuilder: 
+    quarto  
+Config/testthat/edition: 3 
+Remotes: 
+    PPBDS/primer.data,
+BugReports: https://github.com/PPBDS/primer/issues
+URL: https://github.com/PPBDS/primer, https://ppbds.github.io/primer/tutorials/

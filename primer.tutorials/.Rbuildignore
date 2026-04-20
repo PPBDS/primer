@@ -1,0 +1,16 @@
+^renv$
+^renv\.lock$
+^LICENSE\.md$
+^README\.Rmd$
+^\.github$
+^_pkgdown\.yml$
+^doc$
+^docs$
+^pkgdown$
+^Meta$
+tutorials/[^/]*/(?!(data|images|.*Rmd))
+.*_cache$
+^template_tutorial.Rmd$
+^TODO\.txt$
+^primer\.tutorials\.Rproj$
+^\.Rproj\.user$

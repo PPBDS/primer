@@ -1,0 +1,431 @@
+### Alec
+ 
+Use Claud Code to make dramatic improvements in this tutorial.
+
+* Don't just listen to me! Ask AI about my advice.
+
+* Test often.
+
+* Commit often. (Ask AI!) But keep things organized.
+
+* Submit PRs which make logical sense. Do not need to submit for each tutorial 
+    if that turns out to be easy. PRs include much more code change now then
+    they did three years ago.
+
+* Fix validity in one or two tutorial. Submit PRs. Have a conversation with Claude. - DONE
+
+* Fix it everywhere else. - IN PROGRESS
+
+* Figure out other errors. template_tutorial.Rmd is ground truth. Submit PRs fixing them. - IN PROGRESS (putting these types of changes from the validity edits here. Next, I'll go through and specifically ensure consistency with template_tutorial.rmd)
+
+* Read template_tutorial.Rmd.  
+
+
+### Later projects
+
+Population Table versus population.
+
+All footnotes are 1.
+
+Must be possible for a footnote to just not be there, presumably by setting the value to NULL.
+
+Set all footnotes to NULL be default and then, obviously, NULL footnotes do not appear.
+
+Source does not appear under Unit/Time. It has no spanner above it.
+
+In Population Table, should be:
+
+Data
+Data
+...
+Data
+
+Footnotes for two tables are very different because the Population Table footnotes should address the 3/4 assumptions.
+
+Make tables.qmd good! Not too long. Focusses on only those things which help students create better tables, which is primarily what sort of thoughts go in the footnotes.
+
+Add allowed/required details to individual arguments in the roxygen material.
+
+Split out helper functions, each into their own file, where the file name is always the same as the function name.
+
+Stuff like gt::px(80) seems like a ridiculous hack. Really necessary? No! You need width magic when making the tribble. You don't need it in gt() code.
+
+I am not sure that gt::tab_footnote() is being used as simply and concisely as it ought to be. Do we really need to use id = "unit_span" and then refer to that id again. Can't we just use "Unit/Time", i.e., the actual label?
+
+I think that, at the top of the Population Table code, you should be calling expand_input_table twice . . .
+
+Do not need the `type` argument in expand_input_tibble because the length of x tells us this. Also, need to document that with a list of two tibbles, the first is assumed to be the Preceptor Table information.
+
+
+
+* The Population Table code chunk does NOT get to assume that the Preceptor Table code was run. It begins with "raw" p_tibble and d_tibble, objects which only contain the data enterted by the user. That means that there will be some replication in the code in the two chunks: they both add a missing third row to p_tibble and a More column, for example. But that is OK.   
+
+
+
+    + There will be a footnote to the Units (if Preceptor) or Units/Time (if Population) spanners.  This is an opportunity for the author to explain the range of units and the time period covered. There is always something to say about these topics and, indeed, sometimes several sentences are necessary. A Preceptor/Population Table is self-contained. It includes all the text you need to understand it. (The language in this and other parts of the overview should be used in the help page.)
+
+    + There will be a footnote to the "Outcome/Potenial Outcomes" spanner which explains how/why we determined that this was a predictive or causal model. It might also report some details about our actual outcome variable and why it might not be exactly what we are looking for, especially given differences between the outcome we have in our data and the outcome we were initially interested in when we started the process.
+
+    + If it is a causal model, there will be a footnote to the "Treatment" spanner. There is almost always something useful to say about the treatment, especially in terms of how the treatment in the data differs from the treatment in the  Preceptor Table.
+
+    + There will be a footnote to the "Covariates" spanner. There is almost always something useful to say about the covariates, especially in terms of how the covariates in the data differs from the covariates in the  Preceptor Table.
+    
+    + Perhaps it should be easy for the author to delete these footnotes altogether. Perhaps the code is such that, at the top, there is a covariates_footnote variable, which has "Fix Me!" text but which, if set to NULL, generates no footnote, and no error.
+
+
+* Keep in mind, we need gt, tibble and glue libraries. How hard would it be to not use glue? (Do this at the end.) There are three approaches to the library issue: 1) Do nothing except ensure that the packages are in the DESCRIPTION file. 2) Load the packages in the code which is pasted in. 3) Use :: notation to call functions directly, like gt::tab_spanner(). Ask AI. What does it say?    AP: working on it (not done)
+
+
+### Summer Associates
+
+Think harder about where the data for these tutorials comes from. Does it all really need to be in primer.data? Wouldn't it be good to put some garbage data sources for the earlier tutorials into this tutorial itself. The biden polling data, for example. Three issues:
+
+    * It is wrong for that data to be created on the fly. That is too confusing for students.
+    * The data is too trivial for primer.data.
+    * We should be making the data "fake" by adding sex and age and telephone_call to the tibble, even if we have to make it up. We want to move away from having students "imagine" treatment variables and other covariates, at least in the earlier tutorials.
+
+Consider adding data used in class sessions, like resumes, to primer.data.
+
+
+031-sampling exercises take too long time to  process. either shorten them or delete them.
+
+Do we need some simulation tutorials?
+
+
+
+
+### primer.data
+
+
+### Animation
+
+Overview of Cardinal Virtues and key concepts.
+
+Use the DGM to create one complete Preceptor Table. In that draw, Joe is a 6 for `att_end`. Then, do another draw. Joe is a 5. Do a thousand draws. You then have a thousand Preceptor Tables. Calculate the Quantity of Interest for each Preceptor Table. The 1,000 values are the posterior for your QoI. Would be great to make a cool animation of this, perhaps with a simple example. Would be fun to have a similar animation for each chapter. Great summer project!
+
+### Cross Sectional Exercises for Progressive Knowledge Drops
+
+
+### Sharav
+
+Tutorial selector as Positron extension. 
+
+### Ansh
+
+Fixes to bugs reported by students.
+
+### Other Items
+
+Submit a PR with some material for marginaleffects webpage: 
+https://github.com/vincentarelbundock/marginaleffects/issues/1197
+
+
+### Preceptor
+
+Add some questions to Courage in template_tutorial to handle discussion/dismisal of hypothesis tests.
+
+Decide on naming convention. Name can include model form (linear/logistic/multinomial), type (causal/predictive) and, perhaps, difficulty level. Want to get away from arbitrary number of parameter. Think harder about directory names and id's. Or maybe just give them fun names like `biden` and `police-stops`, and then an ordering. 
+
+Upon reflection, we must have a recommended ordering, and given that, we hardly need a difficulty level. And no one will care if we have the logistic-causal or any other nonsense in the name.
+
+Maybe remove file name, like postcards.qmd, from all show_file questions, at least after tutorial 5 or so. One less thing for tutorial writers to worry about. One more thing which forces students to think about what they are typing, rather than just copying/pasting our code.
+
+Delete katex and broom.helpers from imports?
+
+
+
+
+
+1) Talk about probability family. 2) Talk about link function. 3) LaTeX with parameters and error term. 4) LaTeX math with parameter values and no error term. 5) Verbal description of the model.
+
+Update template_tutorial.Rmd. Get rid of DK stuff.
+
+The inferences() function in marginaleffects seems useful. Also, we should make use of more marginaleffects functions. For example, instead of interpreting tidy() tables, might interpret averages() (?) and similiar functions, which are useful themselves and set the scene for the plots.
+
+
+
+Deal with the word "render" in template_tutorial.Rmd. `Cmd/Ctrl + Shift + K` now runs Quarto preview, not Quarto render . . .
+
+Edit RCM tutorial to remove all the make work.
+
+Edit Probability tutorial to remove all the make work.
+
+Finish Tests section of Cardinal Virtues vignette.
+
+
+
+Optional: Read first nine chapters https://www.tmwr.org/. Go fast if you have seen this
+material before. 
+
+Choose a dataset which might be fun to use.
+
+Make a new tutorial 151. New directory. Use the template. 
+
+Start by making model. What kind? Flexible.
+  
+### Simulation, dice and beads
+
+* Discuss tutorial which would simulate the NCAA basketball tournament. What are the odds of a 5th seed winning the whole thing? Follow the 538 approach of just simulating the whole tournament a lot. Or maybe something similar but simpler?
+
+* Discuss simulating craps. Win with 7 or 11. Lose with 2, 3, or 12. Then roll until you make your "point" and win or "crap out" by rolling  a 7.
+
+* Give the formula for the coin and President and height examples. The mathematical distribution is one, by definition, with a formula.
+
+What does the Preceptor Table look like for dice and then for beads?
+
+For dice, we have one row for each die and each point in time at which we might roll that die. If the Preceptor Table were filled in, we could answer any question because we would know that Die 1 rolled a 3, Die 2 a 4, and so on.
+
+For beads, we have one row for each shovel result (8 reds or 6 reds or whatever) at each point in time. Again, if we had all the missing rows filled in, we could answer any question. 
+
+I guess that you could do one row for each empty space in the shovel . . . Maybe there is a useful discuss to be had about it depending on what you care about. If your unit of analysis is the student, then you care about the test score for each student in a class. If the unit is the class, then maybe you only care about the average of the class as a whole.
+
+Could be useful to use these simple examples to hammer home the theme of the DGM. We can create and use a DGM without doing any inference!
+
+
+### Exploration Projects
+
+Original idea for this comes from Jade. Key points:
+
+* Ultimate standard for success of the course is the quality of student final projects. So, the more time that students practice making final projects, the better.
+
+* We want students to have a professional portfolio. These projects can, perhaps with some more work, serve as starter elements of that portfolio.
+
+* Students vary in terms of their talent and willingness to work hard. Exploration Projects provide an opportunity for skilled and diligent students to push themselves.
+
+* Projects start with standard construction of a website, so require that students have completed the two Quarto websites tutorial. 
+
+* We encourage the use of AI extensively. Indeed, a primary purpose of these projects is to force students to make greater use of AI tools. There is no more important skill to teach them.
+
+* All the resulting URLs are gathered and shared with the class as a whole, with the best results highlighted.
+
+* We specify the data that should be used for the plot, at least for the first few tutorials. Perhaps the naming convention is EP: Diamnds, EP: Crime, and so on --- where "EP" stands for Exploration Project and the name of the dataset to use follows the colon.
+
+* Ideally, we might connect these projects to cool-looking professional work. That is, we find a nice looking New York Times data project, with some public data, and then encourage students to make something which looks just as good if not better.
+
+### Possible Data Sets to Use for New Tutorials
+
+These are all chosen to have thousands of observations and scores of variables, thereby 
+allowing for machine learning models.
+
+Source: https://vincentarelbundock.github.io/Rdatasets/articles/data.html
+
+https://vincentarelbundock.github.io/Rdatasets/doc/openintro/labor_market_discrimination.html
+
+https://vincentarelbundock.github.io/Rdatasets/doc/openintro/hfi.html
+
+https://vincentarelbundock.github.io/Rdatasets/doc/ISLR/Caravan.html
+
+https://vincentarelbundock.github.io/Rdatasets/doc/modeldata/ames.html
+
+https://vincentarelbundock.github.io/Rdatasets/doc/Ecdat/Car.html
+
+https://vincentarelbundock.github.io/Rdatasets/doc/AER/STAR.html
+
+https://vincentarelbundock.github.io/Rdatasets/doc/sampleSelection/RandHIE.html
+
+https://vincentarelbundock.github.io/Rdatasets/doc/modeldata/deliveries.html
+
+https://vincentarelbundock.github.io/Rdatasets/doc/modeldata/hotel_rates.html
+
+### Other Data Sets
+
+Stereotype threat replication: https://osf.io/preprints/psyarxiv/qctkp
+
+
+
+#### Other Items
+
+ordinal package is being maintained, which is nice.
+
+
+### Projects to Consider
+
+* Consider switching categorical to multinomial and Bernoulli to binomial.
+
+* Update 4 parameters so it does not produce these warning messages by default: https://rpubs.com/lelasengupta/four-parameters
+
+* Explore gradetools: https://federicazoe.github.io/gradetools/index.html
+
+* Deal with katex. Seems like all (?) Windows users are getting an error about needing the katex package. But nothing for Mac users. So, I added katex as an import, which is an absurd hack. Better approach?
+
+
+* 
+
+
+
+## Later
+
+r-universe for making primer.tutorials easier to install; maybe this would allow Window users to not have to install RTools?
+
+Maybe r2u is as good or better than caching. https://eddelbuettel.github.io/r2u/
+
+https://github.com/eddelbuettel/r2u/blob/master/inst/scripts/add_cranapt_jammy.sh
+
+https://github.com/eddelbuettel/tidycpp/blob/master/.github/workflows/ci.yaml
+
+https://community.rstudio.com/t/output-directory-in-quarto-cli-not-respected/143762/3
+
+
+## Other stuff
+
+
+### Visualization Links
+
+http://r-statistics.co/Top50-Ggplot2-Visualizations-MasterList-R-Code.html
+https://cran.r-project.org/web/packages/ggside/vignettes/ggside_basic_usage.html
+
+https://ggplot2.tidyverse.org/articles/
+
+[A Gentle Guide to the Grammar of Graphics](https://pkg.garrickadenbuie.com/gentle-ggplot2) or https://moderndive.com/2-viz.html#grammarofgraphics
+
+Tidy Tuesday: https://github.com/rfordatascience/tidytuesday
+
+gghighlights, ggsides, ggrepel
+
+
+
+## Chapter 5 and Associated Tutorials
+
+
+
+
+### Tutorials to add
+
+Let's discuss the six broad categories of tutorials which we might add, especially to chapters 5 through 11.
+
+First, we can just do more examples. Use different data with a different question, but all the same steps as in the chapter itself. Such examples will generally, like 082, do two analyses: one with all the data (to show the truth) and one in which representativeness fails in a way which we define, thereby showing how we can be led astray. Last step is to compare the answers from these two approaches, thus emphasizing the importance of humility.
+
+Second, stand-alone tutorials on useful topics, like text modeling or networks or rtweet or whatever. These could go in any chapter and would not be restricted to having X number of parameters.
+
+Third, we could cover many other model families, again perhaps not worrying too much about whether or not they have the "right" number of parameters. Simplest here would be other stan_glm families. That is, show a weird data set in which the outcome variable is something that should be fit with poisson or something, and then use family = poisson. Goal would be to emphasize that there are many possible models.
+
+
+
+Obviously, we could also combine these in various ways. Upon reflction, we should save the machine learning examples for later chapters in which we have several righhand side variables. Indeed, we could have three machine learning tutorials in chapter 11.
+
+* Compare results from rstanarm model to an approach, like we learned in Chapter 5, in which we do the analysis "by hand," creating the joint distribution and then the posterior distribution. This is easiest to do for Chapter 6. Indeed, you can just take the code from Chapter 5, make it continuous by sampling lots of possible values, and then compare to rstanarm. Should work fine. More ambitiously, we could do this for Chapter 7. This requires a three dimensional joint distribution because there are two unknown parameters and then a two dimensional posterior, with one dimension for mu and one for sigma. This is cool! But perhaps over kill.
+
+* Expand the Getting Started tutorial and make it better connected to the Primer chapter. Students read the chapter and then do the tutorial. The tutorial ought to confirm that they have done everything that the chapter told them to do. Even though it is done in class, it could be a bit longer, so 10 or 15 questions.
+
+
+* A "models" which would be a full dry run of their final projects. Download some data (maybe lots of little data files) with an R script. Clean the data in other R script. Make the model (a simple two parameter model) in another R script. Then, make a quarto website which uses the model to make pretty pictures which answer a couple of questions. Should show results using gtsummary to make pretty tables of model results. Might even show how stan_glm() models differ from lm() models. Or maybe run stan_glm() with option to get the lm() results. Example usage: https://ipums.github.io/pma-data-hub/posts/2021-07-01-covid-tables/
+
+* Advanced plotting, ideally focussed on all a variety of different plotting approaches designed for modeling-type questions and answers. Maybe https://feddelegrand7.github.io/ddplot/.
+
+* Would it be possible to have tutorials in the last few weeks which were, more or less, final project check-ins . . .
+
+* A tutorial about working with textual data. Perhaps based on tidytext book. Also: https://datavizs21.classes.andrewheiss.com/example/13-example/
+
+* Regression to the mean
+
+* The garden of forking paths
+
+* M/S errors
+
+
+* An rtweet tutorial: https://github.com/ropensci/rtweet
+
+* A Python tutorial. See the new features in learnr: "Added a new polyglot tutorial to learnr. This tutorial displays mixing R, python, and sql exercises. See run_tutorial("polyglot", "learnr") for a an example. (#397)"
+
+
+### To discuss
+
+* Another example set: https://openintrostat.github.io/ims-tutorials/
+
+* Specify which versions of learnr (and other Github packages?) we want. Otherwise, you always get the head, which may not be desirable. Do we really still need to be using the development version of learnr? That makes me nervous! And why haven't they updated the version on CRAN for more than 15 months?
+
+* Best single summary of tutorial tools/approaches: https://damien-datasci-blog.netlify.app/post/how-to-make-an-interactive-tutorial-to-teach-r-an-overview/
+
+
+* Another way to host the tutorials: https://higgi13425.github.io/medical_r/posts/2020-12-27-creating-mini-learnr-apps-and-hosting-on-a-server/
+
+
+* mention iter = 10000
+
+### To explore later
+
+* Powerful approach for hosting cool looking tutorials: https://github.com/ines/course-starter-r. One example of a tutorial using this approach:  https://github.com/noamross/gams-in-r-course
+
+* Should our tutorials look more like this one? https://minecr.shinyapps.io/dsbox-05-moneyinpolitics/. I don't think so. Too many words, not enough typing.
+
+* Explore the use of setup chunks that are referenced by name, rather than requiring that the code chunk names match up. Example: exercise.setup = "setupA"
+
+* Put the number of exercises in the group header so that students know how long? Or maybe put in in the exercise header in exercise 5, 10 and so on.
+
+* Can we give students a search box in the tutorial so that they can find answers to questions they have already done?
+
+
+* Interesting discussion and some plausible claims: http://laderast.github.io/2020/09/15/getting-learnr-tutorials-to-run-on-mybinder-org/. Claims that "the .Rmd file containing the tutorial should be named the same as the directory it is in." But why?
+
+* https://github.com/karthik/holepunch is interesting. But it also hasn't been updated in more than 7 months.
+
+## Videos Worth Looking At?
+
+Data Science Mini Projects: https://www.youtube.com/playlist?list=PLpdmBGJ6ELUJM6_vKQbpi9vGc65Sn0uPr
+Draw Multiple Time Series in Same Plot: https://www.youtube.com/watch?v=FNXnJ_zT1gE
+Barplot in R: https://www.youtube.com/watch?v=pYbuWU77QkU&feature=youtu.be
+
+# Interestin approach for next summer
+
+## Material from JSM 2021
+
+Education section: https://matackett.github.io/open-stat-ds-ed/
+
+Interesting discussion of using art to bring students into data science.
+
+Consider the use of ggirl package for encouraging students to send someone an actual postcard.
+
+### Later tutorials in later chapters
+
+The first tutorial for each of the later chapters is easy. Just do more or less exactly what the chapter does. Recall that, one day, we expect to incorporate those questions directly into the chapter itself. So, the more that it just forces students to type in the same commands as in the chapter, the better. But, for the most part, the chapters are not that long! There is only about one tutorial worth of material.
+
+What do we do for the other 5 or so tutorials for each chapter? Good question! Honestly, I am not sure. Here are some ideas:
+
+* The second tutorial could be very similar to the first -- and, therefore, to the chapter. Just use a different variable(s) and/or a different tibble, but answer the same sorts of questions in the same way.
+
+* Don't be repetitive in the written questions. It is fine, in the first tutorial for each chapter, to ask students to write a definition of the Preceptor Table. Indeed, we should always have that question in each first tutorial. But, we don't want that question in each of the 5 tutorials for a single chapter.
+
+* Use written questions which do require different answers depending in the data/variable used. We can't resuse "Define a Preceptor Table" because that question has the same answer every time. Consider a different question:
+
+> Write a paragraph which explores reasons why we should **not** consider the Preceptor Table and our data set as being drawn from the same population?
+
+That is a good question, not least because it needs a different answer for each data science problem we confront. Another good example:
+
+> Write a paragraph explaining why, even though the data is not a random sample, we may still consider it to be "respsentative" enough to move forward?
+
+Again, this requires a different answer for each new tibble.
+
+* We don't usually (ever?) ask questions about the four Cardinal Virtues directly. They are simply a pedagogical device we use to help students organize their work. But we do ask written questions about the key concepts (population, representativeness, validity) in each and every tutorial. These are difficult concepts with no "right" answers. We need to wrestle with them every week.
+
+* A tutorial after the first might do a very similar exercise but with three differences. First, it can go faster, given that students have already seen the basics fairly slowly in the first tutorial. Second, it can add some complexity, make the modeling problem just a little more difficult than the basic case. Third, it can add some new magic. Perhaps it grabs data using a new package instead of just using another boring data set from **primer.data**. Perhaps it creates a nicer plot with some geoms we have not used before.
+
+* If the main example is the chapter is one which uses a linear model, then tutorial 2 could use a logistic model and then tutorial 3 could use the third kind of model (which we have not chosen yet). Similarly, if the chapter (and first tutorial) does a predictive mode, then tutorial 3 should do a causal model.
+
+
+* Another type of tutorial is one which uses fake data which has been manipulated to violate the assumptions which students are making. Show them Preceptor's Posterior and compare it to their own.
+
+* Seems like you can't include LaTeX math in a R exercise message. Generates an error under R CMD check. Example of something which fails:
+
+Add the formula to `model.qmd`, `$$ biden_i =  \mu + \epsilon_i $$`. `Cmd/Ctrl + Shift + K`. Ensure that the formula is looks correct. 
+
+<!-- # ```{r courage-12} -->
+<!-- # question_text(NULL, -->
+<!-- # 	message = "$$ biden_i =  \mu + \epsilon_i $$", -->
+<!-- # 	answer(NULL, correct = TRUE), -->
+<!-- # 	allow_retry = FALSE, -->
+<!-- # 	incorrect = NULL, -->
+<!-- # 	rows = 6) -->
+<!-- # ``` -->
+
+
+Fix MacOs Github issues. I would like to see green!
+
+## Packages to Delete/Reconsider
+
+Why do we need to explicitly load katex at all? Shouldn't quarto or whatever take care of this for us?
+
+Why do we need the hack of the primer.tutorials-package nonsense?
+
+Even if we need katex, we do we need it in imports rather than just suggests? Maybe adding library(katex) to all the Rmd files would solve the problem?
+
+Probably don't need rsconnect, and a bunch of other things in Suggests?

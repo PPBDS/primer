@@ -1,0 +1,30 @@
+.Rproj.user
+.Rhistory
+.RData
+.Ruserdata
+
+.httr-oauth
+.DS_Store
+
+# Running devtools::test() causes each tutorial to be knitted and
+# run in its own directory. We don't want to check in any of the
+# resulting files which are created.
+
+inst/tutorials/*/*html
+inst/tutorials/*/*_files/
+inst/tutorials/*/*pdf
+
+# Why do I need these?
+
+tests/testthat/testthat-problems.rds
+docs
+
+inst/doc
+
+**/.quarto
+/doc/
+/Meta/
+
+template_tutorial.html
+
+/.quarto/

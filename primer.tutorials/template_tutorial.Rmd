@@ -1,0 +1,2188 @@
+---
+title: XX
+author: XX
+tutorial:
+  id: XX (should be the number (indicating the order in which we complete these) +
+    title, everything in lower case, all spaces and weird characters replaced with
+    dashes. See Instructions for details. Same as the directory in which this file
+    will be located.)
+output:
+  learnr::tutorial:
+    progressive: yes
+    allow_skip: yes
+runtime: shiny_prerendered
+description: "Tutorial #XX for Preceptor's Primer (where XX is the same number as
+  in the id)"
+---
+
+```{r setup, include = FALSE}
+# XX: First packages are ones that students don't know about or load up in the
+# Console. learnr and tutorial.helpers are required for the tutorial to work at
+# all. gt is needed because we show a Preceptor Table to the students, which is
+# built with this package, even though we don't show students how to do so.
+
+library(learnr)
+library(tutorial.helpers)
+library(gt)
+
+# XX: Any package from below is something that we want students to explicitly
+# load up in the tutorial/Console/QMD. This serves two purposes. First, it provides an
+# occasion for knowledge drops. Second, it reminds students that these packages
+# must be loaded in the Console if they want the relevant code from the tutorial
+# to work in the Console. The most common package to be added to this section,
+# and which should also be loaded by students, is a data source like
+# primer.data. It should be placed after library(tidyverse) since that is when
+# it is loaded in the tutorial.
+
+# Some models, like ordinal regressions, do not work with tidymodels. So, for
+# those tutorials, we replace library(tidymodels) with library(MASS), or
+# whichever package we need to make a model. Obviously, it is nice if fitted
+# objects using that package work with our usual tools. In general, 
+# broom (or broom.mixed)  works with everything and marginaleffects is
+# also ecumenical. In either case, we only keep here (and load later) tidymodels 
+# if we actually use it.
+
+library(tidyverse)
+library(tidymodels)   # Or some other modeling package like ordinal.
+library(broom)        # Or broom.mixed. Not sure if we ever need broom.helpers?
+library(marginaleffects)
+
+# easystats is just used for check_predictions(), which we only run in the
+# Console. Is there a better approach for running a posterior predictive
+# check? 
+
+library(easystats)
+
+knitr::opts_chunk$set(echo = FALSE)
+options(tutorial.exercise.timelimit = 600, 
+        tutorial.storage = "local") 
+
+# XX: Never include setup code that takes more than a few seconds to run. See
+# https://ppbds.github.io/tutorial.helpers/articles/ai.html#data for
+# background.
+
+# XX: You need to create a version of your model in this setup code chunk. We
+# use an example here, fit_XX, which you should obviously replace and use your
+# own name for, but always starting with `fit_`.
+
+fit_XX <- linear_reg(engine = "lm") |> 
+  fit(att_end ~ sex + treatment + age, data = primer.data::trains)
+```
+
+```{r copy-code-chunk, child = system.file("child_documents/copy_button.Rmd", package = "tutorial.helpers")}
+```
+
+```{r info-section, child = system.file("child_documents/info_section.Rmd", package = "tutorial.helpers")}
+```
+
+<!-- INSTRUCTIONS to Users of this Template -->
+
+<!-- This is the template tutorial for creating any tutorial which uses the Cardinal Virtues to answer a question given a data set. Although its primary use is for the chapters after 4 in the Primer, it could be used for independent tutorials as well. The letters `XX` are used to indicate locations which require editing. Comments with instructions are interspersed. -->
+
+<!-- Read The Cardinal Virtues vignette in the package for background: https://ppbds.github.io/primer.tutorials/articles/cardinal_virtues.html  -->
+
+<!-- Delete all these instructions as you go. Once you are done with the tutorial, none of them should remain. The only comments left should be ones that you wrote, comments specific to your tutorial --- like modeling approaches that you tried but did not use, other approaches that might be considered in the future and so on. -->
+
+<!-- The tutorial is not done until you deal with, and remove, every XX. In general, XX will either mark a comment, which you should delete entirely once you have read it (and/or followed its instructions), or it will mark an object which you need to replace with the name that you have chosen. -->
+
+<!-- Once you decide the appropriate replacement for `fit_XX` and `XX.qmd`, you can do a global replace to fix them all. -->
+
+<!-- We sometimes connect XX to another word or phrase, as in [XX: unit] or `[XX: the tibble]`. In these cases, the XX indicates that this is something that you need to replace and the other words/symbols are there to guide you as to what the replacement should be. But you delete everything within the brackets. For example, you might replace [XX: unit] with "candidate" (with no quotation marks) or whatever the type of unit we have in this problem. Similarly, `[XX: the tibble]` would be replaced with `trains` or whatever tibble is used in this tutorial. In both cases, we provide the correct punctuation. The word "candidate" would not have any punctuation since it is just a word in a sentence. But a tibble like `trains` needs to be surrounded by backticks, like any other tibble. -->
+
+<!-- Whenever creating an object which will be used in later questions, never have students do the assignment themselves. Instead, have a series of one or more questions which create the object, often by building a pipe line-by-line, with each step creating output which can be examined and discussed. Then, when the creation is done, have a last question which says, more or less, 'Behind the scenes, we have assigned the result of the pipe [or whatever function call was used] to the object `fit_obj`. To confirm, type `fit_obj` and hit "Run Code."' -->
+
+<!-- Note that the questions are a mixture of our three types: code, written (with answer) and written (without answer). The last is only used for questions in which we ask the student to run a command like `show_file()`. Otherwise, we always provide an excellent written answer because students will generally look closely at our answer because they are concerned about whether or not their written answer matches ours. -->
+
+<!-- A plot, especially of the outcome or key covariate, often makes for an excellent knowledge drop. Just have a code chunk with no code chunk label, i.e., just ```{r} ```. -->
+
+<!-- Whenever you tell a student to make a change in the QMD, you should tell them to `Cmd/Ctrl + Shift + K` in order to render the document. (This will also cause it to be saved.) This is good practice for catching bugs early. (Professionals do this.) Then, the last step in these exercises is often some version of show_file() and then CP/CR. -->
+
+<!-- Make use of, e.g., `show_file("tutorial-6.qmd", start = -5)` to get just the last 5 lines of the QMD. We don't want students to copy/paste the whole document. We also don't need to ensure that we get whatever it is that was just changed. We never look! Instead, we are just plausibly threatening to look. Although `chunk = "Last"` is probably prefered to `start = -5`.  -->
+
+<!-- Make sure to uncomment the test code chunks below, once you have created the necessary objects. -->
+
+## Introduction
+### 
+
+This tutorial supports [*Preceptor’s Primer for Bayesian Data Science: Using the Cardinal Virtues for Inference*](https://ppbds.github.io/primer/) by [David Kane](https://davidkane.info/). 
+
+The world confronts us. Make decisions we must.
+
+<!-- XX: Add an "Imagine" paragraph The purpose of the paragraph is to describe a real person in the world. In general, this person has lots of data and lots of problems and lots of decisions to make. And they are a real person! This motivates the work that we will do below. Always start with "Imagine that you are . . ." Always end with "There are many decisions to make." Examples: -->
+
+<!-- XX: Example: Imagine you're in charge of ordering uniforms for next year's Marine Corps bootcamp recruits. There are many factors to consider: the cost of different designs, the number of male and female recruits, the distributions of heights and weights, and so on. There are many decisions to make. -->
+
+<!-- XX: Example: Imagine that you are running for Governor of Texas in the next election. Seeking any political office, much less the governorship of a large state, is difficult. You have resources --- money, volunteers, surrogates, your own time. You have goals --- increase your name recognition, raise money, attack your opponent, persuade undecided voters, get your supporters to vote. There are many decisions to make. -->
+
+Imagine that you are ... XX. There are many decisions to make.
+
+<!-- XX: The main purpose of the Introduction section is to re-iterate key concepts, mainly involving causal versus predictive models. We want to ensure that students have completely internalized these points. -->
+
+### Exercise 1
+
+What are the four [Cardinal Virtues](https://en.wikipedia.org/wiki/Cardinal_virtues), in order, which we use to guide our data science work?
+
+```{r introduction-1}
+question_text(NULL,
+	message = "Wisdom, Justice, Courage, and Temperance.",
+	answer(NULL, correct = TRUE),
+	allow_retry = FALSE,
+	incorrect = NULL,
+	rows = 2)
+```
+
+###
+
+Why do we ask this, and a score more other questions, in each tutorial? Because the best way to (try to) ensure that students remember these concepts more than a few months after the course ends is [spaced repetition](https://en.wikipedia.org/wiki/Spaced_repetition), although we focus more on the repetition than on the spacing.
+
+### Exercise 2
+
+Create a Github repo called `XX`. Make sure to click the "Add a README file" check box.
+
+Connect the repo to a project on your computer using `File -> New Folder from Git ...`. Make sure to select the "Open in a new window" box. 
+
+You need two Positon windows: this one for running the tutorial and the one you just created for writing your code and interacting with the Console.
+
+Select `File -> New File -> Quarto Document ...`. Provide a title -- `"XX"` -- and an author (you). Render the document and save it as `XX.qmd`.
+
+Create a `.gitignore` file with `XX_files` on the first line and then a blank line. Save and push.
+
+In the Console, run:
+
+```         
+show_file(".gitignore")
+```
+
+If that fails, it is probably because you have not yet loaded `library(tutorial.helpers)` in the Console.
+
+CP/CR.
+
+```{r introduction-2}
+question_text(NULL,
+	answer(NULL, correct = TRUE),
+	allow_retry = TRUE,
+	try_again_button = "Edit Answer",
+	incorrect = NULL,
+	rows = 3)
+```
+
+### 
+
+Professionals keep their data science work in the cloud because laptops fail.
+
+### Exercise 3
+
+<!-- XX: Switch primer.data for whichever package you get your data from. -->
+
+In your QMD, put `library(tidyverse)` and [XX: `library(primer.data)`] in a new code chunk. Render the file.
+
+Notice that the file does not look good because the code is visible and there are annoying messages. To take care of this, add `#| message: false` to remove all the messages in this `setup` chunk. Also add the following to the YAML header to remove all code echos from the HTML:
+
+```         
+execute: 
+  echo: false
+```
+
+In the Console, run:
+
+```         
+show_file("XX.qmd", chunk = "Last")
+```
+
+CP/CR.
+
+```{r introduction-3}
+question_text(NULL,
+	answer(NULL, correct = TRUE),
+	allow_retry = TRUE,
+	try_again_button = "Edit Answer",
+	incorrect = NULL,
+	rows = 6)
+```
+
+### 
+
+Render again. Everything looks nice, albeit empty, because we have added code to make the file look better and more professional.
+
+### Exercise 4
+
+<!-- XX: This reason for this somewhat convoluted approach is that we want to give students lots of practice working in both the QMD World and the Console World. -->
+
+Place your cursor in the QMD file on the `library(tidyverse)` line. Use `Cmd/Ctrl + Enter` to execute that line.
+
+Note that this causes `library(tidyverse)` to be copied down to the Console and then executed. 
+
+CP/CR.
+
+```{r introduction-4}
+question_text(NULL,
+	answer(NULL, correct = TRUE),
+	allow_retry = TRUE,
+	try_again_button = "Edit Answer",
+	incorrect = NULL,
+	rows = 3)
+```
+
+###
+
+<!-- XX: Report the source of the data, along with some background information about it. -->
+
+### Exercise 5
+
+<!-- DK: Load up data before Wisdom? -->
+
+<!-- XX. Note that these instructions do not specify what the next library is. Feel free to specify it, if you like. If you are not adding another library, just delete this question. -->
+
+Place your cursor in the QMD file on the next line. Use `Cmd/Ctrl + Enter` to execute that line.
+
+This work flow --- writing things in the QMD so that you have a permanent copy and then executing them in the Console with `Cmd/Ctrl + Enter` --- is the most common approach to data science. 
+
+There is QMD World and Console World. It is your responsibility to keep them in sync.
+
+CP/CR.
+
+```{r introduction-5}
+question_text(NULL,
+	answer(NULL, correct = TRUE),
+	allow_retry = TRUE,
+	try_again_button = "Edit Answer",
+	incorrect = NULL,
+	rows = 3)
+```
+
+###
+
+A version of the data from XX is available in the `XX` tibble.
+
+### Exercise 6
+
+<!-- XX: This question only works if there is help available for the tibble you hope to use. Delete the question if there is not.  -->
+
+In the Console, type `?XX`, and paste the Description below.
+
+```{r introduction-6}
+question_text(NULL,
+	answer(NULL, correct = TRUE),
+	allow_retry = TRUE,
+	try_again_button = "Edit Answer",
+	incorrect = NULL,
+	rows = 8)
+```
+
+### 
+
+<!-- XX. More information about the data. One example would be a copy/paste of the abstract if the data is from a paper. Or perhaps a quote from the website on which the data can be found. -->
+
+### Exercise 7
+
+Define a causal effect.
+
+```{r introduction-7}
+question_text(NULL,
+	message = "A causal effect is the difference between two potential outcomes.",
+	answer(NULL, correct = TRUE),
+	allow_retry = FALSE,
+	incorrect = NULL,
+	rows = 6)
+```
+
+### 
+
+According to the Rubin Causal Model, there must be two (or more) potential outcomes for any discussion of causation to make sense. This is simplest to discuss when the treatment only has two different values, thereby generating only two potential outcomes. 
+
+### Exercise 8
+
+What is the fundamental problem of causal inference?
+
+```{r introduction-8}
+question_text(NULL,
+	message = "The fundamental problem of causal inference is that we can only observe one potential outcome.",
+	answer(NULL, correct = TRUE),
+	allow_retry = FALSE,
+	incorrect = NULL,
+	rows = 6)
+```
+
+### 
+
+<!-- DK: Not a great knowledge drop for this question. -->
+
+If the treatment variable is continuous (like a lottery payment), then there are lots and lots of potential outcomes, one for each possible value of the treatment variable. 
+
+<!-- DK: Why those definitions? Why not others? -->
+
+### Exercise 9
+
+XX is the broad topic of this tutorial. Given that topic, which variable in `XX` should we use as our outcome variable? 
+
+```{r introduction-9}
+question_text(NULL,
+	message = "XX: A sentence about the outcome variable which we will be using.",
+	answer(NULL, correct = TRUE),
+	allow_retry = FALSE,
+	incorrect = NULL,
+	rows = 2)
+```
+
+### 
+
+We will use `XX` as our outcome variable.
+
+<!-- XX: Create (with AI) a simple univariate plot of the outcome variable. Or a bivariate plot in which the outcome variable, on the y-axis, is compared to a covariate, but not to the important covariate. Do not use any code chunk labels for this code chunk. The subtitle should highlight some aspect of the data. Plot does not need to be fancy but it should be competent, with axis labels, nice formatting and so on. We don't show students the code. You can add more knowledge below the plot, if you like. Looking closely at the outcome variable guides us as to the statistical model to use. -->
+
+### Exercise 10
+
+<!-- DK: Should discussion of predictive models come first? -->
+
+Let's imagine a brand new variable which **does not exists** in the data. This variable should be binary, meaning that it only takes on one of two values. It should also, at least in theory, be manipulable. In other words, if the value of the variable is "3," or whatever, then it generates one potential outcome and if it is "9," or whatever, it generates another potential outcome.
+
+Describe this imaginary variable and how might we manipulate its value.
+
+<!-- XX: Include these two sentences if this is a causal model: -->
+
+<!-- For now, ignore the actual treatment variable `XX` which we will be using later in the analysis. The point of this exercise is to reinforce our understanding of the [Rubin Causal Model](https://ppbds.github.io/primer/rubin-causal-model.html). -->
+
+
+```{r introduction-10}
+# XX: In your answer, and for the next few questions, always treat this
+# imaginary variable as real by putting backticks around the name. For example,
+# with nhanes data, we might imagine a variable called `vitamin` for which `1`
+# means that the individual ate vitamins growing up and `0` means they did not.
+# Using the words "treatment group" and "control group" as part of your answer
+# is often helpful since it reinforces the fact that we are using the Rubin
+# Causal Model.
+
+question_text(NULL,
+	message = "XX: (This is an example answer.) Imagine a variable called `phone_call` which has a value of `1` if the person received a phone call urging them to vote and `0` if they did not receive such a phone call. We, meaning the organization in charge of making such phone calls, can manipulate this variable by deciding, either randomly or otherwise, whether or not to call a specific individual.",
+	answer(NULL, correct = TRUE),
+	allow_retry = FALSE,
+	incorrect = NULL,
+	rows = 6)
+```
+
+### 
+
+Any data set can be used to construct a causal model as long as there is at least one covariate that we can, at least in theory, manipulate. It does not matter whether or not anyone did, in fact, manipulate it. 
+
+### Exercise 11
+
+Given our (imaginary) treatment variable `XX`, how many potential outcomes are there for each [XX: unit]? Explain why.
+
+```{r introduction-11}
+question_text(NULL,
+	message = "There are two potential outcomes because the treatment variable `XX` takes on two possible values: XX-list-the-values-here, i.e., exposure to Spanish-speakers on a train platform versus no such exposure.",
+	answer(NULL, correct = TRUE),
+	allow_retry = FALSE,
+	incorrect = NULL,
+	rows = 6)
+```
+
+### 
+
+The same data set can be used to create, separately, lots and lots of different models, both causal and predictive. We can just use different outcome variables and/or specify different treatment variables. This is a *conceptual* framework we apply to the data. It is never inherent in the data itself.
+
+### Exercise 12
+
+<!-- DK: Make this two questions? -->
+
+In a few sentences, specify the two different values for the imaginary treatment variable `XX`, for a single unit, guess at the potential outcomes which would result, and then determine the causal effect for that unit given those guesses.
+
+```{r introduction-12}
+# XX: Replace [XX: unit] with a better word below given the actual data set we
+# are using. Replace all the XX terms as appropriate.
+
+# XX: For a given individual, assume that the value of the treatment variables
+# might be 'exposure to Spanish-speakers' or 'no exposure'. If the individual
+# gets 'exposure to Spanish-speakers', then her attitude toward immigration
+# would be 10. If the individual gets 'no exposure', then her attitude would be
+# 8. The causal effect on the outcome of a treatment of exposure to
+# Spanish-speakers versus no exposure is 10 - 8 --- i.e., the difference between
+# two potential outcomes --- which equals 2, which is the causal effect.
+
+# XX: If the outcome is a character variable, like Strongly Approve, then there
+# is no simple metric on which we can pinpoint the causal effect. That is, the
+# causal effect is still defined --- as, in this example, the difference between
+# Strongly Approve and Neutral --- but can not be expressed as a number, at
+# least without further work.
+
+question_text(NULL,
+	message = "For a given [XX: unit], assume that the value of the treatment variable might be [XX: treatment] or [XX: control]. If the [XX: unit] gets [XX: treatment], then [XX: the outcome] would be [XX: a number/character]. If the [XX: unit] gets [XX: control], then [XX: the outcome] would be [XX: a different number or character]. The causal effect on the outcome of a treatment of [XX: treatment] versus [XX: control] is [XX: a number] - [XX: a different number] --- i.e., the difference between two potential outcomes --- which equals [XX: the causal effect], which is the causal effect for this [XX: unit].",
+	answer(NULL, correct = TRUE),
+	allow_retry = FALSE,
+	incorrect = NULL,
+	rows = 6)
+```
+
+### 
+
+A causal effect is defined as the *difference* between two potential outcomes. Keep two things in mind.
+
+First, *difference* does not necessarily mean *subtraction*. Many potential outcome are not numbers. For example, it makes no sense to subtract a potential outcome, like who you would vote for if you saw a Facebook ad, from another potential outcome, like who you vote for if you did not see the ad.
+
+Second, even in the case of numeric outcomes, you can’t simply say the effect is 10 without specifying the order of subtraction, although there is, perhaps, a default sense in which the causal effect is defined as potential outcome under treatment minus potential outcome under control.
+
+### Exercise 13
+
+<!-- XX: Replace stuff like `XX: the tibble` with just the name of the tibble, i.e., `trains`. -->
+
+Let's consider a *predictive* model. Which variable in `XX: the tibble` do you think might have an important connection to `XX: the outcome variable`? 
+
+```{r introduction-13}
+question_text(NULL,
+	message = "XX: Describe one of the key covariates whose connection to the outcome variable we might want to explore.",
+	answer(NULL, correct = TRUE),
+	allow_retry = FALSE,
+	incorrect = NULL,
+	rows = 2)
+```
+
+### 
+
+With a predictive model, each individual unit has only one observed outcome. There are not two potential outcomes because none of the covariates are treated as treatment variables. Instead, all covariates are assumed to be "fixed."
+
+Predictive models have no "treatments" -—- only covariates.
+
+<!-- DK: Shouldn't this come after we specify the covariate in which we are interested? -->
+
+### Exercise 14
+
+Specify two different groups of [XX: units] which have different values for [XX: covariate] and which might have different average values for the [XX: outcome].  
+
+```{r introduction-14}
+question_text(NULL,
+	message = "XX: Consider two groups, the first with a value for [XX: covariate] of [XX: a value] and the second with value [XX: a different value]. Those two groups might have different average values for the outcome variable.",
+	answer(NULL, correct = TRUE),
+	allow_retry = FALSE,
+	incorrect = NULL,
+	rows = 6)
+```
+
+### 
+
+In predictive models, do not use words like "cause," "influence," "impact," or anything else which suggests causation. The best phrasing is in terms of "differences" between groups of units with different values for a covariate of interest.
+
+Any causal connection means exploring the *within row* difference between two potential outcomes. There's no need to consider other rows.
+
+### Exercise 15
+
+<!-- XX: You can make this question more complex by specifying more than one covariate. This is often useful when you expect heterogeneity, either in the causal effects or in the predictive model.  -->
+
+Write a [XX: choose causal or predictive] question which connects the outcome variable `XX` to `XXZ`, the covariate of interest. 
+
+```{r introduction-15}
+# XX: If it is causal, you should use key causal language in the question, like
+# "What is the causal effect of the treatment on the outcome?" Example: "What is
+# the average causal effect of exposure to Spanish-speakers on attitudes toward
+# immigration?" If the model is predictive, the question should clearly compare
+# two groups of units. "What is the difference in the outcome variable between
+# two groups of units?" Example:  "What is the difference in immigration
+# attitudes between Democrats and Republicans?" In both cases, the word
+# "average" is implicit in the question.
+
+question_text(NULL,
+	message = "XX: Give your question.",
+	answer(NULL, correct = TRUE),
+	allow_retry = FALSE,
+	incorrect = NULL,
+	rows = 6)
+```
+
+### 
+
+This is the first version of the question. We will now create a Preceptor Table to answer the question. We may then revise the question given complexities discovered in the data. We then update the question and the Preceptor Table. And so on.
+
+
+## Wisdom
+### 
+
+<!-- XX: We finished the Introduction with a broad area of interest, a relevant dataset and some reminders about the Rubin Causal Model. Now we need to iterate, moving back and forth between the data and the Preceptor Table until we have ones that seem to work well together. -->
+
+<!-- XX: Pick one. -->
+
+*A prudent question is one half of wisdom.* - Francis Bacon
+*The power to question is the basis of all human progress.* - Indira Gandhi
+*The important thing is not to stop questioning.* - Albert Einstein
+*It is not the answer that enlightens, but the question.* - Eugene Ionesco
+
+<!-- XX: Write a few sentences, but no more than a paragraph, which connects your larger problem, as discussed above, to a question/questions which you might be able to answer given the data set we seem to have. That answer won't solve all your other problems! But it should make it more likely that you will deal with at least some of your problems more intelligently, that your decisions will be better than they otherwise would have been if, counterfactually, you had not completed this data science project. -->
+
+<!-- XX: Example: -->
+
+<!-- You have a campaign budget. Your goal is to win the election. Winning the election involves convincing people to vote for you *and* getting your supporters to vote. Should you send postcards to registered voters? What should those postcards say? Does the effect of the postcards vary for different types of voters?  -->
+
+<!-- XX: It is probably good if there are a couple of questions/topics here. We have not made any final choices yet. We are just refining the problem down from the broad generality of the "Imagine" paragraph from the Introduction. By the end of the Wisdom section, we need a very specific question. -->
+
+### Exercise 1
+
+In your own words, describe the key components of Wisdom when working on a data science problem.
+
+```{r wisdom-1}
+question_text(NULL,
+    message = "Wisdom begins with a question and then moves on to the creation of a Preceptor Table and an examination of our data.",
+    answer(NULL, correct = TRUE),
+    allow_retry = FALSE,
+    incorrect = NULL,
+    rows = 3)
+```
+
+###
+
+*The combination of some data and an aching desire for an answer does not ensure that a reasonable answer can be extracted from a given body of data.* -- John W. Tukey
+
+### Exercise 2
+
+Define a Preceptor Table.
+
+```{r wisdom-2}
+question_text(NULL,
+	message = "A Preceptor Table is the smallest possible table of data with rows and columns such that, if there is no missing data, we can easily calculate the quantity of interest.",
+	answer(NULL, correct = TRUE),
+	allow_retry = FALSE,
+	incorrect = NULL,
+	rows = 6)
+```
+
+### 
+
+The Preceptor Table does not include all the covariates which you will eventually include in your model. It only includes, along with the outcome(s), covariates which are mentioned in your question.
+
+<!-- XX: Insert at least two addition exercises which explore the data. These will almost always involve the outcome variable for ine questin and the treatment (or key covariate) for the other. Provide knowledge drops which highlight important aspects. Don't forget to `tutorial.helpers::check_current_tutorial()` when you are done so that all the subsequent exercises are renumbered correctly. -->
+
+### Exercise 3
+
+Describe the key components of Preceptor Tables in general, without worrying about this specific problem. Use words like "units," "outcomes," and "covariates."
+
+```{r wisdom-3}
+question_text(NULL,
+	message = "The rows of the Preceptor Table are the units. The outcome is at least one of the columns. If the problem is causal, there will be at least two (potential) outcome columns. The other columns are covariates. If the problem is causal, at least one of the covariates will be considered a treatment.",
+	answer(NULL, correct = TRUE),
+	allow_retry = FALSE,
+	incorrect = NULL,
+	rows = 6)
+```
+
+### 
+
+<!-- XX: Pick one, and edit, as appropriate: -->
+
+<!-- XX: This problem is causal so one of the covariates is a treatment. In our problem, the treatment is XX. There is a potential outcome for each of the XX possible values of the treatment. -->
+
+<!-- XX: This problem is predictive so [insert something about comparing the outcomes for two different groups] -->
+
+### Exercise 4
+
+What are the units for this problem?
+
+```{r wisdom-4}
+question_text(NULL,
+	message = "XX",
+	answer(NULL, correct = TRUE),
+	allow_retry = FALSE,
+	incorrect = NULL,
+	rows = 6)
+```
+
+### 
+
+Specifying the Preceptor Table forces us to think clearly about the units and outcomes implied by the question. The resulting discussion sometimes leads us to modify the question with which we started. No data science project follows a single direction. We always backtrack. There is always dialogue.
+
+We model units, but we only really care about aggregates.
+
+### Exercise 5
+
+What is the outcome variable for this problem?
+
+```{r wisdom-5}
+question_text(NULL,
+	message = "Keep track of two 'outcome' variables: the one in our Preceptor Table and the one in our data. In this case, XX . . .",
+	answer(NULL, correct = TRUE),
+	allow_retry = FALSE,
+	incorrect = NULL,
+	rows = 6)
+```
+
+### 
+
+The outcome variable that we really care about is often not the outcome variable which our data includes. This compromise --- working with what we *have* rather than what we really *want* --- is a part of most data science work in the real world.
+
+### Exercise 6
+
+What is a covariate which you think might be useful for this problem, regardless of whether or not it might be included in the data?
+
+```{r wisdom-6}
+question_text(NULL,
+	message = "XX. Answer should be a sensible variable which is plausibly connected to the outcome.",
+	answer(NULL, correct = TRUE),
+	allow_retry = FALSE,
+	incorrect = NULL,
+	rows = 6)
+```
+
+### 
+
+The term "covariates" is used in at least three ways in data science. First, it is all the variables which might be useful, regardless of whether or not we have the data. Second, it is all the variables for which we have data. Third, it is the set of variables in the data which we end up using in the model.
+
+### Exercise 7
+
+What are the treatments, if any, for this problem?
+
+```{r wisdom-7}
+question_text(NULL,
+	message = "XX",
+	answer(NULL, correct = TRUE),
+	allow_retry = FALSE,
+	incorrect = NULL,
+	rows = 6)
+```
+
+### 
+
+Remember that a treatment is just another covariate which, for the purposes of this specific problem, we are assuming can be manipulated, thereby, creating two or more different potential outcomes for each unit.
+
+### Exercise 8
+
+What moment in time does the Preceptor Table refer to?
+
+```{r wisdom-8}
+question_text(NULL,
+	message = "XX: One brief phrase or sentence describing the moment.",
+	answer(NULL, correct = TRUE),
+	allow_retry = FALSE,
+	incorrect = NULL,
+	rows = 6)
+```
+
+### 
+
+A Preceptor Table can never really refer to an exact instant in time since nothing is instantaneous in this fallen world.
+
+<!-- XX: Put a sentence with a more sophisticated discussion of timing, referencing the data for this problem. -->
+
+```{r}
+# XX: Make a nice looking plot which shows the outcome variable on the y-axis
+# and the most important/interesting covariate/treatment on the x-axis. This
+# doesn't really go here, but we want to show the plot after discussing
+# covariates and treatments above. We don't show the code. Plot does not need
+# to be fancy, but it should be competent, with a title, a subtitle which
+# highlights the main takeaway from the plot, axis labels and so on.
+```
+
+> *You can never look at the data too much. -- Mark Engerman*
+
+### Exercise 9
+
+Describe in words the Preceptor Table for this problem.
+
+```{r wisdom-9}
+question_text(NULL,
+	message = "XX. Make sure your words give an excellent description of the Preceptor Table which you are about to show the student. Mentions these words: rows, units, outcome, covariates and, maybe, treatment.",
+	answer(NULL, correct = TRUE),
+	allow_retry = FALSE,
+	incorrect = NULL,
+	rows = 6)
+```
+
+### 
+
+The Preceptor Table for this problem looks something like this:
+
+<!-- Use primer.tutorials::make_p_tibble() to create the tables that you need. -->
+
+Like all aspects of a data science problem, the Preceptor Table evolves as we continue our work. 
+
+<!-- XX: If necessary, provide code exercises which, line-by-line, create the pipeline which creates the cleaned data that will be used in modeling. Name the new object `x`. For many tutorials, this is unnecessary since we can just use the raw tibble that is available in whatever package. But we sometimes need some code like
+
+nes |> 
+  filter(year == 1992) |> 
+  drop_na()
+
+We have three code exercises, each adding one line to the pipeline, explaining what we are doing and why. It is nice that, for each exercise, something is spat out.
+-->
+
+<!-- XX: If such a pipeline was built, there is one QMD question which requires that you add a new code chunk to the QMD, copy/paste the pipeline and assign the result to the new object `x`:
+
+x <- nes |> 
+  filter(year == 1992) |> 
+  drop_na()
+
+`Cmd/Ctrl + Shift + K` follows, perhaps with a show_file("XX.qmd", chunk = "Last")
+-->
+
+### Exercise 10
+
+What is the narrow, specific question we will try to answer?
+
+```{r wisdom-10}
+question_text(NULL,
+	message = "XX: ",
+	answer(NULL, correct = TRUE),
+	allow_retry = FALSE,
+	incorrect = NULL,
+	rows = 6)
+```
+
+###
+
+The answer to this question is your "Quantity of Interest." It is OK if your question differs from ours. Many similar questions lead to the creation of the same model. For the purpose of this tutorial, let's use our question.
+
+Our Quantity of Interest might appear too specific, too narrow to capture the full complexity of the topic. There are many, many numbers in which we are interested, many numbers that we want to know. But we don't need to list them all here! We just need to choose one of them since our goal is just to have a specific question which helped to guide us in the creation of the Preceptor Table and, soon, the model. 
+
+### Exercise 11
+
+Over the course of this tutorial, we will be creating a summary paragraph. The purpose of this exercise is to write the first two sentences of that paragraph.
+
+The first sentence is a general statement about the overall topic, mentioning both the general class of the outcome variable and of at least one of the covariates. It is **not** connected to the initial "Imagine that you are XX" which set the stage for this project. That sentence can be rhetorical. It can be trite, or even a platitude. The purpose of the sentence is to let the reader know, gently, about our topic.
+
+The second sentence does two things. First, it introduces the data source. Second, it introduces the specific question. The sentence can't be that long. Important aspects of the data include when/where it was gathered, how many observations it includes and the organization (if famous) which collected it.
+
+Type your two sentences below.
+
+<!-- XX: Example:  -->
+
+<!-- XX: Sending postcards and other mailings to registered voters is a traditional part of US political campaigns. Using data from a 2006 experiment in Michigan, we seek to explore the likely causal effects of sending postcards to voters in the current gubernatorial campaign in Texas. -->
+
+
+```{r wisdom-11}
+question_text(NULL,
+	message = "XX; Make your own answer excellent!",
+	answer(NULL, correct = TRUE),
+	allow_retry = FALSE,
+	incorrect = NULL,
+	rows = 6)
+```
+
+### 
+
+Read our answer. It will not be the same as yours. You can, if you want, change your answer to incorporate some of our ideas. Do not copy/paste our answer exactly. Add your two sentences, edited or otherwise, to your QMD, `Cmd/Ctrl + Shift + K`, and then commit/push.
+
+<!-- DK: In most academic writing, the "official" Preceptor Table is much closer to the data than it is in applied work. An academic might just be interested in the causal effect of postcard on voting in an election 20 years ago. That is the only claim she is making. But any decision-maker in the real world really cares about, not what happened decades ago, but what postcards might accomplish today.  -->
+
+## Justice
+### 
+
+<!-- XX: Choose one. -->
+
+*Justice is truth in action.* - Benjamin Disraeli
+*The arc of the moral universe is long, but it bends toward justice.* - Theodore Parker
+*Justice delayed is justice denied.* - William E. Gladstone
+*It is in justice that the ordering of society is centered.* - Aristotle
+*Charity is no substitute for justice withheld.* - Saint Augustine
+
+### Exercise 1
+
+In your own words, name the five key components of Justice when working on a data science problem.
+
+```{r justice-1}
+question_text(NULL,
+	message = "Justice concerns the Population Table and the four key assumptions which underlie it: validity, stability, representativeness, and unconfoundedness.",
+	answer(NULL, correct = TRUE),
+	allow_retry = FALSE,
+	incorrect = NULL,
+	rows = 6)
+```
+
+### 
+
+Justice is about concerns that you (or your critics) might have, reasons why the model you create might not work as well as you hope. 
+
+### Exercise 2
+
+In your own words, define "validity" as we use the term.
+
+```{r justice-2}
+question_text(NULL,
+	message = "Validity is the consistency, or lack thereof, in the columns of the data set and the corresponding columns in the Preceptor Table.",
+	answer(NULL, correct = TRUE),
+	allow_retry = FALSE,
+	incorrect = NULL,
+	rows = 6)
+```
+
+### 
+
+Validity is always about the *columns* in the Preceptor Table and the data. Just because columns from these two different tables have the same *name* does not mean that they are the same *thing*.
+
+### Exercise 3
+
+<!-- XX: For the validity questions, specifics matter. There is always a reason why the outcome column in the data is not the same as the outcome columns in the Preceptor Table, even in the case of simple sampling. For example, consider a historical question connecting sex with presidential vote. Our data is a subset of our Preceptor Table. We have information on a few thousand voters and want to draw inferences about millions of other voters in the same election. But, even in this case, the outcome columns are different. The data is who people told a survey who they voted for. The Preceptor Table is who people actually did vote for. Those are not the same things! If they, in your view, are different enough than validity is violated. -->
+
+Provide one reason why the assumption of validity might not hold for the outcome variable `XX` or for one of the covariates. Use the words "column" or "columns" in your answer.
+
+```{r justice-3}
+question_text(NULL,
+	message = "XX: Answers to validity questions should always use the word 'column(s)'. You should make your answer longer than the one we expect from students, ideally mentioning potential problems with both the outcome and a covariate.",
+	answer(NULL, correct = TRUE),
+	allow_retry = FALSE,
+	incorrect = NULL,
+	rows = 6)
+```
+
+### 
+
+<!-- DK: This knowledge drop is too long. It should have two parts: one the same for all tutorials and one which brings in details of the problem in this tutorial. Or maybe that is already covered in the answer above?  -->
+
+In order to consider the Preceptor Table and the data to be drawn from the same population, the columns from one must have a *valid correspondence* with the columns in the other. Validity, if true (or at least reasonable), allows us to construct the Population Table, which is the first step in Justice.
+
+Because we control the Preceptor Table and, to a lesser extent, the original question, we can adjust those variables to be “closer” to the data that we actually have. This is another example of the iterative nature of data science. If the data is not close enough to the question, then we check with our boss/colleague/customer to see if we can modify the question in order to make the match between the data and the Preceptor Table close enough for validity to hold.
+
+Despite these potential problems, we will assume that validity holds since it, mostly (?), does.
+
+### Exercise 4
+
+In your own words, define a Population Table.
+
+```{r justice-4}
+question_text(NULL,
+	message = "The Population Table includes a row for each unit/time combination in the underlying population from which both the Preceptor Table and the data are drawn.",
+	answer(NULL, correct = TRUE),
+	allow_retry = FALSE,
+	incorrect = NULL,
+	rows = 6)
+```
+
+### 
+
+The Population Table is almost always much bigger than the combination of the Preceptor Table and the data because, if we can really assume that both the Preceptor Table and the data are part of the same population, than that population must cover a broad universe of time and units since the Preceptor Table and the data are, themselves, often far apart from each other.
+
+### Exercise 5
+
+Specify the unit/time combinations which define each row in this Population Table.
+
+```{r justice-5}
+question_text(NULL,
+	message = "XX: Your answer here.",
+	answer(NULL, correct = TRUE),
+	allow_retry = FALSE,
+	incorrect = NULL,
+	rows = 6)
+```
+
+### 
+
+The exact time period used --- whether hour, day, month, year, or whatever --- is relatively arbitrary. The important thing to note is that the Population Table, unlike the Preceptor Table, covers a period of time over which things may change.
+
+<!-- XX: Show what the Population Table looks like using the code you already created when you (or Claude) use make_p_tables(). -->
+
+### Exercise 6
+
+In your own words, define the assumption of "stability" when employed in the context of data science.
+
+```{r justice-6}
+question_text(NULL,
+	message = "Stability means that the relationship between the columns in the Population Table is the same for three categories of rows: the data, the Preceptor Table, and the larger population from which both are drawn.",
+	answer(NULL, correct = TRUE),
+	allow_retry = FALSE,
+	incorrect = NULL,
+	rows = 6)
+```
+
+### 
+
+Stability is all about *time*. Is the relationship among the columns in the Population Table stable over time? In particular, is the relationship --- which is another way of saying "mathematical formula" --- at the time the data was gathered the same as the relationship at the (generally later) time referenced by the Preceptor Table? The longer the time period between the Preceptor Table and the data, the more suspect the assumption of stability becomes. 
+
+### Exercise 7
+
+Provide one reason why the assumption of stability might not be true in this case.
+
+```{r justice-7}
+question_text(NULL,
+	message = "XX. Again, students read these 'official' answers as closely as anything else you will write. Make your example precise and excellent.",
+	answer(NULL, correct = TRUE),
+	allow_retry = FALSE,
+	incorrect = NULL,
+	rows = 6)
+```
+
+### 
+
+A change in time or the distribution of the data does not, in and of itself, demonstrate a violation of stability. Stability is about the parameters: $\beta_0$, $\beta_1$ and so on. Stability means these parameters are the same in the data as they are in the population as they are in the Preceptor Table.
+
+### Exercise 8
+
+We use our data to make inferences about the overall population. We use information about the population to make inferences about the Preceptor Table: `Data -> Population -> Preceptor Table`. In your own words, define the assumption of "representativeness" when employed in the context of data science.
+
+```{r justice-8}
+question_text(NULL,
+	message = "Representativeness, or the lack thereof, concerns two relationships among the rows in the Population Table. The first is between the data and the other rows. The second is between the other rows and the Preceptor Table.",
+	answer(NULL, correct = TRUE),
+	allow_retry = FALSE,
+	incorrect = NULL,
+	rows = 6)
+```
+
+### 
+
+Ideally, we would like both the Preceptor Table *and* our data to be random samples from the population. Sadly, this is almost never the case.
+
+### Exercise 9
+
+We do not use the data, directly, to estimate missing values in the Preceptor Table. Instead, we use the data to learn about the overall population. Provide one reason, involving the relationship between the data and the population, for why the assumption of representativeness might not be true in this case. 
+
+```{r justice-9}
+question_text(NULL,
+	message = "XX: In your answer, try not use the concept of time, even though, in theory, it is perfectly reasonable to do so. Instead, focus on why the data might not be representative of the population at that moment in time.",
+	answer(NULL, correct = TRUE),
+	allow_retry = FALSE,
+	incorrect = NULL,
+	rows = 6)
+```
+
+### 
+
+The reason that representativeness is important is because, when it is violated, the estimates for the model parameters will be biased. 
+
+### Exercise 10
+
+We use information about the population to make inferences about the Preceptor Table. Provide one reason, involving the relationship between the Population and the Preceptor Table, for why the assumption of representativeness might not be true in this case.
+
+```{r justice-10}
+question_text(NULL,
+	message = "XX: Again, try not to use of the concept time. We want to save examples of changes caused by time for the discussion about stability. Instead, focus on why the Preceptor Table might not be representative of the population at that moment in time. ",
+	answer(NULL, correct = TRUE),
+	allow_retry = FALSE,
+	incorrect = NULL,
+	rows = 6)
+```
+
+### 
+
+Stability looks across time periods. Representativeness looks within time periods, for the most part. 
+
+### Exercise 11
+
+In your own words, define the assumption of "unconfoundedness" when employed in the context of data science.
+
+```{r justice-11}
+question_text(NULL,
+	message = "Unconfoundedness means that the treatment assignment is independent of the potential outcomes, when we condition on pre-treatment covariates.",
+	answer(NULL, correct = TRUE),
+	allow_retry = FALSE,
+	incorrect = NULL,
+	rows = 6)
+```
+
+### 
+
+This assumption is only relevant for causal models. We describe a model as "confounded" if this is not true. The easiest way to ensure unconfoundedness is to assign treatment randomly.
+
+<!-- XX: This knowledge drop will grow mre complex as we get into later tutorials. Conditioning on pre-treatment covariates is a very confusing concept which students can't handle until tutorial 10. -->
+
+### Exercise 12
+
+<!-- XX: Delete this question for non-causal models. -->
+
+Provide one reason why the assumption of unconfoundedness might not be true (or relevant) in this case.
+
+```{r justice-12}
+question_text(NULL,
+	message = "XX. There is nothing harder for students than coming up with examples of possible confounds. So, your example should be a good one, and should specify precisely how treatment assignment is correlated with the potential outcomes. Do this even if the treatment is randomized. In the real world, randomization often fails.",
+	answer(NULL, correct = TRUE),
+	allow_retry = FALSE,
+	incorrect = NULL,
+	rows = 6)
+```
+
+### 
+
+The great advantage of randomized assignment of treatment is that it guarantees unconfoundedness, *if the randomization is done correctly*. There is no way for treatment assignment to be correlated with anything, including potential outcomes, if treatment assignment is random, and *if the experimental set up worked as designed.* Sadly, in the real world, there are sometimes problems.
+
+<!-- XX: This is another knowledge drop that should be broken into two sections: the first is always the same; the second uses details from the current problem. -->
+
+### Exercise 13
+
+A statistical model consists of two parts: the *probability family* and the *link function*. The probability family is the probability distribution which generates the randomness in our data. The link function is the mathematical formula which links our data to the unknown parameters in the probability distribution. 
+
+<!-- XX: Only use tidymodels if you are actually using it. Or load the modeling package that you are using, like ordinal. Or, if you are just using something built in like glm(), delete this question but move the knowledge drop back to the previous question. -->
+
+Add `library(tidymodels)` to the QMD file.
+
+Place your cursor in the QMD file on that line. Use `Cmd/Ctrl + Enter` to execute that line.
+
+Note that this causes the `library()` call to be copied down to the Console and then executed. 
+
+CP/CR.
+
+```{r justice-13}
+question_text(NULL,
+	answer(NULL, correct = TRUE),
+	allow_retry = TRUE,
+	try_again_button = "Edit Answer",
+	incorrect = NULL,
+	rows = 3)
+```
+
+###
+
+The probability family is determined by the outcome variable $Y$. 
+
+<!-- XX: Choose one: -->
+
+Since $Y$ is a continuous variable, the probability family is Normal, also known as Gaussian.
+
+$$Y \sim N(\mu, \sigma^2)$$
+
+Since $Y$ is a binary variable (with exactly two possible values), the probability family is Bernoulli.
+
+$$Y \sim \text{Bernoulli}(\rho)$$
+
+where $\rho$ is the probability that one of the two possible values --- conventionally referred to as `1` or `TRUE` --- occurs. By definition, $1 - \rho$ is the probability of the other value.
+
+Since $Y$ is a categorical value (with 2+ possible values), the probability family is Multinomial.
+
+$$Y \sim \text{Multinomial}(\rho_1, \rho_2, \rho_3, \ldots)$$
+
+where $\rho_1 + \rho_2 + \rho_3 + \ldots = 1$.
+
+Since $Y$ is a categorical variable in which the categories have a clear ordering, the cumulative distribution function is:
+
+$$F(y) = P(Y \leq y) = \sum_{k=1}^{\lfloor y \rfloor} \rho_k$$
+
+where $\lfloor y \rfloor$ is the floor function (largest integer $\leq y$), assuming categories are labeled as integers 1, 2, 3, \ldots
+
+Since \$Y\$ is an ordinal variable (with 2+ ordered values), the probability family is Cumulative Logistic.
+
+$$
+\text{approval} \sim \text{CumulativeLogit}(\theta_1, \theta_2, \ldots, \theta_{K-1})
+$$
+
+where each \$\theta\_k\$ defines a threshold between approval levels, and the model estimates the probability of being at or below each category using a series of cumulative log-odds.
+
+### Exercise 14
+
+<!-- XX: In later tutorials, you can shrink this verbiage. -->
+
+Add `library(broom)` to the QMD file.
+
+Place your cursor in the QMD file on the `library(broom)` line. Use `Cmd/Ctrl + Enter` to execute that line.
+
+Note that this causes `library(broom)` to be copied down to the Console and then executed. 
+
+CP/CR.
+
+```{r justice-14}
+question_text(NULL,
+	answer(NULL, correct = TRUE),
+	allow_retry = TRUE,
+	try_again_button = "Edit Answer",
+	incorrect = NULL,
+	rows = 3)
+```
+
+###
+
+The link function, the basic mathematical structure of the model, is (mostly) determined by the type of outcome variable. 
+
+<!-- XX: How this is written depends on what tutorial we are working on. For earlier tutorials, it can be fairly simple. But later tutorials should be more sophisticated. -->
+
+<!-- XX: Choose the appropriate structure. Delete the others.-->
+
+For a continuous outcome variable, we use a linear model for the link function:
+
+$$\mu = \beta_0 + \beta_1 X_1 + \beta_2 X_2 + \ldots$$
+
+For a binary outcome variable, we use a log-odds model:
+
+$$
+\log\left[ \frac { \rho }{ 1 - \rho } \right] = \beta_0 + \beta_1 X_1 + \beta_2 X_2 + \ldots 
+$$
+
+For a multinomial outcome variable, we use a multinomial logistic regression model. (Note that this formulation is for the case with three outcomes, but the same approach holds for more than three outcomes.)
+
+$$
+\begin{aligned}
+\rho_{A} &= \frac{e^{\beta_{0, A} + \beta_{1, A} \cdot X}}{1 + e^{\beta_{0, A} + \beta_{1, A} \cdot X} + e^{\beta_{0, B} + \beta_{1, B} \cdot X}} \\
+\rho_{B} &= \frac{e^{\beta_{0, B} + \beta_{1, B} \cdot X}}{1 + e^{\beta_{0, A} + \beta_{1, A} \cdot X} + e^{\beta_{0, B} + \beta_{1, B} \cdot X}} \\
+\rho_{C} &= 1 - \rho_{A} - \rho_{B}
+\end{aligned}
+$$
+
+For an ordinal outcome variable, we use a cumulative logistic regression model. (Note that this formulation is for the case with three outcomes, but the same approach holds for more than three outcomes.)
+
+$$
+\begin{aligned}
+\log\left[ \frac { P(Y \leq A) }{ 1 - P(Y \leq A) } \right] &= \alpha_1 - \beta_1 X_1 - \beta_2 X_2 - \ldots \\
+\log\left[ \frac { P(Y \leq B) }{ 1 - P(Y \leq B) } \right] &= \alpha_2 - \beta_1 X_1 - \beta_2 X_2 - \ldots \\
+P(Y \leq C) &= 1
+\end{aligned}
+$$
+
+
+### Exercise 15
+
+<!-- DK: This question seems really hard! -->
+
+<!-- XX: The first (of three) versions of the model is a mathematical formula which includes parameters like \beta_1 as well as the error term. This model does not, yet, specify exactly which variables are included on the left-hand side, much less any transformations which are required.  -->
+
+Use AI to come up with a $\LaTeX$ representation of the mathematical structure of the model, with $Y$ as the dependent variable and $X_1$, $X_2$ and so on as the independent variables. This version will not have the values of any parameters since we have not, yet, estimated them. Confirm that the $\LaTeX$ code works by placing it in your QMD and then rendering. Paste that $\LaTeX$ code below.
+
+```{r justice-15}
+question_text(NULL,
+	answer(NULL, correct = TRUE),
+	allow_retry = TRUE,
+	try_again_button = "Edit Answer",
+	incorrect = NULL,
+	rows = 5)
+```
+
+###
+
+<!-- XX: Provide a nice looking LaTeX version of the model. Perhaps show the prompt you used. Then, show the code, within a four backtick environment, which generates that LaTeX. Then, provide some sensible discussion. Note that we can't (easily) use a yes-answer exercise here because the answers inside an exercise chunk can't really be LaTeX. If the model is none of the four choices below, then use your best judgment . . .-->
+
+Our answer:
+
+<!-- For Normal: -->
+
+$$Y = \beta_0 + \beta_1 X_1 + \beta_2 X_2 + \cdots + \beta_n X_n + \epsilon$$
+
+with $\epsilon \sim \mathcal{N}(0, \sigma^2)$.
+
+Which we created with $\LaTeX$ code that looks like this:
+
+````
+$$Y = \beta_0 + \beta_1 X_1 + \beta_2 X_2 + \cdots + \beta_n X_n + \epsilon$$
+
+with $\epsilon \sim \mathcal{N}(0, \sigma^2)$.
+````
+
+This follows the linear regression form for continuous data, where the $\beta$ coefficients represent the effect of predictors on the mean of the outcome.
+
+<!-- For Bernoulli: -->
+
+$$P(Y = 1) = \frac{1}{1 + e^{-(\beta_0 + \beta_1 X_1 + \beta_2 X_2 + \cdots + \beta_n X_n)}}$$
+
+with $Y \sim \text{Bernoulli}(\rho)$ where $\rho$ is the probability above.
+
+Which we created with $\LaTeX$ code that looks like this:
+
+````
+$$P(Y = 1) = \frac{1}{1 + e^{-(\beta_0 + \beta_1 X_1 + \beta_2 X_2 + \cdots + \beta_n X_n)}}$$
+
+with $Y \sim \text{Bernoulli}(\rho)$ where $\rho$ is the probability above.
+````
+
+This follows the logistic regression form for binary data, where the $\beta$ coefficients represent the effect of predictors on the log-odds of the outcome.
+
+<!-- For Multinomial: -->
+
+$$P(Y = k) = \frac{e^{\beta_{k0} + \beta_{k1} X_1 + \beta_{k2} X_2 + \cdots + \beta_{kn} X_n}}{\sum_{j=1}^{K} e^{\beta_{j0} + \beta_{j1} X_1 + \beta_{j2} X_2 + \cdots + \beta_{jn} X_n}}$$
+
+with $Y \sim \text{Multinomial}(\boldsymbol{\rho})$ where $\boldsymbol{\rho} = (\rho_1, \rho_2, \ldots, \rho_K)$ are the probabilities above.
+
+Which we created with $\LaTeX$ code that looks like this:
+
+````
+$$P(Y = k) = \frac{e^{\beta_{k0} + \beta_{k1} X_1 + \beta_{k2} X_2 + \cdots + \beta_{kn} X_n}}{\sum_{j=1}^{K} e^{\beta_{j0} + \beta_{j1} X_1 + \beta_{j2} X_2 + \cdots + \beta_{jn} X_n}}$$
+
+with $Y \sim \text{Multinomial}(\boldsymbol{\rho})$ where $\boldsymbol{\rho} = (\rho_1, \rho_2, \ldots, \rho_K)$ are the probabilities above.
+````
+
+This follows the multinomial logistic regression form, where each category $k$ has its own set of parameters $\beta_{k0}, \beta_{k1}, \ldots, \beta_{kn}$.
+
+<!-- For Cumulative: -->
+
+$$P(Y \leq k) = \frac{1}{1 + e^{-(\alpha_k - \beta_1 X_1 - \beta_2 X_2 - \cdots - \beta_n X_n)}}$$
+
+with $Y \sim \text{Ordinal}(\boldsymbol{\rho})$ where $\boldsymbol{\rho} = (\rho_1, \rho_2, \ldots, \rho_K)$ are derived from the cumulative probabilities above.
+
+````
+$$P(Y \leq k) = \frac{1}{1 + e^{-(\alpha_k - \beta_1 X_1 - \beta_2 X_2 - \cdots - \beta_n X_n)}}$$
+
+with $Y \sim \text{Ordinal}(\boldsymbol{\rho})$ where $\boldsymbol{\rho} = (\rho_1, \rho_2, \ldots, \rho_K)$ are derived from the cumulative probabilities above.
+````
+
+This follows the proportional odds model form for ordinal data, where $\alpha_k$ are the threshold parameters (cutpoints) and the $\beta$ coefficients represent the effect of predictors on the log-odds of being in category $k$ or below.
+
+<!-- XX: Any of these four versions would keep this. -->
+
+We use generic variables --- $Y$, $X_1$ and so on --- because our purpose is to describe the general mathematical structure of the model, independent of the specific variables we will eventually choose to use.
+
+Having decided on the basic mathematical structure of the model, a choice mostly driven by the distribution of our outcome variable, we now turn toward estimating the model.
+
+### Exercise 16
+
+Write one sentence which highlights a potential weakness in your model. This will almost always be derived from possible problems with the assumptions discussed above. We will add this sentence to our summary paragraph. So far, our version of the summary paragraph looks like this:
+
+> XX: Paste our first two sentences here. See the Cardinal Virtues vignette for some examples.
+
+Of course, your version will be somewhat different.
+
+```{r justice-16}
+question_text(NULL,
+	message = "XX",
+	answer(NULL, correct = TRUE),
+	allow_retry = FALSE,
+	incorrect = NULL,
+	rows = 6)
+```
+
+### 
+
+Add a weakness sentence to the summary paragraph in your QMD. You can modify your paragraph as you see fit, but do not copy/paste our answer exactly. `Cmd/Ctrl + Shift + K`, and then commit/push.
+
+
+## Courage
+### 
+
+<!-- XX: Choose one. -->
+
+*Courage is found in unlikely places.* - J.R.R. Tolkien
+*Courage is being scared to death, but saddling up anyway.* - John Wayne
+*Courage is going from failure to failure without losing enthusiasm.* - Winston Churchill
+*Courage is the commitment to begin without any guarantee of success.* - Johann Wolfgang von Goethe
+
+<!-- After Justice, we have a mathematical formula and a data set which, via the assumptions behind the Population Table, we can use to make inferences about the Preceptor Table and, thereby, answer our questions. -->
+
+### Exercise 1
+
+In your own words, describe the components of the virtue of Courage for analyzing data.
+
+```{r courage-1}
+question_text(NULL,
+	message = "Courage creates the data generating mechanism.",
+	answer(NULL, correct = TRUE),
+	allow_retry = FALSE,
+	incorrect = NULL,
+	rows = 6)
+```
+
+### 
+
+Having decided on the basic mathematical structure of the model at the end of *Justice*, a choice mostly driven by the distribution of our outcome variable, we now turn toward estimating the model.
+
+### Exercise 2
+
+Because our outcome variable is [XX: binary or continuous or multinomial or cumulative], start to create the model by entering `[XX: logistic_reg(engine = "glm") or linear_reg(engine = "lm") or multinom_reg(engine = "glmnet")]`.
+
+```{r courage-2, exercise = TRUE}
+
+```
+
+```{r courage-2-hint-1, eval = FALSE}
+# XX
+```
+
+```{r courage-2-test, include = FALSE}
+# XX
+```
+
+### 
+
+The *[tidymodels](https://www.tidymodels.org/)* framework is the most popular one in the R world for estimating models. *[Tidy Modeling with R](https://www.tmwr.org/)* by Max Kuhn and Julia Silge is a great introduction.
+
+<!-- XX: We now fit a bunch of models in a bunch of new exercises, starting below. Include the results of the model fitting code in the tutorial itself, even though the student will also see those results when she runs the code herself. When you do, you don't need to include the input or even all the output, just the important part for whatever discussion goes along with it. -->
+
+<!-- XX: In the earlier tutorials, this section will look a lot like the next few questions below. After tutorial 10, I hope that we use less simple examples.  -->
+
+### Exercise 3
+
+<!-- XX: Fit the model to a single categorical variable, ideally one with just two levels, like sex. If that is not possible, use your best judgment as to what to do instead. -->
+
+Continue the pipe to `fit(XX, data = XX)`.
+
+```{r courage-3, exercise = TRUE}
+
+```
+
+<button onclick = "transfer_code(this)">Copy previous code</button>
+
+```{r courage-3-hint-1, eval = FALSE}
+... |> 
+  fit(..., data = ...)
+```
+
+```{r courage-3-test, include = FALSE}
+# XX |> 
+#   fit(XX, data = XX)
+```
+
+### 
+
+<!-- XX: Edit this paragraph to use an example of a categorical variable from your model, if one is available. -->
+
+Recall that a categorical variable (whether character or factor) like `sex` is turned into a $0/1$ "dummy" variable which is then re-named something like $sexMale$. After all, we can't have words --- like "Male" or "Female" --- in a mathematical formula, hence the need for dummy variables.
+
+### Exercise 4
+
+<!-- XX: We like to see confidence intervals for the parameters, so we had the call to tidy() here. In the next few questions, we go back and change the call to fit(). -->
+
+Continue the pipe with `tidy(conf.int = TRUE)`.
+
+```{r courage-4, exercise = TRUE}
+
+```
+
+<button onclick = "transfer_code(this)">Copy previous code</button>
+
+```{r courage-4-hint-1, eval = FALSE}
+...
+  tidy(... = TRUE)
+```
+
+```{r courage-4-test, include = FALSE}
+# ...
+#   tidy(conf.int = TRUE)
+```
+
+### 
+
+<!-- XX: Discuss the meaning of the intercept and beta_1. Use the actual results. DK: Add some examples here. See https://ppbds.github.io/primer.tutorials/articles/cardinal_virtues.html for detailed examples. This is a good document to show to Claude. Actually, looks like lots of the knowledge drops below come from this document. -->
+
+### Exercise 5
+
+<!-- XX: Fit the model to a different categorical variable, ideally one with three or more levels, like race. If that is not possible, use your best judgment as to what to do instead. -->
+
+Change the call to `fit()` to `fit(XX, data = XX)`.
+
+```{r courage-5, exercise = TRUE}
+
+```
+
+<button onclick = "transfer_code(this)">Copy previous code</button>
+
+```{r courage-5-hint-1, eval = FALSE}
+... |> 
+  fit(..., data = ...)
+  ...
+```
+
+```{r courage-5-test, include = FALSE}
+# ...
+```
+
+### 
+
+<!-- XX: Edit this paragraph to use an example of a categorical variable from your model, if one is available. -->
+
+The same dummy variable approach applies to a categorical covariate with $N$ values. Such cases produce $N-1$ dummy $0/1$ variables. The presence of an intercept in most models means that we can't have $N$ categories. The "missing" category is incorporated into the intercept. If `race` has three values --- "black", "hispanic", and "white" --- the model creates two $0/1$ dummy variables, giving them names like $race_{hispanic}$ and $race_{white}$. The results for the *first* category are included in the intercept, which becomes the reference case, relative to which the other coefficients are applied.
+
+<!-- XX: Consider fitting more versions of the model, discussing what you notice. Eventually, you will decide on a final version of the model. That is the one which you fit in the next question. -->
+
+### Exercise 6
+
+<!-- XX: Fit the model one last time. -->
+
+Change the call to `fit()` to `fit(XX, data = XX)`.
+
+```{r courage-6, exercise = TRUE}
+
+```
+
+<button onclick = "transfer_code(this)">Copy previous code</button>
+
+```{r courage-6-hint-1, eval = FALSE}
+... |> 
+  fit(..., data = ...)
+  ...
+```
+
+```{r courage-6-test, include = FALSE}
+# XX |> 
+#   fit(XX, data = XX)
+#   tidy(conf.int = TRUE)
+```
+
+### 
+
+The more variables we add, the more difficult it is to interpret the meaning of any particular coefficient. But interpretation also becomes less important. We don't really care about coefficients. We care about using our model to estimate quantities of interest.
+
+<!-- XX: Some commentary about why this is the model that you are choosing. -->
+
+### Exercise 7
+
+Behind the scenes of this tutorial, an object called `fit_XX` has been created which is the result of the code above. Type `fit_XX` and hit "Run Code." This generates the same results as using `print(fit_XX)`.
+
+```{r courage-7, exercise = TRUE}
+
+```
+
+```{r courage-7-hint-1, eval = FALSE}
+fit_XX
+```
+
+```{r courage-7-test, include = FALSE}
+# fit_XX
+```
+
+### 
+
+In data science, **we deal with words, math, and code, but the most important of these is code.** We created the mathematical structure of the model and then wrote a model formula in order to estimate the unknown parameters. 
+
+### Exercise 8
+
+<!-- DK: This should happen in the QMD first, before it is `Cmd/Ctrl + Enter`'d to the Console? -->
+
+We need `fit_XX` to exit in Console World. Copy/paste this code into the Console and execute it.
+
+````
+# fit_XX <- XX |> 
+#   fit(XX, data = XX)
+````
+
+CP/CR.
+
+```{r courage-8}
+question_text(NULL,
+	answer(NULL, correct = TRUE),
+	allow_retry = TRUE,
+	try_again_button = "Edit Answer",
+	incorrect = NULL,
+	rows = 3)
+```
+
+###
+
+Just because something exists in the tutorial (or in the QMD) does not mean that it is in the Console. You should be aware of what exists in Console World, which is generally called your "workspace."
+
+
+### Exercise 9
+
+In the Console, load the **[easystats](https://easystats.github.io/easystats/)** package. CP/CR.
+
+```{r courage-9}
+question_text(NULL,
+	answer(NULL, correct = TRUE),
+	allow_retry = TRUE,
+	try_again_button = "Edit Answer",
+	incorrect = NULL,
+	rows = 5)
+```
+
+###
+
+We don't add **easystats** to the QMD because we are only using it for an interactive check of our fitted model. However, the [easystats ecosystem](https://easystats.github.io/easystats/) has a variety of interesting functions and packages which you might want to explore.
+
+### Exercise 10
+
+In the Console, run `check_predictions(extract_fit_engine(fit_XX))`. CP/CR.
+
+```{r courage-10}
+question_text(NULL,
+	answer(NULL, correct = TRUE),
+	allow_retry = TRUE,
+	try_again_button = "Edit Answer",
+	incorrect = NULL,
+	rows = 5)
+```
+
+###
+
+The purpose of `check_predictions()` is to compare your actual data (in green) with data that has been simulated from your fitted model, i.e., from your data generating mechanism. If your DGM is reasonable, then data simulated from it should not look too dissimilar from your actual data. Of course, it won't look exactly the same because of randomness, both in the world and in your simulation. But the actual data should be within the range of outcomes that your DGM simulates with `check_predictions()`.
+
+<!-- XX: Note whether or not most/all of the data looks like the simulated data. Conclude that, while not perfect, the model is probably good enough. Or! Note that it is not good enough, and go create a new model, and then check it. Then note how much better it is. And then make that new fitted object the one we use going forward. We might wait to do this in tutorials 11+ -->
+
+### Exercise 11
+
+Ask AI to create $\LaTeX$ code for this model, including our variable names and estimates for all the coefficients. Because this is a fitted model, the dependent variable will have a "hat" and the formula will not include an error term. 
+
+Add the code to your QMD. `Cmd/Ctrl + Shift + K`.
+
+Make sure the resulting display looks good. For example, you don't want an absurd number of figures to the right of the decimal. If the model is too long, you will need to spread it across several lines. You may need to go back-and-forth with the AI a few times.
+
+Once the $\LaTeX$ code looks good, paste it below.
+
+```{r courage-11}
+question_text(NULL,
+	answer(NULL, correct = TRUE),
+	allow_retry = TRUE,
+	try_again_button = "Edit Answer",
+	incorrect = NULL,
+	rows = 3)
+```
+
+###
+
+Our formula looks like:
+
+<!-- 
+XX: Replace the material within the ---- with code for your model.
+
+----
+$$\widehat{\text{att\_end}} = 8.45 + 1.55 \cdot \text{treatment}$$
+
+It was created with:
+
+````
+$$\widehat{\text{att\_end}} = 8.45 + 1.55 \cdot \text{treatment}$$
+```` 
+----
+
+-->
+
+First, we have replaced the parameters with our best estimates. Second, the left-hand side variable is $\widehat{\text{XX}}$ instead of $\text{XX}$ because this formula generates our estimated `XX`. A hat indicates an estimated value. 
+
+**This is our data generating mechanism.**
+
+Of course, there is randomness built into the DGM, but we won't worry about that detail for now.
+
+A data generating mechanism is just a formula, something which we can write down and implement with computer code.
+
+### Exercise 12
+
+Create a new code chunk in your QMD. Add a code chunk option: `#| cache: true`. Copy/paste the R code for the final model into the code chunk, assigning the result to `fit_XX`. (This will include the call to `fit()` but not the call to `tidy()` because we want the entire fitted model, not just a table of the estimated parameter values.)
+
+Place your cursor in the QMD file on the `fit_XX` line. Use `Cmd/Ctrl + Enter` to execute that line. Strictly speaking, this step is unnecessary because we already added `fit_XX` to our workspace above. But ensuring that everything in the QMD is also in the Console is a good habit.
+
+`Cmd/Ctrl + Shift + K`. It may take some time to render your QMD, depending on how complex your model is. But, by including `#| cache: true` you cause Quarto to cache the results of the chunk. The next time you render your QMD, as long as you have not changed the code, Quarto will just load up the saved fitted object.
+
+At the Console, run:
+
+```
+tutorial.helpers::show_file("XX.qmd", chunk = "Last")
+```
+
+CP/CR.
+
+```{r courage-12}
+question_text(NULL,
+	answer(NULL, correct = TRUE),
+	allow_retry = TRUE,
+	try_again_button = "Edit Answer",
+	incorrect = NULL,
+	rows = 8)
+```
+
+### 
+
+To confirm, `Cmd/Ctrl + Shift + K` again. It should be quick.
+
+### Exercise 13
+
+Add `*_cache` to `.gitignore` file. Cached objects are often large. They don't belong on Github.
+
+At the Console, run:
+
+```
+tutorial.helpers::show_file(".gitignore")
+```
+
+CP/CR.
+
+```{r courage-13}
+question_text(NULL,
+	answer(NULL, correct = TRUE),
+	allow_retry = TRUE,
+	try_again_button = "Edit Answer",
+	incorrect = NULL,
+	rows = 6)
+```
+
+###
+
+Because of the change in your `.gitignore` (assuming that you saved it), the cache directory should not appear in the Source Control panel because Git is ignoring it, as instructed. Commit and push. 
+
+### Exercise 14
+
+In the Console, run `tidy()` on `fit_XX` with the argument `conf.int` set equal to `TRUE`. This returns 95% intervals for all the parameters in our model.
+
+```{r courage-14, exercise = TRUE}
+
+```
+
+```{r courage-14-hint-1, eval = FALSE}
+tidy(..., conf.int = ...)
+```
+
+```{r courage-14-test, include = FALSE}
+# tidy(fit_XX, conf.int = TRUE)
+```
+
+### 
+
+<!-- DK: Belongs earlier, since we use tidy() above. -->
+
+`tidy()` is part of the [**broom**](https://broom.tidymodels.org/) package, used to summarize information from a wide variety of models.
+
+### Exercise 15
+
+Create a new code chunk in your QMD. Ask AI to help you make a nice looking table from the tibble which is returned by `tidy()`. You don't have to include all the variables which `tidy()` produces. We often just show the estimate and the confidence intervals.
+
+You might need to add some new libraries, e.g., **[tinytable](https://vincentarelbundock.github.io/tinytable/)**, **[knitr](https://yihui.org/knitr/)**, **[gt](https://gt.rstudio.com/)**, **[kableExtra](https://haozhu233.github.io/kableExtra/)**, **[flextable](https://davidgohel.github.io/flextable/)**, **[modelsummary](https://modelsummary.com/)**, et cetera, to the `setup` code chunk, if you use any functions from these packages, all of which have strengths and weaknesses for making tables.
+
+Insert your table code into the QMD. (If you need a new library, and you probably will, place it in the `setup` code chunk along with the other libraries you have already loaded.)
+
+`Cmd/Ctrl + Shift + K`. 
+
+At the Console, run:
+
+```
+tutorial.helpers::show_file("XX.qmd", chunk = "Last")
+```
+
+CP/CR.
+
+```{r courage-15}
+question_text(NULL,
+	answer(NULL, correct = TRUE),
+	allow_retry = TRUE,
+	try_again_button = "Edit Answer",
+	incorrect = NULL,
+	rows = 12)
+```
+
+###
+
+<!-- XX: Show your table, and the code which you used to create it. -->
+
+At the very least, your table should include a title and a caption with the data source. The more you use AI, the better you will get at doing so.
+
+### Exercise 16
+
+Add a sentence to your project summary. 
+
+Explain the structure of the model. Something like: "I/we model XX [the concept of the outcome, not the variable name], [insert description of values of XX], as a [linear/logistic/multinomial/ordinal] function of XX [and maybe other covariates]." 
+
+
+Recall the beginning of our version of the summary:
+
+> [XX: Include what we suggested at the end of Justice.]
+
+```{r courage-16}
+question_text(NULL,
+	message = "XX",
+	answer(NULL, correct = TRUE),
+	allow_retry = FALSE,
+	incorrect = NULL,
+	rows = 6)
+```
+
+### 
+
+Read our answer. It will not be the same as yours. You can, if you want, change your answer to incorporate some of our ideas. Do not copy/paste our answer exactly. Add your two sentences, edited or otherwise, to the summary paragraph portion of your QMD. `Cmd/Ctrl + Shift + K`, and then commit/push.
+
+## Temperance
+### 
+
+<!-- XX: Choose one. -->
+
+XX: Here are some thoughts on the exercises which belong in this section. 
+
+First, we show the parameter values of the DGM and try to interpret their meaning. This is relatively straight-forward for simple linear models. With non-linear models and interaction terms, it becomes much harder, but we still give it a try, if only to highlight how the approaches for linear models fail in these cases. With complex models like random forest, the parameters have no meaningful interpretation. In those cases, we still have an exercise which ensures that the student understands that.
+
+Second, 
+
+*Temperance is a tree which has for its root very little contentment, and for its fruit calm and peace.* - Buddha
+*Temperance is the greatest of all virtues. It subdues every passion and emotion, and almost creates a Heaven upon Earth.* - Joseph Smith Jr.
+*Temperance is a bridle of gold; he, who uses it rightly, is more like a god than a man.* - Robert Burton
+*Temperance is the firm and moderate dominion of reason over passion and other unrighteous impulses of the mind.* - Marcus Tullius Cicero
+*Temperance to be a virtue must be free, and not forced.* - Philip Massinger
+*Temperance is simply a disposition of the mind which binds the passion.* - Thomas Aquinas
+
+### Exercise 1
+
+In your own words, describe the use of Temperance in data science.
+
+```{r temperance-1}
+question_text(NULL,
+	message = "Temperance interprets the data generating mechanism and then uses it to answer, with the help of graphics, the question(s) with which we began. Humility reminds us that this answer is always false.",
+	answer(NULL, correct = TRUE),
+	allow_retry = FALSE,
+	incorrect = NULL,
+	rows = 6)
+```
+
+### 
+
+Courage gave us the data generating mechanism. Temperance guides us in the use of the DGM — or the “model” — we have created to answer the question(s) with which we began. We create posteriors for the quantities of interest. 
+
+<!-- XX: Add at least three questions which involve the interpretation of numbers in the table. We have created three empty questions below this commentary block for you. The first question --- and maybe all the questions? --- shows a table of the parameter values at the start. For models with lots of parameters, you need to restrict what the table displays. See the Cardinal Virtues vignette for detailed discussion:
+
+https://ppbds.github.io/primer.tutorials/articles/cardinal_virtues.html#interpreting-parameters
+
+ You must provide an excellent answer to each of the questions. -->
+
+<!-- Your main job is to provide a clear question and an excellent answer. So, you are using "yes-answer" type exercises. But what about the knowledge drops? Consider some prototype knowledge drops in the list below. Pick and choose among them, editing them as you see fit. In many cases, you can just copy/paste them as they are. But you must choose ones which apply to that particular question and/or the answer you provide.  These are mostly from the Cardinal Virtues vignette.
+
+Example Knowledge Drops:
+
+* Whenever we consider non-treatment variables, we must never use terms like "cause," "impact" and so on. We can't make any statement which implies the existence of more than one potential outcome based on changes in non-treatment variables. We can't make any claims about **within row** effects. Instead, we can only compare **across rows**. Always use the phrase "when comparing X and Y" or something very similar.
+
+* Dummy variables must always be interpreted in the context of the base value for that variable, which is generally included in the intercept. Example: "The base value here is 'asian/pacific islander.' The base value is the first alphabetically by default for character variables. However, if it is a factor variable, you can change that by setting the order of the levels by hand."
+
+* The interpretation of a treatment variable is very different from the interpretation of a standard covariate. The key point is that there is no such thing as a causal (versus predictive) data set nor a causal (versus predictive) R code formula. You can use the same data set (and the same R code) for both causal and predictive models. The difference lies in the assumptions you make.
+
+* Most of the time parameters in a model have no direct relationship with any population value in which we might be interested. This is especially true in complex and/or non-linear models. That is, in those cases, a coefficient like $\beta_0$ does not "mean" anything. But, in simple, small, linear models, it sometimes happens that a parameter does correspond to something real.
+
+* We care if the confidence interval for a given variable excludes zero. If not, then we can't be sure if the relationship between the variable and the outcome is positive or negative. In that case, why would we include the variable in the model at all?
+
+* We recommend the verb "adjust" in place of "control" when discussing the effect of including other variables in the model. Example: "The causal effect of exposure to Spanish-speakers is 1.5, adjusting for other variables like age and party." The word "adjusting" is better than the word "controlling" because it demonstrates some humility.
+
+* If the variable is categorical, we care if confidence interval for one of the dummy columns overlaps with the confidence intervals for any of the other dummy columns derived from that categorical variable. If so, then we can not be sure as to the ordering of importance among the categories. 
+
+* Numeric variables are harder to use in comparisons than binary variables because there are no longer just two well-defined groups to compare with each other. We must create those two groups ourselves. Fortunately, as long as there are no interaction terms, we can just pick two groups with any values for the variable. The most common two groups differ by one unit of the variable. But it is quite common to use groups which differ by more/less if doing so seems sensible and/or if it makes the math easier.
+-->
+
+### Exercise 2
+
+<!-- XX: You can cut these three questions if you are using a model like random forest for which there are no interpretable parameters. -->
+
+Before using the DGM, we should make sure that we can interpret it.
+
+Recall the values for the parameters in our data generating mechanism:
+
+```{r}
+# fit_XX |> 
+# 	tidy(conf.int = TRUE) |> 
+#	select(term, estimate, conf.low, conf.high)
+```
+
+```{r temperance-2}
+question_text(NULL,
+	message = "Place correct answer here.",
+	answer(NULL, correct = TRUE),
+	allow_retry = FALSE,
+	incorrect = NULL,
+	rows = 6)
+```
+
+###
+
+### Exercise 3
+
+```{r}
+# fit_XX |> 
+# 	tidy(conf.int = TRUE) |> 
+#	select(term, estimate, conf.low, conf.high)
+```
+
+```{r temperance-3}
+question_text(NULL,
+	message = "Place correct answer here.",
+	answer(NULL, correct = TRUE),
+	allow_retry = FALSE,
+	incorrect = NULL,
+	rows = 6)
+```
+
+###
+
+### Exercise 4
+
+```{r}
+# fit_XX |> 
+# 	tidy(conf.int = TRUE) |> 
+#	select(term, estimate, conf.low, conf.high)
+```
+
+```{r temperance-4}
+question_text(NULL,
+	message = "Place correct answer here.",
+	answer(NULL, correct = TRUE),
+	allow_retry = FALSE,
+	incorrect = NULL,
+	rows = 6)
+```
+
+###
+
+<!-- XX: You can add some more interpretation questions if you like, but three is probably enough. -->
+
+### Exercise 5
+
+In the end, we don't really care about parameters, much less how to interpret them. Parameters are *imaginary*, like unicorns. We care about answers to our questions. Parameters are tools for answering questions. They aren't interesting in-and-of themselves. *In the modern world, all parameters are nuisance parameters.* 
+
+Add `library(marginaleffects)` to the QMD file.
+
+Place your cursor in the QMD file on the `library(marginaleffects)` line. Use `Cmd/Ctrl + Enter` to execute that line.
+
+Note that this causes `library(marginaleffects)` to be copied down to the Console and then executed. 
+
+CP/CR.
+
+```{r temperance-5}
+question_text(NULL,
+	answer(NULL, correct = TRUE),
+	allow_retry = TRUE,
+	try_again_button = "Edit Answer",
+	incorrect = NULL,
+	rows = 3)
+```
+
+### 
+
+We should be modest in the claims we make. The posteriors we create are never the “truth.” The assumptions we made to create the model are never perfect. Yet decisions made with flawed posteriors are almost always better than decisions made without them.
+
+### Exercise 6
+
+What is the specific question we are trying to answer? 
+
+```{r temperance-6}
+question_text(NULL,
+	message = "XX: This might be the same question as we started with in Wisdom. But it is also OK if it is different. I think . . .",
+	answer(NULL, correct = TRUE),
+	allow_retry = FALSE,
+	incorrect = NULL,
+	rows = 6)
+```
+
+### 
+
+Data science projects begin with a decision which we face. To make that decision wisely, we would like to have good estimates of many unknown numbers. Yet, in order to make progress, we need to drill down to one specific question. This leads to the creation of a data generating mechanism, which can now be used to answer lots of questions, thus allowing us to explore the original decision more broadly.
+
+<!-- XX: There should be a bunch of questions here, covering examples of plot_predictions(), plot_comparisons(), averages and maybe even slopes. We want to run multiple versions of plot_predictions(), dropping knowledge each time which connects what we see to our coefficients, especially those which we asked interpretation questions about above. See the Cardinal Virtues vignette for some examples. The last such question creates a final plot which is then included in the QMD. We always include test chunks.  Always start with predictions() -->
+
+### Exercise 7
+
+In the Console, `predictions()` on `fit_XX`.
+
+CP/CR.
+
+```{r temperance-7}
+question_text(NULL,
+	answer(NULL, correct = TRUE),
+	allow_retry = TRUE,
+	try_again_button = "Edit Answer",
+	incorrect = NULL,
+	rows = 3)
+```
+
+```{r temperance-7-test, include = FALSE}
+predictions(fit_XX)
+```
+
+###
+
+`predictions()` returns a data frame with one row for each observation in the data set used to fit the model. In this case, predictions() returns XX rows, because the input data has XX observations. [XX: Insert another sentence.]
+
+<!-- XX: You can insert other marginaleffects questions here. Below, we just show one plot_predictions() question, but your tutorial should really have several. -->
+
+### Exercise 8
+
+In the Console, run `plot_predictions()` on `fit_XX` with [XX: these arguments/values].
+
+CP/CR.
+
+```{r temperance-8}
+question_text(NULL,
+	answer(NULL, correct = TRUE),
+	allow_retry = TRUE,
+	try_again_button = "Edit Answer",
+	incorrect = NULL,
+	rows = 5)
+```
+
+```{r temperance-8-test, include = FALSE}
+# plot_predictions(fit_XX, condition = "XX")
+```
+
+### 
+
+<!-- XX: The knowledge drop MUST discuss the estimate (and its uncertainty) that you go on to include in your summary paragraph. You MUST discuss how you are reading, roughly, the values for the estimate and the confidence interval by looking at this plot. -->
+
+<!-- XX: There are a lot of interesting options in plot_predictions. Check them out. You may want to use some of them in your plot. I think `points` is quite interesting. Add a couple more questions which use different argument values and/or add other options.  -->
+
+<!-- XX: You can use the draw = FALSE option to return a tibble which can then be piped directly into ggplot.  -->
+
+### Exercise 9
+
+<!-- XX: After you have run several marginaleffects functions, it is time to finish up, to create your final plot. In this question, have them run the final marginaleffects function, the one that will form the basis of the final plot. -->
+
+In the Console, run `plot_predictions()` on `fit_XX` with [XX: these arguments/values].
+
+CP/CR.
+
+```{r temperance-9}
+question_text(NULL,
+	answer(NULL, correct = TRUE),
+	allow_retry = TRUE,
+	try_again_button = "Edit Answer",
+	incorrect = NULL,
+	rows = 5)
+```
+
+### 
+
+<!-- XX: Make some comments about what this plot is telling us, especially with regard to the questions with which we began. What are the most important takeaways from this plot? (Obviously, this will -->
+
+### Exercise 10
+
+In the Console, run the same `plot_predictions()` call as above again, but with `draw = FALSE`.
+
+CP/CR.
+
+```{r temperance-10}
+question_text(NULL,
+	answer(NULL, correct = TRUE),
+	allow_retry = TRUE,
+	try_again_button = "Edit Answer",
+	incorrect = NULL,
+	rows = 5)
+```
+
+### 
+
+Because `plot_predictions()` returns a ggplot object, you can just continue with ggplot commands like `labs()`. However, it can be useful to see the actual underlying values in the tibble and then build your own plot directly from them.
+
+### Exercise 11
+
+Work with AI to create a beautiful plot starting with the output to the above call to `plot_predictions()`. Do this in your QMD since that is much easier than working in the Console directly.
+
+Your title should highlight the key variables. Your subtitle should describe an important takeaway, the sentence/conclusion which readers will, you hope, remember. Your caption should mention the data source. Your axis labels should look nice.
+
+This plot is not directly connected to your question. It answers lots of questions! It might be used by lots of different people. 
+
+Copy the code for your plot here:
+
+```{r temperance-11}
+question_text(NULL,
+	answer(NULL, correct = TRUE),
+	allow_retry = TRUE,
+	try_again_button = "Edit Answer",
+	incorrect = NULL,
+	rows = 15)
+```
+
+### 
+
+Our plot:
+
+```{r}
+# XX
+```
+
+
+Our code:
+
+````
+XX
+````
+
+Data science often involves this-back-and-forth style of work. First, we need to make a single chunk of code, in this case, a new plot, work well. This requires interactive work between the QMD and the Console. Second, we need to ensure that the entire QMD runs correctly on its own.
+
+### Exercise 12
+
+Finalize the new graphics code chunk in your QMD. `Cmd/Ctrl + Shift + K` to ensure that it all works as intended. 
+
+At the Console, run:
+
+```
+tutorial.helpers::show_file("XX.qmd", chunk = "Last")
+```
+
+CP/CR.
+
+```{r temperance-12}
+question_text(NULL,
+	answer(NULL, correct = TRUE),
+	allow_retry = TRUE,
+	try_again_button = "Edit Answer",
+	incorrect = NULL,
+	rows = 10)
+```
+
+
+### 
+
+Always [remember](https://en.wikipedia.org/wiki/Map%E2%80%93territory_relation): *The map is not the territory.* A beautiful graphic tells a story, but that story is always an imperfect representation of reality. Our models depend on assumptions, assumptions which are never completely true.
+
+<!-- XX: You can optionally add some specifics for your case. -->
+
+### Exercise 13
+
+Write the last sentence of your summary paragraph. It describes at least one quantity of interest (QoI) and provides a measure of uncertainty about that QoI. It is OK if this QoI is not the one that you began with. The focus of a data science project often changes over time. It is also OK to discuss more than one QoI. Do whatever seems reasonable, given the context.
+
+```{r temperance-13}
+question_text(NULL,
+	message = "XX",
+	answer(NULL, correct = TRUE),
+	allow_retry = FALSE,
+	incorrect = NULL,
+	rows = 6)
+```
+
+### 
+
+Add a final sentence to your summary paragraph in your QMD as you see fit, but do not copy/paste our answer exactly. `Cmd/Ctrl + Shift + K`.
+
+### Exercise 14
+
+Write a few sentences which explain why the estimates for the quantities of interest, and the uncertainty thereof, might be wrong. Suggest an alternative estimate and confidence interval, if you think either might be warranted.
+
+```{r temperance-14}
+question_text(NULL,
+	message = "XX: This is another example in which the quality of your answer is important. You might or might not suggest an alternate estimate. I always adjust the estimate toward my own subjective sense of a long-run average and/or typical value and/or zero. But that is not necessary. However, you should always increase the confidence interval since the assumptions of your model are always false.",
+	answer(NULL, correct = TRUE),
+	allow_retry = FALSE,
+	incorrect = NULL,
+	rows = 6)
+```
+
+### 
+
+Always go back to your Preceptor Table, the information which, if you had it, would make answering your question easy. In almost all real world cases, the Preceptor Table and the data are fairly different, not least because validity never holds perfectly. So, even a perfectly estimated statistical model is rarely as useful as we might like.
+
+### Exercise 15
+
+Rearrange the material in your QMD so that the order is graphic, followed by the paragraph. Doing so, of course, requires sensible judgment. For example, the code chunk which creates the fitted model must occur before the chunk which creates the graphic. You can keep or discard the math and any other material at your own discretion.
+
+`Cmd/Ctrl + Shift + K` to ensure that everything works.
+
+At the Console, run:
+
+```
+tutorial.helpers::show_file("XX.qmd")
+```
+
+CP/CR.
+
+```{r temperance-15}
+question_text(NULL,
+	answer(NULL, correct = TRUE),
+	allow_retry = TRUE,
+	try_again_button = "Edit Answer",
+	incorrect = NULL,
+	rows = 30)
+```
+
+### 
+
+This is the version of your QMD file at which your teacher is most likely to look closely.
+
+### Exercise 16
+
+Publish your rendered QMD to GitHub Pages. In the Terminal --- not the Console! --- run:
+
+````
+quarto publish gh-pages XX.qmd
+````
+
+Copy/paste the resulting URL below.
+
+```{r temperance-16}
+question_text(NULL,
+	answer(NULL, correct = TRUE),
+	allow_retry = TRUE,
+	try_again_button = "Edit Answer",
+	incorrect = NULL,
+	rows = 3)
+```
+
+### 
+
+Commit/push everything.
+
+### Exercise 17
+
+Copy/paste the URL to your Github repo.
+
+```{r temperance-17}
+question_text(NULL,
+	answer(NULL, correct = TRUE),
+	allow_retry = TRUE,
+	try_again_button = "Edit Answer",
+	incorrect = NULL,
+	rows = 3)
+```
+
+### 
+
+We can never know all the entries in the Preceptor Table. That knowledge is reserved for God. If all our assumptions are correct, then our DGM is true, it accurately describes the way in which the world works. There is no better way to predict the future, or to model the past, than to use it. Sadly, this will only be the case with toy examples involving things like coins and dice. We hope that our DGM is close to the true DGM but, since our assumptions are never perfectly correct, our DGM will always be different from the truth. The estimated magnitude and importance of that difference is a matter of judgment.
+
+The world confronts us. Make decisions we must.
+
+## Summary
+### 
+
+This tutorial supports [*Preceptor’s Primer for Bayesian Data Science: Using the Cardinal Virtues for Inference*](https://ppbds.github.io/primer/) by [David Kane](https://davidkane.info/). 
+
+<!-- XX: Give the final plot and our summary paragraph. Add the concerns separately. And a note indicating how this information might be helpful to the Imagine person we created at the start, and mention some of the other numbers that would be helpful. There is always more work to do!  -->
+
+```{r download-answers, child = system.file("child_documents/download_answers.Rmd", package = "tutorial.helpers")}
+```
+
+
+<!-- Priorities: -->
+
+<!-- Seems like the definition of Justice should include deciding the mathematical formula . . . Maybe Justice creates the Population Table and the mathematical relationship between the outcome and the covariates. Implicit in this definition are the assumptions that must be checked when using the Population Table. -->
+
+<!-- Change the definition of Courage to include a few more things besides the DGM, like no hypothesis tests. -->
+
+<!-- Update the repo creation exercises to work on VS Code on Codespaces.  -->
+
+<!-- Deal with different starting directories in Positron versus VS Code. -->
+
+<!-- The language of "Console World" does not really work in VS Code. Maybe "R World?" -->
+
+<!-- Perhaps "In the Console" should be "In R?" -->
+
+<!-- Not sure if the whole probability family and link function stuff works . . . -->
+
+
+
+<!-- OPEN ISSUES: -->
+
+<!-- Should there be questions about, say, using AI to create a nice looking histogram or density plot of the outcome variable? Good to practice AI. Good to add stuff to the QMD.  -->
+
+<!-- We are still wrestling with what to include in the topic introductions, i.e., the space between the topic header and the first exercise. Think about the connections among all the material in the initial chunk of each section. How does the "Imagine that you are . . . " of the Introduction connect later virtues. There is nothing wrong with the silly quotes. (Or is there? Are we wasting student time?) But we should do more with that space.  -->
+
+<!-- Note that the DGM includes selection mechanism! And other mechanisms? -->
+
+<!-- Add test cases to the predictions() calls. -->
+
+<!-- Include this somewhere? -->
+
+<!-- ### Exercise 9
+
+How does the motto "No causation without manipulation" apply in this problem?
+
+```{r introduction-16}
+question_text(NULL,
+	message = "XX: With a tutorial which uses a predictive model, it is fair for your answer to this question to be. 'The motto does not apply because this is a predictive, not causal, model.' For a causal model, can you really manipulate the treatments? In reality or in theory? How? What details would need to change to make this more or less plausible?",
+	answer(NULL, correct = TRUE),
+	allow_retry = FALSE,
+	incorrect = NULL,
+	rows = 6)
+```
+
+###  -->
+
+<!-- XX: We need to keep track of how these issues apply to both our Preceptor Table and our data.  -->
+
+<!-- Need a better definition of Courage. -->
+
+
+
+<!-- Need to understand avg_predictions better. Just what is it averaging over? Also, what do the `by` and `conditions` arguments really accomplish. -->
+
+<!-- Which questions should be moved from Wisdom to Introduction? -->
+
+<!-- What order should we use for Wisdom questions? -->
+
+<!-- Think harder about displaying iterations of the Preceptor Table. At the very least, we need to explicitly show, with gt() code, the final version of our beautiful Preceptor Table, the one we use going forward. But, as part of the back-and-forth iteration, we will also discuss earlier versions of the Preceptor Table. Maybe we just do so with words? Maybe we also use gt()? -->
+
+<!-- 2) Change the Justice section:
+
+
+ * Add a question about the assignment mechanism. This could even be two questions. First, define it. Second, in a causal model, explain how it works in this problem.
+
+ * Add a question about the selection mechanism. This could even be two questions. First, define it. Second explain how it works in this problem. This could be right before representativeness. Note that there are two selection mechanisms: how a unit got in the data and how a unit got in the Preceptor Table.
+
+ * Connect these mechanisms to our assumptions of representativeness and unconfoundedness. Perhaps the definitions of these terms should include the specific mechanisms. That is a subtle issue because we do not need random assignment/selection to be OK. We just need . . .  what exactly?
+
+
+ <!-- 3) The sequence of questions for marginal effects always begins with predictions(). Maybe the second is always avg_comparisons()? Then you can have other questions if you like, including simple plots. You always end with first, the plot_something, usually plot_predictions, create a plot which you like. Then, you run that code but with draw = FALSE at the end, showing the data which gets spat out, explaining what that data is. Then, you show AI that spit out, and ask it to make a nice looking plot. As part of these, we need to some default knowledge drops, especially about common confusing arguments, like by, conditions and variables. -->
+
+
+
+
+<!-- We model units, but we only really care about aggregates. -->
+
+<!-- In marginaleffects, explain taking the average of the ratios (or whatever) versus the ratio of the averages. Or is this not important enough? -->
+
+<!-- Add a question about defining the data generating mechanism. Maybe this would be a big help, an organizing principal for other concepts --- link function, probability family, selection/assignment mechanisms, et cetera --- which don't have a clear home. -->
+
+
+<!-- How to handle choosing among models? In early tutorials, this might just involve looking at coefficient values/significance. Later, we might use a more formal approach from easystats. At least one model should be checked for posterior prediction problems. -->
+
+<!-- Should "What is a covariate" question specify discussion of both a variable in the data and one not? If so, should those be separate questions? -->
+
+<!-- Deal with decimals when showing tidy() table of coefficients. -->
+
+<!-- Both a causal effect and a prediction are much fuzzier notions than you might think because their are so many, depending on AGGREGATION. That is, you might ask for the average causal effect, or the average causal effect for men and for women, or for the difference in average causal effect between men and women, or . . . The key point is that all these questions are trivial to answer if you have the Preceptor Table *and* they might require very different approaches given that we don't. This is where the power/flexibility of marginaleffects can come in handy. -->
+
+<!-- Add discussion of easystats::report()? -->
+
+<!-- Should we put the final image at the start of each tutorial, in the Introduction? Might it be interesting or motivating for students? Or a waste of time? -->
+
+<!-- With AI, maybe we should never build code line-by-line, just ask AI. In that case, we don't need the `child_documents/copy_button.Rmd` addition at the top. -->
+
+<!-- What changes should we make if we want to have versions of all tutorials which work in both R and Python? -->
