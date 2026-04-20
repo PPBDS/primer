@@ -46,7 +46,7 @@ Suggests:
 VignetteBuilder: 
     quarto  
 Config/testthat/edition: 3 
-Remotes: 
-    PPBDS/primer.data,
+Remotes:
+    PPBDS/primer.data
 BugReports: https://github.com/PPBDS/primer/issues
 URL: https://github.com/PPBDS/primer, https://ppbds.github.io/primer/tutorials/

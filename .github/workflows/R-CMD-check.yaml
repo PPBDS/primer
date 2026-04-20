@@ -20,11 +20,6 @@ jobs:
     env:
       GITHUB_PAT: ${{ secrets.GITHUB_TOKEN }}
       R_KEEP_PKG_SOURCE: yes
-      FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
-
-    defaults:
-      run:
-        working-directory: primer.tutorials
 
     steps:
       - uses: actions/checkout@v4
@@ -37,18 +32,11 @@ jobs:
         with:
           use-public-rspm: true
 
-      - name: Install system dependencies for V8
-        run: |
-          sudo apt-get update
-          sudo apt-get install -y libnode-dev libv8-dev
-
-      - uses: r-lib/actions/setup-renv@v2
+      - uses: r-lib/actions/setup-r-dependencies@v2
         with:
-          cache-version: 1
           working-directory: primer.tutorials
-
-      - name: Install rcmdcheck
-        run: Rscript -e 'install.packages(c("rcmdcheck"))'
+          extra-packages: any::rcmdcheck
+          needs: check
 
       - uses: r-lib/actions/check-r-package@v2
         with:
