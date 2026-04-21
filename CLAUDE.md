@@ -80,6 +80,8 @@ The exception is when a concept is being introduced for the first time. The Easy
 
 Note that the definition shifts only between Easy and Medium, then stays fixed. That is the typical pattern: a temporary intro framing in Easy, the canonical §11 form from Medium onward, and the discussion deepening continuously across all three.
 
+**Terminology introduction points (sampling mechanism, selection mechanism).** The phrase *sampling mechanism* is first introduced in the middle of the Easy tier and is used from then on in knowledge drops and example answers — every subsequent tutorial can assume the reader has seen it. The phrase *selection mechanism* is first introduced in the middle of the Medium tier and likewise propagates forward. Before writing any given tutorial, check where it sits in the sequence: if it is before the introduction point of one of these phrases, use only the plainer vocabulary; if it is after, use the technical term freely. This staggered introduction is why the two phrases are defined as canonical concepts in §11 but not introduced together.
+
 **Worked example: validity across three levels.**
 
 - **Easy.** Canonical §11 wording from the start. Scope is restricted to the **outcome column** and obvious measurement mismatches. Counter-examples: unit mismatches (cm vs. inches, years vs. months), scale mismatches (1–7 Likert vs. 0–10), timing mismatches (income last year vs. income at treatment time), naming collisions (household income vs. personal income). Remedies: identify, document, and adjust either the Preceptor Table's concept or the question to match what the data actually measures.
@@ -131,6 +133,19 @@ The Easy → Medium transition hands the tool to the student. The Medium → Dif
 - **Difficult.** Introduce the full framework explicitly: the five decisions — **quantity**, **predictor grid**, **aggregation**, **uncertainty**, **test** — and the habit of answering them *deliberately before computing anything*. Introduce the **grid types** (empirical, representative, counterfactual) and have students choose consciously rather than accept defaults. Link to the [Challenge chapter](https://marginaleffects.com/chapters/challenge.html) (why raw coefficients mislead) and the [Framework chapter](https://marginaleffects.com/chapters/framework.html). The Difficult-level frame: *"Define your quantity of interest first, then pick the `marginaleffects` tool that delivers it — don't start from the function and work backward."* Slopes (partial derivatives of prediction with respect to a continuous predictor) are intentionally **not** introduced at any level — the Primer's causal framing is about differences between potential outcomes, not instantaneous rates of change.
 
 The question `marginaleffects` answers — "what is the model saying, on the outcome scale?" — stays fixed across all three levels. What changes is: (Easy → Medium) adding comparisons as a second kind of QoI; (Medium → Difficult) adding deliberate choice across all five framework axes.
+
+**Worked example: Preceptor Table and Population Table footnote sophistication across three levels.** The tables themselves do not change across tiers. Every example tutorial shows the full Preceptor Table and Population Table, with the same column structure, the same `gt` conventions (spanners, alignment, hatching, `"..."` vs. hatch for unobservable potential outcomes, per-row layouts), and the same row counts (Preceptor: 4; Population: 11). What scales is what the **footnotes** say.
+
+- **Easy.** Footnotes include scaffolding for students first encountering these tables:
+  - The title footnote explains what a Preceptor (or Population) Table *is*, not just what question it would answer. E.g., *"A Preceptor Table is the smallest table such that, if every cell were filled with its true value, answering the question 'Does winning a gubernatorial election cause longer life?' would be easy."*
+  - For causal tables, the per-row causal-effect footnote (§10.3) walks through the subtraction explicitly: *"The causal effect for Clayton Williams is 85 − 88 = −3 years. Because the Preceptor Table shows the unobservable truth, this is the true causal effect for him, not an estimate."*
+  - Other footnotes (unit, outcome, treatment, covariates) stay at the plainest level — what each column means, nothing more.
+
+- **Medium.** The scaffolding goes away. The title footnote becomes the canonical §10.3 form — *"If all the information in this table were available, we could answer the question: [Question]."* — with no further explanation of what a Preceptor Table is. The per-row causal-effect footnote is **dropped**; students are expected to read the subtraction off the row themselves. What replaces the scaffolding is **more sophisticated discussion inside the remaining footnotes**: why these specific column values rather than plausible alternatives, what ambiguity in the question forced the author's hand, what measurement issues sit behind the covariates.
+
+- **Difficult.** Footnotes deepen further: subtle unit-definition edge cases, covariate non-overlap between Data and Preceptor rows in the Population Table, validity concerns that span multiple columns at once, representativeness concerns tied to specific rows in the visible table.
+
+**Practical consequence for regeneration.** Authors generating Easy, Medium, and Difficult versions of the same problem copy the same `gt` skeleton — same tibble, same spanners, same alignment, same hatching — and only rewrite the footnote strings. The gt code is stable; the pedagogical work lives in the footnote authoring.
 
 ### 1.4 Build and rebuild strategy
 
@@ -297,6 +312,12 @@ These are part of the framework. Do not reinvent them.
 ### 5.4 Sections and numbering
 
 Each of the six sections opens with `##`. Each exercise opens with `### Exercise N` where `N` restarts at 1 within each section. Each exercise has a chunk label of the form `<section>-<N>` — `introduction-1`, `wisdom-3`, `justice-11`, etc.
+
+### 5.5 Section preambles
+
+The **preamble** of a virtue section is the content between the section header (`## Wisdom`, `## Justice`, `## Temperance`, etc.) and the first `### Exercise N` block. Preambles are prose, knowledge drops, and/or author-rendered output — never student-facing exercises. They orient the student, review work done earlier in the tutorial, or set up what this section will do.
+
+Preamble content is section-specific. The most heavily specified preamble is Temperance (§13.5), which reviews the DGM decided on at the end of Courage using some combination of four canonical ways to describe a model. Preambles for the other virtues (Introduction, Wisdom, Justice, Courage, Summary) are not yet fully specified — see §16 Open items.
 
 ---
 
@@ -481,7 +502,9 @@ There is never a `More` column anywhere in the Preceptor Table.
 - *Outcome footnote*: clarifies what the outcome *concept* means — the ambiguities in the question, not the data. For "wealth", is it personal or family? Does a spouse's wealth count? For "lifespan", age at death from birth or from the election year? When the outcome has a specified scale (a 3–15 integer, a 0–1 probability, etc.), name the scale and its direction (higher = more of what?). In causal tables, this footnote also explains the cross-hatched cells: they mark the unobservable potential outcome for each unit — the one we could never see, because the unit actually experienced the other treatment.
 - *Treatment footnote* (causal only): describes the treatment — what counts as "received" vs. "not received", what the possible values are, and whether edge cases (contributions via Super PACs, indirect exposure on the next platform over, etc.) count. The defining concept of the treatment lives here.
 - *Covariate(s) footnote* (when the spanner is present): clarifies the concept and values of each non-treatment covariate, plus any operational choices (e.g., *"Independents are treated here as their own category rather than folded into the party they caucus with"*). When a covariate is in the table because the question asks about effect heterogeneity, say so (*"shown because the question asks whether the connection varies across hometowns"*). With many covariates, discuss the ones whose definitions are most ambiguous and let the rest speak for themselves.
-- *Per-row causal-effect footnote* (causal only): attached to the unit-column cell of the second non-missing row (by default row 2 under the 1/2/blank/4 layout). The footnote shows the arithmetic of the difference between the two potential outcomes for that unit — e.g., *"the causal effect for Elizabeth Warren is 12.02 − 12.00 = 0.02 million USD"* — and emphasizes that because the Preceptor Table shows the unobservable truth, this is the true causal effect for that unit, not an estimate.
+- *Per-row causal-effect footnote* (causal only, **Easy tier only — dropped in Medium and Difficult**, see §1.3 *Worked example: Preceptor Table and Population Table footnote sophistication*): attached to the unit-column cell of the second non-missing row (by default row 2 under the 1/2/blank/4 layout). The footnote shows the arithmetic of the difference between the two potential outcomes for that unit — e.g., *"the causal effect for Elizabeth Warren is 12.02 − 12.00 = 0.02 million USD"* — and emphasizes that because the Preceptor Table shows the unobservable truth, this is the true causal effect for that unit, not an estimate.
+
+**Tier-dependent footnote content.** The Preceptor Table structure is identical across Easy / Medium / Difficult, but footnote wording scales. At Easy, the title footnote additionally explains *what* a Preceptor Table is (not just what question it would answer), and the per-row causal-effect footnote above is mandatory. At Medium and Difficult, both Easy scaffolding moves are dropped; the remaining footnotes instead carry more sophisticated discussion (why these column values, what ambiguity the author resolved, what subtleties sit behind the covariates). See §1.3 *Worked example: Preceptor Table and Population Table footnote sophistication across three levels* for details.
 
 **Hatch convention (causal only).** The cell for each unit's unobservable potential outcome is rendered with a transparent diagonal cross-hatch. The hatch signals "this value exists and is filled in with the truth, but we could never observe it." Solid shading alone doesn't convey the *unobservable* part — the hatch makes the missing-from-reality status visible. In `gt`, define a small helper and apply it via `gt::text_transform()`:
 
@@ -679,7 +702,7 @@ The two marks differ because the underlying claims differ: Data `"..."` means "w
 - *Outcome footnote*: documents the measurement of the outcome in the data, any rescaling to match the Preceptor Table's scale, and explains the `"..."` (Data rows) vs. hatch (Preceptor rows) convention for unobservable potential outcomes. For causal models, connects to validity.
 - *Treatment footnote* (causal only): describes how the treatment was realized in the Data rows (a randomized experiment, an observational measure, etc.) and what the treatment means in the Preceptor rows. If the two treatment operationalizations differ — and they usually do — say so; this is a validity and unconfoundedness issue.
 - *Covariate(s) footnote* (when the spanner is present): documents the covariate data sources, any measurement differences between Data and Preceptor rows, and any non-overlap between the values seen in Data vs. Preceptor rows.
-- *Per-row causal-effect footnote* (causal only, carries over from the Preceptor Table). Attached to the same Preceptor unit as in the Preceptor Table — by default, the second non-missing Preceptor row. Because Preceptor rows show the unobservable truth with both potential outcomes filled in, the arithmetic still works. The row number changes: in the Preceptor Table the footnote sat on row 2; in the Population Table it typically sits on row 8.
+- *Per-row causal-effect footnote* (causal only, **Easy tier only — dropped in Medium and Difficult**, carries over from the Preceptor Table; see §1.3 *Worked example: Preceptor Table and Population Table footnote sophistication*). Attached to the same Preceptor unit as in the Preceptor Table — by default, the second non-missing Preceptor row. Because Preceptor rows show the unobservable truth with both potential outcomes filled in, the arithmetic still works. The row number changes: in the Preceptor Table the footnote sat on row 2; in the Population Table it typically sits on row 8.
 
 **Causal template.** Using a flat 11-row `tribble()` keeps the visual layout aligned with the rendered table row for row.
 
@@ -1360,9 +1383,10 @@ Opens with a substantive framing paragraph (see §14.6).
   - Multinomial → multinomial logistic (three-outcome form in template)
   - Ordinal → cumulative logistic (three-outcome form in template)
 
-**Exercise 15.** [per-tutorial, written-without-answer] LaTeX for the model.
-- Prompt: *Use AI to come up with a LaTeX representation of the mathematical structure of the model, with $Y$ as the dependent variable and $X_1, X_2, \ldots$ as independent variables. This version has no parameter values since we haven't estimated them. Confirm the LaTeX works by placing it in your QMD and rendering. Paste that LaTeX below.*
-- End: *Our answer:* followed by a nice LaTeX display (normal/Bernoulli/multinomial/cumulative as appropriate), then the source LaTeX inside a 4-backtick block. Closing knowledge drop: *We use generic variables — $Y$, $X_1$, and so on — because our purpose is to describe the general mathematical structure of the model, independent of the specific variables we will eventually use. Having decided on the basic mathematical structure, we now turn toward estimating the model.*
+**Exercise 15.** [author-shown block, Easy tier only; omit in Medium and Difficult] Mathematical structure of the model.
+- No student-facing prompt. Instead, render the abstract LaTeX form for the chosen functional family (normal / Bernoulli / multinomial / cumulative — pull the block from §13.7) directly in the tutorial flow at this position.
+- Accompany with the knowledge drop: *We use generic variables — $Y$, $X_1$, and so on — because our purpose is to describe the general mathematical structure of the model, independent of the specific variables we will eventually use. Having decided on the basic mathematical structure, we now turn toward estimating the model.*
+- In Medium and Difficult tutorials, drop this block entirely (see §13.5 Temperance preamble, "Fifth form — abstract mathematical structure (Easy only)").
 
 **Exercise 16.** [per-tutorial, written-with-answer] Add a weakness sentence to the summary.
 - Prompt: *Write one sentence highlighting a potential weakness in your model. Derive it from possible problems with the assumptions above. We will add this to our summary paragraph. So far our version of the summary paragraph looks like this:* (paste our first two sentences). *Your version will be somewhat different.*
@@ -1422,9 +1446,10 @@ Opens with a substantive framing paragraph (see §14.6).
 - Prompt: *In the Console, run `check_predictions(extract_fit_engine(fit_<n>))`. CP/CR.*
 - End: the `check_predictions()` knowledge drop (§12.4). Add a sentence noting whether the simulated data looks like the actual data for this problem.
 
-**Exercise 11.** [per-tutorial, written-without-answer] LaTeX for the fitted model.
-- Prompt: *Ask AI to create LaTeX for this model, including variable names and estimates for all coefficients. Since this is a fitted model, the dependent variable has a hat and no error term. Add the code to your QMD, `Cmd/Ctrl + Shift + K`, check the formatting (no absurd decimals), and paste the LaTeX below.*
-- End: *Our formula looks like:* <LaTeX>. *It was created with:* <backticked source>. Then the hat-and-error-term knowledge drop (§12.4), followed by: *This is our data generating mechanism.* Then the DGM-being-a-formula knowledge drop (§12.4).
+**Exercise 11.** [author-shown block in Easy and Medium; optional student exercise in Difficult tutorials with simple models only] Concrete LaTeX DGM.
+- **Default (Easy, Medium, and Difficult tutorials with many parameters):** author-shipped. Render the fitted model in LaTeX with variable names and estimated coefficients substituted in — the concrete DGM. Include the hat-and-error-term knowledge drop (§12.4) followed by: *This is our data generating mechanism.* Then the DGM-being-a-formula knowledge drop (§12.4).
+- **Difficult tutorials with simple models** (few coefficients, no many-level categoricals) may optionally include a student-produced version: the student prompts AI for the LaTeX and pastes it into their QMD. Even here, the heavy lifting is AI; the student is checking and pasting, not deriving.
+- The concrete LaTeX DGM is also referenced in the §13.5 Temperance preamble as the fourth way to describe a model.
 
 **Exercise 12.** [operational] Cache the fit in the QMD.
 - Prompt: *Create a new code chunk in your QMD. Add the chunk option `#| cache: true`. Copy/paste the R code for the final model into the chunk, assigning the result to `fit_<n>`. (This includes `fit()` but not `tidy()`.) Place your cursor on the `fit_<n>` line and use `Cmd/Ctrl + Enter`. (This is technically unnecessary since we already have `fit_<n>` in the workspace, but ensuring everything in the QMD is also in the Console is good habit.) `Cmd/Ctrl + Shift + K`. Rendering may be slow the first time but cached thereafter. At the Console, run `tutorial.helpers::show_file("XX.qmd", chunk = "Last")`. CP/CR.*
@@ -1451,7 +1476,22 @@ Opens with a substantive framing paragraph (see §14.6).
 
 Opens with a substantive framing paragraph (see §14.6).
 
-**Link to the `marginaleffects` book.** Immediately after the `## Temperance` header in every tutorial, include a line linking [**Model to Meaning**](https://marginaleffects.com/). The specific chapter linked depends on the tutorial's sophistication tier — see §1.3 *Worked example: using the fitted model to answer questions (`marginaleffects`) across three levels*. Easy-tier tutorials link the Predictions chapter; Medium adds Comparisons; Difficult adds Challenge and Framework.
+**Preamble (between `## Temperance` header and Exercise 1).** The Temperance preamble is a transition — a review of the DGM decided on at the end of Courage, before we use it. Contents, in order:
+
+1. The framing paragraph (§14.6).
+2. A link to [**Model to Meaning**](https://marginaleffects.com/) — pick the chapter matching the tutorial's tier per §1.3 (Easy: Predictions; Medium adds Comparisons; Difficult adds Challenge and Framework).
+3. A review of the DGM using some subset of the four canonical ways to describe a model (below), plus — in Easy tutorials only — a fifth form (the abstract mathematical structure).
+
+**Four ways to describe a model.** Most Temperance preambles combine some subset of these four:
+
+1. **Words.** *"We describe [outcome] as a [functional form] of [covariates]."* This is the same sentence added to the summary paragraph in §13.4 Exercise 16 and the canonical answer to the Courage model-structure question. Reuse verbatim — do not rewrite.
+2. **R code.** The fitting call itself — e.g. `linear_reg(engine = "lm") |> fit(att_end ~ treatment, data = trains)` → `fit_att`. Rendered as a code block; not re-run in the preamble.
+3. **Parameter table.** The estimated parameter values. *Easy:* rough `tidy(fit_<n>, conf.int = TRUE)` output. *Medium:* nicer table via `knitr::kable()`, `gt`, or equivalent. *Difficult:* close to publication quality. The Primer does not teach students to build these tables in Easy or Medium — the author ships them. In Difficult tutorials with few parameters, a student exercise using AI to produce the table is possible; in Difficult tutorials with many covariates or many-level categoricals, the table is too complex to hand to a student, and the author ships it.
+4. **Concrete LaTeX DGM.** The fitted model in LaTeX with variable names and estimated coefficients substituted in — the "true" DGM. Never asked of students in Easy or Medium. Possibly asked (via AI) in Difficult tutorials with simple models; author-shipped otherwise.
+
+**Fifth form — abstract mathematical structure (Easy only).** In Easy-tier tutorials, the preamble also shows the abstract LaTeX form using $Y$, $X_1$, $X_2$, $\beta_0$, $\beta_1$, … (pull the block from §13.7). This is pedagogical scaffolding — meant to slow students down when they first choose a functional family. It is **dropped entirely from the middle of Medium onward** because by then the structure is familiar and no longer adds information.
+
+**We do not ask students to write LaTeX themselves.** The previous curriculum had exercises (old §13.3 Exercise 15, old §13.4 Exercise 11) asking students to prompt AI for LaTeX and paste it in. Those student-facing exercises are removed; the LaTeX is now shown to students, not produced by them. A small number of Difficult tutorials with simple models may keep a student-produced LaTeX exercise, but the heavy lifting is AI — the student is checking and pasting, not deriving.
 
 **Parameter-interpretation approach (Exercises 2–4).** Start by showing the fitted DGM's parameter values and attempting to interpret them. This is relatively straightforward for simple linear models; harder for non-linear models and interaction terms; and essentially degenerate for models with no interpretable parameters (random forest, gradient boosting). Attempt the interpretation anyway when models are hard, if only to highlight how the linear-model intuition fails. When parameters genuinely aren't interpretable, keep one exercise whose purpose is to make sure the student understands *why* they aren't. Then move on: comparisons, predictions, and a final plot.
 
@@ -1644,7 +1684,19 @@ Each virtue section opens with a substantive framing paragraph — **not** a quo
 
 (Knowledge-drop quotes used inside exercises — e.g., Tukey, Engerman, the Rumsfeld-style aphorisms — are kept in §12 and remain part of the tutorial toolkit. This section is only about section-opening quotes, which we have dropped.)
 
-### 14.7 When to skip exercises
+### 14.7 Keep control of the question and the model
+
+Even when an exercise asks the student to propose a question or a model, the tutorial always closes that exercise with *our* canonical answer, and the student uses our answer for the rest of the tutorial. Subsequent exercises — Preceptor Tables, Population Tables, the fitted model, parameter interpretation, summary paragraph — depend on everyone being anchored to the same question and the same model. If each student drifted to their own version, later exercises would lose their scaffolding and knowledge drops downstream would stop making sense.
+
+The pattern:
+
+1. A written-without-answer exercise (§7.3) lets the student propose freely.
+2. A follow-up written-with-answer exercise (§7.2) displays our canonical version in the `message =` field.
+3. Explicit closing language: *"This is the question (or model) we will use going forward."*
+
+This is not a progression — it applies at every level (Easy / Medium / Difficult). What varies across levels is the sophistication of the proposal exercise, not whether the tutorial ultimately anchors the proposal to our canonical answer.
+
+### 14.8 When to skip exercises
 
 Predictive tutorials skip the unconfoundedness exercises (Justice 11 and 12). Models with no interpretable parameters (random forests, neural nets) skip the parameter-interpretation exercises (Temperance 2–4) — replace with a single exercise that ensures the student understands the parameters aren't directly interpretable.
 
@@ -1674,6 +1726,8 @@ The tutorial setup chunk (§5.2) loads the full package stack. For chapters, set
 ## 16. Open items
 
 Things flagged but not yet resolved. Revisit when relevant.
+
+- **Preambles for the non-Temperance virtue sections.** §5.5 defines the "preamble" as the content between a virtue section header and its first exercise. §13.5 fully specifies the Temperance preamble (transition + `marginaleffects` book link + four ways to describe the model + Easy-only abstract mathematical structure). The preambles for Introduction, Wisdom, Justice, Courage, and Summary are not yet specified — decide what each should always contain and add the specification to the corresponding §13.x subsection.
 
 - **Curriculum learning goals — explicit specification.** Write down, in CLAUDE.md, what students should understand after completing all 14 tutorials. We need these goals explicit because the Easy / Medium / Difficult progressions (§1.3) are supposed to *build toward* them, and we cannot calibrate the progressions without knowing the targets. Candidate home: a new §1.4 or its own top-level section. Aim for 10–20 concrete things a student should be able to do, explain, or notice by the end of Tutorial 14. Current worked examples in §1.3 (representativeness, validity, stability, unconfoundedness, model checking) implicitly define a handful of these goals — enumerate them all.
 
