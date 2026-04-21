@@ -26,7 +26,7 @@ A data science project has three potential artifacts:
 
 **Miscellaneous** chapters/tutorials cover topics that do not involve a major data science exercise. The current five are Probability, Sampling, Rubin Causal Model, Cardinal Virtues, and Mechanics.
 
-The target curriculum is **20 chapter/tutorial pairs total**: the 5 miscellaneous above and 15 example chapters. The chapter sequence in §15 grows toward this target.
+The target curriculum is **20 chapter/tutorial pairs total**: the 5 miscellaneous above and 15 example chapters. The chapter sequence in §17 grows toward this target.
 
 ### 1.2 Chapter ≠ tutorial
 
@@ -101,7 +101,7 @@ The authoring of a chapter/tutorial pair is a conversation. Do not try to produc
 3. **David picks.** Iterate on the dataset, the unit, the outcome, the treatment (if causal), and a short list of covariates. The same choices govern both the primary and the paired question.
 4. **Claude drafts both Preceptor Tables and both Population Tables** as `gt` code — primary question first, paired question second. David reviews and corrects.
 5. **Claude drafts the chapter Wisdom section**, then the tutorial Wisdom section. David reviews. Repeat by virtue: Justice, Courage, Temperance.
-6. **Claude checks spaced-repetition coverage** against the tutorial index in §15 and adjusts which recurring questions this tutorial asks.
+6. **Claude checks spaced-repetition coverage** against the per-tutorial specifications in §17 and adjusts which recurring questions this tutorial asks.
 
 This protocol is a default; deviate when it makes sense. Where a decision is small and reversible (phrasing of a knowledge drop, which concrete example to use in an exercise), just make it. Where a decision shapes the rest of the chapter (dataset, QoI, functional form), pause and ask.
 
@@ -339,7 +339,7 @@ We believe spaced repetition works, and we care more about repetition than preci
 
 Spaced repetition pairs with progressive sophistication (§1.3): when a recurring concept reappears, it should appear at the next sophistication level — not as the same question restated.
 
-Before writing a tutorial, read §15 to see which recurring questions are due this tutorial.
+Before writing a tutorial, read §17 for the problem specification (dataset, question, model, tables) and apply §8's spaced-repetition judgment.
 
 ---
 
@@ -1574,36 +1574,7 @@ Operational exercises can be abbreviated in later tutorials once students have d
 
 ---
 
-## 15. Curriculum and tutorial index
-
-This section is a registry. It tracks what chapters exist, what datasets they use, and which recurring questions each tutorial has asked. It is how we execute spaced repetition in §8.
-
-**Status: not yet populated.** Before writing a new tutorial, David and Claude should fill in the rows for existing tutorials so that Claude knows what has and has not been asked recently.
-
-Chapter and tutorial numbers share a single two-digit convention (01, 02, …). Tutorial directories are named `NN-topic-name` (e.g. `01-probability`, `05-cardinal-virtues`, `14-stops`) — same NN as the chapter.
-
-| Chapter | Type | Topic | Dataset | Model (tutorial) | Canonical exercises used |
-|--------:|------|-------|---------|------------------|--------------------------|
-| 01 | misc | Probability | — | — | TBD |
-| 02 | misc | Sampling | — | — | TBD |
-| 03 | misc | Rubin Causal Model | — | — | TBD |
-| 04 | misc | Mechanics | — | — | TBD |
-| 05 | misc | Cardinal Virtues | — | — | TBD |
-| 06 | example | Models | YouGov poll (constructed) | `logistic_reg`, `biden ~ 1` | TBD |
-| 07 | example | Two Parameters | NHANES (`primer.data`) | `linear_reg`, `height ~ sex` | TBD |
-| 08 | example | Three Parameters: Causal | `trains` (Enos 2014) | `linear_reg`, `att_end ~ treatment` | TBD |
-| 09 | example | Four Parameters: Categorical | NES 1992 (`primer.data`) | `multinom_reg`, `pres_vote ~ sex` | TBD |
-| 10 | example | Five Parameters | `governors` (`primer.data`) | `linear_reg`, `lived_after ~ election_age*sex` | TBD |
-| 11 | example | N Parameters | `shaming` (GGL 2008) | `logistic_reg`, `voted ~ age + sex + treatment*voter_class` | TBD |
-| 12 | example | Cumulative | `ces` 2020 (`primer.data`) | `polr`, `approval ~ ideology + education` | TBD |
-| 13 | example | Ordered Factors | `colleges` (`primer.data`) | `linear_reg`, `grad_rate ~ tuition + selectivity` | TBD |
-| 14 | example | Stops | `stops` (Open Policing) | `linear_reg`, `arrested ~ sex + race*zone` | TBD |
-
-The "Canonical exercises used" column is the key one for spaced repetition (§8). It tracks which §13 canonical exercises each tutorial actually included, so future tutorials can space them out. This column needs to be populated by reading each tutorial's exercise list against §13 — pending work.
-
----
-
-## 16. R tooling
+## 15. R tooling
 
 The tutorial setup chunk (§5.2) loads the full package stack. For chapters, setup is simpler: load the packages, fit the model, move on.
 
@@ -1622,15 +1593,213 @@ The tutorial setup chunk (§5.2) loads the full package stack. For chapters, set
 
 ---
 
-## 17. Open items
+## 16. Open items
 
 Things flagged but not yet resolved. Revisit when relevant.
 
 - **Justice exercises for sampling and selection mechanism.** §11 now defines assignment, sampling, and selection mechanism as canonical concepts, and §12.3 has disambiguation knowledge drops. Still pending: adding explicit Justice exercises to the §13.3 master exercise list that ask students to name the sampling mechanism and the selection mechanism for the problem at hand, alongside the existing representativeness/stability/validity/unconfoundedness exercises.
-- **Functional form guidance** for Courage — the rule of thumb is continuous outcome → linear, binary → logistic, multi-category unordered → multinomial logistic, multi-category ordered → cumulative logistic. Full LaTeX forms are in the template; migrate into §13.3 Exercise 13–15 when writing the first chapter that uses each.
 - **Posterior predictive checks** — the `check_predictions()` flow in §13.4 Exercise 10 currently just checks and continues. Codify when to accept the DGM vs. when to go back and fit a new model, once a chapter actually does the latter.
-- **Knowledge-drop splitting** — many template knowledge drops were one paragraph combining a universal truth with a problem-specific example (see §14.1). As we write new tutorials we should split them: universal truth to §12, problem-specific to the tutorial. A few of these splits are still pending.
+- **Knowledge-drop splitting** — as we write new tutorials, remember to split universal-truth drops from problem-specific examples (see §14.1). Universal truth goes into §12; the problem-specific part stays in the tutorial.
 - **Non-hypothesis-testing language** — the Courage section says no hypothesis tests, but we haven't codified what replaces a "p < 0.05" phrasing when reporting a coefficient's sign. Likely: "the confidence interval excludes zero" — but there should be a knowledge drop that handles this recurring moment.
 - **The DGM randomness detail** — we defer discussion of the randomness in the DGM in Courage Exercise 11's knowledge drop. Decide in which tutorial this gets unwrapped.
 - **AI tool article absorption** — `https://ppbds.github.io/tutorial.helpers/articles/ai.html` may have more AI-workflow specifics than §9 currently captures. Worth re-reading and absorbing the next time we touch §9.
-- **Curriculum registry (§15) — exercise tracking** — the rows are populated, but the "Canonical exercises used" column is still TBD. Fill it by reading each tutorial against §13 so spaced repetition has data to draw on.
+
+---
+
+## 17. Per-tutorial problem specifications
+
+Key parameters for each of the 14 numbered tutorials in the `primer.tutorials` package. Use these entries to orient new authoring sessions: the dataset, the primary question, the model to fit, and the Preceptor Table and Population Table column structure. Tutorials marked **miscellaneous** have no full data-science exercise (no Preceptor Table, no model fit). All others are **example** tutorials.
+
+Preceptor Table and Population Table columns are listed by spanner in order. Population Tables always have a leading `Source` column (not under any spanner) and a `Unit/Time` spanner with two columns. Preceptor Tables have no Time column — time is implicit. Causal models have a `Treatment` spanner separate from `Covariate(s)`. Potential outcome columns are named "Outcome if [treatment value]".
+
+---
+
+### 01 — Probability
+
+- **Type:** miscellaneous
+
+---
+
+### 02 — Sampling
+
+- **Type:** miscellaneous
+
+---
+
+### 03 — Rubin Causal Model
+
+- **Type:** miscellaneous
+
+---
+
+### 04 — Mechanics
+
+- **Type:** miscellaneous
+
+---
+
+### 05 — Cardinal Virtues
+
+- **Type:** miscellaneous
+
+---
+
+### 06 — Models
+
+- **Type:** example
+- **"Imagine":** You are the chair of the Democratic National Committee in early 2024 deciding where to devote time and money.
+- **Dataset:** YouGov poll, 1,559 U.S. adult citizens, March 2024 (constructed inline as a tibble)
+- **Outcome:** `biden` — binary support for Biden (Yes/No)
+- **Treatment / Key covariate:** none (intercept-only model)
+- **Question (QoI):** What proportion of all votes will be cast for Joe Biden in the 2024 election?
+- **Model:** Logistic regression, intercept-only
+- **Causal / Predictive:** Predictive
+- **Student project:** `biden`
+- **Data prep:** `tibble(biden = as.factor(c(rep("Yes", 655), rep("No", 904)))) |> slice_sample(prop = 1)` → `poll_data`
+- **Final model:** `logistic_reg() |> fit(biden ~ 1, data = poll_data)` → `fit_biden`
+- **Preceptor Table:** Unit (Voter) | Outcome (Biden Support)
+- **Population Table:** Source | Unit/Time (Voter, Year) | Outcome (Biden Support)
+
+---
+
+### 07 — Two Parameters
+
+- **Type:** example
+- **"Imagine":** You are in charge of ordering uniforms for next year's Marine Corps bootcamp recruits.
+- **Dataset:** NHANES (`primer.data`)
+- **Outcome:** `height` (continuous, cm)
+- **Treatment / Key covariate:** `sex` (Male/Female)
+- **Question (QoI):** What is the average height of male and female USMC recruits?
+- **Model:** Linear regression, one categorical predictor
+- **Causal / Predictive:** Predictive
+- **Student project:** `height`
+- **Data prep:** `nhanes |> filter(age >= 18 & age <= 27) |> select(height, sex) |> drop_na() |> slice_sample(n = 50)` → `x`
+- **Final model:** `linear_reg() |> set_engine("lm") |> fit(height ~ sex, data = x)` → `fit_height`
+- **Preceptor Table:** Unit (Young Adult) | Outcome (Height cm) | Covariate (Sex)
+- **Population Table:** Source | Unit/Time (Young Adult, Year) | Outcome (Height cm) | Covariate (Sex)
+
+---
+
+### 08 — Three Parameters: Causal
+
+- **Type:** example
+- **"Imagine":** You are a campaign manager for a Republican congressional candidate in Georgia who wants to increase anti-immigration sentiment among voters.
+- **Dataset:** `trains` (Enos 2014), Boston commuters, 2012 (`primer.data`)
+- **Outcome:** `att_end` — immigration attitude after experiment (integer, 3–15)
+- **Treatment / Key covariate:** `treatment` — exposure to Spanish-speakers on train platform (randomized)
+- **Question (QoI):** What is the average causal effect of exposure to Spanish-speakers on attitudes toward immigration?
+- **Model:** Linear regression, randomized experiment
+- **Causal / Predictive:** Causal
+- **Student project:** `immigration`
+- **Data prep:** none — uses `trains` directly
+- **Final model:** `linear_reg(engine = "lm") |> fit(att_end ~ treatment, data = trains)` → `fit_att`
+- **Preceptor Table:** Unit (Person) | Potential Outcomes (Attitude if Exposed, Attitude if Not Exposed) | Treatment (Spanish Exposure)
+- **Population Table:** Source | Unit/Time (Person, Year) | Potential Outcomes (Attitude if Exposed, Attitude if Not Exposed) | Treatment (Spanish Exposure)
+
+---
+
+### 09 — Four Parameters: Categorical
+
+- **Type:** example
+- **"Imagine":** You are a political scientist studying the 1992 presidential election, curious whether men and women differed in their support for Clinton, Bush, and Perot. There are many decisions to make.
+- **Dataset:** NES (`primer.data`), 1992 presidential election
+- **Outcome:** `pres_vote` — vote choice (Clinton / Bush / Perot)
+- **Treatment / Key covariate:** `sex` (Male/Female)
+- **Question (QoI):** What was the difference in voting preference of men and women in the 1992 US Presidential election?
+- **Model:** Multinomial logistic regression
+- **Causal / Predictive:** Predictive
+- **Student project:** `election-1992`
+- **Data prep:** `nes |> filter(year == 1992) |> select(sex, pres_vote) |> drop_na() |> mutate(pres_vote = as.factor(case_when(pres_vote == "Democrat" ~ "Clinton", pres_vote == "Republican" ~ "Bush", pres_vote == "Third Party" ~ "Perot")))` → `nes_92`
+- **Final model:** `multinom_reg(engine = "nnet") |> fit(pres_vote ~ sex, data = nes_92)` → `fit_nes`
+- **Preceptor Table:** Unit (Voter) | Outcome (Vote) | Covariate (Sex)
+- **Population Table:** Source | Unit/Time (Voter, Year) | Outcome (Vote) | Covariate (Sex)
+
+---
+
+### 10 — Five Parameters
+
+- **Type:** example
+- **"Imagine":** You are considering a run for governor and wonder how long you are likely to live afterward.
+- **Dataset:** `governors` (Barfort et al. 2020) (`primer.data`)
+- **Outcome:** `lived_after` — years lived after election (continuous)
+- **Treatment / Key covariate:** `election_age`, `sex` (with interaction)
+- **Question (QoI):** How many years do gubernatorial candidates live after their election, and how does that vary by age and sex?
+- **Model:** Linear regression with interaction term (`election_age * sex`)
+- **Causal / Predictive:** Predictive
+- **Student project:** `life-expectancy`
+- **Data prep:** `governors |> filter(year > 1945) |> select(last_name, year, state, sex, lived_after, election_age, region)` → `x`
+- **Final model:** `linear_reg(engine = "lm") |> fit(lived_after ~ election_age*sex, data = x)` → `fit_years`
+- **Preceptor Table:** Unit (Candidate) | Outcome (Years Lived After) | Covariates (Age at Election, Sex)
+- **Population Table:** Source | Unit/Time (Candidate, Year) | Outcome (Years Lived After) | Covariates (Age at Election, Sex)
+
+---
+
+### 11 — N Parameters
+
+- **Type:** example
+- **"Imagine":** You are running for Governor of Texas and must decide how to allocate campaign resources.
+- **Dataset:** `shaming` (Gerber, Green, Larimer 2008) (`primer.data`)
+- **Outcome:** `primary_06` — voted in 2006 primary (binary)
+- **Treatment / Key covariate:** `treatment` — social-pressure mailing type (randomized)
+- **Question (QoI):** What is the causal effect of social-pressure postcards on voter turnout?
+- **Model:** Logistic regression with interaction (`treatment * voter_class`)
+- **Causal / Predictive:** Causal
+- **Student project:** `postcards`
+- **Data prep:** `shaming |> mutate(civ_engage = primary_00 + primary_02 + primary_04 + general_00 + general_02 + general_04) |> select(primary_06, treatment, sex, age, civ_engage) |> mutate(voter_class = factor(case_when(civ_engage %in% c(5, 6) ~ "Always Vote", civ_engage %in% c(3, 4) ~ "Sometimes Vote", civ_engage %in% c(1, 2) ~ "Rarely Vote"), levels = c("Rarely Vote", "Sometimes Vote", "Always Vote"))) |> mutate(voted = as.factor(primary_06))` → `x`
+- **Final model:** `logistic_reg(engine = "glm") |> fit(voted ~ age + sex + treatment*voter_class, data = x)` → `fit_vote`
+- **Preceptor Table:** Unit (Voter) | Potential Outcomes (Voted if Postcard, Voted if No Postcard) | Treatment (Mailing Type)
+- **Population Table:** Source | Unit/Time (Voter, Year) | Potential Outcomes (Voted if Postcard, Voted if No Postcard) | Treatment (Mailing Type)
+
+---
+
+### 12 — Cumulative
+
+- **Type:** example
+- **"Imagine":** You are a pollster preparing for an upcoming election, exploring 2020 Trump approval patterns across ideology and education levels.
+- **Dataset:** `ces` (Cooperative Election Study) (`primer.data`), 2020
+- **Outcome:** `approval` — presidential approval (ordinal, 5 categories)
+- **Treatment / Key covariate:** `ideology` (Very Liberal … Very Conservative)
+- **Question (QoI):** What is the average difference in Trump approval between Very Liberal and Very Conservative voters?
+- **Model:** Ordinal logistic regression (`MASS::polr`)
+- **Causal / Predictive:** Predictive
+- **Student project:** `approval`
+- **Data prep:** `ces |> filter(year == 2020) |> select(approval, ideology, education) |> drop_na() |> filter(!ideology %in% "Not Sure") |> mutate(ideology = fct_drop(ideology))` → `x`
+- **Final model:** `polr(approval ~ ideology + education, data = x)` → `fit_approval`
+- **Preceptor Table:** Unit (Respondent) | Outcome (Presidential Approval) | Covariate (Political Ideology)
+- **Population Table:** Source | Unit/Time (Respondent, Year) | Outcome (Presidential Approval) | Covariate (Political Ideology)
+
+---
+
+### 13 — Ordered Factors
+
+- **Type:** example
+- **"Imagine":** You are a data scientist at a non-profit helping students find the best college.
+- **Dataset:** `colleges` (`primer.data`), ~900 U.S. colleges/universities (DOE IPEDS 2013)
+- **Outcome:** `grad_rate` — graduation rate (continuous, 0–1)
+- **Treatment / Key covariate:** `tuition` (continuous)
+- **Question (QoI):** What effect does the tuition of a college have on its graduation rate?
+- **Model:** Linear regression with ordinal categorical predictor
+- **Causal / Predictive:** Predictive
+- **Student project:** `ordered`
+- **Data prep:** `colleges |> select(tuition, grad_rate, selectivity) |> filter(tuition > 2)` → `x`
+- **Final model:** `linear_reg() |> set_engine("lm") |> fit(grad_rate ~ tuition + selectivity, data = x)` → `fit_colleges`
+- **Preceptor Table:** Unit (College) | Outcome (Graduation Rate) | Covariate (Tuition)
+- **Population Table:** Source | Unit/Time (College, Year) | Outcome (Graduation Rate) | Covariate (Tuition)
+
+---
+
+### 14 — Stops
+
+- **Type:** example
+- **"Imagine":** You are a member of your city's police department who wants to ensure race doesn't unfairly affect arrest chances during traffic stops.
+- **Dataset:** `stops` (Open Policing Project) (`primer.data`), New Orleans, July 2011–July 2018
+- **Outcome:** `arrested` — arrest during stop (binary)
+- **Treatment / Key covariate:** `race` (Black/White), `sex`, `zone`
+- **Question (QoI):** What is the difference in arrest rate between Black and White drivers, adjusting for sex and zone?
+- **Model:** Linear regression (`arrested ~ sex + race*zone`); logistic regression also demonstrated
+- **Causal / Predictive:** Predictive
+- **Student project:** `stops`
+- **Data prep:** `stops |> filter(race %in% c("black", "white")) |> mutate(race = str_to_title(race), sex = str_to_title(sex))` → `x`
+- **Final model:** `linear_reg() |> set_engine("lm") |> fit(arrested ~ sex + race*zone, data = x)` → `fit_stops`
+- **Preceptor Table:** Unit (Traffic Stop) | Outcome (Arrested) | Covariates (Race, Sex, Zone)
+- **Population Table:** Source | Unit/Time (Traffic Stop, Year) | Outcome (Arrested) | Covariates (Race, Sex, Zone)

@@ -127,18 +127,6 @@ Replace r, cache = TRUE with #| cache: true.
 Figure which packages are needed and when we introduce them. All at the start? Or add the modeling ones at the start of Courage.
 
 
-## Plan
-
-Given that the course is two weeks away, we need to start to make some choices. Here is my current thinking:
-
-The RCM and probability chapters are good. But the associated tutorials need to be cleaned up.
-
-The sampling and models chapters are OK. But the tutorials don't really exist. These four chapters combined are week 5 of the course. You can make a model and use it to answer questions.
-
-two-parameters and then two three-parameter chapters, along with mechanics, make for a good week 6. Maybe also a time series?
-
-Week 7, we move to tidymodels.
-
 
 
 ### Which Modeling Package Should We Use?
@@ -175,11 +163,8 @@ We need a new structure to the entire book, sadly. The Probability and Rubin Cau
 
 ## Quotes
 
-Ought to have a cool new quote about the virtues, starting off each section in each chapter. Here is one for Temperance, or Wisdom.
-
 Always use variable names, rather than y's and x's, in the math formulas.
 
-Get rid of graphs of parameters. Only confusing! Always use posterior_epred() and posterior_predict().
 
 Different questions lead to different variables in the Preceptor Table, even for cases in which the outcome is the same.
 
@@ -188,10 +173,6 @@ In every realistic data science problem, the Preceptor Table and the data are no
 Need a table which shows all 4 (?) languages for describing a model together: English, math, code, output.
 
 One of the key jobs of a data scientist is to guide people --- our colleagues, bosses and clients --- toward asking precise questions. We must help them to translate English into inference. That translation requires precision. 
-
-
-I am really annoyed by the default number of columns in the displayed code block in Quarto. Look at what happens in Chapter 3, for example. The code comments, all of which are fewer than 80 characters per line (I assume) look great in the qmd file. But, when rendered, they don't fit in a line and so need to be split into two lines in a very ugly and unreadable fashion. How many columns are displayed by default, and how can we cause that number to be the default wide in qmd documents so that comment lines can be wrapped automatically with CNTRL-Shift-/?
-
 
 Think more about whether not "mechanism" discussion could unify our discussion of potential problems. What is the sampling mechanism, the assignment mechanism and the missing data mechanism? Representativeness is about the sampling mechanism. Unconfoundedness is about the assignment mechanism. Hmmm. If your sampling mechanism creates a correlation between your outcome variable and other stuff, then you may have a problem.
 
