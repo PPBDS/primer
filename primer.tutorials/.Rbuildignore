@@ -8,7 +8,7 @@
 ^inst/tutorials/[^/]+/.+\.html$
 ^inst/tutorials/[^/]+/.+_files$
 .*_cache$
-^TODO.*\.txt$
+^TODO-tutorials\.txt$
 ^primer\.tutorials\.Rproj$
 ^\.Rproj\.user$
 ^\.Rprofile$

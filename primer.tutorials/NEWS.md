@@ -1,5 +1,15 @@
 # primer.tutorials (development version)
 
+* Absorbed into the `PPBDS/primer` monorepo. The package now lives at `primer.tutorials/` inside the book repo and installs via `remotes::install_github("PPBDS/primer", subdir = "primer.tutorials")`.
+
+* Renumbered tutorial directories from three-digit (`011-probability`, etc.) to two-digit (`01-probability`). Tutorial IDs in YAML headers updated to match.
+
+* Rearranged the curriculum: Mechanics is now Chapter 04 (was 08) and Cardinal Virtues is Chapter 05 (was 04); example chapters 06–08 shifted accordingly.
+
+* Removed `renv` lockfile and `.Rprofile` autoloader. Dependencies now resolved via standard DESCRIPTION + `pak`.
+
+* `DESCRIPTION` URL and BugReports now point at https://github.com/PPBDS/primer.
+
 * Stop using gtsummary and equatiomatic packages.
 
 # primer.tutorials 1.2.2

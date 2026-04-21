@@ -16,9 +16,9 @@ Use Claud Code to make dramatic improvements in this tutorial.
 
 * Fix it everywhere else. - IN PROGRESS
 
-* Figure out other errors. template_tutorial.Rmd is ground truth. Submit PRs fixing them. - IN PROGRESS (putting these types of changes from the validity edits here. Next, I'll go through and specifically ensure consistency with template_tutorial.rmd)
+* Figure out other errors. CLAUDE.md is ground truth (especially §5 tutorial structure, §10 Preceptor/Population tables, §13 master exercise list). Submit PRs fixing them. - IN PROGRESS
 
-* Read template_tutorial.Rmd.  
+* Read CLAUDE.md.  
 
 
 ### Later projects

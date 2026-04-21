@@ -93,8 +93,6 @@ This may seem like overkill, but, as [*Pro Git*](https://git-scm.com/book/en/v2)
 
 Note that this command should automatically put you in a new Positron session within the `primer` (or `primer.data`, etc.) project which now resides on your computer.
 
-<!-- DK: The above description is left over from RStudio. Is that what happens in Positron? -->
-
 2) **Skip this step if working on primer.** For a renv-using project (everything other than primer), the next step is to get **renv** set up so that you are running the same package versions as everyone else. Run this once in the project's top-level directory:
 
 ```{r, eval=FALSE}

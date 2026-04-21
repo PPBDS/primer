@@ -6,6 +6,26 @@ This file is the working reference for creating data science education artifacts
 
 The goal is that this file is the only reference either of us needs when starting work on a new chapter/tutorial pair or new class exercise. If any other document in the project conflicts with what's written here, this file wins.
 
+## Contents
+
+1. **Project** — what the Primer is; curriculum shape; Easy / Medium / Difficult progressions (representativeness, validity, stability, unconfoundedness, model checking, `marginaleffects`)
+2. **Working with David** — collaboration protocol
+3. **Output artifacts and file conventions** — where files live, naming
+4. **Chapter structure** — the six sections of an example chapter
+5. **Tutorial structure** — YAML, setup chunk, child documents
+6. **Question flow** — Start / exercise / End
+7. **Exercise types** — code / written-with-answer / written-without-answer
+8. **Spaced repetition** — the curriculum-level pattern
+9. **AI-mediated code exercises** — how students use AI to write code
+10. **Preceptor and Population Tables** — `gt` code, conventions
+11. **Canonical definitions** — verbatim text for §11-referenced concepts
+12. **Knowledge drop library** — pedagogical beats, organized by virtue
+13. **Master exercise list** — per-virtue exercise template
+14. **Guidance for tutorial authors** — cross-cutting rules
+15. **R tooling** — packages, setup chunk
+16. **Open items** — pending TODOs
+17. **Per-tutorial problem specifications** — Imagine, dataset, model, tables per tutorial
+
 ---
 
 ## 1. Project
@@ -101,6 +121,16 @@ Like stability, unconfoundedness has an Easy → Medium definitional shift and t
 - **Difficult.** Introduce the phrase **posterior predictive check** for the first time. Use `check_predictions()` (or equivalent) to perform a formal PPC. Discussion deepens to cover what different kinds of divergence mean for inference downstream: interval width, coverage, bias in particular regions of covariate space. In at least two Difficult-tier tutorials, use the PPC to drive a model revision — fit a first-pass model, show that its PPC is visibly poor, fit an alternative (different outcome family, added interaction, transformed covariate, etc.), and show that the new PPC is visibly better. This is the first time students see the check drive model choice rather than passively confirm it.
 
 The Easy → Medium transition hands the tool to the student. The Medium → Difficult transition adds the technical name and — more importantly — the practice of *acting on* what the check reveals. The vocabulary "posterior predictive check" is withheld until Difficult so that the practice (look at the picture, reason about it, eventually iterate on the model) accumulates before the jargon arrives.
+
+**Worked example: using the fitted model to answer questions (`marginaleffects`) across three levels.** Temperance's job is to get from the fitted DGM to the question we actually asked. Raw parameters rarely *are* the answer — log-odds, multinomial coefficients, and interaction terms are not on the outcome scale a student or stakeholder can read. The `marginaleffects` package — [**Model to Meaning: How to Interpret Statistical Models in R and Python**](https://marginaleffects.com/) by Vincent Arel-Bundock — is the tool for that transformation. Every Temperance section links the relevant chapter of the book at least once (see §13.5).
+
+- **Easy.** Predictions only. `predictions()`, `avg_predictions()`, `plot_predictions()`. The frame: *"The model's coefficients are on an awkward scale. `predictions()` gives us back numbers on the outcome scale — probabilities, counts, years, whatever the question actually needs."* Skip `comparisons()`; skip the five-decision framework; skip grid types. Knowledge drops emphasize that predictions answer *"what does the model say Y is when X = …?"* Link each tutorial's Temperance section to the [Predictions chapter](https://marginaleffects.com/chapters/predictions.html). The current §13.5 Exercises 7–9 already operate at this level.
+
+- **Medium.** Add comparisons. `comparisons()`, `avg_comparisons()`, `plot_comparisons()`. The frame: *"Predictions tell us the level of Y. Comparisons tell us how Y changes when X changes. Most of the questions we actually ask — causal effects, group differences — are comparisons, not predictions."* Canonical pitfall to drill: deducing a comparison by subtracting two predictions (point estimate is often right; the confidence interval is wrong). Introduce the `avg_*()` family for aggregation — unit-level estimates vs. aggregated summaries. Link to the [Comparisons chapter](https://marginaleffects.com/chapters/comparisons.html).
+
+- **Difficult.** Introduce the full framework explicitly: the five decisions — **quantity**, **predictor grid**, **aggregation**, **uncertainty**, **test** — and the habit of answering them *deliberately before computing anything*. Introduce the **grid types** (empirical, representative, counterfactual) and have students choose consciously rather than accept defaults. Link to the [Challenge chapter](https://marginaleffects.com/chapters/challenge.html) (why raw coefficients mislead) and the [Framework chapter](https://marginaleffects.com/chapters/framework.html). The Difficult-level frame: *"Define your quantity of interest first, then pick the `marginaleffects` tool that delivers it — don't start from the function and work backward."* Slopes (partial derivatives of prediction with respect to a continuous predictor) are intentionally **not** introduced at any level — the Primer's causal framing is about differences between potential outcomes, not instantaneous rates of change.
+
+The question `marginaleffects` answers — "what is the model saying, on the outcome scale?" — stays fixed across all three levels. What changes is: (Easy → Medium) adding comparisons as a second kind of QoI; (Medium → Difficult) adding deliberate choice across all five framework axes.
 
 ---
 
@@ -1389,6 +1419,8 @@ Opens with a substantive framing paragraph (see §14.6).
 
 Opens with a substantive framing paragraph (see §14.6).
 
+**Link to the `marginaleffects` book.** Immediately after the `## Temperance` header in every tutorial, include a line linking [**Model to Meaning**](https://marginaleffects.com/). The specific chapter linked depends on the tutorial's sophistication tier — see §1.3 *Worked example: using the fitted model to answer questions (`marginaleffects`) across three levels*. Easy-tier tutorials link the Predictions chapter; Medium adds Comparisons; Difficult adds Challenge and Framework.
+
 **Parameter-interpretation approach (Exercises 2–4).** Start by showing the fitted DGM's parameter values and attempting to interpret them. This is relatively straightforward for simple linear models; harder for non-linear models and interaction terms; and essentially degenerate for models with no interpretable parameters (random forest, gradient boosting). Attempt the interpretation anyway when models are hard, if only to highlight how the linear-model intuition fails. When parameters genuinely aren't interpretable, keep one exercise whose purpose is to make sure the student understands *why* they aren't. Then move on: comparisons, predictions, and a final plot.
 
 **Exercise 1.** [canonical] Components of Temperance.
@@ -1614,8 +1646,6 @@ Things flagged but not yet resolved. Revisit when relevant.
 - **Curriculum learning goals — explicit specification.** Write down, in CLAUDE.md, what students should understand after completing all 14 tutorials. We need these goals explicit because the Easy / Medium / Difficult progressions (§1.3) are supposed to *build toward* them, and we cannot calibrate the progressions without knowing the targets. Candidate home: a new §1.4 or its own top-level section. Aim for 10–20 concrete things a student should be able to do, explain, or notice by the end of Tutorial 14. Current worked examples in §1.3 (representativeness, validity, stability, unconfoundedness, model checking) implicitly define a handful of these goals — enumerate them all.
 
 - **Justice exercises for sampling and selection mechanism.** §11 now defines assignment, sampling, and selection mechanism as canonical concepts, and §12.3 has disambiguation knowledge drops. Still pending: adding explicit Justice exercises to the §13.3 master exercise list that ask students to name the sampling mechanism and the selection mechanism for the problem at hand, alongside the existing representativeness/stability/validity/unconfoundedness exercises.
-- **Knowledge-drop splitting** — as we write new tutorials, remember to split universal-truth drops from problem-specific examples (see §14.1). Universal truth goes into §12; the problem-specific part stays in the tutorial.
-- **Non-hypothesis-testing language** — the Courage section says no hypothesis tests, but we haven't codified what replaces a "p < 0.05" phrasing when reporting a coefficient's sign. Likely: "the confidence interval excludes zero" — but there should be a knowledge drop that handles this recurring moment.
 - **The DGM randomness detail** — we defer discussion of the randomness in the DGM in Courage Exercise 11's knowledge drop. Decide in which tutorial this gets unwrapped.
 - **AI tool article absorption** — `https://ppbds.github.io/tutorial.helpers/articles/ai.html` may have more AI-workflow specifics than §9 currently captures. Worth re-reading and absorbing the next time we touch §9.
 

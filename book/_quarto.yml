@@ -25,7 +25,6 @@ book:
     - 07-election-1992.qmd
     # - 06-models.qmd Still filed with old nonsense
     - set-up.qmd
-    - ai.qmd
 format:
   html:
     code-fold: false
