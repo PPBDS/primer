@@ -8,7 +8,6 @@
 ^inst/tutorials/[^/]+/.+\.html$
 ^inst/tutorials/[^/]+/.+_files$
 .*_cache$
-^template_tutorial.Rmd$
 ^TODO.*\.txt$
 ^primer\.tutorials\.Rproj$
 ^\.Rproj\.user$

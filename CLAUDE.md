@@ -1375,6 +1375,8 @@ Opens with one of four Courage quotes.
 
 Opens with one of six Temperance quotes.
 
+**Framing.** Start by showing the fitted DGM's parameter values and attempting to interpret them. This is relatively straightforward for simple linear models; harder for non-linear models and interaction terms; and essentially degenerate for models with no interpretable parameters (random forest, gradient boosting). Attempt the interpretation anyway when models are hard, if only to highlight how the linear-model intuition fails. When parameters genuinely aren't interpretable, keep one exercise whose purpose is to make sure the student understands *why* they aren't. Then move on: comparisons, predictions, and a final plot.
+
 **Exercise 1.** [canonical] Components of Temperance.
 - Prompt: *In your own words, describe the use of Temperance in data science.*
 - Message: `"Temperance interprets the data generating mechanism and then uses it to answer, with the help of graphics, the question(s) with which we began. Humility reminds us that this answer is always false."`
@@ -1453,6 +1455,74 @@ Then the `download_answers.Rmd` child document:
 ```
 ```
 
+### 13.7 LaTeX model-form reference
+
+The LaTeX blocks to paste into Justice Exercise 15 (and to show students the mathematical structure of the model). Pick the form matching the outcome type.
+
+**Normal (continuous outcome — linear regression).**
+
+$$Y = \beta_0 + \beta_1 X_1 + \beta_2 X_2 + \cdots + \beta_n X_n + \epsilon$$
+
+with $\epsilon \sim \mathcal{N}(0, \sigma^2)$.
+
+Source:
+
+````
+$$Y = \beta_0 + \beta_1 X_1 + \beta_2 X_2 + \cdots + \beta_n X_n + \epsilon$$
+
+with $\epsilon \sim \mathcal{N}(0, \sigma^2)$.
+````
+
+Linear regression for continuous data. The $\beta$ coefficients represent the effect of predictors on the mean of the outcome.
+
+**Bernoulli (binary outcome — logistic regression).**
+
+$$P(Y = 1) = \frac{1}{1 + e^{-(\beta_0 + \beta_1 X_1 + \beta_2 X_2 + \cdots + \beta_n X_n)}}$$
+
+with $Y \sim \text{Bernoulli}(\rho)$, where $\rho$ is the probability above.
+
+Source:
+
+````
+$$P(Y = 1) = \frac{1}{1 + e^{-(\beta_0 + \beta_1 X_1 + \beta_2 X_2 + \cdots + \beta_n X_n)}}$$
+
+with $Y \sim \text{Bernoulli}(\rho)$, where $\rho$ is the probability above.
+````
+
+Logistic regression for binary data. The $\beta$ coefficients represent the effect of predictors on the log-odds of the outcome.
+
+**Multinomial (unordered categorical outcome — multinomial logistic regression).**
+
+$$P(Y = k) = \frac{e^{\beta_{k0} + \beta_{k1} X_1 + \beta_{k2} X_2 + \cdots + \beta_{kn} X_n}}{\sum_{j=1}^{K} e^{\beta_{j0} + \beta_{j1} X_1 + \beta_{j2} X_2 + \cdots + \beta_{jn} X_n}}$$
+
+with $Y \sim \text{Multinomial}(\boldsymbol{\rho})$ where $\boldsymbol{\rho} = (\rho_1, \rho_2, \ldots, \rho_K)$ are the probabilities above.
+
+Source:
+
+````
+$$P(Y = k) = \frac{e^{\beta_{k0} + \beta_{k1} X_1 + \beta_{k2} X_2 + \cdots + \beta_{kn} X_n}}{\sum_{j=1}^{K} e^{\beta_{j0} + \beta_{j1} X_1 + \beta_{j2} X_2 + \cdots + \beta_{jn} X_n}}$$
+
+with $Y \sim \text{Multinomial}(\boldsymbol{\rho})$ where $\boldsymbol{\rho} = (\rho_1, \rho_2, \ldots, \rho_K)$ are the probabilities above.
+````
+
+Each category $k$ has its own set of parameters $\beta_{k0}, \beta_{k1}, \ldots, \beta_{kn}$.
+
+**Cumulative / ordinal (ordered categorical outcome — proportional-odds model).**
+
+$$P(Y \leq k) = \frac{1}{1 + e^{-(\alpha_k - \beta_1 X_1 - \beta_2 X_2 - \cdots - \beta_n X_n)}}$$
+
+with $Y \sim \text{Ordinal}(\boldsymbol{\rho})$ where $\boldsymbol{\rho} = (\rho_1, \rho_2, \ldots, \rho_K)$ are derived from the cumulative probabilities above.
+
+Source:
+
+````
+$$P(Y \leq k) = \frac{1}{1 + e^{-(\alpha_k - \beta_1 X_1 - \beta_2 X_2 - \cdots - \beta_n X_n)}}$$
+
+with $Y \sim \text{Ordinal}(\boldsymbol{\rho})$ where $\boldsymbol{\rho} = (\rho_1, \rho_2, \ldots, \rho_K)$ are derived from the cumulative probabilities above.
+````
+
+Proportional-odds model for ordinal data. $\alpha_k$ are the threshold parameters (cutpoints); the $\beta$ coefficients represent the effect of predictors on the log-odds of being in category $k$ or below.
+
 ---
 
 ## 14. Guidance for tutorial authors
@@ -1492,7 +1562,34 @@ For `predictions()` and `plot_predictions()` exercises, include a `-test` chunk.
 
 ### 14.6 Quotes at the top of each virtue section
 
-Each virtue section opens with a thematic quote. The template lists options for each (four for Wisdom, five for Justice, four for Courage, six for Temperance). Pick one per tutorial; variety across the curriculum is good.
+Each virtue section opens with a thematic quote. Pick one per tutorial; variety across the curriculum is good. The canonical options are:
+
+**Wisdom (four options):**
+- *A prudent question is one half of wisdom.* — Francis Bacon
+- *The power to question is the basis of all human progress.* — Indira Gandhi
+- *The important thing is not to stop questioning.* — Albert Einstein
+- *It is not the answer that enlightens, but the question.* — Eugène Ionesco
+
+**Justice (five options):**
+- *Justice is truth in action.* — Benjamin Disraeli
+- *The arc of the moral universe is long, but it bends toward justice.* — Theodore Parker
+- *Justice delayed is justice denied.* — William E. Gladstone
+- *It is in justice that the ordering of society is centered.* — Aristotle
+- *Charity is no substitute for justice withheld.* — Saint Augustine
+
+**Courage (four options):**
+- *Courage is found in unlikely places.* — J.R.R. Tolkien
+- *Courage is being scared to death, but saddling up anyway.* — John Wayne
+- *Courage is going from failure to failure without losing enthusiasm.* — Winston Churchill
+- *Courage is the commitment to begin without any guarantee of success.* — Johann Wolfgang von Goethe
+
+**Temperance (six options):**
+- *Temperance is a tree which has for its root very little contentment, and for its fruit calm and peace.* — Buddha
+- *Temperance is the greatest of all virtues. It subdues every passion and emotion, and almost creates a Heaven upon Earth.* — Joseph Smith Jr.
+- *Temperance is a bridle of gold; he, who uses it rightly, is more like a god than a man.* — Robert Burton
+- *Temperance is the firm and moderate dominion of reason over passion and other unrighteous impulses of the mind.* — Marcus Tullius Cicero
+- *Temperance to be a virtue must be free, and not forced.* — Philip Massinger
+- *Temperance is simply a disposition of the mind which binds the passion.* — Thomas Aquinas
 
 ### 14.7 When to skip exercises
 
