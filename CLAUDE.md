@@ -90,6 +90,18 @@ Like representativeness, stability has an Easy → Medium definitional shift and
 
 Like stability, unconfoundedness has an Easy → Medium definitional shift and then fixes the canonical form from Medium onward. The Medium upgrade is heavy — the conditioning apparatus plus pre-vs-post-treatment plus the observables/unobservables framing — so plan to revisit these pieces across several Medium-tier tutorials rather than dropping them all at once. The Difficult upgrade is mostly about named designs (IV, RDD, DiD, propensity methods), which the Primer does not teach but names so students know the menu exists when they face unmeasured confounders in practice.
 
+**Worked example: model checking across three levels.** Model checking — comparing the fitted values our DGM produces with the actual outcomes in the data — is different from the four assumption worked examples above. It is not a property we hope for; it is a diagnostic we perform. The same Easy / Medium / Difficult staging applies, but what scales is how much the check steers model choice and how much vocabulary we attach to it.
+
+- **Easy.** Two sub-stages.
+  - **First two example tutorials:** skip model checking entirely. The section's other canonical questions (Rubin framing, Preceptor Table construction, Population Table, the assumptions) already fill the budget; tutorial real estate is better spent there.
+  - **Next three example tutorials:** one exercise that shows a side-by-side plot the author has produced ahead of time — the distribution of the actual outcome alongside the distribution of fitted values from the DGM. The student doesn't write code; they view the image, hit Continue, and see a short knowledge drop. Canonical End: *"In a good model, the distribution of fitted values looks like the distribution of the actual outcome. Big divergences mean our model is missing something."* No package loaded, no new terminology, no phrase "posterior predictive check" yet.
+
+- **Medium.** Students create the comparison themselves with `check_predictions()` from `easystats` (or an equivalent package if a better one emerges). Knowledge drops sharpen: what a discrepancy can mean — wrong functional form, missing covariate, a wrong distributional family for the outcome, variance that depends on covariates. Students **diagnose** what they see but **do not fix** the model yet; the skill at this level is interpretation, not iteration.
+
+- **Difficult.** Introduce the phrase **posterior predictive check** for the first time. Use `check_predictions()` (or equivalent) to perform a formal PPC. Discussion deepens to cover what different kinds of divergence mean for inference downstream: interval width, coverage, bias in particular regions of covariate space. In at least two Difficult-tier tutorials, use the PPC to drive a model revision — fit a first-pass model, show that its PPC is visibly poor, fit an alternative (different outcome family, added interaction, transformed covariate, etc.), and show that the new PPC is visibly better. This is the first time students see the check drive model choice rather than passively confirm it.
+
+The Easy → Medium transition hands the tool to the student. The Medium → Difficult transition adds the technical name and — more importantly — the practice of *acting on* what the check reveals. The vocabulary "posterior predictive check" is withheld until Difficult so that the practice (look at the picture, reason about it, eventually iterate on the model) accumulates before the jargon arrives.
+
 ---
 
 ## 2. Working with David
@@ -1299,6 +1311,8 @@ Opens with a substantive framing paragraph (see §14.6).
 
 Opens with a substantive framing paragraph (see §14.6).
 
+**Model-checking staging.** Exercises 9 and 10 below (load `easystats`, run `check_predictions()`) are **Medium-tier** as written. In **Easy-tier** tutorials, replace them with a single exercise that shows an author-produced side-by-side plot of outcome distribution vs. fitted-value distribution (no student code, view-and-Continue pattern) — or in the first two example tutorials, omit model checking entirely. In **Difficult-tier** tutorials, add a follow-up exercise that uses the check to drive a model revision and then re-runs the check on the improved model. The full progression is in §1.3 (Worked example: model checking across three levels).
+
 **Exercise 1.** [canonical] Components of Courage.
 - Prompt: *In your own words, describe the components of the virtue of Courage for analyzing data.*
 - Message: `"Courage creates the data generating mechanism."`
@@ -1597,8 +1611,9 @@ The tutorial setup chunk (§5.2) loads the full package stack. For chapters, set
 
 Things flagged but not yet resolved. Revisit when relevant.
 
+- **Curriculum learning goals — explicit specification.** Write down, in CLAUDE.md, what students should understand after completing all 14 tutorials. We need these goals explicit because the Easy / Medium / Difficult progressions (§1.3) are supposed to *build toward* them, and we cannot calibrate the progressions without knowing the targets. Candidate home: a new §1.4 or its own top-level section. Aim for 10–20 concrete things a student should be able to do, explain, or notice by the end of Tutorial 14. Current worked examples in §1.3 (representativeness, validity, stability, unconfoundedness, model checking) implicitly define a handful of these goals — enumerate them all.
+
 - **Justice exercises for sampling and selection mechanism.** §11 now defines assignment, sampling, and selection mechanism as canonical concepts, and §12.3 has disambiguation knowledge drops. Still pending: adding explicit Justice exercises to the §13.3 master exercise list that ask students to name the sampling mechanism and the selection mechanism for the problem at hand, alongside the existing representativeness/stability/validity/unconfoundedness exercises.
-- **Posterior predictive checks** — the `check_predictions()` flow in §13.4 Exercise 10 currently just checks and continues. Codify when to accept the DGM vs. when to go back and fit a new model, once a chapter actually does the latter.
 - **Knowledge-drop splitting** — as we write new tutorials, remember to split universal-truth drops from problem-specific examples (see §14.1). Universal truth goes into §12; the problem-specific part stays in the tutorial.
 - **Non-hypothesis-testing language** — the Courage section says no hypothesis tests, but we haven't codified what replaces a "p < 0.05" phrasing when reporting a coefficient's sign. Likely: "the confidence interval excludes zero" — but there should be a knowledge drop that handles this recurring moment.
 - **The DGM randomness detail** — we defer discussion of the randomness in the DGM in Courage Exercise 11's knowledge drop. Decide in which tutorial this gets unwrapped.
