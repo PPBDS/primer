@@ -1140,7 +1140,7 @@ Opens with a single "Imagine that you are …" paragraph that motivates the prob
 
 ### 13.2 Wisdom
 
-Opens with one of four Wisdom quotes (pick one; see template for list) and a short paragraph narrowing from the broad "Imagine" topic to a plausibly answerable question. By the end of Wisdom, the student has a specific question.
+Opens with a substantive framing paragraph (see §14.6), then a short paragraph narrowing from the broad "Imagine" topic to a plausibly answerable question. By the end of Wisdom, the student has a specific question.
 
 **Exercise 1.** [canonical] Components of Wisdom.
 - Prompt: *In your own words, describe the key components of Wisdom when working on a data science problem.*
@@ -1206,7 +1206,7 @@ If the modeling requires a cleaned tibble `x` (e.g., filtering to one year, drop
 
 ### 13.3 Justice
 
-Opens with one of five Justice quotes (pick one; see template).
+Opens with a substantive framing paragraph (see §14.6).
 
 **Exercise 1.** [canonical] Components of Justice.
 - Prompt: *In your own words, name the five key components of Justice when working on a data science problem.*
@@ -1297,7 +1297,7 @@ Opens with one of five Justice quotes (pick one; see template).
 
 ### 13.4 Courage
 
-Opens with one of four Courage quotes.
+Opens with a substantive framing paragraph (see §14.6).
 
 **Exercise 1.** [canonical] Components of Courage.
 - Prompt: *In your own words, describe the components of the virtue of Courage for analyzing data.*
@@ -1373,9 +1373,9 @@ Opens with one of four Courage quotes.
 
 ### 13.5 Temperance
 
-Opens with one of six Temperance quotes.
+Opens with a substantive framing paragraph (see §14.6).
 
-**Framing.** Start by showing the fitted DGM's parameter values and attempting to interpret them. This is relatively straightforward for simple linear models; harder for non-linear models and interaction terms; and essentially degenerate for models with no interpretable parameters (random forest, gradient boosting). Attempt the interpretation anyway when models are hard, if only to highlight how the linear-model intuition fails. When parameters genuinely aren't interpretable, keep one exercise whose purpose is to make sure the student understands *why* they aren't. Then move on: comparisons, predictions, and a final plot.
+**Parameter-interpretation approach (Exercises 2–4).** Start by showing the fitted DGM's parameter values and attempting to interpret them. This is relatively straightforward for simple linear models; harder for non-linear models and interaction terms; and essentially degenerate for models with no interpretable parameters (random forest, gradient boosting). Attempt the interpretation anyway when models are hard, if only to highlight how the linear-model intuition fails. When parameters genuinely aren't interpretable, keep one exercise whose purpose is to make sure the student understands *why* they aren't. Then move on: comparisons, predictions, and a final plot.
 
 **Exercise 1.** [canonical] Components of Temperance.
 - Prompt: *In your own words, describe the use of Temperance in data science.*
@@ -1560,36 +1560,11 @@ After each addition, the student updates their QMD, renders with `Cmd/Ctrl + Shi
 
 For `predictions()` and `plot_predictions()` exercises, include a `-test` chunk. These calls sometimes break with package updates; the test chunk is how we catch that.
 
-### 14.6 Quotes at the top of each virtue section
+### 14.6 Virtue section openers
 
-Each virtue section opens with a thematic quote. Pick one per tutorial; variety across the curriculum is good. The canonical options are:
+Each virtue section opens with a substantive framing paragraph — **not** a quote. The intent is to connect the virtue to the specific problem at hand (or to the reader's progress through the tutorial so far) rather than provide an inspirational aphorism. The exact form and length of the opener are pending final specification; update this section once the format stabilizes across the curriculum.
 
-**Wisdom (four options):**
-- *A prudent question is one half of wisdom.* — Francis Bacon
-- *The power to question is the basis of all human progress.* — Indira Gandhi
-- *The important thing is not to stop questioning.* — Albert Einstein
-- *It is not the answer that enlightens, but the question.* — Eugène Ionesco
-
-**Justice (five options):**
-- *Justice is truth in action.* — Benjamin Disraeli
-- *The arc of the moral universe is long, but it bends toward justice.* — Theodore Parker
-- *Justice delayed is justice denied.* — William E. Gladstone
-- *It is in justice that the ordering of society is centered.* — Aristotle
-- *Charity is no substitute for justice withheld.* — Saint Augustine
-
-**Courage (four options):**
-- *Courage is found in unlikely places.* — J.R.R. Tolkien
-- *Courage is being scared to death, but saddling up anyway.* — John Wayne
-- *Courage is going from failure to failure without losing enthusiasm.* — Winston Churchill
-- *Courage is the commitment to begin without any guarantee of success.* — Johann Wolfgang von Goethe
-
-**Temperance (six options):**
-- *Temperance is a tree which has for its root very little contentment, and for its fruit calm and peace.* — Buddha
-- *Temperance is the greatest of all virtues. It subdues every passion and emotion, and almost creates a Heaven upon Earth.* — Joseph Smith Jr.
-- *Temperance is a bridle of gold; he, who uses it rightly, is more like a god than a man.* — Robert Burton
-- *Temperance is the firm and moderate dominion of reason over passion and other unrighteous impulses of the mind.* — Marcus Tullius Cicero
-- *Temperance to be a virtue must be free, and not forced.* — Philip Massinger
-- *Temperance is simply a disposition of the mind which binds the passion.* — Thomas Aquinas
+(Knowledge-drop quotes used inside exercises — e.g., Tukey, Engerman, the Rumsfeld-style aphorisms — are kept in §12 and remain part of the tutorial toolkit. This section is only about section-opening quotes, which we have dropped.)
 
 ### 14.7 When to skip exercises
 
