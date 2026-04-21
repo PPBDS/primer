@@ -132,6 +132,38 @@ The Easy → Medium transition hands the tool to the student. The Medium → Dif
 
 The question `marginaleffects` answers — "what is the model saying, on the outcome scale?" — stays fixed across all three levels. What changes is: (Easy → Medium) adding comparisons as a second kind of QoI; (Medium → Difficult) adding deliberate choice across all five framework axes.
 
+### 1.4 Build and rebuild strategy
+
+The Primer is designed so that most example tutorials (and the chapters that match them) can be generated from this file plus the seed specifications in §17. The reason the system works this way, rather than as a set of hand-written artifacts edited individually forever:
+
+**Cross-cutting changes are expensive to propagate manually.** If we change the canonical definition of stability, or adjust how the Easy → Medium transition for representativeness works, the hand-edit path requires walking through all the tutorials (and their matching chapters) — and we will miss things. The regeneration path updates §11 (or §1.3, or wherever the change lives) and rebuilds the affected tutorials from the updated spec. Consistency is enforced by construction.
+
+**Definition-only edits do not need a rebuild.** Changing just the wording of a §11 canonical definition works as find-and-replace in every tutorial. Regeneration earns its keep for *structural* changes: progression pacing (is Medium too steep between Tutorial 7 and Tutorial 8?), coverage (has this tutorial asked the canonical exercises from §13 that are due this tutorial?), cross-tutorial consistency (do the Difficult tutorials consistently drive model revision from the PPC per §1.3?). These are hard to see when each tutorial is considered in isolation and hard to fix without walking the whole sequence.
+
+**The seed lives in §17.** Each example tutorial's entry in §17 specifies the "Imagine that you are…" scenario, the dataset, the outcome variable, the treatment / key covariate, the question (QoI), the model, and the Preceptor and Population Table column structure. That — plus the rules in §4–§14 — is enough to regenerate a tutorial from scratch. The §17 entries are the stable core; everything around them (exercise wording, knowledge drops, specific transitions) is derivative.
+
+**Writing order.**
+
+1. **Tutorials first, in curriculum order, Easy → Medium → Difficult.** Write Tutorial 06 (the first example), then 07, 08, and so on up through 14. Expect back-and-forth: when you reach the last Medium tutorial you may realize the Medium sequence progressed too slowly (or too quickly) and the earlier Medium tutorials need adjustment. Plan for at least one revision pass once the last Medium tutorial is drafted, and another once the last Difficult tutorial is drafted. This is not a failure mode; it is the price of calibrating the progression only after seeing where it lands.
+2. **Chapters after tutorials.** Each example chapter extends its paired tutorial: same primary question, same Preceptor and Population Tables, same fitted model, but with more EDA, more candidate models, more exploration (§1.2). Chapters also cover the *paired* question — the opposite framing (causal if the tutorial is predictive, predictive if causal) — which the tutorial does not. Writing chapters against finished tutorials is easier than the reverse.
+
+**What this plan depends on.**
+
+- §17 seed entries must be kept current. If a tutorial's dataset or model changes, update §17 before regenerating.
+- Tutorial directory names and YAML `id:` fields do not change during regeneration. Student progress records are keyed on those, so directory stability protects continuity — though answers to exercises that got reworded will not map cleanly. Treat each major regeneration like a breaking release: bump the package version, describe the change in `NEWS.md`, tell students they may want to redo the affected tutorials.
+- The miscellaneous tutorials (01 Probability, 02 Sampling, 03 Rubin Causal Model, 04 Mechanics, 05 Cardinal Virtues) have only one-line §17 entries today (`Type: miscellaneous`). For those to be regeneratable the same way, §17 would need richer seed content per misc tutorial. Until then, treat misc tutorials as hand-edited rather than regenerated.
+- The LLM doing the regeneration must have this file as context. That is by design — `CLAUDE.md` is the only reference either author needs.
+
+**Operational notes.**
+
+- **LLM regeneration is not deterministic.** The same §17 seed plus the same CLAUDE.md can produce meaningfully different tutorial drafts on two different runs. Some drift is fine — it may even self-edit in useful ways — but budget a human QA pass after each rebuild. Do not expect bit-identical reproduction across runs.
+
+- **Chapter regeneration is more expensive than tutorial regeneration.** Chapters carry the paired-question requirement (§1.2) that tutorials do not: one fitted model serving two framings, two Preceptor Tables, two Population Tables, two sets of Temperance answers. More moving parts, more places the LLM can drift. Plan for chapter QA to take longer than tutorial QA.
+
+- **Branch-based rebuilds.** Regenerate on a feature branch (e.g., `rebuild/2026-05`), review the full diff there, merge to `main` only when satisfied. Keeps main-branch history clean and gives a reversible fallback if a rebuild goes sideways.
+
+- **Cap revision cycles.** The writing order above expects revision when the last Medium tutorial reveals earlier Medium tutorials need adjustment. Set a budget: at most two Easy → Medium calibration passes and two Medium → Difficult passes. If the second pass is not converging, the *progression design* itself needs reconsideration — not another revision pass.
+
 ---
 
 ## 2. Working with David
