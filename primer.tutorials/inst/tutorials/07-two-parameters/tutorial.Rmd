@@ -376,9 +376,7 @@ question_text(NULL,
 This is the first version of the question. We will now create a Preceptor Table to answer the question. We may then revise the question given complexities discovered in the data. We then update the question and the Preceptor Table. And so on.
 
 ## Wisdom
-### 
-
-*The only true wisdom is in knowing you know nothing.* - Socrates
+###
 
 In this tutorial, we will focus on height. As the person in charge of uniforms you would like to know what to expect about recruits' heights in the coming year.
 
@@ -388,11 +386,11 @@ In your own words, describe the key components of Wisdom when working on a data 
 
 ```{r wisdom-1}
 question_text(NULL,
-    message = "Wisdom requires a question, the creation of a Preceptor Table, and an examination of our data.",
-    answer(NULL, correct = TRUE),
-    allow_retry = FALSE,
-    incorrect = NULL,
-    rows = 3)
+  message = "Wisdom begins with a question and then moves on to the creation of a Preceptor Table and an examination of our data.",
+  answer(NULL, correct = TRUE),
+  allow_retry = FALSE,
+  incorrect = NULL,
+  rows = 3)
 ```
 
 ###
@@ -401,165 +399,9 @@ question_text(NULL,
 
 ### Exercise 2
 
-Of all the many measurements which go into uniforms, let's focus on height. Given that, which variable in `nhanes` should we use as our outcome variable? 
-
-```{r wisdom-2}
-question_text(NULL,
-  message = "The obvious variable to use is `height`.",
-  answer(NULL, correct = TRUE),
-  allow_retry = FALSE,
-  incorrect = NULL,
-  rows = 2)
-```
-
-### 
-
-We will use `height` as our outcome variable.
-
-```{r}
-nhanes |>
-  filter(age >= 18) |>
-  drop_na() |>
-  ggplot(aes(x = height)) +
-  geom_histogram(bins = 50) +
-  labs(
-    title = "Adult Heights in the US in 2010",
-    x = "Height (cm)",
-    y = "Count",
-    caption = "Source: National Health and Nutrition Examination Survey",
-    subtitle = "The Average Height of Adults in the US in 2010 was around 162 cm (64 in)"
-  )
-```
-
-### Exercise 3
-
-Let's imagine a brand new variable which **does not exist** in the data. This variable should be binary, meaning that it only takes on one of two values. It should also, at least in theory, be manipulable. In other words, if the value of the variable is "3," or whatever, then it generates one potential outcome and if it is "9," or whatever, it generates another potential outcome.
-
-Describe this imaginary variable and how might we manipulate its value.
-
-```{r wisdom-3}
-question_text(
-  NULL,
-  message = "Imagine a variable called `vitamin`. We can manipulate the value of `vitamin`, at least in theory, by providing children in the treatment group with vitamins throughout their childhood while not giving vitamins to children in the control group.",
-  answer(NULL, correct = TRUE),
-  allow_retry = FALSE,
-  incorrect = NULL,
-  rows = 6
-)
-```
-
-### 
-
-Any data set can be used to construct a causal model as long as there is at least one covariate that we can, in theory, manipulate. It does not matter whether or not anyone did, in fact, manipulate it.
-
-### Exercise 4
-
-Given our (imaginary) treatment variable `vitamin`, how many potential outcomes are there for each individual? Explain why.
-
-```{r wisdom-4}
-question_text(
-  NULL,
-  message = "There were two potential outcomes because the treatment variable, 'vitamin,' had two possible values: 'took vitamins' and 'no vitamins'.",
-  answer(NULL, correct = TRUE),
-  allow_retry = FALSE,
-  incorrect = NULL,
-  rows = 6
-)
-```
-
-### 
-
-The same data set can be used to create, separately, lots and lots of different models, both causal and predictive. We can just use different outcome variables and/or specify different treatment variables. This is a *conceptual* framework we apply to the data. It is never inherent in the data itself.
-
-### Exercise 5
-
-In a few sentences, specify the two different values for the imaginary treatment variable `vitamin`. Then, for a single unit, invent values for the potential outcomes which could result, and then calculate the causal effect for that unit given those values.
-
-```{r wisdom-5}
-question_text(
-  NULL,
-  message = "For a given individual, assume that the value of the treatment variables might be `take vitamin` or `no vitamin`. If the individual gets `take vitamin`, then `height` would be 175. If the individual gets `no vitamin`, then `height` would be 173. The causal effect on the outcome of a treatment of `vitamin` versus `no vitamin` is 175 - 173 --- i.e., the difference between two potential outcomes --- which equals 2, which is the causal effect.",
-  answer(NULL, correct = TRUE),
-  allow_retry = FALSE,
-  incorrect = NULL,
-  rows = 6
-)
-```
-
-### 
-
-A causal effect is defined as the *difference* between two potential outcomes. Keep two things in mind.
-
-First, *difference* does not necessarily mean *subtraction*. Many potential outcome are not numbers. For example, it makes no sense to subtract a potential outcome, like who you would vote for if you saw a Facebook ad, from another potential outcome, like who you vote for if you did not see the ad.
-
-Second, even in the case of numeric outcomes, you can’t simply say the effect is 10 without specifying the order of subtraction. There is, perhaps, a default sense in which the causal effect is defined as potential outcome under treatment minus potential outcome under control.
-
-### Exercise 6
-
-Let's consider a *predictive* model. Which variable in `nhanes` do you think might have an important connection to `height`?
-
-```{r wisdom-6}
-question_text(
-  NULL,
-  message = "`sex` is a variable that almost certainly relates to `height`.",
-  answer(NULL, correct = TRUE),
-  allow_retry = FALSE,
-  incorrect = NULL,
-  rows = 2
-)
-```
-
-### 
-
-With a predictive model, each individual unit has only one observed outcome. There are not two potential outcomes because none of the covariates are treated as treatment variables. Instead, all covariates are assumed to be "fixed."
-
-Predictive models have no "treatments" --- only covariates.
-
-### Exercise 7
-
-Specify two different groups of individuals which have specific values for `sex` and which might have different average values for `height`.
-
-```{r wisdom-7}
-question_text(
-  NULL,
-  message = "Some individuals might have a value for `sex` of `Male`. Others might have a value of `Female`. Those two groups will, on average, have different values for the outcome variable.",
-  answer(NULL, correct = TRUE),
-  allow_retry = FALSE,
-  incorrect = NULL,
-  rows = 6
-)
-```
-
-### 
-
-In predictive models, do not use words like "cause," "influence," "impact," or anything else which suggests causation. The best phrasing is in terms of "differences" between groups of units with different values for a covariate of interest.
-
-Any causal connection means exploring the *within row* difference between two potential outcomes. There's no need to consider other rows.
-
-### Exercise 8
-
-Write a very simple predictive question concerning `height`.
-
-```{r wisdom-8}
-question_text(
-  NULL,
-  message = "What is the average height of men and women?",
-  answer(NULL, correct = TRUE),
-  allow_retry = FALSE,
-  incorrect = NULL,
-  rows = 6
-)
-```
-
-### 
-
-This is the first version of the question. We will now create a Preceptor Table to answer the question. We may then revise the question given complexities discovered in the data. We then update the question and the Preceptor Table. And so on.
-
-### Exercise 9
-
 Define a Preceptor Table.
 
-```{r wisdom-9}
+```{r wisdom-2}
 question_text(NULL,
   message = "A Preceptor Table is the smallest possible table of data with rows and columns such that, if there is no missing data, we can easily calculate the quantity of interest.",
   answer(NULL, correct = TRUE),
@@ -568,176 +410,87 @@ question_text(NULL,
   rows = 6)
 ```
 
-### 
+###
 
-The Preceptor Table does not include all the covariates which you will eventually include in your model. It only includes covariates which you need to answer your question.
+The Preceptor Table does not include all the covariates which you will eventually include in your model. It only includes, along with the outcome(s), covariates which are mentioned in your question.
 
-### Exercise 10
+### Exercise 3
 
-Run `glimpse()` on `nhanes`.
+Let's explore the outcome variable. Ask AI to write R code that plots the distribution of `height` in `nhanes`, filtered to young adults aged 18 through 27 (the range for USMC recruits), using a density plot with a descriptive title, subtitle, axis labels, and caption. Paste the code below and run it.
 
-```{r wisdom-10, exercise = TRUE}
-
-```
-
-```{r wisdom-10-hint-1, eval = FALSE}
-glimpse(nhanes)
-```
-
-```{r wisdom-10-test, include = FALSE}
-glimpse(nhanes)
-```
-
-### 
-
-The `nhanes` dataset includes 15 variables, including physical attributes like weight and height. We do not care about most of these variables for our question.
-
-We think of both age and height as numbers. And they are numbers! But R distinguishes between “integers” and “doubles,” only the second of which allow for decimal values. In the `nhanes` data, `age` is an integer and `height` is a double.
-
-### Exercise 11
-
-Pipe `nhanes` to `filter(age >= 18 & age <= 27)`. These are the allowed ages for Marine Corps recruits.
-
-```{r wisdom-11, exercise = TRUE}
+```{r wisdom-3, exercise = TRUE}
 
 ```
 
-```{r wisdom-11-hint-1, eval = FALSE}
- nhanes |>
-  filter(age >= ... & age <= 27)
-```
-
-```{r wisdom-11-test, include = FALSE}
+```{r wisdom-3-hint-1, eval = FALSE}
 nhanes |>
-  filter(age >= 18 & age <= 27)
+  filter(age >= 18 & age <= 27) |>
+  drop_na(height) |>
+  ggplot(aes(x = height)) +
+  geom_density(...) +
+  labs(...)
 ```
 
-### 
-
-<!-- DK: Better plot? Whole section is sloppy? -->
-
-This is the distribution of height for men and women.
-
-```{r}
+```{r wisdom-3-test, include = FALSE}
 nhanes |>
-  filter(age >= 18) |>
-  select(age, sex, height) |>
-  drop_na() |>
-  ggplot(aes(height, fill = sex)) +
-  geom_histogram(position = "Identity", alpha = 0.5, bins = 30) +
+  filter(age >= 18 & age <= 27) |>
+  drop_na(height) |>
+  ggplot(aes(x = height)) +
+  geom_density(fill = "steelblue", alpha = 0.5) +
   labs(
-    title = "Distribution of Height by Sex",
-    subtitle = "On average, Men are taller than Women",
+    title = "Heights of young adults in NHANES",
+    subtitle = "Distribution of height among respondents aged 18-27",
     x = "Height (cm)",
-    y = "Number"
+    y = "Density",
+    caption = "Source: National Health and Nutrition Examination Survey via primer.data"
   )
 ```
 
-### Exercise 12
+###
 
-Most data sets have some NA values. We have to get rid of these so that we can use the data. Continue the pipe to `select(height, sex)`. Finally, drop the NA's using `drop_na()`.
+The distribution of `height` among young adults shows two concentrations — roughly centered near the typical female and male heights. That bimodality is a hint that `sex` will matter a lot.
 
-```{r wisdom-12, exercise = TRUE}
+### Exercise 4
+
+Now look at how height varies with our key covariate, `sex`. Ask AI to write R code that plots the distribution of `height` by `sex` (same age filter) as overlapping density curves, with a descriptive title, subtitle, axis labels, and caption. Paste the code below and run it.
+
+```{r wisdom-4, exercise = TRUE}
 
 ```
 
-<button onclick="transfer_code(this)">
-
-Copy previous code
-
-</button>
-
-```{r wisdom-12-hint-1, eval = FALSE}
-...
-  select(...) |>
-  drop_na() 
-```
-
-```{r wisdom-12-test, include = FALSE}
+```{r wisdom-4-hint-1, eval = FALSE}
 nhanes |>
-  filter(sex == "Male") |> 
   filter(age >= 18 & age <= 27) |>
-  select(height, sex) |>
-  drop_na() 
+  drop_na(height, sex) |>
+  ggplot(aes(x = height, fill = sex)) +
+  geom_density(alpha = ...) +
+  labs(...)
 ```
 
-### 
-
-We have to clean the data so we can focus on the specific numbers to answer our question. 
-
-### Exercise 13
-
-Copy the previous code, continue the pipe with `slice_sample()`, setting `n` equal to `50`. Add `set.seed(10)` in a separate line before creating the object.
-
-```{r wisdom-13, exercise = TRUE}
-
-```
-
-<button onclick="transfer_code(this)">
-
-Copy previous code
-
-</button>
-
-```{r wisdom-13-hint-1, eval = FALSE}
-set.seed(10)
-... |>
-  slice_sample(n = ...)
-```
-
-```{r wisdom-13-test, include = FALSE}
-set.seed(10)
-x <- nhanes |>
+```{r wisdom-4-test, include = FALSE}
+nhanes |>
   filter(age >= 18 & age <= 27) |>
-  select(height, sex) |>
-  drop_na() |>
-  slice_sample(n = 50) 
+  drop_na(height, sex) |>
+  ggplot(aes(x = height, fill = sex)) +
+  geom_density(alpha = 0.5) +
+  labs(
+    title = "Heights of young adults by sex",
+    subtitle = "Male heights sit systematically higher than female heights",
+    x = "Height (cm)",
+    y = "Density",
+    caption = "Source: NHANES via primer.data"
+  )
 ```
 
-### 
+###
 
-Because we want the uncertainty about the true average to be large enough to show up in our plot in an interesting way, we pretend that we only have 50 observations in the data.
+The two groups have clearly different average heights. This is the kind of systematic difference our model will try to capture.
 
-### Exercise 14
-
-In `analysis.qmd`, add a new code chunk to the QMD, copy/paste the pipeline above and assign the result to the new object `x`:
-
-```         
-set.seed(10)
-
-x <- nhanes |>
-  filter(age >= 18 & age <= 27) |>
-  select(height, sex) |>
-  drop_na() |>
-  slice_sample(n = 50) 
-```
-
-`Cmd/Ctrl + Shift + K` follows. In the Console, run:
-
-```         
-show_file("analysis.qmd", chunk = "Last")
-```
-
-```{r wisdom-14}
-question_text(
-  NULL,
-  answer(NULL, correct = TRUE),
-  allow_retry = TRUE,
-  try_again_button = "Edit Answer",
-  incorrect = NULL,
-  rows = 8
-)
-```
-
-### 
-
-Now you have an object `x`, a subset of `nhanes` that has been cleaned and narrowed down to meet the requirements of our question.
-
-### Exercise 15
+### Exercise 5
 
 Describe the key components of Preceptor Tables in general, without worrying about this specific problem. Use words like "units," "outcomes," and "covariates."
 
-```{r wisdom-15}
+```{r wisdom-5}
 question_text(NULL,
   message = "The rows of the Preceptor Table are the units. The outcome is at least one of the columns. If the problem is causal, there will be at least two (potential) outcome columns. The other columns are covariates. If the problem is causal, at least one of the covariates will be considered a treatment.",
   answer(NULL, correct = TRUE),
@@ -746,55 +499,49 @@ question_text(NULL,
   rows = 6)
 ```
 
-### 
+###
 
-This problem is predictive so there is only one outcome: height.
+This problem is predictive, so there is one outcome column. We compare average `height` between male and female young adults.
 
-### Exercise 16
+### Exercise 6
 
 What are the units for this problem?
 
-```{r wisdom-16}
-question_text(
-  NULL,
-  message = "The units are all USMC recruits enlisting next year.",
+```{r wisdom-6}
+question_text(NULL,
+  message = "The units are USMC recruits enlisting next year.",
   answer(NULL, correct = TRUE),
   allow_retry = FALSE,
   incorrect = NULL,
-  rows = 6
-)
+  rows = 6)
 ```
 
-### 
+###
 
-Specifying the Preceptor Table forces us to think clearly about the units and outcomes implied by the question. The resulting discussion sometimes leads us to modify the question with which we started. No data science project follows a single direction. We always backtrack. There is always dialogue.
+Specifying the Preceptor Table forces us to think clearly about the units and outcomes implied by the question. No data science project follows a single direction. We always backtrack. There is always dialogue. We model units, but we only really care about aggregates.
 
-We model units, but we only really care about aggregates.
-
-### Exercise 17
+### Exercise 7
 
 What is the outcome variable for this problem?
 
-```{r wisdom-17}
-question_text(
-  NULL,
-  message = "Height is the outcome variable. This is not the same thing as the answer to the question we have been asked. But, if we can build a model which explains/understands/predicts height for an individual, we can use that model to answer our questions.",
+```{r wisdom-7}
+question_text(NULL,
+  message = "Keep track of two 'outcome' variables: the one in our Preceptor Table and the one in our data. In this case, `height`.",
   answer(NULL, correct = TRUE),
   allow_retry = FALSE,
   incorrect = NULL,
-  rows = 6
-)
+  rows = 6)
 ```
 
-### 
+###
 
 The outcome variable that we really care about is often not the outcome variable which our data includes. This compromise --- working with what we *have* rather than what we really *want* --- is a part of most data science work in the real world.
 
-### Exercise 18
+### Exercise 8
 
 What is a covariate which you think might be useful for this problem, regardless of whether or not it might be included in the data?
 
-```{r wisdom-18}
+```{r wisdom-8}
 question_text(NULL,
   message = "The obvious covariate would be `sex`, since men and women differ in height, on average.",
   answer(NULL, correct = TRUE),
@@ -803,15 +550,15 @@ question_text(NULL,
   rows = 6)
 ```
 
-### 
+###
 
 The term "covariates" is used in at least three ways in data science. First, it is all the variables which might be useful, regardless of whether or not we have the data. Second, it is all the variables for which we have data. Third, it is the set of variables in the data which we end up using in the model.
 
-### Exercise 19
+### Exercise 9
 
 What are the treatments, if any, for this problem?
 
-```{r wisdom-19}
+```{r wisdom-9}
 question_text(NULL,
   message = "There are no treatments, since this is a predictive model.",
   answer(NULL, correct = TRUE),
@@ -822,13 +569,13 @@ question_text(NULL,
 
 ###
 
-Remember that a treatment is just another covariate which, for the purposes of this specific problem, we are assuming can be manipulated, thereby, creating two or more different potential outcomes for each unit.
+Remember that a treatment is just another covariate which, for the purposes of this specific problem, we are assuming can be manipulated, thereby creating two or more different potential outcomes for each unit.
 
-### Exercise 20
+### Exercise 10
 
 What moment in time does the Preceptor Table refer to?
 
-```{r wisdom-20}
+```{r wisdom-10}
 question_text(NULL,
   message = "The next year, or the period of time over which new recruits will arrive for training and need uniforms.",
   answer(NULL, correct = TRUE),
@@ -839,71 +586,143 @@ question_text(NULL,
 
 ###
 
-A Preceptor Table can never really refer to an exact instant in time since nothing is instantaneous in this fallen world.
-
-In almost all practical problems, the data was gathered at a time other than that to which the Preceptor Table refers.
+A Preceptor Table can never really refer to an exact instant in time since nothing is instantaneous in this fallen world. In almost all practical problems, the data was gathered at a time other than that to which the Preceptor Table refers.
 
 ```{r}
+#| echo: false
+#| message: false
+#| warning: false
+
 nhanes |>
-  filter(age >= 18) |>
-  drop_na() |>
-  ggplot(aes(x = height)) +
-  geom_histogram(bins = 50) +
+  filter(age >= 18 & age <= 27) |>
+  drop_na(height, sex) |>
+  ggplot(aes(x = sex, y = height, fill = sex)) +
+  geom_boxplot(alpha = 0.5) +
   labs(
-    title = "Adult Heights in the US in 2010",
-    x = "Height (cm)",
-    y = "Count",
-    caption = "Source: National Health and Nutrition Examination Survey",
-    subtitle = "The Average Height of Adults in the US in 2010 was around 162 cm (64 in)"
-  )
+    title = "Heights of young adults by sex",
+    subtitle = "Male heights sit systematically higher than female heights",
+    x = "Sex",
+    y = "Height (cm)",
+    caption = "Source: NHANES via primer.data"
+  ) +
+  theme(legend.position = "none")
 ```
 
-> *You can never look at the data too much. -- Mark Engerman*
+> *You can never look at the data too much.* -- Mark Engerman
 
-### Exercise 21
+### Exercise 11
 
 Describe in words the Preceptor Table for this problem.
 
-```{r wisdom-21}
-question_text(
-  NULL,
-  message = "The Preceptor Table has three columns. There is a column for the ID, one for height, and one for sex. Each row represents one recruit.",
+```{r wisdom-11}
+question_text(NULL,
+  message = "The Preceptor Table has three columns: one identifying each USMC recruit, one for `height`, and one for `sex`. Each row represents one recruit expected to enlist during the coming year.",
   answer(NULL, correct = TRUE),
   allow_retry = FALSE,
   incorrect = NULL,
-  rows = 6
-)
+  rows = 6)
 ```
 
-### 
+###
 
 The Preceptor Table for this problem looks something like this:
 
 ```{r}
-tibble(
-  ID = c(
-    "Recruit 1",
-    "Recruit 2",
-    "...",
-    "Recruit 5,000",
-    "Recruit 5,001",
-    "..."
-  ),
-  height = c("150", "172", "...", "160", "142", "..."),
-  sex = c("Female", "Male", "...", "Male", "Female", "...")) |>  
-  gt() |>
-  cols_label(ID = md("ID"), height = "Height (cm)", sex = "Sex")
+#| echo: false
+pre_tibble <- tibble::tribble(
+  ~`Recruit`,       ~`Height (cm)`, ~`Sex`,
+  "Recruit 1",      "150",          "Female",
+  "Recruit 2",      "172",          "Male",
+  "...",            "...",          "...",
+  "Recruit 5,000",  "160",          "Female"
+)
+
+pre_title_footnote     <- "A Preceptor Table is the smallest table such that, if every cell were filled with its true value, answering the question 'What is the average height of male and female USMC recruits?' would be easy."
+pre_units_footnote     <- "Each row is one USMC recruit expected to enlist during the coming year. Missing rows represent the other recruits not shown."
+pre_outcome_footnote   <- "Height in centimeters, measured at enlistment."
+pre_covariate_footnote <- "Sex, taking values 'Male' or 'Female', as recorded at enlistment."
+
+gt::gt(pre_tibble) |>
+  gt::tab_header(title = "Preceptor Table") |>
+  gt::tab_spanner(label = "Unit",      id = "unit_span",
+                  columns = c(`Recruit`)) |>
+  gt::tab_spanner(label = "Outcome",   id = "outcome_span",
+                  columns = c(`Height (cm)`)) |>
+  gt::tab_spanner(label = "Covariate", id = "covariates_span",
+                  columns = c(`Sex`)) |>
+  gt::cols_align(align = "center", columns = gt::everything()) |>
+  gt::cols_align(align = "left",   columns = c(`Recruit`)) |>
+  gt::fmt_markdown(columns = gt::everything()) |>
+  gt::tab_footnote(footnote = pre_title_footnote,
+                   locations = gt::cells_title()) |>
+  gt::tab_footnote(footnote = pre_units_footnote,
+                   locations = gt::cells_column_spanners(spanners = "unit_span")) |>
+  gt::tab_footnote(footnote = pre_outcome_footnote,
+                   locations = gt::cells_column_spanners(spanners = "outcome_span")) |>
+  gt::tab_footnote(footnote = pre_covariate_footnote,
+                   locations = gt::cells_column_spanners(spanners = "covariates_span"))
 ```
 
-Like all aspects of a data science problem, the Preceptor Table evolves as we continue our work. 
+Like all aspects of a data science problem, the Preceptor Table evolves as we continue our work.
 
-<!-- DK: Should the data cleaning go here? -->
+### Exercise 12
 
-### Exercise 22
+Ask AI to write R code that creates a tibble called `x` by taking `nhanes`, filtering to ages 18 through 27 (USMC recruit range), keeping only `height` and `sex`, dropping rows with missing values, and taking a random sample of 50 rows. Set `set.seed(10)` on the line before the pipeline so the sample is reproducible. Paste the code below and run it.
+
+```{r wisdom-12, exercise = TRUE}
+
+```
+
+```{r wisdom-12-hint-1, eval = FALSE}
+set.seed(10)
+x <- nhanes |>
+  filter(age >= 18 & age <= 27) |>
+  select(height, sex) |>
+  drop_na() |>
+  slice_sample(n = 50)
+```
+
+```{r wisdom-12-test, include = FALSE}
+set.seed(10)
+x <- nhanes |>
+  filter(age >= 18 & age <= 27) |>
+  select(height, sex) |>
+  drop_na() |>
+  slice_sample(n = 50)
+```
+
+###
+
+We pretend we only have 50 observations so the uncertainty about the true average is large enough to show up in our plot in an interesting way.
+
+### Exercise 13
+
+In `analysis.qmd`, add a new code chunk and copy/paste the pipeline above (including the `set.seed(10)` line). Render the QMD with `Cmd/Ctrl + Shift + K`. In the Console, run:
+
+```
+show_file("analysis.qmd", chunk = "Last")
+```
+
+CP/CR.
+
+```{r wisdom-13}
+question_text(NULL,
+  answer(NULL, correct = TRUE),
+  allow_retry = TRUE,
+  try_again_button = "Edit Answer",
+  incorrect = NULL,
+  rows = 8)
+```
+
+###
+
+Now you have an object `x`, a subset of `nhanes` cleaned and narrowed down to the units our question is about.
+
+### Exercise 14
 
 What is the narrow, specific question we will try to answer?
 
-```{r wisdom-22}
+```{r wisdom-14}
 question_text(NULL,
   message = "What is the average height of male and female USMC recruits?",
   answer(NULL, correct = TRUE),
@@ -914,33 +733,26 @@ question_text(NULL,
 
 ###
 
-The answer to this question is your "Quantity of Interest." It is OK if your question differs from ours. Many similar questions lead to the creation of the same model. For the purpose of this tutorial, let's use our question.
+The answer to this question is your Quantity of Interest. It is OK if your question differs from ours. Many similar questions lead to the creation of the same model.
 
-Our Quantity of Interest might appear too specific, too narrow to capture the full complexity of the topic. There are many, many numbers in which we are interested, many numbers that we want to know. But we don't need to list them all here! We just need to choose one of them since our goal is just to have a specific question which helped to guide us in the creation of the Preceptor Table and, soon, the model. 
+### Exercise 15
 
-### Exercise 23
+We will be creating a summary paragraph over the course of this tutorial. Write the first two sentences.
 
-Over the course of this tutorial, we will be creating a summary paragraph. The purpose of this exercise is to write the first two sentences of that paragraph.
+The first sentence is a general statement about the overall topic, mentioning the general class of the outcome and at least one covariate. The second introduces the data source and the specific question --- when/where gathered, how many observations, who collected it.
 
-The first sentence is a general statement about the overall topic, mentioning both the general class of the outcome variable and of at least one of the covariates. It is **not** connected to the initial "Imagine that you are XX" which set the stage for this project. That sentence can be rhetorical. It can be trite, or even a platitude. The purpose of the sentence is to let the reader know, gently, about our topic.
-
-The second sentence does two things. First, it introduces the data source. Second, it introduces the specific question. The sentence can't be that long. Important aspects of the data include when/where it was gathered, how many observations it includes and the organization (if famous) which collected it.
-
-Type your two sentences below.
-
-
-```{r wisdom-23}
+```{r wisdom-15}
 question_text(NULL,
-  message = "People vary in height. Using data from the National Health and Nutrition Examination Survey conducted from 2009 to 2011 by the Centers for Disease Control and Prevention, we seek to estimate the average height of USMC recruits for the coming year.",
+  message = "People vary in height, and that variation is strongly patterned by sex. Using data from the National Health and Nutrition Examination Survey conducted from 2009 to 2011 by the Centers for Disease Control and Prevention, we seek to estimate the average height of male and female USMC recruits for the coming year.",
   answer(NULL, correct = TRUE),
   allow_retry = FALSE,
   incorrect = NULL,
   rows = 6)
 ```
 
-### 
+###
 
-Read our answer. It will not be the same as yours. You can, if you want, change your answer to incorporate some of our ideas. Do not copy/paste our answer exactly. Add your two sentences, edited or otherwise, to your QMD, `Cmd/Ctrl + Shift + K`, and then commit/push.
+Read our answer. It will not be the same as yours. You can change your answer to incorporate some of our ideas, but do not copy/paste our answer exactly. Add your two sentences to your QMD, `Cmd/Ctrl + Shift + K`, and commit/push.
 
 ## Justice
 ### 
