@@ -1,6 +1,6 @@
 # Set Up for Working on PPBDS Projects {-}
 
-This document provides a guide in setting up R/Positron/Git/GitHub to work on *[The Primer](https://ppbds.github.io/primer/)*, both the book itself, [PPDBS/primer](https://github.com/PPBDS/primer), and the associated tutorials ([primer.tutorials](https://github.com/PPBDS/primer/tree/main/primer.tutorials)) and data ([PPDBS/primer.data](https://github.com/PPBDS/primer.data)) packages. The same procedures apply for working on other packages associated with the [PPBDS](https://github.com/PPBDS/) organization: [PPDBS/tutorial.helpers](https://github.com/PPBDS/tutorial.helpers),  [PPDBS/positron.tutorials](https://github.com/PPBDS/positron.tutorials), [PPDBS/r4ds.tutorials](https://github.com/PPBDS/r4ds.tutorials), [PPDBS/tidycensus.tutorials](https://github.com/PPBDS/tidycensus.tutorials), [PPDBS/tidymodels.tutorials](https://github.com/PPBDS/tidymodels.tutorials) and others. There are three steps:
+This document provides a guide to setting up R/Positron/Git/GitHub to work on *[The Primer](https://ppbds.github.io/primer/)*. The book and its accompanying tutorials R package live together in a single monorepo, [PPBDS/primer](https://github.com/PPBDS/primer): book sources are under `book/`, the R package is under `primer.tutorials/`, and both are edited in the same Positron project. You do not clone `primer.tutorials` separately — cloning `primer` gives you everything. The data package [PPBDS/primer.data](https://github.com/PPBDS/primer.data) is its own repo. These procedures also apply to other PPBDS packages — [tutorial.helpers](https://github.com/PPBDS/tutorial.helpers), [positron.tutorials](https://github.com/PPBDS/positron.tutorials), [r4ds.tutorials](https://github.com/PPBDS/r4ds.tutorials), [tidycensus.tutorials](https://github.com/PPBDS/tidycensus.tutorials), [tidymodels.tutorials](https://github.com/PPBDS/tidymodels.tutorials) — **with one important difference: those packages use renv for dependency management; primer does not.** Steps below that are renv-specific are flagged so you can skip them when working on primer. There are three steps:
 
 * The first part ensures that you have the knowledge and computer settings to be successful. With luck, you will only need to do this once. At the very least, you should upgrade your R version to the latest available and re-do the set up commands as specified in the [Getting Started](https://ppbds.github.io/primer/getting-started.html) chapter. 
 
@@ -55,9 +55,9 @@ usethis::create_github_token()
 
 and read about [Github credentials](https://usethis.r-lib.org/articles/articles/git-credentials.html). After you do, restart R and then run `git_sitrep()` again to make sure that things look like mine, more or less.
 
-3) Install the [**renv**](https://rstudio.github.io/renv/) package. Read about the **renv** package [here](https://rstudio.github.io/renv/articles/renv.html). Most of the PPBDS projects use **renv**. The most important exception is **primer**, which uses a DESCRIPTION file to keep track of the required R packages.
+3) **If you are working only on primer, skip this step.** primer tracks R dependencies with DESCRIPTION files (`book/DESCRIPTION` for the book, `primer.tutorials/DESCRIPTION` for the package) and does not use renv. Most other PPBDS packages do use renv, so install the [**renv**](https://rstudio.github.io/renv/) package now if you will be working on any of them. Read about the **renv** package [here](https://rstudio.github.io/renv/articles/renv.html).
 
-It is not critical to understand all the details of how **renv** works. The big picture is that it creates a set of libraries which will be used just for this project and whose versions are kept in sync between you and me. 
+It is not critical to understand all the details of how **renv** works. The big picture is that it creates a set of libraries used just for that project and whose versions are kept in sync between you and me.
 
 4) At this point, you should have all the tools you need to contribute. If you have never done a pull request, however, you will need to learn more. Start by reading the [help page](https://usethis.r-lib.org/articles/articles/pr-functions.html). Read the whole thing! Don't just skim it. These are important concepts for professional-level workflow. The **usethis** package is mostly providing wrappers around the underlying git commands. If you want to understand what is happening at a lower level, read [this](https://git-scm.com/book/en/v2/GitHub-Contributing-to-a-Project), but doing so is optional.
 
@@ -83,7 +83,7 @@ create_from_github(repo_spec = "PPBDS/INSERT-NAME-OF-PROJECT",
                    protocol = "https")  
 ```
 
-Obviously, you need to modify the string "INSERT-NAME-OF-PROJECT" to correspond to one of our projects. Most common options are **positron.tutorials**, **primer**, **primer.data**, and **primer.tutorials**. If, for some reason, you are working on a project which does not reside in the PPBDS organization, you should modify the first part of the `repo_spec` as well. 
+Obviously, you need to modify the string "INSERT-NAME-OF-PROJECT" to correspond to one of our projects. Most common options are **primer** (the monorepo that contains the book and the `primer.tutorials` package), **primer.data**, **positron.tutorials**, and **tutorial.helpers**. Do not try to clone `primer.tutorials` on its own — it lives inside `primer`. If, for some reason, you are working on a project which does not reside in the PPBDS organization, you should modify the first part of the `repo_spec` as well.
 
 You must change `destdir` to be a location on your computer. Indeed, professionals will generally have several different Positron windows open, each working on a different project, each of which is connected to its own Github repo.                     
                     
@@ -91,11 +91,11 @@ For your education, it is worth reading the help page for `create_from_github()`
 
 This may seem like overkill, but, as [*Pro Git*](https://git-scm.com/book/en/v2) explains, it is how (essentially) all large projects are organized. With luck, you only have to issue this command once. After that, you are always connected, both to your fork and to the true repos, which live at github/com/PPBDS. Also, note that, if something ever gets totally messed up on your computer, you can just delete the project folder on your computer and the repo on your Github account and then start again. (If you have made changes that you don't want to lose, just save the files with those changes to one side and then move them back after you have recreated the project.)
 
-Note that this command should automatically put you in a new Positron session within the `primer` (or `primer.tutorials` or `primer.data`) project which now resides on your computer.
+Note that this command should automatically put you in a new Positron session within the `primer` (or `primer.data`, etc.) project which now resides on your computer.
 
 <!-- DK: The above description is left over from RStudio. Is that what happens in Positron? -->
 
-2) The next step is to get **renv** setup so that you are running the same package versions as everyone else. Run this once:
+2) **Skip this step if working on primer.** For a renv-using project (everything other than primer), the next step is to get **renv** set up so that you are running the same package versions as everyone else. Run this once in the project's top-level directory:
 
 ```{r, eval=FALSE}
 #| code-fold: false
@@ -117,7 +117,7 @@ However, there are three other **renv** commands you might issue:
 
 `renv::snapshot()` should only be issued if you know what you are doing. This changes the `renv.lock` file, which is something that, usually, only I do. Most common case for use would be if you need to add a new package to the project.
 
-**Warning:** The **renv** package commands are very sensitive to your current working directory. Ensure that you are in the main directory of your project --- something like `/Users/dkane/Desktop/projects/primer.tutorials` --- before you run any of them.
+**Warning:** The **renv** package commands are very sensitive to your current working directory. Ensure that you are in the main directory of a renv-using project --- something like `/Users/dkane/Desktop/projects/positron.tutorials` --- before you run any of them.
 
 
 3) Create a branch to work from:
@@ -182,15 +182,15 @@ If you see the above-mentioned conflicts in your document, **do not submit a pul
 
 But even if there is not an open PR, `pr_push()` can be tricky. The key thing to remember is that *you must press a green button on Github* for a new PR to be created. Normally, this is easy. Running `pr_push()` automatically (or perhaps after you run `pr_view()`) puts you in a browser and brings you to the correct Github page. Press the button and -- presto! -- you have created a PR. But, sometimes, the web page is different. It actually sends you back to an old pull request. When this happens, you need to click on the "Pull Request" tab above. This will take you to a new page, with a green button labeled "Compare & Pull Request". Press that button.
 
-6) If you end up needing to install a new package --- which should be rare --- just install it with `renv::install()`and then type `renv::status()` to confirm than **renv** is aware of the change. Then, type `renv::snapshot()`. This will update the `renv.lock` file to include the new package. You just commit/push the new version of `renv.lock`, and that shares the information with everyone else on the project. Never commit/push a modified `renv.lock` unless you know why it has changed. But, for the most part, leave changes in `renv.lock` to me.
+6) **(renv-using projects only.)** If you end up needing to install a new package --- which should be rare --- just install it with `renv::install()`and then type `renv::status()` to confirm than **renv** is aware of the change. Then, type `renv::snapshot()`. This will update the `renv.lock` file to include the new package. You just commit/push the new version of `renv.lock`, and that shares the information with everyone else on the project. Never commit/push a modified `renv.lock` unless you know why it has changed. But, for the most part, leave changes in `renv.lock` to me. For **primer**, add new book dependencies to `book/DESCRIPTION` and new package dependencies to `primer.tutorials/DESCRIPTION` instead.
 
 7) Be careful of committing garbage files like ".DS_Store", which is a file created sometimes. Only commit changes which you understand. In the vast majority of cases your PRs will only involve one or two files.
 
 8) If using Windows, make sure you have RTools installed.
 
-9) Sometimes, your **renv** library becomes messed up. Note that nuking from orbit may not fix this because **renv** installs your packages in some private common area which is not impacted when you reinstall the PPBDS package you are working with. In this case, running `renv::rebuild()` may help. If not, run `renv::diagnostics()`, find the path to the **renv** cache directory and delete everything there by hand. Then, run `renv::repair()'.`
+9) **(renv-using projects only.)** Sometimes, your **renv** library becomes messed up. Note that nuking from orbit may not fix this because **renv** installs your packages in some private common area which is not impacted when you reinstall the PPBDS package you are working with. In this case, running `renv::rebuild()` may help. If not, run `renv::diagnostics()`, find the path to the **renv** cache directory and delete everything there by hand. Then, run `renv::repair()'.`
 
-10) When using `renv::restore()`, you will occasionally have a problem in which one package, say **aprob**, fails to install, thereby aborting the entire run. This can be tricky. The most common reason for this problem is that the `renv.lock` file specifies an older version of **aprob** than the current version available on CRAN. Since CRAN does not (?) keep binaries for non-current versions, your computer is forced to compile from source. This often works OK, especially if you are using a Mac. But it often doesn't work. The easiest approach is to update the `renv.lock` file to use the latest version of **aprob**. 
+10) **(renv-using projects only.)** When using `renv::restore()`, you will occasionally have a problem in which one package, say **aprob**, fails to install, thereby aborting the entire run. This can be tricky. The most common reason for this problem is that the `renv.lock` file specifies an older version of **aprob** than the current version available on CRAN. Since CRAN does not (?) keep binaries for non-current versions, your computer is forced to compile from source. This often works OK, especially if you are using a Mac. But it often doesn't work. The easiest approach is to update the `renv.lock` file to use the latest version of **aprob**.
 
 Complications can also arise if **aprob** was, in the last day or two, updated on CRAN. If you go to the page for **aprob** you can see that the source file is version 1.2.7, or whatever, while the binary versions are still 1.2.6. It takes a day or two for new binaries to be created on CRAN, especially for Windows. Again, situations like this are tricky enough that you should reach out to me for guidance.
   

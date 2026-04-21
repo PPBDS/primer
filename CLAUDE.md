@@ -792,9 +792,13 @@ These are the ground truth for the project's key definitions. Use the wording be
 
 > *The assignment mechanism is the probabilistic rule by which units come to receive one treatment value rather than another. In a randomized experiment the assignment mechanism is known and independent of the potential outcomes; in observational data it is unknown and must be modeled or assumed.*
 
+### Sampling mechanism
+
+> *The sampling mechanism is the probabilistic rule by which units come to appear in the data. It covers survey-sampling design, non-response, attrition, and any other process that determines who the data includes. When the sampling mechanism is correlated with the outcome or with treatment, inference about the broader population is biased.*
+
 ### Selection mechanism
 
-> *The selection mechanism is the rule by which units come to appear in a given table. Two distinct selection mechanisms operate on every problem: one determines which units appear in the data, and another determines which units appear in the Preceptor Table. When either mechanism is correlated with the outcome, inference about the broader population is biased.*
+> *The selection mechanism is the analyst's decision about which units the Preceptor Table includes — the scope of the question. Unlike the sampling mechanism, this is not a physical process but a scoping choice made by the analyst. When the selection mechanism excludes units whose outcomes would differ systematically, inference about the target population is biased.*
 
 ### Data Generating Mechanism (DGM)
 
@@ -914,6 +918,12 @@ Canonical definitions from §11 appropriate here: Justice, Population Table, Val
 
 **The crispest summary.**
 > *Validity is about the columns in our Population Table. Stability and representativeness are about the rows.*
+
+**On sampling vs. selection mechanism.**
+> *Sampling mechanism and selection mechanism both concern which units we see, but they act in different places: sampling determines who ends up in the data, selection determines who ends up in the Preceptor Table. Sampling is a physical process (who answered, who showed up, who survived); selection is an analyst's scoping choice.*
+
+**On the Heckman terminology collision.**
+> *In published statistics and econometrics (notably Heckman 1979, "Sample Selection Bias"), "selection mechanism" usually refers to the data-side process — what the Primer calls sampling mechanism. The Primer reverses the emphasis deliberately: sampling is something that happened in the world, often before the analyst arrived; selection is something the analyst does when scoping the question. Students reading Heckman later should expect the terms to be used in the opposite direction.*
 
 **On unconfoundedness being causal-only.**
 > *This assumption is only relevant for causal models. We describe a model as "confounded" if this is not true. The easiest way to ensure unconfoundedness is to assign treatment randomly.*
@@ -1544,7 +1554,7 @@ The tutorial setup chunk (§5.2) loads the full package stack. For chapters, set
 
 Things flagged but not yet resolved. Revisit when relevant.
 
-- **Assignment mechanism and selection mechanism** are not yet defined here as first-class concepts distinct from unconfoundedness. The template's bottom TODO list asks for Justice exercises on them; there are two selection mechanisms worth distinguishing (how a unit got into the data vs. how a unit got into the Preceptor Table). When ready, add definitions to §11 and decide where they fit in the Justice flow.
+- **Justice exercises for sampling and selection mechanism.** §11 now defines assignment, sampling, and selection mechanism as canonical concepts, and §12.3 has disambiguation knowledge drops. Still pending: adding explicit Justice exercises to the §13.3 master exercise list that ask students to name the sampling mechanism and the selection mechanism for the problem at hand, alongside the existing representativeness/stability/validity/unconfoundedness exercises.
 - **Functional form guidance** for Courage — the rule of thumb is continuous outcome → linear, binary → logistic, multi-category unordered → multinomial logistic, multi-category ordered → cumulative logistic. Full LaTeX forms are in the template; migrate into §13.3 Exercise 13–15 when writing the first chapter that uses each.
 - **Posterior predictive checks** — the `check_predictions()` flow in §13.4 Exercise 10 currently just checks and continues. Codify when to accept the DGM vs. when to go back and fit a new model, once a chapter actually does the latter.
 - **Knowledge-drop splitting** — many template knowledge drops were one paragraph combining a universal truth with a problem-specific example (see §14.1). As we write new tutorials we should split them: universal truth to §12, problem-specific to the tutorial. A few of these splits are still pending.
