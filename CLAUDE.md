@@ -1155,7 +1155,7 @@ Within a section, keep exercises in the order given. Not every tutorial includes
 
 ### 13.1 Introduction
 
-Opens with a single "Imagine that you are …" paragraph that motivates the problem with a real person facing real decisions. Always starts with "Imagine that you are …" and always ends with "There are many decisions to make." The same paragraph is used in the matching chapter.
+The Introduction preamble opens with the bookend sentence *The world confronts us. Make decisions we must.* This sentence appears at both ends of every tutorial — it also closes the Temperance section (§13.5 Exercise 17 End). After this opening sentence comes a single "Imagine that you are …" paragraph that motivates the problem with a real person facing real decisions. The paragraph always starts with "Imagine that you are …" and always ends with "There are many decisions to make." The same paragraph is used in the matching chapter.
 
 **Exercise 1.** [canonical] Four Cardinal Virtues.
 - Prompt: *What are the four [Cardinal Virtues](https://en.wikipedia.org/wiki/Cardinal_virtues), in order, which we use to guide our data science work?*

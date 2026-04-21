@@ -161,7 +161,7 @@ question_text(NULL,
 
 ###
 
-You should practice moving from QMD World to Console World and back.
+You should practice moving from QMD World to R World and back.
 
 ### Exercise 5
 
@@ -169,7 +169,7 @@ Place your cursor in the QMD file on the next line. Use `Cmd/Ctrl + Enter` to ex
 
 This work flow --- writing things in the QMD so that you have a permanent copy and then executing them in the Console with `Cmd/Ctrl + Enter` --- is the most common approach to data science. 
 
-There is QMD World and Console World. It is your responsibility to keep them in sync.
+There is QMD World and R World. It is your responsibility to keep them in sync.
 
 CP/CR.
 
@@ -235,7 +235,145 @@ question_text(NULL,
 
 ### 
 
-If the treatment variable is continuous (like income), then there are lots and lots of potential outcomes, one for each possible value of the treatment variable. 
+If the treatment variable is continuous (like income), then there are lots and lots of potential outcomes, one for each possible value of the treatment variable.
+
+### Exercise 9
+
+Height of young adults is the broad topic of this tutorial. Given that topic, which variable in `nhanes` should we use as our outcome variable?
+
+```{r introduction-9}
+question_text(NULL,
+	message = "Our outcome variable is `height`. We care about the height of USMC recruits, who are young adults.",
+	answer(NULL, correct = TRUE),
+	allow_retry = FALSE,
+	incorrect = NULL,
+	rows = 3)
+```
+
+###
+
+We will use `height` as our outcome variable.
+
+```{r}
+#| echo: false
+#| message: false
+#| warning: false
+
+nhanes |>
+  filter(age >= 18 & age <= 27) |>
+  drop_na(height) |>
+  ggplot(aes(x = height)) +
+  geom_density(fill = "steelblue", alpha = 0.5) +
+  labs(
+    title = "Heights of young adults in NHANES",
+    subtitle = "Distribution of height among respondents aged 18–27",
+    x = "Height (cm)",
+    y = "Density",
+    caption = "Source: National Health and Nutrition Examination Survey via primer.data"
+  )
+```
+
+### Exercise 10
+
+Let's imagine a brand new variable which does not exist in the data. This variable should be binary --- it only takes on one of two values --- and, at least in theory, manipulable. Describe this imaginary variable and how we might manipulate its value.
+
+```{r introduction-10}
+question_text(NULL,
+	message = "Imagine a variable called `nutrition_program` which has value 1 if a child was enrolled in a government childhood-nutrition program between ages 5 and 10, and 0 otherwise. The government could manipulate this variable by deciding whether to enroll any given child.",
+	answer(NULL, correct = TRUE),
+	allow_retry = FALSE,
+	incorrect = NULL,
+	rows = 4)
+```
+
+###
+
+Any data set can be used to construct a causal model as long as there is at least one covariate that we can, at least in theory, manipulate. It does not matter whether or not anyone did, in fact, manipulate it.
+
+### Exercise 11
+
+Given our (imaginary) treatment variable `nutrition_program`, how many potential outcomes are there for each unit? Explain why.
+
+```{r introduction-11}
+question_text(NULL,
+	message = "There are two potential outcomes because the treatment variable `nutrition_program` takes on two possible values: 1 (enrolled) and 0 (not enrolled).",
+	answer(NULL, correct = TRUE),
+	allow_retry = FALSE,
+	incorrect = NULL,
+	rows = 3)
+```
+
+###
+
+The same data set can be used to create, separately, lots and lots of different models, both causal and predictive. This is a conceptual framework we apply to the data. It is never inherent in the data itself.
+
+### Exercise 12
+
+Specify two different values for the imaginary treatment variable `nutrition_program`, for a single unit; guess the potential outcomes; and calculate the causal effect for that unit given those guesses.
+
+```{r introduction-12}
+question_text(NULL,
+	message = "For a given young adult, say Maria, assume the treatment variable `nutrition_program` could be 1 (enrolled) or 0 (not enrolled). If Maria gets `nutrition_program = 1`, her height at age 20 would be 168 cm. If Maria gets `nutrition_program = 0`, her height at age 20 would be 165 cm. The causal effect on height of `nutrition_program = 1` versus `nutrition_program = 0` is 168 - 165 = 3 cm, which is the causal effect for Maria.",
+	answer(NULL, correct = TRUE),
+	allow_retry = FALSE,
+	incorrect = NULL,
+	rows = 6)
+```
+
+###
+
+A causal effect is the difference between two potential outcomes. "Difference" does not necessarily mean "subtraction" --- many potential outcomes are not numbers.
+
+### Exercise 13
+
+Let's consider a predictive model. Which variable in `nhanes` do you think might have an important connection to `height`?
+
+```{r introduction-13}
+question_text(NULL,
+	message = "One candidate is `sex`. Men and women tend to have systematically different average heights, so a model that includes `sex` should do better than one that does not.",
+	answer(NULL, correct = TRUE),
+	allow_retry = FALSE,
+	incorrect = NULL,
+	rows = 3)
+```
+
+###
+
+With a predictive model, each individual unit has only one observed outcome. Predictive models have no "treatments" --- only covariates.
+
+### Exercise 14
+
+Specify two different groups of young adults which have different values for `sex` and which might have different average values for `height`.
+
+```{r introduction-14}
+question_text(NULL,
+	message = "Consider two groups: young adults with `sex` = Male, and young adults with `sex` = Female. These two groups might have different average heights.",
+	answer(NULL, correct = TRUE),
+	allow_retry = FALSE,
+	incorrect = NULL,
+	rows = 3)
+```
+
+###
+
+In predictive models, do not use "cause," "influence," "impact," or anything else which suggests causation. The best phrasing is in terms of "differences" between groups of units with different values for a covariate of interest.
+
+### Exercise 15
+
+Write a predictive question connecting the outcome `height` to `sex`, the covariate of interest.
+
+```{r introduction-15}
+question_text(NULL,
+	message = "What is the average height of male and female USMC recruits?",
+	answer(NULL, correct = TRUE),
+	allow_retry = FALSE,
+	incorrect = NULL,
+	rows = 3)
+```
+
+###
+
+This is the first version of the question. We will now create a Preceptor Table to answer the question. We may then revise the question given complexities discovered in the data. We then update the question and the Preceptor Table. And so on.
 
 ## Wisdom
 ### 

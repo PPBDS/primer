@@ -158,7 +158,7 @@ Place your cursor in the QMD file on the next line. Use `Cmd/Ctrl + Enter` to ex
 
 This work flow --- writing things in the QMD so that you have a permanent copy and then executing them in the Console with `Cmd/Ctrl + Enter` --- is the most common approach to data science. 
 
-There is QMD World and Console World. It is your responsibility to keep them in sync.
+There is QMD World and R World. It is your responsibility to keep them in sync.
 
 CP/CR.
 
@@ -1132,7 +1132,7 @@ In data science, **we deal with words, math, and code, but the most important of
 
 ### Exercise 8
 
-We need `fit_att` to exist in Console World. Copy/paste this code into the Console and execute it.
+We need `fit_att` to exist in R World. Copy/paste this code into the Console and execute it.
 
 ````
 fit_att <- linear_reg(engine = "lm") |> 
@@ -1152,7 +1152,7 @@ question_text(NULL,
 
 ###
 
-Just because something exists in the tutorial (or in the QMD) does not mean that it is in the Console. You should be aware of what exists in Console World, which is generally called your "workspace."
+Just because something exists in the tutorial (or in the QMD) does not mean that it is in the Console. You should be aware of what exists in R World, which is generally called your "workspace."
 
 
 ### Exercise 9

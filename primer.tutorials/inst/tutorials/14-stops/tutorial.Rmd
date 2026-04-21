@@ -1197,7 +1197,7 @@ In data science, **we deal with words, math, and code, but the most important of
 
 ### Exercise 10
 
-We need `fit_stops` to exit in Console World. Copy/paste this code into the Console and execute it.
+We need `fit_stops` to exit in R World. Copy/paste this code into the Console and execute it.
 
 ````
 x <- stops |>
@@ -1223,7 +1223,7 @@ question_text(NULL,
 
 ###
 
-Just because something exists in the tutorial (or in the QMD) does not mean that it is in the Console. You should be aware of what exists in Console World, which is generally called your "workspace."
+Just because something exists in the tutorial (or in the QMD) does not mean that it is in the Console. You should be aware of what exists in R World, which is generally called your "workspace."
 
 ### Exercise 11
 
