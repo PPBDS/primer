@@ -60,11 +60,11 @@ In your own words, describe the key components of Wisdom when working on a data 
 
 ```{r example-1-1}
 question_text(NULL,
-	message = "Wisdom requires the creation of a Preceptor Table, an examination of our data, and a determination, using the concept of validity, as to whether or not we can (reasonably!) assume that the two come from the same population.",
-	answer(NULL, correct = TRUE),
-	allow_retry = FALSE,
-	incorrect = NULL,
-	rows = 6)
+  message = "Wisdom requires the creation of a Preceptor Table, an examination of our data, and a determination, using the concept of validity, as to whether or not we can (reasonably!) assume that the two come from the same population.",
+  answer(NULL, correct = TRUE),
+  allow_retry = FALSE,
+  incorrect = NULL,
+  rows = 6)
 ```
 
 ### 
@@ -77,11 +77,11 @@ Define a Preceptor Table.
 
 ```{r example-1-2}
 question_text(NULL,
-	message = "A Preceptor Table is the smallest possible table of data with rows and columns such that, if there is no missing data, we can easily calculate the quantity of interest.",
-	answer(NULL, correct = TRUE),
-	allow_retry = FALSE,
-	incorrect = NULL,
-	rows = 6)
+  message = "A Preceptor Table is the smallest possible table of data with rows and columns such that, if there is no missing data, we can easily calculate the quantity of interest.",
+  answer(NULL, correct = TRUE),
+  allow_retry = FALSE,
+  incorrect = NULL,
+  rows = 6)
 ```
 
 ### 
@@ -94,11 +94,11 @@ Describe the key components of Preceptor Tables in general, without worrying abo
 
 ```{r example-1-3}
 question_text(NULL,
-	message = "The rows of the Preceptor Table are the units. The outcome is at least one of the columns. If the problem is causal, there will be at least two (potential) outcome columns. The other columns are covariates. If the problem is causal, at least one of the covariates will considered a treatment.",
-	answer(NULL, correct = TRUE),
-	allow_retry = FALSE,
-	incorrect = NULL,
-	rows = 6)
+  message = "The rows of the Preceptor Table are the units. The outcome is at least one of the columns. If the problem is causal, there will be at least two (potential) outcome columns. The other columns are covariates. If the problem is causal, at least one of the covariates will considered a treatment.",
+  answer(NULL, correct = TRUE),
+  allow_retry = FALSE,
+  incorrect = NULL,
+  rows = 6)
 ```
 
 ### 
@@ -111,11 +111,11 @@ What are the units for this problem?
 
 ```{r example-1-4}
 question_text(NULL,
-	message = "The individual students.",
-	answer(NULL, correct = TRUE),
-	allow_retry = FALSE,
-	incorrect = NULL,
-	rows = 6)
+  message = "The individual students.",
+  answer(NULL, correct = TRUE),
+  allow_retry = FALSE,
+  incorrect = NULL,
+  rows = 6)
 ```
 
 ### 
@@ -128,11 +128,11 @@ What is the outcome variable for this problem?
 
 ```{r example-1-5}
 question_text(NULL,
-	message = "SAT scores.",
-	answer(NULL, correct = TRUE),
-	allow_retry = FALSE,
-	incorrect = NULL,
-	rows = 6)
+  message = "SAT scores.",
+  answer(NULL, correct = TRUE),
+  allow_retry = FALSE,
+  incorrect = NULL,
+  rows = 6)
 ```
 
 ### Exercise 6
@@ -141,11 +141,11 @@ What is a covariate which you think might be useful for this problem, regardless
 
 ```{r example-1-6}
 question_text(NULL,
-	message = "PSAT scores give a good indication of how well a student is going to do on the SAT, given that it is a pre-test and usually covers the same format and similar content.",
-	answer(NULL, correct = TRUE),
-	allow_retry = FALSE,
-	incorrect = NULL,
-	rows = 6)
+  message = "PSAT scores give a good indication of how well a student is going to do on the SAT, given that it is a pre-test and usually covers the same format and similar content.",
+  answer(NULL, correct = TRUE),
+  allow_retry = FALSE,
+  incorrect = NULL,
+  rows = 6)
 ```
 
 ### 
@@ -158,11 +158,11 @@ What are the treatments, if any, for this problem?
 
 ```{r example-1-7}
 question_text(NULL,
-	message = "Since this is a predictive model, there is no treatment.",
-	answer(NULL, correct = TRUE),
-	allow_retry = FALSE,
-	incorrect = NULL,
-	rows = 6)
+  message = "Since this is a predictive model, there is no treatment.",
+  answer(NULL, correct = TRUE),
+  allow_retry = FALSE,
+  incorrect = NULL,
+  rows = 6)
 ```
 
 ### 
@@ -175,11 +175,11 @@ What moment in time does the Preceptor Table refer to?
 
 ```{r example-1-8}
 question_text(NULL,
-	message = "The Preceptor Table refers to the current moment, since we are trying to predict the future SAT scores of current juniors.",
-	answer(NULL, correct = TRUE),
-	allow_retry = FALSE,
-	incorrect = NULL,
-	rows = 6)
+  message = "The Preceptor Table refers to the current moment, since we are trying to predict the future SAT scores of current juniors.",
+  answer(NULL, correct = TRUE),
+  allow_retry = FALSE,
+  incorrect = NULL,
+  rows = 6)
 ```
 
 
@@ -189,11 +189,11 @@ Define a causal effect. Note that the model in this tutorial is predictive, not 
 
 ```{r example-1-9}
 question_text(NULL,
-	message = "A causal effect is the difference between two potential outcomes.",
-	answer(NULL, correct = TRUE),
-	allow_retry = FALSE,
-	incorrect = NULL,
-	rows = 6)
+  message = "A causal effect is the difference between two potential outcomes.",
+  answer(NULL, correct = TRUE),
+  allow_retry = FALSE,
+  incorrect = NULL,
+  rows = 6)
 ```
 
 ### 
@@ -206,11 +206,11 @@ What is the fundamental problem of causal inference?
 
 ```{r example-1-10}
 question_text(NULL,
-	message = "The fundamental problem of causal inference is that we can only observe one potential outcome.",
-	answer(NULL, correct = TRUE),
-	allow_retry = FALSE,
-	incorrect = NULL,
-	rows = 6)
+  message = "The fundamental problem of causal inference is that we can only observe one potential outcome.",
+  answer(NULL, correct = TRUE),
+  allow_retry = FALSE,
+  incorrect = NULL,
+  rows = 6)
 ```
 
 ### 
@@ -223,11 +223,11 @@ How does the motto "No causation without manipulation" apply in this problem?
 
 ```{r example-1-11}
 question_text(NULL,
-	message = "The motto does not apply because this is a predictive, not causal, model.",
-	answer(NULL, correct = TRUE),
-	allow_retry = FALSE,
-	incorrect = NULL,
-	rows = 6)
+  message = "The motto does not apply because this is a predictive, not causal, model.",
+  answer(NULL, correct = TRUE),
+  allow_retry = FALSE,
+  incorrect = NULL,
+  rows = 6)
 ```
 
 
@@ -237,11 +237,11 @@ Describe in words the Preceptor Table for this problem.
 
 ```{r example-1-12}
 question_text(NULL,
-	message = "The rows (units) are individual students. The outcome is the SAT score. Key covariates include high school grades, PSAT scores, how many hours they studied for the SAT, and whether or not they took an SAT tutoring class.",
-	answer(NULL, correct = TRUE),
-	allow_retry = FALSE,
-	incorrect = NULL,
-	rows = 6)
+  message = "The rows (units) are individual students. The outcome is the SAT score. Key covariates include high school grades, PSAT scores, how many hours they studied for the SAT, and whether or not they took an SAT tutoring class.",
+  answer(NULL, correct = TRUE),
+  allow_retry = FALSE,
+  incorrect = NULL,
+  rows = 6)
 ```
 
 
@@ -251,11 +251,11 @@ In your own words, define "validity" as we use the term.
 
 ```{r example-1-13}
 question_text(NULL,
-	message = "Validity is the consistency, or lack thereof, in the columns of the data set and the corresponding columns in the Preceptor Table.",
-	answer(NULL, correct = TRUE),
-	allow_retry = FALSE,
-	incorrect = NULL,
-	rows = 6)
+  message = "Validity is the consistency, or lack thereof, in the columns of the data set and the corresponding columns in the Preceptor Table.",
+  answer(NULL, correct = TRUE),
+  allow_retry = FALSE,
+  incorrect = NULL,
+  rows = 6)
 ```
 
 ### 
@@ -268,11 +268,11 @@ Provide one reason why the assumption of validity might not hold for the outcome
 
 ```{r example-1-14}
 question_text(NULL,
-	message = "The high school grades column in the data covers all four years of high school — the class of 2015 has already graduated. But the high school grades column in the Preceptor Table can only include grades through junior year, since the current students have not yet finished high school. These two columns are measuring different things — cumulative four-year GPA versus cumulative three-year GPA — and so may not correspond to the same concept.",
-	answer(NULL, correct = TRUE),
-	allow_retry = FALSE,
-	incorrect = NULL,
-	rows = 6)
+  message = "The high school grades column in the data covers all four years of high school — the class of 2015 has already graduated. But the high school grades column in the Preceptor Table can only include grades through junior year, since the current students have not yet finished high school. These two columns are measuring different things — cumulative four-year GPA versus cumulative three-year GPA — and so may not correspond to the same concept.",
+  answer(NULL, correct = TRUE),
+  allow_retry = FALSE,
+  incorrect = NULL,
+  rows = 6)
 ```
 
 ### 
@@ -289,11 +289,11 @@ In your own words, name the four key components of Justice when working on a dat
 
 ```{r example-1-15}
 question_text(NULL,
-	message = "Justice concerns four topics: the Population Table, stability, representativeness, and unconfoundedness.",
-	answer(NULL, correct = TRUE),
-	allow_retry = FALSE,
-	incorrect = NULL,
-	rows = 6)
+  message = "Justice concerns four topics: the Population Table, stability, representativeness, and unconfoundedness.",
+  answer(NULL, correct = TRUE),
+  allow_retry = FALSE,
+  incorrect = NULL,
+  rows = 6)
 ```
 
 ### 
@@ -306,11 +306,11 @@ In your own words, define a Population Table.
 
 ```{r example-1-16}
 question_text(NULL,
-	message = "The Population Table includes a row for each unit/time combination in the underlying population from which both the Preceptor Table and the data are drawn.",
-	answer(NULL, correct = TRUE),
-	allow_retry = FALSE,
-	incorrect = NULL,
-	rows = 6)
+  message = "The Population Table includes a row for each unit/time combination in the underlying population from which both the Preceptor Table and the data are drawn.",
+  answer(NULL, correct = TRUE),
+  allow_retry = FALSE,
+  incorrect = NULL,
+  rows = 6)
 ```
 
 ### 
@@ -323,11 +323,11 @@ In your own words, define the assumption of "stability" when employed in the con
 
 ```{r example-1-17}
 question_text(NULL,
-	message = "Stability means that the relationship between the columns in the Population Table is the same for three categories of rows: the data, the Preceptor Table, and the larger population from which both are drawn.",
-	answer(NULL, correct = TRUE),
-	allow_retry = FALSE,
-	incorrect = NULL,
-	rows = 6)
+  message = "Stability means that the relationship between the columns in the Population Table is the same for three categories of rows: the data, the Preceptor Table, and the larger population from which both are drawn.",
+  answer(NULL, correct = TRUE),
+  allow_retry = FALSE,
+  incorrect = NULL,
+  rows = 6)
 ```
 
 ### 
@@ -340,11 +340,11 @@ Provide one reason why the assumption of stability might not be true in this cas
 
 ```{r example-1-18}
 question_text(NULL,
-	message = "The topics that the SAT covers, as well as the formatting and structure of the test, has changed a lot since 2015. This means that it may have been easier or harder to score higher back in the day, making the results unstable over time.",
-	answer(NULL, correct = TRUE),
-	allow_retry = FALSE,
-	incorrect = NULL,
-	rows = 6)
+  message = "The topics that the SAT covers, as well as the formatting and structure of the test, has changed a lot since 2015. This means that it may have been easier or harder to score higher back in the day, making the results unstable over time.",
+  answer(NULL, correct = TRUE),
+  allow_retry = FALSE,
+  incorrect = NULL,
+  rows = 6)
 ```
 
 ### 
@@ -357,11 +357,11 @@ We use our data to make inferences about the overall population. We use informat
 
 ```{r example-1-19}
 question_text(NULL,
-	message = "Representativeness, or the lack thereof, concerns two relationships among the rows in the Population Table. The first is between the data and the other rows. The second is between the other rows and the Preceptor Table.",
-	answer(NULL, correct = TRUE),
-	allow_retry = FALSE,
-	incorrect = NULL,
-	rows = 6)
+  message = "Representativeness, or the lack thereof, concerns two relationships among the rows in the Population Table. The first is between the data and the other rows. The second is between the other rows and the Preceptor Table.",
+  answer(NULL, correct = TRUE),
+  allow_retry = FALSE,
+  incorrect = NULL,
+  rows = 6)
 ```
 
 ### 
@@ -374,11 +374,11 @@ We do not use the data, directly, to estimate missing values in the Preceptor Ta
 
 ```{r example-1-20}
 question_text(NULL,
-	message = "We are interested in the SAT scores of all high school juniors. The data only includes information from students who graduated and were going to college, which leaves out students who didn't fit the requirements to graduate or were going on to do other things. It is not representative of the larger population of juniors.",
-	answer(NULL, correct = TRUE),
-	allow_retry = FALSE,
-	incorrect = NULL,
-	rows = 6)
+  message = "We are interested in the SAT scores of all high school juniors. The data only includes information from students who graduated and were going to college, which leaves out students who didn't fit the requirements to graduate or were going on to do other things. It is not representative of the larger population of juniors.",
+  answer(NULL, correct = TRUE),
+  allow_retry = FALSE,
+  incorrect = NULL,
+  rows = 6)
 ```
 
 ### 
@@ -392,11 +392,11 @@ We use information about the population to make inferences about the Preceptor T
 ```{r example-1-21}
 
 question_text(NULL,
-	message = "The current juniors, in the Preceptor Table, may have different demographics and better curriculum than those in the Population Table.",
-	answer(NULL, correct = TRUE),
-	allow_retry = FALSE,
-	incorrect = NULL,
-	rows = 6)
+  message = "The current juniors, in the Preceptor Table, may have different demographics and better curriculum than those in the Population Table.",
+  answer(NULL, correct = TRUE),
+  allow_retry = FALSE,
+  incorrect = NULL,
+  rows = 6)
 ```
 
 ### 
@@ -410,11 +410,11 @@ In your own words, define the assumption of "unconfoundedness" when employed in 
 
 ```{r example-1-22}
 question_text(NULL,
-	message = "Unconfoundedness means that the treatment assignment is independent of the potential outcomes, when we condition on pre-treatment covariates.",
-	answer(NULL, correct = TRUE),
-	allow_retry = FALSE,
-	incorrect = NULL,
-	rows = 6)
+  message = "Unconfoundedness means that the treatment assignment is independent of the potential outcomes, when we condition on pre-treatment covariates.",
+  answer(NULL, correct = TRUE),
+  allow_retry = FALSE,
+  incorrect = NULL,
+  rows = 6)
 ```
 
 ### 
@@ -428,11 +428,11 @@ In your own words, describe the components of the virtue of Courage for analyzin
 
 ```{r example-1-23}
 question_text(NULL,
-	message = "Courage starts with math, explores models, and then creates the data generating mechanism.",
-	answer(NULL, correct = TRUE),
-	allow_retry = FALSE,
-	incorrect = NULL,
-	rows = 6)
+  message = "Courage starts with math, explores models, and then creates the data generating mechanism.",
+  answer(NULL, correct = TRUE),
+  allow_retry = FALSE,
+  incorrect = NULL,
+  rows = 6)
 ```
 
 ###
@@ -445,11 +445,11 @@ In your own words, describe the use of Temperance in data science.
 
 ```{r example-1-24}
 question_text(NULL,
-	message = "Temperance uses the data generating mechanism to answer the question with which we began. Humility reminds us that this answer is always a lie. We can also use the DGM to calculate many similar quantities of interest, displaying the results graphically.",
-	answer(NULL, correct = TRUE),
-	allow_retry = FALSE,
-	incorrect = NULL,
-	rows = 6)
+  message = "Temperance uses the data generating mechanism to answer the question with which we began. Humility reminds us that this answer is always a lie. We can also use the DGM to calculate many similar quantities of interest, displaying the results graphically.",
+  answer(NULL, correct = TRUE),
+  allow_retry = FALSE,
+  incorrect = NULL,
+  rows = 6)
 ```
 
 ### 
@@ -471,11 +471,11 @@ What are the units for this problem?
 
 ```{r example-2-1}
 question_text(NULL,
-	message = "The individual students.",
-	answer(NULL, correct = TRUE),
-	allow_retry = FALSE,
-	incorrect = NULL,
-	rows = 6)
+  message = "The individual students.",
+  answer(NULL, correct = TRUE),
+  allow_retry = FALSE,
+  incorrect = NULL,
+  rows = 6)
 ```
 
 ### Exercise 2
@@ -484,11 +484,11 @@ What is the outcome variable for this problem?
 
 ```{r example-2-2}
 question_text(NULL,
-	message = "SAT scores.",
-	answer(NULL, correct = TRUE),
-	allow_retry = FALSE,
-	incorrect = NULL,
-	rows = 6)
+  message = "SAT scores.",
+  answer(NULL, correct = TRUE),
+  allow_retry = FALSE,
+  incorrect = NULL,
+  rows = 6)
 ```
 
 ### Exercise 3
@@ -497,11 +497,11 @@ What is a covariate which you think might be useful for this problem, regardless
 
 ```{r example-2-3}
 question_text(NULL,
-	message = "How many hours each student studied for the SAT is a good indication of how well a student will do on the SAT, as if they study more, they are likely to do better.",
-	answer(NULL, correct = TRUE),
-	allow_retry = FALSE,
-	incorrect = NULL,
-	rows = 6)
+  message = "How many hours each student studied for the SAT is a good indication of how well a student will do on the SAT, as if they study more, they are likely to do better.",
+  answer(NULL, correct = TRUE),
+  allow_retry = FALSE,
+  incorrect = NULL,
+  rows = 6)
 ```
 
 ### 
@@ -514,11 +514,11 @@ What are the treatments, if any, for this problem?
 
 ```{r example-2-4}
 question_text(NULL,
-	message = "Whether or not the student took an SAT tutoring class.",
-	answer(NULL, correct = TRUE),
-	allow_retry = FALSE,
-	incorrect = NULL,
-	rows = 6)
+  message = "Whether or not the student took an SAT tutoring class.",
+  answer(NULL, correct = TRUE),
+  allow_retry = FALSE,
+  incorrect = NULL,
+  rows = 6)
 ```
 
 ### 
@@ -532,11 +532,11 @@ What moment in time does the Preceptor Table refer to?
 
 ```{r example-2-5}
 question_text(NULL,
-	message = "The Preceptor Table refers to the current moment, since we are trying to predict the future SAT scores of current juniors.",
-	answer(NULL, correct = TRUE),
-	allow_retry = FALSE,
-	incorrect = NULL,
-	rows = 6)
+  message = "The Preceptor Table refers to the current moment, since we are trying to predict the future SAT scores of current juniors.",
+  answer(NULL, correct = TRUE),
+  allow_retry = FALSE,
+  incorrect = NULL,
+  rows = 6)
 ```
 
 ### Exercise 6
@@ -545,11 +545,11 @@ How does the motto "No causation without manipulation" apply in this problem?
 
 ```{r example-2-6}
 question_text(NULL,
-	message = "We can only find the causal effect if we manipulate the treatment (either give or don't give the student SAT tutoring). It is easy to do this, as we can offer it to some students and not others.",
-	answer(NULL, correct = TRUE),
-	allow_retry = FALSE,
-	incorrect = NULL,
-	rows = 6)
+  message = "We can only find the causal effect if we manipulate the treatment (either give or don't give the student SAT tutoring). It is easy to do this, as we can offer it to some students and not others.",
+  answer(NULL, correct = TRUE),
+  allow_retry = FALSE,
+  incorrect = NULL,
+  rows = 6)
 ```
 
 ### Exercise 7
@@ -559,11 +559,11 @@ Describe in words the Preceptor Table for this problem.
 
 ```{r example-2-7}
 question_text(NULL,
-	message = "The rows (units) are individual students. The outcome is the SAT score. There needs to be a column for the treatment, which is whether or not the student recieved SAT tutong. Other key covariates include high school grades, PSAT scores, how many hours they studied for the SAT, and whether or not they took an SAT tutoring class.",
-	answer(NULL, correct = TRUE),
-	allow_retry = FALSE,
-	incorrect = NULL,
-	rows = 6)
+  message = "The rows (units) are individual students. The outcome is the SAT score. There needs to be a column for the treatment, which is whether or not the student recieved SAT tutong. Other key covariates include high school grades, PSAT scores, how many hours they studied for the SAT, and whether or not they took an SAT tutoring class.",
+  answer(NULL, correct = TRUE),
+  allow_retry = FALSE,
+  incorrect = NULL,
+  rows = 6)
 ```
 
 ### Exercise 8
@@ -572,11 +572,11 @@ Provide one reason why the assumption of validity might not hold for the outcome
 
 ```{r example-2-8}
 question_text(NULL,
-	message = "SAT tutoring styles has advanced a lot since 2015, so we are probably not covering the same content as before. In this case, the SAT tutoring column from the Preceptor Table and the data may not correspond completely.",
-	answer(NULL, correct = TRUE),
-	allow_retry = FALSE,
-	incorrect = NULL,
-	rows = 6)
+  message = "SAT tutoring styles has advanced a lot since 2015, so we are probably not covering the same content as before. In this case, the SAT tutoring column from the Preceptor Table and the data may not correspond completely.",
+  answer(NULL, correct = TRUE),
+  allow_retry = FALSE,
+  incorrect = NULL,
+  rows = 6)
 ```
 
 ### 
@@ -592,11 +592,11 @@ Provide one reason why the assumption of stability might not be true in this cas
 
 ```{r example-2-9}
 question_text(NULL,
-	message = "What if the student class of 2015 was smarter, on average, than the current junior class that we are trying to calculate scores for? In this case, the stability assumption would not hold.",
-	answer(NULL, correct = TRUE),
-	allow_retry = FALSE,
-	incorrect = NULL,
-	rows = 6)
+  message = "What if the student class of 2015 was smarter, on average, than the current junior class that we are trying to calculate scores for? In this case, the stability assumption would not hold.",
+  answer(NULL, correct = TRUE),
+  allow_retry = FALSE,
+  incorrect = NULL,
+  rows = 6)
 ```
 
 ### 
@@ -610,11 +610,11 @@ We do not use the data, directly, to estimate missing values in the Preceptor Ta
 
 ```{r example-2-10}
 question_text(NULL,
-	message = "We are interested in the SAT scores of all high school juniors. The data only includes information from students who graduated and were going to college, which leaves out students who didn't fit the requirements to graduate or were going on to do other things. It is not representative of the larger population of juniors.",
-	answer(NULL, correct = TRUE),
-	allow_retry = FALSE,
-	incorrect = NULL,
-	rows = 6)
+  message = "We are interested in the SAT scores of all high school juniors. The data only includes information from students who graduated and were going to college, which leaves out students who didn't fit the requirements to graduate or were going on to do other things. It is not representative of the larger population of juniors.",
+  answer(NULL, correct = TRUE),
+  allow_retry = FALSE,
+  incorrect = NULL,
+  rows = 6)
 ```
 
 ### 
@@ -628,11 +628,11 @@ We use information about the population to make inferences about the Preceptor T
 ```{r example-2-11}
 
 question_text(NULL,
-	message = "The current juniors, in the Preceptor Table, may have different demographics and better curriculum than those in the Population Table.",
-	answer(NULL, correct = TRUE),
-	allow_retry = FALSE,
-	incorrect = NULL,
-	rows = 6)
+  message = "The current juniors, in the Preceptor Table, may have different demographics and better curriculum than those in the Population Table.",
+  answer(NULL, correct = TRUE),
+  allow_retry = FALSE,
+  incorrect = NULL,
+  rows = 6)
 ```
 
 ### 
@@ -645,11 +645,11 @@ In your own words, define the assumption of "unconfoundedness" when employed in 
 
 ```{r example-2-12}
 question_text(NULL,
-	message = "Unconfoundedness means that the treatment assignment is independent of the potential outcomes, when we condition on pre-treatment covariates.",
-	answer(NULL, correct = TRUE),
-	allow_retry = FALSE,
-	incorrect = NULL,
-	rows = 6)
+  message = "Unconfoundedness means that the treatment assignment is independent of the potential outcomes, when we condition on pre-treatment covariates.",
+  answer(NULL, correct = TRUE),
+  allow_retry = FALSE,
+  incorrect = NULL,
+  rows = 6)
 ```
 
 ### 
@@ -662,11 +662,11 @@ Provide one reason why the assumption of unconfoundedness might not be true (or 
 
 ```{r example-2-13}
 question_text(NULL,
-	message = "The assignment might not be completely random. SAT tutoring is most helpful to those in desperate need of help, so students who may not be as intelligent may be more likely to take it than students who are smarter. This might lead to some false conclusions, as the average of their SAT scores after tutoring may be lower, because they didn't have much to build off in the first place.",
-	answer(NULL, correct = TRUE),
-	allow_retry = FALSE,
-	incorrect = NULL,
-	rows = 6)
+  message = "The assignment might not be completely random. SAT tutoring is most helpful to those in desperate need of help, so students who may not be as intelligent may be more likely to take it than students who are smarter. This might lead to some false conclusions, as the average of their SAT scores after tutoring may be lower, because they didn't have much to build off in the first place.",
+  answer(NULL, correct = TRUE),
+  allow_retry = FALSE,
+  incorrect = NULL,
+  rows = 6)
 ```
 
 ### 

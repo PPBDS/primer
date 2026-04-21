@@ -79,11 +79,11 @@ What are the four [Cardinal Virtues](https://en.wikipedia.org/wiki/Cardinal_virt
 
 ```{r introduction-1}
 question_text(NULL,
-	message = "Wisdom, Justice, Courage, and Temperance.",
-	answer(NULL, correct = TRUE),
-	allow_retry = FALSE,
-	incorrect = NULL,
-	rows = 2)
+  message = "Wisdom, Justice, Courage, and Temperance.",
+  answer(NULL, correct = TRUE),
+  allow_retry = FALSE,
+  incorrect = NULL,
+  rows = 2)
 ```
 
 ###
@@ -143,11 +143,11 @@ After loading **primer.data** in your Console, type `?ces` in the Console, and p
 
 ```{r the-question-3}
 question_text(NULL,
-	answer(NULL, correct = TRUE),
-	allow_retry = TRUE,
-	try_again_button = "Edit Answer",
-	incorrect = NULL,
-	rows = 3)
+  answer(NULL, correct = TRUE),
+  allow_retry = TRUE,
+  try_again_button = "Edit Answer",
+  incorrect = NULL,
+  rows = 3)
 ```
 
 ### 
@@ -160,11 +160,11 @@ Approval is the broad topic of this tutorial. Given that topic, which variable i
 
 ```{r the-question-4}
 question_text(NULL,
-	message = "The `approval` variable shows the approval of the president.",
-	answer(NULL, correct = TRUE),
-	allow_retry = FALSE,
-	incorrect = NULL,
-	rows = 2)
+  message = "The `approval` variable shows the approval of the president.",
+  answer(NULL, correct = TRUE),
+  allow_retry = FALSE,
+  incorrect = NULL,
+  rows = 2)
 ```
 
 ### 
@@ -192,11 +192,11 @@ Describe this imaginary variable and how might we manipulate its value.
 
 ```{r the-question-5}
 question_text(NULL,
-	message = "Imagine a variable called ads which has a value of 1 if a person was exposed to positive Facebook ads and 0 if they were not. The organization running the campaign can control this variable by deciding, either randomly or otherwise, whether or not to show these ads to a specific individual. This allows us to measure the causal effect of ads on presidential approval.",
-	answer(NULL, correct = TRUE),
-	allow_retry = FALSE,
-	incorrect = NULL,
-	rows = 6)
+  message = "Imagine a variable called ads which has a value of 1 if a person was exposed to positive Facebook ads and 0 if they were not. The organization running the campaign can control this variable by deciding, either randomly or otherwise, whether or not to show these ads to a specific individual. This allows us to measure the causal effect of ads on presidential approval.",
+  answer(NULL, correct = TRUE),
+  allow_retry = FALSE,
+  incorrect = NULL,
+  rows = 6)
 ```
 
 ### 
@@ -209,11 +209,11 @@ Given our (imaginary) treatment variable `ads`, how many potential outcomes are 
 
 ```{r the-question-6}
 question_text(NULL,
-	message = "There are 2 potential outcomes because the treatment variable `ads` takes on 2 posible values: 0 (if the person did not see the ads) or 1 (if the person did see the ads).",
-	answer(NULL, correct = TRUE),
-	allow_retry = FALSE,
-	incorrect = NULL,
-	rows = 6)
+  message = "There are 2 potential outcomes because the treatment variable `ads` takes on 2 posible values: 0 (if the person did not see the ads) or 1 (if the person did see the ads).",
+  answer(NULL, correct = TRUE),
+  allow_retry = FALSE,
+  incorrect = NULL,
+  rows = 6)
 ```
 
 ### 
@@ -226,11 +226,11 @@ In a few sentences, specify the two different values for the imaginary treatment
 
 ```{r the-question-7}
 question_text(NULL,
-	message = 'For a given person, assume that the value of the treatment variable might be 1 (treatment) or 0 (control). If the person gets 1, then `approval` would be "Strongly Approve." If the person gets 0, then `approval` would be "Neither Approve nor Disapprove." The causal effect on the outcome of a treatment of 1 versus 0 is "Strongly Approve" minus "Neither Approve nor Disapprove" — i.e., the difference between two potential outcomes — which equals the individual causal effect for this person.',
-	answer(NULL, correct = TRUE),
-	allow_retry = FALSE,
-	incorrect = NULL,
-	rows = 6)
+  message = 'For a given person, assume that the value of the treatment variable might be 1 (treatment) or 0 (control). If the person gets 1, then `approval` would be "Strongly Approve." If the person gets 0, then `approval` would be "Neither Approve nor Disapprove." The causal effect on the outcome of a treatment of 1 versus 0 is "Strongly Approve" minus "Neither Approve nor Disapprove" — i.e., the difference between two potential outcomes — which equals the individual causal effect for this person.',
+  answer(NULL, correct = TRUE),
+  allow_retry = FALSE,
+  incorrect = NULL,
+  rows = 6)
 ```
 
 ### 
@@ -245,11 +245,11 @@ Let's consider a *predictive* model. Which variable in `ces` do you think might 
 
 ```{r the-question-8}
 question_text(NULL,
-	message = "The ideology of an individual could be connected to their approval of the president. If the president is a Republican, we might expect more conservative individuals to have stronger measured approval.",
-	answer(NULL, correct = TRUE),
-	allow_retry = FALSE,
-	incorrect = NULL,
-	rows = 2)
+  message = "The ideology of an individual could be connected to their approval of the president. If the president is a Republican, we might expect more conservative individuals to have stronger measured approval.",
+  answer(NULL, correct = TRUE),
+  allow_retry = FALSE,
+  incorrect = NULL,
+  rows = 2)
 ```
 
 ### 
@@ -264,11 +264,11 @@ Specify two different groups of people that have different values for `ideology`
 
 ```{r the-question-9}
 question_text(NULL,
-	message = "Consider two groups, the first with a value for `ideology` of Very Liberal and the second with a value of Very Conservative. Those two groups might have different average values for the outcome variable, presidential approval.",
-	answer(NULL, correct = TRUE),
-	allow_retry = FALSE,
-	incorrect = NULL,
-	rows = 6)
+  message = "Consider two groups, the first with a value for `ideology` of Very Liberal and the second with a value of Very Conservative. Those two groups might have different average values for the outcome variable, presidential approval.",
+  answer(NULL, correct = TRUE),
+  allow_retry = FALSE,
+  incorrect = NULL,
+  rows = 6)
 ```
 
 ### 
@@ -281,11 +281,11 @@ Write a predictive question which connects the outcome variable `approval` to `i
 
 ```{r the-question-10}
 question_text(NULL,
-	message = "What is the average difference in presidential approval between people who are Very Liberal and those who are Very Conservative?",
-	answer(NULL, correct = TRUE),
-	allow_retry = FALSE,
-	incorrect = NULL,
-	rows = 6)
+  message = "What is the average difference in presidential approval between people who are Very Liberal and those who are Very Conservative?",
+  answer(NULL, correct = TRUE),
+  allow_retry = FALSE,
+  incorrect = NULL,
+  rows = 6)
 ```
 
 ### 
@@ -309,11 +309,11 @@ In your own words, describe the key components of Wisdom when working on a data 
 
 ```{r wisdom-1}
 question_text(NULL,
-	message = "Wisdom requires a question, the creation of a Preceptor Table, and an examination of our data.",
-	answer(NULL, correct = TRUE),
-	allow_retry = FALSE,
-	incorrect = NULL,
-	rows = 6)
+  message = "Wisdom requires a question, the creation of a Preceptor Table, and an examination of our data.",
+  answer(NULL, correct = TRUE),
+  allow_retry = FALSE,
+  incorrect = NULL,
+  rows = 6)
 ```
 
 ### 
@@ -326,11 +326,11 @@ Define a Preceptor Table.
 
 ```{r wisdom-2}
 question_text(NULL,
-	message = "A Preceptor Table is the smallest possible table of data with rows and columns such that, if there is no missing data, we can easily calculate the quantities of interest.",
-	answer(NULL, correct = TRUE),
-	allow_retry = FALSE,
-	incorrect = NULL,
-	rows = 6)
+  message = "A Preceptor Table is the smallest possible table of data with rows and columns such that, if there is no missing data, we can easily calculate the quantities of interest.",
+  answer(NULL, correct = TRUE),
+  allow_retry = FALSE,
+  incorrect = NULL,
+  rows = 6)
 ```
 
 ### 
@@ -351,11 +351,11 @@ Describe the key components of Preceptor Tables in general, without worrying abo
 
 ```{r wisdom-3}
 question_text(NULL,
-	message = "The rows of the Preceptor Table are the units. The outcome is at least one of the columns. If the problem is causal, there will be at least two (potential) outcome columns. The other columns are covariates. If the problem is causal, at least one of the covariates will be a treatment.",
-	answer(NULL, correct = TRUE),
-	allow_retry = FALSE,
-	incorrect = NULL,
-	rows = 6)
+  message = "The rows of the Preceptor Table are the units. The outcome is at least one of the columns. If the problem is causal, there will be at least two (potential) outcome columns. The other columns are covariates. If the problem is causal, at least one of the covariates will be a treatment.",
+  answer(NULL, correct = TRUE),
+  allow_retry = FALSE,
+  incorrect = NULL,
+  rows = 6)
 ```
 
 ### 
@@ -382,11 +382,11 @@ CP/CR.
 
 ```{r wisdom-4}
 question_text(NULL,
-	answer(NULL, correct = TRUE),
-	allow_retry = TRUE,
-	try_again_button = "Edit Answer",
-	incorrect = NULL,
-	rows = 3)
+  answer(NULL, correct = TRUE),
+  allow_retry = TRUE,
+  try_again_button = "Edit Answer",
+  incorrect = NULL,
+  rows = 3)
 ```
 
 ### 
@@ -399,11 +399,11 @@ What are the units for this problem?
 
 ```{r wisdom-5}
 question_text(NULL,
-	message = "Adults in the United States of America.",
-	answer(NULL, correct = TRUE),
-	allow_retry = FALSE,
-	incorrect = NULL,
-	rows = 6)
+  message = "Adults in the United States of America.",
+  answer(NULL, correct = TRUE),
+  allow_retry = FALSE,
+  incorrect = NULL,
+  rows = 6)
 ```
 
 ### 
@@ -416,11 +416,11 @@ What is the outcome variable for this problem?
 
 ```{r wisdom-6}
 question_text(NULL,
-	message = "The outcome variable is `approval`, which measures each respondent’s approval rating of the president.",
-	answer(NULL, correct = TRUE),
-	allow_retry = FALSE,
-	incorrect = NULL,
-	rows = 6)
+  message = "The outcome variable is `approval`, which measures each respondent’s approval rating of the president.",
+  answer(NULL, correct = TRUE),
+  allow_retry = FALSE,
+  incorrect = NULL,
+  rows = 6)
 ```
 
 ### 
@@ -433,11 +433,11 @@ What is a covariate which you think might be useful for this problem, regardless
 
 ```{r wisdom-7}
 question_text(NULL,
-	message = "A useful covariate would be `ideology`, since it likely has a strong connection to presidential approval.",
-	answer(NULL, correct = TRUE),
-	allow_retry = FALSE,
-	incorrect = NULL,
-	rows = 6)
+  message = "A useful covariate would be `ideology`, since it likely has a strong connection to presidential approval.",
+  answer(NULL, correct = TRUE),
+  allow_retry = FALSE,
+  incorrect = NULL,
+  rows = 6)
 ```
 
 ### 
@@ -450,11 +450,11 @@ What are the treatments, if any, for this problem?
 
 ```{r wisdom-8}
 question_text(NULL,
-	message = "There are no treatments.",
-	answer(NULL, correct = TRUE),
-	allow_retry = FALSE,
-	incorrect = NULL,
-	rows = 6)
+  message = "There are no treatments.",
+  answer(NULL, correct = TRUE),
+  allow_retry = FALSE,
+  incorrect = NULL,
+  rows = 6)
 ```
 
 ### 
@@ -467,11 +467,11 @@ What moment in time does the Preceptor Table refer to?
 
 ```{r wisdom-9}
 question_text(NULL,
-	message = "The Preceptor Table refers to the upcoming election. The data come from the 2020 CES survey.",
-	answer(NULL, correct = TRUE),
-	allow_retry = FALSE,
-	incorrect = NULL,
-	rows = 6)
+  message = "The Preceptor Table refers to the upcoming election. The data come from the 2020 CES survey.",
+  answer(NULL, correct = TRUE),
+  allow_retry = FALSE,
+  incorrect = NULL,
+  rows = 6)
 ```
 
 ###
@@ -513,11 +513,11 @@ Define causal effect.
 
 ```{r wisdom-10}
 question_text(NULL,
-	message = "A causal effect is the difference between two potential outcomes.",
-	answer(NULL, correct = TRUE),
-	allow_retry = FALSE,
-	incorrect = NULL,
-	rows = 6)
+  message = "A causal effect is the difference between two potential outcomes.",
+  answer(NULL, correct = TRUE),
+  allow_retry = FALSE,
+  incorrect = NULL,
+  rows = 6)
 ```
 
 ### 
@@ -530,11 +530,11 @@ What is the fundamental problem of causal inference?
 
 ```{r wisdom-11}
 question_text(NULL,
-	message = "The fundamental problem of causal inference is that we can only observe one potential outcome.",
-	answer(NULL, correct = TRUE),
-	allow_retry = FALSE,
-	incorrect = NULL,
-	rows = 6)
+  message = "The fundamental problem of causal inference is that we can only observe one potential outcome.",
+  answer(NULL, correct = TRUE),
+  allow_retry = FALSE,
+  incorrect = NULL,
+  rows = 6)
 ```
 
 ### 
@@ -547,11 +547,11 @@ How does the motto "No causation without manipulation" apply in this problem?
 
 ```{r wisdom-12}
 question_text(NULL,
-	message = "Since the data is only a survey, without any manipulation, we cannot make any causal inferences.",
-	answer(NULL, correct = TRUE),
-	allow_retry = FALSE,
-	incorrect = NULL,
-	rows = 6)
+  message = "Since the data is only a survey, without any manipulation, we cannot make any causal inferences.",
+  answer(NULL, correct = TRUE),
+  allow_retry = FALSE,
+  incorrect = NULL,
+  rows = 6)
 ```
 
 ### 
@@ -564,11 +564,11 @@ Describe in words the Preceptor Table for this problem.
 
 ```{r wisdom-13}
 question_text(NULL,
-	message = "The Preceptor Table has 3 columns. There is a column for the ID, one for the outcome, and one for ideology. Each row represents one individual.",
-	answer(NULL, correct = TRUE),
-	allow_retry = FALSE,
-	incorrect = NULL,
-	rows = 6)
+  message = "The Preceptor Table has 3 columns. There is a column for the ID, one for the outcome, and one for ideology. Each row represents one individual.",
+  answer(NULL, correct = TRUE),
+  allow_retry = FALSE,
+  incorrect = NULL,
+  rows = 6)
 ```
 
 ### 
@@ -620,11 +620,11 @@ CP/CR.
 
 ```{r wisdom-14}
 question_text(NULL,
-	answer(NULL, correct = TRUE),
-	allow_retry = TRUE,
-	try_again_button = "Edit Answer",
-	incorrect = NULL,
-	rows = 3)
+  answer(NULL, correct = TRUE),
+  allow_retry = TRUE,
+  try_again_button = "Edit Answer",
+  incorrect = NULL,
+  rows = 3)
 ```
 
 ### 
@@ -761,11 +761,11 @@ CP/CR.
 
 ```{r wisdom-20}
 question_text(NULL,
-	answer(NULL, correct = TRUE),
-	allow_retry = TRUE,
-	try_again_button = "Edit Answer",
-	incorrect = NULL,
-	rows = 3)
+  answer(NULL, correct = TRUE),
+  allow_retry = TRUE,
+  try_again_button = "Edit Answer",
+  incorrect = NULL,
+  rows = 3)
 ```
 
 ### 
@@ -884,11 +884,11 @@ CP/CR.
 
 ```{r wisdom-24}
 question_text(NULL,
-	answer(NULL, correct = TRUE),
-	allow_retry = TRUE,
-	try_again_button = "Edit Answer",
-	incorrect = NULL,
-	rows = 3)
+  answer(NULL, correct = TRUE),
+  allow_retry = TRUE,
+  try_again_button = "Edit Answer",
+  incorrect = NULL,
+  rows = 3)
 ```
 
 ### 
@@ -907,11 +907,11 @@ Type your two sentences below.
 
 ```{r wisdom-25}
 question_text(NULL,
-	message = "Public opinion about political leaders often depends on where people fall on the ideological spectrum. Using data from the 2020 Cooperative Election Study, one of the largest political surveys in the U.S., we explore how presidential approval varies across different ideological groups.",
-	answer(NULL, correct = TRUE),
-	allow_retry = FALSE,
-	incorrect = NULL,
-	rows = 6)
+  message = "Public opinion about political leaders often depends on where people fall on the ideological spectrum. Using data from the 2020 Cooperative Election Study, one of the largest political surveys in the U.S., we explore how presidential approval varies across different ideological groups.",
+  answer(NULL, correct = TRUE),
+  allow_retry = FALSE,
+  incorrect = NULL,
+  rows = 6)
 ```
 
 ### 
@@ -929,11 +929,11 @@ In your own words, name the five key components of Justice when working on a dat
 
 ```{r justice-1}
 question_text(NULL,
-	message = "Justice concerns the Population Table and the four key assumptions which underlie it: validity, stability, representativeness, and unconfoundedness.",
-	answer(NULL, correct = TRUE),
-	allow_retry = FALSE,
-	incorrect = NULL,
-	rows = 6)
+  message = "Justice concerns the Population Table and the four key assumptions which underlie it: validity, stability, representativeness, and unconfoundedness.",
+  answer(NULL, correct = TRUE),
+  allow_retry = FALSE,
+  incorrect = NULL,
+  rows = 6)
 ```
 
 ###
@@ -946,11 +946,11 @@ In your own words, define "validity" as we use the term.
 
 ```{r justice-2}
 question_text(NULL,
-	message = "Validity is the consistency, or lack thereof, in the columns of the data set and the corresponding columns in the Preceptor Table.",
-	answer(NULL, correct = TRUE),
-	allow_retry = FALSE,
-	incorrect = NULL,
-	rows = 6)
+  message = "Validity is the consistency, or lack thereof, in the columns of the data set and the corresponding columns in the Preceptor Table.",
+  answer(NULL, correct = TRUE),
+  allow_retry = FALSE,
+  incorrect = NULL,
+  rows = 6)
 ```
 
 ###
@@ -963,11 +963,11 @@ Provide one reason why the assumption of validity might not hold for the outcome
 
 ```{r justice-3}
 question_text(NULL,
-	message = "The `approval` column in our data records how survey respondents reported their approval of the president. But the `approval` column in the Preceptor Table represents respondents' true, underlying approval — not necessarily what they would report on a survey. Survey respondents may not accurately report their true opinions, so the two columns may not be measuring the same thing.",
-	answer(NULL, correct = TRUE),
-	allow_retry = FALSE,
-	incorrect = NULL,
-	rows = 6)
+  message = "The `approval` column in our data records how survey respondents reported their approval of the president. But the `approval` column in the Preceptor Table represents respondents' true, underlying approval — not necessarily what they would report on a survey. Survey respondents may not accurately report their true opinions, so the two columns may not be measuring the same thing.",
+  answer(NULL, correct = TRUE),
+  allow_retry = FALSE,
+  incorrect = NULL,
+  rows = 6)
 ```
 
 ###
@@ -984,11 +984,11 @@ In your own words, define a Population Table.
 
 ```{r justice-4}
 question_text(NULL,
-	message = "The Population Table includes a row for each unit/time combination in the underlying population from which both the Preceptor Table and the data are drawn.",
-	answer(NULL, correct = TRUE),
-	allow_retry = FALSE,
-	incorrect = NULL,
-	rows = 6)
+  message = "The Population Table includes a row for each unit/time combination in the underlying population from which both the Preceptor Table and the data are drawn.",
+  answer(NULL, correct = TRUE),
+  allow_retry = FALSE,
+  incorrect = NULL,
+  rows = 6)
 ```
 
 ### 
@@ -1017,11 +1017,11 @@ In your own words, define the assumption of "stability" when employed in the con
 
 ```{r justice-5}
 question_text(NULL,
-	message = "Stability means that the relationship between the columns in the Population Table is the same for three categories of rows: the data, the Preceptor Table, and the larger population from which both are drawn.",
-	answer(NULL, correct = TRUE),
-	allow_retry = FALSE,
-	incorrect = NULL,
-	rows = 6)
+  message = "Stability means that the relationship between the columns in the Population Table is the same for three categories of rows: the data, the Preceptor Table, and the larger population from which both are drawn.",
+  answer(NULL, correct = TRUE),
+  allow_retry = FALSE,
+  incorrect = NULL,
+  rows = 6)
 ```
 
 ### 
@@ -1034,11 +1034,11 @@ Provide one reason why the assumption of stability might not be true in this cas
 
 ```{r justice-6}
 question_text(NULL,
-	message = "We are concerned about the year 2020 and the data we have has information for 2020, so their is no danger to stability. The time the data was gathered is the same as the time refered to in the Preceptor Table.",
-	answer(NULL, correct = TRUE),
-	allow_retry = FALSE,
-	incorrect = NULL,
-	rows = 6)
+  message = "We are concerned about the year 2020 and the data we have has information for 2020, so their is no danger to stability. The time the data was gathered is the same as the time refered to in the Preceptor Table.",
+  answer(NULL, correct = TRUE),
+  allow_retry = FALSE,
+  incorrect = NULL,
+  rows = 6)
 ```
 
 ### 
@@ -1051,11 +1051,11 @@ We use our data to make inferences about the overall population. We use informat
 
 ```{r justice-7}
 question_text(NULL,
-	message = "Representativeness, or the lack thereof, concerns two relationships among the rows in the Population Table. The first is between the data and the other rows. The second is between the other rows and the Preceptor Table.",
-	answer(NULL, correct = TRUE),
-	allow_retry = FALSE,
-	incorrect = NULL,
-	rows = 6)
+  message = "Representativeness, or the lack thereof, concerns two relationships among the rows in the Population Table. The first is between the data and the other rows. The second is between the other rows and the Preceptor Table.",
+  answer(NULL, correct = TRUE),
+  allow_retry = FALSE,
+  incorrect = NULL,
+  rows = 6)
 ```
 
 ### 
@@ -1068,11 +1068,11 @@ We do not use the data, directly, to estimate missing values in the Preceptor Ta
 
 ```{r justice-8}
 question_text(NULL,
-	message = "A large portion of the CES respondents are YouGov panelists. This group might not representative of the whole population because they might be more politically active and care more about politics than other people do.",
-	answer(NULL, correct = TRUE),
-	allow_retry = FALSE,
-	incorrect = NULL,
-	rows = 6)
+  message = "A large portion of the CES respondents are YouGov panelists. This group might not representative of the whole population because they might be more politically active and care more about politics than other people do.",
+  answer(NULL, correct = TRUE),
+  allow_retry = FALSE,
+  incorrect = NULL,
+  rows = 6)
 ```
 
 ### 
@@ -1085,11 +1085,11 @@ We use information about the population to make inferences about the Preceptor T
 
 ```{r justice-9}
 question_text(NULL,
-	message = "Because the Preceptor Table includes the entire population, there is no problem with representativeness in using the population to draw inferences about the Precetor Table. They are one and the same.",
-	answer(NULL, correct = TRUE),
-	allow_retry = FALSE,
-	incorrect = NULL,
-	rows = 6)
+  message = "Because the Preceptor Table includes the entire population, there is no problem with representativeness in using the population to draw inferences about the Precetor Table. They are one and the same.",
+  answer(NULL, correct = TRUE),
+  allow_retry = FALSE,
+  incorrect = NULL,
+  rows = 6)
 ```
 
 ### 
@@ -1102,11 +1102,11 @@ In your own words, define the assumption of "unconfoundedness" when employed in 
 
 ```{r justice-10}
 question_text(NULL,
-	message = "Unconfoundedness means that the treatment assignment is independent of the potential outcomes, when we condition on pre-treatment covariates.",
-	answer(NULL, correct = TRUE),
-	allow_retry = FALSE,
-	incorrect = NULL,
-	rows = 6)
+  message = "Unconfoundedness means that the treatment assignment is independent of the potential outcomes, when we condition on pre-treatment covariates.",
+  answer(NULL, correct = TRUE),
+  allow_retry = FALSE,
+  incorrect = NULL,
+  rows = 6)
 ```
 
 ### 
@@ -1123,11 +1123,11 @@ Of course, your version will be somewhat different.
 
 ```{r justice-11}
 question_text(NULL,
-	message = "Public opinion about political leaders often depends on where people fall on the ideological spectrum. Using data from the 2020 Cooperative Election Study, one of the largest political surveys in the U.S., we explore how presidential approval varies across different ideological groups. One concern is that survey respondents might be systematically different from other Americans.",
-	answer(NULL, correct = TRUE),
-	allow_retry = FALSE,
-	incorrect = NULL,
-	rows = 6)
+  message = "Public opinion about political leaders often depends on where people fall on the ideological spectrum. Using data from the 2020 Cooperative Election Study, one of the largest political surveys in the U.S., we explore how presidential approval varies across different ideological groups. One concern is that survey respondents might be systematically different from other Americans.",
+  answer(NULL, correct = TRUE),
+  allow_retry = FALSE,
+  incorrect = NULL,
+  rows = 6)
 ```
 
 ### 
@@ -1145,11 +1145,11 @@ In your own words, describe the components of the virtue of Courage for analyzin
 
 ```{r courage-1}
 question_text(NULL,
-	message = "Courage starts with math, explores models, and then creates the data generating mechanism.",
-	answer(NULL, correct = TRUE),
-	allow_retry = FALSE,
-	incorrect = NULL,
-	rows = 6)
+  message = "Courage starts with math, explores models, and then creates the data generating mechanism.",
+  answer(NULL, correct = TRUE),
+  allow_retry = FALSE,
+  incorrect = NULL,
+  rows = 6)
 ```
 
 ###
@@ -1198,11 +1198,11 @@ Use AI to come up with a $\LaTeX$ representation of the mathematical structure o
 
 ```{r courage-3}
 question_text(NULL,
-	answer(NULL, correct = TRUE),
-	allow_retry = TRUE,
-	try_again_button = "Edit Answer",
-	incorrect = NULL,
-	rows = 5)
+  answer(NULL, correct = TRUE),
+  allow_retry = TRUE,
+  try_again_button = "Edit Answer",
+  incorrect = NULL,
+  rows = 5)
 ```
 
 ###
@@ -1238,11 +1238,11 @@ CP/CR.
 
 ```{r courage-4}
 question_text(NULL,
-	answer(NULL, correct = TRUE),
-	allow_retry = TRUE,
-	try_again_button = "Edit Answer",
-	incorrect = NULL,
-	rows = 3)
+  answer(NULL, correct = TRUE),
+  allow_retry = TRUE,
+  try_again_button = "Edit Answer",
+  incorrect = NULL,
+  rows = 3)
 ```
 
 ### 
@@ -1265,11 +1265,11 @@ CP/CR.
 
 ```{r courage-5}
 question_text(NULL,
-	answer(NULL, correct = TRUE),
-	allow_retry = TRUE,
-	try_again_button = "Edit Answer",
-	incorrect = NULL,
-	rows = 3)
+  answer(NULL, correct = TRUE),
+  allow_retry = TRUE,
+  try_again_button = "Edit Answer",
+  incorrect = NULL,
+  rows = 3)
 ```
 
 ### Exercise 6
@@ -1280,11 +1280,11 @@ Copy and paste the description.
 
 ```{r courage-6}
 question_text(NULL,
-	answer(NULL, correct = TRUE),
-	allow_retry = TRUE,
-	try_again_button = "Edit Answer",
-	incorrect = NULL,
-	rows = 3)
+  answer(NULL, correct = TRUE),
+  allow_retry = TRUE,
+  try_again_button = "Edit Answer",
+  incorrect = NULL,
+  rows = 3)
 ```
 
 
@@ -1306,11 +1306,11 @@ CP/CR.
 
 ```{r courage-7}
 question_text(NULL,
-	answer(NULL, correct = TRUE),
-	allow_retry = TRUE,
-	try_again_button = "Edit Answer",
-	incorrect = NULL,
-	rows = 3)
+  answer(NULL, correct = TRUE),
+  allow_retry = TRUE,
+  try_again_button = "Edit Answer",
+  incorrect = NULL,
+  rows = 3)
 ```
 
 ###
@@ -1325,11 +1325,11 @@ CP/CR.
 
 ```{r courage-8}
 question_text(NULL,
-	answer(NULL, correct = TRUE),
-	allow_retry = TRUE,
-	try_again_button = "Edit Answer",
-	incorrect = NULL,
-	rows = 3)
+  answer(NULL, correct = TRUE),
+  allow_retry = TRUE,
+  try_again_button = "Edit Answer",
+  incorrect = NULL,
+  rows = 3)
 ```
 
 ### Exercise 9
@@ -1340,11 +1340,11 @@ CP/CR the loaded libraries from your Console.
 
 ```{r courage-9}
 question_text(NULL,
-	answer(NULL, correct = TRUE),
-	allow_retry = TRUE,
-	try_again_button = "Edit Answer",
-	incorrect = NULL,
-	rows = 3)
+  answer(NULL, correct = TRUE),
+  allow_retry = TRUE,
+  try_again_button = "Edit Answer",
+  incorrect = NULL,
+  rows = 3)
 ```
 
 ### Exercise 10
@@ -1355,11 +1355,11 @@ Copy and paste the description.
 
 ```{r courage-10}
 question_text(NULL,
-	answer(NULL, correct = TRUE),
-	allow_retry = TRUE,
-	try_again_button = "Edit Answer",
-	incorrect = NULL,
-	rows = 3)
+  answer(NULL, correct = TRUE),
+  allow_retry = TRUE,
+  try_again_button = "Edit Answer",
+  incorrect = NULL,
+  rows = 3)
 ```
 
 ###
@@ -1417,11 +1417,11 @@ CP/CR.
 
 ```{r courage-12}
 question_text(NULL,
-	answer(NULL, correct = TRUE),
-	allow_retry = TRUE,
-	try_again_button = "Edit Answer",
-	incorrect = NULL,
-	rows = 3)
+  answer(NULL, correct = TRUE),
+  allow_retry = TRUE,
+  try_again_button = "Edit Answer",
+  incorrect = NULL,
+  rows = 3)
 ```
 
 ### Exercise 13
@@ -1467,11 +1467,11 @@ CP/CR.
 
 ```{r courage-14}
 question_text(NULL,
-	answer(NULL, correct = TRUE),
-	allow_retry = TRUE,
-	try_again_button = "Edit Answer",
-	incorrect = NULL,
-	rows = 3)
+  answer(NULL, correct = TRUE),
+  allow_retry = TRUE,
+  try_again_button = "Edit Answer",
+  incorrect = NULL,
+  rows = 3)
 ```
 
 ### Exercise 15
@@ -1482,11 +1482,11 @@ CP/CR
 
 ```{r courage-15}
 question_text(NULL,
-	answer(NULL, correct = TRUE),
-	allow_retry = TRUE,
-	try_again_button = "Edit Answer",
-	incorrect = NULL,
-	rows = 3)
+  answer(NULL, correct = TRUE),
+  allow_retry = TRUE,
+  try_again_button = "Edit Answer",
+  incorrect = NULL,
+  rows = 3)
 ```
 
 ### 
@@ -1549,11 +1549,11 @@ Once the $\LaTeX$ code looks good, paste it below.
 
 ```{r courage-18}
 question_text(NULL,
-	answer(NULL, correct = TRUE),
-	allow_retry = TRUE,
-	try_again_button = "Edit Answer",
-	incorrect = NULL,
-	rows = 3)
+  answer(NULL, correct = TRUE),
+  allow_retry = TRUE,
+  try_again_button = "Edit Answer",
+  incorrect = NULL,
+  rows = 3)
 ```
 
 ###
@@ -1605,11 +1605,11 @@ CP/CR.
 
 ```{r courage-19}
 question_text(NULL,
-	answer(NULL, correct = TRUE),
-	allow_retry = TRUE,
-	try_again_button = "Edit Answer",
-	incorrect = NULL,
-	rows = 8)
+  answer(NULL, correct = TRUE),
+  allow_retry = TRUE,
+  try_again_button = "Edit Answer",
+  incorrect = NULL,
+  rows = 8)
 ```
 
 ### 
@@ -1630,11 +1630,11 @@ CP/CR.
 
 ```{r courage-20}
 question_text(NULL,
-	answer(NULL, correct = TRUE),
-	allow_retry = TRUE,
-	try_again_button = "Edit Answer",
-	incorrect = NULL,
-	rows = 6)
+  answer(NULL, correct = TRUE),
+  allow_retry = TRUE,
+  try_again_button = "Edit Answer",
+  incorrect = NULL,
+  rows = 6)
 ```
 
 ###
@@ -1661,11 +1661,11 @@ CP/CR.
 
 ```{r courage-21}
 question_text(NULL,
-	answer(NULL, correct = TRUE),
-	allow_retry = TRUE,
-	try_again_button = "Edit Answer",
-	incorrect = NULL,
-	rows = 3)
+  answer(NULL, correct = TRUE),
+  allow_retry = TRUE,
+  try_again_button = "Edit Answer",
+  incorrect = NULL,
+  rows = 3)
 ```
 
 ### Exercise 22
@@ -1685,11 +1685,11 @@ CP/CR.
 
 ```{r courage-22}
 question_text(NULL,
-	answer(NULL, correct = TRUE),
-	allow_retry = TRUE,
-	try_again_button = "Edit Answer",
-	incorrect = NULL,
-	rows = 3)
+  answer(NULL, correct = TRUE),
+  allow_retry = TRUE,
+  try_again_button = "Edit Answer",
+  incorrect = NULL,
+  rows = 3)
 ```
 
 ### 
@@ -1717,11 +1717,11 @@ CP/CR.
 
 ```{r courage-23}
 question_text(NULL,
-	answer(NULL, correct = TRUE),
-	allow_retry = TRUE,
-	try_again_button = "Edit Answer",
-	incorrect = NULL,
-	rows = 12)
+  answer(NULL, correct = TRUE),
+  allow_retry = TRUE,
+  try_again_button = "Edit Answer",
+  incorrect = NULL,
+  rows = 12)
 ```
 
 ###
@@ -1768,11 +1768,11 @@ Recall the beginning of our version of the summary:
 
 ```{r courage-24}
 question_text(NULL,
-	message = "Public opinion about political leaders often depends on where people fall on the ideological spectrum. Using data from the 2020 Cooperative Election Study, one of the largest political surveys in the U.S., we explore how presidential approval varies across different ideological groups. One concern is that survey respondents might be systematically different from other Americans. We are using a cumulative model for ordinal regression.",
-	answer(NULL, correct = TRUE),
-	allow_retry = FALSE,
-	incorrect = NULL,
-	rows = 6)
+  message = "Public opinion about political leaders often depends on where people fall on the ideological spectrum. Using data from the 2020 Cooperative Election Study, one of the largest political surveys in the U.S., we explore how presidential approval varies across different ideological groups. One concern is that survey respondents might be systematically different from other Americans. We are using a cumulative model for ordinal regression.",
+  answer(NULL, correct = TRUE),
+  allow_retry = FALSE,
+  incorrect = NULL,
+  rows = 6)
 ```
 
 ### 
@@ -1790,11 +1790,11 @@ In your own words, describe the use of Temperance in data science.
 
 ```{r temperance-1}
 question_text(NULL,
-	message = "Temperance uses the data generating mechanism to answer the questions with which we began. Humility reminds us that this answer is always a lie. We can also use the DGM to calculate many similar quantities of interest, displaying the results graphically.",
-	answer(NULL, correct = TRUE),
-	allow_retry = FALSE,
-	incorrect = NULL,
-	rows = 6)
+  message = "Temperance uses the data generating mechanism to answer the questions with which we began. Humility reminds us that this answer is always a lie. We can also use the DGM to calculate many similar quantities of interest, displaying the results graphically.",
+  answer(NULL, correct = TRUE),
+  allow_retry = FALSE,
+  incorrect = NULL,
+  rows = 6)
 ```
 
 ### 
@@ -1816,11 +1816,11 @@ What does the "Very Conservative" coefficient tell us?
 
 ```{r temperance-2}
 question_text(NULL,
-	message = "The coefficient for 'ideologyVery Conservative' is negative, indicating that, when comparing Very Conservative respondents to the baseline (Moderates), the predicted approval rating is lower, adjusting for education.",
-	answer(NULL, correct = TRUE),
-	allow_retry = FALSE,
-	incorrect = NULL,
-	rows = 6)
+  message = "The coefficient for 'ideologyVery Conservative' is negative, indicating that, when comparing Very Conservative respondents to the baseline (Moderates), the predicted approval rating is lower, adjusting for education.",
+  answer(NULL, correct = TRUE),
+  allow_retry = FALSE,
+  incorrect = NULL,
+  rows = 6)
 ```
 
 ### Exercise 3
@@ -1829,11 +1829,11 @@ What does the "College Graduate" coefficient tell us?
 
 ```{r temperance-3}
 question_text(NULL,
-	message = "The estimate for 'educationCollege Graduate' is negative, showing that College Graduates tend to have lower presidential approval compared to High School graduates (the baseline), adjusting for ideology.",
-	answer(NULL, correct = TRUE),
-	allow_retry = FALSE,
-	incorrect = NULL,
-	rows = 6)
+  message = "The estimate for 'educationCollege Graduate' is negative, showing that College Graduates tend to have lower presidential approval compared to High School graduates (the baseline), adjusting for ideology.",
+  answer(NULL, correct = TRUE),
+  allow_retry = FALSE,
+  incorrect = NULL,
+  rows = 6)
 ```
 
 ### Exercise 4
@@ -1842,11 +1842,11 @@ Does the "Liberal" confidence interval include zero? What does that mean?
 
 ```{r temperance-4}
 question_text(NULL,
-	message = "The confidence interval for 'ideologyLiberal' does not include zero, so we can be confident that Liberals differ in approval compared to Moderates, after adjusting for education.",
-	answer(NULL, correct = TRUE),
-	allow_retry = FALSE,
-	incorrect = NULL,
-	rows = 6)
+  message = "The confidence interval for 'ideologyLiberal' does not include zero, so we can be confident that Liberals differ in approval compared to Moderates, after adjusting for education.",
+  answer(NULL, correct = TRUE),
+  allow_retry = FALSE,
+  incorrect = NULL,
+  rows = 6)
 ```
 
 ### Exercise 5
@@ -1877,11 +1877,11 @@ What is the specific question we are trying to answer?
 
 ```{r temperance-6}
 question_text(NULL,
-	message = "The general question: What is the relationship between the approval of the president and an individual's ideology? The specific question: What is the average difference in presidential approval between Very Liberal and Very Conservative people?",
-	answer(NULL, correct = TRUE),
-	allow_retry = FALSE,
-	incorrect = NULL,
-	rows = 6)
+  message = "The general question: What is the relationship between the approval of the president and an individual's ideology? The specific question: What is the average difference in presidential approval between Very Liberal and Very Conservative people?",
+  answer(NULL, correct = TRUE),
+  allow_retry = FALSE,
+  incorrect = NULL,
+  rows = 6)
 ```
 
 ### 
@@ -1993,11 +1993,11 @@ Copy the code for your plot here:
 
 ```{r temperance-12}
 question_text(NULL,
-	answer(NULL, correct = TRUE),
-	allow_retry = TRUE,
-	try_again_button = "Edit Answer",
-	incorrect = NULL,
-	rows = 20)
+  answer(NULL, correct = TRUE),
+  allow_retry = TRUE,
+  try_again_button = "Edit Answer",
+  incorrect = NULL,
+  rows = 20)
 ```
 
 ###
@@ -2020,11 +2020,11 @@ CP/CR.
 
 ```{r temperance-13}
 question_text(NULL,
-	answer(NULL, correct = TRUE),
-	allow_retry = TRUE,
-	try_again_button = "Edit Answer",
-	incorrect = NULL,
-	rows = 10)
+  answer(NULL, correct = TRUE),
+  allow_retry = TRUE,
+  try_again_button = "Edit Answer",
+  incorrect = NULL,
+  rows = 10)
 ```
 
 
@@ -2038,11 +2038,11 @@ Write the last sentence of your summary paragraph. It describes at least one qua
 
 ```{r temperance-14}
 question_text(NULL,
-	message = "Public opinion about political leaders often depends on where people fall on the ideological spectrum. Using data from the 2020 Cooperative Election Study, one of the largest political surveys in the U.S., we explore how presidential approval varies across different ideological groups. One concern is that survey respondents might be systematically different from other Americans. We are using a cumulative model for ordinal regression. People who are very conservative are more likely to approve the president higher by about 5.6 compared to people who are very liberal. We are 95% confident that the true value is between 4.9 and 6.2.",
-	answer(NULL, correct = TRUE),
-	allow_retry = FALSE,
-	incorrect = NULL,
-	rows = 6)
+  message = "Public opinion about political leaders often depends on where people fall on the ideological spectrum. Using data from the 2020 Cooperative Election Study, one of the largest political surveys in the U.S., we explore how presidential approval varies across different ideological groups. One concern is that survey respondents might be systematically different from other Americans. We are using a cumulative model for ordinal regression. People who are very conservative are more likely to approve the president higher by about 5.6 compared to people who are very liberal. We are 95% confident that the true value is between 4.9 and 6.2.",
+  answer(NULL, correct = TRUE),
+  allow_retry = FALSE,
+  incorrect = NULL,
+  rows = 6)
 ```
 
 ### 
@@ -2055,11 +2055,11 @@ Write a few sentences which explain why the estimates for the quantities of inte
 
 ```{r temperance-15}
 question_text(NULL,
-	message = "Our estimates and confidence intervals might not be wrong because the data is not perfect. We have noticed some potential problems such as in validity; people could be lying about thier approval of the president or misidentifying their ideology. These concerns can cause our findings to be inaccurate. The true estimate and confidence interval might be different. The interval would be bigger because we have uncertainties about the data.",
-	answer(NULL, correct = TRUE),
-	allow_retry = FALSE,
-	incorrect = NULL,
-	rows = 6)
+  message = "Our estimates and confidence intervals might not be wrong because the data is not perfect. We have noticed some potential problems such as in validity; people could be lying about thier approval of the president or misidentifying their ideology. These concerns can cause our findings to be inaccurate. The true estimate and confidence interval might be different. The interval would be bigger because we have uncertainties about the data.",
+  answer(NULL, correct = TRUE),
+  allow_retry = FALSE,
+  incorrect = NULL,
+  rows = 6)
 ```
 
 ### 
@@ -2082,11 +2082,11 @@ CP/CR.
 
 ```{r temperance-16}
 question_text(NULL,
-	answer(NULL, correct = TRUE),
-	allow_retry = TRUE,
-	try_again_button = "Edit Answer",
-	incorrect = NULL,
-	rows = 30)
+  answer(NULL, correct = TRUE),
+  allow_retry = TRUE,
+  try_again_button = "Edit Answer",
+  incorrect = NULL,
+  rows = 30)
 ```
 
 ### 
@@ -2099,11 +2099,11 @@ Publish your rendered QMD to GitHub Pages. Copy/paste the resulting url below.
 
 ```{r temperance-17}
 question_text(NULL,
-	answer(NULL, correct = TRUE),
-	allow_retry = TRUE,
-	try_again_button = "Edit Answer",
-	incorrect = NULL,
-	rows = 3)
+  answer(NULL, correct = TRUE),
+  allow_retry = TRUE,
+  try_again_button = "Edit Answer",
+  incorrect = NULL,
+  rows = 3)
 ```
 
 ### 
@@ -2116,11 +2116,11 @@ Copy/paste the url to your Github repo.
 
 ```{r temperance-18}
 question_text(NULL,
-	answer(NULL, correct = TRUE),
-	allow_retry = TRUE,
-	try_again_button = "Edit Answer",
-	incorrect = NULL,
-	rows = 3)
+  answer(NULL, correct = TRUE),
+  allow_retry = TRUE,
+  try_again_button = "Edit Answer",
+  incorrect = NULL,
+  rows = 3)
 ```
 
 ### 

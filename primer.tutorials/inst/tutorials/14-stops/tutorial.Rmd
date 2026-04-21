@@ -69,11 +69,11 @@ What are the four [Cardinal Virtues](https://en.wikipedia.org/wiki/Cardinal_virt
 
 ```{r introduction-1}
 question_text(NULL,
-	message = "Wisdom, Justice, Courage, and Temperance.",
-	answer(NULL, correct = TRUE),
-	allow_retry = FALSE,
-	incorrect = NULL,
-	rows = 2)
+  message = "Wisdom, Justice, Courage, and Temperance.",
+  answer(NULL, correct = TRUE),
+  allow_retry = FALSE,
+  incorrect = NULL,
+  rows = 2)
 ```
 
 ###
@@ -104,11 +104,11 @@ CP/CR.
 
 ```{r introduction-2}
 question_text(NULL,
-	answer(NULL, correct = TRUE),
-	allow_retry = TRUE,
-	try_again_button = "Edit Answer",
-	incorrect = NULL,
-	rows = 3)
+  answer(NULL, correct = TRUE),
+  allow_retry = TRUE,
+  try_again_button = "Edit Answer",
+  incorrect = NULL,
+  rows = 3)
 ```
 
 ### 
@@ -136,11 +136,11 @@ CP/CR.
 
 ```{r introduction-3}
 question_text(NULL,
-	answer(NULL, correct = TRUE),
-	allow_retry = TRUE,
-	try_again_button = "Edit Answer",
-	incorrect = NULL,
-	rows = 6)
+  answer(NULL, correct = TRUE),
+  allow_retry = TRUE,
+  try_again_button = "Edit Answer",
+  incorrect = NULL,
+  rows = 6)
 ```
 
 ### 
@@ -157,11 +157,11 @@ CP/CR.
 
 ```{r introduction-4}
 question_text(NULL,
-	answer(NULL, correct = TRUE),
-	allow_retry = TRUE,
-	try_again_button = "Edit Answer",
-	incorrect = NULL,
-	rows = 3)
+  answer(NULL, correct = TRUE),
+  allow_retry = TRUE,
+  try_again_button = "Edit Answer",
+  incorrect = NULL,
+  rows = 3)
 ```
 
 ###
@@ -178,11 +178,11 @@ In the Console, type `?stops`, and paste the Description below.
 
 ```{r introduction-5}
 question_text(NULL,
-	answer(NULL, correct = TRUE),
-	allow_retry = TRUE,
-	try_again_button = "Edit Answer",
-	incorrect = NULL,
-	rows = 8)
+  answer(NULL, correct = TRUE),
+  allow_retry = TRUE,
+  try_again_button = "Edit Answer",
+  incorrect = NULL,
+  rows = 8)
 ```
 
 ### 
@@ -195,11 +195,11 @@ Define a causal effect.
 
 ```{r introduction-6}
 question_text(NULL,
-	message = "A causal effect is the difference between two potential outcomes.",
-	answer(NULL, correct = TRUE),
-	allow_retry = FALSE,
-	incorrect = NULL,
-	rows = 6)
+  message = "A causal effect is the difference between two potential outcomes.",
+  answer(NULL, correct = TRUE),
+  allow_retry = FALSE,
+  incorrect = NULL,
+  rows = 6)
 ```
 
 ### 
@@ -212,11 +212,11 @@ What is the fundamental problem of causal inference?
 
 ```{r introduction-7}
 question_text(NULL,
-	message = "The fundamental problem of causal inference is that we can only observe one potential outcome.",
-	answer(NULL, correct = TRUE),
-	allow_retry = FALSE,
-	incorrect = NULL,
-	rows = 6)
+  message = "The fundamental problem of causal inference is that we can only observe one potential outcome.",
+  answer(NULL, correct = TRUE),
+  allow_retry = FALSE,
+  incorrect = NULL,
+  rows = 6)
 ```
 
 ### 
@@ -229,11 +229,11 @@ Arrests in traffic stops are the broad topic of this tutorial. Given that topic,
 
 ```{r introduction-8}
 question_text(NULL,
-	message = "We should be using the `arrested` variable.",
-	answer(NULL, correct = TRUE),
-	allow_retry = FALSE,
-	incorrect = NULL,
-	rows = 2)
+  message = "We should be using the `arrested` variable.",
+  answer(NULL, correct = TRUE),
+  allow_retry = FALSE,
+  incorrect = NULL,
+  rows = 2)
 ```
 
 ### 
@@ -266,11 +266,11 @@ Describe this imaginary variable and how might we manipulate its value.
 
 ```{r introduction-9}
 question_text(NULL,
-	message = "Imagine a variable called `mask`, indicating whether or not the person is wearing a mask. We can manipulate this, at least in theory, by giving out masks to half the motorists that we plan on studying, and seeing if the mask affects their chances of getting arrested.",
-	answer(NULL, correct = TRUE),
-	allow_retry = FALSE,
-	incorrect = NULL,
-	rows = 6)
+  message = "Imagine a variable called `mask`, indicating whether or not the person is wearing a mask. We can manipulate this, at least in theory, by giving out masks to half the motorists that we plan on studying, and seeing if the mask affects their chances of getting arrested.",
+  answer(NULL, correct = TRUE),
+  allow_retry = FALSE,
+  incorrect = NULL,
+  rows = 6)
 ```
 
 ### 
@@ -283,11 +283,11 @@ Given our (imaginary) treatment variable `mask`, how many potential outcomes are
 
 ```{r introduction-10}
 question_text(NULL,
-	message = "There are 2 potential outcomes because the treatment variable `mask` takes on 2 posible values: either wearing a mask and getting arrested or not wearing one and getting arrested.",
-	answer(NULL, correct = TRUE),
-	allow_retry = FALSE,
-	incorrect = NULL,
-	rows = 6)
+  message = "There are 2 potential outcomes because the treatment variable `mask` takes on 2 posible values: either wearing a mask and getting arrested or not wearing one and getting arrested.",
+  answer(NULL, correct = TRUE),
+  allow_retry = FALSE,
+  incorrect = NULL,
+  rows = 6)
 ```
 
 ### 
@@ -300,11 +300,11 @@ In a few sentences, specify the two different values for the imaginary treatment
 
 ```{r introduction-11}
 question_text(NULL,
-	message = "For each person, there are only two possible values for arrested: 0 (meaning not arrested) and 1 (meaning arrested). So, there might be a person who, if she had been wearing a mask, would have been arrested, but, since she was not wearing a mask, she was not arrested. For a given arrest, assume that the value of the treatment variable might be `is wearing a mask` or `isn't wearing a mask`. If the person `is wearing a mask`, and gets arrested, but the person `isn't wearing a mask`, and does not get arrested. The causal effect on the outcome of a treatment of `mask = TRUE` versus `mask = FALSE` is getting arrested the difference between two potential outcomes --- which is the causal effect.",
-	answer(NULL, correct = TRUE),
-	allow_retry = FALSE,
-	incorrect = NULL,
-	rows = 6)
+  message = "For each person, there are only two possible values for arrested: 0 (meaning not arrested) and 1 (meaning arrested). So, there might be a person who, if she had been wearing a mask, would have been arrested, but, since she was not wearing a mask, she was not arrested. For a given arrest, assume that the value of the treatment variable might be `is wearing a mask` or `isn't wearing a mask`. If the person `is wearing a mask`, and gets arrested, but the person `isn't wearing a mask`, and does not get arrested. The causal effect on the outcome of a treatment of `mask = TRUE` versus `mask = FALSE` is getting arrested the difference between two potential outcomes --- which is the causal effect.",
+  answer(NULL, correct = TRUE),
+  allow_retry = FALSE,
+  incorrect = NULL,
+  rows = 6)
 ```
 
 ### 
@@ -321,11 +321,11 @@ Let's consider a *predictive* model. Which variable in `stops` do you think migh
 
 ```{r introduction-12}
 question_text(NULL,
-	message = "Let's consider the variable `race`. Does race have an effect on the rate people get arrested at?",
-	answer(NULL, correct = TRUE),
-	allow_retry = FALSE,
-	incorrect = NULL,
-	rows = 2)
+  message = "Let's consider the variable `race`. Does race have an effect on the rate people get arrested at?",
+  answer(NULL, correct = TRUE),
+  allow_retry = FALSE,
+  incorrect = NULL,
+  rows = 2)
 ```
 
 ### 
@@ -340,11 +340,11 @@ Specify two different groups of people which have different values for race and 
 
 ```{r introduction-13}
 question_text(NULL,
-	message = "Consider two groups, the first with a value for race of white and the second with value black. Those two groups might have different average values for the outcome variable.",
-	answer(NULL, correct = TRUE),
-	allow_retry = FALSE,
-	incorrect = NULL,
-	rows = 6)
+  message = "Consider two groups, the first with a value for race of white and the second with value black. Those two groups might have different average values for the outcome variable.",
+  answer(NULL, correct = TRUE),
+  allow_retry = FALSE,
+  incorrect = NULL,
+  rows = 6)
 ```
 
 ### 
@@ -359,11 +359,11 @@ Write a predictive question which connects the outcome variable `arrested` to `r
 
 ```{r introduction-14}
 question_text(NULL,
-	message = "What is the difference in arrest rate between Black and White drivers adjusting for other variables?",
-	answer(NULL, correct = TRUE),
-	allow_retry = FALSE,
-	incorrect = NULL,
-	rows = 6)
+  message = "What is the difference in arrest rate between Black and White drivers adjusting for other variables?",
+  answer(NULL, correct = TRUE),
+  allow_retry = FALSE,
+  incorrect = NULL,
+  rows = 6)
 ```
 
 ### 
@@ -400,11 +400,11 @@ Define a Preceptor Table.
 
 ```{r wisdom-2}
 question_text(NULL,
-	message = "A Preceptor Table is the smallest possible table of data with rows and columns such that, if there is no missing data, we can easily calculate the quantity of interest.",
-	answer(NULL, correct = TRUE),
-	allow_retry = FALSE,
-	incorrect = NULL,
-	rows = 6)
+  message = "A Preceptor Table is the smallest possible table of data with rows and columns such that, if there is no missing data, we can easily calculate the quantity of interest.",
+  answer(NULL, correct = TRUE),
+  allow_retry = FALSE,
+  incorrect = NULL,
+  rows = 6)
 ```
 
 ### 
@@ -421,11 +421,11 @@ Describe the key components of Preceptor Tables in general, without worrying abo
 
 ```{r wisdom-3}
 question_text(NULL,
-	message = "The rows of the Preceptor Table are the units. The outcome is at least one of the columns. If the problem is causal, there will be at least two (potential) outcome columns. The other columns are covariates. If the problem is causal, at least one of the covariates will be considered a treatment.",
-	answer(NULL, correct = TRUE),
-	allow_retry = FALSE,
-	incorrect = NULL,
-	rows = 6)
+  message = "The rows of the Preceptor Table are the units. The outcome is at least one of the columns. If the problem is causal, there will be at least two (potential) outcome columns. The other columns are covariates. If the problem is causal, at least one of the covariates will be considered a treatment.",
+  answer(NULL, correct = TRUE),
+  allow_retry = FALSE,
+  incorrect = NULL,
+  rows = 6)
 ```
 
 ### 
@@ -438,11 +438,11 @@ What are the units for this problem?
 
 ```{r wisdom-4}
 question_text(NULL,
-	message = "The units are the people who have been pulled over.",
-	answer(NULL, correct = TRUE),
-	allow_retry = FALSE,
-	incorrect = NULL,
-	rows = 6)
+  message = "The units are the people who have been pulled over.",
+  answer(NULL, correct = TRUE),
+  allow_retry = FALSE,
+  incorrect = NULL,
+  rows = 6)
 ```
 
 ### 
@@ -457,11 +457,11 @@ What is the outcome variable for this problem?
 
 ```{r wisdom-5}
 question_text(NULL,
-	message = "Our outcome variable is `arrested`.",
-	answer(NULL, correct = TRUE),
-	allow_retry = FALSE,
-	incorrect = NULL,
-	rows = 6)
+  message = "Our outcome variable is `arrested`.",
+  answer(NULL, correct = TRUE),
+  allow_retry = FALSE,
+  incorrect = NULL,
+  rows = 6)
 ```
 
 ### 
@@ -474,11 +474,11 @@ What is a covariate which you think might be useful for this problem, regardless
 
 ```{r wisdom-6}
 question_text(NULL,
-	message = "A useful covariate is `race`. Other characteristics like the person's age, sex, and the type of car they're driving might also affect whether someone is arrested. It would also be beneficial to include `zone`, since the officer's zone may affect arrest rates.",
-	answer(NULL, correct = TRUE),
-	allow_retry = FALSE,
-	incorrect = NULL,
-	rows = 6)
+  message = "A useful covariate is `race`. Other characteristics like the person's age, sex, and the type of car they're driving might also affect whether someone is arrested. It would also be beneficial to include `zone`, since the officer's zone may affect arrest rates.",
+  answer(NULL, correct = TRUE),
+  allow_retry = FALSE,
+  incorrect = NULL,
+  rows = 6)
 ```
 
 ### 
@@ -491,11 +491,11 @@ What are the treatments, if any, for this problem?
 
 ```{r wisdom-7}
 question_text(NULL,
-	message = "There are no treatments.",
-	answer(NULL, correct = TRUE),
-	allow_retry = FALSE,
-	incorrect = NULL,
-	rows = 6)
+  message = "There are no treatments.",
+  answer(NULL, correct = TRUE),
+  allow_retry = FALSE,
+  incorrect = NULL,
+  rows = 6)
 ```
 
 ### 
@@ -508,11 +508,11 @@ What moment in time does the Preceptor Table refer to?
 
 ```{r wisdom-8}
 question_text(NULL,
-	message = "Our Preceptor Table should represent traffic stops sometime between the late 2000s and the mid 2010s for maximum compatibility with our data.",
-	answer(NULL, correct = TRUE),
-	allow_retry = FALSE,
-	incorrect = NULL,
-	rows = 6)
+  message = "Our Preceptor Table should represent traffic stops sometime between the late 2000s and the mid 2010s for maximum compatibility with our data.",
+  answer(NULL, correct = TRUE),
+  allow_retry = FALSE,
+  incorrect = NULL,
+  rows = 6)
 ```
 
 ### 
@@ -542,11 +542,11 @@ Describe in words the Preceptor Table for this problem.
 
 ```{r wisdom-9}
 question_text(NULL,
-	message = "The Preceptor Table has one row for each traffic stop. The columns are an ID, `arrested` (the outcome variable), and covariates including `race`, `sex`, and `zone`.",
-	answer(NULL, correct = TRUE),
-	allow_retry = FALSE,
-	incorrect = NULL,
-	rows = 6)
+  message = "The Preceptor Table has one row for each traffic stop. The columns are an ID, `arrested` (the outcome variable), and covariates including `race`, `sex`, and `zone`.",
+  answer(NULL, correct = TRUE),
+  allow_retry = FALSE,
+  incorrect = NULL,
+  rows = 6)
 ```
 
 ### 
@@ -586,11 +586,11 @@ What is the narrow, specific question we will try to answer?
 
 ```{r wisdom-10}
 question_text(NULL,
-	message = "What is the difference in arrest rate between Black and White drivers adjusting for other variables?",
-	answer(NULL, correct = TRUE),
-	allow_retry = FALSE,
-	incorrect = NULL,
-	rows = 6)
+  message = "What is the difference in arrest rate between Black and White drivers adjusting for other variables?",
+  answer(NULL, correct = TRUE),
+  allow_retry = FALSE,
+  incorrect = NULL,
+  rows = 6)
 ```
 
 ###
@@ -611,11 +611,11 @@ Type your two sentences below.
 
 ```{r wisdom-11}
 question_text(NULL,
-	message = "Racial disparities in policing outcomes remain a pressing concern, particularly when examining how factors like race and location influence the likelihood of arrest during traffic stops. Using data from a study of New Orleans drivers, we seek to understand the relationship between driver race and the probability of getting arrested during a traffic stop.",
-	answer(NULL, correct = TRUE),
-	allow_retry = FALSE,
-	incorrect = NULL,
-	rows = 6)
+  message = "Racial disparities in policing outcomes remain a pressing concern, particularly when examining how factors like race and location influence the likelihood of arrest during traffic stops. Using data from a study of New Orleans drivers, we seek to understand the relationship between driver race and the probability of getting arrested during a traffic stop.",
+  answer(NULL, correct = TRUE),
+  allow_retry = FALSE,
+  incorrect = NULL,
+  rows = 6)
 ```
 
 ### 
@@ -633,11 +633,11 @@ In your own words, name the five key components of Justice when working on a dat
 
 ```{r justice-1}
 question_text(NULL,
-	message = "Justice concerns the Population Table and the four key assumptions which underlie it: validity, stability, representativeness, and unconfoundedness.",
-	answer(NULL, correct = TRUE),
-	allow_retry = FALSE,
-	incorrect = NULL,
-	rows = 6)
+  message = "Justice concerns the Population Table and the four key assumptions which underlie it: validity, stability, representativeness, and unconfoundedness.",
+  answer(NULL, correct = TRUE),
+  allow_retry = FALSE,
+  incorrect = NULL,
+  rows = 6)
 ```
 
 ### 
@@ -650,11 +650,11 @@ In your own words, define "validity" as we use the term.
 
 ```{r justice-2}
 question_text(NULL,
-	message = "Validity is the consistency, or lack thereof, in the columns of the data set and the corresponding columns in the Preceptor Table.",
-	answer(NULL, correct = TRUE),
-	allow_retry = FALSE,
-	incorrect = NULL,
-	rows = 6)
+  message = "Validity is the consistency, or lack thereof, in the columns of the data set and the corresponding columns in the Preceptor Table.",
+  answer(NULL, correct = TRUE),
+  allow_retry = FALSE,
+  incorrect = NULL,
+  rows = 6)
 ```
 
 ### 
@@ -667,11 +667,11 @@ Provide one reason why the assumption of validity might not hold for the outcome
 
 ```{r justice-3}
 question_text(NULL,
-	message = "The `arrested` column in our data records whether a person was formally arrested. But the `arrested` column in the Preceptor Table might capture a broader category of police actions — including detainments or summonses that fall short of a formal arrest. If the two columns are using different definitions of what counts as an arrest, they are not measuring the same thing.",
-	answer(NULL, correct = TRUE),
-	allow_retry = FALSE,
-	incorrect = NULL,
-	rows = 6)
+  message = "The `arrested` column in our data records whether a person was formally arrested. But the `arrested` column in the Preceptor Table might capture a broader category of police actions — including detainments or summonses that fall short of a formal arrest. If the two columns are using different definitions of what counts as an arrest, they are not measuring the same thing.",
+  answer(NULL, correct = TRUE),
+  allow_retry = FALSE,
+  incorrect = NULL,
+  rows = 6)
 ```
 
 ### 
@@ -688,11 +688,11 @@ In your own words, define a Population Table.
 
 ```{r justice-4}
 question_text(NULL,
-	message = "The Population Table includes a row for each unit/time combination in the underlying population from which both the Preceptor Table and the data are drawn.",
-	answer(NULL, correct = TRUE),
-	allow_retry = FALSE,
-	incorrect = NULL,
-	rows = 6)
+  message = "The Population Table includes a row for each unit/time combination in the underlying population from which both the Preceptor Table and the data are drawn.",
+  answer(NULL, correct = TRUE),
+  allow_retry = FALSE,
+  incorrect = NULL,
+  rows = 6)
 ```
 
 ### 
@@ -705,11 +705,11 @@ Specify the unit/time combinations which define each row in this Population Tabl
 
 ```{r justice-5}
 question_text(NULL,
-	message = "Each row in the Population Table represents a single traffic stop involving a driver, observed at the time the stop occurred. So, the unit is a driver during a specific traffic stop, and the time is the moment or date of that stop.",
-	answer(NULL, correct = TRUE),
-	allow_retry = FALSE,
-	incorrect = NULL,
-	rows = 6)
+  message = "Each row in the Population Table represents a single traffic stop involving a driver, observed at the time the stop occurred. So, the unit is a driver during a specific traffic stop, and the time is the moment or date of that stop.",
+  answer(NULL, correct = TRUE),
+  allow_retry = FALSE,
+  incorrect = NULL,
+  rows = 6)
 ```
 
 ### 
@@ -734,11 +734,11 @@ In your own words, define the assumption of "stability" when employed in the con
 
 ```{r justice-6}
 question_text(NULL,
-	message = "Stability means that the relationship between the columns in the Population Table is the same for three categories of rows: the data, the Preceptor Table, and the larger population from which both are drawn.",
-	answer(NULL, correct = TRUE),
-	allow_retry = FALSE,
-	incorrect = NULL,
-	rows = 6)
+  message = "Stability means that the relationship between the columns in the Population Table is the same for three categories of rows: the data, the Preceptor Table, and the larger population from which both are drawn.",
+  answer(NULL, correct = TRUE),
+  allow_retry = FALSE,
+  incorrect = NULL,
+  rows = 6)
 ```
 
 ### 
@@ -751,11 +751,11 @@ Provide one reason why the assumption of stability might not be true in this cas
 
 ```{r justice-7}
 question_text(NULL,
-	message = "We don't know the exact time period of the Preceptor Table, so we don't know if any laws were passed between the time periods of both data sources that affected the basis of arrests during traffic stops. Therefore, we don't know if the arrests reported in the `arrested` column in both data sources were made on the same basis and whether or not both data sources had the same arrest rate.",
-	answer(NULL, correct = TRUE),
-	allow_retry = FALSE,
-	incorrect = NULL,
-	rows = 6)
+  message = "We don't know the exact time period of the Preceptor Table, so we don't know if any laws were passed between the time periods of both data sources that affected the basis of arrests during traffic stops. Therefore, we don't know if the arrests reported in the `arrested` column in both data sources were made on the same basis and whether or not both data sources had the same arrest rate.",
+  answer(NULL, correct = TRUE),
+  allow_retry = FALSE,
+  incorrect = NULL,
+  rows = 6)
 ```
 
 ### 
@@ -768,11 +768,11 @@ We use our data to make inferences about the overall population. We use informat
 
 ```{r justice-8}
 question_text(NULL,
-	message = "Representativeness, or the lack thereof, concerns two relationships among the rows in the Population Table. The first is between the data and the other rows. The second is between the other rows and the Preceptor Table.",
-	answer(NULL, correct = TRUE),
-	allow_retry = FALSE,
-	incorrect = NULL,
-	rows = 6)
+  message = "Representativeness, or the lack thereof, concerns two relationships among the rows in the Population Table. The first is between the data and the other rows. The second is between the other rows and the Preceptor Table.",
+  answer(NULL, correct = TRUE),
+  allow_retry = FALSE,
+  incorrect = NULL,
+  rows = 6)
 ```
 
 ### 
@@ -785,11 +785,11 @@ We do not use the data, directly, to estimate missing values in the Preceptor Ta
 
 ```{r justice-9}
 question_text(NULL,
-	message = "The dataset `stops` is a heavily modified version of the data from the actual study, and therefore has left out nearly 3.1 million entries from the real data, shortening it to roughly 400,000 entries. The deletion of the entries may have led to a misrepresentation of the population, in that a lot of the current data may only be from select areas with select conditions present, and could be from biased officers who are more likely to arrest drivers compared to other officers in the zone. This would mess up our final predictions because it would be providing values that are unrealistic to the area, causing our entire model to be unreastic.",
-	answer(NULL, correct = TRUE),
-	allow_retry = FALSE,
-	incorrect = NULL,
-	rows = 6)
+  message = "The dataset `stops` is a heavily modified version of the data from the actual study, and therefore has left out nearly 3.1 million entries from the real data, shortening it to roughly 400,000 entries. The deletion of the entries may have led to a misrepresentation of the population, in that a lot of the current data may only be from select areas with select conditions present, and could be from biased officers who are more likely to arrest drivers compared to other officers in the zone. This would mess up our final predictions because it would be providing values that are unrealistic to the area, causing our entire model to be unreastic.",
+  answer(NULL, correct = TRUE),
+  allow_retry = FALSE,
+  incorrect = NULL,
+  rows = 6)
 ```
 
 ### 
@@ -804,11 +804,11 @@ We use information about the population to make inferences about the Preceptor T
 
 ```{r justice-10}
 question_text(NULL,
-	message = "Our data may not be collected fairly, in that some of the data could have just been collected from corrupt officers who would be more likely to arrest drivers than other officers in the zone. The opposite could be inferred as well. This, again, would mess up our final predictions because it would be providing values that are unrealistic to the area, causing our entire model to be unreastic.",
-	answer(NULL, correct = TRUE),
-	allow_retry = FALSE,
-	incorrect = NULL,
-	rows = 6)
+  message = "Our data may not be collected fairly, in that some of the data could have just been collected from corrupt officers who would be more likely to arrest drivers than other officers in the zone. The opposite could be inferred as well. This, again, would mess up our final predictions because it would be providing values that are unrealistic to the area, causing our entire model to be unreastic.",
+  answer(NULL, correct = TRUE),
+  allow_retry = FALSE,
+  incorrect = NULL,
+  rows = 6)
 ```
 
 ### 
@@ -821,11 +821,11 @@ In your own words, define the assumption of "unconfoundedness" when employed in 
 
 ```{r justice-11}
 question_text(NULL,
-	message = "Unconfoundedness means that the treatment assignment is independent of the potential outcomes, when we condition on pre-treatment covariates.",
-	answer(NULL, correct = TRUE),
-	allow_retry = FALSE,
-	incorrect = NULL,
-	rows = 6)
+  message = "Unconfoundedness means that the treatment assignment is independent of the potential outcomes, when we condition on pre-treatment covariates.",
+  answer(NULL, correct = TRUE),
+  allow_retry = FALSE,
+  incorrect = NULL,
+  rows = 6)
 ```
 
 ### 
@@ -846,11 +846,11 @@ CP/CR.
 
 ```{r justice-12}
 question_text(NULL,
-	answer(NULL, correct = TRUE),
-	allow_retry = TRUE,
-	try_again_button = "Edit Answer",
-	incorrect = NULL,
-	rows = 3)
+  answer(NULL, correct = TRUE),
+  allow_retry = TRUE,
+  try_again_button = "Edit Answer",
+  incorrect = NULL,
+  rows = 3)
 ```
 
 ###
@@ -875,11 +875,11 @@ CP/CR.
 
 ```{r justice-13}
 question_text(NULL,
-	answer(NULL, correct = TRUE),
-	allow_retry = TRUE,
-	try_again_button = "Edit Answer",
-	incorrect = NULL,
-	rows = 3)
+  answer(NULL, correct = TRUE),
+  allow_retry = TRUE,
+  try_again_button = "Edit Answer",
+  incorrect = NULL,
+  rows = 3)
 ```
 
 ###
@@ -900,11 +900,11 @@ Use AI to come up with a $\LaTeX$ representation of the mathematical structure o
 
 ```{r justice-14}
 question_text(NULL,
-	answer(NULL, correct = TRUE),
-	allow_retry = TRUE,
-	try_again_button = "Edit Answer",
-	incorrect = NULL,
-	rows = 5)
+  answer(NULL, correct = TRUE),
+  allow_retry = TRUE,
+  try_again_button = "Edit Answer",
+  incorrect = NULL,
+  rows = 5)
 ```
 
 ###
@@ -945,11 +945,11 @@ Of course, your version will be somewhat different.
 
 ```{r justice-15}
 question_text(NULL,
-	message = "Racial disparities in policing outcomes remain a pressing concern, particularly when examining how factors like race and location influence the likelihood of arrest during traffic stops. Using data from a study of New Orleans drivers, we seek to understand the relationship between driver race and the probability of getting arrested during a traffic stop. However, our data from both our Preceptor Table and our dataset may not fully represent the population as both may not be from the same time frame and some of our data may come from biased officers, who may target certain groups of individuals.",
-	answer(NULL, correct = TRUE),
-	allow_retry = FALSE,
-	incorrect = NULL,
-	rows = 6)
+  message = "Racial disparities in policing outcomes remain a pressing concern, particularly when examining how factors like race and location influence the likelihood of arrest during traffic stops. Using data from a study of New Orleans drivers, we seek to understand the relationship between driver race and the probability of getting arrested during a traffic stop. However, our data from both our Preceptor Table and our dataset may not fully represent the population as both may not be from the same time frame and some of our data may come from biased officers, who may target certain groups of individuals.",
+  answer(NULL, correct = TRUE),
+  allow_retry = FALSE,
+  incorrect = NULL,
+  rows = 6)
 ```
 
 ### 
@@ -967,11 +967,11 @@ In your own words, describe the components of the virtue of Courage for analyzin
 
 ```{r courage-1}
 question_text(NULL,
-	message = "Courage creates the data generating mechanism.",
-	answer(NULL, correct = TRUE),
-	allow_retry = FALSE,
-	incorrect = NULL,
-	rows = 6)
+  message = "Courage creates the data generating mechanism.",
+  answer(NULL, correct = TRUE),
+  allow_retry = FALSE,
+  incorrect = NULL,
+  rows = 6)
 ```
 
 ### 
@@ -1214,11 +1214,11 @@ CP/CR.
 
 ```{r courage-10}
 question_text(NULL,
-	answer(NULL, correct = TRUE),
-	allow_retry = TRUE,
-	try_again_button = "Edit Answer",
-	incorrect = NULL,
-	rows = 3)
+  answer(NULL, correct = TRUE),
+  allow_retry = TRUE,
+  try_again_button = "Edit Answer",
+  incorrect = NULL,
+  rows = 3)
 ```
 
 ###
@@ -1231,11 +1231,11 @@ In the Console, load the **[easystats](https://easystats.github.io/easystats/)**
 
 ```{r courage-11}
 question_text(NULL,
-	answer(NULL, correct = TRUE),
-	allow_retry = TRUE,
-	try_again_button = "Edit Answer",
-	incorrect = NULL,
-	rows = 5)
+  answer(NULL, correct = TRUE),
+  allow_retry = TRUE,
+  try_again_button = "Edit Answer",
+  incorrect = NULL,
+  rows = 5)
 ```
 
 ###
@@ -1252,11 +1252,11 @@ You may skip this question.
 
 ```{r courage-12}
 question_text(NULL,
-	answer(NULL, correct = TRUE),
-	allow_retry = TRUE,
-	try_again_button = "Edit Answer",
-	incorrect = NULL,
-	rows = 5)
+  answer(NULL, correct = TRUE),
+  allow_retry = TRUE,
+  try_again_button = "Edit Answer",
+  incorrect = NULL,
+  rows = 5)
 ```
 
 ###
@@ -1275,11 +1275,11 @@ Once the $\LaTeX$ code looks good, paste it below.
 
 ```{r courage-13}
 question_text(NULL,
-	answer(NULL, correct = TRUE),
-	allow_retry = TRUE,
-	try_again_button = "Edit Answer",
-	incorrect = NULL,
-	rows = 3)
+  answer(NULL, correct = TRUE),
+  allow_retry = TRUE,
+  try_again_button = "Edit Answer",
+  incorrect = NULL,
+  rows = 3)
 ```
 
 ###
@@ -1344,11 +1344,11 @@ CP/CR.
 
 ```{r courage-14}
 question_text(NULL,
-	answer(NULL, correct = TRUE),
-	allow_retry = TRUE,
-	try_again_button = "Edit Answer",
-	incorrect = NULL,
-	rows = 8)
+  answer(NULL, correct = TRUE),
+  allow_retry = TRUE,
+  try_again_button = "Edit Answer",
+  incorrect = NULL,
+  rows = 8)
 ```
 
 ### 
@@ -1369,11 +1369,11 @@ CP/CR.
 
 ```{r courage-15}
 question_text(NULL,
-	answer(NULL, correct = TRUE),
-	allow_retry = TRUE,
-	try_again_button = "Edit Answer",
-	incorrect = NULL,
-	rows = 6)
+  answer(NULL, correct = TRUE),
+  allow_retry = TRUE,
+  try_again_button = "Edit Answer",
+  incorrect = NULL,
+  rows = 6)
 ```
 
 ###
@@ -1419,11 +1419,11 @@ CP/CR.
 
 ```{r courage-17}
 question_text(NULL,
-	answer(NULL, correct = TRUE),
-	allow_retry = TRUE,
-	try_again_button = "Edit Answer",
-	incorrect = NULL,
-	rows = 12)
+  answer(NULL, correct = TRUE),
+  allow_retry = TRUE,
+  try_again_button = "Edit Answer",
+  incorrect = NULL,
+  rows = 12)
 ```
 
 ###
@@ -1471,11 +1471,11 @@ Recall the beginning of our version of the summary:
 <!-- AR: Summary should not yet discuss findings? Isn't that supposed to happen after temperance? -->
 ```{r courage-18}
 question_text(NULL,
-	message = "Using data from a study of New Orleans drivers, we seek to understand the relationship between driver race and the probabilty of getting arrested during a traffic stop. However, our data from both our Preceptor Table and our dataset may not fully represent the population as both may not be from the same time frame and some of our data may come from biased officers, who may target certain groups of individuals. However, these concerns don't appear to be valid in a substantial manner in either dataset, allowing us to continue in our process. We modeled `arrested` as a linear function of both `sex` and the product of `race` and `zone`. From this, we examined that Males are more likely to get arrested than Females.",
-	answer(NULL, correct = TRUE),
-	allow_retry = FALSE,
-	incorrect = NULL,
-	rows = 6)
+  message = "Using data from a study of New Orleans drivers, we seek to understand the relationship between driver race and the probabilty of getting arrested during a traffic stop. However, our data from both our Preceptor Table and our dataset may not fully represent the population as both may not be from the same time frame and some of our data may come from biased officers, who may target certain groups of individuals. However, these concerns don't appear to be valid in a substantial manner in either dataset, allowing us to continue in our process. We modeled `arrested` as a linear function of both `sex` and the product of `race` and `zone`. From this, we examined that Males are more likely to get arrested than Females.",
+  answer(NULL, correct = TRUE),
+  allow_retry = FALSE,
+  incorrect = NULL,
+  rows = 6)
 ```
 
 ### 
@@ -1493,11 +1493,11 @@ In your own words, describe the use of Temperance in data science.
 
 ```{r temperance-1}
 question_text(NULL,
-	message = "Temperance uses the data generating mechanism to answer the question with which we began. Humility reminds us that this answer is always a lie. We can also use the DGM to calculate many similar quantities of interest, displaying the results graphically.",
-	answer(NULL, correct = TRUE),
-	allow_retry = FALSE,
-	incorrect = NULL,
-	rows = 6)
+  message = "Temperance uses the data generating mechanism to answer the question with which we began. Humility reminds us that this answer is always a lie. We can also use the DGM to calculate many similar quantities of interest, displaying the results graphically.",
+  answer(NULL, correct = TRUE),
+  allow_retry = FALSE,
+  incorrect = NULL,
+  rows = 6)
 ```
 
 ### 
@@ -1522,11 +1522,11 @@ Write a sentence interpreting the 0.06 estimate for `sexMale`.
 
 ```{r temperance-2}
 question_text(NULL,
-	message = "When comparing men with women, men have a 0.06 higher value for arrested, meaning that they are more likely to get arrested, relative to women, conditional on the other variables in the model.",
-	answer(NULL, correct = TRUE),
-	allow_retry = FALSE,
-	incorrect = NULL,
-	rows = 6)
+  message = "When comparing men with women, men have a 0.06 higher value for arrested, meaning that they are more likely to get arrested, relative to women, conditional on the other variables in the model.",
+  answer(NULL, correct = TRUE),
+  allow_retry = FALSE,
+  incorrect = NULL,
+  rows = 6)
 ```
 
 ###
@@ -1545,11 +1545,11 @@ Write a sentence interpreting the -0.04 estimate for `raceWhite`.
 
 ```{r temperance-3}
 question_text(NULL,
-	message = "When comparing White people with Black people, White people have a lower value for arrested, meaning that they are less likely to get arrested, relative to Black people conditional on the other variables in the model.",
-	answer(NULL, correct = TRUE),
-	allow_retry = FALSE,
-	incorrect = NULL,
-	rows = 6)
+  message = "When comparing White people with Black people, White people have a lower value for arrested, meaning that they are less likely to get arrested, relative to Black people conditional on the other variables in the model.",
+  answer(NULL, correct = TRUE),
+  allow_retry = FALSE,
+  incorrect = NULL,
+  rows = 6)
 ```
 
 ###
@@ -1568,11 +1568,11 @@ Write a sentence interpreting the 0.18 estimate for `(Intercept)`.
 
 ```{r temperance-4}
 question_text(NULL,
-	message = "The intercept represents the baseline predicted value of the outcome when all the predictor variables are at their reference levels. In our case this means that there is a 18% chance that a Black female living in Zone A will get arrested.",
-	answer(NULL, correct = TRUE),
-	allow_retry = FALSE,
-	incorrect = NULL,
-	rows = 6)
+  message = "The intercept represents the baseline predicted value of the outcome when all the predictor variables are at their reference levels. In our case this means that there is a 18% chance that a Black female living in Zone A will get arrested.",
+  answer(NULL, correct = TRUE),
+  allow_retry = FALSE,
+  incorrect = NULL,
+  rows = 6)
 ```
 
 ### Exercise 5
@@ -1589,11 +1589,11 @@ CP/CR.
 
 ```{r temperance-5}
 question_text(NULL,
-	answer(NULL, correct = TRUE),
-	allow_retry = TRUE,
-	try_again_button = "Edit Answer",
-	incorrect = NULL,
-	rows = 3)
+  answer(NULL, correct = TRUE),
+  allow_retry = TRUE,
+  try_again_button = "Edit Answer",
+  incorrect = NULL,
+  rows = 3)
 ```
 
 ### 
@@ -1606,11 +1606,11 @@ What is the specific question we are trying to answer?
 
 ```{r temperance-6}
 question_text(NULL,
-	message = "We are generally investigating the likelihood of getting arrested during a Traffic Stop in New Orleans. We are specifically interested in the probabilty of arrest for a Black driver.",
-	answer(NULL, correct = TRUE),
-	allow_retry = FALSE,
-	incorrect = NULL,
-	rows = 6)
+  message = "We are generally investigating the likelihood of getting arrested during a Traffic Stop in New Orleans. We are specifically interested in the probabilty of arrest for a Black driver.",
+  answer(NULL, correct = TRUE),
+  allow_retry = FALSE,
+  incorrect = NULL,
+  rows = 6)
 ```
 
 ### 
@@ -1625,11 +1625,11 @@ CP/CR.
 
 ```{r temperance-7}
 question_text(NULL,
-	answer(NULL, correct = TRUE),
-	allow_retry = TRUE,
-	try_again_button = "Edit Answer",
-	incorrect = NULL,
-	rows = 3)
+  answer(NULL, correct = TRUE),
+  allow_retry = TRUE,
+  try_again_button = "Edit Answer",
+  incorrect = NULL,
+  rows = 3)
 ```
 
 ```{r temperance-7-test, include = FALSE}
@@ -1648,11 +1648,11 @@ CP/CR.
 
 ```{r temperance-8}
 question_text(NULL,
-	answer(NULL, correct = TRUE),
-	allow_retry = TRUE,
-	try_again_button = "Edit Answer",
-	incorrect = NULL,
-	rows = 3)
+  answer(NULL, correct = TRUE),
+  allow_retry = TRUE,
+  try_again_button = "Edit Answer",
+  incorrect = NULL,
+  rows = 3)
 ```
 
 ```{r temperance-8-test, include = FALSE}
@@ -1672,11 +1672,11 @@ CP/CR.
 
 ```{r temperance-9}
 question_text(NULL,
-	answer(NULL, correct = TRUE),
-	allow_retry = TRUE,
-	try_again_button = "Edit Answer",
-	incorrect = NULL,
-	rows = 3)
+  answer(NULL, correct = TRUE),
+  allow_retry = TRUE,
+  try_again_button = "Edit Answer",
+  incorrect = NULL,
+  rows = 3)
 ```
 
 ```{r temperance-9-test, include = FALSE}
@@ -1702,11 +1702,11 @@ CP/CR.
 
 ```{r temperance-10}
 question_text(NULL,
-	answer(NULL, correct = TRUE),
-	allow_retry = TRUE,
-	try_again_button = "Edit Answer",
-	incorrect = NULL,
-	rows = 5)
+  answer(NULL, correct = TRUE),
+  allow_retry = TRUE,
+  try_again_button = "Edit Answer",
+  incorrect = NULL,
+  rows = 5)
 ```
 
 ```{r temperance-10-test, include = FALSE}
@@ -1729,11 +1729,11 @@ Copy the code for your plot here:
 
 ```{r temperance-11}
 question_text(NULL,
-	answer(NULL, correct = TRUE),
-	allow_retry = TRUE,
-	try_again_button = "Edit Answer",
-	incorrect = NULL,
-	rows = 15)
+  answer(NULL, correct = TRUE),
+  allow_retry = TRUE,
+  try_again_button = "Edit Answer",
+  incorrect = NULL,
+  rows = 15)
 ```
 
 ### 
@@ -1807,11 +1807,11 @@ CP/CR.
 
 ```{r temperance-12}
 question_text(NULL,
-	answer(NULL, correct = TRUE),
-	allow_retry = TRUE,
-	try_again_button = "Edit Answer",
-	incorrect = NULL,
-	rows = 10)
+  answer(NULL, correct = TRUE),
+  allow_retry = TRUE,
+  try_again_button = "Edit Answer",
+  incorrect = NULL,
+  rows = 10)
 ```
 
 
@@ -1825,11 +1825,11 @@ Write the last sentence of your summary paragraph. It describes at least one qua
 
 ```{r temperance-13}
 question_text(NULL,
-	message = "Using data from a study of New Orleans drivers, we seek to understand the relationship between driver race and the probabilty of getting arrested during a traffic stop. However, our data from both our Preceptor Table and our dataset may not fully represent the population as both may not be from the same time frame and some of our data may come from biased officers, who may target certain groups of individuals. However, these concerns don't appear to be valid in a substantial manner in either dataset, allowing us to continue in our process. We modeled `arrested` as a linear function of both `sex` and the product of `race` and `zone`. From this, we examined that Males are less likely of getting arrested than Females. Focusing on our question, there is no uncertainty associated with our estimate because it, itself, is an expression of uncertainty. We estimate that the probaibility of a Black driver in New Orleans getting arrested during a traffic stop is roughly 25%, compared to roughly 20% for White drivers.",
-	answer(NULL, correct = TRUE),
-	allow_retry = FALSE,
-	incorrect = NULL,
-	rows = 6)
+  message = "Using data from a study of New Orleans drivers, we seek to understand the relationship between driver race and the probabilty of getting arrested during a traffic stop. However, our data from both our Preceptor Table and our dataset may not fully represent the population as both may not be from the same time frame and some of our data may come from biased officers, who may target certain groups of individuals. However, these concerns don't appear to be valid in a substantial manner in either dataset, allowing us to continue in our process. We modeled `arrested` as a linear function of both `sex` and the product of `race` and `zone`. From this, we examined that Males are less likely of getting arrested than Females. Focusing on our question, there is no uncertainty associated with our estimate because it, itself, is an expression of uncertainty. We estimate that the probaibility of a Black driver in New Orleans getting arrested during a traffic stop is roughly 25%, compared to roughly 20% for White drivers.",
+  answer(NULL, correct = TRUE),
+  allow_retry = FALSE,
+  incorrect = NULL,
+  rows = 6)
 ```
 
 ### 
@@ -1844,11 +1844,11 @@ Write a few sentences which explain why the estimates for the quantities of inte
 
 ```{r temperance-14}
 question_text(NULL,
-	message = "Based on all of the errors in our data that we collected during Justice, our original data source to base our model on was already flawed. Additionally, our model can only predict estimates on paper, based on an ideal world. It doesn't account for many factors of the real world that we, ourselves, can't even describe. However, our estimate was formed to the best of our abilities given the data on hand, and all I would do to modify it would be to modify the confidence intervals: I would keep the upper confidence interval the same, but would singifcantly decrease the lower confidence interval to roughly 15%-17% to account for the future, where the values would most likely decrease based on the pattern of racism in the US decreasing over time.",
-	answer(NULL, correct = TRUE),
-	allow_retry = FALSE,
-	incorrect = NULL,
-	rows = 6)
+  message = "Based on all of the errors in our data that we collected during Justice, our original data source to base our model on was already flawed. Additionally, our model can only predict estimates on paper, based on an ideal world. It doesn't account for many factors of the real world that we, ourselves, can't even describe. However, our estimate was formed to the best of our abilities given the data on hand, and all I would do to modify it would be to modify the confidence intervals: I would keep the upper confidence interval the same, but would singifcantly decrease the lower confidence interval to roughly 15%-17% to account for the future, where the values would most likely decrease based on the pattern of racism in the US decreasing over time.",
+  answer(NULL, correct = TRUE),
+  allow_retry = FALSE,
+  incorrect = NULL,
+  rows = 6)
 ```
 
 ### 
@@ -1871,11 +1871,11 @@ CP/CR.
 
 ```{r temperance-15}
 question_text(NULL,
-	answer(NULL, correct = TRUE),
-	allow_retry = TRUE,
-	try_again_button = "Edit Answer",
-	incorrect = NULL,
-	rows = 30)
+  answer(NULL, correct = TRUE),
+  allow_retry = TRUE,
+  try_again_button = "Edit Answer",
+  incorrect = NULL,
+  rows = 30)
 ```
 
 ### 
@@ -1894,11 +1894,11 @@ Copy/paste the resulting URL below.
 
 ```{r temperance-16}
 question_text(NULL,
-	answer(NULL, correct = TRUE),
-	allow_retry = TRUE,
-	try_again_button = "Edit Answer",
-	incorrect = NULL,
-	rows = 3)
+  answer(NULL, correct = TRUE),
+  allow_retry = TRUE,
+  try_again_button = "Edit Answer",
+  incorrect = NULL,
+  rows = 3)
 ```
 
 ### 
@@ -1911,11 +1911,11 @@ Copy/paste the URL to your Github repo.
 
 ```{r temperance-17}
 question_text(NULL,
-	answer(NULL, correct = TRUE),
-	allow_retry = TRUE,
-	try_again_button = "Edit Answer",
-	incorrect = NULL,
-	rows = 3)
+  answer(NULL, correct = TRUE),
+  allow_retry = TRUE,
+  try_again_button = "Edit Answer",
+  incorrect = NULL,
+  rows = 3)
 ```
 
 ### 

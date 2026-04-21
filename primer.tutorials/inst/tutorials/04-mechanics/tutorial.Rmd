@@ -1159,11 +1159,11 @@ How do we decide which variables are useful? First, let’s interpret our coeffi
 
 ```{r selecting-variables-6}
 question_text(NULL,
-	message = "The point estimate for `treatmentTreated` is 0.95, indicating that being in the treated group (exposed to Spanish speakers) is associated with a higher attitude towards immigration at the end of the experiment compared to being in the control group.",
-	answer(NULL, correct = TRUE),
-	allow_retry = FALSE,
-	incorrect = NULL,
-	rows = 6)
+  message = "The point estimate for `treatmentTreated` is 0.95, indicating that being in the treated group (exposed to Spanish speakers) is associated with a higher attitude towards immigration at the end of the experiment compared to being in the control group.",
+  answer(NULL, correct = TRUE),
+  allow_retry = FALSE,
+  incorrect = NULL,
+  rows = 6)
 ```
 
 ### 
@@ -1178,11 +1178,11 @@ In your own words, describe the magnitude of the relationship between `att_start
 
 ```{r selecting-variables-7}
 question_text(NULL,
-	message = "The estimated coefficient for `att_start` is positive, indicating that the attitude at the end of the experiment is higher for every one unit increase in `att_start`.",
-	answer(NULL, correct = TRUE),
-	allow_retry = FALSE,
-	incorrect = NULL,
-	rows = 6)
+  message = "The estimated coefficient for `att_start` is positive, indicating that the attitude at the end of the experiment is higher for every one unit increase in `att_start`.",
+  answer(NULL, correct = TRUE),
+  allow_retry = FALSE,
+  incorrect = NULL,
+  rows = 6)
 ```
 
 ### 
@@ -1208,11 +1208,11 @@ ci_msg <- glue::glue(
 
 ```{r selecting-variables-8}
 question_text(NULL,
-	message = ci_msg,
-	answer(NULL, correct = TRUE),
-	allow_retry = FALSE,
-	incorrect = NULL,
-	rows = 6)
+  message = ci_msg,
+  answer(NULL, correct = TRUE),
+  allow_retry = FALSE,
+  incorrect = NULL,
+  rows = 6)
 ```
 
 ### 
@@ -1238,11 +1238,11 @@ att_start_msg <- glue::glue(
 
 ```{r selecting-variables-9}
 question_text(NULL,
-	message = att_start_msg,
-	answer(NULL, correct = TRUE),
-	allow_retry = FALSE,
-	incorrect = NULL,
-	rows = 6)
+  message = att_start_msg,
+  answer(NULL, correct = TRUE),
+  allow_retry = FALSE,
+  incorrect = NULL,
+  rows = 6)
 ```
 
 ### 
@@ -1358,11 +1358,11 @@ msg <- glue::glue(
 
 ```{r selecting-variables-14}
 question_text(NULL,
-	message = msg,
-	answer(NULL, correct = TRUE),
-	allow_retry = FALSE,
-	incorrect = NULL,
-	rows = 6)
+  message = msg,
+  answer(NULL, correct = TRUE),
+  allow_retry = FALSE,
+  incorrect = NULL,
+  rows = 6)
 ```
 
 ### 
@@ -1388,11 +1388,11 @@ liberal_msg <- glue::glue(
 
 ```{r selecting-variables-15}
 question_text(NULL,
-	message = liberal_msg,
-	answer(NULL, correct = TRUE),
-	allow_retry = FALSE,
-	incorrect = NULL,
-	rows = 6)
+  message = liberal_msg,
+  answer(NULL, correct = TRUE),
+  allow_retry = FALSE,
+  incorrect = NULL,
+  rows = 6)
 ```
 
 ### 
@@ -1417,11 +1417,11 @@ age_msg <- glue::glue(
 
 ```{r selecting-variables-16}
 question_text(NULL,
-	message = age_msg,
-	answer(NULL, correct = TRUE),
-	allow_retry = FALSE,
-	incorrect = NULL,
-	rows = 6)
+  message = age_msg,
+  answer(NULL, correct = TRUE),
+  allow_retry = FALSE,
+  incorrect = NULL,
+  rows = 6)
 ```
 
 ### 
@@ -1608,11 +1608,11 @@ Run `predict(fit_liberal, new_data = x)`, what is the name of the column in the 
 
 ```{r comparing-models-in-theory-8}
 question_text(NULL,
-	message = "the name of the column is .pred",
-	answer(NULL, correct = TRUE),
-	allow_retry = FALSE,
-	incorrect = NULL,
-	rows = 6)
+  message = "the name of the column is .pred",
+  answer(NULL, correct = TRUE),
+  allow_retry = FALSE,
+  incorrect = NULL,
+  rows = 6)
 ```
 
 ### 
@@ -1694,11 +1694,11 @@ Paste the code you used to make your plot into the answer box below.
 
 ```{r comparing-models-in-theory-12}
 question_text(NULL,
-	answer(NULL, correct = TRUE),
-	allow_retry = TRUE,
-	try_again_button = "Edit Answer",
-	incorrect = NULL,
-	rows = 12)
+  answer(NULL, correct = TRUE),
+  allow_retry = TRUE,
+  try_again_button = "Edit Answer",
+  incorrect = NULL,
+  rows = 12)
 ```
 
 ### 
@@ -1747,11 +1747,11 @@ Paste the code you used to make your plot into the answer box below.
 
 ```{r comparing-models-in-theory-13}
 question_text(NULL,
-	answer(NULL, correct = TRUE),
-	allow_retry = TRUE,
-	try_again_button = "Edit Answer",
-	incorrect = NULL,
-	rows = 12)
+  answer(NULL, correct = TRUE),
+  allow_retry = TRUE,
+  try_again_button = "Edit Answer",
+  incorrect = NULL,
+  rows = 12)
 ```
 
 ### 
@@ -2266,11 +2266,11 @@ In one or two sentences, summarize our work so far, stating which model is bette
 
 ```{r comparing-models-in-practice-6}
 question_text(NULL,
-	message = "`fit_att_start` is the stronger model. This means that a commuter's initial attitude (`att_start`) is a much better predictor of their final attitude (`att_end`) than their political ideology (`liberal`).",
-	answer(NULL, correct = TRUE),
-	allow_retry = FALSE,
-	incorrect = NULL,
-	rows = 6)
+  message = "`fit_att_start` is the stronger model. This means that a commuter's initial attitude (`att_start`) is a much better predictor of their final attitude (`att_end`) than their political ideology (`liberal`).",
+  answer(NULL, correct = TRUE),
+  allow_retry = FALSE,
+  incorrect = NULL,
+  rows = 6)
 ```
 
 ###

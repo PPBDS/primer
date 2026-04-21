@@ -58,11 +58,11 @@ What are the four [Cardinal Virtues](https://en.wikipedia.org/wiki/Cardinal_virt
 
 ```{r introduction-1}
 question_text(NULL,
-	message = "Wisdom, Justice, Courage, and Temperance.",
-	answer(NULL, correct = TRUE),
-	allow_retry = FALSE,
-	incorrect = NULL,
-	rows = 2)
+  message = "Wisdom, Justice, Courage, and Temperance.",
+  answer(NULL, correct = TRUE),
+  allow_retry = FALSE,
+  incorrect = NULL,
+  rows = 2)
 ```
 
 ###
@@ -93,11 +93,11 @@ CP/CR.
 
 ```{r introduction-2}
 question_text(NULL,
-	answer(NULL, correct = TRUE),
-	allow_retry = TRUE,
-	try_again_button = "Edit Answer",
-	incorrect = NULL,
-	rows = 3)
+  answer(NULL, correct = TRUE),
+  allow_retry = TRUE,
+  try_again_button = "Edit Answer",
+  incorrect = NULL,
+  rows = 3)
 ```
 
 ### 
@@ -125,11 +125,11 @@ CP/CR.
 
 ```{r introduction-3}
 question_text(NULL,
-	answer(NULL, correct = TRUE),
-	allow_retry = TRUE,
-	try_again_button = "Edit Answer",
-	incorrect = NULL,
-	rows = 6)
+  answer(NULL, correct = TRUE),
+  allow_retry = TRUE,
+  try_again_button = "Edit Answer",
+  incorrect = NULL,
+  rows = 6)
 ```
 
 ### 
@@ -146,11 +146,11 @@ CP/CR.
 
 ```{r introduction-4}
 question_text(NULL,
-	answer(NULL, correct = TRUE),
-	allow_retry = TRUE,
-	try_again_button = "Edit Answer",
-	incorrect = NULL,
-	rows = 3)
+  answer(NULL, correct = TRUE),
+  allow_retry = TRUE,
+  try_again_button = "Edit Answer",
+  incorrect = NULL,
+  rows = 3)
 ```
 
 ###
@@ -169,11 +169,11 @@ CP/CR.
 
 ```{r introduction-5}
 question_text(NULL,
-	answer(NULL, correct = TRUE),
-	allow_retry = TRUE,
-	try_again_button = "Edit Answer",
-	incorrect = NULL,
-	rows = 3)
+  answer(NULL, correct = TRUE),
+  allow_retry = TRUE,
+  try_again_button = "Edit Answer",
+  incorrect = NULL,
+  rows = 3)
 ```
 
 ###
@@ -186,11 +186,11 @@ In the Console, type `?governors`, and paste the Description below.
 
 ```{r introduction-6}
 question_text(NULL,
-	answer(NULL, correct = TRUE),
-	allow_retry = TRUE,
-	try_again_button = "Edit Answer",
-	incorrect = NULL,
-	rows = 8)
+  answer(NULL, correct = TRUE),
+  allow_retry = TRUE,
+  try_again_button = "Edit Answer",
+  incorrect = NULL,
+  rows = 8)
 ```
 
 ### 
@@ -203,11 +203,11 @@ Define a causal effect.
 
 ```{r introduction-7}
 question_text(NULL,
-	message = "A causal effect is the difference between two potential outcomes.",
-	answer(NULL, correct = TRUE),
-	allow_retry = FALSE,
-	incorrect = NULL,
-	rows = 6)
+  message = "A causal effect is the difference between two potential outcomes.",
+  answer(NULL, correct = TRUE),
+  allow_retry = FALSE,
+  incorrect = NULL,
+  rows = 6)
 ```
 
 ### 
@@ -220,11 +220,11 @@ What is the fundamental problem of causal inference?
 
 ```{r introduction-8}
 question_text(NULL,
-	message = "The fundamental problem of causal inference is that we can only observe one potential outcome.",
-	answer(NULL, correct = TRUE),
-	allow_retry = FALSE,
-	incorrect = NULL,
-	rows = 6)
+  message = "The fundamental problem of causal inference is that we can only observe one potential outcome.",
+  answer(NULL, correct = TRUE),
+  allow_retry = FALSE,
+  incorrect = NULL,
+  rows = 6)
 ```
 
 ### 
@@ -266,11 +266,11 @@ Longevity i.e., how long people live, is the broad topic of this tutorial. Given
 
 ```{r wisdom-2}
 question_text(NULL,
-	message = "It would be most logical to use `lived_after`.",
-	answer(NULL, correct = TRUE),
-	allow_retry = FALSE,
-	incorrect = NULL,
-	rows = 2)
+  message = "It would be most logical to use `lived_after`.",
+  answer(NULL, correct = TRUE),
+  allow_retry = FALSE,
+  incorrect = NULL,
+  rows = 2)
 ```
 
 ### 
@@ -306,11 +306,11 @@ For now, ignore the actual treatment variable `win_margin` which we will be usin
 
 ```{r wisdom-3}
 question_text(NULL,
-	message = "Imagine a variable called `health_screening` which has a value of `1` if the candidate received annual preventive health screenings and `0` if they did not. In a policy experiment, an employer or insurer could randomly offer this benefit to some employees — in our case, politicians — and track longevity outcomes.",
-	answer(NULL, correct = TRUE),
-	allow_retry = FALSE,
-	incorrect = NULL,
-	rows = 6)
+  message = "Imagine a variable called `health_screening` which has a value of `1` if the candidate received annual preventive health screenings and `0` if they did not. In a policy experiment, an employer or insurer could randomly offer this benefit to some employees — in our case, politicians — and track longevity outcomes.",
+  answer(NULL, correct = TRUE),
+  allow_retry = FALSE,
+  incorrect = NULL,
+  rows = 6)
 ```
 
 ### 
@@ -323,11 +323,11 @@ Given our (imaginary) treatment variable `health_screening`, how many potential 
 
 ```{r wisdom-4}
 question_text(NULL,
-	message = "There are two potential outcomes because the treatment variable `health_screening` takes on two possible values: receiving annual preventive health screenings (1) or not receiving them (0).",
-	answer(NULL, correct = TRUE),
-	allow_retry = FALSE,
-	incorrect = NULL,
-	rows = 6)
+  message = "There are two potential outcomes because the treatment variable `health_screening` takes on two possible values: receiving annual preventive health screenings (1) or not receiving them (0).",
+  answer(NULL, correct = TRUE),
+  allow_retry = FALSE,
+  incorrect = NULL,
+  rows = 6)
 ```
 
 ### 
@@ -340,11 +340,11 @@ In a few sentences, specify the two different values for the imaginary treatment
 
 ```{r wisdom-5}
 question_text(NULL,
-	message = "For a given candidate, assume that the value of the treatment variable might be 1, meaning they received annual preventive health screenings, or 0, meaning they did not. If the candidate gets 1, then years lived after the election would be 27. If the candidate gets 0, then years lived would be 22. The causal effect on the outcome of a treatment of 1 versus 0 is 27 - 22 --- i.e., the difference between two potential outcomes --- which equals 5, which is the causal effect for this candidate.",
-	answer(NULL, correct = TRUE),
-	allow_retry = FALSE,
-	incorrect = NULL,
-	rows = 6)
+  message = "For a given candidate, assume that the value of the treatment variable might be 1, meaning they received annual preventive health screenings, or 0, meaning they did not. If the candidate gets 1, then years lived after the election would be 27. If the candidate gets 0, then years lived would be 22. The causal effect on the outcome of a treatment of 1 versus 0 is 27 - 22 --- i.e., the difference between two potential outcomes --- which equals 5, which is the causal effect for this candidate.",
+  answer(NULL, correct = TRUE),
+  allow_retry = FALSE,
+  incorrect = NULL,
+  rows = 6)
 ```
 
 ### 
@@ -361,11 +361,11 @@ Let's consider a *predictive* model. Which variable in `governors` do you think 
 
 ```{r wisdom-6}
 question_text(NULL,
-	message = "The covariate that is the most connected to `lived_after` is probably `election_age`. If this were a predictive model, we would seek to predict how long a governor would live based, among other things, on what age they were when the election happened.",
-	answer(NULL, correct = TRUE),
-	allow_retry = FALSE,
-	incorrect = NULL,
-	rows = 2)
+  message = "The covariate that is the most connected to `lived_after` is probably `election_age`. If this were a predictive model, we would seek to predict how long a governor would live based, among other things, on what age they were when the election happened.",
+  answer(NULL, correct = TRUE),
+  allow_retry = FALSE,
+  incorrect = NULL,
+  rows = 2)
 ```
 
 ### 
@@ -380,11 +380,11 @@ Specify two different groups of governors which have specific values for `electi
 
 ```{r wisdom-7}
 question_text(NULL,
-	message = "For governors, the covariate age can be used to define two distinct groups. Group 1 consists of younger candidates aged 40-50. This group is expected to have a higher average `lived_after`, perhaps around 40 years. Group 2 includes older candidates aged 60-70. This group is expected to have a lower average `lived_after`, probably closer to 20 years. ",
-	answer(NULL, correct = TRUE),
-	allow_retry = FALSE,
-	incorrect = NULL,
-	rows = 6)
+  message = "For governors, the covariate age can be used to define two distinct groups. Group 1 consists of younger candidates aged 40-50. This group is expected to have a higher average `lived_after`, perhaps around 40 years. Group 2 includes older candidates aged 60-70. This group is expected to have a lower average `lived_after`, probably closer to 20 years. ",
+  answer(NULL, correct = TRUE),
+  allow_retry = FALSE,
+  incorrect = NULL,
+  rows = 6)
 ```
 
 ### 
@@ -399,11 +399,11 @@ Write a predictive question which connects the outcome variable `lived_after` to
 
 ```{r wisdom-8}
 question_text(NULL,
-	message = "What is the difference is years lived after the election between younger candidates and older candidates?",
-	answer(NULL, correct = TRUE),
-	allow_retry = FALSE,
-	incorrect = NULL,
-	rows = 6)
+  message = "What is the difference is years lived after the election between younger candidates and older candidates?",
+  answer(NULL, correct = TRUE),
+  allow_retry = FALSE,
+  incorrect = NULL,
+  rows = 6)
 ```
 
 ### 
@@ -416,11 +416,11 @@ Define a Preceptor Table.
 
 ```{r wisdom-9}
 question_text(NULL,
-	message = "A Preceptor Table is the smallest possible table of data with rows and columns such that, if there is no missing data, we can easily calculate the quantity of interest.",
-	answer(NULL, correct = TRUE),
-	allow_retry = FALSE,
-	incorrect = NULL,
-	rows = 6)
+  message = "A Preceptor Table is the smallest possible table of data with rows and columns such that, if there is no missing data, we can easily calculate the quantity of interest.",
+  answer(NULL, correct = TRUE),
+  allow_retry = FALSE,
+  incorrect = NULL,
+  rows = 6)
 ```
 
 ### 
@@ -433,11 +433,11 @@ Describe the key components of Preceptor Tables in general, without worrying abo
 
 ```{r wisdom-10}
 question_text(NULL,
-	message = "The rows of the Preceptor Table are the units. The outcome is at least one of the columns. If the problem is causal, there will be at least two (potential) outcome columns. The other columns are covariates. If the problem is causal, at least one of the covariates will be considered a treatment.",
-	answer(NULL, correct = TRUE),
-	allow_retry = FALSE,
-	incorrect = NULL,
-	rows = 6)
+  message = "The rows of the Preceptor Table are the units. The outcome is at least one of the columns. If the problem is causal, there will be at least two (potential) outcome columns. The other columns are covariates. If the problem is causal, at least one of the covariates will be considered a treatment.",
+  answer(NULL, correct = TRUE),
+  allow_retry = FALSE,
+  incorrect = NULL,
+  rows = 6)
 ```
 
 ### 
@@ -450,11 +450,11 @@ What are the units for this problem?
 
 ```{r wisdom-11}
 question_text(NULL,
-	message = "The units are individual gubernatorial candidates.",
-	answer(NULL, correct = TRUE),
-	allow_retry = FALSE,
-	incorrect = NULL,
-	rows = 6)
+  message = "The units are individual gubernatorial candidates.",
+  answer(NULL, correct = TRUE),
+  allow_retry = FALSE,
+  incorrect = NULL,
+  rows = 6)
 ```
 
 ### 
@@ -469,11 +469,11 @@ What is the outcome variable for this problem?
 
 ```{r wisdom-12}
 question_text(NULL,
-	message = "The outcome variable is `lived_after`, which measures how many years a governor lived after the election.",
-	answer(NULL, correct = TRUE),
-	allow_retry = FALSE,
-	incorrect = NULL,
-	rows = 6)
+  message = "The outcome variable is `lived_after`, which measures how many years a governor lived after the election.",
+  answer(NULL, correct = TRUE),
+  allow_retry = FALSE,
+  incorrect = NULL,
+  rows = 6)
 ```
 
 ### 
@@ -486,11 +486,11 @@ Imagine a covariate which you think might be useful for this problem that is not
 
 ```{r wisdom-13}
 question_text(NULL,
-	message = "Longevity of someone's parents is a good predictor of their own lifespan. A polygenic risk score for longevity might also be useful.",
-	answer(NULL, correct = TRUE),
-	allow_retry = FALSE,
-	incorrect = NULL,
-	rows = 6)
+  message = "Longevity of someone's parents is a good predictor of their own lifespan. A polygenic risk score for longevity might also be useful.",
+  answer(NULL, correct = TRUE),
+  allow_retry = FALSE,
+  incorrect = NULL,
+  rows = 6)
 ```
 
 ### 
@@ -503,11 +503,11 @@ What are the treatments, if any, for this problem?
 
 ```{r wisdom-14}
 question_text(NULL,
-	message = "Since this is a predictive model, there are no treatments.",
-	answer(NULL, correct = TRUE),
-	allow_retry = FALSE,
-	incorrect = NULL,
-	rows = 6)
+  message = "Since this is a predictive model, there are no treatments.",
+  answer(NULL, correct = TRUE),
+  allow_retry = FALSE,
+  incorrect = NULL,
+  rows = 6)
 ```
 
 ### 
@@ -520,11 +520,11 @@ What moment in time does the Preceptor Table refer to?
 
 ```{r wisdom-15}
 question_text(NULL,
-	message = "The Preceptor Table refers to now, today, because we are trying to help someone make a decision about running for office. We want to help them better understand the likelihood of various outcomes.",
-	answer(NULL, correct = TRUE),
-	allow_retry = FALSE,
-	incorrect = NULL,
-	rows = 6)
+  message = "The Preceptor Table refers to now, today, because we are trying to help someone make a decision about running for office. We want to help them better understand the likelihood of various outcomes.",
+  answer(NULL, correct = TRUE),
+  allow_retry = FALSE,
+  incorrect = NULL,
+  rows = 6)
 ```
 
 ### 
@@ -550,11 +550,11 @@ Describe in words the Preceptor Table for this problem.
 
 ```{r wisdom-16}
 question_text(NULL,
-	message = "The rows (units) are individual candidates for political office. The outcome is the number of years lived after the election. Key covariates include sex, age at the election, and party.",
-	answer(NULL, correct = TRUE),
-	allow_retry = FALSE,
-	incorrect = NULL,
-	rows = 6)
+  message = "The rows (units) are individual candidates for political office. The outcome is the number of years lived after the election. Key covariates include sex, age at the election, and party.",
+  answer(NULL, correct = TRUE),
+  allow_retry = FALSE,
+  incorrect = NULL,
+  rows = 6)
 ```
 
 ### 
@@ -595,11 +595,11 @@ What is the narrow, specific question we will try to answer?
 
 ```{r wisdom-17}
 question_text(NULL,
-	message = "How many years do gubernatorial candidates live after thier election?",
-	answer(NULL, correct = TRUE),
-	allow_retry = FALSE,
-	incorrect = NULL,
-	rows = 6)
+  message = "How many years do gubernatorial candidates live after thier election?",
+  answer(NULL, correct = TRUE),
+  allow_retry = FALSE,
+  incorrect = NULL,
+  rows = 6)
 ```
 
 ###
@@ -620,11 +620,11 @@ Type your two sentences below.
 
 ```{r wisdom-18}
 question_text(NULL,
-	message = "Running for political office is stressful. Using data from over 1,000 candidates for governor since 1945 in the United States, we seek to create a model for forecasting longevity for gubernatorial candidates.",
-	answer(NULL, correct = TRUE),
-	allow_retry = FALSE,
-	incorrect = NULL,
-	rows = 6)
+  message = "Running for political office is stressful. Using data from over 1,000 candidates for governor since 1945 in the United States, we seek to create a model for forecasting longevity for gubernatorial candidates.",
+  answer(NULL, correct = TRUE),
+  allow_retry = FALSE,
+  incorrect = NULL,
+  rows = 6)
 ```
 
 ### 
@@ -642,11 +642,11 @@ In your own words, name the five key components of Justice when working on a dat
 
 ```{r justice-1}
 question_text(NULL,
-	message = "Justice concerns the Population Table and the four key assumptions which underlie it: validity, stability, representativeness, and unconfoundedness.",
-	answer(NULL, correct = TRUE),
-	allow_retry = FALSE,
-	incorrect = NULL,
-	rows = 6)
+  message = "Justice concerns the Population Table and the four key assumptions which underlie it: validity, stability, representativeness, and unconfoundedness.",
+  answer(NULL, correct = TRUE),
+  allow_retry = FALSE,
+  incorrect = NULL,
+  rows = 6)
 ```
 
 ### 
@@ -659,11 +659,11 @@ In your own words, define "validity" as we use the term.
 
 ```{r justice-2}
 question_text(NULL,
-	message = "Validity is the consistency, or lack thereof, in the columns of the data set and the corresponding columns in the Preceptor Table.",
-	answer(NULL, correct = TRUE),
-	allow_retry = FALSE,
-	incorrect = NULL,
-	rows = 6)
+  message = "Validity is the consistency, or lack thereof, in the columns of the data set and the corresponding columns in the Preceptor Table.",
+  answer(NULL, correct = TRUE),
+  allow_retry = FALSE,
+  incorrect = NULL,
+  rows = 6)
 ```
 
 ### 
@@ -676,11 +676,11 @@ Provide one reason why the assumption of validity might not hold for the outcome
 
 ```{r justice-3}
 question_text(NULL,
-	message = "The outcome column in our data records the actual number of years each historical candidate lived after their election — a value we can only know for candidates who have already died. But the outcome column in the Preceptor Table represents the longevity of present-day candidates, who benefit from modern medicine. These two columns may not be measuring the same underlying concept.",
-	answer(NULL, correct = TRUE),
-	allow_retry = FALSE,
-	incorrect = NULL,
-	rows = 6)
+  message = "The outcome column in our data records the actual number of years each historical candidate lived after their election — a value we can only know for candidates who have already died. But the outcome column in the Preceptor Table represents the longevity of present-day candidates, who benefit from modern medicine. These two columns may not be measuring the same underlying concept.",
+  answer(NULL, correct = TRUE),
+  allow_retry = FALSE,
+  incorrect = NULL,
+  rows = 6)
 ```
 
 ### 
@@ -697,11 +697,11 @@ Provide one reason why the assumption of stability might not be true in this cas
 
 ```{r justice-4}
 question_text(NULL,
-	message = "Running for election as a woman was a very different proposition in 1950 than it is today, so the relationship between sex and years lived after the election may have changed.",
-	answer(NULL, correct = TRUE),
-	allow_retry = FALSE,
-	incorrect = NULL,
-	rows = 6)
+  message = "Running for election as a woman was a very different proposition in 1950 than it is today, so the relationship between sex and years lived after the election may have changed.",
+  answer(NULL, correct = TRUE),
+  allow_retry = FALSE,
+  incorrect = NULL,
+  rows = 6)
 ```
 
 ###
@@ -714,11 +714,11 @@ In your own words, define a Population Table.
 
 ```{r justice-5}
 question_text(NULL,
-	message = "The Population Table includes a row for each unit/time combination in the underlying population from which both the Preceptor Table and the data are drawn.",
-	answer(NULL, correct = TRUE),
-	allow_retry = FALSE,
-	incorrect = NULL,
-	rows = 6)
+  message = "The Population Table includes a row for each unit/time combination in the underlying population from which both the Preceptor Table and the data are drawn.",
+  answer(NULL, correct = TRUE),
+  allow_retry = FALSE,
+  incorrect = NULL,
+  rows = 6)
 ```
 
 ### 
@@ -731,11 +731,11 @@ Specify the unit/time combinations which define each row in this Population Tabl
 
 ```{r justice-6}
 question_text(NULL,
-	message = "Each row in the Population Table represents one political candidate in one specific election year. This means the unit is a candidate, and the time is defined by the year they ran for office. If a candidate runs in multiple elections, they will appear in the table once for each year they ran.",
-	answer(NULL, correct = TRUE),
-	allow_retry = FALSE,
-	incorrect = NULL,
-	rows = 6)
+  message = "Each row in the Population Table represents one political candidate in one specific election year. This means the unit is a candidate, and the time is defined by the year they ran for office. If a candidate runs in multiple elections, they will appear in the table once for each year they ran.",
+  answer(NULL, correct = TRUE),
+  allow_retry = FALSE,
+  incorrect = NULL,
+  rows = 6)
 ```
 
 ### 
@@ -765,11 +765,11 @@ In your own words, define the assumption of "stability" when employed in the con
 
 ```{r justice-7}
 question_text(NULL,
-	message = "Stability means that the relationship between the columns in the Population Table is the same for three categories of rows: the data, the Preceptor Table, and the larger population from which both are drawn.",
-	answer(NULL, correct = TRUE),
-	allow_retry = FALSE,
-	incorrect = NULL,
-	rows = 6)
+  message = "Stability means that the relationship between the columns in the Population Table is the same for three categories of rows: the data, the Preceptor Table, and the larger population from which both are drawn.",
+  answer(NULL, correct = TRUE),
+  allow_retry = FALSE,
+  incorrect = NULL,
+  rows = 6)
 ```
 
 ### 
@@ -782,11 +782,11 @@ Provide one reason why the assumption of stability might not be true in this cas
 
 ```{r justice-8}
 question_text(NULL,
-	message = "Running for election as a woman was a very different proposition in 1950 than it is today, so the relationship between sex and years lived after the election may have changed.",
-	answer(NULL, correct = TRUE),
-	allow_retry = FALSE,
-	incorrect = NULL,
-	rows = 6)
+  message = "Running for election as a woman was a very different proposition in 1950 than it is today, so the relationship between sex and years lived after the election may have changed.",
+  answer(NULL, correct = TRUE),
+  allow_retry = FALSE,
+  incorrect = NULL,
+  rows = 6)
 ```
 
 ### 
@@ -799,11 +799,11 @@ We use our data to make inferences about the overall population. We use informat
 
 ```{r justice-9}
 question_text(NULL,
-	message = "Representativeness concerns two relationships in the Population Table: between the data and the population, and between the population and the Preceptor Table. Both depend on the *selection mechanism* — how units end up in each. Representativeness holds when neither mechanism systematically excludes certain types of units.",
-	answer(NULL, correct = TRUE),
-	allow_retry = FALSE,
-	incorrect = NULL,
-	rows = 6)
+  message = "Representativeness concerns two relationships in the Population Table: between the data and the population, and between the population and the Preceptor Table. Both depend on the *selection mechanism* — how units end up in each. Representativeness holds when neither mechanism systematically excludes certain types of units.",
+  answer(NULL, correct = TRUE),
+  allow_retry = FALSE,
+  incorrect = NULL,
+  rows = 6)
 ```
 
 ### 
@@ -816,11 +816,11 @@ We do not use the data, directly, to estimate missing values in the Preceptor Ta
 
 ```{r justice-10}
 question_text(NULL,
-	message = "We are interested in all sorts of political offices: mayors, governors, senators and so on. Ideally, we would like our data to include people who have run for all these positions. But our data only includes candidates for governor. It is not representative of the larger population.",
-	answer(NULL, correct = TRUE),
-	allow_retry = FALSE,
-	incorrect = NULL,
-	rows = 6)
+  message = "We are interested in all sorts of political offices: mayors, governors, senators and so on. Ideally, we would like our data to include people who have run for all these positions. But our data only includes candidates for governor. It is not representative of the larger population.",
+  answer(NULL, correct = TRUE),
+  allow_retry = FALSE,
+  incorrect = NULL,
+  rows = 6)
 ```
 
 ### 
@@ -833,11 +833,11 @@ We use information about the population to make inferences about the Preceptor T
 
 ```{r justice-11}
 question_text(NULL,
-	message = "Even if our data about governors is representative of the larger population of all political offices, our Preceptor Table is not a random draw from that population. We are only interested in mayors because the person who came to us is considering a mayoral campaign. Mayors are not a representative sample of all candidates.",
-	answer(NULL, correct = TRUE),
-	allow_retry = FALSE,
-	incorrect = NULL,
-	rows = 6)
+  message = "Even if our data about governors is representative of the larger population of all political offices, our Preceptor Table is not a random draw from that population. We are only interested in mayors because the person who came to us is considering a mayoral campaign. Mayors are not a representative sample of all candidates.",
+  answer(NULL, correct = TRUE),
+  allow_retry = FALSE,
+  incorrect = NULL,
+  rows = 6)
 ```
 
 ### 
@@ -850,11 +850,11 @@ In your own words, define the assumption of "unconfoundedness" when employed in 
 
 ```{r justice-12}
 question_text(NULL,
-	message = "Unconfoundedness means that the treatment assignment is independent of the potential outcomes, when we condition on pre-treatment covariates.",
-	answer(NULL, correct = TRUE),
-	allow_retry = FALSE,
-	incorrect = NULL,
-	rows = 6)
+  message = "Unconfoundedness means that the treatment assignment is independent of the potential outcomes, when we condition on pre-treatment covariates.",
+  answer(NULL, correct = TRUE),
+  allow_retry = FALSE,
+  incorrect = NULL,
+  rows = 6)
 ```
 
 ### 
@@ -875,11 +875,11 @@ CP/CR.
 
 ```{r justice-13}
 question_text(NULL,
-	answer(NULL, correct = TRUE),
-	allow_retry = TRUE,
-	try_again_button = "Edit Answer",
-	incorrect = NULL,
-	rows = 3)
+  answer(NULL, correct = TRUE),
+  allow_retry = TRUE,
+  try_again_button = "Edit Answer",
+  incorrect = NULL,
+  rows = 3)
 ```
 
 ###
@@ -902,11 +902,11 @@ CP/CR.
 
 ```{r justice-14}
 question_text(NULL,
-	answer(NULL, correct = TRUE),
-	allow_retry = TRUE,
-	try_again_button = "Edit Answer",
-	incorrect = NULL,
-	rows = 3)
+  answer(NULL, correct = TRUE),
+  allow_retry = TRUE,
+  try_again_button = "Edit Answer",
+  incorrect = NULL,
+  rows = 3)
 ```
 
 ###
@@ -923,11 +923,11 @@ Use AI to come up with a $\LaTeX$ representation of the mathematical structure o
 
 ```{r justice-15}
 question_text(NULL,
-	answer(NULL, correct = TRUE),
-	allow_retry = TRUE,
-	try_again_button = "Edit Answer",
-	incorrect = NULL,
-	rows = 5)
+  answer(NULL, correct = TRUE),
+  allow_retry = TRUE,
+  try_again_button = "Edit Answer",
+  incorrect = NULL,
+  rows = 5)
 ```
 
 ###
@@ -960,11 +960,11 @@ Of course, your version will be somewhat different.
 
 ```{r justice-16}
 question_text(NULL,
-	message = "Because our data includes only candidates for governor, our estimated model might not work well when applied to candidates for other positions, like mayor.",
-	answer(NULL, correct = TRUE),
-	allow_retry = FALSE,
-	incorrect = NULL,
-	rows = 6)
+  message = "Because our data includes only candidates for governor, our estimated model might not work well when applied to candidates for other positions, like mayor.",
+  answer(NULL, correct = TRUE),
+  allow_retry = FALSE,
+  incorrect = NULL,
+  rows = 6)
 ```
 
 ### 
@@ -983,11 +983,11 @@ In your own words, describe the components of the virtue of Courage for analyzin
 
 ```{r courage-1}
 question_text(NULL,
-	message = "Courage creates the data generating mechanism.",
-	answer(NULL, correct = TRUE),
-	allow_retry = FALSE,
-	incorrect = NULL,
-	rows = 6)
+  message = "Courage creates the data generating mechanism.",
+  answer(NULL, correct = TRUE),
+  allow_retry = FALSE,
+  incorrect = NULL,
+  rows = 6)
 ```
 
 ### 
@@ -1223,11 +1223,11 @@ CP/CR.
 
 ```{r courage-9}
 question_text(NULL,
-	answer(NULL, correct = TRUE),
-	allow_retry = TRUE,
-	try_again_button = "Edit Answer",
-	incorrect = NULL,
-	rows = 3)
+  answer(NULL, correct = TRUE),
+  allow_retry = TRUE,
+  try_again_button = "Edit Answer",
+  incorrect = NULL,
+  rows = 3)
 ```
 
 ###
@@ -1241,11 +1241,11 @@ In the Console, load the **[easystats](https://easystats.github.io/easystats/)**
 
 ```{r courage-10}
 question_text(NULL,
-	answer(NULL, correct = TRUE),
-	allow_retry = TRUE,
-	try_again_button = "Edit Answer",
-	incorrect = NULL,
-	rows = 5)
+  answer(NULL, correct = TRUE),
+  allow_retry = TRUE,
+  try_again_button = "Edit Answer",
+  incorrect = NULL,
+  rows = 5)
 ```
 
 ###
@@ -1258,11 +1258,11 @@ In the Console, run `check_predictions(extract_fit_engine(fit_years))`. CP/CR.
 
 ```{r courage-11}
 question_text(NULL,
-	answer(NULL, correct = TRUE),
-	allow_retry = TRUE,
-	try_again_button = "Edit Answer",
-	incorrect = NULL,
-	rows = 5)
+  answer(NULL, correct = TRUE),
+  allow_retry = TRUE,
+  try_again_button = "Edit Answer",
+  incorrect = NULL,
+  rows = 5)
 ```
 
 ###
@@ -1281,11 +1281,11 @@ Once the $\LaTeX$ code looks good, paste it below.
 
 ```{r courage-12}
 question_text(NULL,
-	answer(NULL, correct = TRUE),
-	allow_retry = TRUE,
-	try_again_button = "Edit Answer",
-	incorrect = NULL,
-	rows = 3)
+  answer(NULL, correct = TRUE),
+  allow_retry = TRUE,
+  try_again_button = "Edit Answer",
+  incorrect = NULL,
+  rows = 3)
 ```
 
 <!--DK: Fix. AR: LaTeX is incorrect for current state of fit_years-->
@@ -1332,11 +1332,11 @@ CP/CR.
 
 ```{r courage-13}
 question_text(NULL,
-	answer(NULL, correct = TRUE),
-	allow_retry = TRUE,
-	try_again_button = "Edit Answer",
-	incorrect = NULL,
-	rows = 8)
+  answer(NULL, correct = TRUE),
+  allow_retry = TRUE,
+  try_again_button = "Edit Answer",
+  incorrect = NULL,
+  rows = 8)
 ```
 
 ### 
@@ -1357,11 +1357,11 @@ CP/CR.
 
 ```{r courage-14}
 question_text(NULL,
-	answer(NULL, correct = TRUE),
-	allow_retry = TRUE,
-	try_again_button = "Edit Answer",
-	incorrect = NULL,
-	rows = 6)
+  answer(NULL, correct = TRUE),
+  allow_retry = TRUE,
+  try_again_button = "Edit Answer",
+  incorrect = NULL,
+  rows = 6)
 ```
 
 ###
@@ -1407,11 +1407,11 @@ CP/CR.
 
 ```{r courage-16}
 question_text(NULL,
-	answer(NULL, correct = TRUE),
-	allow_retry = TRUE,
-	try_again_button = "Edit Answer",
-	incorrect = NULL,
-	rows = 12)
+  answer(NULL, correct = TRUE),
+  allow_retry = TRUE,
+  try_again_button = "Edit Answer",
+  incorrect = NULL,
+  rows = 12)
 ```
 
 ###
@@ -1450,11 +1450,11 @@ Recall the beginning of our version of the summary:
 
 ```{r courage-17}
 question_text(NULL,
-	message = "We model life expectancy (years lived after the election), measured in years, as a linear function of the candidate’s sex, age at election, and their interaction.",
-	answer(NULL, correct = TRUE),
-	allow_retry = FALSE,
-	incorrect = NULL,
-	rows = 6)
+  message = "We model life expectancy (years lived after the election), measured in years, as a linear function of the candidate’s sex, age at election, and their interaction.",
+  answer(NULL, correct = TRUE),
+  allow_retry = FALSE,
+  incorrect = NULL,
+  rows = 6)
 ```
 
 ### 
@@ -1472,11 +1472,11 @@ In your own words, describe the use of Temperance in data science.
 
 ```{r temperance-1}
 question_text(NULL,
-	message = "Temperance uses the data generating mechanism to answer the question with which we began. Humility reminds us that this answer is always a lie. We can also use the DGM to calculate many similar quantities of interest, displaying the results graphically.",
-	answer(NULL, correct = TRUE),
-	allow_retry = FALSE,
-	incorrect = NULL,
-	rows = 6)
+  message = "Temperance uses the data generating mechanism to answer the question with which we began. Humility reminds us that this answer is always a lie. We can also use the DGM to calculate many similar quantities of interest, displaying the results graphically.",
+  answer(NULL, correct = TRUE),
+  allow_retry = FALSE,
+  incorrect = NULL,
+  rows = 6)
 ```
 
 ### 
@@ -1491,19 +1491,19 @@ Recall the values for the parameters in our data generating mechanism:
 
 ```{r}
 fit_years |> 
-	tidy(conf.int = TRUE) |> 
-	select(term, estimate, conf.low, conf.high)
+  tidy(conf.int = TRUE) |> 
+  select(term, estimate, conf.low, conf.high)
 ```
 
 Interpret 19.3, the estimate for the `(Intercept)`.
 
 ```{r temperance-2}
 question_text(NULL,
-	message = "For female candidates, the terms which include `sexMale` and  `election_age:sexMale` are zeroed out. 19.3 would be the expected years lived after the election for candidates who are female and age 0 at the election, which is, of course, nonsense.",
-	answer(NULL, correct = TRUE),
-	allow_retry = FALSE,
-	incorrect = NULL,
-	rows = 6)
+  message = "For female candidates, the terms which include `sexMale` and  `election_age:sexMale` are zeroed out. 19.3 would be the expected years lived after the election for candidates who are female and age 0 at the election, which is, of course, nonsense.",
+  answer(NULL, correct = TRUE),
+  allow_retry = FALSE,
+  incorrect = NULL,
+  rows = 6)
 ```
 
 ###
@@ -1514,19 +1514,19 @@ Dummy variables must always be interpreted in the context of the base value for 
 
 ```{r}
 fit_years |> 
-	tidy(conf.int = TRUE) |> 
-	select(term, estimate, conf.low, conf.high)
+  tidy(conf.int = TRUE) |> 
+  select(term, estimate, conf.low, conf.high)
 ```
 
 Interpret -0.06, the estimate for the coefficient for `election_age`.
 
 ```{r temperance-3}
 question_text(NULL,
-	message = "The older you are at the time of the election (i.e., the larger the value for `election_age`), the fewer years you can expect to live after the election. The negative value makes sense. The magnitude of 0.06 suggests that, if we compare two groups of female candidates --- so that `election_age:sexMale` is zeroed out --- who differ in age by twenty years, then the older group might live about one year less since -0.06 * 20 = -1.2. That seems much too small!",
-	answer(NULL, correct = TRUE),
-	allow_retry = FALSE,
-	incorrect = NULL,
-	rows = 6)
+  message = "The older you are at the time of the election (i.e., the larger the value for `election_age`), the fewer years you can expect to live after the election. The negative value makes sense. The magnitude of 0.06 suggests that, if we compare two groups of female candidates --- so that `election_age:sexMale` is zeroed out --- who differ in age by twenty years, then the older group might live about one year less since -0.06 * 20 = -1.2. That seems much too small!",
+  answer(NULL, correct = TRUE),
+  allow_retry = FALSE,
+  incorrect = NULL,
+  rows = 6)
 ```
 
 ###
@@ -1537,19 +1537,19 @@ Whenever we consider non-treatment variables, we must never use terms like "caus
 
 ```{r}
 fit_years |> 
-	tidy(conf.int = TRUE) |> 
-	select(term, estimate, conf.low, conf.high)
+  tidy(conf.int = TRUE) |> 
+  select(term, estimate, conf.low, conf.high)
 ```
 
 Interpret -0.8, the estimate for the coefficient of `election_age:sexMale`.
 
 ```{r temperance-4}
 question_text(NULL,
-	message = "Relative to female candidates, male candidates who are older die much earlier than younger candidates. The -0.8 estimate suggests that male candidates who are twenty years older, live 16 years less after the election, compared to their younger peers. This seems much more plausible than the 1 year estimate for female candidates.",
-	answer(NULL, correct = TRUE),
-	allow_retry = FALSE,
-	incorrect = NULL,
-	rows = 6)
+  message = "Relative to female candidates, male candidates who are older die much earlier than younger candidates. The -0.8 estimate suggests that male candidates who are twenty years older, live 16 years less after the election, compared to their younger peers. This seems much more plausible than the 1 year estimate for female candidates.",
+  answer(NULL, correct = TRUE),
+  allow_retry = FALSE,
+  incorrect = NULL,
+  rows = 6)
 ```
 
 ###
@@ -1560,8 +1560,8 @@ Numeric variables are harder to use in comparisons than binary variables because
 
 ```{r}
 fit_years |> 
-	tidy(conf.int = TRUE) |> 
-	select(term, estimate, conf.low, conf.high)
+  tidy(conf.int = TRUE) |> 
+  select(term, estimate, conf.low, conf.high)
 ```
 
 Interpret [-1.5, -0.07], the confidence interval for the estimate of the coefficient of `election_age:sexMale`.
@@ -1570,11 +1570,11 @@ Interpret [-1.5, -0.07], the confidence interval for the estimate of the coeffic
 
 ```{r temperance-5}
 question_text(NULL,
-	message = "Our best estimate is that male candidates who are 20 years younger will live 16 years longer than their older male peers. But that is just an estimate. We are uncertain. It would not be surprising if the true value were as low as 1.4 years or as high as 30 years.",
-	answer(NULL, correct = TRUE),
-	allow_retry = FALSE,
-	incorrect = NULL,
-	rows = 6)
+  message = "Our best estimate is that male candidates who are 20 years younger will live 16 years longer than their older male peers. But that is just an estimate. We are uncertain. It would not be surprising if the true value were as low as 1.4 years or as high as 30 years.",
+  answer(NULL, correct = TRUE),
+  allow_retry = FALSE,
+  incorrect = NULL,
+  rows = 6)
 ```
 
 ###
@@ -1595,11 +1595,11 @@ CP/CR.
 
 ```{r temperance-6}
 question_text(NULL,
-	answer(NULL, correct = TRUE),
-	allow_retry = TRUE,
-	try_again_button = "Edit Answer",
-	incorrect = NULL,
-	rows = 3)
+  answer(NULL, correct = TRUE),
+  allow_retry = TRUE,
+  try_again_button = "Edit Answer",
+  incorrect = NULL,
+  rows = 3)
 ```
 
 ### 
@@ -1612,11 +1612,11 @@ What is the specific question we are trying to answer?
 
 ```{r temperance-7}
 question_text(NULL,
-	message = "How many years do gubernatorial candidates live after leaving office?",
-	answer(NULL, correct = TRUE),
-	allow_retry = FALSE,
-	incorrect = NULL,
-	rows = 6)
+  message = "How many years do gubernatorial candidates live after leaving office?",
+  answer(NULL, correct = TRUE),
+  allow_retry = FALSE,
+  incorrect = NULL,
+  rows = 6)
 ```
 
 ### 
@@ -1629,7 +1629,7 @@ Run this code:
 
 ```
 plot_predictions(fit_years, 
-				 by = "sex")
+         by = "sex")
 ```             
 
 
@@ -1640,7 +1640,7 @@ plot_predictions(fit_years,
 
 ```{r temperance-8-test, include = FALSE}
 plot_predictions(fit_years, 
-				 by = "sex")
+         by = "sex")
 ```
 
 ### 
@@ -1659,7 +1659,7 @@ Run this code:
 
 ```
 plot_predictions(fit_years,
-				condition = c("election_age"))
+        condition = c("election_age"))
 ```             
 
 ```{r temperance-9, exercise = TRUE}
@@ -1668,7 +1668,7 @@ plot_predictions(fit_years,
 
 ```{r temperance-9-test, include = FALSE}
 plot_predictions(fit_years, 
-				 condition = c("election_age"))
+         condition = c("election_age"))
 ```
 
 ### 
@@ -1688,7 +1688,7 @@ Run this code:
 
 ```
 plot_predictions(fit_years, 
-				 by = c("election_age", "sex"))
+         by = c("election_age", "sex"))
 ```             
 
 ```{r temperance-10, exercise = TRUE}
@@ -1698,7 +1698,7 @@ plot_predictions(fit_years,
 
 ```{r temperance-10-test, include = FALSE}
 plot_predictions(fit_years, 
-				 by = c("election_age", "sex"))
+         by = c("election_age", "sex"))
 ```
 
 ### 
@@ -1722,11 +1722,11 @@ Copy the code for your plot here:
 
 ```{r temperance-11}
 question_text(NULL,
-	answer(NULL, correct = TRUE),
-	allow_retry = TRUE,
-	try_again_button = "Edit Answer",
-	incorrect = NULL,
-	rows = 15)
+  answer(NULL, correct = TRUE),
+  allow_retry = TRUE,
+  try_again_button = "Edit Answer",
+  incorrect = NULL,
+  rows = 15)
 ```
 
 ### 
@@ -1791,11 +1791,11 @@ CP/CR.
 
 ```{r temperance-12}
 question_text(NULL,
-	answer(NULL, correct = TRUE),
-	allow_retry = TRUE,
-	try_again_button = "Edit Answer",
-	incorrect = NULL,
-	rows = 10)
+  answer(NULL, correct = TRUE),
+  allow_retry = TRUE,
+  try_again_button = "Edit Answer",
+  incorrect = NULL,
+  rows = 10)
 ```
 
 
@@ -1809,11 +1809,11 @@ Write the last sentence of your summary paragraph. It describes at least one qua
 
 ```{r temperance-13}
 question_text(NULL,
-	message = "A 50-year-old male political candidate can expect to live about 30 years after the election, plus-or-minus about 1 year.",
-	answer(NULL, correct = TRUE),
-	allow_retry = FALSE,
-	incorrect = NULL,
-	rows = 6)
+  message = "A 50-year-old male political candidate can expect to live about 30 years after the election, plus-or-minus about 1 year.",
+  answer(NULL, correct = TRUE),
+  allow_retry = FALSE,
+  incorrect = NULL,
+  rows = 6)
 ```
 
 ### 
@@ -1826,11 +1826,11 @@ Write a few sentences which explain why the estimates for the quantities of inte
 
 ```{r temperance-14}
 question_text(NULL,
-	message = "There is clearly something weird about the data for female candidates. But, at the same time, we are trying to make a claim for candidates in general, not just male candidates. So, I would change the conclusion to: a 50-year-old political candidates can expect to live another 18 years, plus-or-minus 4 years.",
-	answer(NULL, correct = TRUE),
-	allow_retry = FALSE,
-	incorrect = NULL,
-	rows = 6)
+  message = "There is clearly something weird about the data for female candidates. But, at the same time, we are trying to make a claim for candidates in general, not just male candidates. So, I would change the conclusion to: a 50-year-old political candidates can expect to live another 18 years, plus-or-minus 4 years.",
+  answer(NULL, correct = TRUE),
+  allow_retry = FALSE,
+  incorrect = NULL,
+  rows = 6)
 ```
 
 ### 
@@ -1853,11 +1853,11 @@ CP/CR.
 
 ```{r temperance-15}
 question_text(NULL,
-	answer(NULL, correct = TRUE),
-	allow_retry = TRUE,
-	try_again_button = "Edit Answer",
-	incorrect = NULL,
-	rows = 30)
+  answer(NULL, correct = TRUE),
+  allow_retry = TRUE,
+  try_again_button = "Edit Answer",
+  incorrect = NULL,
+  rows = 30)
 ```
 
 ### 
@@ -1876,11 +1876,11 @@ Copy/paste the resulting URL below.
 
 ```{r temperance-16}
 question_text(NULL,
-	answer(NULL, correct = TRUE),
-	allow_retry = TRUE,
-	try_again_button = "Edit Answer",
-	incorrect = NULL,
-	rows = 3)
+  answer(NULL, correct = TRUE),
+  allow_retry = TRUE,
+  try_again_button = "Edit Answer",
+  incorrect = NULL,
+  rows = 3)
 ```
 
 ### 
@@ -1893,11 +1893,11 @@ Copy/paste the URL to your Github repo.
 
 ```{r temperance-17}
 question_text(NULL,
-	answer(NULL, correct = TRUE),
-	allow_retry = TRUE,
-	try_again_button = "Edit Answer",
-	incorrect = NULL,
-	rows = 3)
+  answer(NULL, correct = TRUE),
+  allow_retry = TRUE,
+  try_again_button = "Edit Answer",
+  incorrect = NULL,
+  rows = 3)
 ```
 
 ### 

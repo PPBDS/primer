@@ -59,11 +59,11 @@ What are the four [Cardinal Virtues](https://en.wikipedia.org/wiki/Cardinal_virt
 
 ```{r introduction-1}
 question_text(NULL,
-	message = "Wisdom, Justice, Courage, and Temperance.",
-	answer(NULL, correct = TRUE),
-	allow_retry = FALSE,
-	incorrect = NULL,
-	rows = 2)
+  message = "Wisdom, Justice, Courage, and Temperance.",
+  answer(NULL, correct = TRUE),
+  allow_retry = FALSE,
+  incorrect = NULL,
+  rows = 2)
 ```
 
 ###
@@ -94,11 +94,11 @@ CP/CR.
 
 ```{r introduction-2}
 question_text(NULL,
-	answer(NULL, correct = TRUE),
-	allow_retry = TRUE,
-	try_again_button = "Edit Answer",
-	incorrect = NULL,
-	rows = 3)
+  answer(NULL, correct = TRUE),
+  allow_retry = TRUE,
+  try_again_button = "Edit Answer",
+  incorrect = NULL,
+  rows = 3)
 ```
 
 ### 
@@ -126,11 +126,11 @@ CP/CR.
 
 ```{r introduction-3}
 question_text(NULL,
-	answer(NULL, correct = TRUE),
-	allow_retry = TRUE,
-	try_again_button = "Edit Answer",
-	incorrect = NULL,
-	rows = 6)
+  answer(NULL, correct = TRUE),
+  allow_retry = TRUE,
+  try_again_button = "Edit Answer",
+  incorrect = NULL,
+  rows = 6)
 ```
 
 ### 
@@ -147,11 +147,11 @@ CP/CR.
 
 ```{r introduction-4}
 question_text(NULL,
-	answer(NULL, correct = TRUE),
-	allow_retry = TRUE,
-	try_again_button = "Edit Answer",
-	incorrect = NULL,
-	rows = 3)
+  answer(NULL, correct = TRUE),
+  allow_retry = TRUE,
+  try_again_button = "Edit Answer",
+  incorrect = NULL,
+  rows = 3)
 ```
 
 ###
@@ -164,11 +164,11 @@ In the Console, type `?colleges`, and paste the Description below.
 
 ```{r introduction-5}
 question_text(NULL,
-	answer(NULL, correct = TRUE),
-	allow_retry = TRUE,
-	try_again_button = "Edit Answer",
-	incorrect = NULL,
-	rows = 8)
+  answer(NULL, correct = TRUE),
+  allow_retry = TRUE,
+  try_again_button = "Edit Answer",
+  incorrect = NULL,
+  rows = 8)
 ```
 
 ### 
@@ -181,11 +181,11 @@ Define a causal effect.
 
 ```{r introduction-6}
 question_text(NULL,
-	message = "A causal effect is the difference between two potential outcomes.",
-	answer(NULL, correct = TRUE),
-	allow_retry = FALSE,
-	incorrect = NULL,
-	rows = 6)
+  message = "A causal effect is the difference between two potential outcomes.",
+  answer(NULL, correct = TRUE),
+  allow_retry = FALSE,
+  incorrect = NULL,
+  rows = 6)
 ```
 
 ### 
@@ -198,11 +198,11 @@ Colleges are the broad topic of this tutorial. Given that topic, which variable 
 
 ```{r introduction-7}
 question_text(NULL,
-	message = "We will use `grad_rate`.",
-	answer(NULL, correct = TRUE),
-	allow_retry = FALSE,
-	incorrect = NULL,
-	rows = 2)
+  message = "We will use `grad_rate`.",
+  answer(NULL, correct = TRUE),
+  allow_retry = FALSE,
+  incorrect = NULL,
+  rows = 2)
 ```
 
 ### 
@@ -220,11 +220,11 @@ How might we manipulate this variable?
 
 ```{r introduction-8}
 question_text(NULL,
-	message = "We could create a new variable called `impv_food` where we could send funds to certain schools for the purpose of improving their food, for which `1` means funds were sent and `0` means funds were not send. We could compare the graduation rates after 5 years and see if improving food had any effect on it.",
-	answer(NULL, correct = TRUE),
-	allow_retry = FALSE,
-	incorrect = NULL,
-	rows = 6)
+  message = "We could create a new variable called `impv_food` where we could send funds to certain schools for the purpose of improving their food, for which `1` means funds were sent and `0` means funds were not send. We could compare the graduation rates after 5 years and see if improving food had any effect on it.",
+  answer(NULL, correct = TRUE),
+  allow_retry = FALSE,
+  incorrect = NULL,
+  rows = 6)
 ```
 
 ### 
@@ -238,11 +238,11 @@ Given our (imaginary) treatment variable `impv_food`, how many potential outcome
 
 ```{r introduction-9}
 question_text(NULL,
-	message = "There are 2 potential outcomes because the treatment variable `impv_food` takes on 2 posible values: a college improved their food or a college didn't improve their food.",
-	answer(NULL, correct = TRUE),
-	allow_retry = FALSE,
-	incorrect = NULL,
-	rows = 6)
+  message = "There are 2 potential outcomes because the treatment variable `impv_food` takes on 2 posible values: a college improved their food or a college didn't improve their food.",
+  answer(NULL, correct = TRUE),
+  allow_retry = FALSE,
+  incorrect = NULL,
+  rows = 6)
 ```
 
 ### 
@@ -255,11 +255,11 @@ In a few sentences, specify the two different values for the imaginary treatment
 
 ```{r introduction-10}
 question_text(NULL,
-	message = "For a given college, assume that the value of the treatment variable might be 1 or 0. If the college gets 1 (meaning they improved their food), then the graduation rate (`grad_rate`) would be 0.85. If the college gets o (meaning they did not improve their food), then the graduation rate would be 0.60. The causal effect on the outcome of a treatment of 1 versus 0 is 0.85 - 0.6 --- i.e., the difference between two potential outcomes --- which equals 0.25, which is the causal effect.",
-	answer(NULL, correct = TRUE),
-	allow_retry = FALSE,
-	incorrect = NULL,
-	rows = 6)
+  message = "For a given college, assume that the value of the treatment variable might be 1 or 0. If the college gets 1 (meaning they improved their food), then the graduation rate (`grad_rate`) would be 0.85. If the college gets o (meaning they did not improve their food), then the graduation rate would be 0.60. The causal effect on the outcome of a treatment of 1 versus 0 is 0.85 - 0.6 --- i.e., the difference between two potential outcomes --- which equals 0.25, which is the causal effect.",
+  answer(NULL, correct = TRUE),
+  allow_retry = FALSE,
+  incorrect = NULL,
+  rows = 6)
 ```
 
 ### 
@@ -274,11 +274,11 @@ Let's consider a *predictive* model. Which variable in `colleges` do you think m
 
 ```{r introduction-11}
 question_text(NULL,
-	message = "One variable which might have an important connection could be `tuition`. People who pay more for a college may be more willing to spend time there.",
-	answer(NULL, correct = TRUE),
-	allow_retry = FALSE,
-	incorrect = NULL,
-	rows = 2)
+  message = "One variable which might have an important connection could be `tuition`. People who pay more for a college may be more willing to spend time there.",
+  answer(NULL, correct = TRUE),
+  allow_retry = FALSE,
+  incorrect = NULL,
+  rows = 2)
 ```
 
 ### 
@@ -291,11 +291,11 @@ Specify two different groups of colleges which have specific value for `tuition`
 
 ```{r introduction-12}
 question_text(NULL,
-	message = "Some colleges might charge a tuition of $90,000 per year. Others might have a tuition of $30,000. Those two groups will, on average, have graduation rate.",
-	answer(NULL, correct = TRUE),
-	allow_retry = FALSE,
-	incorrect = NULL,
-	rows = 6)
+  message = "Some colleges might charge a tuition of $90,000 per year. Others might have a tuition of $30,000. Those two groups will, on average, have graduation rate.",
+  answer(NULL, correct = TRUE),
+  allow_retry = FALSE,
+  incorrect = NULL,
+  rows = 6)
 ```
 
 ### 
@@ -308,11 +308,11 @@ Write a predicative question which connects the outcome variable `grad_rate` to 
 
 ```{r introduction-13}
 question_text(NULL,
-	message = "How does graduation rate differ between colleges at the 75th and 25th percentile of tuition?",
-	answer(NULL, correct = TRUE),
-	allow_retry = FALSE,
-	incorrect = NULL,
-	rows = 6)
+  message = "How does graduation rate differ between colleges at the 75th and 25th percentile of tuition?",
+  answer(NULL, correct = TRUE),
+  allow_retry = FALSE,
+  incorrect = NULL,
+  rows = 6)
 ```
 
 ### 
@@ -334,11 +334,11 @@ In your own words, describe the key components of Wisdom when working on a data 
 
 ```{r wisdom-1}
 question_text(NULL,
-	message = "Wisdom requires a question, the creation of a Preceptor Table, and an examination of our data.",
-	answer(NULL, correct = TRUE),
-	allow_retry = FALSE,
-	incorrect = NULL,
-	rows = 6)
+  message = "Wisdom requires a question, the creation of a Preceptor Table, and an examination of our data.",
+  answer(NULL, correct = TRUE),
+  allow_retry = FALSE,
+  incorrect = NULL,
+  rows = 6)
 ```
 
 ### 
@@ -351,11 +351,11 @@ Define a Preceptor Table.
 
 ```{r wisdom-2}
 question_text(NULL,
-	message = "A Preceptor Table is the smallest possible table of data with rows and columns such that, if there is no missing data, we can easily calculate the quantity of interest.",
-	answer(NULL, correct = TRUE),
-	allow_retry = FALSE,
-	incorrect = NULL,
-	rows = 6)
+  message = "A Preceptor Table is the smallest possible table of data with rows and columns such that, if there is no missing data, we can easily calculate the quantity of interest.",
+  answer(NULL, correct = TRUE),
+  allow_retry = FALSE,
+  incorrect = NULL,
+  rows = 6)
 ```
 
 ### 
@@ -368,11 +368,11 @@ Describe the key components of Preceptor Tables in general, without worrying abo
 
 ```{r wisdom-3}
 question_text(NULL,
-	message = "The rows of the Preceptor Table are the units. The outcome is at least one of the columns. If the problem is causal, there will be at least two (potential) outcome columns. The other columns are covariates. If the problem is causal, at least one of the covariates will be a treatment.",
-	answer(NULL, correct = TRUE),
-	allow_retry = FALSE,
-	incorrect = NULL,
-	rows = 6)
+  message = "The rows of the Preceptor Table are the units. The outcome is at least one of the columns. If the problem is causal, there will be at least two (potential) outcome columns. The other columns are covariates. If the problem is causal, at least one of the covariates will be a treatment.",
+  answer(NULL, correct = TRUE),
+  allow_retry = FALSE,
+  incorrect = NULL,
+  rows = 6)
 ```
 
 ### 
@@ -385,11 +385,11 @@ What are the units for this problem?
 
 ```{r wisdom-4}
 question_text(NULL,
-	message = "Each individual college in the United States.",
-	answer(NULL, correct = TRUE),
-	allow_retry = FALSE,
-	incorrect = NULL,
-	rows = 6)
+  message = "Each individual college in the United States.",
+  answer(NULL, correct = TRUE),
+  allow_retry = FALSE,
+  incorrect = NULL,
+  rows = 6)
 ```
 
 ### 
@@ -404,11 +404,11 @@ What is the outcome variable for this problem?
 
 ```{r wisdom-5}
 question_text(NULL,
-	message = "The outcome variable is `grad_rate`, which measures the graduation rate for each college.",
-	answer(NULL, correct = TRUE),
-	allow_retry = FALSE,
-	incorrect = NULL,
-	rows = 6)
+  message = "The outcome variable is `grad_rate`, which measures the graduation rate for each college.",
+  answer(NULL, correct = TRUE),
+  allow_retry = FALSE,
+  incorrect = NULL,
+  rows = 6)
 ```
 
 ### 
@@ -421,11 +421,11 @@ What is a covariate which you think might be useful for this problem, regardless
 
 ```{r wisdom-6}
 question_text(NULL,
-	message = "A useful covariate is `tuition`. Others that might be helpful include `selectivity`, size of campus, location of campus (could be `region`, `state`, or `zip`), and the prestige (or `tier`) of the school.",
-	answer(NULL, correct = TRUE),
-	allow_retry = FALSE,
-	incorrect = NULL,
-	rows = 6)
+  message = "A useful covariate is `tuition`. Others that might be helpful include `selectivity`, size of campus, location of campus (could be `region`, `state`, or `zip`), and the prestige (or `tier`) of the school.",
+  answer(NULL, correct = TRUE),
+  allow_retry = FALSE,
+  incorrect = NULL,
+  rows = 6)
 ```
 
 ### 
@@ -438,11 +438,11 @@ What are the treatments, if any, for this problem?
 
 ```{r wisdom-7}
 question_text(NULL,
-	message = "Since this is a predictive model, there are no treatments.",
-	answer(NULL, correct = TRUE),
-	allow_retry = FALSE,
-	incorrect = NULL,
-	rows = 6)
+  message = "Since this is a predictive model, there are no treatments.",
+  answer(NULL, correct = TRUE),
+  allow_retry = FALSE,
+  incorrect = NULL,
+  rows = 6)
 ```
 
 ### 
@@ -455,11 +455,11 @@ What moment in time does the Preceptor Table refer to?
 
 ```{r wisdom-8}
 question_text(NULL,
-	message = "The Preceptor Table refers to the current academic year, when students are choosing colleges.",
-	answer(NULL, correct = TRUE),
-	allow_retry = FALSE,
-	incorrect = NULL,
-	rows = 6)
+  message = "The Preceptor Table refers to the current academic year, when students are choosing colleges.",
+  answer(NULL, correct = TRUE),
+  allow_retry = FALSE,
+  incorrect = NULL,
+  rows = 6)
 ```
 
 ### 
@@ -487,11 +487,11 @@ Describe in words the Preceptor Table for this problem.
 
 ```{r wisdom-9}
 question_text(NULL,
-	message = "The Preceptor Table has one row for each college. The columns are ID, `grad_rate` (the outcome variable), and `tuition` (the main covariate).",
-	answer(NULL, correct = TRUE),
-	allow_retry = FALSE,
-	incorrect = NULL,
-	rows = 6)
+  message = "The Preceptor Table has one row for each college. The columns are ID, `grad_rate` (the outcome variable), and `tuition` (the main covariate).",
+  answer(NULL, correct = TRUE),
+  allow_retry = FALSE,
+  incorrect = NULL,
+  rows = 6)
 ```
 
 ### 
@@ -542,11 +542,11 @@ What is the narrow, specific question we will try to answer?
 
 ```{r wisdom-10}
 question_text(NULL,
-	message = "What effect does the tuition of a college have on its graduation rate?",
-	answer(NULL, correct = TRUE),
-	allow_retry = FALSE,
-	incorrect = NULL,
-	rows = 6)
+  message = "What effect does the tuition of a college have on its graduation rate?",
+  answer(NULL, correct = TRUE),
+  allow_retry = FALSE,
+  incorrect = NULL,
+  rows = 6)
 ```
 
 ###
@@ -567,11 +567,11 @@ Type your two sentences below.
 
 ```{r wisdom-11}
 question_text(NULL,
-	message = "Tuition and educational quality are among the main concerns for many students and their families when choosing a college. Using data from IPEDS, a system of interrelated surveys on postsecondary education in 2013, we seek to understand the relationship between graduation rates and tuition for colleges and universities in the United States.",
-	answer(NULL, correct = TRUE),
-	allow_retry = FALSE,
-	incorrect = NULL,
-	rows = 6)
+  message = "Tuition and educational quality are among the main concerns for many students and their families when choosing a college. Using data from IPEDS, a system of interrelated surveys on postsecondary education in 2013, we seek to understand the relationship between graduation rates and tuition for colleges and universities in the United States.",
+  answer(NULL, correct = TRUE),
+  allow_retry = FALSE,
+  incorrect = NULL,
+  rows = 6)
 ```
 
 ### 
@@ -589,11 +589,11 @@ In your own words, name the five key components of Justice when working on a dat
 
 ```{r justice-1}
 question_text(NULL,
-	message = "Justice concerns the Population Table and the four key assumptions which underlie it: validity, stability, representativeness, and unconfoundedness.",
-	answer(NULL, correct = TRUE),
-	allow_retry = FALSE,
-	incorrect = NULL,
-	rows = 6)
+  message = "Justice concerns the Population Table and the four key assumptions which underlie it: validity, stability, representativeness, and unconfoundedness.",
+  answer(NULL, correct = TRUE),
+  allow_retry = FALSE,
+  incorrect = NULL,
+  rows = 6)
 ```
 
 ### 
@@ -606,11 +606,11 @@ In your own words, define "validity" as we use the term.
 
 ```{r justice-2}
 question_text(NULL,
-	message = "Validity is the consistency, or lack thereof, in the columns of the data set and the corresponding columns in the Preceptor Table.",
-	answer(NULL, correct = TRUE),
-	allow_retry = FALSE,
-	incorrect = NULL,
-	rows = 6)
+  message = "Validity is the consistency, or lack thereof, in the columns of the data set and the corresponding columns in the Preceptor Table.",
+  answer(NULL, correct = TRUE),
+  allow_retry = FALSE,
+  incorrect = NULL,
+  rows = 6)
 ```
 
 ### 
@@ -623,11 +623,11 @@ Provide one reason why the assumption of validity might not hold for the outcome
 
 ```{r justice-3}
 question_text(NULL,
-	message = "The `grad_rate` column in our data is reported by colleges themselves to the federal government, and colleges have an incentive to make their graduation rates look high. The `grad_rate` column in the Preceptor Table represents the true graduation rate. These two columns may not be measuring exactly the same thing.",
-	answer(NULL, correct = TRUE),
-	allow_retry = FALSE,
-	incorrect = NULL,
-	rows = 6)
+  message = "The `grad_rate` column in our data is reported by colleges themselves to the federal government, and colleges have an incentive to make their graduation rates look high. The `grad_rate` column in the Preceptor Table represents the true graduation rate. These two columns may not be measuring exactly the same thing.",
+  answer(NULL, correct = TRUE),
+  allow_retry = FALSE,
+  incorrect = NULL,
+  rows = 6)
 ```
 
 ### 
@@ -644,11 +644,11 @@ In your own words, define a Population Table.
 
 ```{r justice-4}
 question_text(NULL,
-	message = "The Population Table includes a row for each unit/time combination in the underlying population from which both the Preceptor Table and the data are drawn.",
-	answer(NULL, correct = TRUE),
-	allow_retry = FALSE,
-	incorrect = NULL,
-	rows = 6)
+  message = "The Population Table includes a row for each unit/time combination in the underlying population from which both the Preceptor Table and the data are drawn.",
+  answer(NULL, correct = TRUE),
+  allow_retry = FALSE,
+  incorrect = NULL,
+  rows = 6)
 ```
 
 ### 
@@ -661,11 +661,11 @@ In your own words, define the assumption of "stability" when employed in the con
 
 ```{r justice-5}
 question_text(NULL,
-	message = "Stability means that the relationship between the columns in the Population Table is the same for three categories of rows: the data, the Preceptor Table, and the larger population from which both are drawn.",
-	answer(NULL, correct = TRUE),
-	allow_retry = FALSE,
-	incorrect = NULL,
-	rows = 6)
+  message = "Stability means that the relationship between the columns in the Population Table is the same for three categories of rows: the data, the Preceptor Table, and the larger population from which both are drawn.",
+  answer(NULL, correct = TRUE),
+  allow_retry = FALSE,
+  incorrect = NULL,
+  rows = 6)
 ```
 
 ### 
@@ -679,11 +679,11 @@ Provide one reason why the assumption of stability might not be true in this cas
 
 ```{r justice-6}
 question_text(NULL,
-	message = "College graduation requirements may have changed over time. This may result in different rates resulting from factors unaccounted for in our data.",
-	answer(NULL, correct = TRUE),
-	allow_retry = FALSE,
-	incorrect = NULL,
-	rows = 6)
+  message = "College graduation requirements may have changed over time. This may result in different rates resulting from factors unaccounted for in our data.",
+  answer(NULL, correct = TRUE),
+  allow_retry = FALSE,
+  incorrect = NULL,
+  rows = 6)
 ```
 
 ### 
@@ -696,11 +696,11 @@ We use our data to make inferences about the overall population. We use informat
 
 ```{r justice-7}
 question_text(NULL,
-	message = "Representativeness, or the lack thereof, concerns two relationships among the rows in the Population Table. The first is between the data and the other rows. The second is between the other rows and the Preceptor Table.",
-	answer(NULL, correct = TRUE),
-	allow_retry = FALSE,
-	incorrect = NULL,
-	rows = 6)
+  message = "Representativeness, or the lack thereof, concerns two relationships among the rows in the Population Table. The first is between the data and the other rows. The second is between the other rows and the Preceptor Table.",
+  answer(NULL, correct = TRUE),
+  allow_retry = FALSE,
+  incorrect = NULL,
+  rows = 6)
 ```
 
 ### 
@@ -713,11 +713,11 @@ We do not use the data, directly, to estimate missing values in the Preceptor Ta
 
 ```{r justice-8}
 question_text(NULL,
-	message = "Smaller schools may have been excluded from our dataset.",
-	answer(NULL, correct = TRUE),
-	allow_retry = FALSE,
-	incorrect = NULL,
-	rows = 6)
+  message = "Smaller schools may have been excluded from our dataset.",
+  answer(NULL, correct = TRUE),
+  allow_retry = FALSE,
+  incorrect = NULL,
+  rows = 6)
 ```
 
 ### 
@@ -731,11 +731,11 @@ We use information about the population to make inferences about the Preceptor T
 
 ```{r justice-9}
 question_text(NULL,
-	message = "Because the Preceptor Table includes the entire population, there is no problem with representativeness in using the population to draw inferences about the Precetor Table. They are one and the same.",
-	answer(NULL, correct = TRUE),
-	allow_retry = FALSE,
-	incorrect = NULL,
-	rows = 6)
+  message = "Because the Preceptor Table includes the entire population, there is no problem with representativeness in using the population to draw inferences about the Precetor Table. They are one and the same.",
+  answer(NULL, correct = TRUE),
+  allow_retry = FALSE,
+  incorrect = NULL,
+  rows = 6)
 ```
 
 ### 
@@ -750,11 +750,11 @@ In your own words, define the assumption of "unconfoundedness" when employed in 
 
 ```{r justice-10}
 question_text(NULL,
-	message = "Unconfoundedness means that the treatment assignment is independent of the potential outcomes, when we condition on pre-treatment covariates.",
-	answer(NULL, correct = TRUE),
-	allow_retry = FALSE,
-	incorrect = NULL,
-	rows = 6)
+  message = "Unconfoundedness means that the treatment assignment is independent of the potential outcomes, when we condition on pre-treatment covariates.",
+  answer(NULL, correct = TRUE),
+  allow_retry = FALSE,
+  incorrect = NULL,
+  rows = 6)
 ```
 
 ### 
@@ -772,11 +772,11 @@ Of course, your version will be somewhat different.
 
 ```{r justice-11}
 question_text(NULL,
-	message = "Tuition fee and educational quality are one of the main concerns for many students and their families when going to college. Using data from a IPEDS, a system of interrelated surveys on postsecondary eduation in 2013, we seek to understand the relationship between graduation rates tuition for colleges/universities in the United States. Graduation rates could've changed tremendously since 2013 thus potentially weaken our model.",
-	answer(NULL, correct = TRUE),
-	allow_retry = FALSE,
-	incorrect = NULL,
-	rows = 6)
+  message = "Tuition fee and educational quality are one of the main concerns for many students and their families when going to college. Using data from a IPEDS, a system of interrelated surveys on postsecondary eduation in 2013, we seek to understand the relationship between graduation rates tuition for colleges/universities in the United States. Graduation rates could've changed tremendously since 2013 thus potentially weaken our model.",
+  answer(NULL, correct = TRUE),
+  allow_retry = FALSE,
+  incorrect = NULL,
+  rows = 6)
 ```
 
 ### 
@@ -794,11 +794,11 @@ In your own words, describe the components of the virtue of Courage for analyzin
 
 ```{r courage-1}
 question_text(NULL,
-	message = "Courage starts with math, explores models, and then creates the data generating mechanism.",
-	answer(NULL, correct = TRUE),
-	allow_retry = FALSE,
-	incorrect = NULL,
-	rows = 6)
+  message = "Courage starts with math, explores models, and then creates the data generating mechanism.",
+  answer(NULL, correct = TRUE),
+  allow_retry = FALSE,
+  incorrect = NULL,
+  rows = 6)
 ```
 
 ### 
@@ -813,11 +813,11 @@ CP/CR.
 
 ```{r courage-2}
 question_text(NULL,
-	answer(NULL, correct = TRUE),
-	allow_retry = TRUE,
-	try_again_button = "Edit Answer",
-	incorrect = NULL,
-	rows = 6)
+  answer(NULL, correct = TRUE),
+  allow_retry = TRUE,
+  try_again_button = "Edit Answer",
+  incorrect = NULL,
+  rows = 6)
 ```
 
 ### 
@@ -889,7 +889,7 @@ linear_reg() |>
     set_engine("lm") |>
     fit(grad_rate ~ tuition + region, 
         data = colleges) |> 
-	tidy(conf.int = TRUE)
+  tidy(conf.int = TRUE)
 ```
 
 ### 
@@ -991,11 +991,11 @@ CP/CR.
 
 ```{r courage-9}
 question_text(NULL,
-	answer(NULL, correct = TRUE),
-	allow_retry = TRUE,
-	try_again_button = "Edit Answer",
-	incorrect = NULL,
-	rows = 3)
+  answer(NULL, correct = TRUE),
+  allow_retry = TRUE,
+  try_again_button = "Edit Answer",
+  incorrect = NULL,
+  rows = 3)
 ```
 
 ###
@@ -1020,11 +1020,11 @@ CP/CR.
 
 ```{r courage-10}
 question_text(NULL,
-	answer(NULL, correct = TRUE),
-	allow_retry = TRUE,
-	try_again_button = "Edit Answer",
-	incorrect = NULL,
-	rows = 8)
+  answer(NULL, correct = TRUE),
+  allow_retry = TRUE,
+  try_again_button = "Edit Answer",
+  incorrect = NULL,
+  rows = 8)
 ```
 
 ### 
@@ -1045,11 +1045,11 @@ CP/CR.
 
 ```{r courage-11}
 question_text(NULL,
-	answer(NULL, correct = TRUE),
-	allow_retry = TRUE,
-	try_again_button = "Edit Answer",
-	incorrect = NULL,
-	rows = 6)
+  answer(NULL, correct = TRUE),
+  allow_retry = TRUE,
+  try_again_button = "Edit Answer",
+  incorrect = NULL,
+  rows = 6)
 ```
 
 ###
@@ -1063,11 +1063,11 @@ In the Console, load the **[easystats](https://easystats.github.io/easystats/)**
 
 ```{r courage-12}
 question_text(NULL,
-	answer(NULL, correct = TRUE),
-	allow_retry = TRUE,
-	try_again_button = "Edit Answer",
-	incorrect = NULL,
-	rows = 5)
+  answer(NULL, correct = TRUE),
+  allow_retry = TRUE,
+  try_again_button = "Edit Answer",
+  incorrect = NULL,
+  rows = 5)
 ```
 
 ###
@@ -1080,11 +1080,11 @@ In the Console, run `check_predictions(extract_fit_engine(fit_colleges))`. CP/CR
 
 ```{r courage-13}
 question_text(NULL,
-	answer(NULL, correct = TRUE),
-	allow_retry = TRUE,
-	try_again_button = "Edit Answer",
-	incorrect = NULL,
-	rows = 5)
+  answer(NULL, correct = TRUE),
+  allow_retry = TRUE,
+  try_again_button = "Edit Answer",
+  incorrect = NULL,
+  rows = 5)
 ```
 
 ###
@@ -1103,11 +1103,11 @@ Once the $\LaTeX$ code looks good, paste it below.
 
 ```{r courage-14}
 question_text(NULL,
-	answer(NULL, correct = TRUE),
-	allow_retry = TRUE,
-	try_again_button = "Edit Answer",
-	incorrect = NULL,
-	rows = 3)
+  answer(NULL, correct = TRUE),
+  allow_retry = TRUE,
+  try_again_button = "Edit Answer",
+  incorrect = NULL,
+  rows = 3)
 ```
 
 ###
@@ -1174,11 +1174,11 @@ CP/CR.
 
 ```{r courage-16}
 question_text(NULL,
-	answer(NULL, correct = TRUE),
-	allow_retry = TRUE,
-	try_again_button = "Edit Answer",
-	incorrect = NULL,
-	rows = 12)
+  answer(NULL, correct = TRUE),
+  allow_retry = TRUE,
+  try_again_button = "Edit Answer",
+  incorrect = NULL,
+  rows = 12)
 ```
 
 ###
@@ -1239,11 +1239,11 @@ Recall the beginning of our version of the summary:
 
 ```{r courage-17}
 question_text(NULL,
-	message = "Tuition fee and educational quality are one of the main concerns for many students and their families when going to college. Using data from a IPEDS, a system of interrelated surveys on postsecondary eduation in 2013, we seek to understand the relationship between graduation rates tuition for colleges/universities in the United States. Graduation rates could've changed tremendously since 2013 thus potentially weaken our model. We modeled graduation rate, a continuous variable, as a linear function of both tuition and selectivity. Graduation rates seem to rise as tuition increases.",
-	answer(NULL, correct = TRUE),
-	allow_retry = FALSE,
-	incorrect = NULL,
-	rows = 6)
+  message = "Tuition fee and educational quality are one of the main concerns for many students and their families when going to college. Using data from a IPEDS, a system of interrelated surveys on postsecondary eduation in 2013, we seek to understand the relationship between graduation rates tuition for colleges/universities in the United States. Graduation rates could've changed tremendously since 2013 thus potentially weaken our model. We modeled graduation rate, a continuous variable, as a linear function of both tuition and selectivity. Graduation rates seem to rise as tuition increases.",
+  answer(NULL, correct = TRUE),
+  allow_retry = FALSE,
+  incorrect = NULL,
+  rows = 6)
 ```
 
 ### 
@@ -1261,11 +1261,11 @@ In your own words, describe the use of Temperance in data science.
 
 ```{r temperance-1}
 question_text(NULL,
-	message = "Temperance uses the data generating mechanism to answer the questions with which we began. Humility reminds us that this answer is always a lie. We can also use the DGM to calculate many similar quantities of interest, displaying the results graphically.",
-	answer(NULL, correct = TRUE),
-	allow_retry = FALSE,
-	incorrect = NULL,
-	rows = 6)
+  message = "Temperance uses the data generating mechanism to answer the questions with which we began. Humility reminds us that this answer is always a lie. We can also use the DGM to calculate many similar quantities of interest, displaying the results graphically.",
+  answer(NULL, correct = TRUE),
+  allow_retry = FALSE,
+  incorrect = NULL,
+  rows = 6)
 ```
 
 ### 
@@ -1282,19 +1282,19 @@ Recall the values for the parameters in our data generating mechanism:
 
 ```{r}
  fit_colleges |> 
- 	tidy(conf.int = TRUE) |> 
-	select(term, estimate, conf.low, conf.high)
+   tidy(conf.int = TRUE) |> 
+  select(term, estimate, conf.low, conf.high)
 ```
 
 <!-- I find the selectivity variable names to be difficult to interpret. Consider renaming in the code. -->
 
 ```{r temperance-2}
 question_text(NULL,
-	message = "The estimate for selectivityHighlySelective is 0.16, with a 95% confidence interval from 0.13 to 0.19. This means that, when comparing colleges that are highly selective to the baseline category, we predict a 16 percentage point higher graduation rate, adjusting for tuition. Since the confidence interval does not include zero, we can be reasonably confident that this positive association is not due to random chance.",
-	answer(NULL, correct = TRUE),
-	allow_retry = FALSE,
-	incorrect = NULL,
-	rows = 6)
+  message = "The estimate for selectivityHighlySelective is 0.16, with a 95% confidence interval from 0.13 to 0.19. This means that, when comparing colleges that are highly selective to the baseline category, we predict a 16 percentage point higher graduation rate, adjusting for tuition. Since the confidence interval does not include zero, we can be reasonably confident that this positive association is not due to random chance.",
+  answer(NULL, correct = TRUE),
+  allow_retry = FALSE,
+  incorrect = NULL,
+  rows = 6)
 ```
 
 ###
@@ -1307,17 +1307,17 @@ What does the estimate for tuition suggest about the relationship between tuitio
 
 ```{r}
  fit_colleges |> 
- 	tidy(conf.int = TRUE) |> 
-	select(term, estimate, conf.low, conf.high)
+   tidy(conf.int = TRUE) |> 
+  select(term, estimate, conf.low, conf.high)
 ```
 
 ```{r temperance-3}
 question_text(NULL,
-	message = "The estimate for tuition is 0.09, meaning that for each additional $10k of tuition, graduation rate is predicted to increase by 0.9 percentage points, adjusting for selectivity. The confidence interval (0.074, 0.106) does not include zero, so the effect is statistically significant.",
-	answer(NULL, correct = TRUE),
-	allow_retry = FALSE,
-	incorrect = NULL,
-	rows = 6)
+  message = "The estimate for tuition is 0.09, meaning that for each additional $10k of tuition, graduation rate is predicted to increase by 0.9 percentage points, adjusting for selectivity. The confidence interval (0.074, 0.106) does not include zero, so the effect is statistically significant.",
+  answer(NULL, correct = TRUE),
+  allow_retry = FALSE,
+  incorrect = NULL,
+  rows = 6)
 ```
 
 ###
@@ -1330,17 +1330,17 @@ What does it mean that the confidence intervals for selectivitySelective and sel
 
 ```{r}
  fit_colleges |> 
- 	tidy(conf.int = TRUE) |> 
-	select(term, estimate, conf.low, conf.high)
+   tidy(conf.int = TRUE) |> 
+  select(term, estimate, conf.low, conf.high)
 ```
 
 ```{r temperance-4}
 question_text(NULL,
-	message = "The confidence interval for selectivitySelective is [0.04, 0.10], and for selectivityHighlySelective it is [0.13, 0.19]. Because these intervals do not overlap, we can reasonably conclude that graduation rates are higher for highly selective colleges than for moderately selective ones, adjusting for tuition. The difference is not only positive but also statistically distinguishable.",
-	answer(NULL, correct = TRUE),
-	allow_retry = FALSE,
-	incorrect = NULL,
-	rows = 6)
+  message = "The confidence interval for selectivitySelective is [0.04, 0.10], and for selectivityHighlySelective it is [0.13, 0.19]. Because these intervals do not overlap, we can reasonably conclude that graduation rates are higher for highly selective colleges than for moderately selective ones, adjusting for tuition. The difference is not only positive but also statistically distinguishable.",
+  answer(NULL, correct = TRUE),
+  allow_retry = FALSE,
+  incorrect = NULL,
+  rows = 6)
 ```
 
 ###
@@ -1361,11 +1361,11 @@ CP/CR.
 
 ```{r temperance-5}
 question_text(NULL,
-	answer(NULL, correct = TRUE),
-	allow_retry = TRUE,
-	try_again_button = "Edit Answer",
-	incorrect = NULL,
-	rows = 3)
+  answer(NULL, correct = TRUE),
+  allow_retry = TRUE,
+  try_again_button = "Edit Answer",
+  incorrect = NULL,
+  rows = 3)
 ```
 
 ### 
@@ -1378,11 +1378,11 @@ What is the specific question we are trying to answer?
 
 ```{r temperance-6}
 question_text(NULL,
-	message = "What is the relationship between tuition and graduation rates for colleges and universities in the United States?",
-	answer(NULL, correct = TRUE),
-	allow_retry = FALSE,
-	incorrect = NULL,
-	rows = 6)
+  message = "What is the relationship between tuition and graduation rates for colleges and universities in the United States?",
+  answer(NULL, correct = TRUE),
+  allow_retry = FALSE,
+  incorrect = NULL,
+  rows = 6)
 ```
 
 ### 
@@ -1397,11 +1397,11 @@ CP/CR.
 
 ```{r temperance-7}
 question_text(NULL,
-	answer(NULL, correct = TRUE),
-	allow_retry = TRUE,
-	try_again_button = "Edit Answer",
-	incorrect = NULL,
-	rows = 3)
+  answer(NULL, correct = TRUE),
+  allow_retry = TRUE,
+  try_again_button = "Edit Answer",
+  incorrect = NULL,
+  rows = 3)
 ```
 
 ```{r temperance-7-test, include = FALSE}
@@ -1422,11 +1422,11 @@ CP/CR.
 
 ```{r temperance-8}
 question_text(NULL,
-	answer(NULL, correct = TRUE),
-	allow_retry = TRUE,
-	try_again_button = "Edit Answer",
-	incorrect = NULL,
-	rows = 3)
+  answer(NULL, correct = TRUE),
+  allow_retry = TRUE,
+  try_again_button = "Edit Answer",
+  incorrect = NULL,
+  rows = 3)
 ```
 
 ```{r temperance-8-test, include = FALSE}
@@ -1446,11 +1446,11 @@ CP/CR.
 
 ```{r temperance-9}
 question_text(NULL,
-	answer(NULL, correct = TRUE),
-	allow_retry = TRUE,
-	try_again_button = "Edit Answer",
-	incorrect = NULL,
-	rows = 5)
+  answer(NULL, correct = TRUE),
+  allow_retry = TRUE,
+  try_again_button = "Edit Answer",
+  incorrect = NULL,
+  rows = 5)
 ```
 
 ### 
@@ -1469,11 +1469,11 @@ Copy the code for your plot here:
 
 ```{r temperance-10}
 question_text(NULL,
-	answer(NULL, correct = TRUE),
-	allow_retry = TRUE,
-	try_again_button = "Edit Answer",
-	incorrect = NULL,
-	rows = 15)
+  answer(NULL, correct = TRUE),
+  allow_retry = TRUE,
+  try_again_button = "Edit Answer",
+  incorrect = NULL,
+  rows = 15)
 ```
 
 ### 
@@ -1547,11 +1547,11 @@ CP/CR.
 
 ```{r temperance-11}
 question_text(NULL,
-	answer(NULL, correct = TRUE),
-	allow_retry = TRUE,
-	try_again_button = "Edit Answer",
-	incorrect = NULL,
-	rows = 10)
+  answer(NULL, correct = TRUE),
+  allow_retry = TRUE,
+  try_again_button = "Edit Answer",
+  incorrect = NULL,
+  rows = 10)
 ```
 
 
@@ -1565,11 +1565,11 @@ Write the last sentence of your summary paragraph. It describes at least one qua
 
 ```{r temperance-12}
 question_text(NULL,
-	message = "Tuition fee and educational quality are one of the main concerns for many students and their families when going to college. Using data from a IPEDS, a system of interrelated surveys on postsecondary eduation in 2013, we seek to understand the relationship between graduation rates tuition for colleges/universities in the United States. Graduation rates could've changed tremendously since 2013 thus potentially weaken our model. We modeled graduation rate, a continuous variable, as a linear function of both tuition and selectivity. Graduation rates seem to rise as tuition increases. Colleges in the 75th percentile are have on average an 11% higher graduation rate as opposed to colleges in the 25th percentile, although that number may be anywhere from 9-13%.",
-	answer(NULL, correct = TRUE),
-	allow_retry = FALSE,
-	incorrect = NULL,
-	rows = 6)
+  message = "Tuition fee and educational quality are one of the main concerns for many students and their families when going to college. Using data from a IPEDS, a system of interrelated surveys on postsecondary eduation in 2013, we seek to understand the relationship between graduation rates tuition for colleges/universities in the United States. Graduation rates could've changed tremendously since 2013 thus potentially weaken our model. We modeled graduation rate, a continuous variable, as a linear function of both tuition and selectivity. Graduation rates seem to rise as tuition increases. Colleges in the 75th percentile are have on average an 11% higher graduation rate as opposed to colleges in the 25th percentile, although that number may be anywhere from 9-13%.",
+  answer(NULL, correct = TRUE),
+  allow_retry = FALSE,
+  incorrect = NULL,
+  rows = 6)
 ```
 
 ### 
@@ -1593,11 +1593,11 @@ CP/CR.
 
 ```{r temperance-13}
 question_text(NULL,
-	answer(NULL, correct = TRUE),
-	allow_retry = TRUE,
-	try_again_button = "Edit Answer",
-	incorrect = NULL,
-	rows = 30)
+  answer(NULL, correct = TRUE),
+  allow_retry = TRUE,
+  try_again_button = "Edit Answer",
+  incorrect = NULL,
+  rows = 30)
 ```
 
 ### 
@@ -1616,11 +1616,11 @@ Copy/paste the resulting URL below.
 
 ```{r temperance-14}
 question_text(NULL,
-	answer(NULL, correct = TRUE),
-	allow_retry = TRUE,
-	try_again_button = "Edit Answer",
-	incorrect = NULL,
-	rows = 3)
+  answer(NULL, correct = TRUE),
+  allow_retry = TRUE,
+  try_again_button = "Edit Answer",
+  incorrect = NULL,
+  rows = 3)
 ```
 
 ### 
@@ -1633,11 +1633,11 @@ Copy/paste the URL to your Github repo.
 
 ```{r temperance-15}
 question_text(NULL,
-	answer(NULL, correct = TRUE),
-	allow_retry = TRUE,
-	try_again_button = "Edit Answer",
-	incorrect = NULL,
-	rows = 3)
+  answer(NULL, correct = TRUE),
+  allow_retry = TRUE,
+  try_again_button = "Edit Answer",
+  incorrect = NULL,
+  rows = 3)
 ```
 
 ### 

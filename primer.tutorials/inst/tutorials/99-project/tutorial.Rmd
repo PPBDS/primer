@@ -123,11 +123,11 @@ Either way, copy/paste the url of the page containing your photo here:
 
 ```{r pimp-your-github-account-2}
 question_text(NULL,
-	answer(NULL, correct = TRUE),
-	allow_retry = TRUE,
-	try_again_button = "Edit Answer",
-	incorrect = NULL,
-	rows = 1)
+  answer(NULL, correct = TRUE),
+  allow_retry = TRUE,
+  try_again_button = "Edit Answer",
+  incorrect = NULL,
+  rows = 1)
 ```
 
 ### 
@@ -148,11 +148,11 @@ Paste the URL of your pimped GitHub account below. It should looks like `github.
 
 ```{r pimp-your-github-account-3}
 question_text(NULL,
-	answer(NULL, correct = TRUE),
-	allow_retry = TRUE,
-	try_again_button = "Edit Answer",
-	incorrect = NULL,
-	rows = 1)
+  answer(NULL, correct = TRUE),
+  allow_retry = TRUE,
+  try_again_button = "Edit Answer",
+  incorrect = NULL,
+  rows = 1)
 ```
 
 ## Create your project summary
@@ -174,11 +174,11 @@ Enter your first sentence in the box below. For example, "The prevalent emotions
 
 ```{r create-your-project-summary-1}
 question_text(NULL,
-	answer(NULL, correct = TRUE),
-	allow_retry = TRUE,
-	try_again_button = "Edit Answer",
-	incorrect = NULL,
-	rows = 2)
+  answer(NULL, correct = TRUE),
+  allow_retry = TRUE,
+  try_again_button = "Edit Answer",
+  incorrect = NULL,
+  rows = 2)
 ```
 
 ### 
@@ -197,11 +197,11 @@ With a statistical model, we will have specific numbers to include. Examples: "E
 
 ```{r create-your-project-summary-2}
 question_text(NULL,
-	answer(NULL, correct = TRUE),
-	allow_retry = TRUE,
-	try_again_button = "Edit Answer",
-	incorrect = NULL,
-	rows = 2)
+  answer(NULL, correct = TRUE),
+  allow_retry = TRUE,
+  try_again_button = "Edit Answer",
+  incorrect = NULL,
+  rows = 2)
 ```
 
 ### 
@@ -227,11 +227,11 @@ The sentence(s) will also often mention the larger goal of the exercise. Example
 
 ```{r create-your-project-summary-3}
 question_text(NULL,
-	answer(NULL, correct = TRUE),
-	allow_retry = TRUE,
-	try_again_button = "Edit Answer",
-	incorrect = NULL,
-	rows = 3)
+  answer(NULL, correct = TRUE),
+  allow_retry = TRUE,
+  try_again_button = "Edit Answer",
+  incorrect = NULL,
+  rows = 3)
 ```
 
 ### 
@@ -252,11 +252,11 @@ If your project includes a model, write your relevant sentence(s) below. Otherwi
 
 ```{r create-your-project-summary-4}
 question_text(NULL,
-	answer(NULL, correct = TRUE),
-	allow_retry = TRUE,
-	try_again_button = "Edit Answer",
-	incorrect = NULL,
-	rows = 6)
+  answer(NULL, correct = TRUE),
+  allow_retry = TRUE,
+  try_again_button = "Edit Answer",
+  incorrect = NULL,
+  rows = 6)
 ```
 
 ### Exercise 5
@@ -274,11 +274,11 @@ It's time to put all of the sentences together! Paste the compendium of your sen
 
 ```{r create-your-project-summary-5}
 question_text(NULL,
-	answer(NULL, correct = TRUE),
-	allow_retry = TRUE,
-	try_again_button = "Edit Answer",
-	incorrect = NULL,
-	rows = 5)
+  answer(NULL, correct = TRUE),
+  allow_retry = TRUE,
+  try_again_button = "Edit Answer",
+  incorrect = NULL,
+  rows = 5)
 ```
 
 ###
@@ -299,11 +299,11 @@ First, let's check whether you have the appropriate files in your project. Run `
 
 ```{r create-your-project-summary-6}
 question_text(NULL,
-	answer(NULL, correct = TRUE),
-	allow_retry = TRUE,
-	try_again_button = "Edit Answer",
-	incorrect = NULL,
-	rows = 4)
+  answer(NULL, correct = TRUE),
+  allow_retry = TRUE,
+  try_again_button = "Edit Answer",
+  incorrect = NULL,
+  rows = 4)
 ```
 
 This should return files like "index.qmd", "about.qmd", "sources.qmd", and "_quarto.yml" at the bare minimum.
@@ -321,11 +321,11 @@ https://github.com/davidkane9/nra
 
 ```{r github-repository-1}
 question_text(NULL,
-	answer(NULL, correct = TRUE),
-	allow_retry = TRUE,
-	try_again_button = "Edit Answer",
-	incorrect = NULL,
-	rows = 3)
+  answer(NULL, correct = TRUE),
+  allow_retry = TRUE,
+  try_again_button = "Edit Answer",
+  incorrect = NULL,
+  rows = 3)
 ```
 
 ### 
@@ -361,11 +361,11 @@ This should, at least, pull up the link to your Quarto website. It is OK if it p
 
 ```{r github-repository-2}
 question_text(NULL,
-	answer(NULL, correct = TRUE),
-	allow_retry = TRUE,
-	try_again_button = "Edit Answer",
-	incorrect = NULL,
-	rows = 3)
+  answer(NULL, correct = TRUE),
+  allow_retry = TRUE,
+  try_again_button = "Edit Answer",
+  incorrect = NULL,
+  rows = 3)
 ```
 
 ### 
@@ -384,11 +384,11 @@ CP/CR.
 
 ```{r github-repository-3}
 question_text(NULL,
-	answer(NULL, correct = TRUE),
-	allow_retry = TRUE,
-	try_again_button = "Edit Answer",
-	incorrect = NULL,
-	rows = 3)
+  answer(NULL, correct = TRUE),
+  allow_retry = TRUE,
+  try_again_button = "Edit Answer",
+  incorrect = NULL,
+  rows = 3)
 ```
 
 ### 
@@ -417,11 +417,11 @@ CP/CR.
 
 ```{r indexqmd-1}
 question_text(NULL,
-	answer(NULL, correct = TRUE),
-	allow_retry = TRUE,
-	try_again_button = "Edit Answer",
-	incorrect = NULL,
-	rows = 4)
+  answer(NULL, correct = TRUE),
+  allow_retry = TRUE,
+  try_again_button = "Edit Answer",
+  incorrect = NULL,
+  rows = 4)
 ```
 
 ### 
@@ -448,11 +448,11 @@ CP/CR.
 
 ```{r aboutqmd-1}
 question_text(NULL,
-	answer(NULL, correct = TRUE),
-	allow_retry = TRUE,
-	try_again_button = "Edit Answer",
-	incorrect = NULL,
-	rows = 3)
+  answer(NULL, correct = TRUE),
+  allow_retry = TRUE,
+  try_again_button = "Edit Answer",
+  incorrect = NULL,
+  rows = 3)
 ```
 
 This should **not** return anything if you've correctly removed the default text.
@@ -471,11 +471,11 @@ CP/CR.
 
 ```{r aboutqmd-2}
 question_text(NULL,
-	answer(NULL, correct = TRUE),
-	allow_retry = TRUE,
-	try_again_button = "Edit Answer",
-	incorrect = NULL,
-	rows = 3)
+  answer(NULL, correct = TRUE),
+  allow_retry = TRUE,
+  try_again_button = "Edit Answer",
+  incorrect = NULL,
+  rows = 3)
 ```
 
 ### Exercise 3
@@ -492,11 +492,11 @@ CP/CR.
 
 ```{r aboutqmd-3}
 question_text(NULL,
-	answer(NULL, correct = TRUE),
-	allow_retry = TRUE,
-	try_again_button = "Edit Answer",
-	incorrect = NULL,
-	rows = 3)
+  answer(NULL, correct = TRUE),
+  allow_retry = TRUE,
+  try_again_button = "Edit Answer",
+  incorrect = NULL,
+  rows = 3)
 ```
 
 ### 
@@ -517,11 +517,11 @@ CP/CR.
 
 ```{r aboutqmd-4}
 question_text(NULL,
-	answer(NULL, correct = TRUE),
-	allow_retry = TRUE,
-	try_again_button = "Edit Answer",
-	incorrect = NULL,
-	rows = 3)
+  answer(NULL, correct = TRUE),
+  allow_retry = TRUE,
+  try_again_button = "Edit Answer",
+  incorrect = NULL,
+  rows = 3)
 ```
 
 ### 
@@ -543,11 +543,11 @@ CP/CR.
 
 ```{r aboutqmd-5}
 question_text(NULL,
-	answer(NULL, correct = TRUE),
-	allow_retry = TRUE,
-	try_again_button = "Edit Answer",
-	incorrect = NULL,
-	rows = 3)
+  answer(NULL, correct = TRUE),
+  allow_retry = TRUE,
+  try_again_button = "Edit Answer",
+  incorrect = NULL,
+  rows = 3)
 ```
 
 ### 
@@ -578,11 +578,11 @@ CP/CR.
 
 ```{r modelqmd-1}
 question_text(NULL,
-	answer(NULL, correct = TRUE),
-	allow_retry = TRUE,
-	try_again_button = "Edit Answer",
-	incorrect = NULL,
-	rows = 8)
+  answer(NULL, correct = TRUE),
+  allow_retry = TRUE,
+  try_again_button = "Edit Answer",
+  incorrect = NULL,
+  rows = 8)
 ```
 
 ### 
@@ -605,11 +605,11 @@ Paste the email you entered in the spreadsheet below.
 
 ```{r project-spreadsheet-1}
 question_text(NULL,
-	answer(NULL, correct = TRUE),
-	allow_retry = TRUE,
-	try_again_button = "Edit Answer",
-	incorrect = NULL,
-	rows = 2)
+  answer(NULL, correct = TRUE),
+  allow_retry = TRUE,
+  try_again_button = "Edit Answer",
+  incorrect = NULL,
+  rows = 2)
 ```
 
 ### 
@@ -624,11 +624,11 @@ Paste this Github account link in the answer box below.
 
 ```{r project-spreadsheet-2}
 question_text(NULL,
-	answer(NULL, correct = TRUE),
-	allow_retry = TRUE,
-	try_again_button = "Edit Answer",
-	incorrect = NULL,
-	rows = 2)
+  answer(NULL, correct = TRUE),
+  allow_retry = TRUE,
+  try_again_button = "Edit Answer",
+  incorrect = NULL,
+  rows = 2)
 ```
 
 ### Exercise 3
@@ -639,11 +639,11 @@ Enter your project title below.
 
 ```{r project-spreadsheet-3}
 question_text(NULL,
-	answer(NULL, correct = TRUE),
-	allow_retry = TRUE,
-	try_again_button = "Edit Answer",
-	incorrect = NULL,
-	rows = 2)
+  answer(NULL, correct = TRUE),
+  allow_retry = TRUE,
+  try_again_button = "Edit Answer",
+  incorrect = NULL,
+  rows = 2)
 ```
 
 ### Exercise 4
@@ -654,11 +654,11 @@ Enter this project URL in the box below.
 
 ```{r project-spreadsheet-4}
 question_text(NULL,
-	answer(NULL, correct = TRUE),
-	allow_retry = TRUE,
-	try_again_button = "Edit Answer",
-	incorrect = NULL,
-	rows = 2)
+  answer(NULL, correct = TRUE),
+  allow_retry = TRUE,
+  try_again_button = "Edit Answer",
+  incorrect = NULL,
+  rows = 2)
 ```
 
 ### Exercise 5
@@ -669,11 +669,11 @@ Enter your takeaway sentence below.
 
 ```{r project-spreadsheet-5}
 question_text(NULL,
-	answer(NULL, correct = TRUE),
-	allow_retry = TRUE,
-	try_again_button = "Edit Answer",
-	incorrect = NULL,
-	rows = 2)
+  answer(NULL, correct = TRUE),
+  allow_retry = TRUE,
+  try_again_button = "Edit Answer",
+  incorrect = NULL,
+  rows = 2)
 ```
 
 Make sure you have the same information in the tutorial and on the spreadsheet. 

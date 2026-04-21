@@ -148,11 +148,11 @@ Describe the *units* in the Preceptor Table which would allow us to answer our q
 
 ```{r preceptor-table-1-2}
 question_text(NULL,
-	message = "The 'units' refer to the rows, which are the individual students at New College.",
-	answer(NULL, correct = TRUE),
-	allow_retry = FALSE,
-	incorrect = NULL,
-	rows = 6)
+  message = "The 'units' refer to the rows, which are the individual students at New College.",
+  answer(NULL, correct = TRUE),
+  allow_retry = FALSE,
+  incorrect = NULL,
+  rows = 6)
 ```
 
 ### Exercise 3
@@ -161,11 +161,11 @@ Describe the *outcomes* in the Preceptor Table which would allow us to answer ou
 
 ```{r preceptor-table-1-3}
 question_text(NULL,
-	message = "Outcomes refers to height, which is a column.",
-	answer(NULL, correct = TRUE),
-	allow_retry = FALSE,
-	incorrect = NULL,
-	rows = 6)
+  message = "Outcomes refers to height, which is a column.",
+  answer(NULL, correct = TRUE),
+  allow_retry = FALSE,
+  incorrect = NULL,
+  rows = 6)
 ```
 
 ###
@@ -178,11 +178,11 @@ Describe what the Preceptor Table should look like for this example.
 
 ```{r preceptor-table-1-4}
 question_text(NULL,
-	message = "The Preceptor Table will have a row for each individual student at New College. In addition to an ID column, it will have one other column: height, which is the outcome.",
-	answer(NULL, correct = TRUE),
-	allow_retry = FALSE,
-	incorrect = NULL,
-	rows = 6)
+  message = "The Preceptor Table will have a row for each individual student at New College. In addition to an ID column, it will have one other column: height, which is the outcome.",
+  answer(NULL, correct = TRUE),
+  allow_retry = FALSE,
+  incorrect = NULL,
+  rows = 6)
 ```
 
 ### Exercise 5
@@ -193,11 +193,11 @@ Describe what a covariate is in your own words. Then, describe the covariate nee
 
 ```{r preceptor-table-1-5}
 question_text(NULL,
-	message = "Covariates are the variables, other than the outcome, which we need to answer our question(s). For this question, we will need an additional column: Sex.",
-	answer(NULL, correct = TRUE),
-	allow_retry = FALSE,
-	incorrect = NULL,
-	rows = 3)
+  message = "Covariates are the variables, other than the outcome, which we need to answer our question(s). For this question, we will need an additional column: Sex.",
+  answer(NULL, correct = TRUE),
+  allow_retry = FALSE,
+  incorrect = NULL,
+  rows = 3)
 ```
 
 ###
@@ -231,11 +231,11 @@ In your own words, define "validity" as we use the term.
 
 ```{r preceptor-table-1-6}
 question_text(NULL,
-	message = "Validity is the consistency, or lack thereof, in the columns of the data set and the corresponding columns in the Preceptor Table.",
-	answer(NULL, correct = TRUE),
-	allow_retry = FALSE,
-	incorrect = NULL,
-	rows = 6)
+  message = "Validity is the consistency, or lack thereof, in the columns of the data set and the corresponding columns in the Preceptor Table.",
+  answer(NULL, correct = TRUE),
+  allow_retry = FALSE,
+  incorrect = NULL,
+  rows = 6)
 ```
 
 ###
@@ -250,11 +250,11 @@ Describe in your own words what the assumption of validity, if it is true, allow
 
 ```{r preceptor-table-1-7}
 question_text(NULL,
-	message = "If the assumption of validity holds, we can 'stack' the rows from the data and from the Preceptor Table into the same table. This structure forms the start of the Population Table, although it will generally have many more rows.",
-	answer(NULL, correct = TRUE),
-	allow_retry = FALSE,
-	incorrect = NULL,
-	rows = 6)
+  message = "If the assumption of validity holds, we can 'stack' the rows from the data and from the Preceptor Table into the same table. This structure forms the start of the Population Table, although it will generally have many more rows.",
+  answer(NULL, correct = TRUE),
+  allow_retry = FALSE,
+  incorrect = NULL,
+  rows = 6)
 ```
 
 ### 
@@ -295,11 +295,11 @@ Come up with a scenario for this problem in which the assumption of validity mig
 
 ```{r preceptor-table-1-8}
 question_text(NULL,
-	message = "What if the data were collected while the students had their shoes on but the question about average height refers to height without shoes? In that case, the meaning of 'height' would be different between the data and the Preceptor Table.",
-	answer(NULL, correct = TRUE),
-	allow_retry = FALSE,
-	incorrect = NULL,
-	rows = 6)
+  message = "What if the data were collected while the students had their shoes on but the question about average height refers to height without shoes? In that case, the meaning of 'height' would be different between the data and the Preceptor Table.",
+  answer(NULL, correct = TRUE),
+  allow_retry = FALSE,
+  incorrect = NULL,
+  rows = 6)
 ```
 
 ###
@@ -364,11 +364,11 @@ How are these rows usually indicated in the 'Source' column?
 
 ```{r population-table-1-2}
 question_text(NULL,
-	message = "There are typically three sources for the rows in the Population Table: the data, the Preceptor Table, and the other units in the population from which the data and the Preceptor Table were drawn. These rows are usually indicated with 'Data', 'Preceptor Table', and '...', respectively.",
-	answer(NULL, correct = TRUE),
-	allow_retry = FALSE,
-	incorrect = NULL,
-	rows = 6)
+  message = "There are typically three sources for the rows in the Population Table: the data, the Preceptor Table, and the other units in the population from which the data and the Preceptor Table were drawn. These rows are usually indicated with 'Data', 'Preceptor Table', and '...', respectively.",
+  answer(NULL, correct = TRUE),
+  allow_retry = FALSE,
+  incorrect = NULL,
+  rows = 6)
 ```
 
 ### 
@@ -381,11 +381,11 @@ What combination of variables *uniquely* defines each row in the Population Tabl
 
 ```{r population-table-1-3}
 question_text(NULL,
-	message = "Each row in the Population Table is uniquely defined by an ID/Time combination.",
-	answer(NULL, correct = TRUE),
-	allow_retry = FALSE,
-	incorrect = NULL,
-	rows = 6)
+  message = "Each row in the Population Table is uniquely defined by an ID/Time combination.",
+  answer(NULL, correct = TRUE),
+  allow_retry = FALSE,
+  incorrect = NULL,
+  rows = 6)
 ```
 
 ### 
@@ -399,11 +399,11 @@ In your own words, explain why "time is always a lie" in a Population Table.
 
 ```{r population-table-1-4}
 question_text(NULL,
-	message = "Time variables in data science, particularly in Population Tables, can be misleading due to inaccurate measurements, hidden variations, and lack of specificity. The value for the time variable in rows corresponding to the Preceptor Table is often ambiguous, as it may refer to the present, future, or whenever the analysis is completed.",
-	answer(NULL, correct = TRUE),
-	allow_retry = FALSE,
-	incorrect = NULL,
-	rows = 6)
+  message = "Time variables in data science, particularly in Population Tables, can be misleading due to inaccurate measurements, hidden variations, and lack of specificity. The value for the time variable in rows corresponding to the Preceptor Table is often ambiguous, as it may refer to the present, future, or whenever the analysis is completed.",
+  answer(NULL, correct = TRUE),
+  allow_retry = FALSE,
+  incorrect = NULL,
+  rows = 6)
 ```
 
 ### 
@@ -416,11 +416,11 @@ For simplicity, let's drop the `ID` column. Describe in words what the Populatio
 
 ```{r population-table-1-5}
 question_text(NULL,
-	message = "There will be 3 columns: `Source`, `Year`, and `Height`. There will be rows for every row from the data table and for every row in the Preceptor Table. In addition, there will be rows from the broader population, perhaps going back in time to 2010 and forward in time to 2040.",
-	answer(NULL, correct = TRUE),
-	allow_retry = FALSE,
-	incorrect = NULL,
-	rows = 6)
+  message = "There will be 3 columns: `Source`, `Year`, and `Height`. There will be rows for every row from the data table and for every row in the Preceptor Table. In addition, there will be rows from the broader population, perhaps going back in time to 2010 and forward in time to 2040.",
+  answer(NULL, correct = TRUE),
+  allow_retry = FALSE,
+  incorrect = NULL,
+  rows = 6)
 ```
 
 ### 
@@ -458,11 +458,11 @@ In one sentence, explain which type of model the New College example involves an
 
 ```{r predictive-model-1}
 question_text(NULL,
-	message = "The New College problem involves the creation of a predictive model because there is only one outcome: height.",
-	answer(NULL, correct = TRUE),
-	allow_retry = FALSE,
-	incorrect = NULL,
-	rows = 6)
+  message = "The New College problem involves the creation of a predictive model because there is only one outcome: height.",
+  answer(NULL, correct = TRUE),
+  allow_retry = FALSE,
+  incorrect = NULL,
+  rows = 6)
 ```
 
 ### 
@@ -475,11 +475,11 @@ Write two sentences about *validity*, as used as an assumption in the *Primer*.
 
 ```{r predictive-model-2}
 question_text(NULL,
-	message = "Validity is the consistency, or lack thereof, in the columns of the data set and the corresponding columns in the Preceptor Table. If validity holds, we can 'stack' the rows from the data, the Preceptor Table, and the population into a single Population Table.",
-	answer(NULL, correct = TRUE),
-	allow_retry = FALSE,
-	incorrect = NULL,
-	rows = 6)
+  message = "Validity is the consistency, or lack thereof, in the columns of the data set and the corresponding columns in the Preceptor Table. If validity holds, we can 'stack' the rows from the data, the Preceptor Table, and the population into a single Population Table.",
+  answer(NULL, correct = TRUE),
+  allow_retry = FALSE,
+  incorrect = NULL,
+  rows = 6)
 ```
 
 ### 
@@ -492,11 +492,11 @@ In your own words, define the assumption of "stability" when employed in the con
 
 ```{r predictive-model-3}
 question_text(NULL,
-	message = "Stability means that the relationship between the columns in the Population Table is the same for three categories of rows: the data, the Preceptor Table, and the larger population from which both are drawn.",
-	answer(NULL, correct = TRUE),
-	allow_retry = FALSE,
-	incorrect = NULL,
-	rows = 6)
+  message = "Stability means that the relationship between the columns in the Population Table is the same for three categories of rows: the data, the Preceptor Table, and the larger population from which both are drawn.",
+  answer(NULL, correct = TRUE),
+  allow_retry = FALSE,
+  incorrect = NULL,
+  rows = 6)
 ```
 
 ### 
@@ -510,11 +510,11 @@ Provide one reason why the assumption of stability might not be true in this cas
 
 ```{r predictive-model-4}
 question_text(NULL,
-	message = "In the case of height, we might worry that the population of students at New College is different today than it was in 2015. For example, maybe there are more students from Denmark and Slovenia, two countries where people are taller, on average, than in the US. We could then not use the data from 2015.",
-	answer(NULL, correct = TRUE),
-	allow_retry = FALSE,
-	incorrect = NULL,
-	rows = 6)
+  message = "In the case of height, we might worry that the population of students at New College is different today than it was in 2015. For example, maybe there are more students from Denmark and Slovenia, two countries where people are taller, on average, than in the US. We could then not use the data from 2015.",
+  answer(NULL, correct = TRUE),
+  allow_retry = FALSE,
+  incorrect = NULL,
+  rows = 6)
 ```
 
 ###
@@ -527,11 +527,11 @@ In your own words, define the assumption of "representativeness" when employed i
 
 ```{r predictive-model-5}
 question_text(NULL,
-	message = "Representativeness, or the lack thereof, concerns two relationships, among the rows in the Population Table: the first between the Preceptor Table and the other rows, and the second between our data and the other rows. Ideally, we would like both the Preceptor Table and our data to be random samples from the population.",
-	answer(NULL, correct = TRUE),
-	allow_retry = FALSE,
-	incorrect = NULL,
-	rows = 6)
+  message = "Representativeness, or the lack thereof, concerns two relationships, among the rows in the Population Table: the first between the Preceptor Table and the other rows, and the second between our data and the other rows. Ideally, we would like both the Preceptor Table and our data to be random samples from the population.",
+  answer(NULL, correct = TRUE),
+  allow_retry = FALSE,
+  incorrect = NULL,
+  rows = 6)
 ```
 
 ### 
@@ -544,11 +544,11 @@ We do not use the data, directly, to estimate missing values in the Preceptor Ta
 
 ```{r predictive-model-6}
 question_text(NULL,
-	message = "With height among New College students, we might worry about the process by which our data was collected in 2015. If the students in the data were a random sample of all students, then representativeness would not be a concern. Random samples are representative, at least in expectation. But if, instead, the 2015 data was collected from students walking out of the gym, then that sample of students might not be representative of the population of New College students from 2010 to 2030 as a whole.",
-	answer(NULL, correct = TRUE),
-	allow_retry = FALSE,
-	incorrect = NULL,
-	rows = 6)
+  message = "With height among New College students, we might worry about the process by which our data was collected in 2015. If the students in the data were a random sample of all students, then representativeness would not be a concern. Random samples are representative, at least in expectation. But if, instead, the 2015 data was collected from students walking out of the gym, then that sample of students might not be representative of the population of New College students from 2010 to 2030 as a whole.",
+  answer(NULL, correct = TRUE),
+  allow_retry = FALSE,
+  incorrect = NULL,
+  rows = 6)
 ```
 
 
@@ -558,11 +558,11 @@ In your own words, define the assumption of "unconfoundedness" when employed in 
 
 ```{r predictive-model-7}
 question_text(NULL,
-	message = "Unconfoundedness means that the treatment assignment is independent of the potential outcomes, when we condition on pre-treatment covariates.",
-	answer(NULL, correct = TRUE),
-	allow_retry = FALSE,
-	incorrect = NULL,
-	rows = 6)
+  message = "Unconfoundedness means that the treatment assignment is independent of the potential outcomes, when we condition on pre-treatment covariates.",
+  answer(NULL, correct = TRUE),
+  allow_retry = FALSE,
+  incorrect = NULL,
+  rows = 6)
 ```
 
 ### 
@@ -610,11 +610,11 @@ Describe the *units* in this Preceptor Table which would allow us to answer our 
 
 ```{r causal-model-1}
 question_text(NULL,
-	message = "The 'units' refer to the rows, which are individual Boston commuters.",
-	answer(NULL, correct = TRUE),
-	allow_retry = FALSE,
-	incorrect = NULL,
-	rows = 6)
+  message = "The 'units' refer to the rows, which are individual Boston commuters.",
+  answer(NULL, correct = TRUE),
+  allow_retry = FALSE,
+  incorrect = NULL,
+  rows = 6)
 ```
 
 ### Exercise 2
@@ -623,11 +623,11 @@ Describe the *outcomes* in the Preceptor Table which would allow us to answer ou
 
 ```{r causal-model-2}
 question_text(NULL,
-	message = "The outcomes are attitude towards immigration.",
-	answer(NULL, correct = TRUE),
-	allow_retry = FALSE,
-	incorrect = NULL,
-	rows = 6)
+  message = "The outcomes are attitude towards immigration.",
+  answer(NULL, correct = TRUE),
+  allow_retry = FALSE,
+  incorrect = NULL,
+  rows = 6)
 ```
 
 ### Exercise 3
@@ -636,11 +636,11 @@ Describe the *covariates* in the Preceptor Table which would allow us to answer 
 
 ```{r causal-model-3}
 question_text(NULL,
-	message = "The 'covariate' is the treatment column.",
-	answer(NULL, correct = TRUE),
-	allow_retry = FALSE,
-	incorrect = NULL,
-	rows = 6)
+  message = "The 'covariate' is the treatment column.",
+  answer(NULL, correct = TRUE),
+  allow_retry = FALSE,
+  incorrect = NULL,
+  rows = 6)
 ```
 
 ###
@@ -701,11 +701,11 @@ Describe what the Preceptor Table should look like for this example. Include inf
 
 ```{r causal-model-5}
 question_text(NULL,
-	message = "The Preceptor Table will have a row for each individual Boston commuter. In addition to an ID column, it has 3 other columns: The potential outcomes and the causal effect.",
-	answer(NULL, correct = TRUE),
-	allow_retry = FALSE,
-	incorrect = NULL,
-	rows = 6)
+  message = "The Preceptor Table will have a row for each individual Boston commuter. In addition to an ID column, it has 3 other columns: The potential outcomes and the causal effect.",
+  answer(NULL, correct = TRUE),
+  allow_retry = FALSE,
+  incorrect = NULL,
+  rows = 6)
 ```
 
 
@@ -715,11 +715,11 @@ Come up with a scenario for this problem in which the assumption of validity mig
 
 ```{r causal-model-6}
 question_text(NULL,
-	message = "The `att_end` column in the data records how commuters responded to a survey question about immigration attitudes. But the `att_end` column in the Preceptor Table represents their true, underlying attitudes — not necessarily what they would report on a survey. People do not always answer surveys honestly, so the two columns may not be measuring the same thing.",
-	answer(NULL, correct = TRUE),
-	allow_retry = FALSE,
-	incorrect = NULL,
-	rows = 6)
+  message = "The `att_end` column in the data records how commuters responded to a survey question about immigration attitudes. But the `att_end` column in the Preceptor Table represents their true, underlying attitudes — not necessarily what they would report on a survey. People do not always answer surveys honestly, so the two columns may not be measuring the same thing.",
+  answer(NULL, correct = TRUE),
+  allow_retry = FALSE,
+  incorrect = NULL,
+  rows = 6)
 ```
 
 
@@ -765,11 +765,11 @@ Come up with a scenario for this problem in which the assumption of stability mi
 
 ```{r causal-model-7}
 question_text(NULL,
-	message = "If the treatment started to have greater effects on women than men over time, it would hinder the stability.",
-	answer(NULL, correct = TRUE),
-	allow_retry = FALSE,
-	incorrect = NULL,
-	rows = 6)
+  message = "If the treatment started to have greater effects on women than men over time, it would hinder the stability.",
+  answer(NULL, correct = TRUE),
+  allow_retry = FALSE,
+  incorrect = NULL,
+  rows = 6)
 ```
 
 ###
@@ -782,11 +782,11 @@ Come up with a scenario for this problem in which the assumption of representati
 
 ```{r causal-model-8}
 question_text(NULL,
-	message = "Since we are only taking observations on the train, we cannot calculate an accurate causal effect for those that commute by cars.",
-	answer(NULL, correct = TRUE),
-	allow_retry = FALSE,
-	incorrect = NULL,
-	rows = 6)
+  message = "Since we are only taking observations on the train, we cannot calculate an accurate causal effect for those that commute by cars.",
+  answer(NULL, correct = TRUE),
+  allow_retry = FALSE,
+  incorrect = NULL,
+  rows = 6)
 ```
 
 ### Exercise 9
@@ -796,11 +796,11 @@ Come up with a scenario for this problem in which the assumption of unconfounded
 
 ```{r causal-model-9}
 question_text(NULL,
-	message = "If the doctor prescribing the medication only did it being mindful of the potential outcome, it would confound the data.",
-	answer(NULL, correct = TRUE),
-	allow_retry = FALSE,
-	incorrect = NULL,
-	rows = 6)
+  message = "If the doctor prescribing the medication only did it being mindful of the potential outcome, it would confound the data.",
+  answer(NULL, correct = TRUE),
+  allow_retry = FALSE,
+  incorrect = NULL,
+  rows = 6)
 ```
 
 ###
@@ -894,11 +894,11 @@ In one sentence, explain which type of model the immigration-attitudes example i
 
 ```{r causal-effects-5}
 question_text(NULL,
-	message = "The immigration-attitude example involves a causal model because there are two potential outcomes: a person's attitude toward immigration if they hear Spanish on the train platform and the same person's attitude if they do not.",
-	answer(NULL, correct = TRUE),
-	allow_retry = FALSE,
-	incorrect = NULL,
-	rows = 6)
+  message = "The immigration-attitude example involves a causal model because there are two potential outcomes: a person's attitude toward immigration if they hear Spanish on the train platform and the same person's attitude if they do not.",
+  answer(NULL, correct = TRUE),
+  allow_retry = FALSE,
+  incorrect = NULL,
+  rows = 6)
 ```
 
 ### 
@@ -911,11 +911,11 @@ In your own words, explain the meaning of the phrase "No causation without manip
 
 ```{r causal-effects-6}
 question_text(NULL,
-	message = "The motto 'No causation without manipulation' suggests that for a causal effect to be well-defined, both potential outcomes must be possible, at least conceptually. However, this raises complex questions about whether characteristics like race, sex, and genetic conditions can be considered causal, as they may not be easily manipulated.",
-	answer(NULL, correct = TRUE),
-	allow_retry = FALSE,
-	incorrect = NULL,
-	rows = 6)
+  message = "The motto 'No causation without manipulation' suggests that for a causal effect to be well-defined, both potential outcomes must be possible, at least conceptually. However, this raises complex questions about whether characteristics like race, sex, and genetic conditions can be considered causal, as they may not be easily manipulated.",
+  answer(NULL, correct = TRUE),
+  allow_retry = FALSE,
+  incorrect = NULL,
+  rows = 6)
 ```
 
 ### 
@@ -931,11 +931,11 @@ You want to predict the final college GPA of students at a specific University. 
 
 ```{r review-1}
 question_text(NULL,
-	message = "The Preceptor Table will have a row for each individual student, which are the units.  In addition to an ID column, it will have one other column: college GPA, which is the outcome.",
-	answer(NULL, correct = TRUE),
-	allow_retry = FALSE,
-	incorrect = NULL,
-	rows = 6)
+  message = "The Preceptor Table will have a row for each individual student, which are the units.  In addition to an ID column, it will have one other column: college GPA, which is the outcome.",
+  answer(NULL, correct = TRUE),
+  allow_retry = FALSE,
+  incorrect = NULL,
+  rows = 6)
 ```
 
 ### Exercise 2
@@ -944,11 +944,11 @@ Come up with a scenario for the college GPA problem in which the assumption of s
 
 ```{r review-2}
 question_text(NULL,
-	message = "What if the college we got our data from had a stricter grading policy, causing more students to have a lower GPA? In that case, the standards of GPA may not be stable across the data and the Preceptor Table.",
-	answer(NULL, correct = TRUE),
-	allow_retry = FALSE,
-	incorrect = NULL,
-	rows = 6)
+  message = "What if the college we got our data from had a stricter grading policy, causing more students to have a lower GPA? In that case, the standards of GPA may not be stable across the data and the Preceptor Table.",
+  answer(NULL, correct = TRUE),
+  allow_retry = FALSE,
+  incorrect = NULL,
+  rows = 6)
 ```
 
 ### Exercise 3
@@ -957,11 +957,11 @@ You want to know the distribution of wealth in NYC today. You have some data fro
 
 ```{r review-3}
 question_text(NULL,
-	message = "The Preceptor Table will have a row for each individual resident, which are the units.  In addition to an ID column, it will have one other column: wealth, which is the outcome.",
-	answer(NULL, correct = TRUE),
-	allow_retry = FALSE,
-	incorrect = NULL,
-	rows = 6)
+  message = "The Preceptor Table will have a row for each individual resident, which are the units.  In addition to an ID column, it will have one other column: wealth, which is the outcome.",
+  answer(NULL, correct = TRUE),
+  allow_retry = FALSE,
+  incorrect = NULL,
+  rows = 6)
 ```
 
 ### Exercise 4
@@ -970,11 +970,11 @@ Come up with a scenario for the wealth problem in which the assumption of validi
 
 ```{r review-4}
 question_text(NULL,
-	message = "The outcome column in the Preceptor Table represents true wealth — the total value of a person's assets. But the outcome column in our data records income, which is a flow of earnings over time. Wealth and income are different concepts, so these two columns are not measuring the same thing, and validity may not hold.",
-	answer(NULL, correct = TRUE),
-	allow_retry = FALSE,
-	incorrect = NULL,
-	rows = 6)
+  message = "The outcome column in the Preceptor Table represents true wealth — the total value of a person's assets. But the outcome column in our data records income, which is a flow of earnings over time. Wealth and income are different concepts, so these two columns are not measuring the same thing, and validity may not hold.",
+  answer(NULL, correct = TRUE),
+  allow_retry = FALSE,
+  incorrect = NULL,
+  rows = 6)
 ```
 
 ### Exercise 5
@@ -983,11 +983,11 @@ A school district wants to determine if a new teaching method improves student t
 
 ```{r review-5}
 question_text(NULL,
-	message = "The teaching problem involves the creation of a causal model because there are two outcomes: their test score if taught by the new method, and their test score if taught by the traditional method.",
-	answer(NULL, correct = TRUE),
-	allow_retry = FALSE,
-	incorrect = NULL,
-	rows = 6)
+  message = "The teaching problem involves the creation of a causal model because there are two outcomes: their test score if taught by the new method, and their test score if taught by the traditional method.",
+  answer(NULL, correct = TRUE),
+  allow_retry = FALSE,
+  incorrect = NULL,
+  rows = 6)
 ```
 
 ### Exercise 6
@@ -996,11 +996,11 @@ Come up with a scenario for the school district problem in which the assumption 
 
 ```{r review-6}
 question_text(NULL,
-	message = "If the teachers knew what type of teaching would work best on their students, and changed their teaching ways to fit the individual students to improve their test scores, it would make the data confounded.",
-	answer(NULL, correct = TRUE),
-	allow_retry = FALSE,
-	incorrect = NULL,
-	rows = 6)
+  message = "If the teachers knew what type of teaching would work best on their students, and changed their teaching ways to fit the individual students to improve their test scores, it would make the data confounded.",
+  answer(NULL, correct = TRUE),
+  allow_retry = FALSE,
+  incorrect = NULL,
+  rows = 6)
 ```
 
 ### Exercise 7
@@ -1009,11 +1009,11 @@ You want to predict how likely customers are to buy a new product after receivin
 
 ```{r review-7}
 question_text(NULL,
-	message = "The Preceptor Table will have a row for each individual customer, which are the units.  In addition to an ID column, it will have one other column: whether or not they made a purchase, which is the outcome.",
-	answer(NULL, correct = TRUE),
-	allow_retry = FALSE,
-	incorrect = NULL,
-	rows = 6)
+  message = "The Preceptor Table will have a row for each individual customer, which are the units.  In addition to an ID column, it will have one other column: whether or not they made a purchase, which is the outcome.",
+  answer(NULL, correct = TRUE),
+  allow_retry = FALSE,
+  incorrect = NULL,
+  rows = 6)
 ```
 
 ### Exercise 8
@@ -1022,11 +1022,11 @@ Come up with a scenario for the marketing problem in which the assumption of rep
 
 ```{r review-8}
 question_text(NULL,
-	message = "What if the marketing campaign from 3 years ago only involved mail fliers? In that case, the sample of people in this study would only be representative of those who open their mail, which may not be applicable to the entire clientbase.",
-	answer(NULL, correct = TRUE),
-	allow_retry = FALSE,
-	incorrect = NULL,
-	rows = 6)
+  message = "What if the marketing campaign from 3 years ago only involved mail fliers? In that case, the sample of people in this study would only be representative of those who open their mail, which may not be applicable to the entire clientbase.",
+  answer(NULL, correct = TRUE),
+  allow_retry = FALSE,
+  incorrect = NULL,
+  rows = 6)
 ```
 
 ### Exercise 9
@@ -1035,11 +1035,11 @@ question_text(NULL,
 
 ```{r review-9}
 question_text(NULL,
-	message = "The free-trial problem involves the creation of a causal model because there are two outcomes: whether they become paying customers if offered a free trial, and whether they become paying customers if not offered the free trial.",
-	answer(NULL, correct = TRUE),
-	allow_retry = FALSE,
-	incorrect = NULL,
-	rows = 6)
+  message = "The free-trial problem involves the creation of a causal model because there are two outcomes: whether they become paying customers if offered a free trial, and whether they become paying customers if not offered the free trial.",
+  answer(NULL, correct = TRUE),
+  allow_retry = FALSE,
+  incorrect = NULL,
+  rows = 6)
 ```
 
 ### Exercise 10
@@ -1048,11 +1048,11 @@ Come up with a scenario for the free trial problem in which the assumption of un
 
 ```{r review-10}
 question_text(NULL,
-	message = "If the company only offered the free trial to the users who had more engagement on the site, knowing that it would be more likely to have them become paying customers, it would make the data confounded.",
-	answer(NULL, correct = TRUE),
-	allow_retry = FALSE,
-	incorrect = NULL,
-	rows = 6)
+  message = "If the company only offered the free trial to the users who had more engagement on the site, knowing that it would be more likely to have them become paying customers, it would make the data confounded.",
+  answer(NULL, correct = TRUE),
+  allow_retry = FALSE,
+  incorrect = NULL,
+  rows = 6)
 ```
 
 
