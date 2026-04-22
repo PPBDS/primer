@@ -2,13 +2,13 @@
 title: Biden
 author: David Kane and Anish Talla
 tutorial:
-  id: 06-biden
+  id: 10-biden
 output:
   learnr::tutorial:
     progressive: yes
     allow_skip: yes
 runtime: shiny_prerendered
-description: "Tutorial #06 for Preceptor's Primer"
+description: "Tutorial #10 for Preceptor's Primer"
 ---
 
 ```{r setup, include = FALSE}

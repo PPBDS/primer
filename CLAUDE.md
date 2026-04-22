@@ -46,7 +46,7 @@ A data science project has three potential artifacts:
 
 **Miscellaneous** chapters/tutorials cover topics that do not involve a major data science exercise. The current five are Probability, Sampling, Rubin Causal Model, Cardinal Virtues, and Mechanics.
 
-The target curriculum is **20 chapter/tutorial pairs total**: the 5 miscellaneous above and 15 example chapters. The chapter sequence in §17 grows toward this target.
+The target curriculum is **17 chapter/tutorial pairs total**: the 5 miscellaneous above and **12 example chapters**. Twelve is a working target, chosen because it divides cleanly into 4 Easy / 4 Medium / 4 Hard and pairs with the predictive/causal alternation rule (§1.5). The sequence can grow to 14 or 16 later without changing the design principles — the EMH 4/4/4 split is an artifact of the current size, not a constraint on the final shape.
 
 ### 1.2 Chapter ≠ tutorial
 
@@ -180,6 +180,23 @@ The Primer is designed so that most example tutorials (and the chapters that mat
 - **Branch-based rebuilds.** Regenerate on a feature branch (e.g., `rebuild/2026-05`), review the full diff there, merge to `main` only when satisfied. Keeps main-branch history clean and gives a reversible fallback if a rebuild goes sideways.
 
 - **Cap revision cycles.** The writing order above expects revision when the last Medium tutorial reveals earlier Medium tutorials need adjustment. Set a budget: at most two Easy → Medium calibration passes and two Medium → Difficult passes. If the second pass is not converging, the *progression design* itself needs reconsideration — not another revision pass.
+
+### 1.5 Curriculum shape and sequencing
+
+The 12 example tutorials are arranged under three rules that operate together:
+
+1. **Predictive / causal alternation.** The sequence alternates predictive and causal tutorials, starting with predictive:
+   ```
+   Pos  1  2  3  4  5  6  7  8  9  10  11  12
+        P  C  P  C  P  C  P  C  P  C   P   C
+   ```
+   Six of each. A reader moving through the curriculum sees the causal / predictive distinction reinforced every time a new dataset arrives: we just did a predictive version; now here is a causal one. The rule is a hard constraint — do not drop two predictive tutorials in a row to "simplify," and do not push all the causal tutorials to the end.
+
+2. **EMH 4/4/4.** Positions 1–4 are Easy, 5–8 Medium, 9–12 Hard. The split is an *artifact* of twelve. At 14 tutorials the split becomes 5/5/4 or 4/5/5 with judgment on where the boundaries fall; at 16, 6/5/5 or 5/6/5. The boundary-smoothing principle from §1.3 (*"the last Easy tutorial should be just slightly simpler than the first Medium tutorial"*) is the thing that actually governs sequencing; EMH is the label we put on it for discussion.
+
+3. **Random forest at the end.** Positions 11 and 12 are the non-parametric tutorials — position 11 predictive, position 12 causal. Random forests (or equivalent non-parametric approaches) come last because they complete the arc from "parameters mean something literal" (Easy linear) through "parameters are on a link scale, use `marginaleffects` to interpret" (Medium) to "parameters are not the point at all, use `marginaleffects` or stop" (Hard). The student who reaches position 11 has already seen why direct parameter interpretation fails for link-scale models; RF is the culmination of that lesson, not a surprise.
+
+**Corollary.** Because P/C alternation is a hard rule, any change to the roster of tutorials is a paired change: adding or dropping a tutorial means adding or dropping its alternation partner too (or recasting an existing tutorial from P to C or vice versa). See §17 for the current roster and gap flags.
 
 ---
 
@@ -1383,14 +1400,14 @@ Within a section, keep exercises in the order given. Not every tutorial includes
 
 **Pre-flight before drafting a tutorial.** Find the tutorial's position in §17 (06 = first example, 07 = second, …) and its tier in §1.3 (roughly: first third Easy, middle third Medium, final third Difficult). Some exercises are **tier-dependent** — they are written here in their Medium form but must be dropped, replaced, or extended depending on tier. Tier-dependent exercises are flagged inline with a `**Tier:**` line; read it before including them. Current tier-dependent items:
 
-- **Model checking** (§13.4 Exercises 9–10): skipped in the first two example tutorials (06, 07); replaced by an author-rendered side-by-side outcome/fitted-value plot in Easy tutorials 3–5 (08–10); Medium form (`check_predictions()`) in tutorials 11–12; Difficult form (posterior-predictive-check terminology + model revision driven by the check) thereafter. Full progression in §1.3 *Worked example: model checking across three levels*.
+- **Model checking** (§13.4 Exercises 9–10): skipped in the first two example tutorials (positions 1–2, target tutorials 06–07: NHANES and Trains); replaced by an author-rendered side-by-side outcome/fitted-value plot in the remaining Easy tutorials (positions 3–4, target tutorials 08–09); Medium form (`check_predictions()`) in positions 5–8 (target tutorials 10–13); Hard form (posterior-predictive-check terminology + model revision driven by the check) in positions 9–10 (target tutorials 14–15); omitted entirely for positions 11–12 per §14.8 (random forests skip parameter and fit-diagnostic blocks in favor of `marginaleffects`-native outputs). Full progression in §1.3 *Worked example: model checking across three levels*.
 - **Concrete DGM math** (§13.4 Exercise 11): author-shipped in Easy and Medium; possibly a student exercise (via AI) in Difficult tutorials with simple models; author-shipped when the model is complex. Details in §13.4.
 - **Parameter-table formatting** (§13.5 Temperance preamble): Easy = raw `tidy()`, Medium = nicer (`kable`/`gt`), Difficult = near-publication quality. Always author-shipped.
 - **`marginaleffects` coverage** (§13.5 Temperance): Easy = `predictions()` family only; Medium adds `comparisons()`; Difficult adds the five-decisions framework and grid types. Slopes are never introduced.
 - **Preceptor/Population Table footnote depth** (§10): Easy footnotes include scaffolding (what a Preceptor Table *is*; per-row causal-effect arithmetic); Medium and Difficult drop the scaffolding and deepen the remaining footnotes. Details in §1.3 *Worked example: Preceptor Table and Population Table footnote sophistication*.
 - **Validity/stability/representativeness/unconfoundedness progressions** (§1.3): each has an Easy → Medium → Difficult treatment; consult §1.3 when drafting the Justice exercises for that assumption.
 
-If a tutorial is being drafted without a pre-flight tier check, the default is Medium — and Medium wording *will be wrong* for every Easy tutorial (06–10) and every Difficult tutorial (11 onward, depending on final numbering). The pre-flight is cheap; skipping it is how model-checking exercises ended up in Tutorial 07.
+If a tutorial is being drafted without a pre-flight tier check, the default is Medium — and Medium wording *will be wrong* for every Easy tutorial (target tutorials 06–09, positions 1–4) and every Hard tutorial (target tutorials 14–17, positions 9–12). The pre-flight is cheap; skipping it is how model-checking exercises ended up in the NHANES tutorial (position 1, Easy).
 
 ### 13.1 Introduction
 
@@ -1704,7 +1721,7 @@ Parts 1 and 2 are deliberately repetitive with Justice — they show the same Po
 - End: the workspace-awareness knowledge drop (§12.4).
 
 **Exercise 9.** [operational] Load easystats in the Console.
-- **Tier:** Medium only. **Omit entirely** in the first two example tutorials (06 Models, 07 Two Parameters). In Easy tutorials 3–5 (08–10), replace both Exercises 9 and 10 with a single author-rendered side-by-side plot of outcome distribution vs. fitted-value distribution — the student views it and hits Continue; no package loaded, no terminology introduced. In Difficult tutorials, keep Exercises 9–10 and add a follow-up exercise that uses the check to drive a model revision. Full progression in §1.3 *Worked example: model checking across three levels*.
+- **Tier:** Medium only. **Omit entirely** in positions 1–2 (target tutorials 06 NHANES, 07 Trains). In the remaining Easy positions 3–4 (target tutorials 08 Colleges, 09 TODO), replace both Exercises 9 and 10 with a single author-rendered side-by-side plot of outcome distribution vs. fitted-value distribution — the student views it and hits Continue; no package loaded, no terminology introduced. In Hard positions 9–10 (target tutorials 14 CES, 15 Governors), keep Exercises 9–10 and add a follow-up exercise that uses the check to drive a model revision. In Hard positions 11–12 (random forest tutorials), drop the model-checking block entirely per §14.8. Full progression in §1.3 *Worked example: model checking across three levels*.
 - Prompt: *In the Console, load the [easystats](https://easystats.github.io/easystats/) package. CP/CR.*
 - End: the why-easystats-isn't-in-the-QMD knowledge drop (§12.4).
 
@@ -1785,8 +1802,8 @@ Parts 1 and 2 are deliberately repetitive with Justice — they show the same Po
 2. **Interpretation of a simple, one-covariate model, used to fix ideas.** Before jumping to the final DGM, show a simple version of the model — typically a one-covariate linear (or logistic, etc.) fit — whose coefficients have the cleanest, most direct interpretation possible. The student interprets the simple model's coefficients in isolation, the canonical answer establishes the interpretation pattern, and *then* we move to the final DGM with that interpretation pattern already in hand. The adjustment clause, interaction language, and link-function scale complications are easier to reach for once the simple baseline is there.
 
 **EMH rule for this split:**
-- **Easy (Tutorials 06–10).** Do both. Simple model first (one covariate, outcome scale), then the final DGM. Easy tutorials have room for this two-step flow because their `marginaleffects` coverage is limited to `predictions()`, which leaves Temperance with time to spend on parameters.
-- **Medium and Hard (Tutorials 11+).** Skip the simple-model step. Go straight to interpreting the final DGM. M/H tutorials pack in `comparisons()`, grid choices, and (for Hard) the explicit five-decisions framework (§1.3 *marginaleffects worked example*), which crowds out a second parameter-interpretation block. Students have seen the one-covariate interpretation pattern several times in Easy — by Tutorial 11 it does not need to be re-established.
+- **Easy (positions 1–4, target tutorials 06–09).** Do both. Simple model first (one covariate, outcome scale), then the final DGM. Easy tutorials have room for this two-step flow because their `marginaleffects` coverage is limited to `predictions()`, which leaves Temperance with time to spend on parameters.
+- **Medium and Hard (positions 5–12, target tutorials 10–17).** Skip the simple-model step. Go straight to interpreting the final DGM. M/H tutorials pack in `comparisons()`, grid choices, and (for Hard) the explicit five-decisions framework (§1.3 *marginaleffects worked example*), which crowds out a second parameter-interpretation block. Students have seen the one-covariate interpretation pattern several times in Easy — by position 5 it does not need to be re-established.
 
 In Courage, we have already fit *exactly the model we will interpret here*. For Easy tutorials, the simple-model-interpretation variant runs on a model that Courage has not shown — either a smaller fit Courage skipped past, or a one-covariate reduction of the final model. Either way, Temperance displays a `tidy()` table for that simple fit, asks for an interpretation of one of its coefficients, and then moves on.
 
@@ -1814,9 +1831,9 @@ This ordering determines how much Temperance real-estate the parameter block con
    - **Two or more covariates** (everything past the first few tutorials): every interpretation sentence ends with an adjustment clause — *"…adjusting for [list of other covariates]."* Use **adjust** in preference to **control**; see the adjust-vs-control knowledge drop (§12.5). Omitting the adjustment clause is the single most common student error on interpretation exercises, which is why our canonical `message` always includes it.
 
 **EMH progression for this exercise block:**
-- **Easy** (Tutorials 06–10). Mostly linear models with one or two covariates, binary or 3-level categorical. Interpretation is direct on the outcome scale: a coefficient = expected-value difference. Easy includes the simple-model warm-up before the final DGM (see *Which model(s) to interpret*). The adjustment clause appears from the moment a second covariate is introduced (~Tutorial 09). Logistic and multinomial cases do appear in Easy (06, 09) — for these, follow the non-linear rule above: direct link-scale interpretation is a knowledge drop, not a student exercise.
-- **Medium** (Tutorials 11–12). More covariates, more variable types (continuous + categorical in the same model), interaction terms start appearing, link functions other than identity (logit, multinomial logit). Adjustment clauses are mandatory. Students are **not** asked to interpret link-scale coefficients; the author mentions the link-scale form in a knowledge drop, and the student exercises focus on recognizing the link scale, identifying reference categories, and handing off to `marginaleffects`. Interactions, when they appear on the outcome scale, force conditional interpretation — *"the effect of X depends on the value of Z."*
-- **Hard** (Tutorials 13+). Everything from Medium plus: strong non-linearities, interactions the interpretation of which is not algebraically clean, link functions whose coefficients have no direct human reading (ordinal regression's threshold parameters, cumulative logits). Non-parametric models (random forests, gradient boosting) skip the parameter block entirely per §14.8. Where a parameter block remains, keep at least one exercise whose purpose is to make the student articulate *why* the parameters are opaque — the failure to interpret is the point, and it sets up the `marginaleffects` work that follows.
+- **Easy** (positions 1–4, target tutorials 06–09). All linear models (per §17: NHANES, Trains, Colleges, and the gap-TODO Easy causal). One or two covariates, binary or 3-level categorical. Interpretation is direct on the outcome scale: a coefficient = expected-value difference. Easy includes the simple-model warm-up before the final DGM (see *Which model(s) to interpret*). The adjustment clause appears from the moment a second covariate is introduced.
+- **Medium** (positions 5–8, target tutorials 10–13). First link functions (logit in Biden at position 5, Shaming at position 6; multinomial in NES at position 7). Adjustment clauses are mandatory. Students are **not** asked to interpret link-scale coefficients; the author mentions the link-scale form in a knowledge drop, and the student exercises focus on recognizing the link scale, identifying reference categories, and handing off to `marginaleffects`. Interactions, when they appear on the outcome scale, force conditional interpretation — *"the effect of X depends on the value of Z."*
+- **Hard** (positions 9–12, target tutorials 14–17). Cumulative logit (CES at position 9), RDD causal identification (Governors at position 10), and non-parametric models (random forests at positions 11 and 12). Non-parametric models skip the parameter block entirely per §14.8. Where a parameter block remains, keep at least one exercise whose purpose is to make the student articulate *why* the parameters are opaque — the failure to interpret is the point, and it sets up the `marginaleffects` work that follows.
 
 **Exercise 5.** [operational] Load `marginaleffects`.
 - Prompt: *In the end, we don't really care about parameters. Parameters are imaginary, like unicorns. We care about answers to our questions. In the modern world, all parameters are nuisance parameters. Add `library(marginaleffects)` to the QMD. Place your cursor on that line. Use `Cmd/Ctrl + Enter`. CP/CR.*
@@ -2064,9 +2081,17 @@ Things flagged but not yet resolved. Revisit when relevant.
 
 ## 17. Per-tutorial problem specifications
 
-Key parameters for each of the 14 numbered tutorials in the `primer.tutorials` package. Use these entries to orient new authoring sessions: the dataset, the primary question, the model to fit, and the Preceptor Table and Population Table column structure. Tutorials marked **miscellaneous** have no full data-science exercise (no Preceptor Table, no model fit). All others are **example** tutorials.
+Key parameters for each tutorial in the `primer.tutorials` package. Use these entries to orient new authoring sessions: the dataset, the primary question, the model to fit, and the Preceptor Table and Population Table column structure. Tutorials marked **miscellaneous** have no full data-science exercise (no Preceptor Table, no model fit). All others are **example** tutorials.
+
+**Target roster: 12 example tutorials (positions 1–12) + 5 miscellaneous = 17 total.** Example tutorials are numbered 06–17 and arranged per §1.5:
+
+- P/C alternating (P, C, P, C, …) starting at position 1.
+- Positions 1–4 Easy, 5–8 Medium, 9–12 Hard.
+- Positions 11 and 12 are the non-parametric (random forest or equivalent) tutorials.
 
 Preceptor Table and Population Table columns are listed by spanner in order. Population Tables always have a leading `Source` column (not under any spanner) and a `Unit/Time` spanner with two columns. Preceptor Tables have no Time column — time is implicit. Causal models have a `Treatment` spanner separate from `Covariate(s)`. Potential outcome columns are named "Outcome if [treatment value]".
+
+**Directory numbering.** Physical directory names on disk match the target numbering. Nine example tutorials currently exist (06, 07, 08, 10, 11, 12, 14, 15, 16) with four gap slots (09, 13, 17) to author. Per §1.5, positions 11 and 12 (target tutorials 16 and 17) are the non-parametric tutorials; target tutorial 16 at `16-stops` is slated for a random-forest **recast** of the old predictive-linear stops tutorial.
 
 ---
 
@@ -2100,25 +2125,7 @@ Preceptor Table and Population Table columns are listed by spanner in order. Pop
 
 ---
 
-### 06 — Biden
-
-- **Type:** example
-- **"Imagine":** You are the chair of the Democratic National Committee in early 2024 deciding where to devote time and money.
-- **Dataset:** YouGov poll, 1,559 U.S. adult citizens, March 2024 (constructed inline as a tibble)
-- **Outcome:** `biden` — binary support for Biden (Yes/No)
-- **Treatment / Key covariate:** none (intercept-only model)
-- **Question (QoI):** What proportion of all votes will be cast for Joe Biden in the 2024 election?
-- **Model:** Logistic regression, intercept-only
-- **Causal / Predictive:** Predictive
-- **Student project:** `biden`
-- **Data prep:** `tibble(biden = as.factor(c(rep("Yes", 655), rep("No", 904)))) |> slice_sample(prop = 1)` → `poll_data`
-- **Final model:** `logistic_reg() |> fit(biden ~ 1, data = poll_data)` → `fit_biden`
-- **Preceptor Table:** Unit (Voter) | Outcome (Biden Support)
-- **Population Table:** Source | Unit/Time (Voter, Year) | Outcome (Biden Support)
-
----
-
-### 07 — NHANES
+### 06 — NHANES  *(Position 1, Easy predictive)*
 
 - **Type:** example
 - **"Imagine":** You are in charge of ordering uniforms for next year's Marine Corps bootcamp recruits.
@@ -2136,7 +2143,7 @@ Preceptor Table and Population Table columns are listed by spanner in order. Pop
 
 ---
 
-### 08 — Trains
+### 07 — Trains  *(Position 2, Easy causal)*
 
 - **Type:** example
 - **"Imagine":** You are a campaign manager for a Republican congressional candidate in Georgia who wants to increase anti-immigration sentiment among voters.
@@ -2154,79 +2161,7 @@ Preceptor Table and Population Table columns are listed by spanner in order. Pop
 
 ---
 
-### 09 — NES
-
-- **Type:** example
-- **"Imagine":** You are a political scientist studying the 1992 presidential election, curious whether men and women differed in their support for Clinton, Bush, and Perot. There are many decisions to make.
-- **Dataset:** NES (`primer.data`), 1992 presidential election
-- **Outcome:** `pres_vote` — vote choice (Clinton / Bush / Perot)
-- **Treatment / Key covariate:** `sex` (Male/Female)
-- **Question (QoI):** What was the difference in voting preference of men and women in the 1992 US Presidential election?
-- **Model:** Multinomial logistic regression
-- **Causal / Predictive:** Predictive
-- **Student project:** `nes`
-- **Data prep:** `nes |> filter(year == 1992) |> select(sex, pres_vote) |> drop_na() |> mutate(pres_vote = as.factor(case_when(pres_vote == "Democrat" ~ "Clinton", pres_vote == "Republican" ~ "Bush", pres_vote == "Third Party" ~ "Perot")))` → `nes_92`
-- **Final model:** `multinom_reg(engine = "nnet") |> fit(pres_vote ~ sex, data = nes_92)` → `fit_nes`
-- **Preceptor Table:** Unit (Voter) | Outcome (Vote) | Covariate (Sex)
-- **Population Table:** Source | Unit/Time (Voter, Year) | Outcome (Vote) | Covariate (Sex)
-
----
-
-### 10 — Governors
-
-- **Type:** example
-- **"Imagine":** You are considering a run for governor and wonder how long you are likely to live afterward.
-- **Dataset:** `governors` (Barfort et al. 2020) (`primer.data`)
-- **Outcome:** `lived_after` — years lived after election (continuous)
-- **Treatment / Key covariate:** `election_age`, `sex` (with interaction)
-- **Question (QoI):** How many years do gubernatorial candidates live after their election, and how does that vary by age and sex?
-- **Model:** Linear regression with interaction term (`election_age * sex`)
-- **Causal / Predictive:** Predictive
-- **Student project:** `governors`
-- **Data prep:** `governors |> filter(year > 1945) |> select(last_name, year, state, sex, lived_after, election_age, region)` → `x`
-- **Final model:** `linear_reg(engine = "lm") |> fit(lived_after ~ election_age*sex, data = x)` → `fit_years`
-- **Preceptor Table:** Unit (Candidate) | Outcome (Years Lived After) | Covariates (Age at Election, Sex)
-- **Population Table:** Source | Unit/Time (Candidate, Year) | Outcome (Years Lived After) | Covariates (Age at Election, Sex)
-
----
-
-### 11 — Shaming
-
-- **Type:** example
-- **"Imagine":** You are running for Governor of Texas and must decide how to allocate campaign resources.
-- **Dataset:** `shaming` (Gerber, Green, Larimer 2008) (`primer.data`)
-- **Outcome:** `primary_06` — voted in 2006 primary (binary)
-- **Treatment / Key covariate:** `treatment` — social-pressure mailing type (randomized)
-- **Question (QoI):** What is the causal effect of social-pressure postcards on voter turnout?
-- **Model:** Logistic regression with interaction (`treatment * voter_class`)
-- **Causal / Predictive:** Causal
-- **Student project:** `shaming`
-- **Data prep:** `shaming |> mutate(civ_engage = primary_00 + primary_02 + primary_04 + general_00 + general_02 + general_04) |> select(primary_06, treatment, sex, age, civ_engage) |> mutate(voter_class = factor(case_when(civ_engage %in% c(5, 6) ~ "Always Vote", civ_engage %in% c(3, 4) ~ "Sometimes Vote", civ_engage %in% c(1, 2) ~ "Rarely Vote"), levels = c("Rarely Vote", "Sometimes Vote", "Always Vote"))) |> mutate(voted = as.factor(primary_06))` → `x`
-- **Final model:** `logistic_reg(engine = "glm") |> fit(voted ~ age + sex + treatment*voter_class, data = x)` → `fit_vote`
-- **Preceptor Table:** Unit (Voter) | Potential Outcomes (Voted if Postcard, Voted if No Postcard) | Treatment (Mailing Type)
-- **Population Table:** Source | Unit/Time (Voter, Year) | Potential Outcomes (Voted if Postcard, Voted if No Postcard) | Treatment (Mailing Type)
-
----
-
-### 12 — CES
-
-- **Type:** example
-- **"Imagine":** You are a pollster preparing for an upcoming election, exploring 2020 Trump approval patterns across ideology and education levels.
-- **Dataset:** `ces` (Cooperative Election Study) (`primer.data`), 2020
-- **Outcome:** `approval` — presidential approval (ordinal, 5 categories)
-- **Treatment / Key covariate:** `ideology` (Very Liberal … Very Conservative)
-- **Question (QoI):** What is the average difference in Trump approval between Very Liberal and Very Conservative voters?
-- **Model:** Ordinal logistic regression (`MASS::polr`)
-- **Causal / Predictive:** Predictive
-- **Student project:** `ces`
-- **Data prep:** `ces |> filter(year == 2020) |> select(approval, ideology, education) |> drop_na() |> filter(!ideology %in% "Not Sure") |> mutate(ideology = fct_drop(ideology))` → `x`
-- **Final model:** `polr(approval ~ ideology + education, data = x)` → `fit_approval`
-- **Preceptor Table:** Unit (Respondent) | Outcome (Presidential Approval) | Covariate (Political Ideology)
-- **Population Table:** Source | Unit/Time (Respondent, Year) | Outcome (Presidential Approval) | Covariate (Political Ideology)
-
----
-
-### 13 — Colleges
+### 08 — Colleges  *(Position 3, Easy predictive)*
 
 - **Type:** example
 - **"Imagine":** You are a data scientist at a non-profit helping students find the best college.
@@ -2244,18 +2179,140 @@ Preceptor Table and Population Table columns are listed by spanner in order. Pop
 
 ---
 
-### 14 — Stops
+### 09 — TODO  *(Position 4, Easy causal — GAP)*
+
+- **Type:** example *(to be authored)*
+- **Status:** **Gap.** No existing tutorial fits this slot.
+- **Target:** A second simple randomized experiment (or equivalent clean causal design) with one binary treatment and at most one additional covariate. Linear or logistic outcome. Easy-tier — no interactions, no multi-arm treatment, link-scale interpretation deferred to knowledge drops per §13.5.
+- **Constraint:** Must be causal and Easy (§1.5 alternation). The simplest possible causal setup that isn't just a second Enos-style platform experiment — look for a different dataset in `primer.data` or propose a new one.
+- **Candidates to evaluate:** job-training RCT, small voter-mobilization experiment, Dahl-Moretti lottery, or a synthetic Easy-tier teaching dataset.
+
+---
+
+### 10 — Biden  *(Position 5, Medium predictive)*
 
 - **Type:** example
-- **"Imagine":** You are a member of your city's police department who wants to ensure race doesn't unfairly affect arrest chances during traffic stops.
-- **Dataset:** `stops` (Open Policing Project) (`primer.data`), New Orleans, July 2011–July 2018
-- **Outcome:** `arrested` — arrest during stop (binary)
-- **Treatment / Key covariate:** `race` (Black/White), `sex`, `zone`
-- **Question (QoI):** What is the difference in arrest rate between Black and White drivers, adjusting for sex and zone?
-- **Model:** Linear regression (`arrested ~ sex + race*zone`); logistic regression also demonstrated
+- **"Imagine":** You are the chair of the Democratic National Committee in early 2024 deciding where to devote time and money.
+- **Dataset:** YouGov poll, 1,559 U.S. adult citizens, March 2024 (constructed inline as a tibble)
+- **Outcome:** `biden` — binary support for Biden (Yes/No)
+- **Treatment / Key covariate:** none (intercept-only model)
+- **Question (QoI):** What proportion of all votes will be cast for Joe Biden in the 2024 election?
+- **Model:** Logistic regression, intercept-only
 - **Causal / Predictive:** Predictive
-- **Student project:** `stops`
-- **Data prep:** `stops |> filter(race %in% c("black", "white")) |> mutate(race = str_to_title(race), sex = str_to_title(sex))` → `x`
-- **Final model:** `linear_reg() |> set_engine("lm") |> fit(arrested ~ sex + race*zone, data = x)` → `fit_stops`
-- **Preceptor Table:** Unit (Traffic Stop) | Outcome (Arrested) | Covariates (Race, Sex, Zone)
-- **Population Table:** Source | Unit/Time (Traffic Stop, Year) | Outcome (Arrested) | Covariates (Race, Sex, Zone)
+- **Student project:** `biden`
+- **Data prep:** `tibble(biden = as.factor(c(rep("Yes", 655), rep("No", 904)))) |> slice_sample(prop = 1)` → `poll_data`
+- **Final model:** `logistic_reg() |> fit(biden ~ 1, data = poll_data)` → `fit_biden`
+- **Preceptor Table:** Unit (Voter) | Outcome (Biden Support)
+- **Population Table:** Source | Unit/Time (Voter, Year) | Outcome (Biden Support)
+
+---
+
+### 11 — Shaming  *(Position 6, Medium causal)*
+
+- **Type:** example
+- **"Imagine":** You are running for Governor of Texas and must decide how to allocate campaign resources.
+- **Dataset:** `shaming` (Gerber, Green, Larimer 2008) (`primer.data`)
+- **Outcome:** `primary_06` — voted in 2006 primary (binary)
+- **Treatment / Key covariate:** `treatment` — social-pressure mailing type (randomized)
+- **Question (QoI):** What is the causal effect of social-pressure postcards on voter turnout?
+- **Model:** Logistic regression with interaction (`treatment * voter_class`)
+- **Causal / Predictive:** Causal
+- **Student project:** `shaming`
+- **Data prep:** `shaming |> mutate(civ_engage = primary_00 + primary_02 + primary_04 + general_00 + general_02 + general_04) |> select(primary_06, treatment, sex, age, civ_engage) |> mutate(voter_class = factor(case_when(civ_engage %in% c(5, 6) ~ "Always Vote", civ_engage %in% c(3, 4) ~ "Sometimes Vote", civ_engage %in% c(1, 2) ~ "Rarely Vote"), levels = c("Rarely Vote", "Sometimes Vote", "Always Vote"))) |> mutate(voted = as.factor(primary_06))` → `x`
+- **Final model:** `logistic_reg(engine = "glm") |> fit(voted ~ age + sex + treatment*voter_class, data = x)` → `fit_vote`
+- **Preceptor Table:** Unit (Voter) | Potential Outcomes (Voted if Postcard, Voted if No Postcard) | Treatment (Mailing Type)
+- **Population Table:** Source | Unit/Time (Voter, Year) | Potential Outcomes (Voted if Postcard, Voted if No Postcard) | Treatment (Mailing Type)
+
+---
+
+### 12 — NES  *(Position 7, Medium predictive)*
+
+- **Type:** example
+- **"Imagine":** You are a political scientist studying the 1992 presidential election, curious whether men and women differed in their support for Clinton, Bush, and Perot. There are many decisions to make.
+- **Dataset:** NES (`primer.data`), 1992 presidential election
+- **Outcome:** `pres_vote` — vote choice (Clinton / Bush / Perot)
+- **Treatment / Key covariate:** `sex` (Male/Female)
+- **Question (QoI):** What was the difference in voting preference of men and women in the 1992 US Presidential election?
+- **Model:** Multinomial logistic regression
+- **Causal / Predictive:** Predictive
+- **Student project:** `nes`
+- **Data prep:** `nes |> filter(year == 1992) |> select(sex, pres_vote) |> drop_na() |> mutate(pres_vote = as.factor(case_when(pres_vote == "Democrat" ~ "Clinton", pres_vote == "Republican" ~ "Bush", pres_vote == "Third Party" ~ "Perot")))` → `nes_92`
+- **Final model:** `multinom_reg(engine = "nnet") |> fit(pres_vote ~ sex, data = nes_92)` → `fit_nes`
+- **Preceptor Table:** Unit (Voter) | Outcome (Vote) | Covariate (Sex)
+- **Population Table:** Source | Unit/Time (Voter, Year) | Outcome (Vote) | Covariate (Sex)
+
+---
+
+### 13 — TODO  *(Position 8, Medium causal — GAP)*
+
+- **Type:** example *(to be authored)*
+- **Status:** **Gap.** No existing tutorial fits this slot.
+- **Target:** A Medium-tier causal tutorial with a multi-arm treatment, a multinomial/ordinal outcome, or both. More complex than Trains (position 2) but less than the Hard-tier RF tutorial (position 12). Should introduce a causal setting with one of: (a) a treatment with 3+ arms, (b) an outcome that requires a link function other than identity/logit, or (c) a heterogeneous-treatment-effect framing with at least one moderator.
+- **Constraint:** Must be causal and Medium (§1.5 alternation). Should plausibly share methodological themes with Shaming (position 6, the other Medium causal) — the two together should cover most of what Medium-tier causal inference has to offer.
+- **Candidates to evaluate:** A multi-arm field experiment, a difference-in-differences study suitable at Medium tier, or a stratified RCT with a categorical outcome.
+
+---
+
+### 14 — CES  *(Position 9, Hard predictive)*
+
+- **Type:** example
+- **"Imagine":** You are a pollster preparing for an upcoming election, exploring 2020 Trump approval patterns across ideology and education levels.
+- **Dataset:** `ces` (Cooperative Election Study) (`primer.data`), 2020
+- **Outcome:** `approval` — presidential approval (ordinal, 5 categories)
+- **Treatment / Key covariate:** `ideology` (Very Liberal … Very Conservative)
+- **Question (QoI):** What is the average difference in Trump approval between Very Liberal and Very Conservative voters?
+- **Model:** Ordinal logistic regression (`MASS::polr`)
+- **Causal / Predictive:** Predictive
+- **Student project:** `ces`
+- **Data prep:** `ces |> filter(year == 2020) |> select(approval, ideology, education) |> drop_na() |> filter(!ideology %in% "Not Sure") |> mutate(ideology = fct_drop(ideology))` → `x`
+- **Final model:** `polr(approval ~ ideology + education, data = x)` → `fit_approval`
+- **Preceptor Table:** Unit (Respondent) | Outcome (Presidential Approval) | Covariate (Political Ideology)
+- **Population Table:** Source | Unit/Time (Respondent, Year) | Outcome (Presidential Approval) | Covariate (Political Ideology)
+
+---
+
+### 15 — Governors  *(Position 10, Hard causal — recast from predictive)*
+
+- **Type:** example
+- **Status:** **Recast required.** The existing tutorial frames this as a predictive question — *"how long do gubernatorial candidates live after their election?"*. Under the new §1.5 alternation, position 10 is causal, and the Barfort et al. 2020 paper is a close-election RDD study whose natural framing *is* causal. Rewrite the tutorial around the causal question.
+- **"Imagine":** You are considering a run for governor and want to know whether winning changes how long you are likely to live.
+- **Dataset:** `governors` (Barfort et al. 2020) (`primer.data`)
+- **Outcome:** `lived_after` — years lived after election (continuous)
+- **Treatment / Key covariate:** election outcome (won/lost), identified by close-margin quasi-randomization
+- **Question (QoI):** What is the causal effect of winning a gubernatorial election on lifespan?
+- **Model:** Linear regression restricted to close-margin elections; treatment = win/lose. Interaction with `election_age` and `sex` optional.
+- **Causal / Predictive:** Causal
+- **Student project:** `governors`
+- **Data prep (revised):** `governors |> filter(year > 1945) |> filter(margin < 5) |> select(last_name, year, state, sex, lived_after, election_age, region, won)` → `x`  *(pseudocode — margin column name and cutoff to be confirmed against `primer.data`)*
+- **Final model (revised):** `linear_reg(engine = "lm") |> fit(lived_after ~ won + election_age + sex, data = x)` → `fit_governors`  *(treatment = `won`; interaction terms optional at Hard tier)*
+- **Preceptor Table:** Unit (Candidate) | Potential Outcomes (Years Lived if Won, Years Lived if Lost) | Treatment (Election Outcome) | Covariates (Age at Election, Sex)
+- **Population Table:** Source | Unit/Time (Candidate, Year) | Potential Outcomes (Years Lived if Won, Years Lived if Lost) | Treatment (Election Outcome) | Covariates (Age at Election, Sex)
+- **Author note:** The RDD identification story is what makes this Hard-tier — not the model specification itself (which is still a linear regression). The Justice section should name the RDD assumption explicitly and discuss the close-margin restriction as the mechanism that makes unconfoundedness plausible. Per §1.3 *unconfoundedness worked example (Hard)*, name the design family (RDD) without teaching it in depth; that framing belongs in the Difficult tier.
+
+---
+
+### 16 — TODO  *(Position 11, Hard predictive — non-parametric / random forest — GAP)*
+
+- **Type:** example *(to be authored)*
+- **Status:** **Gap.** Non-parametric predictive tutorial does not exist.
+- **Target:** Random forest or gradient-boosted model on a predictive question where the outcome-scale prediction matters more than parameter interpretation. Per §13.5 *Interpretability ceiling by model family*, the parameter-interpretation block is cut entirely — replace with a single exercise whose purpose is to articulate *why* the model's parameters aren't interpretable, then hand off to `marginaleffects::predictions()` / `plot_predictions()` for all question-answering.
+- **Constraint:** Must be predictive and Hard (§1.5). The current `stops` tutorial (formerly `14-stops`) is a natural candidate to recast — `arrested ~ race + sex + zone + …` on the Open Policing data benefits from non-linearity and interactions a linear model can't capture well — but we should evaluate whether `stops` is the best home for the curriculum's first RF tutorial vs. a cleaner dataset.
+- **Candidates to evaluate:** recast `stops` (Open Policing arrests); a Kaggle-style dataset with strong non-linearities; `colleges` refit with an RF if we've removed colleges from position 3 (we haven't — position 3 keeps `colleges` at Easy tier).
+
+---
+
+### 17 — TODO  *(Position 12, Hard causal — non-parametric / causal forest — GAP)*
+
+- **Type:** example *(to be authored)*
+- **Status:** **Gap.** Non-parametric causal tutorial does not exist.
+- **Target:** Causal forest (e.g., `grf` package), propensity-score matching with an RF propensity model, or doubly-robust ML on a causal question. Parameter interpretation is gone; the answering is via `marginaleffects` or the package's native prediction tools. This tutorial is the curriculum's capstone — it combines Hard-tier causal inference (§1.3 *unconfoundedness worked example, Difficult*) with non-parametric modeling (§13.5 *Interpretability ceiling*).
+- **Constraint:** Must be causal and Hard (§1.5). Should plausibly build on a dataset students have already seen at an easier tier — re-analyzing the Shaming data with a causal forest, or the Trains data with propensity matching, makes the non-parametric lift visible as an upgrade rather than a new topic.
+- **Candidates to evaluate:** causal forest on `shaming` (heterogeneous treatment effects); propensity-score matching on an observational dataset with a binary treatment (Lalonde if available); doubly-robust estimation on a large observational dataset.
+
+---
+
+### Note: `16-stops` pending RF recast
+
+The tutorial at `inst/tutorials/16-stops/` currently fits a linear regression of `arrested ~ sex + race*zone` on the Open Policing data and frames the question as predictive — content that predates the move to position 11 / target tutorial 16. Under §1.5, position 11 is the non-parametric predictive slot, so this tutorial's content must be recast to random forest (or equivalent). The directory has been renamed already; the content rewrite is the outstanding work.
+
+The Open Policing data is well-suited to RF — non-linearities between race, zone, and arrest probability are exactly the kind of interaction a linear model mishandles — so the recast is the default unless a cleaner RF-candidate dataset appears during authoring. The alternative is to drop `16-stops` entirely and start fresh on a different dataset.

@@ -2,13 +2,13 @@
 title: Colleges
 author: David Kane and Ivy Spratt
 tutorial:
-  id: 13-colleges
+  id: 08-colleges
 output:
   learnr::tutorial:
     progressive: yes
     allow_skip: yes
 runtime: shiny_prerendered
-description: "Tutorial #13 for Preceptor's Primer"
+description: "Tutorial #08 for Preceptor's Primer"
 ---
 
 ```{r setup, include = FALSE}

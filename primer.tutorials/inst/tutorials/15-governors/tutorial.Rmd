@@ -2,13 +2,13 @@
 title: Governors
 author: David Kane and Aashna Patel
 tutorial:
-  id: 10-governors
+  id: 15-governors
 output:
   learnr::tutorial:
     progressive: yes
     allow_skip: yes
 runtime: shiny_prerendered
-description: "Tutorial #10 for Preceptor's Primer"
+description: "Tutorial #15 for Preceptor's Primer"
 ---
 
 ```{r setup, include = FALSE}

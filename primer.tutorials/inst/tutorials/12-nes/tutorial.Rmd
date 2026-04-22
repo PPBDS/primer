@@ -2,13 +2,13 @@
 title: NES
 author: David Kane and Ivy Spratt
 tutorial:
-  id: 09-nes
+  id: 12-nes
 output:
   learnr::tutorial:
     progressive: yes
     allow_skip: yes
 runtime: shiny_prerendered
-description: "Tutorial #09 for Preceptor's Primer"
+description: "Tutorial #12 for Preceptor's Primer"
 ---
 
 ```{r setup, include = FALSE}

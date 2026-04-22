@@ -2,13 +2,13 @@
 title: CES
 author: David Kane and Aashna Patel
 tutorial:
-  id: 12-ces
+  id: 14-ces
 output:
   learnr::tutorial:
     progressive: yes
     allow_skip: yes
 runtime: shiny_prerendered
-description: "Tutorial #12 for Preceptor's Primer"
+description: "Tutorial #14 for Preceptor's Primer"
 ---
 
 ```{r setup, include = FALSE}
