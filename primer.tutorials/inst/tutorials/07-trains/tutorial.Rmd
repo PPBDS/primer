@@ -1000,23 +1000,102 @@ question_text(NULL,
 
 The exact time period used --- whether hour, day, month, year, or whatever --- is relatively arbitrary. The important thing to note is that the Population Table, unlike the Preceptor Table, covers a period of time over which things may change.
 
-```{r}
-trains |> 
-  group_by(treatment) |> 
-  summarise(
-    N = n(),
-    mean_att_end = mean(att_end, na.rm = TRUE),
-    sd_att_end = sd(att_end, na.rm = TRUE)
-  ) |> 
-  gt() |> 
-  tab_header(
-    title = "Population Table: Immigration Attitudes by Treatment",
-    subtitle = "Outcome: att_end (Attitudes toward Immigration)"
-  ) |> 
-  fmt_number(
-    columns = c(mean_att_end, sd_att_end),
-    decimals = 2
+```{r, results = 'asis'}
+hatch <- function(x) {
+  paste0(
+    '<span style="background-image: repeating-linear-gradient(',
+    '45deg, rgba(0,0,0,0.12) 0 1px, transparent 1px 6px);',
+    ' padding: 6px 10px; margin: -6px -10px; display: block;">',
+    x,
+    '</span>'
   )
+}
+
+population_tibble <- tibble::tribble(
+  ~Source    , ~`Commuter`      , ~`Year`, ~`Attitude if Exposed`, ~`Attitude if Not Exposed`, ~`Spanish Exposure`,
+  "..."      , "..."            , "..."  , "..."                 , "..."                     , "..."              ,
+  "Data"     , "Sarah Thompson" , "2012" , "12"                  , "..."                     , "Exposed"          ,
+  "Data"     , "Michael Chen"   , "2012" , "..."                 , "8"                       , "Not exposed"      ,
+  "Data"     , "..."            , "..."  , "..."                 , "..."                     , "..."              ,
+  "Data"     , "Rebecca Johnson", "2012" , "14"                  , "..."                     , "Exposed"          ,
+  "..."      , "..."            , "..."  , "..."                 , "..."                     , "..."              ,
+  "Preceptor", "James Carter"   , "2026" , "10"                  , "8"                       , "Exposed"          ,
+  "Preceptor", "Maria Gonzalez" , "2026" , "9"                   , "7"                       , "Not exposed"      ,
+  "Preceptor", "..."            , "..."  , "..."                 , "..."                     , "..."              ,
+  "Preceptor", "Robert Kim"     , "2026" , "11"                  , "9"                       , "Exposed"          ,
+  "..."      , "..."            , "..."  , "..."                 , "..."                     , "..."
+)
+
+pop_title_footnote     <- "This table combines data from Enos (2014) with the Preceptor Table's 2026 Georgia voters, both drawn from the population of US adults who might encounter Spanish speakers in public settings."
+pop_units_footnote     <- "Data rows are participants in Enos's 2012 Boston MBTA commuter rail experiment — 115 commuters. Preceptor rows are registered voters in a Georgia congressional district in 2026."
+pop_outcome_footnote   <- "Immigration attitude on a scale from 3 (most liberal) to 15 (most conservative). In Data rows, only one potential outcome was observed — the one matching the subject's treatment; the other is shown as '...' because it was never measured. In Preceptor rows, both potential outcomes are filled in (the unobservable one is cross-hatched), because Preceptor rows show the unobservable truth."
+pop_treatment_footnote <- "In Data rows, Spanish Exposure is whether the Boston commuter rode alongside Spanish-speaking confederates during Enos's experiment. In Preceptor rows, it is whether the Georgia voter was exposed to Spanish-speaking campaign volunteers."
+pop_effect_footnote    <- "The causal effect for Maria Gonzalez is the difference between her two potential outcomes: 9 − 7 = 2 points on the 3–15 scale. Because the Preceptor rows show the unobservable truth, this is the true causal effect for her, not an estimate."
+
+pop_gt_html <- gt::gt(population_tibble, id = "population_tbl") |>
+  gt::tab_header(title = "Population Table") |>
+  gt::tab_spanner(label = "Unit/Time"         , id = "unit_span",
+                  columns = c(`Commuter`, `Year`)) |>
+  gt::tab_spanner(label = "Potential Outcomes", id = "outcome_span",
+                  columns = c(`Attitude if Exposed`, `Attitude if Not Exposed`)) |>
+  gt::tab_spanner(label = "Treatment"         , id = "treatment_span",
+                  columns = c(`Spanish Exposure`)) |>
+  gt::cols_align(align = "left" , columns = c(`Source`, `Commuter`, `Spanish Exposure`)) |>
+  gt::cols_align(align = "right", columns = c(`Year`, `Attitude if Exposed`, `Attitude if Not Exposed`)) |>
+  gt::fmt_markdown(columns = gt::everything()) |>
+  gt::tab_options(
+    heading.title.font.size   = "1.5em",
+    heading.title.font.weight = "bolder",
+    column_labels.font.weight = "normal"
+  ) |>
+  gt::tab_style(
+    style     = gt::cell_text(weight = "bold"),
+    locations = gt::cells_column_spanners()
+  ) |>
+  gt::tab_style(
+    style     = gt::cell_text(align = "left"),
+    locations = gt::cells_column_spanners(spanners = c("unit_span", "treatment_span"))
+  ) |>
+  gt::tab_style(
+    style     = gt::cell_text(align = "center"),
+    locations = gt::cells_column_spanners(spanners = "outcome_span")
+  ) |>
+  gt::text_transform(
+    locations = gt::cells_body(columns = `Attitude if Not Exposed`, rows = c(7, 10)),
+    fn        = function(x) hatch(x)
+  ) |>
+  gt::text_transform(
+    locations = gt::cells_body(columns = `Attitude if Exposed`, rows = 8),
+    fn        = function(x) hatch(x)
+  ) |>
+  gt::tab_footnote(footnote = pop_title_footnote,
+                   locations = gt::cells_title()) |>
+  gt::tab_footnote(footnote = pop_units_footnote,
+                   locations = gt::cells_column_spanners(spanners = "unit_span")) |>
+  gt::tab_footnote(footnote = pop_outcome_footnote,
+                   locations = gt::cells_column_spanners(spanners = "outcome_span")) |>
+  gt::tab_footnote(footnote = pop_treatment_footnote,
+                   locations = gt::cells_column_spanners(spanners = "treatment_span")) |>
+  gt::tab_footnote(footnote = pop_effect_footnote,
+                   locations = gt::cells_body(columns = `Commuter`, rows = 8)) |>
+  gt::opt_css(
+    css = "
+      #population_tbl .gt_footnote {
+        max-width: 1px;
+        word-break: break-word;
+      }
+    "
+  ) |>
+  gt::as_raw_html()
+
+cat(
+  "```{=html}\n",
+  '<div style="display: inline-block; width: auto; max-width: 100%;">',
+  pop_gt_html,
+  "</div>\n",
+  "```\n",
+  sep = ""
+)
 ```
 
 ### Exercise 6
