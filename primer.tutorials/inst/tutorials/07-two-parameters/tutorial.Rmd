@@ -22,8 +22,6 @@ library(primer.data)
 library(broom)
 library(marginaleffects)
 
-library(easystats)
-
 knitr::opts_chunk$set(echo = FALSE)
 options(tutorial.exercise.timelimit = 600, tutorial.storage = "local")
 
@@ -376,9 +374,16 @@ question_text(NULL,
 This is the first version of the question. We will now create a Preceptor Table to answer the question. We may then revise the question given complexities discovered in the data. We then update the question and the Preceptor Table. And so on.
 
 ## Wisdom
-###
 
-In this tutorial, we will focus on height. As the person in charge of uniforms you would like to know what to expect about recruits' heights in the coming year.
+Data science starts with some broad questions and a data set which might help us to answer them.
+
+Imagine that you are in charge of ordering uniforms for next year's Marine Corps bootcamp recruits. There are many factors to consider: the cost of different designs, the number of male and female recruits, the distributions of heights and weights, and so on. There are many decisions to make.
+
+The broad question: *What is the average height of male and female USMC recruits?*
+
+We will work from the National Health and Nutrition Examination Survey (NHANES), conducted by the Centers for Disease Control and Prevention, available in the `nhanes` tibble of the `primer.data` package.
+
+###
 
 ### Exercise 1
 
@@ -801,9 +806,157 @@ question_text(NULL,
 Read our answer. It will not be the same as yours. You can change your answer to incorporate some of our ideas, but do not copy/paste our answer exactly. Add your two sentences to your QMD, `Cmd/Ctrl + Shift + K`, and commit/push.
 
 ## Justice
-### 
 
-*The arc of the moral universe is long, but it bends toward justice.* - Theodore Parker
+Recall the Preceptor Table we built in Wisdom:
+
+```{r}
+#| echo: false
+#| results: asis
+pre_tibble_j <- tibble::tribble(
+  ~`Recruit`,       ~`Height (cm)`, ~`Sex`,
+  "Recruit 1",      "150",          "Female",
+  "Recruit 2",      "172",          "Male",
+  "...",            "...",          "...",
+  "Recruit 5,000",  "160",          "Female"
+)
+
+pre_title_footnote_j     <- "A Preceptor Table is the smallest table such that, if every cell were filled with its true value, answering the question 'What is the average height of male and female USMC recruits?' would be easy."
+pre_units_footnote_j     <- "Each row is one USMC recruit expected to enlist during the coming year. Missing rows represent the other recruits not shown."
+pre_outcome_footnote_j   <- "Height in centimeters, measured at enlistment."
+pre_covariate_footnote_j <- "Sex, taking values 'Male' or 'Female', as recorded at enlistment."
+
+pre_gt_html_j <- gt::gt(pre_tibble_j, id = "preceptor_tbl_justice") |>
+  gt::tab_header(title = "Preceptor Table") |>
+  gt::tab_spanner(label = "Unit",      id = "unit_span",
+                  columns = c(`Recruit`)) |>
+  gt::tab_spanner(label = "Outcome",   id = "outcome_span",
+                  columns = c(`Height (cm)`)) |>
+  gt::tab_spanner(label = "Covariate", id = "covariates_span",
+                  columns = c(`Sex`)) |>
+  gt::cols_align(align = "left" , columns = c(`Recruit`, `Sex`)) |>
+  gt::cols_align(align = "right", columns = c(`Height (cm)`)) |>
+  gt::fmt_markdown(columns = gt::everything()) |>
+  gt::tab_options(
+    heading.title.font.size   = "1.5em",
+    heading.title.font.weight = "bolder",
+    column_labels.font.weight = "normal"
+  ) |>
+  gt::tab_style(
+    style     = gt::cell_text(weight = "bold"),
+    locations = gt::cells_column_spanners()
+  ) |>
+  gt::tab_style(
+    style     = gt::cell_text(align = "left"),
+    locations = gt::cells_column_spanners(spanners = c("unit_span", "covariates_span"))
+  ) |>
+  gt::tab_style(
+    style     = gt::cell_text(align = "right"),
+    locations = gt::cells_column_spanners(spanners = "outcome_span")
+  ) |>
+  gt::tab_footnote(footnote = pre_title_footnote_j,
+                   locations = gt::cells_title()) |>
+  gt::tab_footnote(footnote = pre_units_footnote_j,
+                   locations = gt::cells_column_spanners(spanners = "unit_span")) |>
+  gt::tab_footnote(footnote = pre_outcome_footnote_j,
+                   locations = gt::cells_column_spanners(spanners = "outcome_span")) |>
+  gt::tab_footnote(footnote = pre_covariate_footnote_j,
+                   locations = gt::cells_column_spanners(spanners = "covariates_span")) |>
+  gt::opt_css(
+    css = "
+      #preceptor_tbl_justice .gt_footnote {
+        max-width: 1px;
+        word-break: break-word;
+      }
+    "
+  ) |>
+  gt::as_raw_html()
+
+cat(
+  "```{=html}\n",
+  '<div style="display: inline-block; width: auto; max-width: 100%;">',
+  pre_gt_html_j,
+  "</div>\n",
+  "```\n",
+  sep = ""
+)
+```
+
+And here is the data we are working with:
+
+```{r}
+#| echo: false
+#| results: asis
+data_tibble <- tibble::tribble(
+  ~`Respondent`, ~`Age`, ~`Height (cm)`, ~`Sex`,
+  "NHANES 1",    "21",   "162",          "Female",
+  "NHANES 2",    "25",   "178",          "Male",
+  "NHANES 3",    "19",   "159",          "Female",
+  "...",         "...",  "...",          "...",
+  "NHANES 50",   "23",   "170",          "Male"
+)
+
+data_title_footnote     <- "National Health and Nutrition Examination Survey (NHANES), Centers for Disease Control and Prevention. Continuous survey data, 1999–present. We restrict to respondents aged 18 through 27 and take a random sample of 50 rows using `set.seed(10)` for reproducibility. Original survey used a complex, stratified multistage sampling design; our simple random subsample discards the survey weights."
+data_units_footnote     <- "Each row is one NHANES participant examined between 1999 and the most recent release cycle."
+data_outcome_footnote   <- "Height in centimeters, measured by a trained examiner in NHANES's Mobile Examination Center using a fixed stadiometer. Each participant is measured once per survey visit with shoes removed."
+data_covariate_footnote <- "Sex, recorded by the NHANES interviewer as 'Male' or 'Female'. NHANES does not separately record gender identity; the two-category coding dates from survey waves going back decades."
+
+data_gt_html <- gt::gt(data_tibble, id = "data_tbl") |>
+  gt::tab_header(title = "Data: NHANES Young Adults, Ages 18–27") |>
+  gt::tab_spanner(label = "Unit",      id = "unit_span",
+                  columns = c(`Respondent`, `Age`)) |>
+  gt::tab_spanner(label = "Outcome",   id = "outcome_span",
+                  columns = c(`Height (cm)`)) |>
+  gt::tab_spanner(label = "Covariate", id = "covariates_span",
+                  columns = c(`Sex`)) |>
+  gt::cols_align(align = "left" , columns = c(`Respondent`, `Sex`)) |>
+  gt::cols_align(align = "right", columns = c(`Age`, `Height (cm)`)) |>
+  gt::fmt_markdown(columns = gt::everything()) |>
+  gt::tab_options(
+    heading.title.font.size   = "1.5em",
+    heading.title.font.weight = "bolder",
+    column_labels.font.weight = "normal"
+  ) |>
+  gt::tab_style(
+    style     = gt::cell_text(weight = "bold"),
+    locations = gt::cells_column_spanners()
+  ) |>
+  gt::tab_style(
+    style     = gt::cell_text(align = "left"),
+    locations = gt::cells_column_spanners(spanners = c("unit_span", "covariates_span"))
+  ) |>
+  gt::tab_style(
+    style     = gt::cell_text(align = "right"),
+    locations = gt::cells_column_spanners(spanners = "outcome_span")
+  ) |>
+  gt::tab_footnote(footnote = data_title_footnote,
+                   locations = gt::cells_title()) |>
+  gt::tab_footnote(footnote = data_units_footnote,
+                   locations = gt::cells_column_spanners(spanners = "unit_span")) |>
+  gt::tab_footnote(footnote = data_outcome_footnote,
+                   locations = gt::cells_column_spanners(spanners = "outcome_span")) |>
+  gt::tab_footnote(footnote = data_covariate_footnote,
+                   locations = gt::cells_column_spanners(spanners = "covariates_span")) |>
+  gt::opt_css(
+    css = "
+      #data_tbl .gt_footnote {
+        max-width: 1px;
+        word-break: break-word;
+      }
+    "
+  ) |>
+  gt::as_raw_html()
+
+cat(
+  "```{=html}\n",
+  '<div style="display: inline-block; width: auto; max-width: 100%;">',
+  data_gt_html,
+  "</div>\n",
+  "```\n",
+  sep = ""
+)
+```
+
+###
 
 ### Exercise 1
 
@@ -1119,9 +1272,97 @@ question_text(NULL,
 Add a weakness sentence to the summary paragraph in your QMD. You can modify your paragraph as you see fit, but do not copy/paste our answer exactly. `Cmd/Ctrl + Shift + K`, and then commit/push.
 
 ## Courage
-### 
 
-*Courage is the commitment to begin without any guarantee of success.* - Johann Wolfgang von Goethe
+Recall the Population Table we built in Justice:
+
+```{r}
+#| echo: false
+#| results: asis
+pop_tibble <- tibble::tribble(
+  ~Source    , ~`Young Adult`    , ~`Year`, ~`Height (cm)`, ~`Sex`   ,
+  "..."      , "..."             , "..."  , "..."         , "..."    ,
+  "Data"     , "NHANES 1"        , "2002" , "162"         , "Female" ,
+  "Data"     , "NHANES 2"        , "2005" , "178"         , "Male"   ,
+  "Data"     , "..."             , "..."  , "..."         , "..."    ,
+  "Data"     , "NHANES 50"       , "2015" , "170"         , "Male"   ,
+  "..."      , "..."             , "..."  , "..."         , "..."    ,
+  "Preceptor", "Recruit 1"       , "2026" , "150"         , "Female" ,
+  "Preceptor", "Recruit 2"       , "2026" , "172"         , "Male"   ,
+  "Preceptor", "..."             , "..."  , "..."         , "..."    ,
+  "Preceptor", "Recruit 5,000"   , "2026" , "160"         , "Female" ,
+  "..."      , "..."             , "..."  , "..."         , "..."
+)
+
+pop_title_footnote     <- "This table combines NHANES adult-height data from 1999 onward with the Preceptor Table's 2026 USMC recruits, drawn from the same broader population of US young adults aged 18-27."
+pop_units_footnote     <- "Each row is one young adult at one point in time. Data rows are NHANES survey participants between the ages of 18 and 27. Preceptor rows are the ~5,000 USMC recruits expected to enlist in the coming year."
+pop_outcome_footnote   <- "Height in centimeters. NHANES measures height directly in the mobile examination center; USMC records height at enlistment. The two measurement procedures are close enough that we treat them as the same column."
+pop_covariate_footnote <- "Sex, recorded as Male or Female in both data sources."
+
+pop_gt_html <- gt::gt(pop_tibble, id = "population_tbl") |>
+  gt::tab_header(title = "Population Table") |>
+  gt::tab_spanner(label = "Unit/Time", id = "unit_span",
+                  columns = c(`Young Adult`, `Year`)) |>
+  gt::tab_spanner(label = "Outcome"  , id = "outcome_span",
+                  columns = c(`Height (cm)`)) |>
+  gt::tab_spanner(label = "Covariate", id = "covariates_span",
+                  columns = c(`Sex`)) |>
+  gt::cols_align(align = "left" , columns = c(`Source`, `Young Adult`, `Sex`)) |>
+  gt::cols_align(align = "right", columns = c(`Year`, `Height (cm)`)) |>
+  gt::fmt_markdown(columns = gt::everything()) |>
+  gt::tab_options(
+    heading.title.font.size   = "1.5em",
+    heading.title.font.weight = "bolder",
+    column_labels.font.weight = "normal"
+  ) |>
+  gt::tab_style(
+    style     = gt::cell_text(weight = "bold"),
+    locations = gt::cells_column_spanners()
+  ) |>
+  gt::tab_style(
+    style     = gt::cell_text(align = "left"),
+    locations = gt::cells_column_spanners(spanners = c("unit_span", "covariates_span"))
+  ) |>
+  gt::tab_style(
+    style     = gt::cell_text(align = "right"),
+    locations = gt::cells_column_spanners(spanners = "outcome_span")
+  ) |>
+  gt::tab_footnote(footnote = pop_title_footnote,
+                   locations = gt::cells_title()) |>
+  gt::tab_footnote(footnote = pop_units_footnote,
+                   locations = gt::cells_column_spanners(spanners = "unit_span")) |>
+  gt::tab_footnote(footnote = pop_outcome_footnote,
+                   locations = gt::cells_column_spanners(spanners = "outcome_span")) |>
+  gt::tab_footnote(footnote = pop_covariate_footnote,
+                   locations = gt::cells_column_spanners(spanners = "covariates_span")) |>
+  gt::opt_css(
+    css = "
+      #population_tbl .gt_footnote {
+        max-width: 1px;
+        word-break: break-word;
+      }
+    "
+  ) |>
+  gt::as_raw_html()
+
+cat(
+  "```{=html}\n",
+  '<div style="display: inline-block; width: auto; max-width: 100%;">',
+  pop_gt_html,
+  "</div>\n",
+  "```\n",
+  sep = ""
+)
+```
+
+And the abstract mathematical structure of the model chosen at the end of Justice:
+
+$$Y = \beta_0 + \beta_1 X_1 + \epsilon$$
+
+with $\epsilon \sim N(0, \sigma^2)$.
+
+We use generic variables --- $Y$, $X_1$, and so on --- because our purpose here is to describe the general mathematical structure of the model, independent of the specific variables we will eventually use.
+
+###
 
 ### Exercise 1
 
@@ -1136,7 +1377,7 @@ question_text(NULL,
   rows = 6)
 ```
 
-### 
+###
 
 Having decided on the basic mathematical structure of the model at the end of *Justice*, a choice mostly driven by the distribution of our outcome variable, we now turn toward estimating the model.
 
@@ -1232,44 +1473,6 @@ fit_height
 In data science, **we deal with words, math, and code, but the most important of these is code.** We created the mathematical structure of the model and then wrote a model formula in order to estimate the unknown parameters. 
 
 ### Exercise 6
-
-In the Console, load the **[easystats](https://easystats.github.io/easystats/)** package. CP/CR.
-
-```{r courage-6}
-question_text(NULL,
-  answer(NULL, correct = TRUE),
-  allow_retry = TRUE,
-  try_again_button = "Edit Answer",
-  incorrect = NULL,
-  rows = 5)
-```
-
-###
-
-We don't add **easystats** to the QMD because we are only using it for an interactive check of our fitted model. However, the [easystats ecosystem](https://easystats.github.io/easystats/) has a variety of interesting functions and packages which you might want to explore.
-
-### Exercise 7
-
-<!-- DK: I didn't get a fit_height object at this point. This function does work when run with height_fit (created below) as arg. Please fix. -->
-
-In the Console, run `check_predictions(extract_fit_engine(fit_height))`. CP/CR.
-
-```{r courage-7}
-question_text(NULL,
-  answer(NULL, correct = TRUE),
-  allow_retry = TRUE,
-  try_again_button = "Edit Answer",
-  incorrect = NULL,
-  rows = 5)
-```
-
-###
-
-The purpose of `check_predictions()` is to compare your actual data (in green) with data that has been simulated from your fitted model, i.e., from your data generating mechanism. If your DGM is reasonable, then data simulated from it should not look too dissimilar from your actual data. Of course, it won't look exactly the same because of randomness, both in the world and in your simulation. But the actual data should be within the range of outcomes that your DGM simulates with `check_predictions()`.
-
-In this case, the distribution of heights **in our data** closely matches the distributions in the data **simulated from our model**.
-
-### Exercise 8
 
 Ask AI to create $\LaTeX$ code for this model, including our variable names and estimates for all the coefficients. Because this is a fitted model, the dependent variable will have a "hat" and the formula will not include an error term. 
 
@@ -1461,9 +1664,9 @@ Read our answer. It will not be the same as yours. You can, if you want, change 
 ## Temperance
 ###
 
-In Courage we built a fitted model: `fit_height`, a linear regression of height on sex. In Temperance we use that model to answer the question we started with --- *What is the average height of male and female USMC recruits?* --- and to express honest uncertainty about the answer. We start by reviewing what Courage produced, then turn to interpretation, predictions, and a final plot.
-
 See the [Predictions chapter](https://marginaleffects.com/chapters/predictions.html) of the `marginaleffects` book [**Model to Meaning**](https://marginaleffects.com/) for background on the tools we use below.
+
+The fitted model from Courage, `fit_height`, can be described in four complementary ways.
 
 **In words:** We describe height as a linear function of sex.
 
@@ -1519,9 +1722,10 @@ Before using the DGM, we should make sure that we can interpret it.
 Recall the values for the parameters in our data generating mechanism:
 
 ```{r}
-fit_height |> 
-  tidy(conf.int = TRUE) |> 
-  select(term, estimate, conf.low, conf.high)
+fit_height |>
+  tidy(conf.int = TRUE) |>
+  select(term, estimate, conf.low, conf.high) |>
+  mutate(across(where(is.numeric), \(x) signif(x, 3)))
 ```
 
 Write a sentence interpreting the 162 estimate for `(Intercept)`.
@@ -1542,9 +1746,10 @@ Most of the time parameters in a model have no direct relationship with any popu
 ### Exercise 3
 
 ```{r}
-fit_height |> 
-  tidy(conf.int = TRUE) |> 
-  select(term, estimate, conf.low, conf.high)
+fit_height |>
+  tidy(conf.int = TRUE) |>
+  select(term, estimate, conf.low, conf.high) |>
+  mutate(across(where(is.numeric), \(x) signif(x, 3)))
 ```
 
 Write a sentence interpreting the 15.9 estimate for `sexMale`.

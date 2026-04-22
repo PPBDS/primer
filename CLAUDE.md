@@ -60,7 +60,9 @@ The "Imagine that you are…" opener is the same in the chapter and the tutorial
 
 ### 1.3 Progressive sophistication
 
-Many definitions, concepts, and tools have three sophistication levels — **Easy**, **Medium**, and **Difficult**. The curriculum uses the Easy version in roughly the first third of the chapter sequence, the Medium version in the second third, and the Difficult version in the final third. Each return to a concept builds on the previous visit, deepening the student's understanding rather than restating it.
+Many definitions, concepts, and tools have three sophistication levels — **Easy**, **Medium**, and **Hard** (abbreviated **EMH**). The curriculum uses the Easy version in roughly the first third of the chapter sequence, the Medium version in the second third, and the Hard version in the final third. Each return to a concept builds on the previous visit, deepening the student's understanding rather than restating it.
+
+*Legacy terminology note:* earlier sections of this file and prior drafts use **Difficult** where this and later sections use **Hard**. They mean the same tier. Going forward, prefer *Hard* and *EMH*; treat any remaining *Difficult* as synonymous.
 
 Transitions are gradual, not sharp. The last Easy tutorial should be just slightly simpler than the first Medium tutorial; same for the Medium-to-Difficult boundary. There should be no step change a student can point to.
 
@@ -317,7 +319,21 @@ Each of the six sections opens with `##`. Each exercise opens with `### Exercise
 
 The **preamble** of a virtue section is the content between the section header (`## Wisdom`, `## Justice`, `## Temperance`, etc.) and the first `### Exercise N` block. Preambles are prose, knowledge drops, and/or author-rendered output — never student-facing exercises. They orient the student, review work done earlier in the tutorial, or set up what this section will do.
 
-Preamble content is section-specific. The most heavily specified preamble is Temperance (§13.5), which reviews the DGM decided on at the end of Courage using some combination of four canonical ways to describe a model. Preambles for the other virtues (Introduction, Wisdom, Justice, Courage, Summary) are not yet fully specified — see §16 Open items.
+**Virtue-section self-containment.** Each virtue section — in the tutorial *and* in the chapter — is meant to be somewhat self-contained. A reader who skipped (or just forgot) the previous section should be able to start the next one without backtracking. The mechanism is the preamble: each preamble revisits the key output(s) from the earlier virtues that this virtue needs. This is repetitive by design, and the repetition is the point — it is the Primer's spaced-repetition pattern (§8) operating at section scale.
+
+Concretely:
+
+- **Wisdom preamble**: opens with the canonical sentence *"Data science starts with some broad questions and a data set which might help us to answer them."* Then the "Imagine that you are…" paragraph verbatim from Introduction, one line restating the broad question (from Intro Exercise 15), and one or two sentences naming the dataset. The preamble emphasizes the two things the Cardinal Virtues assume a student arrives with: a broad question and a data set. Detailed spec in §13.2.
+- **Justice preamble**: shows the Preceptor Table from Wisdom (exact copy) and a `gt` table of the data. Detailed spec in §13.3; the data table's footnotes describe the data on its own terms, not in comparison with the Preceptor Table.
+- **Courage preamble**: shows the Population Table from Justice, plus the abstract mathematical form of the DGM that Justice's last exercise chose (functional family: Normal / Bernoulli / multinomial / cumulative — pull the block from §13.7). The author-shown abstract-math block that used to live at the *end* of Justice (§13.3 Exercise 15) moves here in any tutorial that uses a Courage preamble — one place, not two.
+- **Temperance preamble**: reviews the DGM decided on at the end of Courage using some combination of the four canonical ways to describe a model (words, R code, parameter table, concrete mathematical formula). Fully specified in §13.5.
+- **Summary preamble**: the final plot and the summary paragraph (§13.6).
+
+None of these preambles describe what the *current* virtue does. That is the first exercise's job in every section (§14.6). Preamble prose is limited to showing upstream artifacts and the specifics of *this problem*.
+
+It is OK — though not ideal — for a reader to skip, say, Courage and still make useful sense of Temperance, because Temperance's preamble shows the fitted DGM; and it is OK to skip Justice and start on Courage because Courage's preamble shows the Population Table. Repetition is not a bug; being forced to flip pages is.
+
+Detailed per-virtue preamble specs for Introduction, Wisdom, Justice, and Summary are not yet fully written out — see §16 Open items.
 
 ---
 
@@ -1365,6 +1381,17 @@ This is the ordered list of exercises that make up an example tutorial. Each exe
 
 Within a section, keep exercises in the order given. Not every tutorial includes every exercise — the schedule depends on spaced repetition (§8) and on whether the problem is causal or predictive. Some exercises (e.g., unconfoundedness questions) are skipped entirely for predictive tutorials.
 
+**Pre-flight before drafting a tutorial.** Find the tutorial's position in §17 (06 = first example, 07 = second, …) and its tier in §1.3 (roughly: first third Easy, middle third Medium, final third Difficult). Some exercises are **tier-dependent** — they are written here in their Medium form but must be dropped, replaced, or extended depending on tier. Tier-dependent exercises are flagged inline with a `**Tier:**` line; read it before including them. Current tier-dependent items:
+
+- **Model checking** (§13.4 Exercises 9–10): skipped in the first two example tutorials (06, 07); replaced by an author-rendered side-by-side outcome/fitted-value plot in Easy tutorials 3–5 (08–10); Medium form (`check_predictions()`) in tutorials 11–12; Difficult form (posterior-predictive-check terminology + model revision driven by the check) thereafter. Full progression in §1.3 *Worked example: model checking across three levels*.
+- **Concrete DGM math** (§13.4 Exercise 11): author-shipped in Easy and Medium; possibly a student exercise (via AI) in Difficult tutorials with simple models; author-shipped when the model is complex. Details in §13.4.
+- **Parameter-table formatting** (§13.5 Temperance preamble): Easy = raw `tidy()`, Medium = nicer (`kable`/`gt`), Difficult = near-publication quality. Always author-shipped.
+- **`marginaleffects` coverage** (§13.5 Temperance): Easy = `predictions()` family only; Medium adds `comparisons()`; Difficult adds the five-decisions framework and grid types. Slopes are never introduced.
+- **Preceptor/Population Table footnote depth** (§10): Easy footnotes include scaffolding (what a Preceptor Table *is*; per-row causal-effect arithmetic); Medium and Difficult drop the scaffolding and deepen the remaining footnotes. Details in §1.3 *Worked example: Preceptor Table and Population Table footnote sophistication*.
+- **Validity/stability/representativeness/unconfoundedness progressions** (§1.3): each has an Easy → Medium → Difficult treatment; consult §1.3 when drafting the Justice exercises for that assumption.
+
+If a tutorial is being drafted without a pre-flight tier check, the default is Medium — and Medium wording *will be wrong* for every Easy tutorial (06–10) and every Difficult tutorial (11 onward, depending on final numbering). The pre-flight is cheap; skipping it is how model-checking exercises ended up in Tutorial 07.
+
 ### 13.1 Introduction
 
 The Introduction preamble opens with the bookend sentence *The world confronts us. Make decisions we must.* This sentence appears at both ends of every tutorial — it also closes the Temperance section (§13.5 Exercise 17 End). After this opening sentence comes a single "Imagine that you are …" paragraph that motivates the problem with a real person facing real decisions. The paragraph always starts with "Imagine that you are …" and always ends with "There are many decisions to make." The same paragraph is used in the matching chapter.
@@ -1449,7 +1476,17 @@ The Introduction preamble opens with the bookend sentence *The world confronts u
 
 ### 13.2 Wisdom
 
-Opens with a substantive framing paragraph (see §14.6), then a short paragraph narrowing from the broad "Imagine" topic to a plausibly answerable question. By the end of Wisdom, the student has a specific question.
+By the end of Wisdom, the student has a specific question, a Preceptor Table that would answer it, and a first look at the data.
+
+**Preamble (between `## Wisdom` header and Exercise 1).** The Cardinal Virtues assume a student arrives with a broad question and a data set; Wisdom's preamble emphasizes exactly those two things. Contents, in order:
+
+1. **Canonical opening sentence, verbatim:** *"Data science starts with some broad questions and a data set which might help us to answer them."* Every Wisdom preamble in the Primer begins with this sentence, unchanged.
+2. **The "Imagine that you are…" paragraph from Introduction, verbatim.** Same text, not paraphrased. It reorients a reader who skipped Introduction, and it costs nothing to show a reader who did read Introduction.
+3. **The broad question** in one line — the canonical answer to Intro Exercise 15 (e.g. *"What is the average height of male and female USMC recruits?"*). This is the *broad* question, not the narrow specific question that Wisdom Exercise 10 will arrive at — do not preempt that exercise.
+4. **One or two sentences naming the dataset.** The Introduction identifies the dataset; Wisdom is where we will explore it. Write as a plain statement — *"We will work from the NHANES survey (conducted by the CDC), available in the `nhanes` tibble of the `primer.data` package."* Do not make claims about what the data will show, and do not mention measurement or validity concerns — those come later.
+5. A Continue button (`###` with no heading) before `### Exercise 1`.
+
+Per §14.6, the preamble does **not** describe what Wisdom does; Exercise 1 below asks the student to describe Wisdom using the canonical §11 wording.
 
 **Exercise 1.** [canonical] Components of Wisdom.
 - Prompt: *In your own words, describe the key components of Wisdom when working on a data science problem.*
@@ -1515,7 +1552,20 @@ If the modeling requires a cleaned tibble `x` (e.g., filtering to one year, drop
 
 ### 13.3 Justice
 
-Opens with a substantive framing paragraph (see §14.6).
+**Preamble (between `## Justice` header and Exercise 1).** Per the self-containment principle in §5.5, the Justice preamble revisits the two outputs from Wisdom that Justice needs. Per §14.6, it does not describe what Justice does — Exercise 1 does that. Contents, in order:
+
+1. **The Preceptor Table from Wisdom**, rendered via the §10.3 `gt` pipeline. An exact copy — same tibble, same footnotes, same code. Prefaced by one sentence — something like *"Recall the Preceptor Table we built in Wisdom:"* — so a reader coming in cold knows what it is. Do not alter the Preceptor Table here; if it needs changing, change it in Wisdom too.
+2. **A `gt` table of the data** — a companion to the Preceptor Table. Show 3–5 sample rows (plus a `"..."` row) with the same columns the data has for the outcome and the most important covariates. This is the first time in the tutorial the reader sees the actual data as a formatted table; prior exposure is as raw tibble print-outs. Specifications:
+   - **Title** starts with `"Data: "` and then a short descriptive name of the dataset — e.g. `"Data: NHANES Young Adults, Ages 18–27"`, `"Data: Enos Metra Platform Experiment, 2012"`, `"Data: Gerber-Green-Larimer Michigan Shaming Experiment, 2006"`. Not just the package's tibble name.
+   - **Title footnote** gives proper source information — the citation / author / year / provenance of the data, the kind of thing that would appear in a paper's data section. E.g. *"National Health and Nutrition Examination Survey (NHANES), Centers for Disease Control and Prevention. Continuous survey data 1999–present; height measured by trained examiners in the Mobile Examination Center."*
+   - **Outcome-column footnote** describes the data's outcome on its own terms — how it was measured, by whom, on what scale, and any coding subtlety a thoughtful reader of *this dataset* would want to know. It does **not** compare the data's measurement to the Preceptor Table's; it does **not** say things like "Preceptor recruits, by contrast, are measured at enlistment." Those comparisons are Justice's job — the exercises that follow this preamble are precisely where validity (columns of the data ↔ columns of the Preceptor Table) gets addressed. A footnote that is genuinely describing the data will happen to expose the features that validity will later confront, and that is enough. No foreshadowing beyond that.
+   - **Key-covariate footnote** does the same for the most important covariate (or the treatment, in causal problems): measurement procedure, coding, and any subtlety a reader of the dataset would want to know. Again, describe — do not compare.
+   - **Other columns** need footnotes only if there is something specific to say. Don't narrate every column.
+   - **Do not discuss validity, stability, representativeness, unconfoundedness, or any of the named assumptions.** Those belong to the exercises that follow. The preamble's data-table footnotes are descriptive; the comparative work — data ↔ Preceptor Table, data ↔ population — is the point of Justice's exercises and does not belong in the preamble.
+   - Use the same §10.2 pipeline + inline-block wrapper pattern as the Preceptor/Population Tables so the table renders at content width in learnr. Give the `gt::gt()` call a unique `id` — e.g. `"data_tbl"` — and scope the footnote-cap `opt_css` to it.
+3. A Continue button (`###` with no heading) before `### Exercise 1`.
+
+Parts 1 and 2 are deliberately repetitive with Wisdom — same Preceptor Table, same data a reader has already seen in an EDA plot. That is the point: a reader who skipped Wisdom can still start Justice, and a reader who didn't gets a useful refresher. See §5.5.
 
 **Exercise 1.** [canonical] Components of Justice.
 - Prompt: *In your own words, name the five key components of Justice when working on a data science problem.*
@@ -1595,19 +1645,22 @@ Opens with a substantive framing paragraph (see §14.6).
   - Multinomial → multinomial logistic (three-outcome form in template)
   - Ordinal → cumulative logistic (three-outcome form in template)
 
-**Exercise 15.** [author-shown block, Easy tier only; omit in Medium and Difficult] Mathematical structure of the model.
-- No student-facing prompt. Instead, render the abstract LaTeX form for the chosen functional family (normal / Bernoulli / multinomial / cumulative — pull the block from §13.7) directly in the tutorial flow at this position.
-- Accompany with the knowledge drop: *We use generic variables — $Y$, $X_1$, and so on — because our purpose is to describe the general mathematical structure of the model, independent of the specific variables we will eventually use. Having decided on the basic mathematical structure, we now turn toward estimating the model.*
-- In Medium and Difficult tutorials, drop this block entirely (see §13.5 Temperance preamble, "Fifth form — abstract mathematical structure (Easy only)").
-
-**Exercise 16.** [per-tutorial, written-with-answer] Add a weakness sentence to the summary.
+**Exercise 15.** [per-tutorial, written-with-answer] Add a weakness sentence to the summary.
 - Prompt: *Write one sentence highlighting a potential weakness in your model. Derive it from possible problems with the assumptions above. We will add this to our summary paragraph. So far our version of the summary paragraph looks like this:* (paste our first two sentences). *Your version will be somewhat different.*
 - Message: per-tutorial.
 - End: *Add a weakness sentence to the summary paragraph in your QMD. You can modify your paragraph, but don't copy/paste our answer exactly. `Cmd/Ctrl + Shift + K`, then commit/push.*
 
 ### 13.4 Courage
 
-Opens with a substantive framing paragraph (see §14.6).
+**Preamble (between `## Courage` header and Exercise 1).** Per the self-containment principle in §5.5, the Courage preamble revisits the two outputs from earlier virtues that Courage needs. Per §14.6, it does not describe what Courage does — Exercise 1 does that. Contents, in order:
+
+1. **The Population Table from Justice**, rendered via the §10.4 `gt` pipeline. Prefaced by one sentence of context — something like *"Recall the Population Table we built in Justice:"* — so a reader coming in cold knows what it is.
+2. **The abstract mathematical form of the DGM** — the functional family chosen at the end of Justice (Normal / Bernoulli / multinomial / cumulative). Pull the block from §13.7. Use plain `N(0, \sigma^2)` for the error term, not `\mathcal{N}` (§13.5, same learnr MathJax bug applies here). Accompany with the knowledge drop: *We use generic variables — $Y$, $X_1$, and so on — because our purpose is to describe the general mathematical structure of the model, independent of the specific variables we will eventually use.*
+3. A Continue button (`###` with no heading) before `### Exercise 1`.
+
+Parts 1 and 2 are deliberately repetitive with Justice — they show the same Population Table and the same abstract math that Justice's last exercise produced. That is the point: a reader who skipped Justice can still start Courage, and a reader who didn't gets a useful refresher. See §5.5.
+
+**Abstract-math block moves here.** The author-shown abstract mathematical structure that used to live at the end of Justice (§13.3 Exercise 15 in the original draft) now lives in the Courage preamble only — one place, not two.
 
 **Model-checking staging.** Exercises 9 and 10 below (load `easystats`, run `check_predictions()`) are **Medium-tier** as written. In **Easy-tier** tutorials, replace them with a single exercise that shows an author-produced side-by-side plot of outcome distribution vs. fitted-value distribution (no student code, view-and-Continue pattern) — or in the first two example tutorials, omit model checking entirely. In **Difficult-tier** tutorials, add a follow-up exercise that uses the check to drive a model revision and then re-runs the check on the improved model. The full progression is in §1.3 (Worked example: model checking across three levels).
 
@@ -1651,14 +1704,17 @@ Opens with a substantive framing paragraph (see §14.6).
 - End: the workspace-awareness knowledge drop (§12.4).
 
 **Exercise 9.** [operational] Load easystats in the Console.
+- **Tier:** Medium only. **Omit entirely** in the first two example tutorials (06 Models, 07 Two Parameters). In Easy tutorials 3–5 (08–10), replace both Exercises 9 and 10 with a single author-rendered side-by-side plot of outcome distribution vs. fitted-value distribution — the student views it and hits Continue; no package loaded, no terminology introduced. In Difficult tutorials, keep Exercises 9–10 and add a follow-up exercise that uses the check to drive a model revision. Full progression in §1.3 *Worked example: model checking across three levels*.
 - Prompt: *In the Console, load the [easystats](https://easystats.github.io/easystats/) package. CP/CR.*
 - End: the why-easystats-isn't-in-the-QMD knowledge drop (§12.4).
 
 **Exercise 10.** [operational] Run `check_predictions()`.
+- **Tier:** Medium only. See Exercise 9's tier note above — same rules.
 - Prompt: *In the Console, run `check_predictions(extract_fit_engine(fit_<n>))`. CP/CR.*
 - End: the `check_predictions()` knowledge drop (§12.4). Add a sentence noting whether the simulated data looks like the actual data for this problem.
 
 **Exercise 11.** [author-shown block in Easy and Medium; optional student exercise in Difficult tutorials with simple models only] Concrete LaTeX DGM.
+- **Tier:** Easy and Medium → author-shipped (no student exercise). Difficult with simple models → may be a student exercise (AI-assisted). Difficult with complex models → author-shipped. Never purely abstract LaTeX at this position — that form lives in the Courage preamble only.
 - **Default (Easy, Medium, and Difficult tutorials with many parameters):** author-shipped. Render the fitted model in LaTeX with variable names and estimated coefficients substituted in — the concrete DGM. Include the hat-and-error-term knowledge drop (§12.4) followed by: *This is our data generating mechanism.* Then the DGM-being-a-formula knowledge drop (§12.4).
 - **Difficult tutorials with simple models** (few coefficients, no many-level categoricals) may optionally include a student-produced version: the student prompts AI for the LaTeX and pastes it into their QMD. Even here, the heavy lifting is AI; the student is checking and pasting, not deriving.
 - The concrete LaTeX DGM is also referenced in the §13.5 Temperance preamble as the fourth way to describe a model.
@@ -1686,14 +1742,11 @@ Opens with a substantive framing paragraph (see §14.6).
 
 ### 13.5 Temperance
 
-Opens with a substantive framing paragraph (see §14.6).
+**Preamble (between `## Temperance` header and Exercise 1).** The Temperance preamble reviews the DGM decided on at the end of Courage. Per §14.6, it does not describe what Temperance does — Exercise 1 does that. Contents, in order:
 
-**Preamble (between `## Temperance` header and Exercise 1).** The Temperance preamble is a transition — a review of the DGM decided on at the end of Courage, before we use it. Contents, in order:
-
-1. The framing paragraph (§14.6).
-2. A link to [**Model to Meaning**](https://marginaleffects.com/) — pick the chapter matching the tutorial's tier per §1.3 (Easy: Predictions; Medium adds Comparisons; Difficult adds Challenge and Framework).
-3. A review of the DGM using some subset of the four canonical ways to describe a model (below).
-4. A Continue button (`###` with no heading) before `### Exercise 1`. Students must hit Continue to advance — they should not see Exercise 1 on the same screen as the preamble.
+1. A link to [**Model to Meaning**](https://marginaleffects.com/) — pick the chapter matching the tutorial's tier per §1.3 (Easy: Predictions; Medium adds Comparisons; Difficult adds Challenge and Framework).
+2. A review of the DGM using some subset of the four canonical ways to describe a model (below).
+3. A Continue button (`###` with no heading) before `### Exercise 1`. Students must hit Continue to advance — they should not see Exercise 1 on the same screen as the preamble.
 
 **Four ways to describe a model.** Most Temperance preambles combine some subset of these four:
 
@@ -1722,8 +1775,48 @@ Opens with a substantive framing paragraph (see §14.6).
 
 **Exercises 2–4.** [per-tutorial, written-with-answer] Interpret the parameters.
 - Prompt pattern: show the `tidy(conf.int = TRUE)` table, ask an interpretation question about one parameter or one comparison. At least three such questions. See the *Temperance example knowledge drops* in §12.5 for options to use as the End of each. In tutorials using models with no interpretable parameters (random forests), cut these.
-- Message: per-tutorial; must be excellent.
+- Message: per-tutorial; must be excellent. Numeric values quoted in the message (e.g. *"the intercept of 162"*) must match the rounded parameter table — same rule as the Temperance preamble.
+- **Rounding:** the shown `tidy()` output must use the **same rounding** as the Temperance preamble's parameter table (default: `signif(3)`). Append `|> mutate(across(where(is.numeric), \(x) signif(x, 3)))` to the display chunk. A tutorial that shows 162.178 in one place and 162 in another is confusing; pick a rounding level once and apply it everywhere an author-shown parameter table appears.
 - End: pick from the Temperance knowledge drops (non-treatment variables, dummy base values, confidence intervals excluding zero, same-data-different-assumptions, parameters-don't-mean-anything, "adjust" vs. "control," overlapping dummy intervals, numeric comparisons).
+
+**Which model(s) to interpret.** Before picking *which parameters*, pick *which model's parameters*. Two kinds of interpretation happen in Temperance:
+
+1. **Interpretation of the final DGM.** This is the most important thing and always happens — the final DGM is what Temperance is for. Every tutorial, every tier, includes interpretation exercises for the final fitted model.
+2. **Interpretation of a simple, one-covariate model, used to fix ideas.** Before jumping to the final DGM, show a simple version of the model — typically a one-covariate linear (or logistic, etc.) fit — whose coefficients have the cleanest, most direct interpretation possible. The student interprets the simple model's coefficients in isolation, the canonical answer establishes the interpretation pattern, and *then* we move to the final DGM with that interpretation pattern already in hand. The adjustment clause, interaction language, and link-function scale complications are easier to reach for once the simple baseline is there.
+
+**EMH rule for this split:**
+- **Easy (Tutorials 06–10).** Do both. Simple model first (one covariate, outcome scale), then the final DGM. Easy tutorials have room for this two-step flow because their `marginaleffects` coverage is limited to `predictions()`, which leaves Temperance with time to spend on parameters.
+- **Medium and Hard (Tutorials 11+).** Skip the simple-model step. Go straight to interpreting the final DGM. M/H tutorials pack in `comparisons()`, grid choices, and (for Hard) the explicit five-decisions framework (§1.3 *marginaleffects worked example*), which crowds out a second parameter-interpretation block. Students have seen the one-covariate interpretation pattern several times in Easy — by Tutorial 11 it does not need to be re-established.
+
+In Courage, we have already fit *exactly the model we will interpret here*. For Easy tutorials, the simple-model-interpretation variant runs on a model that Courage has not shown — either a smaller fit Courage skipped past, or a one-covariate reduction of the final model. Either way, Temperance displays a `tidy()` table for that simple fit, asks for an interpretation of one of its coefficients, and then moves on.
+
+**Interpretability ceiling by model family.** Not every model's parameters are equally interpretable. The student-facing interpretation work scales accordingly:
+
+- **Linear models (continuous outcome, identity link).** Fully interpretable. Coefficients sit on the outcome scale — a β of 15.9 literally means "15.9 more centimeters of height." Student interpretation exercises are direct: "what does this coefficient mean?" This is the default setting for Easy tutorials, and the reason the simple-model step (§ above) lives in Easy — because there is a scale on which parameters cleanly mean things.
+
+- **Non-linear link-function models (logistic, multinomial, cumulative, Poisson, etc.).** Partially interpretable. Coefficients sit on a link scale — log-odds, log-rate, cumulative logits — which is not the scale the question is asked on. A direct interpretation is possible ("a one-unit increase in X raises the log-odds of Y by β"), but it is not intuitive, and **we do not ask students to produce that interpretation as their answer**. Instead: the author **notes the link-scale interpretation once, in a knowledge drop**, so students see what it would look like; the interpretation *exercises* for these models focus elsewhere — on recognizing that the coefficients are not on the outcome scale, on identifying the reference category and the sign of β, on asking why the next step is `marginaleffects`. The real answer to "what does this model say?" happens in Exercises 5+ via `predictions()` and (from Medium onward) `comparisons()`, which bring results back to the outcome scale.
+
+- **Non-parametric models (random forest, gradient boosting, neural nets).** Not interpretable at the parameter level. Don't show a parameter table; the object `fit_<n>` does not have meaningful coefficients to `tidy()`. **Skip Exercises 2–4 entirely** per §14.8, and replace with a single exercise whose only purpose is to make the student articulate *why* the parameters are not directly interpretable — no attempt at parameter interpretation at all, and no simple-model warm-up either. All the answering happens downstream via `marginaleffects`.
+
+This ordering determines how much Temperance real-estate the parameter block consumes. Easy linear-model tutorials get the full simple-then-final two-step flow. Easy logistic/multinomial tutorials (if any — 06 is logistic) still use the simple-model warm-up, but the final-DGM interpretation is a knowledge drop, not an exercise. Non-parametric tutorials skip the block almost entirely.
+
+**Which parameters to interpret: the three axes.** Once the model(s) are chosen, pick which parameters (or comparisons) to interpret — three exercises total across both kinds of model in Easy, three on the final DGM in Medium/Hard. The choice depends on three axes. (Shorthand: **EMH** = Easy / Medium / Hard, what §1.3 previously called Easy / Medium / Difficult. Going forward, prefer *EMH* and *Hard*; the word *Difficult* elsewhere in this file is the same tier.)
+
+1. **Variable type.** Three cases come up:
+   - **Binary** (2-level categorical, typically dummy-coded by R as `variableLevelName`). Interpretation language: *"A [Level=1] recruit has X more [outcome] than a [Level=0] recruit."* Plus the adjustment clause if there are other covariates.
+   - **Multinomial** (3+ levels). Each non-reference level becomes its own dummy, interpreted *relative to the reference category* — which by default is the first level alphabetically (or the first factor level if set by hand). Interpretation language: *"Compared to [reference level], a [Other Level=1] unit has X more [outcome] than a [reference] unit."* Whenever a multinomial variable's coefficient is interpreted, state the reference level explicitly; students confuse it otherwise.
+   - **Continuous.** One-unit-change language: *"For every one-unit increase in [X], [outcome] increases by β."* When the variable's natural unit is not 1 (e.g. a year's worth of income change may make no practical sense), either rescale before fitting or name a meaningful comparison in the interpretation (*"an additional decade of education is associated with X more dollars of income"*).
+2. **Variable role.** A variable is either a standard **covariate** or (in causal models only) a **treatment**.
+   - For **covariates**, use associational language: *"is associated with," "connected with," "differ by,"* comparisons *between groups* — no *cause*, *effect*, *impact*, *influence*. See the non-treatment-variables knowledge drop (§12.5).
+   - For **treatments**, use causal language: *"causal effect of X on Y," "the effect of [treatment]."* In any causal tutorial, try to make **at least one of the three interpretation exercises be about the treatment's coefficient** — the treatment is the variable the question is actually about, and interpreting its coefficient is what the model is for.
+3. **Number of covariates.** Every interpretation must name the other covariates it is conditional on, if there are any.
+   - **One covariate** (simple tutorials, typically early in the sequence): no adjustment clause needed. *"For every additional year of education, income increases by β."*
+   - **Two or more covariates** (everything past the first few tutorials): every interpretation sentence ends with an adjustment clause — *"…adjusting for [list of other covariates]."* Use **adjust** in preference to **control**; see the adjust-vs-control knowledge drop (§12.5). Omitting the adjustment clause is the single most common student error on interpretation exercises, which is why our canonical `message` always includes it.
+
+**EMH progression for this exercise block:**
+- **Easy** (Tutorials 06–10). Mostly linear models with one or two covariates, binary or 3-level categorical. Interpretation is direct on the outcome scale: a coefficient = expected-value difference. Easy includes the simple-model warm-up before the final DGM (see *Which model(s) to interpret*). The adjustment clause appears from the moment a second covariate is introduced (~Tutorial 09). Logistic and multinomial cases do appear in Easy (06, 09) — for these, follow the non-linear rule above: direct link-scale interpretation is a knowledge drop, not a student exercise.
+- **Medium** (Tutorials 11–12). More covariates, more variable types (continuous + categorical in the same model), interaction terms start appearing, link functions other than identity (logit, multinomial logit). Adjustment clauses are mandatory. Students are **not** asked to interpret link-scale coefficients; the author mentions the link-scale form in a knowledge drop, and the student exercises focus on recognizing the link scale, identifying reference categories, and handing off to `marginaleffects`. Interactions, when they appear on the outcome scale, force conditional interpretation — *"the effect of X depends on the value of Z."*
+- **Hard** (Tutorials 13+). Everything from Medium plus: strong non-linearities, interactions the interpretation of which is not algebraically clean, link functions whose coefficients have no direct human reading (ordinal regression's threshold parameters, cumulative logits). Non-parametric models (random forests, gradient boosting) skip the parameter block entirely per §14.8. Where a parameter block remains, keep at least one exercise whose purpose is to make the student articulate *why* the parameters are opaque — the failure to interpret is the point, and it sets up the `marginaleffects` work that follows.
 
 **Exercise 5.** [operational] Load `marginaleffects`.
 - Prompt: *In the end, we don't really care about parameters. Parameters are imaginary, like unicorns. We care about answers to our questions. In the modern world, all parameters are nuisance parameters. Add `library(marginaleffects)` to the QMD. Place your cursor on that line. Use `Cmd/Ctrl + Enter`. CP/CR.*
@@ -1902,9 +1995,11 @@ For `predictions()` and `plot_predictions()` exercises, include a `-test` chunk.
 
 ### 14.6 Virtue section openers
 
-Each virtue section opens with a substantive framing paragraph — **not** a quote. The intent is to connect the virtue to the specific problem at hand (or to the reader's progress through the tutorial so far) rather than provide an inspirational aphorism. The exact form and length of the opener are pending final specification; update this section once the format stabilizes across the curriculum.
+**Preambles do not describe what the virtue does.** That job belongs to the first exercise of each virtue section, which asks the student to describe the virtue's components using the canonical §11 wording (Wisdom begins with a question…; Justice concerns the Population Table…; Courage creates the data generating mechanism; Temperance interprets the DGM…). The preamble must not pre-empt this — no "In Wisdom we will build a Preceptor Table," no "Justice is the virtue of asking hard questions about the data," no "Temperance uses the model to answer the question." Those sentences take the work out of the student's mouth.
 
-(Knowledge-drop quotes used inside exercises — e.g., Tukey, Engerman, the Rumsfeld-style aphorisms — are kept in §12 and remain part of the tutorial toolkit. This section is only about section-opening quotes, which we have dropped.)
+What the preamble is for is spelled out in §5.5: it reprints the upstream artifacts this virtue needs (the Preceptor Table, the data table, the Population Table, the fitted DGM, etc.) so the section is usable by a reader who skipped or forgot what came before. Preamble prose stays tight and specific to *this problem* — naming the dataset, restating the question, showing the Preceptor Table — and leaves the virtue-level generalities to the first exercise.
+
+Section-opening **quotes** are retired. Earlier tutorials opened each virtue with an inspirational aphorism (Tukey, Parker, Goethe, etc.); we no longer do. Knowledge-drop quotes *inside* exercises — Tukey, Engerman, the Rumsfeld-style aphorisms listed in §12 — remain part of the tutorial toolkit. This rule concerns only the section-opening slot.
 
 ### 14.7 Keep control of the question and the model
 
@@ -1920,9 +2015,17 @@ This is not a progression — it applies at every level (Easy / Medium / Difficu
 
 ### 14.8 When to skip exercises
 
-Predictive tutorials skip the unconfoundedness exercises (Justice 11 and 12). Models with no interpretable parameters (random forests, neural nets) skip the parameter-interpretation exercises (Temperance 2–4) — replace with a single exercise that ensures the student understands the parameters aren't directly interpretable.
+Predictive tutorials skip the unconfoundedness exercises (Justice 11 and 12). Models with no interpretable parameters (random forests, neural nets) skip the parameter-interpretation exercises (Temperance 2–4) — replace with a single exercise that ensures the student understands the parameters aren't directly interpretable. Non-linear link-function models (logistic, multinomial, cumulative, Poisson) *keep* Exercises 2–4 but redirect them away from asking students to interpret link-scale coefficients directly; see §13.5 *Interpretability ceiling by model family* for the rules.
 
 Operational exercises can be abbreviated in later tutorials once students have done them a few times. The first time through, migrate as-is. By tutorial 10+, the `library(broom)` exercise (Justice 14) can be much shorter.
+
+### 14.9 Rounding consistency for parameter tables
+
+Every **author-shown** parameter table in a tutorial — the Temperance preamble's `tidy()` display, each of Temperance Exercises 2–4, the Courage preamble's parameter summary when present, the concrete DGM math — uses the **same rounding**. Default: `signif(3)`, applied via `|> mutate(across(where(is.numeric), \(x) signif(x, 3)))` appended to the `tidy()` pipeline. Numeric values that appear in exercise `message` text (the canonical answer) must match the rounded display — no "the intercept is 162.18" in the prose while the table shows 162, and no "the intercept is 162" in the prose while the table shows 162.18.
+
+One rounding, one tutorial, everywhere the reader sees parameters. A student who compares their answer to ours should not get tripped up by mismatched digits.
+
+The one exception is a **student-written code exercise** whose point is to teach `tidy()` itself (e.g. the Courage exercise where the student pipes into `tidy(conf.int = TRUE)` for the first time). There, the raw unrounded output is what `tidy()` actually produces; adding `signif()` would muddy the learning goal. After that one teaching exercise, every subsequent display of parameters uses the chosen rounding.
 
 ---
 
