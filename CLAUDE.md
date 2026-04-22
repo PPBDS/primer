@@ -462,20 +462,92 @@ The **Population Table** bridges from the data we actually have to the Preceptor
 
 ### 10.2 Shared conventions
 
-These apply to both tables.
+These apply to both tables, and the same `gt` pipeline + chunk-output wrapping is used verbatim in **both rendering contexts** — `inst/tutorials/NN-topic/tutorial.Rmd` (learnr) and `book/NN-topic.qmd` (Quarto). `gt` is rendering-agnostic; the pipeline-ending pattern described below (id on `gt::gt()`, footnote-cap CSS via `opt_css`, `as_raw_html()` into a variable, `cat()` inside a pandoc raw-HTML fence wrapped in an inline-block `<div>`) was developed to work around learnr-specific layout interactions and is harmless in Quarto. Write the pipeline once per problem; use it in both the tutorial's "Describe Preceptor Table" exercise (§13.2 Ex 9) and the chapter's parallel Wisdom/Justice sections.
 
 - **All cell values are in double quotes, including numbers.** `"42"`, not `42`.
 - **Labels are display phrases, not variable names.** `"Lifespan if Win"`, not `lifespan_win`. Capitalized, space-separated, human-readable. Use the simplest label the question allows: `Year` beats `Session Year` unless sessions actually matter; `Senator` beats `US Senator` when context is clear.
 - **Example rows use real names and plausible figures** when the question targets identifiable units (senators, governors, firms, teams, countries). Track the same identities across a question's Preceptor and Population Tables so the reader sees the same people in both.
 - **`"..."` marks placeholder rows or cells** — the blank row in the middle of a block, or any cell where we're gesturing at "more of the same" rather than giving a specific value.
 - **Unobservable potential outcomes are marked differently in the two tables.** In the Preceptor Table, every cell has its true value filled in, and the cells whose values could never be observed in reality are rendered with a diagonal cross-hatch (see §10.3). In the Data rows of the Population Table, the unobserved counterfactual potential outcome is written as `"..."` because no one measured it. In the Preceptor rows of the Population Table, both potential outcomes are filled in with the hatch convention from §10.3. `"?"` is not used anywhere in our table system.
-- **Column alignment:** center all columns, then left-align the first column (the unit).
+- **Column alignment is type-based.** Left-align the unit column and all character/categorical columns (including `Source` in Population Tables). Right-align numeric columns (even when the `gt` cells are quoted strings to accommodate `"..."` placeholders). Do not center columns by default; centering is reserved for short symmetric content where neither left nor right feels natural. Column labels inherit their column's alignment.
 - **Column widths are flexible.** Set them with `gt::cols_width()` if the default looks cramped or sprawling; otherwise omit. Reasonable ballpark: 100–120px for most columns.
 - **`gt::fmt_markdown(columns = gt::everything())`** — so cell contents can contain emphasis, links, HTML (needed for hatching), etc.
+- **Typographic hierarchy and fit-to-content.** Apply this `tab_options` call immediately after `gt::fmt_markdown()`:
+  ```r
+  gt::tab_options(
+    heading.title.font.size   = "1.5em",
+    heading.title.font.weight = "bolder",
+    column_labels.font.weight = "normal"
+  )
+  ```
+  The title scales to 1.5× the base font and is bolder. Column labels drop to normal weight so they recede behind the spanners without shrinking below body size. No hardcoded pixel sizes on labels or spanners. Body rows keep the gt default.
+
+- **Pipeline ending and chunk output — five-part pattern.** Every Preceptor/Population Table ends in a specific sequence that was necessary to get the table to render at content width in learnr. Skip any part and the table stretches full-width or generates pandoc warnings.
+
+  1. **Give `gt::gt()` an `id`.** `gt::gt(my_tibble, id = "preceptor_tbl")`. The id scopes the footnote-cap CSS (part 2) to this table only. Use `"preceptor_tbl"` for Preceptor Tables and `"population_tbl"` for Population Tables; in chapters with paired Preceptor Tables, distinguish with `"preceptor_primary_tbl"` / `"preceptor_paired_tbl"`.
+
+  2. **Cap the footnote `<td>` cell width** via `gt::opt_css()` placed immediately before `gt::as_raw_html()`:
+     ```r
+     gt::opt_css(
+       css = "
+         #preceptor_tbl .gt_footnote {
+           max-width: 1px;
+           word-break: break-word;
+         }
+       "
+     )
+     ```
+     Without this, the long title footnote ("A Preceptor Table is the smallest table…") drives the table's max-content width to ~1300 px. CSS shrink-to-fit clamps to max-content, so the table fills its container no matter what width rules we apply to the table or its wrappers. Capping the footnote cell forces the table's preferred width to come from the data columns alone.
+
+  3. **End the pipeline with `gt::as_raw_html()` and assign to a variable:**
+     ```r
+     pre_gt_html <- gt::gt(..., id = "preceptor_tbl") |> ... |> gt::as_raw_html()
+     ```
+     `as_raw_html()` returns a character string of HTML with every style inlined on each element. Must be the last call in the gt pipeline.
+
+  4. **The chunk's options must be `#| echo: false` and `#| results: asis`.** Without `results: asis`, knitr wraps the chunk output in a code block, pandoc tries to markdown-parse the `<div>` tags, and you get `Div unclosed … closing implicitly` warnings plus a wrapper that's scoped to the entire rest of the document instead of the table.
+
+  5. **Emit the HTML inside a pandoc raw-HTML fence wrapping an inline-block `<div>`:**
+     ```r
+     cat(
+       "```{=html}\n",
+       '<div style="display: inline-block; width: auto; max-width: 100%;">',
+       pre_gt_html,
+       "</div>\n",
+       "```\n",
+       sep = ""
+     )
+     ```
+     The `` ```{=html} `` fence tells pandoc to pass the block through without markdown processing. The inline-block `<div>` wraps gt's output so the immediate containing block shrink-wraps around the (now footnote-capped) table. Belt-and-suspenders: either the footnote cap or the inline-block wrapper alone might suffice in some environments, but together they're robust across learnr, Quarto, and Shiny.
+
+  This pattern replaced earlier attempts that all failed: `tab_options(table.width = "auto")`, `opt_css` with various width/display rules, and `htmltools::div()` returned from a chunk. See §16 for the gotchas in detail.
+
+- **Spanner styling: bold + alignment mirroring columns.** After `tab_options`, bold all spanners generically and then align each spanner group to match the column(s) it covers. Three `tab_style` calls:
+  ```r
+  gt::tab_style(
+    style     = gt::cell_text(weight = "bold"),
+    locations = gt::cells_column_spanners()
+  ) |>
+  gt::tab_style(
+    style     = gt::cell_text(align = "left"),
+    locations = gt::cells_column_spanners(spanners = c("unit_span", "covariates_span"))
+  ) |>
+  gt::tab_style(
+    style     = gt::cell_text(align = "right"),
+    locations = gt::cells_column_spanners(spanners = "outcome_span")
+  )
+  ```
+  The spanner-ID lists in the left and right calls vary per table: left-aligned spanners cover text/identifier columns (unit, text covariates, treatment when text-valued, `Source` in Population Tables); right-aligned spanners cover numeric columns, almost always just `outcome_span`. When a spanner covers mixed-type columns (e.g., `Unit/Time` in the Population Table spans a text unit + a numeric year), align left by convention. This styling block is mandatory for every Preceptor and Population Table.
 - **Spanner labels singularize when only one column sits under them.** `Covariate` (one) vs. `Covariates` (two or more). `Outcome` (predictive, one) vs. `Potential Outcomes` (causal, two or more). `Unit` stays singular — there is always exactly one unit column.
 - **Spanner IDs are fixed** regardless of label: `"unit_span"`, `"outcome_span"`, `"treatment_span"`, `"covariates_span"`. The covariates ID stays `"covariates_span"` even when the label is the singular `Covariate`. Footnotes attach to IDs, so don't rename.
 - **Code blocks are copy-paste runnable.** Every `gt` code block Claude produces must run top-to-bottom if pasted at an R prompt: `tibble::tribble()` definition, footnote string assignments, and the complete `gt::gt(...) |> ...` pipeline ending at the final `tab_footnote()`. Do not include `library()` calls — `gt` and `tibble` are assumed already loaded.
 - **Footnotes commit; they do not narrate the choice-making.** Write *"Each row represents one US adult in 2026,"* not *"The question leaves the population unspecified, so this table takes it to mean US adults."* Claude's best guess is often right; when it isn't, David will say so and the table gets fixed. Either way, the draft is ready to use.
+
+- **Rendering gotchas we already hit** (don't rediscover). Multiple attempts to narrow the table failed before we landed on the pattern above. For the next future you wondering "why is this so elaborate":
+  1. **`table.width = "auto"` in `tab_options` does nothing in learnr.** gt emits `width: auto` on `.gt_table` by default. The value is correct but is fighting a different problem (max-content from long cells).
+  2. **CSS overrides via `opt_css` on `.gt_table { width: fit-content !important; }` (or `inline-table`, or `auto`) do not shrink the table** when a cell's content has large max-content width. CSS shrink-to-fit is bounded below by max-content; the footnote `<td>` contains a long sentence, which sets max-content ~1300 px, so no width rule on the table shrinks it further. The footnote-cap rule (`max-width: 1px; word-break: break-word`) is what actually lets the table shrink, because it forces the footnote cell to wrap instead of contributing to max-content.
+  3. **`htmltools::div()` returned from a chunk is block-parsed by pandoc.** The `<div>` starts at column 1 in the intermediate `.md`, pandoc treats it as a markdown-div context, fails to find the closing `</div>`, emits `Div unclosed … closing implicitly` warnings, and ends up wrapping the entire rest of the document instead of the table. `cat()` in a `results: asis` chunk inside a pandoc raw-HTML fence (`` ```{=html} … ``` ``) is what actually keeps the wrapper scoped.
+  4. **`gt::as_raw_html()` drops stylesheet-level `opt_css` rules in some configurations** — the inlined per-element styles replace the scoped CSS block. The id-scoped `opt_css` we use (`#preceptor_tbl .gt_footnote { ... }`) still makes it into the inlined output because it's targeted specifically enough to survive. A generic `.gt_table { ... }` rule ahead of `as_raw_html()` does not reliably apply.
 
 ### 10.3 Preceptor Table
 
@@ -537,21 +609,56 @@ pre_title_footnote   <- "If all the information in this table were available, we
 pre_units_footnote   <- "Each row represents one of the 100 currently serving US Senators in 2026. Missing rows represent the other senators not shown."
 pre_outcome_footnote <- "Wealth here is personal net worth — a senator's own assets minus their own liabilities. It does not include a spouse's assets or jointly-held household wealth. A senator married to a billionaire is not counted as wealthy on that basis alone."
 
-gt::gt(p_tibble) |>
+pre_gt_html <- gt::gt(p_tibble, id = "preceptor_tbl") |>
   gt::tab_header(title = "Preceptor Table") |>
   gt::tab_spanner(label = "Unit"   , id = "unit_span",
                   columns = c(`Senator`)) |>
   gt::tab_spanner(label = "Outcome", id = "outcome_span",
                   columns = c(`Net Worth ($M)`)) |>
-  gt::cols_align(align = "center", columns = gt::everything()) |>
-  gt::cols_align(align = "left"  , columns = c(`Senator`)) |>
+  gt::cols_align(align = "left" , columns = c(`Senator`)) |>
+  gt::cols_align(align = "right", columns = c(`Net Worth ($M)`)) |>
   gt::fmt_markdown(columns = gt::everything()) |>
+  gt::tab_options(
+    heading.title.font.size   = "1.5em",
+    heading.title.font.weight = "bolder",
+    column_labels.font.weight = "normal"
+  ) |>
+  gt::tab_style(
+    style     = gt::cell_text(weight = "bold"),
+    locations = gt::cells_column_spanners()
+  ) |>
+  gt::tab_style(
+    style     = gt::cell_text(align = "left"),
+    locations = gt::cells_column_spanners(spanners = "unit_span")
+  ) |>
+  gt::tab_style(
+    style     = gt::cell_text(align = "right"),
+    locations = gt::cells_column_spanners(spanners = "outcome_span")
+  ) |>
   gt::tab_footnote(footnote = pre_title_footnote,
                    locations = gt::cells_title()) |>
   gt::tab_footnote(footnote = pre_units_footnote,
                    locations = gt::cells_column_spanners(spanners = "unit_span")) |>
   gt::tab_footnote(footnote = pre_outcome_footnote,
-                   locations = gt::cells_column_spanners(spanners = "outcome_span"))
+                   locations = gt::cells_column_spanners(spanners = "outcome_span")) |>
+  gt::opt_css(
+    css = "
+      #preceptor_tbl .gt_footnote {
+        max-width: 1px;
+        word-break: break-word;
+      }
+    "
+  ) |>
+  gt::as_raw_html()
+
+cat(
+  "```{=html}\n",
+  '<div style="display: inline-block; width: auto; max-width: 100%;">',
+  pre_gt_html,
+  "</div>\n",
+  "```\n",
+  sep = ""
+)
 ```
 
 **Predictive template, one covariate.** For difference-across-groups questions ("how does X vary by Y?") the grouping variable is a required covariate. Spanner label is `Covariate` (singular).
@@ -570,7 +677,7 @@ pre_units_footnote     <- "Each row represents one of the 535 US federal elected
 pre_outcome_footnote   <- "Wealth here is personal net worth — the politician's own assets minus their own liabilities. It does not include a spouse's assets, family trust holdings, or jointly-held household wealth. A politician married to a billionaire is not counted as wealthy on that basis alone."
 pre_covariate_footnote <- "Party affiliation, taking one of three values: Democrat, Republican, or Independent. Independents (who typically caucus with one of the major parties) are treated here as their own category rather than folded into the party they caucus with."
 
-gt::gt(p_tibble) |>
+pre_gt_html <- gt::gt(p_tibble, id = "preceptor_tbl") |>
   gt::tab_header(title = "Preceptor Table") |>
   gt::tab_spanner(label = "Unit"     , id = "unit_span",
                   columns = c(`Politician`)) |>
@@ -578,9 +685,26 @@ gt::gt(p_tibble) |>
                   columns = c(`Net Worth ($M)`)) |>
   gt::tab_spanner(label = "Covariate", id = "covariates_span",
                   columns = c(`Party`)) |>
-  gt::cols_align(align = "center", columns = gt::everything()) |>
-  gt::cols_align(align = "left"  , columns = c(`Politician`)) |>
+  gt::cols_align(align = "left" , columns = c(`Politician`, `Party`)) |>
+  gt::cols_align(align = "right", columns = c(`Net Worth ($M)`)) |>
   gt::fmt_markdown(columns = gt::everything()) |>
+  gt::tab_options(
+    heading.title.font.size   = "1.5em",
+    heading.title.font.weight = "bolder",
+    column_labels.font.weight = "normal"
+  ) |>
+  gt::tab_style(
+    style     = gt::cell_text(weight = "bold"),
+    locations = gt::cells_column_spanners()
+  ) |>
+  gt::tab_style(
+    style     = gt::cell_text(align = "left"),
+    locations = gt::cells_column_spanners(spanners = c("unit_span", "covariates_span"))
+  ) |>
+  gt::tab_style(
+    style     = gt::cell_text(align = "right"),
+    locations = gt::cells_column_spanners(spanners = "outcome_span")
+  ) |>
   gt::tab_footnote(footnote = pre_title_footnote,
                    locations = gt::cells_title()) |>
   gt::tab_footnote(footnote = pre_units_footnote,
@@ -588,7 +712,25 @@ gt::gt(p_tibble) |>
   gt::tab_footnote(footnote = pre_outcome_footnote,
                    locations = gt::cells_column_spanners(spanners = "outcome_span")) |>
   gt::tab_footnote(footnote = pre_covariate_footnote,
-                   locations = gt::cells_column_spanners(spanners = "covariates_span"))
+                   locations = gt::cells_column_spanners(spanners = "covariates_span")) |>
+  gt::opt_css(
+    css = "
+      #preceptor_tbl .gt_footnote {
+        max-width: 1px;
+        word-break: break-word;
+      }
+    "
+  ) |>
+  gt::as_raw_html()
+
+cat(
+  "```{=html}\n",
+  '<div style="display: inline-block; width: auto; max-width: 100%;">',
+  pre_gt_html,
+  "</div>\n",
+  "```\n",
+  sep = ""
+)
 ```
 
 **Causal template.** The treatment lives under its own `Treatment` spanner. The unobservable potential outcome for each data row is hatched. The second non-missing row (here Clayton Williams) carries a footnote showing its causal effect.
@@ -618,7 +760,7 @@ pre_outcome_footnote   <- "Lifespan as age at death in years. For candidates sti
 pre_treatment_footnote <- "The candidate's election outcome, taking values 'Won' or 'Lost'. The close-election margin (< 5%) is what makes treatment assignment plausibly as-if random."
 pre_effect_footnote    <- "The causal effect for Clayton Williams is the difference between his two potential outcomes: 85 − 88 = -3 years. Because the Preceptor Table shows the unobservable truth, this is the true causal effect for him, not an estimate."
 
-gt::gt(p_tibble) |>
+pre_gt_html <- gt::gt(p_tibble, id = "preceptor_tbl") |>
   gt::tab_header(title = "Preceptor Table") |>
   gt::tab_spanner(label = "Unit"              , id = "unit_span",
                   columns = c(`Candidate`)) |>
@@ -626,9 +768,26 @@ gt::gt(p_tibble) |>
                   columns = c(`Lifespan if Win`, `Lifespan if Lose`)) |>
   gt::tab_spanner(label = "Treatment"         , id = "treatment_span",
                   columns = c(`Election Outcome`)) |>
-  gt::cols_align(align = "center", columns = gt::everything()) |>
-  gt::cols_align(align = "left"  , columns = c(`Candidate`)) |>
+  gt::cols_align(align = "left" , columns = c(`Candidate`, `Election Outcome`)) |>
+  gt::cols_align(align = "right", columns = c(`Lifespan if Win`, `Lifespan if Lose`)) |>
   gt::fmt_markdown(columns = gt::everything()) |>
+  gt::tab_options(
+    heading.title.font.size   = "1.5em",
+    heading.title.font.weight = "bolder",
+    column_labels.font.weight = "normal"
+  ) |>
+  gt::tab_style(
+    style     = gt::cell_text(weight = "bold"),
+    locations = gt::cells_column_spanners()
+  ) |>
+  gt::tab_style(
+    style     = gt::cell_text(align = "left"),
+    locations = gt::cells_column_spanners(spanners = c("unit_span", "treatment_span"))
+  ) |>
+  gt::tab_style(
+    style     = gt::cell_text(align = "right"),
+    locations = gt::cells_column_spanners(spanners = "outcome_span")
+  ) |>
   # Hatch each data row's unobservable potential outcome. Rows 1 and 4 ("Won")
   # → "Lifespan if Lose" is unobservable; row 2 ("Lost") → "Lifespan if Win".
   gt::text_transform(
@@ -649,7 +808,25 @@ gt::gt(p_tibble) |>
                    locations = gt::cells_column_spanners(spanners = "treatment_span")) |>
   # Per-row causal-effect footnote on the second non-missing unit (row 2).
   gt::tab_footnote(footnote = pre_effect_footnote,
-                   locations = gt::cells_body(columns = `Candidate`, rows = 2))
+                   locations = gt::cells_body(columns = `Candidate`, rows = 2)) |>
+  gt::opt_css(
+    css = "
+      #preceptor_tbl .gt_footnote {
+        max-width: 1px;
+        word-break: break-word;
+      }
+    "
+  ) |>
+  gt::as_raw_html()
+
+cat(
+  "```{=html}\n",
+  '<div style="display: inline-block; width: auto; max-width: 100%;">',
+  pre_gt_html,
+  "</div>\n",
+  "```\n",
+  sep = ""
+)
 ```
 
 **Causal with an additional covariate.** When the question asks about effect heterogeneity (e.g., *"and how does that effect vary by hometown?"*), add a `Covariate` or `Covariates` spanner to the right of `Treatment` with the moderator column(s). The treatment footnote still describes only the treatment; the covariate(s) footnote describes the non-treatment covariate(s) and notes why they are in the table (typically: *"shown because the question asks whether the effect varies across it"*).
@@ -739,7 +916,7 @@ pop_treatment_footnote <- "In Data rows, Spanish Exposure is whether the subject
 pop_covariate_footnote <- "Hometown is the municipality each rider lists as primary residence. Chicago-area suburbs (Evanston, Oak Park, Highland Park) appear in the Data block; Boston-area suburbs (Milton, Arlington, Somerville) in the Preceptor block. The two hometown sets do not overlap, a representativeness issue the model must address."
 pop_effect_footnote    <- "The causal effect for Karen Walsh is the difference between her two potential outcomes: 13 − 10 = 3 points on the 3–15 scale. Because the Preceptor rows show the unobservable truth, this is the true causal effect for her, not an estimate."
 
-gt::gt(population_tibble) |>
+pop_gt_html <- gt::gt(population_tibble, id = "population_tbl") |>
   gt::tab_header(title = "Population Table") |>
   gt::tab_spanner(label = "Unit/Time"         , id = "unit_span",
                   columns = c(`Commuter`, `Year`)) |>
@@ -749,9 +926,26 @@ gt::gt(population_tibble) |>
                   columns = c(`Spanish Exposure`)) |>
   gt::tab_spanner(label = "Covariate"         , id = "covariates_span",
                   columns = c(`Hometown`)) |>
-  gt::cols_align(align = "center", columns = gt::everything()) |>
-  gt::cols_align(align = "left"  , columns = c(`Source`, `Commuter`)) |>
+  gt::cols_align(align = "left" , columns = c(`Source`, `Commuter`, `Spanish Exposure`, `Hometown`)) |>
+  gt::cols_align(align = "right", columns = c(`Year`, `Attitude if Exposed`, `Attitude if Not Exposed`)) |>
   gt::fmt_markdown(columns = gt::everything()) |>
+  gt::tab_options(
+    heading.title.font.size   = "1.5em",
+    heading.title.font.weight = "bolder",
+    column_labels.font.weight = "normal"
+  ) |>
+  gt::tab_style(
+    style     = gt::cell_text(weight = "bold"),
+    locations = gt::cells_column_spanners()
+  ) |>
+  gt::tab_style(
+    style     = gt::cell_text(align = "left"),
+    locations = gt::cells_column_spanners(spanners = c("unit_span", "treatment_span", "covariates_span"))
+  ) |>
+  gt::tab_style(
+    style     = gt::cell_text(align = "right"),
+    locations = gt::cells_column_spanners(spanners = "outcome_span")
+  ) |>
   # Hatch Preceptor rows' unobservable potential outcomes.
   # Rows 7 & 10 ("Not exposed") → "Attitude if Exposed" is unobservable.
   # Row 8  ("Exposed")           → "Attitude if Not Exposed" is unobservable.
@@ -776,7 +970,25 @@ gt::gt(population_tibble) |>
   # Per-row causal-effect footnote on the second non-missing Preceptor row
   # (Karen Walsh, row 8 under the Population Table layout).
   gt::tab_footnote(footnote = pop_effect_footnote,
-                   locations = gt::cells_body(columns = `Commuter`, rows = 8))
+                   locations = gt::cells_body(columns = `Commuter`, rows = 8)) |>
+  gt::opt_css(
+    css = "
+      #population_tbl .gt_footnote {
+        max-width: 1px;
+        word-break: break-word;
+      }
+    "
+  ) |>
+  gt::as_raw_html()
+
+cat(
+  "```{=html}\n",
+  '<div style="display: inline-block; width: auto; max-width: 100%;">',
+  pop_gt_html,
+  "</div>\n",
+  "```\n",
+  sep = ""
+)
 ```
 
 **Predictive variant.** Three changes from the causal template:
@@ -1287,7 +1499,7 @@ Between Exercises 8 and 9, consider inserting an AI-prompted plot with outcome o
 **Exercise 9.** [per-tutorial, written-with-answer] Describe the Preceptor Table in words.
 - Prompt: *Describe in words the Preceptor Table for this problem.*
 - Message: an excellent description mentioning *rows*, *units*, *outcome*, *covariates*, and (if causal) *treatment*.
-- End: *The Preceptor Table for this problem looks something like this:* — then insert a rendered `gt` Preceptor Table (§10). Followed by: *Like all aspects of a data science problem, the Preceptor Table evolves as we continue our work.*
+- End: a rendered `gt` Preceptor Table (§10) — by itself, with no prefacing prose ("The Preceptor Table for this problem looks something like this:") and no follow-up ("Like all aspects of a data science problem…"). The table *is* the knowledge drop.
 
 If the modeling requires a cleaned tibble `x` (e.g., filtering to one year, dropping NAs), insert 1–3 AI-prompted code exercises that build the cleaned `x`. Follow with a QMD-world exercise that asks the student to copy/paste the pipeline into a new code chunk, render, and `show_file("XX.qmd", chunk = "Last")`.
 
@@ -1480,16 +1692,24 @@ Opens with a substantive framing paragraph (see §14.6).
 
 1. The framing paragraph (§14.6).
 2. A link to [**Model to Meaning**](https://marginaleffects.com/) — pick the chapter matching the tutorial's tier per §1.3 (Easy: Predictions; Medium adds Comparisons; Difficult adds Challenge and Framework).
-3. A review of the DGM using some subset of the four canonical ways to describe a model (below), plus — in Easy tutorials only — a fifth form (the abstract mathematical structure).
+3. A review of the DGM using some subset of the four canonical ways to describe a model (below).
+4. A Continue button (`###` with no heading) before `### Exercise 1`. Students must hit Continue to advance — they should not see Exercise 1 on the same screen as the preamble.
 
 **Four ways to describe a model.** Most Temperance preambles combine some subset of these four:
 
 1. **Words.** *"We describe [outcome] as a [functional form] of [covariates]."* This is the same sentence added to the summary paragraph in §13.4 Exercise 16 and the canonical answer to the Courage model-structure question. Reuse verbatim — do not rewrite.
 2. **R code.** The fitting call itself — e.g. `linear_reg(engine = "lm") |> fit(att_end ~ treatment, data = trains)` → `fit_att`. Rendered as a code block; not re-run in the preamble.
 3. **Parameter table.** The estimated parameter values. *Easy:* rough `tidy(fit_<n>, conf.int = TRUE)` output. *Medium:* nicer table via `knitr::kable()`, `gt`, or equivalent. *Difficult:* close to publication quality. The Primer does not teach students to build these tables in Easy or Medium — the author ships them. In Difficult tutorials with few parameters, a student exercise using AI to produce the table is possible; in Difficult tutorials with many covariates or many-level categoricals, the table is too complex to hand to a student, and the author ships it.
-4. **Concrete LaTeX DGM.** The fitted model in LaTeX with variable names and estimated coefficients substituted in — the "true" DGM. Never asked of students in Easy or Medium. Possibly asked (via AI) in Difficult tutorials with simple models; author-shipped otherwise.
+4. **Concrete mathematical formula.** The fitted model in LaTeX with variable names and estimated coefficient values substituted in — the "true" DGM. This is the form the Temperance preamble uses for math. Never asked of students in Easy or Medium. Possibly asked (via AI) in Difficult tutorials with simple models; author-shipped otherwise.
 
-**Fifth form — abstract mathematical structure (Easy only).** In Easy-tier tutorials, the preamble also shows the abstract LaTeX form using $Y$, $X_1$, $X_2$, $\beta_0$, $\beta_1$, … (pull the block from §13.7). This is pedagogical scaffolding — meant to slow students down when they first choose a functional family. It is **dropped entirely from the middle of Medium onward** because by then the structure is familiar and no longer adds information.
+**The Temperance preamble never shows the abstract mathematical structure.** That abstract form (the fifth form — $Y$, $X_1$, $\beta_0$, …) belongs to Justice, where the student is choosing a functional family (§13.3). By Temperance the parameter values exist; the concrete DGM is what's on the table. Showing abstract LaTeX here only teaches students to gloss past it.
+
+**Concrete DGM rules.**
+
+- Use the real variable names from the model, not $Y$ and $X_1$. Categorical predictors appear as the dummy variable names R produces — `sexMale`, `treatmentTreated`, `partyRepublican`. State explicitly in one sentence what each dummy encodes (which level is 1, which is 0) and what the intercept represents.
+- Use `N(0, \sigma^2)` for the error term, **not** `\mathcal{N}(0, \sigma^2)`. `\mathcal{N}` renders as an empty box (□) in learnr's MathJax setup — we have hit this bug repeatedly.
+- Parameter values in the math **must match the parameter table** to the same number of significant figures. If the table shows `161`, the math shows `161`, not `161.17778`. Three significant figures is the default.
+- To keep the table and math in sync, round the table with `mutate(across(where(is.numeric), \(x) signif(x, 3)))` in the preamble chunk, then use those same rounded values in the LaTeX.
 
 **We do not ask students to write LaTeX themselves.** The previous curriculum had exercises (old §13.3 Exercise 15, old §13.4 Exercise 11) asking students to prompt AI for LaTeX and paste it in. Those student-facing exercises are removed; the LaTeX is now shown to students, not produced by them. A small number of Difficult tutorials with simple models may keep a student-produced LaTeX exercise, but the heavy lifting is AI — the student is checking and pasting, not deriving.
 
@@ -1576,6 +1796,8 @@ Then the `download_answers.Rmd` child document:
 ### 13.7 LaTeX model-form reference
 
 The LaTeX blocks to paste into Justice Exercise 15 (and to show students the mathematical structure of the model). Pick the form matching the outcome type.
+
+**Rendering caveat.** `\mathcal{N}` renders correctly in Quarto (where these blocks go — into the student's QMD) but renders as an empty box in learnr's MathJax. When showing the error term inside a tutorial (Justice preamble, Temperance preamble), use plain `N(0, \sigma^2)` instead. The blocks below are the Quarto form.
 
 **Normal (continuous outcome — linear regression).**
 

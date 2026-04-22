@@ -625,10 +625,9 @@ question_text(NULL,
 
 ###
 
-The Preceptor Table for this problem looks something like this:
-
 ```{r}
 #| echo: false
+#| results: asis
 pre_tibble <- tibble::tribble(
   ~`Recruit`,       ~`Height (cm)`, ~`Sex`,
   "Recruit 1",      "150",          "Female",
@@ -642,7 +641,7 @@ pre_units_footnote     <- "Each row is one USMC recruit expected to enlist durin
 pre_outcome_footnote   <- "Height in centimeters, measured at enlistment."
 pre_covariate_footnote <- "Sex, taking values 'Male' or 'Female', as recorded at enlistment."
 
-gt::gt(pre_tibble) |>
+pre_gt_html <- gt::gt(pre_tibble, id = "preceptor_tbl") |>
   gt::tab_header(title = "Preceptor Table") |>
   gt::tab_spanner(label = "Unit",      id = "unit_span",
                   columns = c(`Recruit`)) |>
@@ -650,9 +649,28 @@ gt::gt(pre_tibble) |>
                   columns = c(`Height (cm)`)) |>
   gt::tab_spanner(label = "Covariate", id = "covariates_span",
                   columns = c(`Sex`)) |>
-  gt::cols_align(align = "center", columns = gt::everything()) |>
-  gt::cols_align(align = "left",   columns = c(`Recruit`)) |>
+  gt::cols_align(align = "left" , columns = c(`Recruit`, `Sex`)) |>
+  gt::cols_align(align = "right", columns = c(`Height (cm)`)) |>
   gt::fmt_markdown(columns = gt::everything()) |>
+  gt::tab_options(
+    heading.title.font.size   = "1.5em",
+    heading.title.font.weight = "bolder",
+    column_labels.font.weight = "normal",
+    table.width               = "auto",
+    container.width           = "auto"
+  ) |>
+  gt::tab_style(
+    style     = gt::cell_text(weight = "bold"),
+    locations = gt::cells_column_spanners()
+  ) |>
+  gt::tab_style(
+    style     = gt::cell_text(align = "left"),
+    locations = gt::cells_column_spanners(spanners = c("unit_span", "covariates_span"))
+  ) |>
+  gt::tab_style(
+    style     = gt::cell_text(align = "right"),
+    locations = gt::cells_column_spanners(spanners = "outcome_span")
+  ) |>
   gt::tab_footnote(footnote = pre_title_footnote,
                    locations = gt::cells_title()) |>
   gt::tab_footnote(footnote = pre_units_footnote,
@@ -660,10 +678,38 @@ gt::gt(pre_tibble) |>
   gt::tab_footnote(footnote = pre_outcome_footnote,
                    locations = gt::cells_column_spanners(spanners = "outcome_span")) |>
   gt::tab_footnote(footnote = pre_covariate_footnote,
-                   locations = gt::cells_column_spanners(spanners = "covariates_span"))
-```
+                   locations = gt::cells_column_spanners(spanners = "covariates_span")) |>
+  # Force footnote <td> cells to not drive the table's preferred (max-content)
+  # width. Without this, the long footnote text makes gt's table have a
+  # max-content width of ~1300px, so shrink-to-fit on any ancestor container
+  # clamps to the available width and the table appears full-width. Capping
+  # the footnote cell width and allowing words to break forces the table's
+  # preferred width to come from the data columns only (~290px).
+  gt::opt_css(
+    css = "
+      #preceptor_tbl .gt_footnote {
+        max-width: 1px;
+        word-break: break-word;
+      }
+    "
+  ) |>
+  gt::as_raw_html()
 
-Like all aspects of a data science problem, the Preceptor Table evolves as we continue our work.
+# Wrap in an inline-block div so the immediate containing block
+# shrink-wraps to the table's intrinsic content width. Emit inside a
+# pandoc raw-HTML fence (```{=html} ... ```) so pandoc passes it
+# through verbatim instead of trying to parse the div content as
+# markdown — that was what produced the earlier "Div unclosed ...
+# closing implicitly" warnings and left the wrapper scoped wrong.
+cat(
+  "```{=html}\n",
+  '<div style="display: inline-block; width: auto; max-width: 100%;">',
+  pre_gt_html,
+  "</div>\n",
+  "```\n",
+  sep = ""
+)
+```
 
 ### Exercise 12
 
@@ -1413,9 +1459,41 @@ question_text(NULL,
 Read our answer. It will not be the same as yours. You can, if you want, change your answer to incorporate some of our ideas. Do not copy/paste our answer exactly. Add your two sentences, edited or otherwise, to the summary paragraph portion of your QMD. `Cmd/Ctrl + Shift + K`, and then commit/push.
 
 ## Temperance
-### 
+###
 
-*Temperance is a tree which as for its root very little contentment, and for its fruit calm and peace.* - Buddha
+In Courage we built a fitted model: `fit_height`, a linear regression of height on sex. In Temperance we use that model to answer the question we started with --- *What is the average height of male and female USMC recruits?* --- and to express honest uncertainty about the answer. We start by reviewing what Courage produced, then turn to interpretation, predictions, and a final plot.
+
+See the [Predictions chapter](https://marginaleffects.com/chapters/predictions.html) of the `marginaleffects` book [**Model to Meaning**](https://marginaleffects.com/) for background on the tools we use below.
+
+**In words:** We describe height as a linear function of sex.
+
+**In R code:**
+
+```r
+fit_height <- linear_reg() |>
+  set_engine("lm") |>
+  fit(height ~ sex, data = x)
+```
+
+**In a parameter table:**
+
+```{r}
+#| echo: false
+fit_height |>
+  tidy(conf.int = TRUE) |>
+  select(term, estimate, conf.low, conf.high) |>
+  mutate(across(where(is.numeric), \(x) signif(x, 3)))
+```
+
+**As a mathematical formula:**
+
+$$\text{height} = 162 + 15.9 \cdot \text{sexMale} + \epsilon$$
+
+with $\epsilon \sim N(0, \sigma^2)$.
+
+`sexMale` is a dummy variable: 1 for male recruits and 0 for female recruits. The intercept is the average height (in centimeters) for female recruits; the coefficient on `sexMale` is how much taller, on average, male recruits are. Parameter values are rounded to three significant figures to match the table above.
+
+###
 
 ### Exercise 1
 
@@ -1423,7 +1501,7 @@ In your own words, describe the use of Temperance in data science.
 
 ```{r temperance-1}
 question_text(NULL,
-  message = "Temperance uses the data generating mechanism to answer the question with which we began. Humility reminds us that this answer is always a lie. We can also use the DGM to calculate many similar quantities of interest, displaying the results graphically.",
+  message = "Temperance interprets the data generating mechanism and then uses it to answer, with the help of graphics, the question(s) with which we began. Humility reminds us that this answer is always false.",
   answer(NULL, correct = TRUE),
   allow_retry = FALSE,
   incorrect = NULL,
