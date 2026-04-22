@@ -72,9 +72,9 @@ Connect the repo to a project on your computer using `File -> New Folder from Gi
 
 You need two Positron windows: this one for running the tutorial and the one you just created for writing your code and interacting with the Console.
 
-Select `File -> New File -> Quarto Document ...`. Provide a title -- `"Trains"` -- and an author (you). Render the document and save it as `immigration.qmd`.
+Select `File -> New File -> Quarto Document ...`. Provide a title -- `"Trains"` -- and an author (you). Render the document and save it as `trains.qmd`.
 
-Create a `.gitignore` file with `immigration_files` on the first line and then a blank line. Save and push.
+Create a `.gitignore` file with `trains_files` on the first line and then a blank line. Save and push.
 
 In the Console, run:
 
@@ -113,7 +113,7 @@ execute:
 In the Console, run:
 
 ```         
-show_file("immigration.qmd", chunk = "Last")
+show_file("trains.qmd", chunk = "Last")
 ```
 
 CP/CR.
@@ -304,20 +304,16 @@ In a few sentences, specify the two different values for the imaginary treatment
 
 ```{r introduction-12}
 question_text(NULL,
-  message = "For a given person, assume that the value of the treatment variable might be `1`` or `0`. If the person gets `1`, then attitude toward immigration would be 9 on a 3 to 15 unit scale. If the person gets `0`, then the attitude would be 7. The causal effect on the outcome of a treatment of `1` versus `0` is `9 - 7` --- i.e., the difference between two potential outcomes --- which equals 2, which is the causal effect.",
+  message = "For a given person, assume that the value of the treatment variable might be `1` or `0`. If the person gets `1`, then attitude toward immigration would be 9 on a 3 to 15 unit scale. If the person gets `0`, then the attitude would be 7. The causal effect on the outcome of a treatment of `1` versus `0` is `9 - 7` --- i.e., the difference between two potential outcomes --- which equals 2, which is the causal effect.",
   answer(NULL, correct = TRUE),
   allow_retry = FALSE,
   incorrect = NULL,
   rows = 6)
 ```
 
-### 
+###
 
-A causal effect is defined as the *difference* between two potential outcomes. Keep two things in mind.
-
-First, *difference* does not necessarily mean *subtraction*. Many potential outcomes are not numbers. For example, it makes no sense to subtract a potential outcome, like who you would vote for if you saw a Facebook ad, from another potential outcome, like who you vote for if you did not see the ad.
-
-Second, even in the case of numeric outcomes, you can’t simply say the effect is 10 without specifying the order of subtraction, although there is, perhaps, a default sense in which the causal effect is defined as potential outcome under treatment minus potential outcome under control.
+A causal effect is defined as the difference between two potential outcomes. "Difference" does not necessarily mean "subtraction" — many potential outcomes are not numbers. Even for numeric outcomes, you can’t simply say the effect is 10 without specifying the order of subtraction.
 
 ### Exercise 13
 
@@ -375,11 +371,15 @@ question_text(NULL,
 This is the first version of the question. We will now create a Preceptor Table to answer the question. We may then revise the question given complexities discovered in the data. We then update the question and the Preceptor Table. And so on.
 
 ## Wisdom
-### 
+###
 
-*A prudent question is one half of wisdom.* - Francis Bacon
+Data science starts with some broad questions and a data set which might help us to answer them.
 
-You have a lot of campaign volunteers. In previous campaigns, you might have had them call voters. But no one answers their phone anymore! What might you have these volunteers do instead? One of your staff mentioned "[Causal effect of intergroup contact on exclusionary attitudes](https://www.pnas.org/doi/10.1073/pnas.1317670111)" by Ryan Enos, an academic article which claims that commuters become more conservative about immigration when they hear Spanish-speakers on their train platform. Making immigration more salient in the up-coming election and making voters more conservative would probably help your candidate. What would happen if you had some of your (Spanish-speaking) volunteers speak Spanish around town?
+Imagine that you are a campaign manager for a Republican congressional candidate in Georgia. Your goal is to elect your candidate. Your candidate is conservative about immigration. You know that the more conservative a voter is about immigration, the more likely she is to vote for your boss. How should you spend your campaign funds to increase your odds of winning the election? There are many decisions to make.
+
+What is the average causal effect of exposure to Spanish-speakers on attitudes toward immigration?
+
+We will work from data collected by [Enos (2014)](https://www.pnas.org/doi/10.1073/pnas.1317670111) from commuters on nine train platforms around Boston, Massachusetts in 2012, available in the `trains` tibble of the `primer.data` package.
 
 ### Exercise 1
 
@@ -387,7 +387,7 @@ In your own words, describe the key components of Wisdom when working on a data 
 
 ```{r wisdom-1}
 question_text(NULL,
-    message = "Wisdom requires a question, the creation of a Preceptor Table, and an examination of our data.",
+    message = "Wisdom begins with a question and then moves on to the creation of a Preceptor Table and an examination of our data.",
     answer(NULL, correct = TRUE),
     allow_retry = FALSE,
     incorrect = NULL,
@@ -1239,7 +1239,7 @@ Place your cursor in the QMD file on the `fit_att` line. Use `Cmd/Ctrl + Enter` 
 At the Console, run:
 
 ```
-tutorial.helpers::show_file("immigration.qmd", chunk = "Last")
+tutorial.helpers::show_file("trains.qmd", chunk = "Last")
 ```
 
 CP/CR.
@@ -1315,7 +1315,7 @@ Insert your table code into the QMD. (If you need a new library, and you probabl
 At the Console, run:
 
 ```
-tutorial.helpers::show_file("immigration.qmd", chunk = "Last")
+tutorial.helpers::show_file("trains.qmd", chunk = "Last")
 ```
 
 CP/CR.
@@ -1688,7 +1688,7 @@ Finalize the new graphics code chunk in your QMD. `Cmd/Ctrl + Shift + K` to ensu
 At the Console, run:
 
 ```
-tutorial.helpers::show_file("immigration.qmd", chunk = "Last")
+tutorial.helpers::show_file("trains.qmd", chunk = "Last")
 ```
 
 CP/CR.
@@ -1750,7 +1750,7 @@ Rearrange the material in your QMD so that the order is graphic, followed by the
 At the Console, run:
 
 ```
-tutorial.helpers::show_file("immigration.qmd")
+tutorial.helpers::show_file("trains.qmd")
 ```
 
 CP/CR.
@@ -1773,7 +1773,7 @@ This is the version of your QMD file at which your teacher is most likely to loo
 Publish your rendered QMD to GitHub Pages. In the Terminal --- not the Console! --- run:
 
 ````
-quarto publish gh-pages immigration.qmd
+quarto publish gh-pages trains.qmd
 ````
 
 Copy/paste the resulting URL below.
