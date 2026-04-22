@@ -413,7 +413,7 @@ question_text(NULL,
 
 ### 
 
-The Preceptor Table does not include all the covariates which you will eventually include in your model. It only includes covariates which you need to answer your question.
+The Preceptor Table does not include all the covariates which you will eventually include in your model. It only includes, along with the outcome(s), covariates which are mentioned in your question.
 
 ### Exercise 3
 
@@ -517,7 +517,7 @@ What is the outcome variable for this problem?
 
 ```{r wisdom-7}
 question_text(NULL,
-  message = "The outcome variable is `att_end`, which measures each commuter's attitude toward immigration after the experiment.",
+  message = "Keep track of two outcome variables: the one in our Preceptor Table and the one in our data. In the Preceptor Table, the outcome is a Georgia voter's true attitude toward immigration. In our data, `att_end` measures each Boston commuter's self-reported attitude after the experiment — a reasonable stand-in, but not identical.",
   answer(NULL, correct = TRUE),
   allow_retry = FALSE,
   incorrect = NULL,
@@ -580,8 +580,6 @@ question_text(NULL,
 
 A Preceptor Table can never really refer to an exact instant in time since nothing is instantaneous in this fallen world.
 
-In almost all practical problems, the data was gathered at a time other than that to which the Preceptor Table refers.
-
 ```{r}
 trains |> 
   ggplot(aes(x = att_end, fill = treatment)) +
@@ -589,6 +587,7 @@ trains |>
                    position = "dodge") +
     labs(title = "Ending Attitude Toward Immigration",
          subtitle = "Treated Individuals Are More Conservative",
+         caption = "Source: Enos (2014)",
          x = "Attitude",
          y = "Probability",
          fill = NULL) +
@@ -605,7 +604,7 @@ Describe in words the Preceptor Table for this problem.
 
 ```{r wisdom-11}
 question_text(NULL,
-  message = "There is a row for each Boston commuter in the experiment. There are two columns for potential outcomes: attitude toward immigration if treated and attitude if control. There is one column to indicate which treatment the commuter received.",
+  message = "There is a row for each registered voter in our Georgia congressional district. There are two potential outcome columns — attitude toward immigration if exposed to Spanish-speakers, and attitude if not exposed. There is one treatment column indicating whether the voter was actually exposed.",
   answer(NULL, correct = TRUE),
   allow_retry = FALSE,
   incorrect = NULL,
@@ -720,19 +719,19 @@ question_text(NULL,
 
 ###
 
-The answer to this question is your "Quantity of Interest." It is OK if your question differs from ours. Many similar questions lead to the creation of the same model. For the purpose of this tutorial, let's use our question.
-
-Our Quantity of Interest might appear too specific, too narrow to capture the full complexity of the topic. There are many, many numbers in which we are interested, many numbers that we want to know. But we don't need to list them all here! We just need to choose one of them since our goal is just to have a specific question which helped to guide us in the creation of the Preceptor Table and, soon, the model. 
+The answer to this question is your Quantity of Interest. It is OK if your question differs from ours. Many similar questions lead to the creation of the same model.
 
 ### Exercise 13
 
-Over the course of this tutorial, we will be creating a summary paragraph. The purpose of this exercise is to write the first two sentences of that paragraph.
+Over the course of this tutorial, we will be creating a summary paragraph. Write its first two sentences below.
 
-The first sentence is a general statement about the overall topic, mentioning both the general class of the outcome variable and of at least one of the covariates. It is **not** connected to the initial "Imagine that you are XX" which set the stage for this project. That sentence can be rhetorical. It can be trite, or even a platitude. The purpose of the sentence is to let the reader know, gently, about our topic.
+###
 
-The second sentence does two things. First, it introduces the data source. Second, it introduces the specific question. The sentence can't be that long. Important aspects of the data include when/where it was gathered, how many observations it includes and the organization (if famous) which collected it.
+The first sentence is a general statement about the overall topic — mentioning the outcome and at least one covariate. It can be trite or even a platitude; its job is to gently orient the reader.
 
-Type your two sentences below.
+###
+
+The second sentence introduces the data: when and where it was gathered, how many observations, who collected it, and what specific question we are asking.
 
 ```{r wisdom-13}
 question_text(NULL,
