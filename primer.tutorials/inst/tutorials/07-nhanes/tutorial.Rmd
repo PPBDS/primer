@@ -1,8 +1,8 @@
 ---
-title: Two Parameters
+title: NHANES
 author: David Kane and Aashna Patel
 tutorial:
-  id: two-parameters
+  id: 07-nhanes
 output:
   learnr::tutorial:
     progressive: yes
@@ -75,13 +75,13 @@ Why do we ask this, and a score more other questions, in each tutorial? Because 
 
 ### Exercise 2
 
-Create a Github repo called `two-parameters`. Make sure to click the "Add a README file" check box.
+Create a Github repo called `nhanes`. Make sure to click the "Add a README file" check box.
 
 Connect the repo to a project on your computer using `File -> New Folder from Git ...`. Make sure to select the "Open in a new window" box. 
 
 You need two Positron windows: this one for running the tutorial and the one you just created for writing your code and interacting with the Console.
 
-Select `File -> New File -> Quarto Document ...`. Provide a title -- `"Two-Parameters"` -- and an author (you). Render the document and save it as `analysis.qmd`.
+Select `File -> New File -> Quarto Document ...`. Provide a title -- `"NHANES"` -- and an author (you). Render the document and save it as `analysis.qmd`.
 
 Create a `.gitignore` file with `analysis_files` on the first line and then a blank line. Save and push.
 
@@ -1482,7 +1482,7 @@ Make sure the resulting display looks good. For example, you don't want an absur
 
 Once the $\LaTeX$ code looks good, paste it below.
 
-```{r courage-8}
+```{r courage-6}
 question_text(NULL,
   answer(NULL, correct = TRUE),
   allow_retry = TRUE,
@@ -1509,7 +1509,7 @@ Note the differences. First, we have replaced the parameter $\beta_0$ with our b
 
 A data generating mechanism is just a formula, something which we can write down and implement with computer code.
 
-### Exercise 9
+### Exercise 7
 
 Create a new code chunk in your QMD. Add a code chunk option: `#| cache: true`. Copy/paste the code from above for estimating the model into the code chunk, assigning the result to `fit_height`. (This will include the call to `fit()` but not the call to `tidy()` because we want the entire fitted model, not just a table of the estimated parameter values.)
 
@@ -1523,7 +1523,7 @@ tutorial.helpers::show_file("analysis.qmd", chunk = "Last")
 
 CP/CR.
 
-```{r courage-9}
+```{r courage-7}
 question_text(NULL,
   answer(NULL, correct = TRUE),
   allow_retry = TRUE,
@@ -1536,7 +1536,7 @@ question_text(NULL,
 
 To confirm, `Cmd/Ctrl + Shift + K` again. It should be quick.
 
-### Exercise 10
+### Exercise 8
 
 Add `*_cache` to `.gitignore` file. Cached objects are often large. They don't belong on Github.
 
@@ -1548,7 +1548,7 @@ tutorial.helpers::show_file(".gitignore")
 
 CP/CR.
 
-```{r courage-10}
+```{r courage-8}
 question_text(NULL,
   answer(NULL, correct = TRUE),
   allow_retry = TRUE,
@@ -1561,19 +1561,19 @@ question_text(NULL,
 
 Because of the change in your `.gitignore` (assuming that you saved it), the cache directory should not appear in the Source Control panel because Git is ignoring it, as instructed. Commit and push. 
 
-### Exercise 11
+### Exercise 9
 
 In the Console, run `tidy()` on `fit_height` with the argument `conf.int` set equal to `TRUE`. This returns 95% intervals for all the parameters in our model.
 
-```{r courage-11, exercise = TRUE}
+```{r courage-9, exercise = TRUE}
 
 ```
 
-```{r courage-11-hint-1, eval = FALSE}
+```{r courage-9-hint-1, eval = FALSE}
 tidy(..., conf.int = ...)
 ```
 
-```{r courage-11-test, include = FALSE}
+```{r courage-9-test, include = FALSE}
 tidy(fit_height, conf.int = TRUE)
 ```
 
@@ -1581,7 +1581,7 @@ tidy(fit_height, conf.int = TRUE)
 
 `tidy()` is part of the [**broom**](https://broom.tidymodels.org/) package, used to summarize information from a wide variety of models.
 
-### Exercise 12
+### Exercise 10
 
 Create a new code chunk in your QMD. Ask AI to help you make a nice looking table from the tibble which is returned by `tidy()`. You don't have to include all the variables which `tidy()` produces. We often just show the estimate and the confidence intervals.
 
@@ -1599,7 +1599,7 @@ tutorial.helpers::show_file("analysis.qmd", chunk = "Last")
 
 CP/CR.
 
-```{r courage-12}
+```{r courage-10}
 question_text(NULL,
   answer(NULL, correct = TRUE),
   allow_retry = TRUE,
@@ -1638,7 +1638,7 @@ tidy(fit_height, conf.int = TRUE) |>
 
 At the very least, your table should include a title and a caption with the data source. The more you use AI, the better you will get at doing so.
 
-### Exercise 13
+### Exercise 11
 
 Add a sentence to your project summary. 
 
@@ -1648,7 +1648,7 @@ Recall the beginning of our version of the summary:
 
 > People vary in height. Using data from the National Health and Nutrition Examination Survey conducted from 2009 to 2011 by the Centers for Disease Control and Prevention, we seek to estimate the average height of USMC recruits for the coming year. Since the participation for the survey is voluntary, it could mean that taller people are more likely to answer this question, thus hurting representativeness of the data.
 
-```{r courage-13}
+```{r courage-11}
 question_text(NULL,
   message = "We model height as a linear function of sex.",
   answer(NULL, correct = TRUE),

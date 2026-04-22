@@ -1,8 +1,8 @@
 ---
-title: Cumulative
+title: CES
 author: David Kane and Aashna Patel
 tutorial:
-  id: 12-cumulative
+  id: 12-ces
 output:
   learnr::tutorial:
     progressive: yes
@@ -364,11 +364,11 @@ This problem is predictive, so we will compare the outcome, presidential approva
 
 ### Exercise 4
 
-Create a Github repo called `cumulative`. Make sure to click the "Add a README file" check box.
+Create a Github repo called `ces`. Make sure to click the "Add a README file" check box.
 
 Connect the Github repo to a project on your computer. Use a folder name which matches your repo name.
 
-Select `File -> New File -> Quarto Document ...`. Provide a title -- `"Cumulative"` -- and an author (you). Render the document and save it as `analysis.qmd`.
+Select `File -> New File -> Quarto Document ...`. Provide a title -- `"CES"` -- and an author (you). Render the document and save it as `analysis.qmd`.
 
 Edit the `.gitignore` by adding `*_files` and a blank line. Save and push.
 

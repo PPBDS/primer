@@ -202,9 +202,9 @@ When you pause to ask, make it easy for David to answer: short list of options, 
 
 ## 3. Output artifacts and file conventions
 
-Chapters are Quarto files with the top-level `#` already set by the book structure; use `##` for virtue-level sections. Filename convention: `NN-topic-name.qmd` where `NN` is the chapter number (e.g. `04-cardinal-virtues.qmd`, `09-logistic-regression.qmd`).
+Chapters are Quarto files with the top-level `#` already set by the book structure; use `##` for virtue-level sections. Filename convention: `NN-name.qmd` where `NN` is the two-digit chapter number and `name` is the dataset (for example chapters) or a descriptive slug (for miscellaneous chapters) — e.g. `04-cardinal-virtues.qmd`, `08-trains.qmd`, `13-colleges.qmd`.
 
-Tutorials are R Markdown files with `learnr::tutorial` output. They live in the `primer.tutorials` package under `inst/tutorials/NN-topic-name/tutorial.Rmd`, where `NN` is the two-digit chapter number (e.g. `06-models`, `14-stops`). The tutorial's `id` in the YAML is `NN-topic-name`, lowercase, dashes for spaces.
+Tutorials are R Markdown files with `learnr::tutorial` output. They live in the `primer.tutorials` package under `inst/tutorials/NN-name/tutorial.Rmd`, where `NN` is the two-digit chapter number (e.g. `07-nhanes`, `14-stops`). The tutorial's `id` in the YAML is `NN-name`, lowercase, dashes for spaces, identical to the directory name. For example tutorials, `name` is the dataset's tibble name (`nhanes`, `trains`, `nes`, `governors`, `shaming`, `ces`, `colleges`, `stops`) — chosen even when the dataset name is an acronym unfamiliar to students. Student repo names in operational exercises match the tutorial directory name, so everything (directory, id, repo) shares one string per tutorial.
 
 For new chapters, produce a single `.qmd` file. For new tutorials, produce a single `.Rmd` file with the structure described in §5. Do not emit partial diffs; produce complete files David can drop in place.
 
@@ -240,7 +240,7 @@ Every tutorial fits **one model**, not two — either predictive or causal, matc
 title: <Topic>
 author: David Kane
 tutorial:
-  id: <NN-topic-name>   # e.g., 09-logistic-regression. Same as directory name.
+  id: <NN-name>   # e.g., 07-nhanes. Same as directory name.
 output:
   learnr::tutorial:
     progressive: yes
@@ -2100,7 +2100,7 @@ Preceptor Table and Population Table columns are listed by spanner in order. Pop
 
 ---
 
-### 06 — Models
+### 06 — Biden
 
 - **Type:** example
 - **"Imagine":** You are the chair of the Democratic National Committee in early 2024 deciding where to devote time and money.
@@ -2118,7 +2118,7 @@ Preceptor Table and Population Table columns are listed by spanner in order. Pop
 
 ---
 
-### 07 — Two Parameters
+### 07 — NHANES
 
 - **Type:** example
 - **"Imagine":** You are in charge of ordering uniforms for next year's Marine Corps bootcamp recruits.
@@ -2128,7 +2128,7 @@ Preceptor Table and Population Table columns are listed by spanner in order. Pop
 - **Question (QoI):** What is the average height of male and female USMC recruits?
 - **Model:** Linear regression, one categorical predictor
 - **Causal / Predictive:** Predictive
-- **Student project:** `height`
+- **Student project:** `nhanes`
 - **Data prep:** `nhanes |> filter(age >= 18 & age <= 27) |> select(height, sex) |> drop_na() |> slice_sample(n = 50)` → `x`
 - **Final model:** `linear_reg() |> set_engine("lm") |> fit(height ~ sex, data = x)` → `fit_height`
 - **Preceptor Table:** Unit (Young Adult) | Outcome (Height cm) | Covariate (Sex)
@@ -2136,7 +2136,7 @@ Preceptor Table and Population Table columns are listed by spanner in order. Pop
 
 ---
 
-### 08 — Three Parameters: Causal
+### 08 — Trains
 
 - **Type:** example
 - **"Imagine":** You are a campaign manager for a Republican congressional candidate in Georgia who wants to increase anti-immigration sentiment among voters.
@@ -2146,7 +2146,7 @@ Preceptor Table and Population Table columns are listed by spanner in order. Pop
 - **Question (QoI):** What is the average causal effect of exposure to Spanish-speakers on attitudes toward immigration?
 - **Model:** Linear regression, randomized experiment
 - **Causal / Predictive:** Causal
-- **Student project:** `immigration`
+- **Student project:** `trains`
 - **Data prep:** none — uses `trains` directly
 - **Final model:** `linear_reg(engine = "lm") |> fit(att_end ~ treatment, data = trains)` → `fit_att`
 - **Preceptor Table:** Unit (Person) | Potential Outcomes (Attitude if Exposed, Attitude if Not Exposed) | Treatment (Spanish Exposure)
@@ -2154,7 +2154,7 @@ Preceptor Table and Population Table columns are listed by spanner in order. Pop
 
 ---
 
-### 09 — Four Parameters: Categorical
+### 09 — NES
 
 - **Type:** example
 - **"Imagine":** You are a political scientist studying the 1992 presidential election, curious whether men and women differed in their support for Clinton, Bush, and Perot. There are many decisions to make.
@@ -2164,7 +2164,7 @@ Preceptor Table and Population Table columns are listed by spanner in order. Pop
 - **Question (QoI):** What was the difference in voting preference of men and women in the 1992 US Presidential election?
 - **Model:** Multinomial logistic regression
 - **Causal / Predictive:** Predictive
-- **Student project:** `election-1992`
+- **Student project:** `nes`
 - **Data prep:** `nes |> filter(year == 1992) |> select(sex, pres_vote) |> drop_na() |> mutate(pres_vote = as.factor(case_when(pres_vote == "Democrat" ~ "Clinton", pres_vote == "Republican" ~ "Bush", pres_vote == "Third Party" ~ "Perot")))` → `nes_92`
 - **Final model:** `multinom_reg(engine = "nnet") |> fit(pres_vote ~ sex, data = nes_92)` → `fit_nes`
 - **Preceptor Table:** Unit (Voter) | Outcome (Vote) | Covariate (Sex)
@@ -2172,7 +2172,7 @@ Preceptor Table and Population Table columns are listed by spanner in order. Pop
 
 ---
 
-### 10 — Five Parameters
+### 10 — Governors
 
 - **Type:** example
 - **"Imagine":** You are considering a run for governor and wonder how long you are likely to live afterward.
@@ -2182,7 +2182,7 @@ Preceptor Table and Population Table columns are listed by spanner in order. Pop
 - **Question (QoI):** How many years do gubernatorial candidates live after their election, and how does that vary by age and sex?
 - **Model:** Linear regression with interaction term (`election_age * sex`)
 - **Causal / Predictive:** Predictive
-- **Student project:** `life-expectancy`
+- **Student project:** `governors`
 - **Data prep:** `governors |> filter(year > 1945) |> select(last_name, year, state, sex, lived_after, election_age, region)` → `x`
 - **Final model:** `linear_reg(engine = "lm") |> fit(lived_after ~ election_age*sex, data = x)` → `fit_years`
 - **Preceptor Table:** Unit (Candidate) | Outcome (Years Lived After) | Covariates (Age at Election, Sex)
@@ -2190,7 +2190,7 @@ Preceptor Table and Population Table columns are listed by spanner in order. Pop
 
 ---
 
-### 11 — N Parameters
+### 11 — Shaming
 
 - **Type:** example
 - **"Imagine":** You are running for Governor of Texas and must decide how to allocate campaign resources.
@@ -2200,7 +2200,7 @@ Preceptor Table and Population Table columns are listed by spanner in order. Pop
 - **Question (QoI):** What is the causal effect of social-pressure postcards on voter turnout?
 - **Model:** Logistic regression with interaction (`treatment * voter_class`)
 - **Causal / Predictive:** Causal
-- **Student project:** `postcards`
+- **Student project:** `shaming`
 - **Data prep:** `shaming |> mutate(civ_engage = primary_00 + primary_02 + primary_04 + general_00 + general_02 + general_04) |> select(primary_06, treatment, sex, age, civ_engage) |> mutate(voter_class = factor(case_when(civ_engage %in% c(5, 6) ~ "Always Vote", civ_engage %in% c(3, 4) ~ "Sometimes Vote", civ_engage %in% c(1, 2) ~ "Rarely Vote"), levels = c("Rarely Vote", "Sometimes Vote", "Always Vote"))) |> mutate(voted = as.factor(primary_06))` → `x`
 - **Final model:** `logistic_reg(engine = "glm") |> fit(voted ~ age + sex + treatment*voter_class, data = x)` → `fit_vote`
 - **Preceptor Table:** Unit (Voter) | Potential Outcomes (Voted if Postcard, Voted if No Postcard) | Treatment (Mailing Type)
@@ -2208,7 +2208,7 @@ Preceptor Table and Population Table columns are listed by spanner in order. Pop
 
 ---
 
-### 12 — Cumulative
+### 12 — CES
 
 - **Type:** example
 - **"Imagine":** You are a pollster preparing for an upcoming election, exploring 2020 Trump approval patterns across ideology and education levels.
@@ -2218,7 +2218,7 @@ Preceptor Table and Population Table columns are listed by spanner in order. Pop
 - **Question (QoI):** What is the average difference in Trump approval between Very Liberal and Very Conservative voters?
 - **Model:** Ordinal logistic regression (`MASS::polr`)
 - **Causal / Predictive:** Predictive
-- **Student project:** `approval`
+- **Student project:** `ces`
 - **Data prep:** `ces |> filter(year == 2020) |> select(approval, ideology, education) |> drop_na() |> filter(!ideology %in% "Not Sure") |> mutate(ideology = fct_drop(ideology))` → `x`
 - **Final model:** `polr(approval ~ ideology + education, data = x)` → `fit_approval`
 - **Preceptor Table:** Unit (Respondent) | Outcome (Presidential Approval) | Covariate (Political Ideology)
@@ -2226,7 +2226,7 @@ Preceptor Table and Population Table columns are listed by spanner in order. Pop
 
 ---
 
-### 13 — Ordered Factors
+### 13 — Colleges
 
 - **Type:** example
 - **"Imagine":** You are a data scientist at a non-profit helping students find the best college.
@@ -2236,7 +2236,7 @@ Preceptor Table and Population Table columns are listed by spanner in order. Pop
 - **Question (QoI):** What effect does the tuition of a college have on its graduation rate?
 - **Model:** Linear regression with ordinal categorical predictor
 - **Causal / Predictive:** Predictive
-- **Student project:** `ordered`
+- **Student project:** `colleges`
 - **Data prep:** `colleges |> select(tuition, grad_rate, selectivity) |> filter(tuition > 2)` → `x`
 - **Final model:** `linear_reg() |> set_engine("lm") |> fit(grad_rate ~ tuition + selectivity, data = x)` → `fit_colleges`
 - **Preceptor Table:** Unit (College) | Outcome (Graduation Rate) | Covariate (Tuition)

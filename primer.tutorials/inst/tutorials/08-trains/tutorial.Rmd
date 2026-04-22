@@ -1,8 +1,8 @@
 ---
-title: 'Three Parameters: Causal'
+title: Trains
 author: David Kane and Aashna Patel
 tutorial:
-  id: three-parameters-causal
+  id: 08-trains
 output:
   learnr::tutorial:
     progressive: yes
@@ -66,13 +66,13 @@ Why do we ask this, and a score more other questions, in each tutorial? Because 
 
 ### Exercise 2
 
-Create a Github repo called `immigration`. Make sure to click the "Add a README file" check box.
+Create a Github repo called `trains`. Make sure to click the "Add a README file" check box.
 
 Connect the repo to a project on your computer using `File -> New Folder from Git ...`. Make sure to select the "Open in a new window" box. 
 
 You need two Positron windows: this one for running the tutorial and the one you just created for writing your code and interacting with the Console.
 
-Select `File -> New File -> Quarto Document ...`. Provide a title -- `"Immigration"` -- and an author (you). Render the document and save it as `immigration.qmd`.
+Select `File -> New File -> Quarto Document ...`. Provide a title -- `"Trains"` -- and an author (you). Render the document and save it as `immigration.qmd`.
 
 Create a `.gitignore` file with `immigration_files` on the first line and then a blank line. Save and push.
 
