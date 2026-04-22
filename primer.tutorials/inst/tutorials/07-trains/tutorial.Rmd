@@ -804,8 +804,6 @@ In order to consider the Preceptor Table and the data to be drawn from the same 
 
 Because we control the Preceptor Table and, to a lesser extent, the original question, we can adjust those variables to be “closer” to the data that we actually have. This is another example of the iterative nature of data science. If the data is not close enough to the question, then we check with our boss/colleague/customer to see if we can modify the question in order to make the match between the data and the Preceptor Table close enough for validity to hold.
 
-Despite these potential problems, we will assume that validity holds since it, mostly (?), does.
-
 ### Exercise 4
 
 In your own words, define a Population Table.
@@ -874,7 +872,7 @@ question_text(NULL,
 
 ### 
 
-Stability is all about *time*. Is the relationship among the columns in the Population Table stable over time? In particular, is the relationship --- which is another way of saying "mathematical formula" --- at the time the data was gathered the same as the relationship at the (generally later) time referenced by the Preceptor Table.
+Stability is all about *time*. Is the relationship among the columns in the Population Table stable over time? The longer the time period between the data and the Preceptor Table, the more suspect stability becomes.
 
 ### Exercise 7
 
@@ -1036,48 +1034,13 @@ $$\mu = \beta_0 + \beta_1 X_1 + \beta_2 X_2 + \ldots$$
 
 ### Exercise 15
 
-Use AI to come up with a $\LaTeX$ representation of the mathematical structure of the model, with $Y$ as the dependent variable and $X_1$, $X_2$ and so on as the independent variables. This version will not have the values of any parameters since we have not, yet, estimated them. Confirm that the $\LaTeX$ code works by placing it in your QMD and then rendering. Paste that $\LaTeX$ code below.
-
-```{r justice-15}
-question_text(NULL,
-  answer(NULL, correct = TRUE),
-  allow_retry = TRUE,
-  try_again_button = "Edit Answer",
-  incorrect = NULL,
-  rows = 5)
-```
-
-###
-
-Our answer:
-
-$$Y = \beta_0 + \beta_1 X_1 + \beta_2 X_2 + \cdots + \beta_n X_n + \epsilon$$
-
-with $\epsilon \sim \mathcal{N}(0, \sigma^2)$.
-
-Which we created with $\LaTeX$ code that looks like this:
-
-````
-$$Y = \beta_0 + \beta_1 X_1 + \beta_2 X_2 + \cdots + \beta_n X_n + \epsilon$$
-
-with $\epsilon \sim \mathcal{N}(0, \sigma^2)$.
-````
-
-This follows the linear regression form for continuous data, where the $\beta$ coefficients represent the effect of predictors on the mean of the outcome.
-
-We use generic variables --- $Y$, $X_1$ and so on --- because our purpose is to describe the general mathematical structure of the model, independent of the specific variables we will eventually choose to use.
-
-Having decided on the basic mathematical structure of the model, a choice mostly driven by the distribution of our outcome variable, we now turn toward estimating the model.
-
-### Exercise 16
-
 Write one sentence which highlights a potential weakness in your model. This will almost always be derived from possible problems with the assumptions discussed above. We will add this sentence to our summary paragraph. So far, our version of the summary paragraph looks like this:
 
 > Attitudes toward immigration are an increasingly important part of US congressional elections. Using data from a 2012 experiment among Boston commuters, we seek to explore the causal effect of exposure to Spanish speakers on attitudes toward immigration among registered voters in Georgia today.
 
 Of course, your version will be somewhat different.
 
-```{r justice-16}
+```{r justice-15}
 question_text(NULL,
   message = "The relationship between exposure to Spanish speakers and attitudes toward immigration may have changed since 2012.",
   answer(NULL, correct = TRUE),
@@ -1095,6 +1058,16 @@ Add a weakness sentence to the summary paragraph in your QMD. You can modify you
 ### 
 
 *Courage is found in unlikely places.* - J.R.R. Tolkien
+
+Since our outcome variable $Y$ (`att_end`) is continuous, the probability family is Normal and the link function is linear. Together, the full abstract form of the model is:
+
+$$Y = \beta_0 + \beta_1 X_1 + \beta_2 X_2 + \cdots + \beta_n X_n + \epsilon$$
+
+with $\epsilon \sim N(0, \sigma^2)$.
+
+We use generic variables --- $Y$, $X_1$, and so on --- because our purpose is to describe the general mathematical structure of the model, independent of the specific variables we will eventually use.
+
+###
 
 ### Exercise 1
 
