@@ -566,11 +566,11 @@ These apply to both tables, and the same `gt` pipeline + chunk-output wrapping i
     locations = gt::cells_column_spanners(spanners = c("unit_span", "covariates_span"))
   ) |>
   gt::tab_style(
-    style     = gt::cell_text(align = "right"),
+    style     = gt::cell_text(align = "center"),
     locations = gt::cells_column_spanners(spanners = "outcome_span")
   )
   ```
-  The spanner-ID lists in the left and right calls vary per table: left-aligned spanners cover text/identifier columns (unit, text covariates, treatment when text-valued, `Source` in Population Tables); right-aligned spanners cover numeric columns, almost always just `outcome_span`. When a spanner covers mixed-type columns (e.g., `Unit/Time` in the Population Table spans a text unit + a numeric year), align left by convention. This styling block is mandatory for every Preceptor and Population Table.
+  The spanner-ID lists vary per table: left-aligned spanners cover text/identifier columns (unit, text covariates, treatment when text-valued, `Source` in Population Tables); `outcome_span` is always centered. Centering works for both single-column predictive tables and multi-column causal tables ("Potential Outcomes"), where right-aligning over two columns looks visually unanchored. When a spanner covers mixed-type columns (e.g., `Unit/Time` in the Population Table spans a text unit + a numeric year), align left by convention. This styling block is mandatory for every Preceptor and Population Table.
 - **Spanner labels singularize when only one column sits under them.** `Covariate` (one) vs. `Covariates` (two or more). `Outcome` (predictive, one) vs. `Potential Outcomes` (causal, two or more). `Unit` stays singular — there is always exactly one unit column.
 - **Spanner IDs are fixed** regardless of label: `"unit_span"`, `"outcome_span"`, `"treatment_span"`, `"covariates_span"`. The covariates ID stays `"covariates_span"` even when the label is the singular `Covariate`. Footnotes attach to IDs, so don't rename.
 - **Code blocks are copy-paste runnable.** Every `gt` code block Claude produces must run top-to-bottom if pasted at an R prompt: `tibble::tribble()` definition, footnote string assignments, and the complete `gt::gt(...) |> ...` pipeline ending at the final `tab_footnote()`. Do not include `library()` calls — `gt` and `tibble` are assumed already loaded.
@@ -665,7 +665,7 @@ pre_gt_html <- gt::gt(p_tibble, id = "preceptor_tbl") |>
     locations = gt::cells_column_spanners(spanners = "unit_span")
   ) |>
   gt::tab_style(
-    style     = gt::cell_text(align = "right"),
+    style     = gt::cell_text(align = "center"),
     locations = gt::cells_column_spanners(spanners = "outcome_span")
   ) |>
   gt::tab_footnote(footnote = pre_title_footnote,
@@ -735,7 +735,7 @@ pre_gt_html <- gt::gt(p_tibble, id = "preceptor_tbl") |>
     locations = gt::cells_column_spanners(spanners = c("unit_span", "covariates_span"))
   ) |>
   gt::tab_style(
-    style     = gt::cell_text(align = "right"),
+    style     = gt::cell_text(align = "center"),
     locations = gt::cells_column_spanners(spanners = "outcome_span")
   ) |>
   gt::tab_footnote(footnote = pre_title_footnote,
@@ -818,7 +818,7 @@ pre_gt_html <- gt::gt(p_tibble, id = "preceptor_tbl") |>
     locations = gt::cells_column_spanners(spanners = c("unit_span", "treatment_span"))
   ) |>
   gt::tab_style(
-    style     = gt::cell_text(align = "right"),
+    style     = gt::cell_text(align = "center"),
     locations = gt::cells_column_spanners(spanners = "outcome_span")
   ) |>
   # Hatch each data row's unobservable potential outcome. Rows 1 and 4 ("Won")
@@ -976,7 +976,7 @@ pop_gt_html <- gt::gt(population_tibble, id = "population_tbl") |>
     locations = gt::cells_column_spanners(spanners = c("unit_span", "treatment_span", "covariates_span"))
   ) |>
   gt::tab_style(
-    style     = gt::cell_text(align = "right"),
+    style     = gt::cell_text(align = "center"),
     locations = gt::cells_column_spanners(spanners = "outcome_span")
   ) |>
   # Hatch Preceptor rows' unobservable potential outcomes.
