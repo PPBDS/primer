@@ -75,23 +75,19 @@ Why do we ask this, and a score more other questions, in each tutorial? Because 
 
 ### Exercise 2
 
-Create a Github repo called `nhanes`. Make sure to click the "Add a README file" check box.
+You should be working inside a GitHub repo named `nhanes`, opened in a Codespace from the [`PPBDS/codespace-starter`](https://github.com/PPBDS/codespace-starter) template. If you are not there yet, please create that repo and open it in a Codespace now — see the [package README](https://github.com/PPBDS/primer/tree/main/primer.tutorials#working-environments-and-repo-setup) if you need setup instructions or are working locally instead.
 
-Connect the repo to a project on your computer using `File -> New Folder from Git ...`. Make sure to select the "Open in a new window" box. 
-
-You need two Positron windows: this one for running the tutorial and the one you just created for writing your code and interacting with the Console.
-
-Select `File -> New File -> Quarto Document ...`. Provide a title -- `"NHANES"` -- and an author (you). Render the document and save it as `analysis.qmd`.
+Once you're inside the `nhanes` repo, create a new Quarto document titled `"NHANES"` with yourself as the author, render it, and save it as `analysis.qmd`.
 
 Create a `.gitignore` file with `analysis_files` on the first line and then a blank line. Save and push.
 
-In the Console, run:
+At the R prompt, run:
 
-```         
+```
 show_file(".gitignore")
 ```
 
-If that fails, it is probably because you have not yet loaded `library(tutorial.helpers)` in the Console.
+If that fails, it is probably because you have not yet loaded `library(tutorial.helpers)` at the R prompt.
 
 CP/CR.
 
@@ -119,7 +115,7 @@ execute:
   echo: false
 ```
 
-In the Console, run:
+At the R prompt, run:
 
 ```         
 show_file("analysis.qmd", start = -5)
@@ -144,7 +140,7 @@ Render again. Everything looks nice, albeit empty, because we have added code to
 
 Place your cursor in the QMD file on the `library(tidyverse)` line. Use `Cmd/Ctrl + Enter` to execute that line.
 
-Note that this causes `library(tidyverse)` to be copied down to the Console and then executed. 
+Note that this sends `library(tidyverse)` to the R prompt and executes it.
 
 CP/CR.
 
@@ -165,7 +161,7 @@ You should practice moving from QMD World to R World and back.
 
 Place your cursor in the QMD file on the next line. Use `Cmd/Ctrl + Enter` to execute that line.
 
-This work flow --- writing things in the QMD so that you have a permanent copy and then executing them in the Console with `Cmd/Ctrl + Enter` --- is the most common approach to data science. 
+This work flow --- writing things in the QMD so that you have a permanent copy and then sending them to the R prompt with `Cmd/Ctrl + Enter` --- is the most common approach to data science.
 
 There is QMD World and R World. It is your responsibility to keep them in sync.
 
@@ -182,11 +178,11 @@ question_text(NULL,
 
 ###
 
-A version of the data from the National Health and Nutrition Examination Survey is available in the `nhanes` tibble from the **primer.data** package.
+A version of the data from the National Health and Nutrition Examination Survey is available in the `nhanes` tibble from the **[primer.data](https://github.com/PPBDS/primer.data)** package.
 
 ### Exercise 6
 
-In the Console, type `?nhanes`, and paste the Description below.
+At the R prompt, type `?nhanes` and paste the Description below.
 
 ```{r introduction-6}
 question_text(NULL,
@@ -203,43 +199,9 @@ NHANES is a voluntary survey that oversamples groups like older adults and minor
 
 ### Exercise 7
 
-Define a causal effect.
-
-```{r introduction-7}
-question_text(NULL,
-  message = "A causal effect is the difference between two potential outcomes.",
-  answer(NULL, correct = TRUE),
-  allow_retry = FALSE,
-  incorrect = NULL,
-  rows = 6)
-```
-
-### 
-
-According to the Rubin Causal Model, there must be two (or more) potential outcomes for any discussion of causation to make sense. This is simplest to discuss when the treatment only has two different values, thereby generating only two potential outcomes. 
-
-### Exercise 8
-
-What is the fundamental problem of causal inference?
-
-```{r introduction-8}
-question_text(NULL,
-  message = "The fundamental problem of causal inference is that we can only observe one potential outcome.",
-  answer(NULL, correct = TRUE),
-  allow_retry = FALSE,
-  incorrect = NULL,
-  rows = 6)
-```
-
-### 
-
-If the treatment variable is continuous (like income), then there are lots and lots of potential outcomes, one for each possible value of the treatment variable.
-
-### Exercise 9
-
 Height of young adults is the broad topic of this tutorial. Given that topic, which variable in `nhanes` should we use as our outcome variable?
 
-```{r introduction-9}
+```{r introduction-7}
 question_text(NULL,
   message = "Our outcome variable is `height`. We care about the height of USMC recruits, who are young adults.",
   answer(NULL, correct = TRUE),
@@ -271,62 +233,11 @@ nhanes |>
   )
 ```
 
-### Exercise 10
-
-Let's imagine a brand new variable which does not exist in the data. This variable should be binary --- it only takes on one of two values --- and, at least in theory, manipulable. Describe this imaginary variable and how we might manipulate its value.
-
-```{r introduction-10}
-question_text(NULL,
-  message = "Imagine a variable called `nutrition_program` which has value 1 if a child was enrolled in a government childhood-nutrition program between ages 5 and 10, and 0 otherwise. The government could manipulate this variable by deciding whether to enroll any given child.",
-  answer(NULL, correct = TRUE),
-  allow_retry = FALSE,
-  incorrect = NULL,
-  rows = 4)
-```
-
-###
-
-Any data set can be used to construct a causal model as long as there is at least one covariate that we can, at least in theory, manipulate. It does not matter whether or not anyone did, in fact, manipulate it.
-
-### Exercise 11
-
-Given our (imaginary) treatment variable `nutrition_program`, how many potential outcomes are there for each unit? Explain why.
-
-```{r introduction-11}
-question_text(NULL,
-  message = "There are two potential outcomes because the treatment variable `nutrition_program` takes on two possible values: 1 (enrolled) and 0 (not enrolled).",
-  answer(NULL, correct = TRUE),
-  allow_retry = FALSE,
-  incorrect = NULL,
-  rows = 3)
-```
-
-###
-
-The same data set can be used to create, separately, lots and lots of different models, both causal and predictive. This is a conceptual framework we apply to the data. It is never inherent in the data itself.
-
-### Exercise 12
-
-Specify two different values for the imaginary treatment variable `nutrition_program`, for a single unit; guess the potential outcomes; and calculate the causal effect for that unit given those guesses.
-
-```{r introduction-12}
-question_text(NULL,
-  message = "For a given young adult, say Maria, assume the treatment variable `nutrition_program` could be 1 (enrolled) or 0 (not enrolled). If Maria gets `nutrition_program = 1`, her height at age 20 would be 168 cm. If Maria gets `nutrition_program = 0`, her height at age 20 would be 165 cm. The causal effect on height of `nutrition_program = 1` versus `nutrition_program = 0` is 168 - 165 = 3 cm, which is the causal effect for Maria.",
-  answer(NULL, correct = TRUE),
-  allow_retry = FALSE,
-  incorrect = NULL,
-  rows = 6)
-```
-
-###
-
-A causal effect is the difference between two potential outcomes. "Difference" does not necessarily mean "subtraction" --- many potential outcomes are not numbers.
-
-### Exercise 13
+### Exercise 8
 
 Let's consider a predictive model. Which variable in `nhanes` do you think might have an important connection to `height`?
 
-```{r introduction-13}
+```{r introduction-8}
 question_text(NULL,
   message = "One candidate is `sex`. Men and women tend to have systematically different average heights, so a model that includes `sex` should do better than one that does not.",
   answer(NULL, correct = TRUE),
@@ -339,11 +250,11 @@ question_text(NULL,
 
 With a predictive model, each individual unit has only one observed outcome. Predictive models have no "treatments" --- only covariates.
 
-### Exercise 14
+### Exercise 9
 
 Specify two different groups of young adults which have different values for `sex` and which might have different average values for `height`.
 
-```{r introduction-14}
+```{r introduction-9}
 question_text(NULL,
   message = "Consider two groups: young adults with `sex` = Male, and young adults with `sex` = Female. These two groups might have different average heights.",
   answer(NULL, correct = TRUE),
@@ -356,11 +267,11 @@ question_text(NULL,
 
 In predictive models, do not use "cause," "influence," "impact," or anything else which suggests causation. The best phrasing is in terms of "differences" between groups of units with different values for a covariate of interest.
 
-### Exercise 15
+### Exercise 10
 
 Write a predictive question connecting the outcome `height` to `sex`, the covariate of interest.
 
-```{r introduction-15}
+```{r introduction-10}
 question_text(NULL,
   message = "What is the average height of male and female USMC recruits?",
   answer(NULL, correct = TRUE),
@@ -381,7 +292,7 @@ Imagine that you are in charge of ordering uniforms for next year's Marine Corps
 
 The broad question: *What is the average height of male and female USMC recruits?*
 
-We will work from the National Health and Nutrition Examination Survey (NHANES), conducted by the Centers for Disease Control and Prevention, available in the `nhanes` tibble of the `primer.data` package.
+We will work from the National Health and Nutrition Examination Survey (NHANES), conducted by the Centers for Disease Control and Prevention, available in the `nhanes` tibble of the **[primer.data](https://github.com/PPBDS/primer.data)** package.
 
 ###
 
@@ -748,7 +659,7 @@ We pretend we only have 50 observations so the uncertainty about the true averag
 
 ### Exercise 13
 
-In `analysis.qmd`, add a new code chunk and copy/paste the pipeline above (including the `set.seed(10)` line). Render the QMD with `Cmd/Ctrl + Shift + K`. In the Console, run:
+In `analysis.qmd`, add a new code chunk and copy/paste the pipeline above (including the `set.seed(10)` line). Render the QMD with `Cmd/Ctrl + Shift + K`. Then, at the R prompt, run:
 
 ```
 show_file("analysis.qmd", chunk = "Last")
@@ -1165,7 +1076,7 @@ Add `library(tidymodels)` to the QMD file.
 
 Place your cursor in the QMD file on the `library(tidymodels)` line. Use `Cmd/Ctrl + Enter` to execute that line.
 
-Note that this causes `library(tidymodels)` to be copied down to the Console and then executed. 
+Note that this sends `library(tidymodels)` to the R prompt and executes it.
 
 CP/CR.
 
@@ -1192,7 +1103,7 @@ Add `library(broom)` to the QMD file.
 
 Place your cursor in the QMD file on the `library(broom)` line. Use `Cmd/Ctrl + Enter` to execute that line.
 
-Note that this causes `library(broom)` to be copied down to the Console and then executed. 
+Note that this sends `library(broom)` to the R prompt and executes it.
 
 CP/CR.
 
@@ -1399,7 +1310,7 @@ linear_reg()
 
 ### 
 
-The *[tidymodels](https://www.tidymodels.org/)* framework is the most popular one in the R world for estimating models. *[Tidy Modeling with R](https://www.tmwr.org/)* by Max Kuhn and Julia Silge is a great introduction.
+The **[tidymodels](https://www.tidymodels.org/)** framework is the most popular one in the R world for estimating models. *[Tidy Modeling with R](https://www.tmwr.org/)* by Max Kuhn and Julia Silge is a great introduction.
 
 `linear_reg()` accepts a variety of "engines." In this case, the default engine, `lm`, is a good choice, so we can call `linear_reg()` without any arguments.
 
@@ -1472,50 +1383,25 @@ fit_height
 
 In data science, **we deal with words, math, and code, but the most important of these is code.** We created the mathematical structure of the model and then wrote a model formula in order to estimate the unknown parameters. 
 
-### Exercise 6
-
-Ask AI to create $\LaTeX$ code for this model, including our variable names and estimates for all the coefficients. Because this is a fitted model, the dependent variable will have a "hat" and the formula will not include an error term. 
-
-Add the code to your QMD. `Cmd/Ctrl + Shift + K`.
-
-Make sure the resulting display looks good. For example, you don't want an absurd number of figures to the right of the decimal. If the model is too long, you will need to spread it across several lines. You may need to go back-and-forth with the AI a few times.
-
-Once the $\LaTeX$ code looks good, paste it below.
-
-```{r courage-6}
-question_text(NULL,
-  answer(NULL, correct = TRUE),
-  allow_retry = TRUE,
-  try_again_button = "Edit Answer",
-  incorrect = NULL,
-  rows = 3)
-```
-
 ###
 
-Our formula looks like:
+With the parameters estimated, we can write the fitted model as a concrete formula:
 
-$$\hat{\text{height}} = 162.18 + 15.94 \cdot \text{sexMale}$$
+$$\hat{\text{height}} = 162 + 15.9 \cdot \text{sexMale}$$
 
-It was created with:
-
-````
-$$\hat{\text{height}} = 162.18 + 15.94 \cdot \text{sexMale}$$
-```` 
-
-Note the differences. First, we have replaced the parameter $\beta_0$ with our best estimate. Second, we have dropped the error term because this is a formula for predicting the value for our outcome variable. Third, the left-hand side variable is $\widehat{\text{height}}$ instead of $\text{height}$ because this formula generates our estimated (or predicted) `height`. A hat indicates an estimated value.
+Note the differences from the abstract form shown in Courage's preamble. First, we have replaced the parameters $\beta_0$ and $\beta_1$ with our best estimates (rounded to three significant figures). Second, we have dropped the error term because this is a formula for predicting the value of our outcome variable, not for describing its randomness. Third, the left-hand side is $\widehat{\text{height}}$ instead of $\text{height}$ because this formula generates our estimated (or predicted) height — a hat indicates an estimated value.
 
 **This is our data generating mechanism.**
 
 A data generating mechanism is just a formula, something which we can write down and implement with computer code.
 
-### Exercise 7
+### Exercise 6
 
 Create a new code chunk in your QMD. Add a code chunk option: `#| cache: true`. Copy/paste the code from above for estimating the model into the code chunk, assigning the result to `fit_height`. (This will include the call to `fit()` but not the call to `tidy()` because we want the entire fitted model, not just a table of the estimated parameter values.)
 
 `Cmd/Ctrl + Shift + K`. It may take some time to render your QMD, depending on how complex your model is. But, by including `#| cache: true` you cause Quarto to cache the results of the chunk. The next time you render your QMD, as long as you have not changed the code, Quarto will just load up the saved fitted object.
 
-At the Console, run:
+At the R prompt, run:
 
 ```
 tutorial.helpers::show_file("analysis.qmd", chunk = "Last")
@@ -1523,7 +1409,7 @@ tutorial.helpers::show_file("analysis.qmd", chunk = "Last")
 
 CP/CR.
 
-```{r courage-7}
+```{r courage-6}
 question_text(NULL,
   answer(NULL, correct = TRUE),
   allow_retry = TRUE,
@@ -1536,11 +1422,11 @@ question_text(NULL,
 
 To confirm, `Cmd/Ctrl + Shift + K` again. It should be quick.
 
-### Exercise 8
+### Exercise 7
 
 Add `*_cache` to `.gitignore` file. Cached objects are often large. They don't belong on Github.
 
-At the Console, run:
+At the R prompt, run:
 
 ```
 tutorial.helpers::show_file(".gitignore")
@@ -1548,7 +1434,7 @@ tutorial.helpers::show_file(".gitignore")
 
 CP/CR.
 
-```{r courage-8}
+```{r courage-7}
 question_text(NULL,
   answer(NULL, correct = TRUE),
   allow_retry = TRUE,
@@ -1561,19 +1447,19 @@ question_text(NULL,
 
 Because of the change in your `.gitignore` (assuming that you saved it), the cache directory should not appear in the Source Control panel because Git is ignoring it, as instructed. Commit and push. 
 
-### Exercise 9
+### Exercise 8
 
-In the Console, run `tidy()` on `fit_height` with the argument `conf.int` set equal to `TRUE`. This returns 95% intervals for all the parameters in our model.
+At the R prompt, run `tidy()` on `fit_height` with the argument `conf.int` set equal to `TRUE`. This returns 95% intervals for all the parameters in our model.
 
-```{r courage-9, exercise = TRUE}
+```{r courage-8, exercise = TRUE}
 
 ```
 
-```{r courage-9-hint-1, eval = FALSE}
+```{r courage-8-hint-1, eval = FALSE}
 tidy(..., conf.int = ...)
 ```
 
-```{r courage-9-test, include = FALSE}
+```{r courage-8-test, include = FALSE}
 tidy(fit_height, conf.int = TRUE)
 ```
 
@@ -1581,64 +1467,25 @@ tidy(fit_height, conf.int = TRUE)
 
 `tidy()` is part of the [**broom**](https://broom.tidymodels.org/) package, used to summarize information from a wide variety of models.
 
-### Exercise 10
-
-Create a new code chunk in your QMD. Ask AI to help you make a nice looking table from the tibble which is returned by `tidy()`. You don't have to include all the variables which `tidy()` produces. We often just show the estimate and the confidence intervals.
-
-Insert that code into the QMD. 
-
-`Cmd/Ctrl + Shift + K`. 
-
-Make sure it works. You might need to add some new libraries, e.g., **[tinytable](https://vincentarelbundock.github.io/tinytable/)**, **[knitr](https://yihui.org/knitr/)**, **[gt](https://gt.rstudio.com/)**, **[kableExtra](https://haozhu233.github.io/kableExtra/)**, **[flextable](https://davidgohel.github.io/flextable/)**, **[modelsummary](https://modelsummary.com/)**, et cetera, to the `setup` code chunk, if you use any functions from these packages, all of which have strengths and weaknesses for making tables.
-
-At the Console, run:
-
-```
-tutorial.helpers::show_file("analysis.qmd", chunk = "Last")
-```
-
-CP/CR.
-
-```{r courage-10}
-question_text(NULL,
-  answer(NULL, correct = TRUE),
-  allow_retry = TRUE,
-  try_again_button = "Edit Answer",
-  incorrect = NULL,
-  rows = 12)
-```
-
 ###
 
-<!-- DK: Do these look OK? Digits? -->
-
-Here is ours:
+Here is a nicer-looking version of that parameter table, rendered with [**knitr**](https://yihui.org/knitr/):
 
 ```{r}
+#| echo: false
 library(knitr)
 
 tidy(fit_height, conf.int = TRUE) |>
   select(term, estimate, conf.low, conf.high) |>
+  mutate(across(where(is.numeric), \(x) signif(x, 3))) |>
   kable(
     caption = "Estimates and 95% Confidence Intervals for Parameters\nSource: NHANES 2009–2011"
   )
 ```
 
-Generated by this code:
+Rounding to three significant figures keeps the displayed values consistent with the fitted DGM formula above and with the interpretation exercises in Temperance. At the very least, a table like this should include a title and a caption with the data source.
 
-````
-library(knitr)
-
-tidy(fit_height, conf.int = TRUE) |>
-  select(term, estimate, conf.low, conf.high) |>
-  kable(
-    caption = "Estimates and 95% Confidence Intervals for Parameters\nSource: NHANES 2009–2011"
-  )
-````
-
-At the very least, your table should include a title and a caption with the data source. The more you use AI, the better you will get at doing so.
-
-### Exercise 11
+### Exercise 9
 
 Add a sentence to your project summary. 
 
@@ -1648,7 +1495,7 @@ Recall the beginning of our version of the summary:
 
 > People vary in height. Using data from the National Health and Nutrition Examination Survey conducted from 2009 to 2011 by the Centers for Disease Control and Prevention, we seek to estimate the average height of USMC recruits for the coming year. Since the participation for the survey is voluntary, it could mean that taller people are more likely to answer this question, thus hurting representativeness of the data.
 
-```{r courage-11}
+```{r courage-9}
 question_text(NULL,
   message = "We model height as a linear function of sex.",
   answer(NULL, correct = TRUE),
@@ -1662,9 +1509,8 @@ question_text(NULL,
 Read our answer. It will not be the same as yours. You can, if you want, change your answer to incorporate some of our ideas. Do not copy/paste our answer exactly. Add your two sentences, edited or otherwise, to the summary paragraph portion of your QMD. `Cmd/Ctrl + Shift + K`, and then commit/push.
 
 ## Temperance
-###
 
-See the [Predictions chapter](https://marginaleffects.com/chapters/predictions.html) of the `marginaleffects` book [**Model to Meaning**](https://marginaleffects.com/) for background on the tools we use below.
+See the [Predictions chapter](https://marginaleffects.com/chapters/predictions.html) of the **[marginaleffects](https://marginaleffects.com/)** book *[Model to Meaning](https://marginaleffects.com/)* for background on the tools we use below.
 
 The fitted model from Courage, `fit_height`, can be described in four complementary ways.
 
@@ -1692,9 +1538,9 @@ fit_height |>
 
 $$\text{height} = 162 + 15.9 \cdot \text{sexMale} + \epsilon$$
 
-with $\epsilon \sim N(0, \sigma^2)$.
+with $\epsilon \sim N(0, 40.3)$.
 
-`sexMale` is a dummy variable: 1 for male recruits and 0 for female recruits. The intercept is the average height (in centimeters) for female recruits; the coefficient on `sexMale` is how much taller, on average, male recruits are. Parameter values are rounded to three significant figures to match the table above.
+`sexMale` is a dummy variable: 1 for male recruits and 0 for female recruits. The intercept is the average height (in centimeters) for female recruits; the coefficient on `sexMale` is how much taller, on average, male recruits are. The residual variance is $\sigma^2 \approx 40.3$ (a residual SD of about 6.4 cm). All values are rounded to three significant figures to match the parameter table.
 
 ###
 
@@ -1711,15 +1557,42 @@ question_text(NULL,
   rows = 6)
 ```
 
-### 
+###
 
-Courage gave us the data generating mechanism. Temperance guides us in the use of the DGM — or the “model” — we have created to answer the question(s) with which we began. We create posteriors for the quantities of interest. 
+Courage gave us the data generating mechanism. Temperance guides us in the use of the DGM — or the “model” — we have created to answer the question(s) with which we began. We create posteriors for the quantities of interest.
 
 ### Exercise 2
 
-Before using the DGM, we should make sure that we can interpret it.
+Before jumping to the full DGM, consider a simpler version of the model --- one that ignores `sex` entirely. Here is the fitted intercept-only model, `height ~ 1`:
 
-Recall the values for the parameters in our data generating mechanism:
+```{r}
+#| echo: false
+linear_reg() |>
+  set_engine("lm") |>
+  fit(height ~ 1, data = x) |>
+  tidy(conf.int = TRUE) |>
+  select(term, estimate, conf.low, conf.high) |>
+  mutate(across(where(is.numeric), \(x) signif(x, 3)))
+```
+
+Write a sentence interpreting the 170 estimate for `(Intercept)` in this simple model.
+
+```{r temperance-2}
+question_text(NULL,
+  message = "The average height of a young adult in our sample is 170 centimeters. This is the expected value we would predict if we ignored every covariate --- including sex.",
+  answer(NULL, correct = TRUE),
+  allow_retry = FALSE,
+  incorrect = NULL,
+  rows = 6)
+```
+
+###
+
+The simplest model has one parameter: the overall mean. That mean is the "best guess" when we know nothing about the individual beyond their being a young adult. The richer DGM breaks this mean down by sex, and that split is where the useful answer to our question lives.
+
+### Exercise 3
+
+Now consider the full DGM, `height ~ sex`:
 
 ```{r}
 fit_height |>
@@ -1730,7 +1603,7 @@ fit_height |>
 
 Write a sentence interpreting the 162 estimate for `(Intercept)`.
 
-```{r temperance-2}
+```{r temperance-3}
 question_text(NULL,
   message = "The expected value of the height of a female USMC recruit is 162 centimeters because, for female recruits, `sexMale` is zero.",
   answer(NULL, correct = TRUE),
@@ -1743,7 +1616,7 @@ question_text(NULL,
 
 Most of the time parameters in a model have no direct relationship with any population value in which we might be interested. This is especially true in complex and/or non-linear models. That is, in those cases, a parameter like $\beta_0$ does not "mean" anything. But, in simple, small, linear models, it sometimes happens that a parameter does correspond to something real.
 
-### Exercise 3
+### Exercise 4
 
 ```{r}
 fit_height |>
@@ -1754,7 +1627,7 @@ fit_height |>
 
 Write a sentence interpreting the 15.9 estimate for `sexMale`.
 
-```{r temperance-3}
+```{r temperance-4}
 question_text(NULL,
   message = "When compared with female recruits, male recruits have a 15.9 higher expected value for height.",
   answer(NULL, correct = TRUE),
@@ -1768,11 +1641,11 @@ question_text(NULL,
 Recall that a binary variable (whether character or factor) like `sex` is turned into a $0/1$ "dummy" variable which is then re-named something like $sexMale$. After all, we can't have words --- like "Male" or "Female" --- in a mathematical formula, hence the need for dummy variables.
 
 
-### Exercise 4
+### Exercise 5
 
 Write a sentence interpreting the confidence interval for `sexMale`.
 
-```{r temperance-4}
+```{r temperance-5}
 question_text(NULL,
   message = "We do not know the true value for the coefficient for sexMale, but we can be 95% confident that it lies somewhere between 12.3 and 19.6.",
   answer(NULL, correct = TRUE),
@@ -1786,7 +1659,7 @@ question_text(NULL,
 We care if the confidence interval for a given variable excludes zero. If not, then we can't be sure if the relationship between the variable and the outcome is positive or negative. In that case, then why would we include the variable in the model at all?
 
 
-### Exercise 5
+### Exercise 6
 
 In the end, we don't really care about parameters, much less how to interpret them. Parameters are *imaginary*, like unicorns. We care about answers to our questions. Parameters are tools for answering questions. They aren't interesting in-and-of themselves. *In the modern world, all parameters are nuisance parameters.* 
 
@@ -1794,11 +1667,11 @@ Add `library(marginaleffects)` to the QMD file.
 
 Place your cursor in the QMD file on the `library(marginaleffects)` line. Use `Cmd/Ctrl + Enter` to execute that line.
 
-Note that this causes `library(marginaleffects)` to be copied down to the Console and then executed. 
+Note that this sends `library(marginaleffects)` to the R prompt and executes it.
 
 CP/CR.
 
-```{r temperance-5}
+```{r temperance-6}
 question_text(NULL,
   answer(NULL, correct = TRUE),
   allow_retry = TRUE,
@@ -1811,11 +1684,11 @@ question_text(NULL,
 
 We should be modest in the claims we make. The posteriors we create are never the “truth.” The assumptions we made to create the model are never perfect. Yet decisions made with flawed posteriors are almost always better than decisions made without them.
 
-### Exercise 6
+### Exercise 7
 
 What is the specific question we are trying to answer? 
 
-```{r temperance-6}
+```{r temperance-7}
 question_text(NULL,
   message = "What is the expected height of male and female USMC recruits next year?",
   answer(NULL, correct = TRUE),
@@ -1828,34 +1701,9 @@ question_text(NULL,
 
 Data science projects begin with a decision which we face. To make that decision wisely, we would like to have good estimates of many unknown numbers. Yet, in order to make progress, we need to drill down to one specific question. This leads to the creation of a data generating mechanism, which can now be used to answer lots of questions, thus allowing us to explore the original decision more broadly.
 
-### Exercise 7
-
-In the Console, run `predictions()` on `height_fit`.
-
-CP/CR.
-
-```{r temperance-7}
-question_text(NULL,
-  answer(NULL, correct = TRUE),
-  allow_retry = TRUE,
-  try_again_button = "Edit Answer",
-  incorrect = NULL,
-  rows = 10)
-```
-
-```{r temperance-7-test, include = FALSE}
-predictions(fit_height)
-```
-
-###
-
-In the case of a linear model, `predictions()` returns a data frame with one row for each observation in the data set used to fit the model. In this case, `predictions()` returns 50 rows, because the input data has 50 observations. 
-
-Because `sexMale` only has two possible values, there are only two predictions made by the model, one for men (178) and one for women (162).
-
 ### Exercise 8
 
-In the Console, run `avg_predictions()` on `height_fit`.
+At the R prompt, run `predictions()` on `height_fit`.
 
 CP/CR.
 
@@ -1865,20 +1713,22 @@ question_text(NULL,
   allow_retry = TRUE,
   try_again_button = "Edit Answer",
   incorrect = NULL,
-  rows = 5)
+  rows = 10)
 ```
 
 ```{r temperance-8-test, include = FALSE}
-avg_predictions(fit_height)
+predictions(fit_height)
 ```
 
-### 
+###
 
-`avg_predictions()`, without any arguments, returns a single row, averaging all the individual predictions. In this case, the average prediction, 170 centimeters, is between the male and female predictions. 
+In the case of a linear model, `predictions()` returns a data frame with one row for each observation in the data set used to fit the model. In this case, `predictions()` returns 50 rows, because the input data has 50 observations. 
+
+Because `sexMale` only has two possible values, there are only two predictions made by the model, one for men (178) and one for women (162).
 
 ### Exercise 9
 
-In the Console, run `avg_predictions()` on `height_fit` with `by = "sex"`. 
+At the R prompt, run `avg_predictions()` on `height_fit`.
 
 CP/CR.
 
@@ -1892,16 +1742,16 @@ question_text(NULL,
 ```
 
 ```{r temperance-9-test, include = FALSE}
-avg_predictions(fit_height, by = "sex")
+avg_predictions(fit_height)
 ```
 
 ### 
 
-`by = "sex"` causes `avg_predictions()` to return separate predictions for male and female recruits.
+`avg_predictions()`, without any arguments, returns a single row, averaging all the individual predictions. In this case, the average prediction, 170 centimeters, is between the male and female predictions. 
 
 ### Exercise 10
 
-In the Console, run `plot_predictions()` on `height_fit` with `condition = "sex"`. 
+At the R prompt, run `avg_predictions()` on `height_fit` with `by = "sex"`.
 
 CP/CR.
 
@@ -1915,19 +1765,18 @@ question_text(NULL,
 ```
 
 ```{r temperance-10-test, include = FALSE}
-plot_predictions(fit_height, condition = "sex")
+avg_predictions(fit_height, by = "sex")
 ```
 
 ### 
 
+`by = "sex"` causes `avg_predictions()` to return separate predictions for male and female recruits.
 
 ### Exercise 11
 
-In the Console, run `plot_predictions()` on `fit_height` with `condition = "sex"` and `draw = FALSE`. 
+At the R prompt, run `plot_predictions()` on `height_fit` with `condition = "sex"`.
 
 CP/CR.
-
-<!-- DK: Really ought to explain condition versus by. -->
 
 ```{r temperance-11}
 question_text(NULL,
@@ -1939,6 +1788,30 @@ question_text(NULL,
 ```
 
 ```{r temperance-11-test, include = FALSE}
+plot_predictions(fit_height, condition = "sex")
+```
+
+### 
+
+
+### Exercise 12
+
+At the R prompt, run `plot_predictions()` on `fit_height` with `condition = "sex"` and `draw = FALSE`.
+
+CP/CR.
+
+<!-- DK: Really ought to explain condition versus by. -->
+
+```{r temperance-12}
+question_text(NULL,
+  answer(NULL, correct = TRUE),
+  allow_retry = TRUE,
+  try_again_button = "Edit Answer",
+  incorrect = NULL,
+  rows = 5)
+```
+
+```{r temperance-12-test, include = FALSE}
 plot_predictions(fit_height, 
                  condition = "sex",
                  draw = FALSE)
@@ -1949,15 +1822,15 @@ plot_predictions(fit_height,
 We use `draw = FALSE` to cause `plot_predictions()` to return a tibble with the numbers which underlie the plot instead of creating the plot itself.
 
 
-### Exercise 12
+### Exercise 13
 
-Work with AI to create a beautiful plot with the output from this function. Do this in your QMD since that is much easier than working in the Console directly.
+Work with AI to create a beautiful plot with the output from this function. Do this in your QMD since that is much easier than working at the R prompt directly.
 
 Your title should highlight the key variables. Your subtitle should describe the key takeaway, the sentence/conclusion which readers will, you hope, remember. Your caption should mention the data source. Your axis labels should look nice.
 
 Copy the code for your plot here:
 
-```{r temperance-12}
+```{r temperance-13}
 question_text(NULL,
   answer(NULL, correct = TRUE),
   allow_retry = TRUE,
@@ -2024,13 +1897,13 @@ ggplot(aes(x = sex,
 ````
 
 
-Data science often involves this-back-and-forth style of work. First, we need to make a single chunk of code, in this case, a new plot, work well. This requires interactive work between the QMD and the Console. Second, we need to ensure that the entire QMD runs correctly on its own.
+Data science often involves this back-and-forth style of work. First, we need to make a single chunk of code, in this case, a new plot, work well. This requires interactive work between the QMD and the R prompt. Second, we need to ensure that the entire QMD runs correctly on its own.
 
-### Exercise 13
+### Exercise 14
 
 Finalize the new graphics code chunk in your QMD. `Cmd/Ctrl + Shift + K` to ensure that it all works as intended. 
 
-At the Console, run:
+At the R prompt, run:
 
 ```
 tutorial.helpers::show_file("analysis.qmd", chunk = "Last")
@@ -2038,7 +1911,7 @@ tutorial.helpers::show_file("analysis.qmd", chunk = "Last")
 
 CP/CR.
 
-```{r temperance-13}
+```{r temperance-14}
 question_text(NULL,
   answer(NULL, correct = TRUE),
   allow_retry = TRUE,
@@ -2053,11 +1926,11 @@ question_text(NULL,
 Always [remember](https://en.wikipedia.org/wiki/Map%E2%80%93territory_relation): *The map is not the territory.* A beautiful graphic tells a story, but that story is always an imperfect representation of reality. Our models depend on assumptions, assumptions which are never completely true.
 
 
-### Exercise 14
+### Exercise 15
 
 Write the last sentence of your summary paragraph. It describes at least one quantity of interest (QoI) and provides a measure of uncertainty about that QoI. (It is OK if this QoI is not the one that you began with. The focus of a data science project often changes over time.)
 
-```{r temperance-14}
+```{r temperance-15}
 question_text(NULL,
   message = "Expected height of male (female) recruits will be 178 (162) centimeters with a 95% confidence interval of 176 to 181 (160 to 165).",
   answer(NULL, correct = TRUE),
@@ -2070,13 +1943,13 @@ question_text(NULL,
 
 Add a final sentence to your summary paragraph in your QMD as you see fit, but do not copy/paste our answer exactly. `Cmd/Ctrl + Shift + K`.
 
-### Exercise 15
+### Exercise 16
 
 Write a few sentences which explain why the estimates for the quantities of interest, and the uncertainty thereof, might be wrong. Suggest an alternative estimate and confidence interval, if you think either might be warranted.
 
-```{r temperance-15}
+```{r temperance-16}
 question_text(NULL,
-  message = "USMC Recruits are not necessarily representative of the larger population. They are more physically fit and, probably, taller. So, a better estimate for recruit heights would be slightly higher, with more uncertainty because of this issue.",
+  message = "USMC recruits are not necessarily representative of the larger population. They are more physically fit and, probably, taller. So, a better estimate for recruit heights would be slightly higher, with more uncertainty because of this issue.",
   answer(NULL, correct = TRUE),
   allow_retry = FALSE,
   incorrect = NULL,
@@ -2089,13 +1962,13 @@ Always go back to your Preceptor Table, the information which, if you had it, wo
 
 Whether or not to include these concerns in your QMD is up to you!
 
-### Exercise 16
+### Exercise 17
 
 Rearrange the material in your QMD so that the order is graphic, followed by the paragraph. Doing so, of course, requires sensible judgment. For example, the code chunk which creates the fitted model must occur before the chunk which creates the graphic. You can keep or discard the math and any other material at your own discretion.
 
 `Cmd/Ctrl + Shift + K` to ensure that everything works.
 
-At the Console, run:
+At the R prompt, run:
 
 ```
 tutorial.helpers::show_file("analysis.qmd")
@@ -2103,7 +1976,7 @@ tutorial.helpers::show_file("analysis.qmd")
 
 CP/CR.
 
-```{r temperance-16}
+```{r temperance-17}
 question_text(NULL,
   answer(NULL, correct = TRUE),
   allow_retry = TRUE,
@@ -2116,11 +1989,11 @@ question_text(NULL,
 
 This is the version of your QMD file which your teacher is most likely to take a close look at.
 
-### Exercise 17
+### Exercise 18
 
 Publish your rendered QMD to GitHub Pages. Copy/paste the resulting url below.
 
-```{r temperance-17}
+```{r temperance-18}
 question_text(NULL,
   answer(NULL, correct = TRUE),
   allow_retry = TRUE,
@@ -2133,11 +2006,11 @@ question_text(NULL,
 
 Commit/push everything.
 
-### Exercise 18
+### Exercise 19
 
 Copy/paste the url to your Github repo.
 
-```{r temperance-18}
+```{r temperance-19}
 question_text(NULL,
   answer(NULL, correct = TRUE),
   allow_retry = TRUE,
@@ -2185,7 +2058,7 @@ ggplot(aes(x = sex,
 People vary in height. Using data from the National Health and Nutrition Examination Survey conducted from 2009 to 2011 by the Centers for Disease Control and Prevention, we seek to estimate the average height of USMC recruits for the coming year. Since the participation for the survey is voluntary, it could mean that taller people are more likely to answer this question, thus hurting representativeness of the data. Expected height of male (female) recruits will be 178 (162) centimeters with a 95% confidence interval of 176 to 181 (160 to 165).
 
 
-USMC Recruits are not necessarily representative of the larger population. They are more physically fit and, probably, taller. So, a better estimate for recruit heights would be slightly higher, with more uncertainty because of this issue.
+USMC recruits are not necessarily representative of the larger population. They are more physically fit and, probably, taller. So, a better estimate for recruit heights would be slightly higher, with more uncertainty because of this issue.
 
 
 ```{r download-answers, child = system.file("child_documents/download_answers.Rmd", package = "tutorial.helpers")}

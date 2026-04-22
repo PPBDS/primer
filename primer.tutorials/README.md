@@ -45,12 +45,17 @@ in RStudio.
 
 If any of the following is happening to you
 <ul>
+
 <li>
+
 Cannot find the Tutorial pane
 </li>
+
 <li>
+
 Cannot find a tutorial called “Getting Started”
 </li>
+
 </ul>
 
 Then **remember to restart your R session** after installing the
@@ -62,7 +67,7 @@ upper right.
 
  
 
-<img src="man/figures/tutorial_pane.gif" width="75%" style="display: block; margin: auto;" />
+<img src="man/figures/tutorial_pane.gif" alt="" width="75%" style="display: block; margin: auto;" />
 
  
 
@@ -79,6 +84,51 @@ saved between RStudio sessions, meaning that you can complete a tutorial
 in multiple sittings. Once you have completed a tutorial, follow the
 instructions on the tutorial `Submit` page and (if you’re a student)
 submit the downloaded `rds` file as instructed.
+
+## Working environments and repo setup
+
+**The primary supported environment is VS Code on GitHub Codespaces,
+started from the
+[`PPBDS/codespace-starter`](https://github.com/PPBDS/codespace-starter)
+devcontainer.** The tutorial text is written assuming this setup. R,
+Quarto, and all the dependencies are installed in the container, so
+there is nothing to install on your own machine. Two local alternatives
+— Positron and VS Code running on your own machine — are supported but
+require you to install R, Quarto, and the tutorial packages yourself.
+
+**Before you start any exercise tutorial, create a GitHub repo named
+after that tutorial.** Use the tutorial’s *name*, not its number —
+`nhanes`, `trains`, `colleges`, `biden`, `shaming`, `nes`, `ces`,
+`governors`, `stops`. The repo should be **empty**: do *not* check the
+“Add a README” box, do *not* add a `.gitignore`, do *not* add a license.
+The tutorial walks you through creating those files once you’re inside
+the repo.
+
+### Starting a tutorial on Codespaces (primary)
+
+Go to
+[`PPBDS/codespace-starter`](https://github.com/PPBDS/codespace-starter),
+click **Use this template → Create a new repository**, and name the new
+repository after the tutorial you’re about to do (e.g. `nhanes`). Leave
+all the optional boxes unchecked — you want an empty copy of the
+template, not one with a README/gitignore/license added on top. Once the
+repo is created, open it in a Codespace from the **Code → Codespaces**
+button on the repo page. The dev container boots with R and Quarto
+already configured; proceed to Exercise 2 of the tutorial inside that
+Codespace.
+
+### Starting a tutorial locally (Positron or VS Code)
+
+If you prefer to work on your own machine, install R, Quarto, and
+`primer.tutorials` (see the Installation section above). Then create an
+empty GitHub repo named after the tutorial (no README, no `.gitignore`,
+no license), clone it to your machine with your usual workflow
+(`File → New Folder from Git` in Positron; `git clone` followed by
+opening the folder in VS Code), and open the repo in your editor.
+Proceed to Exercise 2.
+
+Regardless of mode, by the time you reach Exercise 2 you should be
+sitting inside an empty repo whose name matches the tutorial.
 
 ## Re-installation
 

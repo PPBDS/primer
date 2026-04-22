@@ -281,8 +281,8 @@ library(learnr)
 library(tutorial.helpers)
 library(gt)
 
-# Packages below are what we want students to load themselves in the
-# Console/QMD. They are listed in the tutorial so that (a) we have access
+# Packages below are what we want students to load themselves at the
+# R prompt / in the QMD. They are listed in the tutorial so that (a) we have access
 # to their functions for rendering, and (b) students get a knowledge drop
 # for each.
 
@@ -447,13 +447,15 @@ question_text(NULL,
 ```
 ```
 
-### 7.4 Operational conventions: "CP/CR" and `show_file()`
+### 7.4 Operational conventions: "CP/CR", `show_file()`, and "the R prompt"
 
 Many operational exercises end with the string **CP/CR**, short for *Copy-Paste / Command-Response*. Students know what it means by the time they get past the first tutorial. Exception: the **very first tutorial** should spell it out once, inside the exercise Start, before using it as shorthand.
 
-`show_file()` (from `tutorial.helpers`) prints the contents of a file in the student's project. The usual pattern: the student does something in their QMD, then runs `show_file("XX.qmd", chunk = "Last")` in the Console to display the last chunk, copies the Console output, and pastes it back into the tutorial. `chunk = "Last"` is preferred over `start = -N` because it's more robust. We never actually check what they paste; the threat of checking is the point.
+`show_file()` (from `tutorial.helpers`) prints the contents of a file in the student's project. The usual pattern: the student does something in their QMD, then runs `show_file("XX.qmd", chunk = "Last")` at the R prompt to display the last chunk, copies the output, and pastes it back into the tutorial. `chunk = "Last"` is preferred over `start = -N` because it's more robust. We never actually check what they paste; the threat of checking is the point.
 
 The `Cmd/Ctrl + Shift + K` keystroke renders the QMD. Use it often — rendering catches bugs early, and professionals do it.
+
+**"At the R prompt" is the canonical phrasing for running code interactively.** Do not say "in the Console" — that term is Positron- and RStudio-specific and does not translate to the VS Code / Codespaces primary environment (§README). When an exercise asks the student to run something interactively rather than by rendering the QMD, use **"At the R prompt, run …"** (or *"At the R prompt, type …"*). When describing the `Cmd/Ctrl + Enter` workflow, say the line is **"sent to the R prompt"** rather than "copied down to the Console." The metaphor is pane-neutral: every supported environment has an R prompt somewhere, even if its on-screen label varies.
 
 ---
 
@@ -1293,7 +1295,7 @@ Canonical definitions from §11 appropriate here: Courage, Data Generating Mecha
 > *In data science, we deal with words, math, and code, but the most important of these is code. We created the mathematical structure of the model and then wrote a model formula in order to estimate the unknown parameters.*
 
 **On workspace awareness.**
-> *Just because something exists in the tutorial (or in the QMD) does not mean that it is in the Console. You should be aware of what exists in R World, which is generally called your "workspace."*
+> *Just because something exists in the tutorial (or in the QMD) does not mean that it is at the R prompt. You should be aware of what exists in R World, which is generally called your "workspace."*
 
 **On why easystats isn't in the QMD.**
 > *We don't add easystats to the QMD because we are only using it for an interactive check of our fitted model. However, the [easystats ecosystem](https://easystats.github.io/easystats/) has a variety of interesting functions and packages which you might want to explore.*
@@ -1366,7 +1368,7 @@ Canonical definitions from §11 appropriate here: Temperance, Preceptor's Poster
 > *Numeric variables are harder to use in comparisons than binary variables because there are no longer two well-defined groups. We must create those two groups ourselves. As long as there are no interaction terms, we can pick two groups with any values. The most common two groups differ by one unit of the variable.*
 
 **On back-and-forth in data science.**
-> *Data science often involves back-and-forth work. First, make a single chunk of code — say, a new plot — work well. This requires interactive work between the QMD and the Console. Second, ensure that the entire QMD runs correctly on its own.*
+> *Data science often involves back-and-forth work. First, make a single chunk of code — say, a new plot — work well. This requires interactive work between the QMD and the R prompt. Second, ensure that the entire QMD runs correctly on its own.*
 
 **On the map and the territory.**
 > *Always remember: the map is not the territory. A beautiful graphic tells a story, but that story is always an imperfect representation of reality. Our models depend on assumptions that are never completely true.*
@@ -1406,6 +1408,25 @@ Within a section, keep exercises in the order given. Not every tutorial includes
 - **`marginaleffects` coverage** (§13.5 Temperance): Easy = `predictions()` family only; Medium adds `comparisons()`; Difficult adds the five-decisions framework and grid types. Slopes are never introduced.
 - **Preceptor/Population Table footnote depth** (§10): Easy footnotes include scaffolding (what a Preceptor Table *is*; per-row causal-effect arithmetic); Medium and Difficult drop the scaffolding and deepen the remaining footnotes. Details in §1.3 *Worked example: Preceptor Table and Population Table footnote sophistication*.
 - **Validity/stability/representativeness/unconfoundedness progressions** (§1.3): each has an Easy → Medium → Difficult treatment; consult §1.3 when drafting the Justice exercises for that assumption.
+- **Introduction pacing** (§13.1): Easy = slower, more explanatory prose before each operational step, split long exercises into shorter ones; Medium = current Introduction-exercise pace; Hard = faster, collapse related operational exercises, drop background knowledge drops students have seen several times already.
+- **Introduction Exercises 7 & 8 (causal definitions)** (§13.1): causal tutorials only (positions 2, 4, 6, 8, 10, 12). Easy causal = both; Medium causal = one; Hard causal = neither, except the last causal tutorial (position 12) = both. Predictive tutorials skip both.
+- **Introduction Exercises 10–14 (causal / predictive setup block)** (§13.1): each tutorial uses *either* the causal block (10–12) *or* the predictive block (13–14), never both. Easy = full block (10/11/12 for causal, 13/14 for predictive). Medium = single setup question only (Ex 12 for causal, Ex 14 for predictive). Hard = drop 10–14 entirely. Ex 15 (state the question) appears in every tutorial at every tier. Use the real treatment variable from §17 in causal tutorials — no imaginary placeholder variables.
+- **Virtue Exercise 1 (canonical definition)** — Wisdom §13.2 Ex 1, Justice §13.3 Ex 1, Courage §13.4 Ex 1, Temperance §13.5 Ex 1: Easy asks all four (one per virtue section, every tutorial). Medium asks only two of the four per tutorial, rotating across the four Medium tutorials so each definition is asked twice. Hard asks only one per tutorial, *except* the last tutorial of the whole curriculum (position 12), which asks all four as a retention check. **When a virtue's Exercise 1 is skipped, the definition appears in that virtue's preamble as a reminder sentence** (e.g. *"Remember that Courage creates the data generating mechanism."*) — the preamble absorbs what the exercise would have asked. Suggested schedule in §13 Virtue-definition rotation below.
+
+**Virtue-definition rotation (suggested).** Which two of the four canonical definitions each Medium tutorial asks, and which one each Hard tutorial asks:
+
+| Position | Tutorial | Tier | Ex 1 asks |
+|---|---|---|---|
+| 5 | 10 Biden | Medium-P | Wisdom, Justice |
+| 6 | 11 Shaming | Medium-C | Courage, Temperance |
+| 7 | 12 NES | Medium-P | Wisdom, Courage |
+| 8 | 13 TODO | Medium-C | Justice, Temperance |
+| 9 | 14 CES | Hard-P | Temperance |
+| 10 | 15 Governors | Hard-C | Wisdom |
+| 11 | 16 Stops/RF | Hard-P | Justice |
+| 12 | 17 TODO | Hard-C (last) | **all four** |
+
+Each canonical definition is asked exactly twice across the four Medium tutorials and exactly once across Hard positions 9–11, then again at position 12. The schedule is a suggestion; adjacent tutorials should not repeat the same pair, and the author can rotate differently if it reads better. In every virtue-section preamble, include a *"Remember that …"* reminder for any canonical definition that is not asked at Ex 1 in that tutorial.
 
 If a tutorial is being drafted without a pre-flight tier check, the default is Medium — and Medium wording *will be wrong* for every Easy tutorial (target tutorials 06–09, positions 1–4) and every Hard tutorial (target tutorials 14–17, positions 9–12). The pre-flight is cheap; skipping it is how model-checking exercises ended up in the NHANES tutorial (position 1, Easy).
 
@@ -1413,14 +1434,25 @@ If a tutorial is being drafted without a pre-flight tier check, the default is M
 
 The Introduction preamble opens with the bookend sentence *The world confronts us. Make decisions we must.* This sentence appears at both ends of every tutorial — it also closes the Temperance section (§13.5 Exercise 17 End). After this opening sentence comes a single "Imagine that you are …" paragraph that motivates the problem with a real person facing real decisions. The paragraph always starts with "Imagine that you are …" and always ends with "There are many decisions to make." The same paragraph is used in the matching chapter.
 
+**Pacing across the EMH tiers.** The Introduction is mostly operational — repo setup, adding libraries to the QMD, turning off code echo, sending commands to the R prompt, etc. The exercise list below is pitched at **Medium** pace: concise, one operational step per exercise, assuming the student has been through this workflow once before. The pace changes with tier:
+
+- **Easy** (positions 1–4, tutorials 06–09). Slower. Expand each operational exercise with more explanatory prose *before* the step — what a `.gitignore` does and why we need one; what `echo: false` does to the rendered document and why we care; what `Cmd/Ctrl + Enter` does and why we want code in the QMD rather than at the R prompt. Split a long exercise into two or three short ones if the student would otherwise have to track multiple unfamiliar steps at once. Add knowledge drops that teach the *concept* behind each mechanic (why QMD World and R World must stay in sync, what "rendering" actually does). Students at this stage have never done this before — silence is not a feature.
+- **Medium** (positions 5–8, tutorials 10–13). Current pace. The exercise list below is calibrated here: one step per exercise, minimal lead-in prose, concepts assumed.
+- **Hard** (positions 9–12, tutorials 14–17). Faster. Collapse sequences of related operational exercises into a single exercise (e.g. "add libraries, turn off echo, and commit the QMD — paste the result"). Drop explanatory knowledge drops that at Easy and Medium we kept for their own sake. Students at this stage have been through the setup six or more times and do not need it re-explained; keep the operational scaffold, but shrink it.
+
+This progression applies to every Introduction exercise below unless the exercise is explicitly flagged otherwise.
+
 **Exercise 1.** [canonical] Four Cardinal Virtues.
 - Prompt: *What are the four [Cardinal Virtues](https://en.wikipedia.org/wiki/Cardinal_virtues), in order, which we use to guide our data science work?*
 - Message: `"Wisdom, Justice, Courage, and Temperance."`
 - End: knowledge drop *On spaced repetition* (§12.1).
 
-**Exercise 2.** [operational] Create a GitHub repo.
-- Prompt: *Create a GitHub repo called `XX`. Make sure to click the "Add a README file" checkbox. Connect the repo to a project on your computer using `File -> New Folder from Git ...`. Select "Open in a new window." You need two editor windows: this one for the tutorial, and the one you just created for your code and Console. Select `File -> New File -> Quarto Document ...`. Provide a title — `"XX"` — and an author. Render the document and save it as `XX.qmd`. Create a `.gitignore` file with `XX_files` on the first line followed by a blank line. Save and push. In the Console, run `show_file(".gitignore")`. If that fails, it's probably because you haven't loaded `library(tutorial.helpers)` in the Console. CP/CR.*
-- In the **first** tutorial, spell out CP/CR as "copy the Console output and paste it in the Response" on first use.
+**Exercise 2.** [operational] Confirm working repo and set up the QMD.
+- The primary assumed environment is **VS Code on GitHub Codespaces**, started from the [`PPBDS/codespace-starter`](https://github.com/PPBDS/codespace-starter) devcontainer. The repo — named after the tutorial (e.g. `nhanes`) and initially empty — is expected to already exist, since the student must have created it to launch the Codespace. Positron-local and VS-Code-local are supported alternatives documented in the `primer.tutorials` package README, not in the tutorial text.
+- Prompt: *You should be working inside a GitHub repo named `XX`, opened in a Codespace from the [`PPBDS/codespace-starter`](https://github.com/PPBDS/codespace-starter) template. If you are not there yet, please create that repo and open it in a Codespace now — see the [package README](https://github.com/PPBDS/primer/tree/main/primer.tutorials#working-environments-and-repo-setup) if you need setup instructions or are working locally instead. Once you're inside the `XX` repo, create a new Quarto document titled `"XX"` with yourself as the author, render it, and save it as `analysis.qmd`. Create a `.gitignore` file with `analysis_files` on the first line followed by a blank line. Save and push. At the R prompt, run `show_file(".gitignore")`. If that fails, it's probably because you haven't loaded `library(tutorial.helpers)` at the R prompt. CP/CR.*
+- The prompt does **not** spell out the IDE-specific mechanics for creating a new Quarto document — no "File → New File → ..." menu path, no mention of a specific pane or button. Assume students know how to create a new document in whatever IDE they are using. The Codespaces-primary / locally-supported framing handles environment differences; mechanics that vary by IDE do not belong here.
+- The QMD's filename is `analysis.qmd` by default in all tutorials (earlier tutorials used per-topic filenames like `immigration.qmd`; new tutorials should stick with `analysis.qmd` for consistency).
+- In the **first** tutorial, spell out CP/CR as "copy the R-prompt output and paste it in the Response" on first use.
 - End: *Professionals keep their data science work in the cloud because laptops fail.*
 
 **Exercise 3.** [operational] Add libraries and echo settings to QMD.
@@ -1429,28 +1461,36 @@ The Introduction preamble opens with the bookend sentence *The world confronts u
   execute:
     echo: false
   ```
-- *In the Console, run `show_file("XX.qmd", chunk = "Last")`. CP/CR.*
+- *At the R prompt, run `show_file("XX.qmd", chunk = "Last")`. CP/CR.*
 - End: *Render again. Everything looks nice, albeit empty, because we have added code to make the file look better and more professional.*
 
 **Exercise 4.** [operational] `library(tidyverse)` via `Cmd/Ctrl + Enter`.
-- Prompt: *Place your cursor in the QMD file on the `library(tidyverse)` line. Use `Cmd/Ctrl + Enter` to execute that line. Note that this copies the line to the Console and runs it. CP/CR.*
+- Prompt: *Place your cursor in the QMD file on the `library(tidyverse)` line. Use `Cmd/Ctrl + Enter` to execute that line. Note that this sends the line to the R prompt and runs it. CP/CR.*
 - (No End before next exercise; this runs into the next one naturally.)
 
 **Exercise 5.** [operational] Next `library()` via `Cmd/Ctrl + Enter`.
-- Prompt: *Place your cursor in the QMD file on the next `library()` line. Use `Cmd/Ctrl + Enter` to execute that line. This workflow — writing things in the QMD so you have a permanent copy, and then executing them in the Console with `Cmd/Ctrl + Enter` — is the most common approach to data science. There is QMD World and R World. It is your responsibility to keep them in sync. CP/CR.*
+- Prompt: *Place your cursor in the QMD file on the next `library()` line. Use `Cmd/Ctrl + Enter` to execute that line. This workflow — writing things in the QMD so you have a permanent copy, and then executing them at the R prompt with `Cmd/Ctrl + Enter` — is the most common approach to data science. There is QMD World and R World. It is your responsibility to keep them in sync. CP/CR.*
 - End: introduce the data: "A version of the data from XX is available in the `XX` tibble."
 
 **Exercise 6.** [operational] Read the `?<tibble>` help.
-- Prompt: *In the Console, type `?XX`, and paste the Description below.*
+- Prompt: *At the R prompt, type `?XX`, and paste the Description below.*
 - Only include if the tibble has a help page. Delete if not.
 - End: short paragraph of context about the data (paper abstract, source website quote).
 
-**Exercise 7.** [canonical] Define a causal effect.
+**Exercises 7 and 8 are causal-only with a spaced-repetition schedule.** Neither exercise appears in predictive tutorials. Across causal tutorials (positions 2, 4, 6, 8, 10, 12), the pattern is:
+
+- **Easy causal tutorials** (positions 2 Trains, 4 TODO): include **both** Exercise 7 and Exercise 8.
+- **Medium causal tutorials** (positions 6 Shaming, 8 TODO): include **one** of Exercise 7 or Exercise 8, not both. Alternate across the two Medium causal tutorials so each question appears once at this tier.
+- **Hard causal tutorials**: include **neither** — *except* in the **very last causal tutorial of the whole curriculum** (position 12), where both reappear. The final reappearance is a retention check: a student who has seen these definitions early, halved in the middle, and absent in the Hard tier should be able to produce them on recall three months after finishing.
+
+Predictive tutorials (positions 1, 3, 5, 7, 9, 11) skip both Exercise 7 and Exercise 8 entirely, and renumber subsequent Introduction exercises accordingly.
+
+**Exercise 7.** [canonical, causal-only] Define a causal effect.
 - Prompt: *Define a causal effect.*
 - Message: `"A causal effect is the difference between two potential outcomes."`
 - End: *According to the Rubin Causal Model, there must be two (or more) potential outcomes for any discussion of causation to make sense. This is simplest to discuss when the treatment has only two different values, generating only two potential outcomes.*
 
-**Exercise 8.** [canonical] Fundamental problem of causal inference.
+**Exercise 8.** [canonical, causal-only] Fundamental problem of causal inference.
 - Prompt: *What is the fundamental problem of causal inference?*
 - Message: `"The fundamental problem of causal inference is that we can only observe one potential outcome."`
 - End: *If the treatment variable is continuous (like a lottery payment), then there are lots and lots of potential outcomes, one for each possible value of the treatment variable.*
@@ -1460,35 +1500,46 @@ The Introduction preamble opens with the bookend sentence *The world confronts u
 - Message: a sentence about the outcome variable used.
 - End: *We will use `XX` as our outcome variable.* Follow with a simple AI-generated plot of the outcome (univariate or bivariate; bivariate should use a non-key covariate). Subtitle highlights an aspect of the data. No code chunk label.
 
-**Exercise 10.** [per-tutorial, written-with-answer] An imaginary binary treatment.
-- Prompt: *Let's imagine a brand new variable which does not exist in the data. This variable should be binary — it only takes on one of two values — and, at least in theory, manipulable. Describe this imaginary variable and how we might manipulate its value.*
-- Message pattern: concrete example of such a variable with `` `backticks` `` around its name, e.g. *"Imagine a variable called `phone_call` which has value 1 if the person received a call urging them to vote and 0 otherwise. We, the organization making the calls, can manipulate this variable by deciding whether to call a specific individual."*
-- (If this is a causal model, also include these two sentences in the Start: *For now, ignore the actual treatment variable `XX` which we will use later. The point of this exercise is to reinforce our understanding of the Rubin Causal Model.*)
+**Exercises 10–14 are split by tutorial type AND by EMH tier.** Each tutorial includes *either* the causal block (Ex 10–12) *or* the predictive block (Ex 13–14), never both. Ex 15 (state the question) is shared by both and always appears. Mixing them — asking a predictive tutorial's student to also reason about potential outcomes for an imagined treatment, or asking a causal tutorial's student to also reason about two predictive groups — makes this section too long and muddles the framing the tutorial is actually using.
+
+**Causal tutorials use Exercises 10–12; predictive tutorials use Exercises 13–14.** For causal tutorials, use the **actual treatment variable** the tutorial plans to use later in Wisdom and Courage. Drop the older "imaginary variable" framing entirely — no `phone_call` or `nutrition_program` placeholders; the treatment is the real one from §17.
+
+**EMH progression across these exercises:**
+- **Easy** (positions 1–4, tutorials 06–09). Use the full block. Causal tutorials do Ex 10, 11, 12, 15. Predictive tutorials do Ex 13, 14, 15. These questions do overlap somewhat with Wisdom — that is fine at Easy; the repetition reinforces the framing at the point in the tutorial where students most need it.
+- **Medium** (positions 5–8, tutorials 10–13). One setup question plus the question-statement. Causal tutorials do only Ex 12 (compute a unit-level causal effect) and Ex 15. Predictive tutorials do only Ex 14 (two groups that might differ) and Ex 15. The Rubin Causal Model and associational-language knowledge drops are compressed into the End of the single retained setup question; Wisdom does the heavier framing at this tier.
+- **Hard** (positions 9–12, tutorials 14–17). Drop Ex 10–14 entirely. Only Ex 15 (state the question) remains. The Introduction is considerably shorter at Hard — which is right, because students at this stage have rehearsed the framing many times and need to get to Wisdom.
+
+The `[per-tutorial, written-with-answer]` tag below applies across all three tiers; the axis that changes is *whether the exercise appears at all*, not the question format.
+
+**Exercise 10.** [per-tutorial, written-with-answer; causal only, Easy only] Introduce the actual treatment variable.
+- Prompt: *Our treatment variable will be `XX`, which can take [values]. Describe briefly what each value means and how, at least in theory, it is manipulable.*
+- Message pattern: concrete one-sentence-each description of each treatment value plus a sentence on who can manipulate it. E.g., for Trains: *"`treatment` takes two values: 'Treated' if the commuter was on a platform during the two-week window when Spanish-speaking confederates rode, or 'Control' otherwise. Enos, the experimenter, manipulated this variable by assigning which platforms the confederates rode on."*
 - End: *Any data set can be used to construct a causal model as long as there is at least one covariate that we can, at least in theory, manipulate. It does not matter whether or not anyone did, in fact, manipulate it.*
 
-**Exercise 11.** [per-tutorial, written-with-answer] Count potential outcomes for binary treatment.
-- Prompt: *Given our (imaginary) treatment variable `XX`, how many potential outcomes are there for each unit? Explain why.*
-- Message pattern: *"There are two potential outcomes because the treatment variable `XX` takes on two possible values: XX."*
+**Exercise 11.** [per-tutorial, written-with-answer; causal only, Easy only] Count potential outcomes.
+- Prompt: *Given our treatment variable `XX`, how many potential outcomes are there for each unit? Explain why.*
+- Message pattern: *"There are [N] potential outcomes because the treatment variable `XX` takes on [N] possible values: …"* For a binary treatment N is 2; for a multi-arm treatment state the exact number and name the arms.
 - End: *The same data set can be used to create, separately, lots and lots of different models, both causal and predictive. This is a conceptual framework we apply to the data. It is never inherent in the data itself.*
 
-**Exercise 12.** [per-tutorial, written-with-answer] Compute a unit-level causal effect.
-- Prompt: *Specify two different values for the imaginary treatment variable `XX`, for a single unit; guess the potential outcomes; and calculate the causal effect for that unit given those guesses.*
-- Message pattern: *"For a given [unit], assume the treatment variable could be [treatment] or [control]. If the unit gets [treatment], the outcome would be [value A]. If the unit gets [control], the outcome would be [value B]. The causal effect on the outcome of a treatment of [treatment] versus [control] is [value A] − [value B] = [difference], which is the causal effect for this unit."*
+**Exercise 12.** [per-tutorial, written-with-answer; causal only, Easy and Medium] Compute a unit-level causal effect.
+- Prompt: *Pick a single [unit] from the data. Specify the two values the treatment variable `XX` could take for that unit, guess the potential outcome under each, and compute the causal effect for that unit.*
+- Message pattern: *"For [specific named unit] in the data, `XX` could be [treatment value] or [control value]. If the unit gets [treatment], the outcome would be [value A]. If the unit gets [control], the outcome would be [value B]. The causal effect on the outcome of [treatment] versus [control] is [value A] − [value B] = [difference], which is the causal effect for this unit."*
 - End: *A causal effect is the difference between two potential outcomes. "Difference" does not necessarily mean "subtraction" — many potential outcomes are not numbers. Even for numeric outcomes, you can't simply say the effect is 10 without specifying the order of subtraction.*
 
-**Exercise 13.** [per-tutorial, written-with-answer] Predictive covariate of interest.
-- Prompt: *Let's consider a predictive model. Which variable in `<tibble>` do you think might have an important connection to `<outcome>`?*
+**Exercise 13.** [per-tutorial, written-with-answer; predictive only, Easy only] Predictive covariate of interest.
+- Prompt: *Which variable in `<tibble>` do you think might have an important connection to `<outcome>`?*
 - Message pattern: brief description of one key covariate whose connection we might want to explore.
 - End: *With a predictive model, each individual unit has only one observed outcome. Predictive models have no "treatments" — only covariates.*
 
-**Exercise 14.** [per-tutorial, written-with-answer] Two groups that might differ.
+**Exercise 14.** [per-tutorial, written-with-answer; predictive only, Easy and Medium] Two groups that might differ.
 - Prompt: *Specify two different groups of [units] which have different values for [covariate] and which might have different average values for the [outcome].*
 - Message pattern: *"Consider two groups: one with [covariate] = [value A], one with [covariate] = [value B]. These two groups might have different average values for the outcome."*
 - End: *In predictive models, do not use "cause," "influence," "impact," or similar words. The best phrasing is in terms of "differences" between groups of units with different values for a covariate of interest.*
 
 **Exercise 15.** [per-tutorial, written-with-answer] State the question.
-- Prompt: *Write a [causal or predictive] question connecting the outcome `XX` to `XX`, the covariate of interest.*
-- Message pattern: the specific question. Causal: "What is the average causal effect of [treatment] on [outcome]?" Predictive: "What is the difference in [outcome] between [group A] and [group B]?"
+- **Appears in every tutorial at every tier** — this is the one exercise in the causal/predictive block that every tutorial keeps.
+- Prompt: *Write a [causal or predictive] question connecting the outcome `XX` to `XX`, the [treatment / covariate of interest].*
+- Message pattern: the specific question. Causal: *"What is the average causal effect of [treatment] on [outcome]?"* Predictive: *"What is the difference in [outcome] between [group A] and [group B]?"*
 - End: *This is the first version of the question. We will now create a Preceptor Table to answer the question. We may then revise the question given complexities discovered in the data. And so on.*
 
 ### 13.2 Wisdom
@@ -1503,9 +1554,10 @@ By the end of Wisdom, the student has a specific question, a Preceptor Table tha
 4. **One or two sentences naming the dataset.** The Introduction identifies the dataset; Wisdom is where we will explore it. Write as a plain statement — *"We will work from the NHANES survey (conducted by the CDC), available in the `nhanes` tibble of the `primer.data` package."* Do not make claims about what the data will show, and do not mention measurement or validity concerns — those come later.
 5. A Continue button (`###` with no heading) before `### Exercise 1`.
 
-Per §14.6, the preamble does **not** describe what Wisdom does; Exercise 1 below asks the student to describe Wisdom using the canonical §11 wording.
+Per §14.6, the preamble does **not** describe what Wisdom does; Exercise 1 below asks the student to describe Wisdom using the canonical §11 wording. *Exception:* when Exercise 1 is skipped (Medium tutorials not on the Wisdom rotation, Hard tutorials not on the Wisdom rotation; see §13 pre-flight list), add the canonical definition to this preamble as a reminder — *"Remember that Wisdom begins with a question and then moves on to the creation of a Preceptor Table and an examination of our data."* The reminder replaces the exercise; preamble absorbs what Ex 1 would have asked.
 
-**Exercise 1.** [canonical] Components of Wisdom.
+**Exercise 1.** [canonical, tier-dependent presence] Components of Wisdom.
+- **Tier:** Easy = always ask; Medium = ask in 2 of the 4 Medium tutorials per the rotation in §13's pre-flight list; Hard = ask only in position 12 (last tutorial, all four definitions) and in one other Hard position per the rotation. When *not* asked, the Wisdom preamble (§13.2) includes a *"Remember that …"* reminder with the canonical definition verbatim.
 - Prompt: *In your own words, describe the key components of Wisdom when working on a data science problem.*
 - Message: `"Wisdom begins with a question and then moves on to the creation of a Preceptor Table and an examination of our data."`
 - End: the Tukey walk-away quote (§12.2).
@@ -1569,7 +1621,7 @@ If the modeling requires a cleaned tibble `x` (e.g., filtering to one year, drop
 
 ### 13.3 Justice
 
-**Preamble (between `## Justice` header and Exercise 1).** Per the self-containment principle in §5.5, the Justice preamble revisits the two outputs from Wisdom that Justice needs. Per §14.6, it does not describe what Justice does — Exercise 1 does that. Contents, in order:
+**Preamble (between `## Justice` header and Exercise 1).** Per the self-containment principle in §5.5, the Justice preamble revisits the two outputs from Wisdom that Justice needs. Per §14.6, it does not describe what Justice does — Exercise 1 does that. *Exception:* when Exercise 1 is skipped in this tutorial (per the rotation in the §13 pre-flight list), add the canonical definition to this preamble as a reminder — *"Remember that Justice concerns the Population Table and the four key assumptions which underlie it: validity, stability, representativeness, and unconfoundedness."* The reminder replaces the exercise. Contents, in order:
 
 1. **The Preceptor Table from Wisdom**, rendered via the §10.3 `gt` pipeline. An exact copy — same tibble, same footnotes, same code. Prefaced by one sentence — something like *"Recall the Preceptor Table we built in Wisdom:"* — so a reader coming in cold knows what it is. Do not alter the Preceptor Table here; if it needs changing, change it in Wisdom too.
 2. **A `gt` table of the data** — a companion to the Preceptor Table. Show 3–5 sample rows (plus a `"..."` row) with the same columns the data has for the outcome and the most important covariates. This is the first time in the tutorial the reader sees the actual data as a formatted table; prior exposure is as raw tibble print-outs. Specifications:
@@ -1584,7 +1636,8 @@ If the modeling requires a cleaned tibble `x` (e.g., filtering to one year, drop
 
 Parts 1 and 2 are deliberately repetitive with Wisdom — same Preceptor Table, same data a reader has already seen in an EDA plot. That is the point: a reader who skipped Wisdom can still start Justice, and a reader who didn't gets a useful refresher. See §5.5.
 
-**Exercise 1.** [canonical] Components of Justice.
+**Exercise 1.** [canonical, tier-dependent presence] Components of Justice.
+- **Tier:** See §13 pre-flight list for the rotation. When *not* asked, the Justice preamble (§13.3) includes a *"Remember that …"* reminder with the canonical definition verbatim.
 - Prompt: *In your own words, name the five key components of Justice when working on a data science problem.*
 - Message: `"Justice concerns the Population Table and the four key assumptions which underlie it: validity, stability, representativeness, and unconfoundedness."`
 - End: *Justice is about concerns that you (or your critics) might have, reasons why the model you create might not work as well as you hope.*
@@ -1645,7 +1698,7 @@ Parts 1 and 2 are deliberately repetitive with Wisdom — same Preceptor Table, 
 - End: the randomization-failing knowledge drop (§12.3).
 
 **Exercise 13.** [operational] Load the modeling package.
-- Prompt: *A statistical model consists of two parts: the probability family and the link function. The probability family is the probability distribution which generates the randomness in our data. The link function is the mathematical formula which links our data to the unknown parameters. Add `library(tidymodels)` to the QMD file. Place your cursor on that line. Use `Cmd/Ctrl + Enter` to execute. Note that this copies the line to the Console. CP/CR.*
+- Prompt: *A statistical model consists of two parts: the probability family and the link function. The probability family is the probability distribution which generates the randomness in our data. The link function is the mathematical formula which links our data to the unknown parameters. Add `library(tidymodels)` to the QMD file. Place your cursor on that line. Use `Cmd/Ctrl + Enter` to execute. Note that this sends the line to the R prompt. CP/CR.*
 - End: the probability family is determined by the outcome variable $Y$. Pick the relevant one:
   - Continuous → Normal: $Y \sim N(\mu, \sigma^2)$
   - Binary → Bernoulli: $Y \sim \text{Bernoulli}(\rho)$
@@ -1669,7 +1722,7 @@ Parts 1 and 2 are deliberately repetitive with Wisdom — same Preceptor Table, 
 
 ### 13.4 Courage
 
-**Preamble (between `## Courage` header and Exercise 1).** Per the self-containment principle in §5.5, the Courage preamble revisits the two outputs from earlier virtues that Courage needs. Per §14.6, it does not describe what Courage does — Exercise 1 does that. Contents, in order:
+**Preamble (between `## Courage` header and Exercise 1).** Per the self-containment principle in §5.5, the Courage preamble revisits the two outputs from earlier virtues that Courage needs. Per §14.6, it does not describe what Courage does — Exercise 1 does that. *Exception:* when Exercise 1 is skipped in this tutorial (per the rotation in the §13 pre-flight list), add the canonical definition to this preamble as a reminder — *"Remember that Courage creates the data generating mechanism."* The reminder replaces the exercise. Contents, in order:
 
 1. **The Population Table from Justice**, rendered via the §10.4 `gt` pipeline. Prefaced by one sentence of context — something like *"Recall the Population Table we built in Justice:"* — so a reader coming in cold knows what it is.
 2. **The abstract mathematical form of the DGM** — the functional family chosen at the end of Justice (Normal / Bernoulli / multinomial / cumulative). Pull the block from §13.7. Use plain `N(0, \sigma^2)` for the error term, not `\mathcal{N}` (§13.5, same learnr MathJax bug applies here). Accompany with the knowledge drop: *We use generic variables — $Y$, $X_1$, and so on — because our purpose is to describe the general mathematical structure of the model, independent of the specific variables we will eventually use.*
@@ -1681,7 +1734,8 @@ Parts 1 and 2 are deliberately repetitive with Justice — they show the same Po
 
 **Model-checking staging.** Exercises 9 and 10 below (load `easystats`, run `check_predictions()`) are **Medium-tier** as written. In **Easy-tier** tutorials, replace them with a single exercise that shows an author-produced side-by-side plot of outcome distribution vs. fitted-value distribution (no student code, view-and-Continue pattern) — or in the first two example tutorials, omit model checking entirely. In **Difficult-tier** tutorials, add a follow-up exercise that uses the check to drive a model revision and then re-runs the check on the improved model. The full progression is in §1.3 (Worked example: model checking across three levels).
 
-**Exercise 1.** [canonical] Components of Courage.
+**Exercise 1.** [canonical, tier-dependent presence] Components of Courage.
+- **Tier:** See §13 pre-flight list for the rotation. When *not* asked, the Courage preamble (§13.4) includes a *"Remember that …"* reminder with the canonical definition verbatim.
 - Prompt: *In your own words, describe the components of the virtue of Courage for analyzing data.*
 - Message: `"Courage creates the data generating mechanism."`
 - End: *Having decided on the basic mathematical structure of the model at the end of Justice — a choice mostly driven by the distribution of our outcome variable — we now turn toward estimating the model.*
@@ -1712,7 +1766,7 @@ Parts 1 and 2 are deliberately repetitive with Justice — they show the same Po
 - End: the code-being-primary knowledge drop (§12.4).
 
 **Exercise 8.** [operational] Bring `fit_<n>` into R World.
-- Prompt: *We need `fit_<n>` to exist in R World. Copy/paste this code into the Console and execute it:*
+- Prompt: *We need `fit_<n>` to exist in R World. Copy/paste this code to the R prompt and execute it:*
   ```
   fit_<n> <- <model spec> |>
     fit(<formula>, data = <tibble>)
@@ -1720,14 +1774,14 @@ Parts 1 and 2 are deliberately repetitive with Justice — they show the same Po
 - *CP/CR.*
 - End: the workspace-awareness knowledge drop (§12.4).
 
-**Exercise 9.** [operational] Load easystats in the Console.
+**Exercise 9.** [operational] Load easystats at the R prompt.
 - **Tier:** Medium only. **Omit entirely** in positions 1–2 (target tutorials 06 NHANES, 07 Trains). In the remaining Easy positions 3–4 (target tutorials 08 Colleges, 09 TODO), replace both Exercises 9 and 10 with a single author-rendered side-by-side plot of outcome distribution vs. fitted-value distribution — the student views it and hits Continue; no package loaded, no terminology introduced. In Hard positions 9–10 (target tutorials 14 CES, 15 Governors), keep Exercises 9–10 and add a follow-up exercise that uses the check to drive a model revision. In Hard positions 11–12 (random forest tutorials), drop the model-checking block entirely per §14.8. Full progression in §1.3 *Worked example: model checking across three levels*.
-- Prompt: *In the Console, load the [easystats](https://easystats.github.io/easystats/) package. CP/CR.*
+- Prompt: *At the R prompt, load the [easystats](https://easystats.github.io/easystats/) package. CP/CR.*
 - End: the why-easystats-isn't-in-the-QMD knowledge drop (§12.4).
 
 **Exercise 10.** [operational] Run `check_predictions()`.
 - **Tier:** Medium only. See Exercise 9's tier note above — same rules.
-- Prompt: *In the Console, run `check_predictions(extract_fit_engine(fit_<n>))`. CP/CR.*
+- Prompt: *At the R prompt, run `check_predictions(extract_fit_engine(fit_<n>))`. CP/CR.*
 - End: the `check_predictions()` knowledge drop (§12.4). Add a sentence noting whether the simulated data looks like the actual data for this problem.
 
 **Exercise 11.** [author-shown block in Easy and Medium; optional student exercise in Difficult tutorials with simple models only] Concrete LaTeX DGM.
@@ -1737,19 +1791,19 @@ Parts 1 and 2 are deliberately repetitive with Justice — they show the same Po
 - The concrete LaTeX DGM is also referenced in the §13.5 Temperance preamble as the fourth way to describe a model.
 
 **Exercise 12.** [operational] Cache the fit in the QMD.
-- Prompt: *Create a new code chunk in your QMD. Add the chunk option `#| cache: true`. Copy/paste the R code for the final model into the chunk, assigning the result to `fit_<n>`. (This includes `fit()` but not `tidy()`.) Place your cursor on the `fit_<n>` line and use `Cmd/Ctrl + Enter`. (This is technically unnecessary since we already have `fit_<n>` in the workspace, but ensuring everything in the QMD is also in the Console is good habit.) `Cmd/Ctrl + Shift + K`. Rendering may be slow the first time but cached thereafter. At the Console, run `tutorial.helpers::show_file("XX.qmd", chunk = "Last")`. CP/CR.*
+- Prompt: *Create a new code chunk in your QMD. Add the chunk option `#| cache: true`. Copy/paste the R code for the final model into the chunk, assigning the result to `fit_<n>`. (This includes `fit()` but not `tidy()`.) Place your cursor on the `fit_<n>` line and use `Cmd/Ctrl + Enter`. (This is technically unnecessary since we already have `fit_<n>` in the workspace, but ensuring everything in the QMD is also at the R prompt is good habit.) `Cmd/Ctrl + Shift + K`. Rendering may be slow the first time but cached thereafter. At the R prompt, run `tutorial.helpers::show_file("XX.qmd", chunk = "Last")`. CP/CR.*
 - End: the caching knowledge drop (§12.4). *To confirm, `Cmd/Ctrl + Shift + K` again. It should be quick.*
 
 **Exercise 13.** [operational] Add `*_cache` to `.gitignore`.
-- Prompt: *Add `*_cache` to `.gitignore`. Cached objects are often large and don't belong on GitHub. At the Console, run `tutorial.helpers::show_file(".gitignore")`. CP/CR.*
+- Prompt: *Add `*_cache` to `.gitignore`. Cached objects are often large and don't belong on GitHub. At the R prompt, run `tutorial.helpers::show_file(".gitignore")`. CP/CR.*
 - End: *Because of the change in your `.gitignore` (assuming you saved it), the cache directory should not appear in the Source Control panel because Git is ignoring it. Commit and push.*
 
 **Exercise 14.** [per-tutorial, code] Run `tidy(fit_<n>, conf.int = TRUE)`.
-- Prompt: *In the Console, run `tidy()` on `fit_<n>` with `conf.int = TRUE`. This returns 95% intervals for all the parameters.*
+- Prompt: *At the R prompt, run `tidy()` on `fit_<n>` with `conf.int = TRUE`. This returns 95% intervals for all the parameters.*
 - End: the `broom` knowledge drop (§12.4).
 
 **Exercise 15.** [per-tutorial, written-without-answer] Make a nice table from `tidy()`.
-- Prompt: *Create a new code chunk in your QMD. Ask AI to make a nice-looking table from the tibble returned by `tidy()`. You don't need all the columns — estimate and confidence intervals is typical. You may need to load [tinytable](https://vincentarelbundock.github.io/tinytable/), [knitr](https://yihui.org/knitr/), [gt](https://gt.rstudio.com/), [kableExtra](https://haozhu233.github.io/kableExtra/), [flextable](https://davidgohel.github.io/flextable/), or [modelsummary](https://modelsummary.com/) in the setup chunk. Insert your table code. `Cmd/Ctrl + Shift + K`. At the Console, `tutorial.helpers::show_file("XX.qmd", chunk = "Last")`. CP/CR.*
+- Prompt: *Create a new code chunk in your QMD. Ask AI to make a nice-looking table from the tibble returned by `tidy()`. You don't need all the columns — estimate and confidence intervals is typical. You may need to load [tinytable](https://vincentarelbundock.github.io/tinytable/), [knitr](https://yihui.org/knitr/), [gt](https://gt.rstudio.com/), [kableExtra](https://haozhu233.github.io/kableExtra/), [flextable](https://davidgohel.github.io/flextable/), or [modelsummary](https://modelsummary.com/) in the setup chunk. Insert your table code. `Cmd/Ctrl + Shift + K`. At the R prompt, `tutorial.helpers::show_file("XX.qmd", chunk = "Last")`. CP/CR.*
 - End: show our table and our code. Closing knowledge drop: *At the very least, your table should include a title and a caption with the data source. The more you use AI, the better you will get at doing so.*
 
 **Exercise 16.** [per-tutorial, written-with-answer] Model-structure sentence.
@@ -1759,7 +1813,7 @@ Parts 1 and 2 are deliberately repetitive with Justice — they show the same Po
 
 ### 13.5 Temperance
 
-**Preamble (between `## Temperance` header and Exercise 1).** The Temperance preamble reviews the DGM decided on at the end of Courage. Per §14.6, it does not describe what Temperance does — Exercise 1 does that. Contents, in order:
+**Preamble (between `## Temperance` header and Exercise 1).** The Temperance preamble reviews the DGM decided on at the end of Courage. Per §14.6, it does not describe what Temperance does — Exercise 1 does that. *Exception:* when Exercise 1 is skipped in this tutorial (per the rotation in the §13 pre-flight list), add the canonical definition to this preamble as a reminder — *"Remember that Temperance interprets the data generating mechanism and then uses it to answer, with the help of graphics, the question(s) with which we began. Humility reminds us that this answer is always false."* The reminder replaces the exercise. Contents, in order:
 
 1. A link to [**Model to Meaning**](https://marginaleffects.com/) — pick the chapter matching the tutorial's tier per §1.3 (Easy: Predictions; Medium adds Comparisons; Difficult adds Challenge and Framework).
 2. A review of the DGM using some subset of the four canonical ways to describe a model (below).
@@ -1777,15 +1831,17 @@ Parts 1 and 2 are deliberately repetitive with Justice — they show the same Po
 **Concrete DGM rules.**
 
 - Use the real variable names from the model, not $Y$ and $X_1$. Categorical predictors appear as the dummy variable names R produces — `sexMale`, `treatmentTreated`, `partyRepublican`. State explicitly in one sentence what each dummy encodes (which level is 1, which is 0) and what the intercept represents.
-- Use `N(0, \sigma^2)` for the error term, **not** `\mathcal{N}(0, \sigma^2)`. `\mathcal{N}` renders as an empty box (□) in learnr's MathJax setup — we have hit this bug repeatedly.
-- Parameter values in the math **must match the parameter table** to the same number of significant figures. If the table shows `161`, the math shows `161`, not `161.17778`. Three significant figures is the default.
-- To keep the table and math in sync, round the table with `mutate(across(where(is.numeric), \(x) signif(x, 3)))` in the preamble chunk, then use those same rounded values in the LaTeX.
+- Use `N(0, …)` (not `\mathcal{N}(0, …)`) for the error term — `\mathcal{N}` renders as an empty box (□) in learnr's MathJax setup; we have hit this bug repeatedly.
+- **Substitute the estimated residual variance, not the symbol `\sigma^2`.** The point of the concrete DGM is to show numbers: every parameter the model fits (including the residual variance) is a number, and the math should display it. Compute `sigma(extract_fit_engine(fit_<n>))`, square it, round to the tutorial's rounding convention, and write `N(0, 40.3)` (or whatever the value is). Follow with a one-sentence note naming the residual SD as well (e.g. *"a residual SD of about 6.4 cm"*) so students see both forms.
+- Parameter values in the math **must match the parameter table** to the same number of significant figures. If the table shows `161`, the math shows `161`, not `161.17778`. Three significant figures is the default; apply it to the residual variance too.
+- To keep the table and math in sync, round the table with `mutate(across(where(is.numeric), \(x) signif(x, 3)))` in the preamble chunk, then use those same rounded values — plus the separately-computed rounded residual variance — in the LaTeX.
 
 **We do not ask students to write LaTeX themselves.** The previous curriculum had exercises (old §13.3 Exercise 15, old §13.4 Exercise 11) asking students to prompt AI for LaTeX and paste it in. Those student-facing exercises are removed; the LaTeX is now shown to students, not produced by them. A small number of Difficult tutorials with simple models may keep a student-produced LaTeX exercise, but the heavy lifting is AI — the student is checking and pasting, not deriving.
 
 **Parameter-interpretation approach (Exercises 2–4).** Start by showing the fitted DGM's parameter values and attempting to interpret them. This is relatively straightforward for simple linear models; harder for non-linear models and interaction terms; and essentially degenerate for models with no interpretable parameters (random forest, gradient boosting). Attempt the interpretation anyway when models are hard, if only to highlight how the linear-model intuition fails. When parameters genuinely aren't interpretable, keep one exercise whose purpose is to make sure the student understands *why* they aren't. Then move on: comparisons, predictions, and a final plot.
 
-**Exercise 1.** [canonical] Components of Temperance.
+**Exercise 1.** [canonical, tier-dependent presence] Components of Temperance.
+- **Tier:** See §13 pre-flight list for the rotation. When *not* asked, the Temperance preamble (§13.5) includes a *"Remember that …"* reminder with the canonical definition verbatim.
 - Prompt: *In your own words, describe the use of Temperance in data science.*
 - Message: `"Temperance interprets the data generating mechanism and then uses it to answer, with the help of graphics, the question(s) with which we began. Humility reminds us that this answer is always false."`
 - End: the Courage-handoff knowledge drop (§12.5).
@@ -1845,11 +1901,11 @@ This ordering determines how much Temperance real-estate the parameter block con
 - End: the data-science-projects-begin-with-decisions knowledge drop (§12.5).
 
 **Exercise 7.** [per-tutorial, written-without-answer] Run `predictions()`.
-- Prompt: *In the Console, run `predictions()` on `fit_<n>`. CP/CR.*
+- Prompt: *At the R prompt, run `predictions()` on `fit_<n>`. CP/CR.*
 - End: the `predictions()` knowledge drop (§12.5), noting actual row count. Add a second sentence specific to what's interesting about this output.
 
 **Exercise 8.** [per-tutorial, written-without-answer] Run `plot_predictions()` (first version).
-- Prompt: *In the Console, run `plot_predictions()` on `fit_<n>` with [specific arguments]. CP/CR.*
+- Prompt: *At the R prompt, run `plot_predictions()` on `fit_<n>` with [specific arguments]. CP/CR.*
 - End: discuss the estimate and uncertainty the plot shows. Explain how to read the estimate and confidence interval from the plot.
 
 Insert additional `plot_predictions()` exercises as needed — different arguments, options like `points`, or `draw = FALSE` to return a tibble. `plot_comparisons()` belongs here when the question calls for differences rather than level estimates (see §12.5).
@@ -1863,11 +1919,11 @@ Insert additional `plot_predictions()` exercises as needed — different argumen
 - End: *Because `plot_predictions()` returns a ggplot object, you can continue with ggplot commands like `labs()`. But it can be useful to see the underlying values in the tibble and build your own plot directly.*
 
 **Exercise 11.** [per-tutorial, written-without-answer] Build a beautiful plot.
-- Prompt: *Work with AI to create a beautiful plot starting from the output of `plot_predictions(..., draw = FALSE)`. Do this in your QMD (much easier than the Console). Title: key variables. Subtitle: important takeaway. Caption: data source. Axis labels: nice. This plot is not directly connected to your question — it answers lots of questions. Paste the plot code below.*
+- Prompt: *Work with AI to create a beautiful plot starting from the output of `plot_predictions(..., draw = FALSE)`. Do this in your QMD (much easier than the R prompt). Title: key variables. Subtitle: important takeaway. Caption: data source. Axis labels: nice. This plot is not directly connected to your question — it answers lots of questions. Paste the plot code below.*
 - End: show our plot and our code. Closing knowledge drop: the back-and-forth knowledge drop (§12.5).
 
 **Exercise 12.** [operational] Finalize the plot chunk.
-- Prompt: *Finalize the new graphics chunk in your QMD. `Cmd/Ctrl + Shift + K` to ensure it all works. At the Console, `tutorial.helpers::show_file("XX.qmd", chunk = "Last")`. CP/CR.*
+- Prompt: *Finalize the new graphics chunk in your QMD. `Cmd/Ctrl + Shift + K` to ensure it all works. At the R prompt, `tutorial.helpers::show_file("XX.qmd", chunk = "Last")`. CP/CR.*
 - End: the map-is-not-the-territory knowledge drop (§12.5).
 
 **Exercise 13.** [per-tutorial, written-with-answer] Last sentence of the summary paragraph.
@@ -1881,11 +1937,11 @@ Insert additional `plot_predictions()` exercises as needed — different argumen
 - End: the go-back-to-the-Preceptor-Table knowledge drop (§12.5).
 
 **Exercise 15.** [operational] Reorder and render final QMD.
-- Prompt: *Rearrange the material in your QMD so the order is graphic, then paragraph. The chunk that creates the fitted model must occur before the chunk that creates the graphic. You can keep or discard the math at your discretion. `Cmd/Ctrl + Shift + K`. At the Console, `tutorial.helpers::show_file("XX.qmd")`. CP/CR.*
+- Prompt: *Rearrange the material in your QMD so the order is graphic, then paragraph. The chunk that creates the fitted model must occur before the chunk that creates the graphic. You can keep or discard the math at your discretion. `Cmd/Ctrl + Shift + K`. At the R prompt, `tutorial.helpers::show_file("XX.qmd")`. CP/CR.*
 - End: the published-version knowledge drop (§12.5).
 
 **Exercise 16.** [operational] Publish to GitHub Pages.
-- Prompt: *Publish your rendered QMD to GitHub Pages. In the Terminal (not the Console!), run `quarto publish gh-pages XX.qmd`. Copy/paste the resulting URL below.*
+- Prompt: *Publish your rendered QMD to GitHub Pages. In the Terminal (not the R prompt!), run `quarto publish gh-pages XX.qmd`. Copy/paste the resulting URL below.*
 - End: *Commit/push everything.*
 
 **Exercise 17.** [operational] Paste the repo URL.
@@ -2044,20 +2100,42 @@ One rounding, one tutorial, everywhere the reader sees parameters. A student who
 
 The one exception is a **student-written code exercise** whose point is to teach `tidy()` itself (e.g. the Courage exercise where the student pipes into `tidy(conf.int = TRUE)` for the first time). There, the raw unrounded output is what `tidy()` actually produces; adding `signif()` would muddy the learning goal. After that one teaching exercise, every subsequent display of parameters uses the chosen rounding.
 
+### 14.10 Package-name formatting
+
+In prose (not in code), R package names use **bold + link to the package's home page**: **[primer.data](https://github.com/PPBDS/primer.data)**, **[tidymodels](https://www.tidymodels.org/)**, **[broom](https://broom.tidymodels.org/)**, **[marginaleffects](https://marginaleffects.com/)**. Do not surround package names with backticks unless they appear inside actual code — backticks are for code identifiers (object names like `nhanes`, function names like `tidy()`), not for package names in running text.
+
+Prefer the package's own documentation site or GitHub page over CRAN. CRAN URLs are fallbacks when no dedicated homepage exists.
+
+Canonical homepages the tutorials reference most often:
+
+| Package | Homepage |
+|---|---|
+| primer.data | `https://github.com/PPBDS/primer.data` |
+| tutorial.helpers | `https://ppbds.github.io/tutorial.helpers/` |
+| tidyverse | `https://www.tidyverse.org/` |
+| tidymodels | `https://www.tidymodels.org/` |
+| broom | `https://broom.tidymodels.org/` |
+| marginaleffects | `https://marginaleffects.com/` |
+| easystats | `https://easystats.github.io/easystats/` |
+| learnr | `https://rstudio.github.io/learnr/` |
+| knitr | `https://yihui.org/knitr/` |
+
+Exceptions: inside `library(packagename)` code, ggplot `caption = "Source: … via primer.data"` strings, and other literal-code contexts, the package name is plain (no bold, no link, no backticks beyond what the code syntax itself implies) because markdown does not render inside those contexts.
+
 ---
 
 ## 15. R tooling
 
 The tutorial setup chunk (§5.2) loads the full package stack. For chapters, setup is simpler: load the packages, fit the model, move on.
 
-**Packages loaded for rendering only** (not expected in student's Console): `learnr`, `tutorial.helpers`, `gt`.
+**Packages loaded for rendering only** (not expected at the student's R prompt): `learnr`, `tutorial.helpers`, `gt`.
 
 **Packages students are expected to load themselves** (and appear in the setup chunk for the tutorial to work):
 - `tidyverse` — always.
 - `tidymodels` — for most models. Replace with `ordinal` or another package if that model framework doesn't fit.
 - `broom` — for tidying model output. `broom.mixed` for mixed models.
 - `marginaleffects` — for `predictions()`, `plot_predictions()`, `plot_comparisons()`.
-- `easystats` — for `check_predictions()`. Not added to student QMDs; used interactively in the Console.
+- `easystats` — for `check_predictions()`. Not added to student QMDs; used interactively at the R prompt.
 
 **Data package**: whichever one holds the tutorial's dataset (`primer.data` most of the time).
 
