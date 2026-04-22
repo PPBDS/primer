@@ -328,6 +328,8 @@ The third child document, `download_answers.Rmd`, goes at the very end of the tu
 
 These are part of the framework. Do not reinvent them.
 
+The `download_answers.Rmd` child document generates an HTML file the student downloads at the end of the tutorial. What the student does with that HTML — submitting it to a grader, emailing it to an instructor, uploading to an LMS — is **out of scope for CLAUDE.md and varies by course context**. Tutorial authors should assume the file is produced and trust that any downstream grading workflow is configured elsewhere. Do not add extra submission instructions in the tutorial body.
+
 ### 5.4 Sections and numbering
 
 Each of the six sections opens with `##`. Each exercise opens with `### Exercise N` where `N` restarts at 1 within each section. Each exercise has a chunk label of the form `<section>-<N>` — `introduction-1`, `wisdom-3`, `justice-11`, etc.
@@ -2169,9 +2171,11 @@ Key parameters for each tutorial in the `primer.tutorials` package. Use these en
 
 Preceptor Table and Population Table columns are listed by spanner in order. Population Tables always have a leading `Source` column (not under any spanner) and a `Unit/Time` spanner with two columns. Preceptor Tables have no Time column — time is implicit. Causal models have a `Treatment` spanner separate from `Covariate(s)`. Potential outcome columns are named "Outcome if [treatment value]".
 
-**Directory numbering.** Physical directory names on disk match the target numbering. Nine example tutorials currently exist (06, 07, 08, 10, 11, 12, 14, 15, 16) with four gap slots (09, 13, 17) to author. Per §1.5, positions 11 and 12 (target tutorials 16 and 17) are the non-parametric tutorials; target tutorial 16 at `16-stops` is slated for a random-forest **recast** of the old predictive-linear stops tutorial.
+**Directory numbering.** Physical directory names on disk match the target numbering. Nine example tutorials currently exist (06, 07, 08, 10, 11, 12, 14, 15, 16) with **three gap slots (09, 13, 17) where the dataset and framing are chosen but the exercise content has yet to be authored**. Target tutorial 09 is **SPS** (Seguro Popular, binary treatment), 13 is **Mail** (Philadelphia mail-in voting, 3-arm), 17 is **Kenya** (voter registration, 6-arm multi-arm causal forest — curriculum capstone). Per §1.5, positions 11 and 12 (target tutorials 16 and 17) are the non-parametric tutorials; target tutorial 16 at `16-stops` is slated for a random-forest **recast** of the old predictive-linear stops tutorial.
 
 ---
+
+**Miscellaneous tutorials (01–05) are frozen inheritance.** They predate this CLAUDE.md rewrite and are not specified here beyond the `Type: miscellaneous` tag. Do not rewrite them to match the §13 master exercise list; their existing content stands. They do not follow the example-tutorial structure (Wisdom / Justice / Courage / Temperance with per-virtue preambles), the EMH progression rules, or the §17 seed-entry pattern. When the rest of the curriculum changes (terminology shifts, renumbering, etc.), touch them only as needed for consistency — not to restructure.
 
 ### 01 — Probability
 
@@ -2257,13 +2261,25 @@ Preceptor Table and Population Table columns are listed by spanner in order. Pop
 
 ---
 
-### 09 — TODO  *(Position 4, Easy causal — GAP)*
+### 09 — SPS  *(Position 4, Easy causal)*
 
-- **Type:** example *(to be authored)*
-- **Status:** **Gap.** No existing tutorial fits this slot.
-- **Target:** A second simple randomized experiment (or equivalent clean causal design) with one binary treatment and at most one additional covariate. Linear or logistic outcome. Easy-tier — no interactions, no multi-arm treatment, link-scale interpretation deferred to knowledge drops per §13.5.
-- **Constraint:** Must be causal and Easy (§1.5 alternation). The simplest possible causal setup that isn't just a second Enos-style platform experiment — look for a different dataset in `primer.data` or propose a new one.
-- **Candidates to evaluate:** job-training RCT, small voter-mobilization experiment, Dahl-Moretti lottery, or a synthetic Easy-tier teaching dataset.
+- **Type:** example *(to be authored — dataset and framing chosen; exercise content still to write)*
+- **"Imagine":** You are a health-policy analyst at Mexico's Ministry of Health deciding whether to continue funding Seguro Popular, the universal health-insurance program. Households care about whether enrollment actually lowers out-of-pocket medical spending.
+- **Dataset:** `sps` (King et al. 2009 Seguro Popular randomized rollout, Mexico 2005–06)
+- **Outcome:** `t2_health_exp_3m` — total health-related household expenditure in the 3 months before the follow-up survey (pesos; continuous)
+- **Treatment:** `treatment` — binary; 1 = household in a cluster randomly assigned to Seguro Popular rollout, 0 = control cluster
+- **Question (QoI):** What is the causal effect of Seguro Popular enrollment on household out-of-pocket health expenditures?
+- **Model:** Linear regression, binary treatment (optionally one covariate for adjustment)
+- **Causal / Predictive:** Causal
+- **Student project:** `sps`
+- **Data prep:** `sps |> select(treatment, t2_health_exp_3m, age, sex, education) |> drop_na() |> slice_sample(n = 100)` → `x`
+- **Final model:** `linear_reg() |> set_engine("lm") |> fit(t2_health_exp_3m ~ treatment, data = x)` → `fit_sps`  *(add `age` or `sex` as a second covariate if the author wants to trigger the adjustment-clause practice at the two-or-more-covariates threshold)*
+- **Preceptor Table:** Unit (Household) | Potential Outcomes (Expenditure if Enrolled, Expenditure if Not Enrolled) | Treatment (Enrollment)
+- **Population Table:** Source | Unit/Time (Household, Year) | Potential Outcomes (Expenditure if Enrolled, Expenditure if Not Enrolled) | Treatment (Enrollment)
+- **Authoring notes:**
+  - Outcome scale is heavy-tailed (raw pesos). Plot the distribution in Wisdom EDA and note the skew. If misbehavior is severe, switch outcome to `t2_health_exp_1m`, log-transform, or trim outliers — record the decision in the Wisdom preamble's dataset note.
+  - Assignment was cluster-randomized, not individual-randomized. Justice should name this under unconfoundedness (treatment assignment is independent of potential outcomes *at the cluster level*) without teaching clustered standard errors (too advanced for Easy).
+  - Pairs thematically with **07-trains** (position 2) as the two simple RCTs in the Easy tier: different domain (health vs. immigration attitudes), same model class (linear with binary treatment), same Easy-tier apparatus.
 
 ---
 
@@ -2321,13 +2337,26 @@ Preceptor Table and Population Table columns are listed by spanner in order. Pop
 
 ---
 
-### 13 — TODO  *(Position 8, Medium causal — GAP)*
+### 13 — Mail  *(Position 8, Medium causal)*
 
-- **Type:** example *(to be authored)*
-- **Status:** **Gap.** No existing tutorial fits this slot.
-- **Target:** A Medium-tier causal tutorial with a multi-arm treatment, a multinomial/ordinal outcome, or both. More complex than Trains (position 2) but less than the Hard-tier RF tutorial (position 12). Should introduce a causal setting with one of: (a) a treatment with 3+ arms, (b) an outcome that requires a link function other than identity/logit, or (c) a heterogeneous-treatment-effect framing with at least one moderator.
-- **Constraint:** Must be causal and Medium (§1.5 alternation). Should plausibly share methodological themes with Shaming (position 6, the other Medium causal) — the two together should cover most of what Medium-tier causal inference has to offer.
-- **Candidates to evaluate:** A multi-arm field experiment, a difference-in-differences study suitable at Medium tier, or a stratified RCT with a categorical outcome.
+- **Type:** example *(to be authored — dataset and framing chosen; exercise content still to write)*
+- **"Imagine":** You are on the Philadelphia City Commissioners' office ahead of the next general election. You have a fixed postcard-printing budget and want to know which nudge message — "safer for you" or "safer for your neighborhood" — actually moves people to apply for a mail ballot.
+- **Dataset:** `mail` (2020 Philadelphia mail-in voting field experiment; Morris et al.)
+- **Outcome:** `applied_mail` — binary; whether the voter applied for a mail ballot before the 26-May deadline
+- **Treatment:** `treatment` — three-arm factor: `No Postcard`, `Self`, `Neighborhood`
+- **Question (QoI):** What is the causal effect of each postcard wording on the probability a registered voter applies for a mail ballot?
+- **Model:** Logistic regression with multi-arm treatment; interpretation via `marginaleffects::avg_comparisons()` back to the probability scale (Medium-tier adds `comparisons()` per §13.5)
+- **Causal / Predictive:** Causal
+- **Student project:** `mail`
+- **Data prep:** `mail |> select(treatment, applied_mail, party, age, sex) |> drop_na() |> mutate(applied_mail = as.factor(applied_mail)) |> slice_sample(n = 5000)` → `x` *(stratify on `treatment` to preserve arm balance; control arm ~888K vs ~23K per treatment arm means a naive slice will under-represent treatment)*
+- **Final model:** `logistic_reg(engine = "glm") |> fit(applied_mail ~ treatment + party + age + sex, data = x)` → `fit_mail`
+- **Preceptor Table:** Unit (Voter) | Potential Outcomes (Applied if No Postcard, Applied if Self, Applied if Neighborhood) | Treatment (Postcard) | Covariates (Party, Age, Sex)
+- **Population Table:** Source | Unit/Time (Voter, Year) | Potential Outcomes (three columns, one per treatment arm) | Treatment (Postcard) | Covariates (Party, Age, Sex)
+- **Authoring notes:**
+  - **Stratified sampling.** Down-sampling from 936K to ~5K must preserve treatment-arm balance. Use `slice_sample(n = ...)` within `group_by(treatment)` or similar — flag in Wisdom's data-prep exercise so the student sees the reason.
+  - **Three potential outcomes per row.** The Preceptor Table stretches to three columns under the `Potential Outcomes` spanner. This is the first tutorial in the curriculum where the Rubin-Causal-Model apparatus scales past two potential outcomes, and the Justice section's per-row causal-effect footnote (Easy-only, so absent here by §10 Medium/Hard rules) is already retired at Medium anyway — no conflict.
+  - **Link-scale interpretation.** Per §13.5 *Interpretability ceiling*, do not ask students to interpret logistic coefficients on the log-odds scale. Author notes the log-odds form in a knowledge drop; student interpretation exercises target `avg_comparisons()` output on the probability scale.
+  - **Pairing with Shaming (position 6).** Both tutorials use multi-arm postcard / mailing treatments in GOTV experiments. The Wisdom section should make the contrast explicit — shaming's postcards apply social pressure, mail's postcards are informational. Same structural apparatus, different behavioral mechanism.
 
 ---
 
@@ -2379,13 +2408,28 @@ Preceptor Table and Population Table columns are listed by spanner in order. Pop
 
 ---
 
-### 17 — TODO  *(Position 12, Hard causal — non-parametric / causal forest — GAP)*
+### 17 — Kenya  *(Position 12, Hard causal — causal forest — curriculum capstone)*
 
-- **Type:** example *(to be authored)*
-- **Status:** **Gap.** Non-parametric causal tutorial does not exist.
-- **Target:** Causal forest (e.g., `grf` package), propensity-score matching with an RF propensity model, or doubly-robust ML on a causal question. Parameter interpretation is gone; the answering is via `marginaleffects` or the package's native prediction tools. This tutorial is the curriculum's capstone — it combines Hard-tier causal inference (§1.3 *unconfoundedness worked example, Difficult*) with non-parametric modeling (§13.5 *Interpretability ceiling*).
-- **Constraint:** Must be causal and Hard (§1.5). Should plausibly build on a dataset students have already seen at an easier tier — re-analyzing the Shaming data with a causal forest, or the Trains data with propensity matching, makes the non-parametric lift visible as an upgrade rather than a new topic.
-- **Candidates to evaluate:** causal forest on `shaming` (heterogeneous treatment effects); propensity-score matching on an observational dataset with a binary treatment (Lalonde if available); doubly-robust estimation on a large observational dataset.
+- **Type:** example *(to be authored — dataset and framing chosen; exercise content still to write)*
+- **"Imagine":** You are an advisor to Kenya's electoral commission ahead of the 2027 election. Your budget can fund one — maybe two — of six possible interventions to boost voter registration: SMS, local administrators, canvassing, or combinations. The right choice almost certainly varies by community: SMS probably works best where phone density is high; a local admin may matter more in isolated, low-poverty areas. You want a *policy rule*, not a single causal effect.
+- **Dataset:** `kenya` (Harris et al., "Electoral Administration in Fledgling Democracies: Experimental Evidence from Kenya")
+- **Outcome:** `reg_byrv13` — registered-voter count at polling location during intervention period divided by registered voters at that polling location in 2013 (continuous rate)
+- **Treatment:** `treatment` — six-arm factor: `control`, `SMS`, `local`, `canvass`, `local + SMS`, `local + canvass`
+- **Question (QoI):** Which intervention produces the largest causal increase in voter registration, and how does the best intervention vary with community characteristics (poverty, distance to polling station, population density)?
+- **Model:** **Causal forest** via the `grf` package (`grf::multi_arm_causal_forest()` for the six-arm case). Parameter interpretation is skipped per §13.5 *Interpretability ceiling*; all answering happens via `marginaleffects::predictions()` / `comparisons()` on the forest's conditional-average-treatment-effect estimates, or via `grf`'s native prediction API.
+- **Causal / Predictive:** Causal
+- **Student project:** `kenya`
+- **Data prep:** `kenya |> select(treatment, reg_byrv13, poverty, distance, pop_density, mean_age) |> drop_na()` → `x` *(polling-station-level, ~1,600 rows — no downsampling needed)*
+- **Final model (sketch):** `fit_kenya <- grf::multi_arm_causal_forest(X = as.matrix(x |> select(poverty, distance, pop_density, mean_age)), Y = x$reg_byrv13, W = x$treatment, num.trees = 2000)`  *(confirm exact `grf` API when authoring; the package has moved around)*
+- **Preceptor Table:** Unit (Polling Station) | Potential Outcomes (six columns: Reg Rate if Control, if SMS, if Local, if Canvass, if Local+SMS, if Local+Canvass) | Treatment (Intervention) | Covariates (Poverty, Distance, Density, Mean Age)
+- **Population Table:** Source | Unit/Time (Polling Station, Year) | Potential Outcomes (six columns) | Treatment | Covariates
+- **Authoring notes:**
+  - **Setup cost.** `grf::multi_arm_causal_forest` with `num.trees = 2000` takes longer than the "few seconds" setup budget in §5.2. Fit once in setup with `#| cache: true` in the tutorial body; if still too slow, reduce `num.trees` for the tutorial (e.g. 500) and note the tradeoff in a knowledge drop. Do not fit the forest at the R prompt interactively in an exercise — cache it.
+  - **Fallback if `grf` is too heavy.** A lighter non-parametric path: fit a random-forest *predictive* model on `reg_byrv13 ~ treatment * (covariates)` with `ranger`, then use `marginaleffects` to extract arm-by-covariate conditional predictions and compute contrasts. Loses the formal causal-forest machinery but keeps the heterogeneous-effect story visible.
+  - **Parameter-block handling.** Per §13.5 Non-parametric models rule (§14.8): drop Temperance Exercises 2–4 entirely. Replace with a single exercise whose only job is to make the student articulate *why* the forest does not have directly interpretable parameters. All answering happens downstream via `marginaleffects` on the forest's predictions.
+  - **Canonical-definition retention check.** Per §13 pre-flight rotation, this is the very last tutorial in the 12-example sequence, so Exercise 1 in each virtue section asks **all four** canonical definitions (Wisdom, Justice, Courage, Temperance) as a retention test. No preamble reminders — the exercises return in force.
+  - **Intro-section pacing.** Per §13.1 Hard-tier rule, the Introduction is maximally short: canonical definitions of the virtues (per the rotation above), the state-the-question exercise (Ex 15), and the minimum operational setup (repo confirmation, library loading). Drop the Rubin-Causal-Model warm-up block (Ex 10–14); students at position 12 have done this six times before.
+  - **Six potential outcomes per row.** The Preceptor and Population Tables get visually wide. Consider column-width adjustments via `gt::cols_width()`; the §10 styling conventions are otherwise unchanged.
 
 ---
 
