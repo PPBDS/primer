@@ -747,9 +747,171 @@ question_text(NULL,
 Read our answer. It will not be the same as yours. You can, if you want, change your answer to incorporate some of our ideas. Do not copy/paste our answer exactly. Add your two sentences, edited or otherwise, to your QMD, `Cmd/Ctrl + Shift + K`, and then commit/push.
 
 ## Justice
-### 
+###
 
-*Justice is truth in action.* - Benjamin Disraeli
+Recall the Preceptor Table we built in Wisdom:
+
+```{r, results = 'asis'}
+hatch <- function(x) {
+  paste0(
+    '<span style="background-image: repeating-linear-gradient(',
+    '45deg, rgba(0,0,0,0.12) 0 1px, transparent 1px 6px);',
+    ' padding: 6px 10px; margin: -6px -10px; display: block;">',
+    x,
+    '</span>'
+  )
+}
+
+p_tibble <- tibble::tribble(
+  ~`Voter`         , ~`Attitude if Exposed`, ~`Attitude if Not Exposed`, ~`Spanish Exposure`,
+  "James Carter"   , "10"                  , "8"                       , "Exposed"          ,
+  "Maria Gonzalez" , "9"                   , "7"                       , "Not exposed"      ,
+  "..."            , "..."                 , "..."                     , "..."              ,
+  "Robert Kim"     , "11"                  , "9"                       , "Exposed"
+)
+
+pre_title_footnote     <- "A Preceptor Table is the smallest possible table of data with rows and columns such that, if there is no missing data, we can easily calculate the quantity of interest. If all the information in this table were available, we could answer the question: What is the average causal effect of exposure to Spanish-speakers on attitudes toward immigration?"
+pre_units_footnote     <- "Each row represents one registered voter in the Georgia congressional district during the current election cycle — a voter who could plausibly be exposed to Spanish-speaking campaign volunteers."
+pre_outcome_footnote   <- "Attitude toward immigration on an integer scale from 3 to 15, where higher values indicate more conservative attitudes. The cross-hatched cells mark each voter's unobservable potential outcome — the one we could never see, because the voter actually experienced the other condition."
+pre_treatment_footnote <- "Whether the voter was exposed to Spanish-speakers — here, campaign volunteers speaking Spanish in their vicinity — taking the value 'Exposed' or 'Not exposed'."
+pre_effect_footnote    <- "The causal effect for Maria Gonzalez is the difference between her two potential outcomes: 9 − 7 = 2 points on the 3–15 scale. Because the Preceptor Table shows the unobservable truth, this is the true causal effect for her, not an estimate."
+
+pre_gt_html <- gt::gt(p_tibble, id = "preceptor_tbl") |>
+  gt::tab_header(title = "Preceptor Table") |>
+  gt::tab_spanner(label = "Unit"              , id = "unit_span",
+                  columns = c(`Voter`)) |>
+  gt::tab_spanner(label = "Potential Outcomes", id = "outcome_span",
+                  columns = c(`Attitude if Exposed`, `Attitude if Not Exposed`)) |>
+  gt::tab_spanner(label = "Treatment"         , id = "treatment_span",
+                  columns = c(`Spanish Exposure`)) |>
+  gt::cols_align(align = "left" , columns = c(`Voter`, `Spanish Exposure`)) |>
+  gt::cols_align(align = "right", columns = c(`Attitude if Exposed`, `Attitude if Not Exposed`)) |>
+  gt::fmt_markdown(columns = gt::everything()) |>
+  gt::tab_options(
+    heading.title.font.size   = "1.5em",
+    heading.title.font.weight = "bolder",
+    column_labels.font.weight = "normal"
+  ) |>
+  gt::tab_style(
+    style     = gt::cell_text(weight = "bold"),
+    locations = gt::cells_column_spanners()
+  ) |>
+  gt::tab_style(
+    style     = gt::cell_text(align = "left"),
+    locations = gt::cells_column_spanners(spanners = c("unit_span", "treatment_span"))
+  ) |>
+  gt::tab_style(
+    style     = gt::cell_text(align = "center"),
+    locations = gt::cells_column_spanners(spanners = "outcome_span")
+  ) |>
+  gt::text_transform(
+    locations = gt::cells_body(columns = `Attitude if Not Exposed`, rows = c(1, 4)),
+    fn        = function(x) hatch(x)
+  ) |>
+  gt::text_transform(
+    locations = gt::cells_body(columns = `Attitude if Exposed`, rows = 2),
+    fn        = function(x) hatch(x)
+  ) |>
+  gt::tab_footnote(footnote = pre_title_footnote,
+                   locations = gt::cells_title()) |>
+  gt::tab_footnote(footnote = pre_units_footnote,
+                   locations = gt::cells_column_spanners(spanners = "unit_span")) |>
+  gt::tab_footnote(footnote = pre_outcome_footnote,
+                   locations = gt::cells_column_spanners(spanners = "outcome_span")) |>
+  gt::tab_footnote(footnote = pre_treatment_footnote,
+                   locations = gt::cells_column_spanners(spanners = "treatment_span")) |>
+  gt::tab_footnote(footnote = pre_effect_footnote,
+                   locations = gt::cells_body(columns = `Voter`, rows = 2)) |>
+  gt::opt_css(
+    css = "
+      #preceptor_tbl .gt_footnote {
+        max-width: 1px;
+        word-break: break-word;
+      }
+    "
+  ) |>
+  gt::as_raw_html()
+
+cat(
+  "```{=html}\n",
+  '<div style="display: inline-block; width: auto; max-width: 100%;">',
+  pre_gt_html,
+  "</div>\n",
+  "```\n",
+  sep = ""
+)
+```
+
+###
+
+```{r, results = 'asis'}
+data_tibble <- tibble::tribble(
+  ~`Commuter`, ~`Attitude`, ~`Treatment`,
+  "001"      , "10"       , "Treated"  ,
+  "002"      , "8"        , "Control"  ,
+  "..."      , "..."      , "..."      ,
+  "115"      , "11"       , "Treated"
+)
+
+dat_title_footnote     <- "Enos, Ryan D. (2014). Causal effect of intergroup contact on exclusionary attitudes. Proceedings of the National Academy of Sciences, 111(10), 3699–3704. Data collected on Boston MBTA commuter rail platforms in spring 2012; 115 commuters randomized to treatment or control."
+dat_outcome_footnote   <- "Immigration attitude on a scale from 3 (most liberal) to 15 (most conservative), measured after the two-week treatment window."
+dat_treatment_footnote <- "Whether the subject rode on a platform alongside Spanish-speaking confederates ('Treated') or not ('Control'). Assignment was randomized."
+
+dat_gt_html <- gt::gt(data_tibble, id = "data_tbl") |>
+  gt::tab_header(title = "Data: Enos Boston MBTA Experiment, 2012") |>
+  gt::tab_spanner(label = "Unit"     , id = "unit_span",
+                  columns = c(`Commuter`)) |>
+  gt::tab_spanner(label = "Outcome"  , id = "outcome_span",
+                  columns = c(`Attitude`)) |>
+  gt::tab_spanner(label = "Treatment", id = "treatment_span",
+                  columns = c(`Treatment`)) |>
+  gt::cols_align(align = "left" , columns = c(`Commuter`, `Treatment`)) |>
+  gt::cols_align(align = "right", columns = c(`Attitude`)) |>
+  gt::fmt_markdown(columns = gt::everything()) |>
+  gt::tab_options(
+    heading.title.font.size   = "1.5em",
+    heading.title.font.weight = "bolder",
+    column_labels.font.weight = "normal"
+  ) |>
+  gt::tab_style(
+    style     = gt::cell_text(weight = "bold"),
+    locations = gt::cells_column_spanners()
+  ) |>
+  gt::tab_style(
+    style     = gt::cell_text(align = "left"),
+    locations = gt::cells_column_spanners(spanners = c("unit_span", "treatment_span"))
+  ) |>
+  gt::tab_style(
+    style     = gt::cell_text(align = "center"),
+    locations = gt::cells_column_spanners(spanners = "outcome_span")
+  ) |>
+  gt::tab_footnote(footnote = dat_title_footnote,
+                   locations = gt::cells_title()) |>
+  gt::tab_footnote(footnote = dat_outcome_footnote,
+                   locations = gt::cells_column_spanners(spanners = "outcome_span")) |>
+  gt::tab_footnote(footnote = dat_treatment_footnote,
+                   locations = gt::cells_column_spanners(spanners = "treatment_span")) |>
+  gt::opt_css(
+    css = "
+      #data_tbl .gt_footnote {
+        max-width: 1px;
+        word-break: break-word;
+      }
+    "
+  ) |>
+  gt::as_raw_html()
+
+cat(
+  "```{=html}\n",
+  '<div style="display: inline-block; width: auto; max-width: 100%;">',
+  dat_gt_html,
+  "</div>\n",
+  "```\n",
+  sep = ""
+)
+```
+
+###
 
 ### Exercise 1
 
