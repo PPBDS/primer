@@ -1,6 +1,6 @@
 Package: primer.tutorials
 Title: Tutorials for Preceptor's Primer for Bayesian Data Science
-Version: 1.5.1
+Version: 1.5.1.9000
 Authors@R: 
     c(
     person(given = "David",
