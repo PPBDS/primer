@@ -1,0 +1,1977 @@
+---
+title: Colleges
+author: David Kane
+tutorial:
+  id: 08-colleges
+output:
+  learnr::tutorial:
+    progressive: yes
+    allow_skip: yes
+runtime: shiny_prerendered
+description: "Tutorial #08 for Preceptor's Primer"
+---
+
+```{r setup, include = FALSE}
+library(learnr)
+library(tutorial.helpers)
+library(gt)
+
+library(tidyverse)
+library(tidymodels)
+library(primer.data)
+library(broom)
+library(marginaleffects)
+
+knitr::opts_chunk$set(echo = FALSE)
+options(tutorial.exercise.timelimit = 600,
+        tutorial.storage = "local")
+
+x <- colleges |>
+  select(tuition, grad_rate, selectivity) |>
+  filter(tuition > 2) |>
+  drop_na() |>
+  mutate(selectivity = factor(as.character(selectivity),
+                              levels = c("Elite", "Highly Selective",
+                                         "Moderately Selective",
+                                         "Lowly Selective", "Non-selective")))
+
+fit_colleges <- linear_reg() |>
+  set_engine("lm") |>
+  fit(grad_rate ~ tuition + selectivity, data = x)
+```
+
+```{r copy-code-chunk, child = system.file("child_documents/copy_button.Rmd", package = "tutorial.helpers")}
+```
+
+```{r info-section, child = system.file("child_documents/info_section.Rmd", package = "tutorial.helpers")}
+```
+
+
+## Introduction
+###
+
+This tutorial supports [*Preceptor's Primer for Bayesian Data Science: Using the Cardinal Virtues for Inference*](https://ppbds.github.io/primer/) by [David Kane](https://davidkane.info/).
+
+The world confronts us. Make decisions we must.
+
+Imagine that you are a data scientist at a non-profit helping students find the best college. There are many decisions to make.
+
+### Exercise 1
+
+What are the four [Cardinal Virtues](https://en.wikipedia.org/wiki/Cardinal_virtues), in order, which we use to guide our data science work?
+
+```{r introduction-1}
+question_text(NULL,
+  message = "Wisdom, Justice, Courage, and Temperance.",
+  answer(NULL, correct = TRUE),
+  allow_retry = FALSE,
+  incorrect = NULL,
+  rows = 2)
+```
+
+###
+
+QMD World and R World are not the same. Rendering a QMD runs in a fresh R session that knows nothing about what's currently loaded at your R prompt --- which is a feature, because it means the rendered document is reproducible from its own code, independent of whatever state your interactive session happens to be in.
+
+### Exercise 2
+
+You should be working inside a GitHub repo named `colleges`, opened in a Codespace from the [`PPBDS/codespace-starter`](https://github.com/PPBDS/codespace-starter) template. If you are not there yet, please create that repo and open it in a Codespace now --- see the [package README](https://github.com/PPBDS/primer/tree/main/primer.tutorials#working-environments-and-repo-setup) if you need setup instructions or are working locally instead.
+
+Once you're inside the `colleges` repo, create a new Quarto document titled `"Colleges"` with yourself as the author, render it, and save it as `analysis.qmd`.
+
+Create a `.gitignore` file with `analysis_files` on the first line followed by a blank line. Save and push.
+
+At the R prompt, run:
+
+```
+show_file(".gitignore")
+```
+
+CP/CR.
+
+```{r introduction-2}
+question_text(NULL,
+  message = "    > show_file(\".gitignore\")\n    analysis_files",
+  answer(NULL, correct = TRUE),
+  allow_retry = FALSE,
+  incorrect = NULL,
+  rows = 3)
+```
+
+###
+
+Professionals keep their data science work in the cloud because laptops fail.
+
+### Exercise 3
+
+In your QMD, put `library(tidyverse)` and `library(primer.data)` in a new code chunk. Render the file.
+
+Add `#| message: false` to the setup chunk to suppress the package-load messages. Add the following to the YAML header:
+
+```
+execute:
+  echo: false
+```
+
+Render again. At the R prompt, run:
+
+```
+show_file("analysis.qmd", chunk = "Last")
+```
+
+CP/CR.
+
+```{r introduction-3}
+question_text(NULL,
+  message = "    > show_file(\"analysis.qmd\", chunk = \"Last\")\n    ```{r}\n    #| message: false\n    library(tidyverse)\n    library(primer.data)\n    ```",
+  answer(NULL, correct = TRUE),
+  allow_retry = FALSE,
+  incorrect = NULL,
+  rows = 5)
+```
+
+###
+
+Rendering a QMD converts the code and prose into an HTML document that shows only what you want readers to see.
+
+### Exercise 4
+
+Place your cursor in the QMD file on the `library(tidyverse)` line. Use `Cmd/Ctrl + Enter` to execute that line.
+
+CP/CR.
+
+```{r introduction-4}
+question_text(NULL,
+  message = "    > library(tidyverse)\n    ── Attaching core tidyverse packages ─ tidyverse 2.0.0 ─\n    ✔ dplyr     ✔ forcats   ✔ ggplot2  ✔ lubridate\n    ✔ purrr     ✔ readr     ✔ stringr  ✔ tibble     ✔ tidyr\n    ── Conflicts ─ tidyverse_conflicts() ─\n    ✖ dplyr::filter() masks stats::filter()\n    ✖ dplyr::lag()    masks stats::lag()",
+  answer(NULL, correct = TRUE),
+  allow_retry = FALSE,
+  incorrect = NULL,
+  rows = 3)
+```
+
+###
+
+The "Conflicts" section of the attach message names functions that exist in multiple packages --- for instance, both base R and dplyr have a `filter()`. When tidyverse loads, `dplyr::filter()` masks `stats::filter()`, which means bare `filter(...)` in your code from now on refers to dplyr's version. The last-loaded package wins.
+
+### Exercise 5
+
+Place your cursor in the QMD file on the `library(primer.data)` line. Use `Cmd/Ctrl + Enter`.
+
+CP/CR.
+
+```{r introduction-5}
+question_text(NULL,
+  message = "    > library(primer.data)\n    >",
+  answer(NULL, correct = TRUE),
+  allow_retry = FALSE,
+  incorrect = NULL,
+  rows = 3)
+```
+
+###
+
+The `colleges` tibble from the **[primer.data](https://github.com/PPBDS/primer.data)** package contains data on roughly 900 US four-year colleges and universities, drawn from the Department of Education's IPEDS database.
+
+### Exercise 6
+
+At the R prompt, type `?colleges` and paste the Description below.
+
+```{r introduction-6}
+question_text(NULL,
+  message = "A dataset from the Department of Education's 2013 IPEDS database containing information on U.S. four-year colleges and universities. Variables include tuition (in $10,000), graduation rate, SAT score, enrollment, and a five-level selectivity rating.",
+  answer(NULL, correct = TRUE),
+  allow_retry = FALSE,
+  incorrect = NULL,
+  rows = 5)
+```
+
+###
+
+Note that `tuition` is recorded in units of $10,000 per year --- a tuition value of `3` means $30,000/year, not $3. Easy to miss; easy to misinterpret later.
+
+### Exercise 7
+
+Graduation rate is the broad topic of this tutorial. Given that topic, which variable in `colleges` should we use as our outcome variable?
+
+```{r introduction-7}
+question_text(NULL,
+  message = "Our outcome variable is `grad_rate`. It records each college's six-year graduation rate as a proportion between 0 and 1.",
+  answer(NULL, correct = TRUE),
+  allow_retry = FALSE,
+  incorrect = NULL,
+  rows = 3)
+```
+
+###
+
+We will use `grad_rate` as our outcome variable.
+
+```{r}
+#| echo: false
+#| message: false
+#| warning: false
+colleges |>
+  filter(tuition > 2) |>
+  drop_na(grad_rate) |>
+  ggplot(aes(x = grad_rate)) +
+  geom_density(fill = "grey70", color = "grey30") +
+  labs(
+    title = "Graduation Rates Across US Colleges",
+    subtitle = "Most colleges graduate 50 to 80 percent of their students within six years",
+    x = "Graduation Rate",
+    y = "Density",
+    caption = "Source: IPEDS 2013 via primer.data"
+  ) +
+  theme_minimal()
+```
+
+### Exercise 8
+
+Which variable in `colleges` do you think might have an important connection to `grad_rate`?
+
+```{r introduction-8}
+question_text(NULL,
+  message = "One candidate is `tuition`. Colleges that charge more tend to have more resources per student, higher admission standards, and students from wealthier families --- all of which correlate with graduation. Another candidate is `selectivity`, which directly captures how choosy the college is about whom it admits.",
+  answer(NULL, correct = TRUE),
+  allow_retry = FALSE,
+  incorrect = NULL,
+  rows = 3)
+```
+
+###
+
+With a predictive model, each individual unit has only one observed outcome. Predictive models have no "treatments" --- only covariates.
+
+### Exercise 9
+
+Specify two different groups of colleges which have different values for `tuition` and which might have different average values for `grad_rate`.
+
+```{r introduction-9}
+question_text(NULL,
+  message = "Consider two groups: colleges with `tuition` below $15,000 per year, and colleges with `tuition` above $40,000 per year. These two groups might have different average graduation rates.",
+  answer(NULL, correct = TRUE),
+  allow_retry = FALSE,
+  incorrect = NULL,
+  rows = 3)
+```
+
+###
+
+In predictive models, do not use "cause," "influence," "impact," or anything else which suggests causation. The best phrasing is in terms of "differences" between groups of units with different values for a covariate of interest.
+
+### Exercise 10
+
+Write a predictive question connecting the outcome `grad_rate` to `tuition`, the covariate of interest.
+
+```{r introduction-10}
+question_text(NULL,
+  message = "What is the relationship between a college's tuition and its graduation rate?",
+  answer(NULL, correct = TRUE),
+  allow_retry = FALSE,
+  incorrect = NULL,
+  rows = 3)
+```
+
+###
+
+The relationship between tuition and graduation rate is a reasonable first question but not the only one worth asking. A student picking a college might also want to know the graduation rate at specific schools they're considering (point predictions, not just averages), or the range of graduation rates for similar-cost colleges (to calibrate expectations). The average question is the simplest, and we will stick with it --- the matching chapter considers the broader family.
+
+
+## Wisdom
+
+Data science starts with some broad questions and a data set which might help us to answer them.
+
+Imagine that you are a data scientist at a non-profit helping students find the best college. There are many decisions to make.
+
+The specific question: *What is the relationship between a college's tuition and its graduation rate?*
+
+We will work from the Department of Education's 2013 IPEDS database, available in the `colleges` tibble of the **[primer.data](https://github.com/PPBDS/primer.data)** package.
+
+###
+
+### Exercise 1
+
+In your own words, describe the key components of Wisdom when working on a data science problem.
+
+```{r wisdom-1}
+question_text(NULL,
+  message = "Wisdom begins with a question and then moves on to the creation of a Preceptor Table and an examination of our data.",
+  answer(NULL, correct = TRUE),
+  allow_retry = FALSE,
+  incorrect = NULL,
+  rows = 3)
+```
+
+###
+
+> *The combination of some data and an aching desire for an answer does not ensure that a reasonable answer can be extracted from a given body of data.* --- John W. Tukey
+
+### Exercise 2
+
+Define a Preceptor Table.
+
+```{r wisdom-2}
+question_text(NULL,
+  message = "A Preceptor Table is the smallest possible table of data with rows and columns such that, if there is no missing data, we can easily calculate the quantity of interest.",
+  answer(NULL, correct = TRUE),
+  allow_retry = FALSE,
+  incorrect = NULL,
+  rows = 6)
+```
+
+###
+
+The Preceptor Table does not include all the covariates which you will eventually include in your model. It only includes, along with the outcome(s), covariates which are mentioned in your question.
+
+### Exercise 3
+
+Let's look at our data more carefully. Ask AI to write R code that plots the distribution of `grad_rate` in `colleges` (filtered to schools with tuition > $20,000), using a density plot with a descriptive title, subtitle, axis labels, and caption. Paste the code below and run it.
+
+```{r wisdom-3}
+question_text(NULL,
+  message = "    colleges |>\n      filter(tuition > 2) |>\n      drop_na(grad_rate) |>\n      ggplot(aes(x = grad_rate)) +\n      geom_density(fill = \"grey70\", color = \"grey30\") +\n      labs(\n        title = \"Graduation Rates Across US Colleges\",\n        subtitle = \"Most colleges graduate 50--80% of students within six years\",\n        x = \"Graduation Rate\", y = \"Density\",\n        caption = \"Source: IPEDS 2013 via primer.data\"\n      ) +\n      theme_minimal()",
+  answer(NULL, correct = TRUE),
+  allow_retry = FALSE,
+  incorrect = NULL,
+  rows = 10)
+```
+
+###
+
+```{r}
+#| echo: false
+#| message: false
+#| warning: false
+colleges |>
+  filter(tuition > 2) |>
+  drop_na(grad_rate) |>
+  ggplot(aes(x = grad_rate)) +
+  geom_density(fill = "grey70", color = "grey30") +
+  labs(
+    title = "Graduation Rates Across US Colleges",
+    subtitle = "Most colleges graduate 50--80% of students within six years",
+    x = "Graduation Rate", y = "Density",
+    caption = "Source: IPEDS 2013 via primer.data"
+  ) +
+  theme_minimal()
+```
+
+The distribution is broad with a peak around 60% graduation. A long left tail captures the non-selective schools where completing a degree in six years is much less common.
+
+### Exercise 4
+
+Now look at how `grad_rate` varies with `tuition`. Ask AI to write R code that plots `grad_rate` on the y-axis against `tuition` on the x-axis using points with `alpha = 0.4`, a smooth trend line, and descriptive labels. Paste the code below.
+
+```{r wisdom-4}
+question_text(NULL,
+  message = "    colleges |>\n      filter(tuition > 2) |>\n      drop_na(grad_rate, tuition) |>\n      ggplot(aes(x = tuition, y = grad_rate)) +\n      geom_point(alpha = 0.4, color = \"grey30\") +\n      geom_smooth(method = \"lm\", color = \"steelblue\", se = FALSE) +\n      labs(\n        title = \"Graduation Rate by Tuition\",\n        subtitle = \"Higher-tuition colleges tend to graduate more students\",\n        x = \"Tuition ($10,000)\", y = \"Graduation Rate\",\n        caption = \"Source: IPEDS 2013 via primer.data\"\n      ) +\n      theme_minimal()",
+  answer(NULL, correct = TRUE),
+  allow_retry = FALSE,
+  incorrect = NULL,
+  rows = 10)
+```
+
+###
+
+```{r}
+#| echo: false
+#| message: false
+#| warning: false
+colleges |>
+  filter(tuition > 2) |>
+  drop_na(grad_rate, tuition) |>
+  ggplot(aes(x = tuition, y = grad_rate)) +
+  geom_point(alpha = 0.4, color = "grey30") +
+  geom_smooth(method = "lm", color = "steelblue", se = FALSE) +
+  labs(
+    title = "Graduation Rate by Tuition",
+    subtitle = "Higher-tuition colleges tend to graduate more students",
+    x = "Tuition ($10,000)",
+    y = "Graduation Rate",
+    caption = "Source: IPEDS 2013 via primer.data"
+  ) +
+  theme_minimal()
+```
+
+A clear positive slope, with lots of scatter. Tuition captures something real, but a long way from the whole story.
+
+### Exercise 5
+
+Describe the key components of Preceptor Tables in general, without worrying about this specific problem. Use words like "units," "outcomes," and "covariates."
+
+```{r wisdom-5}
+question_text(NULL,
+  message = "The rows of the Preceptor Table are the units. The outcome is at least one of the columns. If the problem is causal, there will be at least two (potential) outcome columns. The other columns are covariates. If the problem is causal, at least one of the covariates will be considered a treatment.",
+  answer(NULL, correct = TRUE),
+  allow_retry = FALSE,
+  incorrect = NULL,
+  rows = 6)
+```
+
+###
+
+This problem is predictive, so there is one outcome column: `grad_rate`. The key covariate is `tuition`.
+
+### Exercise 6
+
+What are the units for this problem?
+
+```{r wisdom-6}
+question_text(NULL,
+  message = "Each row is one US four-year college or university in the 2013 IPEDS snapshot. The Preceptor Table would have a row for every such institution --- roughly 900 in total.",
+  answer(NULL, correct = TRUE),
+  allow_retry = FALSE,
+  incorrect = NULL,
+  rows = 3)
+```
+
+###
+
+We model units, but we only really care about aggregates.
+
+### Exercise 7
+
+What is the outcome variable for this problem?
+
+```{r wisdom-7}
+question_text(NULL,
+  message = "`grad_rate` --- the proportion of entering students who graduate within six years, a number between 0 and 1.",
+  answer(NULL, correct = TRUE),
+  allow_retry = FALSE,
+  incorrect = NULL,
+  rows = 3)
+```
+
+###
+
+The outcome we really care about --- "did this college's graduates succeed in life?" --- is not measured in our data. `grad_rate` is a narrow proxy: it tells us completion, not outcomes after graduation.
+
+### Exercise 8
+
+What is a covariate which you think might be useful for this problem, regardless of whether or not it might be included in the data?
+
+```{r wisdom-8}
+question_text(NULL,
+  message = "`selectivity` is a strong candidate --- more selective schools admit students who are more likely to graduate regardless of the school's support. SAT score distribution, percent of first-generation students, and endowment per student are others.",
+  answer(NULL, correct = TRUE),
+  allow_retry = FALSE,
+  incorrect = NULL,
+  rows = 3)
+```
+
+###
+
+The term "covariates" is used in at least three ways. First, it is all the variables which might be useful, regardless of whether or not we have the data. Second, it is all the variables for which we have data. Third, it is the set of variables in the data which we end up using in the model.
+
+### Exercise 9
+
+What are the treatments, if any, for this problem?
+
+```{r wisdom-9}
+question_text(NULL,
+  message = "There are no treatments. This is a predictive model --- nothing in the `colleges` dataset can be manipulated (we cannot force a college to charge more tuition or to become more selective). Predictive models have covariates only.",
+  answer(NULL, correct = TRUE),
+  allow_retry = FALSE,
+  incorrect = NULL,
+  rows = 3)
+```
+
+###
+
+Remember that a treatment is just another covariate which, for the purposes of a specific problem, we are assuming can be manipulated.
+
+### Exercise 10
+
+What moment in time does the Preceptor Table refer to?
+
+```{r wisdom-10}
+question_text(NULL,
+  message = "The 2013 academic year --- the snapshot IPEDS collected. The graduation rate is the six-year rate, so each row's `grad_rate` technically refers to the cohort that entered in 2007.",
+  answer(NULL, correct = TRUE),
+  allow_retry = FALSE,
+  incorrect = NULL,
+  rows = 3)
+```
+
+###
+
+A Preceptor Table can never really refer to an exact instant in time.
+
+### Exercise 11
+
+Describe in words the Preceptor Table for this problem.
+
+```{r wisdom-11}
+question_text(NULL,
+  message = "The Preceptor Table has three columns: one identifying each college, one for `grad_rate`, and one for `tuition`. Each row represents one US four-year institution in 2013.",
+  answer(NULL, correct = TRUE),
+  allow_retry = FALSE,
+  incorrect = NULL,
+  rows = 5)
+```
+
+###
+
+```{r}
+#| echo: false
+#| results: asis
+pre_tibble <- tibble::tribble(
+  ~`College`,                    ~`Graduation Rate`, ~`Tuition ($10,000)`,
+  "Amherst College",             "0.95",             "5.1",
+  "Flagship State University",   "0.68",             "2.5",
+  "...",                         "...",              "...",
+  "Regional Private College",    "0.52",             "3.4"
+)
+
+pre_title_footnote     <- "A Preceptor Table is the smallest table such that, if every cell were filled with its true value, answering the question 'What is the relationship between a college's tuition and its graduation rate?' would be easy."
+pre_units_footnote     <- "Each row is one US four-year college or university. Missing rows represent the other institutions not shown."
+pre_outcome_footnote   <- "Six-year graduation rate, a proportion between 0 and 1. Reflects the entering class from six years before the snapshot year."
+pre_covariate_footnote <- "Annual tuition and fees in units of $10,000. A value of 3 means $30,000 per year."
+
+pre_gt_html <- gt::gt(pre_tibble, id = "preceptor_tbl") |>
+  gt::tab_header(title = "Preceptor Table") |>
+  gt::tab_spanner(label = "Unit",      id = "unit_span",
+                  columns = c(`College`)) |>
+  gt::tab_spanner(label = "Outcome",   id = "outcome_span",
+                  columns = c(`Graduation Rate`)) |>
+  gt::tab_spanner(label = "Covariate", id = "covariates_span",
+                  columns = c(`Tuition ($10,000)`)) |>
+  gt::cols_align(align = "left" , columns = c(`College`)) |>
+  gt::cols_align(align = "right", columns = c(`Graduation Rate`, `Tuition ($10,000)`)) |>
+  gt::fmt_markdown(columns = gt::everything()) |>
+  gt::tab_options(
+    heading.title.font.size   = "1.5em",
+    heading.title.font.weight = "bolder",
+    column_labels.font.weight = "normal"
+  ) |>
+  gt::tab_style(
+    style     = gt::cell_text(weight = "bold"),
+    locations = gt::cells_column_spanners()
+  ) |>
+  gt::tab_style(
+    style     = gt::cell_text(align = "left"),
+    locations = gt::cells_column_spanners(spanners = "unit_span")
+  ) |>
+  gt::tab_style(
+    style     = gt::cell_text(align = "right"),
+    locations = gt::cells_column_spanners(spanners = c("outcome_span", "covariates_span"))
+  ) |>
+  gt::tab_footnote(footnote = pre_title_footnote,
+                   locations = gt::cells_title()) |>
+  gt::tab_footnote(footnote = pre_units_footnote,
+                   locations = gt::cells_column_spanners(spanners = "unit_span")) |>
+  gt::tab_footnote(footnote = pre_outcome_footnote,
+                   locations = gt::cells_column_spanners(spanners = "outcome_span")) |>
+  gt::tab_footnote(footnote = pre_covariate_footnote,
+                   locations = gt::cells_column_spanners(spanners = "covariates_span")) |>
+  gt::opt_css(
+    css = "
+      #preceptor_tbl .gt_footnote {
+        max-width: 1px;
+        word-break: break-word;
+      }
+    "
+  ) |>
+  gt::as_raw_html()
+
+cat(
+  "```{=html}\n",
+  '<div style="display: inline-block; width: auto; max-width: 100%;">',
+  pre_gt_html,
+  "</div>\n",
+  "```\n",
+  sep = ""
+)
+```
+
+### Exercise 12
+
+We need a cleaned tibble. Ask AI to write R code that creates a tibble called `x` by taking `colleges`, selecting only `tuition`, `grad_rate`, and `selectivity`, filtering to rows with tuition above $20,000 (so `tuition > 2`), and dropping rows with missing values. Paste the code below.
+
+```{r wisdom-12}
+question_text(NULL,
+  message = "    x <- colleges |>\n      select(tuition, grad_rate, selectivity) |>\n      filter(tuition > 2) |>\n      drop_na()",
+  answer(NULL, correct = TRUE),
+  allow_retry = FALSE,
+  incorrect = NULL,
+  rows = 10)
+```
+
+###
+
+`filter(tuition > 2)` restricts to schools charging at least $20,000/year, which removes a handful of community-college-priced entries in the IPEDS snapshot that don't fit the four-year residential model we care about. `drop_na()` silently removes rows missing any of the three variables --- a simplification Justice will revisit.
+
+### Exercise 13
+
+In `analysis.qmd`, add a new code chunk and copy/paste the pipeline above. Render the QMD. At the R prompt, run:
+
+```
+show_file("analysis.qmd", chunk = "Last")
+```
+
+CP/CR.
+
+```{r wisdom-13}
+question_text(NULL,
+  message = "    > show_file(\"analysis.qmd\", chunk = \"Last\")\n    ```{r}\n    x <- colleges |>\n      select(tuition, grad_rate, selectivity) |>\n      filter(tuition > 2) |>\n      drop_na()\n    ```",
+  answer(NULL, correct = TRUE),
+  allow_retry = FALSE,
+  incorrect = NULL,
+  rows = 8)
+```
+
+###
+
+You can never look at the data too much. --- Mark Engerman
+
+### Exercise 14
+
+Write the first two sentences of the summary paragraph. The first sentence is a general statement about the overall topic, mentioning the general class of outcome and at least one covariate. The second sentence introduces the data source and the specific question.
+
+```{r wisdom-14}
+question_text(NULL,
+  message = "Where students go to college and what they pay for it varies enormously, and so does the likelihood that they will finish. Using 2013 IPEDS data on roughly 900 US four-year colleges and universities, we examine how graduation rate varies with tuition and selectivity.",
+  answer(NULL, correct = TRUE),
+  allow_retry = FALSE,
+  incorrect = NULL,
+  rows = 5)
+```
+
+###
+
+Read our answer. It will not be the same as yours. Do not copy/paste exactly. Add your two sentences to the summary paragraph. `Cmd/Ctrl + Shift + K`, then commit/push.
+
+
+## Justice
+
+Wisdom gives us the Preceptor Table and the data.
+
+```{r}
+#| echo: false
+#| results: asis
+pre_tibble_j <- tibble::tribble(
+  ~`College`,                    ~`Graduation Rate`, ~`Tuition ($10,000)`,
+  "Amherst College",             "0.95",             "5.1",
+  "Flagship State University",   "0.68",             "2.5",
+  "...",                         "...",              "...",
+  "Regional Private College",    "0.52",             "3.4"
+)
+
+pre_title_footnote_j     <- "A Preceptor Table is the smallest table such that, if every cell were filled with its true value, answering the question 'What is the relationship between a college's tuition and its graduation rate?' would be easy."
+pre_units_footnote_j     <- "Each row is one US four-year college or university."
+pre_outcome_footnote_j   <- "Six-year graduation rate, 0 to 1."
+pre_covariate_footnote_j <- "Annual tuition in units of $10,000."
+
+pre_gt_html_j <- gt::gt(pre_tibble_j, id = "preceptor_tbl_justice") |>
+  gt::tab_header(title = "Preceptor Table") |>
+  gt::tab_spanner(label = "Unit",      id = "unit_span",
+                  columns = c(`College`)) |>
+  gt::tab_spanner(label = "Outcome",   id = "outcome_span",
+                  columns = c(`Graduation Rate`)) |>
+  gt::tab_spanner(label = "Covariate", id = "covariates_span",
+                  columns = c(`Tuition ($10,000)`)) |>
+  gt::cols_align(align = "left" , columns = c(`College`)) |>
+  gt::cols_align(align = "right", columns = c(`Graduation Rate`, `Tuition ($10,000)`)) |>
+  gt::fmt_markdown(columns = gt::everything()) |>
+  gt::tab_options(
+    heading.title.font.size   = "1.5em",
+    heading.title.font.weight = "bolder",
+    column_labels.font.weight = "normal"
+  ) |>
+  gt::tab_style(
+    style     = gt::cell_text(weight = "bold"),
+    locations = gt::cells_column_spanners()
+  ) |>
+  gt::tab_style(
+    style     = gt::cell_text(align = "left"),
+    locations = gt::cells_column_spanners(spanners = "unit_span")
+  ) |>
+  gt::tab_style(
+    style     = gt::cell_text(align = "right"),
+    locations = gt::cells_column_spanners(spanners = c("outcome_span", "covariates_span"))
+  ) |>
+  gt::tab_footnote(footnote = pre_title_footnote_j,
+                   locations = gt::cells_title()) |>
+  gt::tab_footnote(footnote = pre_units_footnote_j,
+                   locations = gt::cells_column_spanners(spanners = "unit_span")) |>
+  gt::tab_footnote(footnote = pre_outcome_footnote_j,
+                   locations = gt::cells_column_spanners(spanners = "outcome_span")) |>
+  gt::tab_footnote(footnote = pre_covariate_footnote_j,
+                   locations = gt::cells_column_spanners(spanners = "covariates_span")) |>
+  gt::opt_css(
+    css = "
+      #preceptor_tbl_justice .gt_footnote {
+        max-width: 1px;
+        word-break: break-word;
+      }
+    "
+  ) |>
+  gt::as_raw_html()
+
+cat(
+  "```{=html}\n",
+  '<div style="display: inline-block; width: auto; max-width: 100%;">',
+  pre_gt_html_j,
+  "</div>\n",
+  "```\n",
+  sep = ""
+)
+```
+
+```{r}
+#| echo: false
+#| results: asis
+data_tibble <- tibble::tribble(
+  ~`College`,                    ~`Year`, ~`Graduation Rate`, ~`Tuition ($10,000)`, ~`Selectivity`,
+  "College 1",                   "2013",  "0.94",             "5.08",               "Elite",
+  "College 2",                   "2013",  "0.63",             "3.07",               "Moderately Selective",
+  "...",                         "...",   "...",              "...",                "...",
+  "College 542",                 "2013",  "0.48",             "2.15",               "Lowly Selective"
+)
+
+data_title_footnote     <- "Integrated Postsecondary Education Data System (IPEDS), US Department of Education, 2013 snapshot. Covers ~900 US four-year colleges and universities reporting graduation rates, tuition, selectivity, and other institutional metrics. After filtering to tuition > $20,000 and dropping rows with missing values, we have 542 colleges."
+data_units_footnote     <- "Each row is one US four-year college in the 2013 reporting year. The graduation rate is the six-year rate for the cohort that entered six years before."
+data_outcome_footnote   <- "Graduation rate is the proportion of first-time, full-time bachelor's-degree-seeking students who graduated within six years. IPEDS collects this from institutional reports; definitions have been consistent across reporting years."
+data_covariate_footnote <- "Tuition is reported annual tuition and fees, converted to units of $10,000. `Selectivity` is a five-level ordered factor assigned by IPEDS based on admissions data: Elite, Highly Selective, Moderately Selective, Lowly Selective, Non-selective."
+
+data_gt_html <- gt::gt(data_tibble, id = "data_tbl") |>
+  gt::tab_header(title = "Data: IPEDS US Four-Year Colleges, 2013") |>
+  gt::tab_spanner(label = "Unit/Time",  id = "unit_span",
+                  columns = c(`College`, `Year`)) |>
+  gt::tab_spanner(label = "Outcome",    id = "outcome_span",
+                  columns = c(`Graduation Rate`)) |>
+  gt::tab_spanner(label = "Covariates", id = "covariates_span",
+                  columns = c(`Tuition ($10,000)`, `Selectivity`)) |>
+  gt::cols_align(align = "left" , columns = c(`College`, `Selectivity`)) |>
+  gt::cols_align(align = "right", columns = c(`Year`, `Graduation Rate`, `Tuition ($10,000)`)) |>
+  gt::fmt_markdown(columns = gt::everything()) |>
+  gt::tab_options(
+    heading.title.font.size   = "1.5em",
+    heading.title.font.weight = "bolder",
+    column_labels.font.weight = "normal"
+  ) |>
+  gt::tab_style(
+    style     = gt::cell_text(weight = "bold"),
+    locations = gt::cells_column_spanners()
+  ) |>
+  gt::tab_style(
+    style     = gt::cell_text(align = "left"),
+    locations = gt::cells_column_spanners(spanners = c("unit_span", "covariates_span"))
+  ) |>
+  gt::tab_style(
+    style     = gt::cell_text(align = "right"),
+    locations = gt::cells_column_spanners(spanners = "outcome_span")
+  ) |>
+  gt::tab_footnote(footnote = data_title_footnote,
+                   locations = gt::cells_title()) |>
+  gt::tab_footnote(footnote = data_units_footnote,
+                   locations = gt::cells_column_spanners(spanners = "unit_span")) |>
+  gt::tab_footnote(footnote = data_outcome_footnote,
+                   locations = gt::cells_column_spanners(spanners = "outcome_span")) |>
+  gt::tab_footnote(footnote = data_covariate_footnote,
+                   locations = gt::cells_column_spanners(spanners = "covariates_span")) |>
+  gt::opt_css(
+    css = "
+      #data_tbl .gt_footnote {
+        max-width: 1px;
+        word-break: break-word;
+      }
+    "
+  ) |>
+  gt::as_raw_html()
+
+cat(
+  "```{=html}\n",
+  '<div style="display: inline-block; width: auto; max-width: 100%;">',
+  data_gt_html,
+  "</div>\n",
+  "```\n",
+  sep = ""
+)
+```
+
+###
+
+### Exercise 1
+
+In your own words, name the five key components of Justice when working on a data science problem.
+
+```{r justice-1}
+question_text(NULL,
+  message = "Justice concerns the Population Table and the four key assumptions which underlie it: validity, stability, representativeness, and unconfoundedness.",
+  answer(NULL, correct = TRUE),
+  allow_retry = FALSE,
+  incorrect = NULL,
+  rows = 5)
+```
+
+###
+
+Justice is about concerns that you (or your critics) might have, reasons why the model you create might not work as well as you hope.
+
+### Exercise 2
+
+In your own words, define "validity" as we use the term.
+
+```{r justice-2}
+question_text(NULL,
+  message = "Validity is the consistency, or lack thereof, in the columns of the data set and the corresponding columns in the Preceptor Table.",
+  answer(NULL, correct = TRUE),
+  allow_retry = FALSE,
+  incorrect = NULL,
+  rows = 5)
+```
+
+###
+
+Validity is always about the columns in the Preceptor Table and the data. Just because two columns share a name does not mean that they are the same thing.
+
+### Exercise 3
+
+Provide one reason why the assumption of validity might not hold for the outcome variable `grad_rate` or for the covariate `tuition`. Use the words "column" or "columns" in your answer.
+
+```{r justice-3}
+question_text(NULL,
+  message = "The `grad_rate` column in IPEDS measures six-year completion of *a* bachelor's degree, but not necessarily at the college where the student started (IPEDS only counts students who graduate from the original institution). A student who transfers and finishes elsewhere counts as a non-graduation, so the column understates the true outcome. That is different from the Preceptor Table's 'did this student finish college in six years?' --- the two columns are not quite the same concept.",
+  answer(NULL, correct = TRUE),
+  allow_retry = FALSE,
+  incorrect = NULL,
+  rows = 6)
+```
+
+###
+
+Validity allows us to construct the Population Table --- the bridge from data to Preceptor Table.
+
+### Exercise 4
+
+In your own words, define a Population Table.
+
+```{r justice-4}
+question_text(NULL,
+  message = "The Population Table includes a row for each unit/time combination in the underlying population from which both the Preceptor Table and the data are drawn.",
+  answer(NULL, correct = TRUE),
+  allow_retry = FALSE,
+  incorrect = NULL,
+  rows = 5)
+```
+
+###
+
+The Population Table is almost always much bigger than the combination of the Preceptor Table and the data.
+
+### Exercise 5
+
+Specify the unit/time combinations which define each row in this Population Table.
+
+```{r justice-5}
+question_text(NULL,
+  message = "Each row is one US four-year college in a given year. Data rows are the 542 colleges in our filtered 2013 IPEDS snapshot. Preceptor rows are the same population of US four-year colleges in 2013 (IPEDS covers essentially all of them, so the data and Preceptor rows largely overlap). Other rows cover the broader span of US four-year colleges across reporting years.",
+  answer(NULL, correct = TRUE),
+  allow_retry = FALSE,
+  incorrect = NULL,
+  rows = 5)
+```
+
+###
+
+```{r}
+#| echo: false
+#| results: asis
+pop_tibble <- tibble::tribble(
+  ~Source    , ~`College`         , ~`Year`, ~`Graduation Rate`, ~`Tuition ($10,000)`, ~`Selectivity`,
+  "..."      , "..."              , "..."  , "..."             , "..."               , "..."         ,
+  "Data"     , "College 1"        , "2013" , "0.94"            , "5.08"              , "Elite"       ,
+  "Data"     , "College 2"        , "2013" , "0.63"            , "3.07"              , "Moderately Selective",
+  "Data"     , "..."              , "..."  , "..."             , "..."               , "..."         ,
+  "Data"     , "College 542"      , "2013" , "0.48"            , "2.15"              , "Lowly Selective",
+  "..."      , "..."              , "..."  , "..."             , "..."               , "..."         ,
+  "Preceptor", "Amherst College"  , "2013" , "0.95"            , "5.10"              , "Elite"       ,
+  "Preceptor", "Flagship State"   , "2013" , "0.68"            , "2.50"              , "Moderately Selective",
+  "Preceptor", "..."              , "..."  , "..."             , "..."               , "..."         ,
+  "Preceptor", "Regional Private" , "2013" , "0.52"            , "3.40"              , "Lowly Selective",
+  "..."      , "..."              , "..."  , "..."             , "..."               , "..."
+)
+
+pop_title_footnote     <- "This table combines the 2013 IPEDS snapshot with the Preceptor Table's view of US four-year colleges in 2013, drawn from the same population of institutions."
+pop_units_footnote     <- "Each row is one college at one point in time. Data and Preceptor rows refer to the same population in the same year; the two sets largely overlap."
+pop_outcome_footnote   <- "Six-year graduation rate, 0 to 1."
+pop_covariate_footnote <- "Tuition in units of $10,000. Selectivity is IPEDS's five-level ordered factor."
+
+pop_gt_html <- gt::gt(pop_tibble, id = "population_tbl") |>
+  gt::tab_header(title = "Population Table") |>
+  gt::tab_spanner(label = "Unit/Time", id = "unit_span",
+                  columns = c(`College`, `Year`)) |>
+  gt::tab_spanner(label = "Outcome",   id = "outcome_span",
+                  columns = c(`Graduation Rate`)) |>
+  gt::tab_spanner(label = "Covariates", id = "covariates_span",
+                  columns = c(`Tuition ($10,000)`, `Selectivity`)) |>
+  gt::cols_align(align = "left" , columns = c(`Source`, `College`, `Selectivity`)) |>
+  gt::cols_align(align = "right", columns = c(`Year`, `Graduation Rate`, `Tuition ($10,000)`)) |>
+  gt::fmt_markdown(columns = gt::everything()) |>
+  gt::tab_options(
+    heading.title.font.size   = "1.5em",
+    heading.title.font.weight = "bolder",
+    column_labels.font.weight = "normal"
+  ) |>
+  gt::tab_style(
+    style     = gt::cell_text(weight = "bold"),
+    locations = gt::cells_column_spanners()
+  ) |>
+  gt::tab_style(
+    style     = gt::cell_text(align = "left"),
+    locations = gt::cells_column_spanners(spanners = c("unit_span", "covariates_span"))
+  ) |>
+  gt::tab_style(
+    style     = gt::cell_text(align = "right"),
+    locations = gt::cells_column_spanners(spanners = "outcome_span")
+  ) |>
+  gt::tab_footnote(footnote = pop_title_footnote,
+                   locations = gt::cells_title()) |>
+  gt::tab_footnote(footnote = pop_units_footnote,
+                   locations = gt::cells_column_spanners(spanners = "unit_span")) |>
+  gt::tab_footnote(footnote = pop_outcome_footnote,
+                   locations = gt::cells_column_spanners(spanners = "outcome_span")) |>
+  gt::tab_footnote(footnote = pop_covariate_footnote,
+                   locations = gt::cells_column_spanners(spanners = "covariates_span")) |>
+  gt::opt_css(
+    css = "
+      #population_tbl .gt_footnote {
+        max-width: 1px;
+        word-break: break-word;
+      }
+    "
+  ) |>
+  gt::as_raw_html()
+
+cat(
+  "```{=html}\n",
+  '<div style="display: inline-block; width: auto; max-width: 100%;">',
+  pop_gt_html,
+  "</div>\n",
+  "```\n",
+  sep = ""
+)
+```
+
+### Exercise 6
+
+In your own words, define "stability."
+
+```{r justice-6}
+question_text(NULL,
+  message = "Stability means that the relationship between the columns in the Population Table is the same for three categories of rows: the data, the Preceptor Table, and the larger population from which both are drawn.",
+  answer(NULL, correct = TRUE),
+  allow_retry = FALSE,
+  incorrect = NULL,
+  rows = 5)
+```
+
+###
+
+Stability is about time.
+
+### Exercise 7
+
+Provide one reason why stability might not hold.
+
+```{r justice-7}
+question_text(NULL,
+  message = "The relationship between tuition and graduation rate has drifted over time. Tuition has risen much faster than inflation, and colleges have competed for students in ways that change admissions and graduation practices. A relationship estimated from 2013 data may not match the underlying parameter in, say, 2023.",
+  answer(NULL, correct = TRUE),
+  allow_retry = FALSE,
+  incorrect = NULL,
+  rows = 5)
+```
+
+###
+
+Stability is about parameters. A change in the distribution of `tuition` over time is not, in itself, a stability violation; a change in the slope of grad_rate on tuition is.
+
+### Exercise 8
+
+In your own words, define representativeness.
+
+```{r justice-8}
+question_text(NULL,
+  message = "Representativeness, or the lack thereof, concerns two relationships among the rows in the Population Table. The first is between the data and the other rows. The second is between the other rows and the Preceptor Table.",
+  answer(NULL, correct = TRUE),
+  allow_retry = FALSE,
+  incorrect = NULL,
+  rows = 5)
+```
+
+###
+
+Ideally we would like both the Preceptor Table and the data to be random samples from the population. Sadly, this is almost never the case.
+
+### Exercise 9
+
+Provide one reason, involving the relationship between the data and the population, why representativeness might not hold.
+
+```{r justice-9}
+question_text(NULL,
+  message = "IPEDS reports from colleges that participate in federal financial-aid programs, which is nearly all accredited four-year institutions but not quite all. Colleges that do not participate --- a handful of religious and specialty schools --- are systematically absent. More importantly, our filter to `tuition > 2` drops low-tuition and community-college-priced schools, so the 542 rows we fit on are a deliberately non-representative slice.",
+  answer(NULL, correct = TRUE),
+  allow_retry = FALSE,
+  incorrect = NULL,
+  rows = 6)
+```
+
+###
+
+When representativeness is violated, the estimates for the model parameters will be biased.
+
+### Exercise 10
+
+Provide one reason, involving the relationship between the Population and the Preceptor Table, why representativeness might not hold.
+
+```{r justice-10}
+question_text(NULL,
+  message = "Our Preceptor Table and the data share units. But the non-profit's students are considering specific colleges, not all US four-year colleges on average. If the students are looking at elite private schools, the broader IPEDS average isn't directly informative for them --- the Preceptor Table that would actually answer their question is a narrower slice than what we have.",
+  answer(NULL, correct = TRUE),
+  allow_retry = FALSE,
+  incorrect = NULL,
+  rows = 6)
+```
+
+###
+
+Stability looks across time periods. Representativeness looks within time periods.
+
+### Exercise 11
+
+Add `library(tidymodels)` to the QMD file. Place your cursor on that line. Use `Cmd/Ctrl + Enter`.
+
+CP/CR.
+
+```{r justice-11}
+question_text(NULL,
+  message = "    > library(tidymodels)\n    ── Attaching packages ──────── tidymodels 1.x.x ──\n    ✔ broom        ✔ recipes\n    ✔ dials        ✔ rsample\n    ✔ infer        ✔ tune\n    ✔ modeldata    ✔ workflows\n    ✔ parsnip      ✔ workflowsets\n    ✔ purrr        ✔ yardstick\n    ── Conflicts ──── tidymodels_conflicts() ──\n    ✖ purrr::discard() masks scales::discard()\n    ✖ dplyr::filter()  masks stats::filter()",
+  answer(NULL, correct = TRUE),
+  allow_retry = FALSE,
+  incorrect = NULL,
+  rows = 3)
+```
+
+###
+
+Our outcome variable `grad_rate` is continuous. The probability family is Normal: $Y \sim N(\mu, \sigma^2)$.
+
+### Exercise 12
+
+Add `library(broom)` to the QMD file. Place your cursor on that line. Use `Cmd/Ctrl + Enter`.
+
+CP/CR.
+
+```{r justice-12}
+question_text(NULL,
+  message = "    > library(broom)\n    >",
+  answer(NULL, correct = TRUE),
+  allow_retry = FALSE,
+  incorrect = NULL,
+  rows = 3)
+```
+
+###
+
+The link function for a continuous outcome is linear. Our model will be a linear regression.
+
+### Exercise 13
+
+Write one sentence highlighting a potential weakness in your model. So far our summary paragraph looks like this:
+
+> Where students go to college and what they pay for it varies enormously, and so does the likelihood that they will finish. Using 2013 IPEDS data on roughly 900 US four-year colleges and universities, we examine how graduation rate varies with tuition and selectivity.
+
+```{r justice-13}
+question_text(NULL,
+  message = "One concern is that our filter to `tuition > 2` drops low-tuition colleges --- so any estimated relationship only applies to schools charging at least $20,000 a year, not to the full range of US four-year institutions.",
+  answer(NULL, correct = TRUE),
+  allow_retry = FALSE,
+  incorrect = NULL,
+  rows = 5)
+```
+
+###
+
+Add a weakness sentence to your summary paragraph. `Cmd/Ctrl + Shift + K`, then commit/push.
+
+
+## Courage
+
+Justice gives us the Population Table and the abstract data generating mechanism.
+
+```{r}
+#| echo: false
+#| results: asis
+pop_tibble_c <- tibble::tribble(
+  ~Source    , ~`College`         , ~`Year`, ~`Graduation Rate`, ~`Tuition ($10,000)`, ~`Selectivity`,
+  "..."      , "..."              , "..."  , "..."             , "..."               , "..."         ,
+  "Data"     , "College 1"        , "2013" , "0.94"            , "5.08"              , "Elite"       ,
+  "Data"     , "College 2"        , "2013" , "0.63"            , "3.07"              , "Moderately Selective",
+  "Data"     , "..."              , "..."  , "..."             , "..."               , "..."         ,
+  "Data"     , "College 542"      , "2013" , "0.48"            , "2.15"              , "Lowly Selective",
+  "..."      , "..."              , "..."  , "..."             , "..."               , "..."         ,
+  "Preceptor", "Amherst College"  , "2013" , "0.95"            , "5.10"              , "Elite"       ,
+  "Preceptor", "Flagship State"   , "2013" , "0.68"            , "2.50"              , "Moderately Selective",
+  "Preceptor", "..."              , "..."  , "..."             , "..."               , "..."         ,
+  "Preceptor", "Regional Private" , "2013" , "0.52"            , "3.40"              , "Lowly Selective",
+  "..."      , "..."              , "..."  , "..."             , "..."               , "..."
+)
+
+pop_title_footnote_c     <- "2013 IPEDS snapshot combined with the Preceptor Table's same-year US four-year colleges."
+pop_units_footnote_c     <- "Each row is one college at one point in time."
+pop_outcome_footnote_c   <- "Graduation rate, 0 to 1."
+pop_covariate_footnote_c <- "Tuition in units of $10,000. Selectivity is IPEDS's five-level factor."
+
+pop_gt_html_c <- gt::gt(pop_tibble_c, id = "population_tbl_courage") |>
+  gt::tab_header(title = "Population Table") |>
+  gt::tab_spanner(label = "Unit/Time", id = "unit_span",
+                  columns = c(`College`, `Year`)) |>
+  gt::tab_spanner(label = "Outcome",   id = "outcome_span",
+                  columns = c(`Graduation Rate`)) |>
+  gt::tab_spanner(label = "Covariates", id = "covariates_span",
+                  columns = c(`Tuition ($10,000)`, `Selectivity`)) |>
+  gt::cols_align(align = "left" , columns = c(`Source`, `College`, `Selectivity`)) |>
+  gt::cols_align(align = "right", columns = c(`Year`, `Graduation Rate`, `Tuition ($10,000)`)) |>
+  gt::fmt_markdown(columns = gt::everything()) |>
+  gt::tab_options(
+    heading.title.font.size   = "1.5em",
+    heading.title.font.weight = "bolder",
+    column_labels.font.weight = "normal"
+  ) |>
+  gt::tab_style(
+    style     = gt::cell_text(weight = "bold"),
+    locations = gt::cells_column_spanners()
+  ) |>
+  gt::tab_style(
+    style     = gt::cell_text(align = "left"),
+    locations = gt::cells_column_spanners(spanners = c("unit_span", "covariates_span"))
+  ) |>
+  gt::tab_style(
+    style     = gt::cell_text(align = "right"),
+    locations = gt::cells_column_spanners(spanners = "outcome_span")
+  ) |>
+  gt::tab_footnote(footnote = pop_title_footnote_c,
+                   locations = gt::cells_title()) |>
+  gt::tab_footnote(footnote = pop_units_footnote_c,
+                   locations = gt::cells_column_spanners(spanners = "unit_span")) |>
+  gt::tab_footnote(footnote = pop_outcome_footnote_c,
+                   locations = gt::cells_column_spanners(spanners = "outcome_span")) |>
+  gt::tab_footnote(footnote = pop_covariate_footnote_c,
+                   locations = gt::cells_column_spanners(spanners = "covariates_span")) |>
+  gt::opt_css(
+    css = "
+      #population_tbl_courage .gt_footnote {
+        max-width: 1px;
+        word-break: break-word;
+      }
+    "
+  ) |>
+  gt::as_raw_html()
+
+cat(
+  "```{=html}\n",
+  '<div style="display: inline-block; width: auto; max-width: 100%;">',
+  pop_gt_html_c,
+  "</div>\n",
+  "```\n",
+  sep = ""
+)
+```
+
+$$Y = \beta_0 + \beta_1 X_1 + \beta_2 X_2 + \cdots + \beta_n X_n + \epsilon$$
+
+with $\epsilon \sim N(0, \sigma^2)$.
+
+###
+
+### Exercise 1
+
+In your own words, describe the components of the virtue of Courage for analyzing data.
+
+```{r courage-1}
+question_text(NULL,
+  message = "Courage creates the data generating mechanism.",
+  answer(NULL, correct = TRUE),
+  allow_retry = FALSE,
+  incorrect = NULL,
+  rows = 5)
+```
+
+###
+
+The abstract data generating mechanism shown in the preamble uses generic variables --- $Y$, $X_1$, $X_2$, and so on --- because our purpose is to describe the general mathematical structure. At the end of Justice we have decided the functional family (linear with normal errors), but not the number or identity of covariates we will ultimately include. Courage fills in the missing pieces.
+
+### Exercise 2
+
+Because our outcome variable is continuous, start to create the model by entering `linear_reg(engine = "lm")`.
+
+```{r courage-2, exercise = TRUE}
+
+```
+
+```{r courage-2-hint-1, eval = FALSE}
+linear_reg(engine = ...)
+```
+
+```{r courage-2-test, include = FALSE}
+linear_reg(engine = "lm")
+```
+
+###
+
+The **[tidymodels](https://www.tidymodels.org/)** framework is the most popular one in the R world for estimating models.
+
+### Exercise 3
+
+Continue the pipe to `fit(grad_rate ~ tuition, data = x)`.
+
+```{r courage-3, exercise = TRUE}
+
+```
+
+<button onclick = "transfer_code(this)">Copy previous code</button>
+
+```{r courage-3-hint-1, eval = FALSE}
+... |>
+  fit(..., data = ...)
+```
+
+```{r courage-3-test, include = FALSE}
+linear_reg(engine = "lm") |>
+  fit(grad_rate ~ tuition, data = x)
+```
+
+###
+
+The intercept is the predicted graduation rate when tuition is 0 --- which is a number outside our data (we filtered to tuition > 2). The slope on `tuition` is how much predicted graduation rate changes when tuition rises by one unit ($10,000).
+
+### Exercise 4
+
+Continue the pipe with `tidy(conf.int = TRUE)`.
+
+```{r courage-4, exercise = TRUE}
+
+```
+
+<button onclick = "transfer_code(this)">Copy previous code</button>
+
+```{r courage-4-hint-1, eval = FALSE}
+...
+  tidy(... = TRUE)
+```
+
+```{r courage-4-test, include = FALSE}
+linear_reg(engine = "lm") |>
+  fit(grad_rate ~ tuition, data = x) |>
+  tidy(conf.int = TRUE)
+```
+
+###
+
+`tidy()` is part of the **[broom](https://broom.tidymodels.org/)** package, used to summarize information from a wide variety of models.
+
+### Exercise 5
+
+Change the call to `fit(grad_rate ~ selectivity, data = x)`. This fits the outcome on a five-level categorical variable.
+
+```{r courage-5, exercise = TRUE}
+
+```
+
+<button onclick = "transfer_code(this)">Copy previous code</button>
+
+```{r courage-5-hint-1, eval = FALSE}
+... |>
+  fit(grad_rate ~ selectivity, data = x) |>
+  tidy(conf.int = TRUE)
+```
+
+```{r courage-5-test, include = FALSE}
+linear_reg(engine = "lm") |>
+  fit(grad_rate ~ selectivity, data = x) |>
+  tidy(conf.int = TRUE)
+```
+
+###
+
+A categorical covariate with 5 values produces 4 dummy 0/1 variables --- one short of the number of levels, because the "missing" category is absorbed into the intercept. For `selectivity`, the reference level is `Elite` (the first level); each of the other four rows in the parameter table is the offset from Elite.
+
+### Exercise 6
+
+Now fit the final model: `fit(grad_rate ~ tuition + selectivity, data = x)`.
+
+```{r courage-6, exercise = TRUE}
+
+```
+
+<button onclick = "transfer_code(this)">Copy previous code</button>
+
+```{r courage-6-hint-1, eval = FALSE}
+... |>
+  fit(grad_rate ~ tuition + selectivity, data = x) |>
+  tidy(conf.int = TRUE)
+```
+
+```{r courage-6-test, include = FALSE}
+linear_reg(engine = "lm") |>
+  fit(grad_rate ~ tuition + selectivity, data = x) |>
+  tidy(conf.int = TRUE)
+```
+
+###
+
+The more variables we add, the more difficult it is to interpret the meaning of any particular coefficient. But interpretation also becomes less important. We don't really care about coefficients. We care about using our model to estimate quantities of interest.
+
+### Exercise 7
+
+Behind the scenes, an object called `fit_colleges` has been created. Type `fit_colleges` and hit "Run Code."
+
+```{r courage-7, exercise = TRUE}
+
+```
+
+```{r courage-7-hint-1, eval = FALSE}
+fit_colleges
+```
+
+```{r courage-7-test, include = FALSE}
+fit_colleges
+```
+
+###
+
+In data science, **we deal with words, math, and code, but the most important of these is code.**
+
+### Exercise 8
+
+We need `fit_colleges` to exist in R World. Copy/paste this code to the R prompt:
+
+```
+fit_colleges <- linear_reg() |>
+  set_engine("lm") |>
+  fit(grad_rate ~ tuition + selectivity, data = x)
+```
+
+CP/CR.
+
+```{r courage-8}
+question_text(NULL,
+  message = "    > fit_colleges <- linear_reg() |>\n    +   set_engine(\"lm\") |>\n    +   fit(grad_rate ~ tuition + selectivity, data = x)\n    >",
+  answer(NULL, correct = TRUE),
+  allow_retry = FALSE,
+  incorrect = NULL,
+  rows = 5)
+```
+
+###
+
+Just because something exists in the tutorial (or in the QMD) does not mean that it is at the R prompt. You should be aware of what exists in R World --- your "workspace."
+
+### Exercise 9
+
+One way to check whether our model is reasonable is to compare the distribution of our actual outcome (`grad_rate`) with the distribution of fitted values from the model. If the model is well-specified, the two distributions should look similar.
+
+```{r}
+#| echo: false
+#| message: false
+#| warning: false
+fitted_df <- tibble(
+  value  = c(x$grad_rate, predict(extract_fit_engine(fit_colleges))),
+  source = c(rep("Actual", nrow(x)),
+             rep("Fitted", nrow(x)))
+)
+
+ggplot(fitted_df, aes(x = value, fill = source)) +
+  geom_density(alpha = 0.5) +
+  labs(
+    title = "Actual vs. Fitted Graduation Rates",
+    subtitle = "The fitted distribution is narrower --- our model smooths out the tails",
+    x = "Graduation Rate",
+    y = "Density",
+    fill = "Source",
+    caption = "Source: IPEDS 2013 via primer.data"
+  ) +
+  theme_minimal()
+```
+
+Read the plot carefully, then continue.
+
+```{r courage-9}
+question_text(NULL,
+  message = "(No command to run --- this exercise is a pause to make sure you have examined the two distributions.)",
+  answer(NULL, correct = TRUE),
+  allow_retry = FALSE,
+  incorrect = NULL,
+  rows = 3)
+```
+
+###
+
+In a good model, the distribution of fitted values looks like the distribution of the actual outcome. Big divergences mean our model is missing something. Here the fitted distribution is noticeably narrower than the actual one, which is expected: a linear model produces one predicted value per (tuition, selectivity) combination, so the spread of fitted values reflects only variation in those predictors. The real graduation rates vary for lots of reasons the model doesn't see, which widens the actual distribution.
+
+### Exercise 10
+
+With the parameters estimated, we can write the fitted model as a concrete formula:
+
+$$\hat{\text{grad\_rate}} = 0.487 + 0.0897 \cdot \text{tuition} - 0.0784 \cdot \text{Highly Selective} - 0.128 \cdot \text{Moderately Selective} - 0.213 \cdot \text{Lowly Selective} - 0.205 \cdot \text{Non-selective}$$
+
+Each selectivity term is a dummy 0/1 variable (e.g. `Highly Selective` is 1 if the college is Highly Selective, 0 otherwise). The baseline case --- an Elite college with every selectivity dummy = 0 --- has predicted graduation rate $0.487 + 0.0897 \cdot \text{tuition}$. Values rounded to three significant figures.
+
+**This is our data generating mechanism.**
+
+Read the formula above, then continue.
+
+```{r courage-10}
+question_text(NULL,
+  message = "(No command to run --- this exercise is a pause to make sure you have read the concrete formula above.)",
+  answer(NULL, correct = TRUE),
+  allow_retry = FALSE,
+  incorrect = NULL,
+  rows = 3)
+```
+
+###
+
+A data generating mechanism is just a formula, something which we can write down and implement with computer code.
+
+### Exercise 11
+
+Create a new code chunk in your QMD with `#| cache: true`. Copy/paste the code for estimating the model:
+
+```
+fit_colleges <- linear_reg() |>
+  set_engine("lm") |>
+  fit(grad_rate ~ tuition + selectivity, data = x)
+```
+
+`Cmd/Ctrl + Shift + K`. At the R prompt, run:
+
+```
+show_file("analysis.qmd", chunk = "Last")
+```
+
+CP/CR.
+
+```{r courage-11}
+question_text(NULL,
+  message = "    > show_file(\"analysis.qmd\", chunk = \"Last\")\n    ```{r}\n    #| cache: true\n    fit_colleges <- linear_reg() |>\n      set_engine(\"lm\") |>\n      fit(grad_rate ~ tuition + selectivity, data = x)\n    ```",
+  answer(NULL, correct = TRUE),
+  allow_retry = FALSE,
+  incorrect = NULL,
+  rows = 8)
+```
+
+###
+
+`#| cache: true` causes Quarto to save the chunk's results. Subsequent renders just load the saved object.
+
+### Exercise 12
+
+Add `*_cache` to `.gitignore`. At the R prompt, run `show_file(".gitignore")`. CP/CR.
+
+```{r courage-12}
+question_text(NULL,
+  message = "    > show_file(\".gitignore\")\n    analysis_files\n    *_cache",
+  answer(NULL, correct = TRUE),
+  allow_retry = FALSE,
+  incorrect = NULL,
+  rows = 5)
+```
+
+###
+
+Cached objects are often large and don't belong on GitHub.
+
+### Exercise 13
+
+At the R prompt, run `tidy()` on `fit_colleges` with `conf.int = TRUE`.
+
+```{r courage-13, exercise = TRUE}
+
+```
+
+```{r courage-13-hint-1, eval = FALSE}
+tidy(..., conf.int = ...)
+```
+
+```{r courage-13-test, include = FALSE}
+tidy(fit_colleges, conf.int = TRUE)
+```
+
+###
+
+`tidy()` returns a tibble with one row per parameter --- intercept plus one per covariate (with 4 dummy rows for the 5-level `selectivity`).
+
+### Exercise 14
+
+Here is a nicer-looking version of that parameter table, rendered with **[knitr](https://yihui.org/knitr/)**:
+
+```{r}
+#| echo: false
+library(knitr)
+
+tidy(fit_colleges, conf.int = TRUE) |>
+  select(term, estimate, conf.low, conf.high) |>
+  mutate(across(where(is.numeric), \(x) signif(x, 3))) |>
+  kable(
+    caption = "Estimates and 95% Confidence Intervals for Parameters.  Source: IPEDS 2013 via primer.data"
+  )
+```
+
+Read the table carefully, then continue.
+
+```{r courage-14}
+question_text(NULL,
+  message = "(No command to run --- this exercise is a pause to make sure you have read the table above.)",
+  answer(NULL, correct = TRUE),
+  allow_retry = FALSE,
+  incorrect = NULL,
+  rows = 3)
+```
+
+###
+
+We care about using our model to estimate quantities of interest, not about the parameters themselves.
+
+### Exercise 15
+
+Add a sentence to your project summary explaining the structure of the model.
+
+```{r courage-15}
+question_text(NULL,
+  message = "We model graduation rate as a linear function of tuition and selectivity.",
+  answer(NULL, correct = TRUE),
+  allow_retry = FALSE,
+  incorrect = NULL,
+  rows = 5)
+```
+
+###
+
+Add your sentence to the summary paragraph. `Cmd/Ctrl + Shift + K`, then commit/push.
+
+
+## Temperance
+
+Courage provides the data generating mechanism. We can express the DGM in four ways:
+
+**In words:** We describe graduation rate as a linear function of tuition and selectivity.
+
+**In R code:**
+
+```r
+fit_colleges <- linear_reg() |>
+  set_engine("lm") |>
+  fit(grad_rate ~ tuition + selectivity, data = x)
+```
+
+**In a parameter table:**
+
+```{r}
+#| echo: false
+fit_colleges |>
+  tidy(conf.int = TRUE) |>
+  select(term, estimate, conf.low, conf.high) |>
+  mutate(across(where(is.numeric), \(x) signif(x, 3)))
+```
+
+**As a mathematical formula:**
+
+$$\text{grad\_rate} = 0.487 + 0.0897 \cdot \text{tuition} - 0.0784 \cdot \text{Highly Selective} - 0.128 \cdot \text{Moderately Selective} - 0.213 \cdot \text{Lowly Selective} - 0.205 \cdot \text{Non-selective} + \epsilon$$
+
+with $\epsilon \sim N(0, 0.00760)$.
+
+###
+
+### Exercise 1
+
+In your own words, describe the use of Temperance in data science.
+
+```{r temperance-1}
+question_text(NULL,
+  message = "Temperance interprets the data generating mechanism and then uses it to answer, with the help of graphics, the question(s) with which we began. Humility reminds us that this answer is always false.",
+  answer(NULL, correct = TRUE),
+  allow_retry = FALSE,
+  incorrect = NULL,
+  rows = 5)
+```
+
+###
+
+Courage gave us the data generating mechanism. Temperance guides us in the use of the DGM --- or the "model" --- to answer the question(s) with which we began. Our tool for doing so is the **[marginaleffects](https://marginaleffects.com/)** package; its companion book *[Model to Meaning](https://marginaleffects.com/)* by Vincent Arel-Bundock is the reference we'll lean on throughout Temperance, starting with the [Predictions chapter](https://marginaleffects.com/chapters/predictions.html).
+
+### Exercise 2
+
+Before jumping to the full DGM, consider a simpler version --- one that ignores `tuition` and `selectivity` entirely. Here is the fitted intercept-only model, `grad_rate ~ 1`:
+
+```{r}
+#| echo: false
+linear_reg() |>
+  set_engine("lm") |>
+  fit(grad_rate ~ 1, data = x) |>
+  tidy(conf.int = TRUE) |>
+  select(term, estimate, conf.low, conf.high) |>
+  mutate(across(where(is.numeric), \(x) signif(x, 3)))
+```
+
+Write a sentence interpreting the 0.62 estimate for `(Intercept)` in this simple model.
+
+```{r temperance-2}
+question_text(NULL,
+  message = "The average graduation rate across our 542 colleges is 0.62 --- about 62% of students finish within six years. This is the expected value we would predict if we ignored every covariate.",
+  answer(NULL, correct = TRUE),
+  allow_retry = FALSE,
+  incorrect = NULL,
+  rows = 5)
+```
+
+###
+
+The simplest model has one parameter: the overall mean. That mean is the "best guess" when we know nothing about the college. The richer DGM breaks this mean down by tuition and selectivity.
+
+### Exercise 3
+
+Now consider the full DGM, `grad_rate ~ tuition + selectivity`:
+
+```{r}
+#| echo: false
+fit_colleges |>
+  tidy(conf.int = TRUE) |>
+  select(term, estimate, conf.low, conf.high) |>
+  mutate(across(where(is.numeric), \(x) signif(x, 3)))
+```
+
+Write a sentence interpreting the 0.0897 estimate for `tuition`.
+
+```{r temperance-3}
+question_text(NULL,
+  message = "When comparing two colleges in the same selectivity tier but with tuition $10,000 apart, the higher-tuition college has an expected graduation rate 0.0897 higher --- about 9 percentage points --- adjusting for selectivity.",
+  answer(NULL, correct = TRUE),
+  allow_retry = FALSE,
+  incorrect = NULL,
+  rows = 5)
+```
+
+###
+
+Whenever we consider non-treatment variables, we must never use terms like "cause" or "impact." We can only compare across rows. Use phrases like "when comparing X and Y."
+
+### Exercise 4
+
+Write a sentence interpreting the `-0.213` estimate for `selectivityLowly Selective`.
+
+```{r temperance-4}
+question_text(NULL,
+  message = "Lowly Selective colleges have an expected graduation rate 0.213 lower --- about 21 percentage points --- than Elite colleges at the same tuition level. The comparison is to the reference category, which is Elite (the first level of the factor).",
+  answer(NULL, correct = TRUE),
+  allow_retry = FALSE,
+  incorrect = NULL,
+  rows = 5)
+```
+
+###
+
+Dummy variables must always be interpreted in the context of the base value for that variable, which is generally included in the intercept. Here the base level of `selectivity` is `Elite`.
+
+### Exercise 5
+
+Write a sentence interpreting the confidence interval for `tuition`.
+
+```{r temperance-5}
+question_text(NULL,
+  message = "We do not know the true value for the tuition coefficient, but we can be 95% confident that it lies between 0.0738 and 0.106 --- that is, between about 7 and 11 percentage points of graduation rate per $10,000 of tuition, adjusting for selectivity.",
+  answer(NULL, correct = TRUE),
+  allow_retry = FALSE,
+  incorrect = NULL,
+  rows = 5)
+```
+
+###
+
+We care if the confidence interval for a given variable excludes zero. If not, we can't be sure whether the relationship between the variable and the outcome is positive or negative.
+
+### Exercise 6
+
+In the end, we don't really care about parameters, much less how to interpret them. Parameters are *imaginary*, like unicorns.
+
+Add `library(marginaleffects)` to the QMD file. Place your cursor on that line. Use `Cmd/Ctrl + Enter`.
+
+CP/CR.
+
+```{r temperance-6}
+question_text(NULL,
+  message = "    > library(marginaleffects)\n    >",
+  answer(NULL, correct = TRUE),
+  allow_retry = FALSE,
+  incorrect = NULL,
+  rows = 3)
+```
+
+###
+
+We should be modest in the claims we make. The posteriors we create are never the "truth."
+
+### Exercise 7
+
+What is the specific question we are trying to answer?
+
+```{r temperance-7}
+question_text(NULL,
+  message = "What is the relationship between a college's tuition and its graduation rate, adjusting for selectivity?",
+  answer(NULL, correct = TRUE),
+  allow_retry = FALSE,
+  incorrect = NULL,
+  rows = 3)
+```
+
+###
+
+Data science projects begin with a decision which we face. To make that decision wisely, we drill down to one specific question.
+
+### Exercise 8
+
+At the R prompt, run `predictions()` on `fit_colleges`.
+
+CP/CR.
+
+```{r temperance-8}
+question_text(NULL,
+  message = "    > predictions(fit_colleges)\n    \n     Estimate Std. Error    z Pr(>|z|)  2.5 % 97.5 %\n        0.623     0.0082 75.9   <0.001  0.607  0.639\n        0.563     0.0060 93.6   <0.001  0.552  0.575\n        0.566     0.0062 91.9   <0.001  0.554  0.578\n        ... (542 rows total, one per college)\n    \n    Type: numeric",
+  answer(NULL, correct = TRUE),
+  allow_retry = FALSE,
+  incorrect = NULL,
+  rows = 5)
+```
+
+###
+
+`predictions()` returns one row per observation --- 542 here --- with the model's predicted graduation rate for each college.
+
+### Exercise 9
+
+At the R prompt, run `plot_predictions(fit_colleges, condition = c("tuition", "selectivity"))`.
+
+CP/CR.
+
+```{r temperance-9}
+question_text(NULL,
+  message = "    > plot_predictions(fit_colleges, condition = c(\"tuition\", \"selectivity\"))\n\n(A plot opens showing five parallel lines --- one per selectivity level --- with graduation rate on the y-axis and tuition on the x-axis. The lines are parallel because the model has no interaction between tuition and selectivity; selectivity shifts the intercept, and the tuition slope is shared.)",
+  answer(NULL, correct = TRUE),
+  allow_retry = FALSE,
+  incorrect = NULL,
+  rows = 5)
+```
+
+```{r temperance-9-test, include = FALSE}
+plot_predictions(fit_colleges, condition = c("tuition", "selectivity"))
+```
+
+###
+
+Conditioning on two variables gives us a two-dimensional predicted surface --- here rendered as five parallel lines, one per selectivity tier.
+
+### Exercise 10
+
+At the R prompt, run the same command with `draw = FALSE`.
+
+CP/CR.
+
+```{r temperance-10}
+question_text(NULL,
+  message = "    > plot_predictions(fit_colleges, condition = c(\"tuition\", \"selectivity\"), draw = FALSE)\n       rowid estimate std.error  conf.low conf.high tuition          selectivity\n    1      1    0.667    0.0240     0.620     0.713   2.01              Elite\n    2      2    0.588    0.0212     0.547     0.630   2.01   Highly Selective\n    3      3    0.539    0.0130     0.513     0.564   2.01 Moderately Selective\n    4      4    0.453    0.0084     0.437     0.470   2.01     Lowly Selective\n    5      5    0.461    0.0266     0.409     0.513   2.01      Non-selective\n    ... (50 rows total --- 10 tuition values × 5 selectivity levels)",
+  answer(NULL, correct = TRUE),
+  allow_retry = FALSE,
+  incorrect = NULL,
+  rows = 5)
+```
+
+```{r temperance-10-test, include = FALSE}
+plot_predictions(fit_colleges, condition = c("tuition", "selectivity"), draw = FALSE)
+```
+
+###
+
+Because `plot_predictions()` returns a ggplot object, you can continue with ggplot commands. But it can be useful to see the underlying values.
+
+### Exercise 11
+
+Work with AI to create a beautiful plot starting from the output above. Do this in your QMD.
+
+Paste the plot code below.
+
+```{r temperance-11}
+question_text(NULL,
+  message = "    plot_predictions(fit_colleges, condition = c(\"tuition\", \"selectivity\"), draw = FALSE) |>\n      ggplot(aes(x = tuition, y = estimate, color = selectivity)) +\n      geom_ribbon(aes(ymin = conf.low, ymax = conf.high, fill = selectivity),\n                  alpha = 0.15, color = NA) +\n      geom_line(size = 1) +\n      labs(\n        title = \"Predicted Graduation Rate by Tuition and Selectivity\",\n        subtitle = \"Within each selectivity tier, every $10k of tuition adds ~9 percentage points\",\n        x = \"Tuition ($10,000)\", y = \"Predicted Graduation Rate\",\n        color = \"Selectivity\", fill = \"Selectivity\",\n        caption = \"Source: IPEDS 2013 via primer.data\"\n      ) +\n      theme_minimal()",
+  answer(NULL, correct = TRUE),
+  allow_retry = FALSE,
+  incorrect = NULL,
+  rows = 12)
+```
+
+###
+
+```{r}
+#| echo: false
+#| message: false
+#| warning: false
+plot_predictions(fit_colleges, condition = c("tuition", "selectivity"), draw = FALSE) |>
+  ggplot(aes(x = tuition, y = estimate, color = selectivity)) +
+  geom_ribbon(aes(ymin = conf.low, ymax = conf.high, fill = selectivity),
+              alpha = 0.15, color = NA) +
+  geom_line(size = 1) +
+  labs(
+    title = "Predicted Graduation Rate by Tuition and Selectivity",
+    subtitle = "Within each selectivity tier, every $10k of tuition adds ~9 percentage points",
+    x = "Tuition ($10,000)",
+    y = "Predicted Graduation Rate",
+    color = "Selectivity",
+    fill = "Selectivity",
+    caption = "Source: IPEDS 2013 via primer.data"
+  ) +
+  theme_minimal()
+```
+
+### Exercise 12
+
+Finalize the graphics chunk in your QMD. `Cmd/Ctrl + Shift + K`. At the R prompt, run `show_file("analysis.qmd", chunk = "Last")`. CP/CR.
+
+```{r temperance-12}
+question_text(NULL,
+  message = "    > show_file(\"analysis.qmd\", chunk = \"Last\")\n    ```{r}\n    plot_predictions(fit_colleges, condition = c(\"tuition\", \"selectivity\"), draw = FALSE) |>\n      ggplot(aes(x = tuition, y = estimate, color = selectivity)) +\n      geom_ribbon(aes(ymin = conf.low, ymax = conf.high, fill = selectivity),\n                  alpha = 0.15, color = NA) +\n      geom_line(size = 1) +\n      labs(\n        title = \"Predicted Graduation Rate by Tuition and Selectivity\",\n        subtitle = \"Within each selectivity tier, every $10k of tuition adds ~9 percentage points\",\n        x = \"Tuition ($10,000)\", y = \"Predicted Graduation Rate\",\n        color = \"Selectivity\", fill = \"Selectivity\",\n        caption = \"Source: IPEDS 2013 via primer.data\"\n      ) +\n      theme_minimal()\n    ```",
+  answer(NULL, correct = TRUE),
+  allow_retry = FALSE,
+  incorrect = NULL,
+  rows = 8)
+```
+
+###
+
+The map is not the territory. A beautiful graphic tells a story, but that story is always an imperfect representation of reality.
+
+### Exercise 13
+
+Write the last sentence of your summary paragraph. It describes at least one Quantity of Interest and a measure of uncertainty.
+
+```{r temperance-13}
+question_text(NULL,
+  message = "We estimate that within a given selectivity tier, each $10,000 of tuition is associated with about 9 percentage points more graduation rate, with a 95% confidence interval of 7 to 11 percentage points; Elite colleges graduate about 20 percentage points more students than Lowly Selective ones at comparable tuition.",
+  answer(NULL, correct = TRUE),
+  allow_retry = FALSE,
+  incorrect = NULL,
+  rows = 5)
+```
+
+###
+
+Add a final sentence to your summary paragraph. `Cmd/Ctrl + Shift + K`.
+
+### Exercise 14
+
+Write a few sentences explaining why the estimates might be wrong.
+
+```{r temperance-14}
+question_text(NULL,
+  message = "Our filter to `tuition > 2` drops low-tuition colleges, so the estimated slope doesn't apply to schools charging under $20,000. Our `grad_rate` outcome excludes students who transfer and graduate elsewhere, which undercounts completion. And selectivity is only a five-level summary of a much richer admissions picture. The confidence intervals the model reports reflect sampling variation around the 542 rows; they don't account for any of those framing or measurement issues.",
+  answer(NULL, correct = TRUE),
+  allow_retry = FALSE,
+  incorrect = NULL,
+  rows = 6)
+```
+
+###
+
+Always go back to your Preceptor Table. Even a perfectly estimated statistical model is rarely as useful as we might like.
+
+### Exercise 15
+
+Rearrange the material in your QMD so the order is graphic, then summary paragraph. The chunk that creates `fit_colleges` must occur before the chunk that creates the graphic. `Cmd/Ctrl + Shift + K`. At the R prompt, run `show_file("analysis.qmd")`. CP/CR.
+
+```{r temperance-15}
+question_text(NULL,
+  message = "    > show_file(\"analysis.qmd\")\n    ---\n    title: \"Colleges\"\n    author: \"<your name>\"\n    execute:\n      echo: false\n    ---\n    \n    ```{r}\n    #| message: false\n    library(tidyverse)\n    library(tidymodels)\n    library(primer.data)\n    library(broom)\n    library(marginaleffects)\n    ```\n    \n    ```{r}\n    x <- colleges |>\n      select(tuition, grad_rate, selectivity) |>\n      filter(tuition > 2) |>\n      drop_na()\n    ```\n    \n    ```{r}\n    #| cache: true\n    fit_colleges <- linear_reg() |>\n      set_engine(\"lm\") |>\n      fit(grad_rate ~ tuition + selectivity, data = x)\n    ```\n    \n    ```{r}\n    plot_predictions(fit_colleges, condition = c(\"tuition\", \"selectivity\"), draw = FALSE) |>\n      ggplot(aes(x = tuition, y = estimate, color = selectivity)) +\n      geom_ribbon(aes(ymin = conf.low, ymax = conf.high, fill = selectivity),\n                  alpha = 0.15, color = NA) +\n      geom_line(size = 1) +\n      labs(\n        title = \"Predicted Graduation Rate by Tuition and Selectivity\",\n        subtitle = \"Within each selectivity tier, every $10k of tuition adds ~9 percentage points\",\n        x = \"Tuition ($10,000)\", y = \"Predicted Graduation Rate\",\n        color = \"Selectivity\", fill = \"Selectivity\",\n        caption = \"Source: IPEDS 2013 via primer.data\"\n      ) +\n      theme_minimal()\n    ```\n    \n    Where students go to college and what they pay for it varies enormously, and so does the likelihood that they will finish. Using 2013 IPEDS data on roughly 900 US four-year colleges and universities, we examine how graduation rate varies with tuition and selectivity. Our filter to tuition above $20,000 drops low-tuition colleges, so the estimated relationship applies only to schools charging at least $20,000 a year. We model graduation rate as a linear function of tuition and selectivity. We estimate that within a given selectivity tier, each $10,000 of tuition is associated with about 9 percentage points more graduation rate; Elite colleges graduate about 20 percentage points more students than Lowly Selective ones at comparable tuition.",
+  answer(NULL, correct = TRUE),
+  allow_retry = FALSE,
+  incorrect = NULL,
+  rows = 10)
+```
+
+###
+
+This is the version of your QMD file at which your teacher is most likely to look closely.
+
+### Exercise 16
+
+Publish your rendered QMD to GitHub Pages. In the Terminal (not the R prompt!), run:
+
+```
+quarto publish gh-pages analysis.qmd
+```
+
+Copy/paste the resulting URL below.
+
+```{r temperance-16}
+question_text(NULL,
+  message = "https://<your-github-username>.github.io/colleges/analysis.html",
+  answer(NULL, correct = TRUE),
+  allow_retry = FALSE,
+  incorrect = NULL,
+  rows = 2)
+```
+
+###
+
+Commit/push everything.
+
+### Exercise 17
+
+Copy/paste the URL to your GitHub repo.
+
+```{r temperance-17}
+question_text(NULL,
+  message = "https://github.com/<your-github-username>/colleges",
+  answer(NULL, correct = TRUE),
+  allow_retry = FALSE,
+  incorrect = NULL,
+  rows = 2)
+```
+
+###
+
+We can never know all the entries in the Preceptor Table. That knowledge is reserved for God.
+
+The world confronts us. Make decisions we must.
+
+
+## Summary
+
+```{r}
+#| echo: false
+#| message: false
+#| warning: false
+plot_predictions(fit_colleges, condition = c("tuition", "selectivity"), draw = FALSE) |>
+  ggplot(aes(x = tuition, y = estimate, color = selectivity)) +
+  geom_ribbon(aes(ymin = conf.low, ymax = conf.high, fill = selectivity),
+              alpha = 0.15, color = NA) +
+  geom_line(size = 1) +
+  labs(
+    title = "Predicted Graduation Rate by Tuition and Selectivity",
+    subtitle = "Within each selectivity tier, every $10k of tuition adds ~9 percentage points",
+    x = "Tuition ($10,000)",
+    y = "Predicted Graduation Rate",
+    color = "Selectivity",
+    fill = "Selectivity",
+    caption = "Source: IPEDS 2013 via primer.data"
+  ) +
+  theme_minimal()
+```
+
+Where students go to college and what they pay for it varies enormously, and so does the likelihood that they will finish. Using 2013 IPEDS data on roughly 900 US four-year colleges and universities, we examine how graduation rate varies with tuition and selectivity. Our filter to tuition above $20,000 drops low-tuition colleges, so the estimated relationship applies only to schools charging at least $20,000 a year. We model graduation rate as a linear function of tuition and selectivity. We estimate that within a given selectivity tier, each $10,000 of tuition is associated with about 9 percentage points more graduation rate, with a 95% confidence interval of 7 to 11 percentage points; Elite colleges graduate about 20 percentage points more students than Lowly Selective ones at comparable tuition.
+
+This forecast would help a student gauge whether a specific school's graduation rate is typical for its tier or unusual. It does not address every question a student might face --- it says nothing about outcomes after graduation, nor about the experience of students within a given college. But it gives a defensible starting point.
+
+The world is always more uncertain than our models would have us believe.
+
+```{r download-answers, child = system.file("child_documents/download_answers.Rmd", package = "tutorial.helpers")}
+```

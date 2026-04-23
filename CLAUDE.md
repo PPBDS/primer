@@ -192,7 +192,15 @@ The 12 example tutorials are arranged under three rules that operate together:
    ```
    Six of each. A reader moving through the curriculum sees the causal / predictive distinction reinforced every time a new dataset arrives: we just did a predictive version; now here is a causal one. The rule is a hard constraint — do not drop two predictive tutorials in a row to "simplify," and do not push all the causal tutorials to the end.
 
-2. **EMH 4/4/4.** Positions 1–4 are Easy, 5–8 Medium, 9–12 Hard. The split is an *artifact* of twelve. At 14 tutorials the split becomes 5/5/4 or 4/5/5 with judgment on where the boundaries fall; at 16, 6/5/5 or 5/6/5. The boundary-smoothing principle from §1.3 (*"the last Easy tutorial should be just slightly simpler than the first Medium tutorial"*) is the thing that actually governs sequencing; EMH is the label we put on it for discussion.
+2. **EMH 4/4/4, fixed by tutorial number.** Positions 1–4 are Easy, 5–8 Medium, 9–12 Hard. Because the directory numbering runs 06–17 for example tutorials, **the tutorial number alone determines the tier**:
+
+   | Tutorial number | Position | Tier |
+   |---|---|---|
+   | 06, 07, 08, 09 | 1–4 | **Easy** |
+   | 10, 11, 12, 13 | 5–8 | **Medium** |
+   | 14, 15, 16, 17 | 9–12 | **Hard** |
+
+   This is a hard rule, not a suggestion. When an author is asked to (re)write a specific tutorial — e.g. "redo tutorial 11" — the tier is given by the number: tutorial 11 is Medium, full stop. Do not look up §17 to decide; the number is sufficient. The split is an *artifact* of twelve. At 14 tutorials the split becomes 5/5/4 or 4/5/5 with judgment on where the boundaries fall; at 16, 6/5/5 or 5/6/5. The boundary-smoothing principle from §1.3 (*"the last Easy tutorial should be just slightly simpler than the first Medium tutorial"*) is the thing that actually governs sequencing; EMH is the label we put on it for discussion.
 
 3. **Random forest at the end.** Positions 11 and 12 are the non-parametric tutorials — position 11 predictive, position 12 causal. Random forests (or equivalent non-parametric approaches) come last because they complete the arc from "parameters mean something literal" (Easy linear) through "parameters are on a link scale, use `marginaleffects` to interpret" (Medium) to "parameters are not the point at all, use `marginaleffects` or stop" (Hard). The student who reaches position 11 has already seen why direct parameter interpretation fails for link-scale models; RF is the culmination of that lesson, not a surprise.
 
@@ -257,6 +265,12 @@ Every example chapter has six top-level sections under `#`:
 6. **Summary** — one final graphic, one concluding paragraph, and the sentence "The world is always more uncertain than our models would have us believe."
 
 Chapters include full image references (`knitr::include_graphics("other/images/Wisdom.jpg")` etc.) at the top of each virtue section. Chapters quote extensively — from Tukey, from Rumsfeld, from the Bible, from whomever fits. Quotes are good; use them.
+
+**Every example chapter includes a discussion of quantity-of-interest variety.** Each tutorial picks one narrow QoI — usually an expected value (*"the average height of male and female USMC recruits"*). The chapter should spend a paragraph or two inside Temperance naming the *other* QoIs a real practitioner would care about and showing which ones the fitted DGM already answers versus which ones need more work. For the NHANES chapter the riff is: *average height is convenient but tells you nothing about the tallest recruit you need to fit (a max), or about how many small-vs-large uniforms to order (quantiles — the 10th and 90th, say), or about how tall the tallest recruit out of a specific batch of three will be (a distribution over sample statistics, which needs simulation).* The chapter names these candidate QoIs, sketches how to get at each from the same fitted DGM, and describes the simulation step — take the DGM, draw `n` synthetic units, record the statistic of interest, repeat many times, build a PDF — without necessarily teaching the full mechanics. The point is that **"average" is one question in a family of questions**, and the DGM answers the whole family once you know how to ask.
+
+This topic is chapter-only at Easy and Medium tiers. Hard tutorials may surface it as a knowledge drop; see §12.6 Theme 5 for the progressive schedule.
+
+Chapters also benefit from an EDA section richer than the tutorial's — chapter authors should include at least one plot per covariate plus one plot showing the outcome conditional on the key covariate, and a paragraph naming anything strange in the data (missingness patterns, outliers, coding quirks). Tutorials budget two EDA plots; chapters can run three to five without bloat.
 
 ---
 
@@ -360,7 +374,7 @@ The **preamble** of a virtue section is the content between the section header (
 
 Concretely:
 
-- **Wisdom preamble**: opens with the canonical sentence *"Data science starts with some broad questions and a data set which might help us to answer them."* Then the "Imagine that you are…" paragraph verbatim from Introduction, one line restating the broad question (from Intro Exercise 15), and one or two sentences naming the dataset. The preamble emphasizes the two things the Cardinal Virtues assume a student arrives with: a broad question and a data set. Detailed spec in §13.2.
+- **Wisdom preamble**: opens with the canonical sentence *"Data science starts with some broad questions and a data set which might help us to answer them."* Then the "Imagine that you are…" paragraph verbatim from Introduction, one line labeled *"The specific question:"* stating the QoI from Intro Exercise 15 (the Cardinal Virtues assume a student arrives with a data set and a *specific* question — Intro narrowed from the broad topic to this one), and one or two sentences naming the dataset. Detailed spec in §13.2.
 - **Justice preamble**: shows the Preceptor Table from Wisdom (exact copy) and a `gt` table of the data. Detailed spec in §13.3; the data table's footnotes describe the data on its own terms, not in comparison with the Preceptor Table.
 - **Courage preamble**: shows the Population Table from Justice, plus the abstract mathematical form of the DGM that Justice's last exercise chose (functional family: Normal / Bernoulli / multinomial / cumulative — pull the block from §13.7). The author-shown abstract-math block that used to live at the *end* of Justice (§13.3 Exercise 15) moves here in any tutorial that uses a Courage preamble — one place, not two.
 - **Temperance preamble**: reviews the DGM decided on at the end of Courage using some combination of the four canonical ways to describe a model (words, R code, parameter table, concrete mathematical formula). Fully specified in §13.5.
@@ -502,7 +516,7 @@ question_text(NULL,
 
 ### 7.4 Operational conventions: "CP/CR", `show_file()`, and "the R prompt"
 
-Many operational exercises end with the string **CP/CR**, short for *Copy-Paste / Command-Response*. Students know what it means by the time they get past the first tutorial. Exception: the **very first tutorial** should spell it out once, inside the exercise Start, before using it as shorthand.
+Many operational exercises end with the string **CP/CR**, short for *copy/paste the **c**ommand and the **r**esponse*. Students copy/paste both the command they sent to R (or the shell) and the response R gave back. Students know what it means by the time they get past the first tutorial. Exception: the **very first tutorial** should spell it out once, inside the exercise Start, before using it as shorthand.
 
 `show_file()` (from `tutorial.helpers`) prints the contents of a file in the student's project. The usual pattern: the student does something in their QMD, then runs `show_file("XX.qmd", chunk = "Last")` at the R prompt to display the last chunk, copies the output, and pastes it back into the tutorial. `chunk = "Last"` is preferred over `start = -N` because it's more robust. We never actually check what they paste; the threat of checking is the point.
 
@@ -1213,6 +1227,8 @@ Short prose fragments — typically one or two sentences — that go in the End 
 
 Knowledge drops are deliberately short. Students won't read more than two sentences.
 
+**Reduce repetition across tutorials.** A common authoring failure is to use identical knowledge drops in every tutorial — the same tidyverse blurb after `library(tidyverse)`, the same QMD/R-World speech after every `Cmd/Ctrl + Enter` exercise. Students notice, and stop reading. The fix is **progressive themes**: pick a concept (how QMD talks to R, what a package namespace is, what the tidyverse ecosystem covers, what `broom` does, how caching works) and plan a ladder of knowledge drops that deepen across the curriculum. Each appearance builds on the previous one rather than restating it. §12.6 below catalogs the themes and the intended progression. When drafting a tutorial, consult §12.6 to see which theme-level each recurring exercise should use, rather than reaching for the same knowledge drop each time.
+
 ### 12.1 Introduction
 
 **On spaced repetition.**
@@ -1245,7 +1261,7 @@ Knowledge drops are deliberately short. Students won't read more than two senten
 **On causal being within-row.**
 > *Any causal connection means exploring the within-row difference between two potential outcomes. There's no need to consider other rows.*
 
-**On the iterative question.**
+**On the iterative question.** *(Legacy — prefer the per-tutorial End specified in §13.1 Exercise 15, which comments on the chosen QoI and names one or two reasonable alternatives. This generic drop is a fallback when the author cannot write good per-tutorial commentary.)*
 > *This is the first version of the question. We will now create a Preceptor Table to answer the question. We may then revise the question given complexities discovered in the data. We then update the question and the Preceptor Table. And so on.*
 
 ### 12.2 Wisdom
@@ -1453,6 +1469,66 @@ Canonical definitions from §11 appropriate here: Temperance, Preceptor's Poster
 **On percentage-point increases (logistic probability-scale interpretation).**
 > *A logistic coefficient on the log-odds scale is hard to read. For probability-scale interpretation, compute `avg_comparisons()` or subtract two `avg_predictions()` and multiply by 100 to get a percentage-point change: "sending the 'Self' postcard raises the probability of applying by X percentage points compared to sending no postcard." Percentage points (the raw difference) are different from percent changes (the ratio). Always say which you mean.*
 
+### 12.6 Progressive knowledge-drop themes
+
+Rather than repeating the same knowledge drop every tutorial, we plan **themes** that deepen across the curriculum. Each theme has a fixed lead-in sentence from Level 2 onward and a ladder of escalating content. When drafting a tutorial, look up which theme-level each recurring exercise should use at this point in the sequence.
+
+Two themes are fully sketched here. Authors should propose new themes whenever they find themselves repeating the same drop across tutorials; add the new theme to this subsection with a ladder of levels.
+
+**Theme 1: QMD World vs R World.** Attached to an early `Cmd/Ctrl + Enter` exercise. From Level 2 onward, each drop opens with the fixed sentence *"QMD World and R World are not the same."*
+
+| Level | Where it appears | Focus |
+|---|---|---|
+| L1 | First Easy tutorial (06) | The two worlds exist; `Cmd/Ctrl + Enter` moves a line from QMD World into R World. Students will do this hundreds of times. |
+| L2 | Easy, next appearance | *QMD World and R World are not the same.* Rendering runs in a fresh session — packages loaded at the R prompt are invisible to the render. |
+| L3 | Easy, third appearance | *QMD World and R World are not the same.* Several R sessions can run simultaneously (interactive, tutorial, render), each with its own workspace. |
+| L4 | Medium, first mention | *QMD World and R World are not the same.* The isolation is usually a feature: renders start from known-clean state, so results don't depend on whatever is loaded in an interactive session. |
+| L5 | Medium, later mention | *QMD World and R World are not the same.* The rare failure mode is when they do share state — writing to the same file, reading a cache another process is updating — and those are almost always bugs. |
+| L6 | Hard, last tutorial (17) | *QMD World and R World are not the same.* In modern workflows, neither is a single instance: many R sessions run in parallel (students on shared Codespaces, `Rscript` jobs, AI agents spawning their own sessions). Parallelism is the norm now; non-interaction is what makes it work; when they do interact, expect trouble. |
+
+Do not reuse the same level across tutorials — each appearance advances the ladder. Skipped levels are fine (authors choose which ones fit); what must not happen is two tutorials shipping the same level.
+
+**Theme 2: `library(tidyverse)` and package ecosystems.** Attached to the `Cmd/Ctrl + Enter` exercise that loads tidyverse (or to the operational exercise whose output is the tidyverse attach message). The theme grows from "what tidyverse is" through "why the conflicts matter" to "what a namespace is."
+
+| Level | Where it appears | Focus |
+|---|---|---|
+| L1 | First Easy tutorial (06) | The tidyverse is a family of packages — dplyr for manipulation, ggplot2 for plotting, readr for I/O, etc. `library(tidyverse)` loads the core set at once. |
+| L2 | Easy, next appearance | The attach message ends with a "Conflicts" section naming functions that have the same name in multiple packages — `dplyr::filter()` masks `stats::filter()`. The last-loaded package wins. |
+| L3 | Medium, first appearance | Why masking matters: `filter()` from dplyr behaves very differently from `filter()` in base R. Tidyverse's masking is deliberate; the tidyverse is saying "our version is what you want." |
+| L4 | Medium, later or Hard appearance | **Namespaces**: every function in R lives in a package's namespace. `dplyr::filter` names the function explicitly and avoids masking entirely. When you write reusable code (packages, scripts meant to be sourced), reach for the namespace prefix rather than relying on load order. |
+
+Authors can compress or expand — the goal is "each appearance teaches something the previous didn't." Reaching L4 (namespaces) across the full curriculum is aspirational, not required.
+
+**Theme 3: "Predictive models have no treatments."** Attached to §13.1 Exercise 13's End (the predictive-only "which variable has an important connection to the outcome" question). Appears only in predictive tutorials (positions 1, 3, 5, 7, 9, 11 — tutorials 06, 08, 10, 12, 14, 16); causal tutorials skip this exercise entirely. At E and M the drop is reused verbatim — students see the framing often enough to cement it, and it's the canonical answer to "why didn't we use the word treatment here." At H the drop deepens: the causal/predictive distinction is a commitment by the analyst, not a property of the data or model, and the sophistication level grows to match.
+
+| Level | Where it appears | Focus |
+|---|---|---|
+| L1 | Easy/Medium predictive tutorials (06, 08, 10, 12), verbatim | *With a predictive model, each individual unit has only one observed outcome. Predictive models have no "treatments" — only covariates.* |
+| L2 | Hard predictive, first appearance (14 CES) | A predictive model doesn't deny causation; it takes no position on it. The same linear-regression code fits a predictive model or a causal one — what differs is the question you ask and the assumptions you're willing to defend. When the analyst refuses to call any covariate a "treatment," the result is a predictive model. |
+| L3 | Hard predictive, last appearance (16 Stops recast) | The predictive/causal distinction is a commitment by the analyst, not a property of the data or the model. Rubin's potential-outcomes framework formalized this distinction roughly fifty years ago; earlier statisticians treated "association" and "causation" as fuzzier ideas. Modern practice demands that you declare your framing upfront, because the same coefficient can be interpreted very differently depending on which framing you adopt. |
+
+**Theme 4: Language discipline in predictive models.** Attached to §13.1 Exercise 14's End (the predictive-only "two groups that might differ" question). Appears only in predictive tutorials. Paired pedagogically with Theme 3 (which frames *what* a predictive model is); this theme drills *how to talk about it*. At E and M the drop is verbatim — language habits form through repetition. At H the drop deepens toward *when* causal language is actually appropriate (truly causal models) and the broader cultural problem of correlation-being-reported-as-causation.
+
+| Level | Where it appears | Focus |
+|---|---|---|
+| L1 | Easy/Medium predictive tutorials (06, 08, 10, 12), verbatim | *In predictive models, do not use "cause," "influence," "impact," or anything else which suggests causation. The best phrasing is in terms of "differences" between groups of units with different values for a covariate of interest.* |
+| L2 | Hard predictive, first appearance (14 CES) | The language rule is not pedantry. Phrases like "X causes Y" or "raising X will raise Y" smuggle causal assumptions into a predictive model, and those assumptions are almost always unjustified. Resist the pull of the active voice ("exercise reduces weight") toward the comparative frame ("groups that exercise more tend to weigh less"). When news stories use causal language to describe what a study actually measured predictively, that is a reporting bug, not a translation choice. |
+| L3 | Hard predictive, last appearance (16 Stops recast) | Language constrains inference. Almost every data-science claim you will meet in the wild — policy memos, news summaries, executive dashboards — uses causal language to describe relationships that were only measured predictively. Refusing to participate in that conflation is a discipline. It is also, occasionally, *over-correction*: in a truly causal model — randomized experiment, cleanly identified quasi-experiment — causal language is not just permitted, it is required. The rule is not "always hedge" but "match your language to your identification strategy." |
+
+**Theme 5: Expected values vs. other quantities of interest.** Attached to a late-Temperance exercise or knowledge drop, typically around the "alternative-estimates / why-might-we-be-wrong" step. This topic is **chapter-primary** (every example chapter includes a paragraph or two on it, per §4) and only optionally surfaces in tutorials — never at E or M, and only at H as a compressed knowledge drop pointing at what the chapter expands on.
+
+The core observation: a tutorial's QoI is almost always an expected value (*"the average height of male and female USMC recruits"*), but the fitted DGM can answer a whole family of questions — max, min, quantiles, distribution of a sample statistic. Many of those require simulation: draw synthetic units from the DGM, compute the statistic, repeat, build a PDF.
+
+| Level | Where it appears | Focus |
+|---|---|---|
+| L1 | Hard tutorials, first appearance (14 CES or 15 Governors) | Average is one question in a family. The fitted DGM also answers max, min, and quantiles — a logistics officer ordering uniforms needs the 90th percentile more than the mean. See the matching chapter for how to ask these questions from the same fit. |
+| L2 | Hard tutorials, later appearance | Some QoIs — the expected height of the tallest recruit in the next batch of three, for instance — aren't functions of a single parameter. They require simulation from the DGM: draw three synthetic units, take the max, record it, repeat 1,000 times. The resulting distribution is your posterior on the question you actually cared about. |
+| L3 | Hard tutorials, capstone (17 Kenya) | The DGM is a simulator. Once you have one, any question that can be posed as "draw units, compute statistic, summarize" has an answer — even questions with no closed form. This is what makes the Rubin framing powerful: expected values are a convenient special case, but the whole family of questions reduces to *draw from the DGM and count*. |
+
+Chapters get more room for this topic than tutorials can afford, and should include concrete simulation code (not just prose) where feasible.
+
+**Structural note.** Themes can require rearranging which exercise a knowledge drop attaches to. For example, if both the QMD/R-World theme and the tidyverse theme naturally attach to the first `Cmd/Ctrl + Enter library(tidyverse)` exercise, split them: put the QMD/R-World drop on the `Cmd/Ctrl + Enter` exercise, and the tidyverse drop on the exercise immediately after (whose output is the tidyverse attach message). Each theme gets its own place to breathe.
+
 ---
 
 ## 13. Master exercise list
@@ -1465,7 +1541,7 @@ This is the ordered list of exercises that make up an example tutorial. Each exe
 
 Within a section, keep exercises in the order given. Not every tutorial includes every exercise — the schedule depends on spaced repetition (§8) and on whether the problem is causal or predictive. Some exercises (e.g., unconfoundedness questions) are skipped entirely for predictive tutorials.
 
-**Pre-flight before drafting a tutorial.** Find the tutorial's position in §17 (06 = first example, 07 = second, …) and its tier in §1.3 (roughly: first third Easy, middle third Medium, final third Difficult). Some exercises are **tier-dependent** — they are written here in their Medium form but must be dropped, replaced, or extended depending on tier. Tier-dependent exercises are flagged inline with a `**Tier:**` line; read it before including them. Current tier-dependent items:
+**Pre-flight before drafting a tutorial.** The tier is fixed by the tutorial number per §1.5: **06–09 Easy, 10–13 Medium, 14–17 Hard**. Do not guess — read the number and use it. Then look up the tutorial's content spec in §17. Some exercises are **tier-dependent** — they are written here in their Medium form but must be dropped, replaced, or extended depending on tier. Tier-dependent exercises are flagged inline with a `**Tier:**` line; read it before including them. Current tier-dependent items:
 
 - **Model checking** (§13.4 Exercises 9–10): skipped in the first two example tutorials (positions 1–2, target tutorials 06–07: NHANES and Trains); replaced by an author-rendered side-by-side outcome/fitted-value plot in the remaining Easy tutorials (positions 3–4, target tutorials 08–09); Medium form (`check_predictions()`) in positions 5–8 (target tutorials 10–13); Hard form (posterior-predictive-check terminology + model revision driven by the check) in positions 9–10 (target tutorials 14–15); omitted entirely for positions 11–12 per §14.8 (random forests skip parameter and fit-diagnostic blocks in favor of `marginaleffects`-native outputs). Full progression in §1.3 *Worked example: model checking across three levels*.
 - **Concrete DGM math** (§13.4 Exercise 11): author-shipped in Easy and Medium; possibly a student exercise (via AI) in Difficult tutorials with simple models; author-shipped when the model is complex. Details in §13.4.
@@ -1497,7 +1573,13 @@ If a tutorial is being drafted without a pre-flight tier check, the default is M
 
 ### 13.1 Introduction
 
-The Introduction preamble opens with the bookend sentence *The world confronts us. Make decisions we must.* This sentence appears at both ends of every tutorial — it also closes the Temperance section (§13.5 Exercise 17 End). After this opening sentence comes a single "Imagine that you are …" paragraph that motivates the problem with a real person facing real decisions. The paragraph always starts with "Imagine that you are …" and always ends with "There are many decisions to make." The same paragraph is used in the matching chapter.
+**The Introduction preamble always has exactly three paragraphs, in this order:**
+
+1. **Citation paragraph.** *"This tutorial supports [*Preceptor's Primer for Bayesian Data Science: Using the Cardinal Virtues for Inference*](https://ppbds.github.io/primer/) by [David Kane](https://davidkane.info/)."* Verbatim in every tutorial.
+2. **Bookend sentence.** *"The world confronts us. Make decisions we must."* Verbatim. This sentence appears at both ends of every tutorial — it also closes the Temperance section (§13.5 Exercise 17 End).
+3. **"Imagine that you are …" paragraph.** One paragraph motivating the problem with a real person facing real decisions. Always starts with *"Imagine that you are …"* and always ends with *"There are many decisions to make."* The exact wording is per-tutorial and comes from the `**"Imagine":**` field of the §17 seed entry. The same paragraph is reused verbatim in the Wisdom preamble (§13.2) and in the matching chapter.
+
+Follow with a `###` Continue button before `### Exercise 1`. The three paragraphs sit on one screen; the student hits Continue to move to the first exercise.
 
 **Pacing across the EMH tiers.** The Introduction is mostly operational — repo setup, adding libraries to the QMD, turning off code echo, sending commands to the R prompt, etc. The exercise list below is pitched at **Medium** pace: concise, one operational step per exercise, assuming the student has been through this workflow once before. The pace changes with tier:
 
@@ -1517,7 +1599,7 @@ This progression applies to every Introduction exercise below unless the exercis
 - Prompt: *You should be working inside a GitHub repo named `XX`, opened in a Codespace from the [`PPBDS/codespace-starter`](https://github.com/PPBDS/codespace-starter) template. If you are not there yet, please create that repo and open it in a Codespace now — see the [package README](https://github.com/PPBDS/primer/tree/main/primer.tutorials#working-environments-and-repo-setup) if you need setup instructions or are working locally instead. Once you're inside the `XX` repo, create a new Quarto document titled `"XX"` with yourself as the author, render it, and save it as `analysis.qmd`. Create a `.gitignore` file with `analysis_files` on the first line followed by a blank line. Save and push. At the R prompt, run `show_file(".gitignore")`. If that fails, it's probably because you haven't loaded `library(tutorial.helpers)` at the R prompt. CP/CR.*
 - The prompt does **not** spell out the IDE-specific mechanics for creating a new Quarto document — no "File → New File → ..." menu path, no mention of a specific pane or button. Assume students know how to create a new document in whatever IDE they are using. The Codespaces-primary / locally-supported framing handles environment differences; mechanics that vary by IDE do not belong here.
 - The QMD's filename is `analysis.qmd` by default in all tutorials (earlier tutorials used per-topic filenames like `immigration.qmd`; new tutorials should stick with `analysis.qmd` for consistency).
-- In the **first** tutorial, spell out CP/CR as "copy the R-prompt output and paste it in the Response" on first use.
+- In the **first** tutorial, spell out CP/CR as *"copy/paste the command you sent to R along with the response R gave back"* on first use. Keep it concise — no "you will see this throughout" filler.
 - End: *Professionals keep their data science work in the cloud because laptops fail.*
 
 **Exercise 3.** [operational] Add libraries and echo settings to QMD.
@@ -1605,7 +1687,7 @@ The `[per-tutorial, written-with-answer]` tag below applies across all three tie
 - **Appears in every tutorial at every tier** — this is the one exercise in the causal/predictive block that every tutorial keeps.
 - Prompt: *Write a [causal or predictive] question connecting the outcome `XX` to `XX`, the [treatment / covariate of interest].*
 - Message pattern: the specific question. Causal: *"What is the average causal effect of [treatment] on [outcome]?"* Predictive: *"What is the difference in [outcome] between [group A] and [group B]?"*
-- End: *This is the first version of the question. We will now create a Preceptor Table to answer the question. We may then revise the question given complexities discovered in the data. And so on.*
+- **End (per-tutorial).** Two-to-three sentences of commentary on the chosen question. The End should: (a) note briefly why the question we chose is reasonable — usually that it exercises every step of the Cardinal Virtues cleanly — and (b) name one or two *other* questions a practitioner in the scenario might reasonably ask instead (a different QoI, a different unit, a different time window). Keep it tutorial-specific: for NHANES, point at the tallest-recruit/percentile variants; for Trains, point at heterogeneous treatment effects; for Shaming, point at cost-effectiveness per postcard. Do **not** use the generic "This is the first version of the question..." drop from §12.1; that drop is a fallback, not the default. The Preceptor-Table transition ("we will use a Preceptor Table to answer this question") does not need to appear here — Wisdom §13.2 Exercise 1's canonical definition of Wisdom already carries it.
 
 ### 13.2 Wisdom
 
@@ -1615,7 +1697,7 @@ By the end of Wisdom, the student has a specific question, a Preceptor Table tha
 
 1. **Canonical opening sentence, verbatim:** *"Data science starts with some broad questions and a data set which might help us to answer them."* Every Wisdom preamble in the Primer begins with this sentence, unchanged.
 2. **The "Imagine that you are…" paragraph from Introduction, verbatim.** Same text, not paraphrased. It reorients a reader who skipped Introduction, and it costs nothing to show a reader who did read Introduction.
-3. **The broad question** in one line — the canonical answer to Intro Exercise 15 (e.g. *"What is the average height of male and female USMC recruits?"*). This is the *broad* question, not the narrow specific question that Wisdom Exercise 10 will arrive at — do not preempt that exercise.
+3. **The specific question** in one line, labeled verbatim: *"The specific question: <the question>"* (e.g. *"The specific question: What is the average height of male and female USMC recruits?"*). This is the canonical answer to Intro Exercise 15 — the question the student just stated at the end of Introduction. The Introduction narrows from a broad topic (the "Imagine" paragraph) to this specific QoI; Wisdom starts from here. Do not relabel it "broad" — the topic is broad, the question is specific.
 4. **One or two sentences naming the dataset.** The Introduction identifies the dataset; Wisdom is where we will explore it. Write as a plain statement — *"We will work from the NHANES survey (conducted by the CDC), available in the `nhanes` tibble of the `primer.data` package."* Do not make claims about what the data will show, and do not mention measurement or validity concerns — those come later.
 5. A Continue button (`###` with no heading) before `### Exercise 1`.
 
@@ -1743,12 +1825,7 @@ If the modeling requires a cleaned tibble `x` (e.g., filtering to one year, drop
 
 These patterns appear in roughly this order across the tutorials — slice-sample is ubiquitous; factor-level control and composite-score construction show up from Medium onward as the models need richer covariate structure.
 
-**Exercise 10.** [per-tutorial, written-with-answer] The narrow specific question.
-- Prompt: *What is the narrow, specific question we will try to answer?*
-- Message: per-tutorial.
-- End: *The answer to this question is your Quantity of Interest. It is OK if your question differs from ours. Many similar questions lead to the creation of the same model.*
-
-**Exercise 11.** [per-tutorial, written-with-answer] First two sentences of the summary paragraph.
+**Exercise 10.** [per-tutorial, written-with-answer] First two sentences of the summary paragraph.
 - Prompt: *We will be creating a summary paragraph over the course of this tutorial. Write the first two sentences. The first sentence is a general statement about the overall topic, mentioning the general class of outcome and at least one covariate. The second introduces the data source and the specific question — when/where gathered, how many observations, who collected it.*
 - Message: an excellent two-sentence opener.
 - End: *Read our answer. It will not be the same as yours. You can change your answer to incorporate some of our ideas, but do not copy/paste our answer exactly. Add your two sentences to your QMD, `Cmd/Ctrl + Shift + K`, and commit/push.*
@@ -1757,8 +1834,10 @@ These patterns appear in roughly this order across the tutorials — slice-sampl
 
 **Preamble (between `## Justice` header and Exercise 1).** Per the self-containment principle in §5.5, the Justice preamble revisits the two outputs from Wisdom that Justice needs. Per §14.6, it does not describe what Justice does — Exercise 1 does that. *Exception:* when Exercise 1 is skipped in this tutorial (per the rotation in the §13 pre-flight list), add the canonical definition to this preamble as a reminder — *"Remember that Justice concerns the Population Table and the four key assumptions which underlie it: validity, stability, representativeness, and unconfoundedness."* The reminder replaces the exercise. Contents, in order:
 
-1. **The Preceptor Table from Wisdom**, rendered via the §10.3 `gt` pipeline. An exact copy — same tibble, same footnotes, same code. Prefaced by one sentence — something like *"Recall the Preceptor Table we built in Wisdom:"* — so a reader coming in cold knows what it is. Do not alter the Preceptor Table here; if it needs changing, change it in Wisdom too.
-2. **A `gt` table of the data** — a companion to the Preceptor Table. Show 3–5 sample rows (plus a `"..."` row) with the same columns the data has for the outcome and the most important covariates. This is the first time in the tutorial the reader sees the actual data as a formatted table; prior exposure is as raw tibble print-outs. Specifications:
+**Opening sentence, verbatim:** *"Wisdom gives us the Preceptor Table and the data."* This single sentence is the entire lead-in — no additional transitional prose. The two objects that follow stand on their own.
+
+1. **The Preceptor Table from Wisdom**, rendered via the §10.3 `gt` pipeline. An exact copy — same tibble, same footnotes, same code. No label or transitional sentence. Do not alter the Preceptor Table here; if it needs changing, change it in Wisdom too.
+2. **A `gt` table of the data** — a companion to the Preceptor Table. No transitional sentence between it and the Preceptor Table above; the tables are shown back-to-back. Show 3–5 sample rows (plus a `"..."` row) with the same columns the data has for the outcome and the most important covariates. This is the first time in the tutorial the reader sees the actual data as a formatted table; prior exposure is as raw tibble print-outs. Specifications:
    - **Title** starts with `"Data: "` and then a short descriptive name of the dataset — e.g. `"Data: NHANES Young Adults, Ages 18–27"`, `"Data: Enos Metra Platform Experiment, 2012"`, `"Data: Gerber-Green-Larimer Michigan Shaming Experiment, 2006"`. Not just the package's tibble name.
    - **Title footnote** gives proper source information — the citation / author / year / provenance of the data, the kind of thing that would appear in a paper's data section. E.g. *"National Health and Nutrition Examination Survey (NHANES), Centers for Disease Control and Prevention. Continuous survey data 1999–present; height measured by trained examiners in the Mobile Examination Center."*
    - **Outcome-column footnote** describes the data's outcome on its own terms — how it was measured, by whom, on what scale, and any coding subtlety a thoughtful reader of *this dataset* would want to know. It does **not** compare the data's measurement to the Preceptor Table's; it does **not** say things like "Preceptor recruits, by contrast, are measured at enlistment." Those comparisons are Justice's job — the exercises that follow this preamble are precisely where validity (columns of the data ↔ columns of the Preceptor Table) gets addressed. A footnote that is genuinely describing the data will happen to expose the features that validity will later confront, and that is enough. No foreshadowing beyond that.
@@ -1858,9 +1937,13 @@ Parts 1 and 2 are deliberately repetitive with Wisdom — same Preceptor Table, 
 
 **Preamble (between `## Courage` header and Exercise 1).** Per the self-containment principle in §5.5, the Courage preamble revisits the two outputs from earlier virtues that Courage needs. Per §14.6, it does not describe what Courage does — Exercise 1 does that. *Exception:* when Exercise 1 is skipped in this tutorial (per the rotation in the §13 pre-flight list), add the canonical definition to this preamble as a reminder — *"Remember that Courage creates the data generating mechanism."* The reminder replaces the exercise. Contents, in order:
 
-1. **The Population Table from Justice**, rendered via the §10.4 `gt` pipeline. Prefaced by one sentence of context — something like *"Recall the Population Table we built in Justice:"* — so a reader coming in cold knows what it is.
-2. **The abstract mathematical form of the DGM** — the functional family chosen at the end of Justice (Normal / Bernoulli / multinomial / cumulative). Pull the block from §13.7. Use plain `N(0, \sigma^2)` for the error term, not `\mathcal{N}` (§13.5, same learnr MathJax bug applies here). Accompany with the knowledge drop: *We use generic variables — $Y$, $X_1$, and so on — because our purpose is to describe the general mathematical structure of the model, independent of the specific variables we will eventually use.*
+**Opening sentence, verbatim:** *"Justice gives us the Population Table and the abstract data generating mechanism."* Single sentence, no additional transitional prose. The two objects that follow stand on their own; no "Recall the…" or "And the abstract form…" labels between them.
+
+1. **The Population Table from Justice**, rendered via the §10.4 `gt` pipeline. Shown immediately after the opening sentence, with no intervening label.
+2. **The abstract mathematical form of the DGM** — the functional family chosen at the end of Justice (Normal / Bernoulli / multinomial / cumulative). Pull the block from §13.7. Use plain `N(0, \sigma^2)` for the error term, not `\mathcal{N}` (§13.5, same learnr MathJax bug applies here). **The abstract form must use an open-ended series with ellipsis** (e.g. `$\beta_0 + \beta_1 X_1 + \beta_2 X_2 + \cdots + \beta_n X_n + \epsilon$`), never a closed form pinned to the final model's covariate count. At the end of Justice we have decided the mathematical *structure* but not the number (or identity) of covariates; the math needs to reflect that. The concrete DGM in the Temperance preamble (§13.5) is the opposite: every term written out, no ellipsis, with the estimated coefficient values substituted in.
 3. A Continue button (`###` with no heading) before `### Exercise 1`.
+
+The "generic variables / Justice decided the family not the covariates" knowledge drop does **not** belong in the preamble — it's too much text after the math. Put it in Exercise 1's End instead (§13.4 Exercise 1).
 
 Parts 1 and 2 are deliberately repetitive with Justice — they show the same Population Table and the same abstract math that Justice's last exercise produced. That is the point: a reader who skipped Justice can still start Courage, and a reader who didn't gets a useful refresher. See §5.5.
 
@@ -1969,9 +2052,14 @@ Loading `MASS` *after* `tidyverse` silently breaks `dplyr::select()` across the 
 
 **Preamble (between `## Temperance` header and Exercise 1).** The Temperance preamble reviews the DGM decided on at the end of Courage. Per §14.6, it does not describe what Temperance does — Exercise 1 does that. *Exception:* when Exercise 1 is skipped in this tutorial (per the rotation in the §13 pre-flight list), add the canonical definition to this preamble as a reminder — *"Remember that Temperance interprets the data generating mechanism and then uses it to answer, with the help of graphics, the question(s) with which we began. Humility reminds us that this answer is always false."* The reminder replaces the exercise. Contents, in order:
 
-1. A link to [**Model to Meaning**](https://marginaleffects.com/) — pick the chapter matching the tutorial's tier per §1.3 (Easy: Predictions; Medium adds Comparisons; Difficult adds Challenge and Framework).
-2. A review of the DGM using some subset of the four canonical ways to describe a model (below).
-3. A Continue button (`###` with no heading) before `### Exercise 1`. Students must hit Continue to advance — they should not see Exercise 1 on the same screen as the preamble.
+**Opening sentence, verbatim:** *"Courage provides the data generating mechanism. We can express the DGM in four ways:"* Single two-sentence block, no additional transitional prose. No "the fitted model `fit_<n>` can be described in four complementary ways" variant — the canonical opener is fixed.
+
+1. The four ways to describe the DGM (below), shown in sequence with their bold headers (**In words:**, **In R code:**, **In a parameter table:**, **As a mathematical formula:**).
+2. A Continue button (`###` with no heading) before `### Exercise 1`. Students must hit Continue to advance — they should not see Exercise 1 on the same screen as the preamble.
+
+**Do not include the marginaleffects book link in the preamble.** That link lives in Exercise 1's End (the canonical-definition knowledge drop), where it introduces the **[marginaleffects](https://marginaleffects.com/)** package as Temperance's tool and points at the relevant chapter of *[Model to Meaning](https://marginaleffects.com/)* for the tier. Easy tutorials cite the [Predictions chapter](https://marginaleffects.com/chapters/predictions.html); Medium adds Comparisons; Hard adds Challenge and Framework.
+
+**Do not include a dummy-variable explanatory paragraph after the concrete formula.** The preamble's math block is the formula and the error-distribution line — no trailing "`sexMale` is a dummy variable: 1 for male..." paragraph. If dummy-variable meaning matters for a specific tutorial, it belongs in an Exercise 3–5 End (where interpretation lives), not in the preamble.
 
 **Four ways to describe a model.** Most Temperance preambles combine some subset of these four:
 
@@ -1984,6 +2072,7 @@ Loading `MASS` *after* `tidyverse` silently breaks `dplyr::select()` across the 
 
 **Concrete DGM rules.**
 
+- **No ellipsis.** The concrete DGM writes out every term of the fitted model explicitly — one `β · X` product per covariate, plus intercept and error term. An ellipsis in the concrete formula would be an error: once the model is fit, every parameter has a value and every term has a name. This is the opposite of the Courage preamble's abstract form, which must use `+ ⋯ + β_n X_n + ε` because the covariate count isn't yet decided at that stage (see §13.4 abstract-math rule).
 - Use the real variable names from the model, not $Y$ and $X_1$. Categorical predictors appear as the dummy variable names R produces — `sexMale`, `treatmentTreated`, `partyRepublican`. State explicitly in one sentence what each dummy encodes (which level is 1, which is 0) and what the intercept represents.
 - Use `N(0, …)` (not `\mathcal{N}(0, …)`) for the error term — `\mathcal{N}` renders as an empty box (□) in learnr's MathJax setup; we have hit this bug repeatedly.
 - **Substitute the estimated residual variance, not the symbol `\sigma^2`.** The point of the concrete DGM is to show numbers: every parameter the model fits (including the residual variance) is a number, and the math should display it. Compute `sigma(extract_fit_engine(fit_<n>))`, square it, round to the tutorial's rounding convention, and write `N(0, 40.3)` (or whatever the value is). Follow with a one-sentence note naming the residual SD as well (e.g. *"a residual SD of about 6.4 cm"*) so students see both forms.
@@ -2280,7 +2369,18 @@ Canonical homepages the tutorials reference most often:
 
 Exceptions: inside `library(packagename)` code, ggplot `caption = "Source: … via primer.data"` strings, and other literal-code contexts, the package name is plain (no bold, no link, no backticks beyond what the code syntax itself implies) because markdown does not render inside those contexts.
 
-### 14.11 Visualization house style
+### 14.11 Conciseness in knowledge drops
+
+Every sentence a student reads in a knowledge drop should earn its place. Verbosity is the enemy. Common traps to avoid:
+
+- **Self-negating clauses** — *"X is the habit we want to build, not the habit you have to justify."* The "not the habit..." tail adds no information. Cut it; keep the positive statement.
+- **Meta-narration about the tutorials** — *"You will see this shorthand throughout the tutorials."* Students figure it out; don't narrate the experience. Cut.
+- **Hedging filler** — *"It might be worth noting that..."*, *"As we mentioned before..."*, *"It is important to recognize that..."*. None of these add content; each just delays the point.
+- **Restating what just happened** — *"Now that you have loaded the library, let's proceed to the next step."* The exercise flow makes this obvious; don't spell it out.
+
+The test: can you delete the sentence and lose information? If no, delete it. Knowledge drops are short on purpose — §6.4 says "Students won't read more than two sentences at a time." Every sentence is precious real estate.
+
+### 14.12 Visualization house style
 
 Every student-produced plot (EDA in Wisdom, final plot in Temperance) should use the same four-slot layout:
 
@@ -2353,6 +2453,8 @@ Leave the rendering behavior to chunk-level overrides when needed. `options(tuto
 Things flagged but not yet resolved. Revisit when relevant.
 
 - **Preambles for the non-Temperance virtue sections.** §5.5 defines the "preamble" as the content between a virtue section header and its first exercise. §13.5 fully specifies the Temperance preamble (transition + `marginaleffects` book link + four ways to describe the model + Easy-only abstract mathematical structure). The preambles for Introduction, Wisdom, Justice, Courage, and Summary are not yet specified — decide what each should always contain and add the specification to the corresponding §13.x subsection.
+
+- **Simulation as a tutorial topic.** §4 and §12.6 Theme 5 commit chapters to a paragraphs-long treatment of simulation from the DGM (drawing synthetic units to answer questions like "what's the tallest recruit in the next batch of three?"). Whether any of this belongs in the tutorials themselves — perhaps a Hard-tier exercise that runs a small simulation — is undecided. The pro: simulation is the general mechanism by which the DGM answers arbitrary questions, and students who never do it may never grasp that the DGM is more than a formula for expected values. The con: each Hard tutorial is already packed, and teaching simulation properly would require introducing `tidyr::expand_grid()` / `purrr::map()` patterns or base-R `replicate()`, adding operational surface area. Revisit when the Hard tutorials are drafted; the default is "chapters only," but a one-exercise simulation inside 17-Kenya (the curriculum capstone) is defensible.
 
 - **Curriculum learning goals — explicit specification.** Write down, in CLAUDE.md, what students should understand after completing all 14 tutorials. We need these goals explicit because the Easy / Medium / Difficult progressions (§1.3) are supposed to *build toward* them, and we cannot calibrate the progressions without knowing the targets. Candidate home: a new §1.4 or its own top-level section. Aim for 10–20 concrete things a student should be able to do, explain, or notice by the end of Tutorial 14. Current worked examples in §1.3 (representativeness, validity, stability, unconfoundedness, model checking) implicitly define a handful of these goals — enumerate them all.
 
