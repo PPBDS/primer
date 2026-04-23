@@ -74,6 +74,10 @@ This is Visual Studio Code--aka "VS Code" or even "VScode"--an integrated develo
 
 * In the upper righthand corner are the "Customize Layout ..." buttons. These are part of the VS Code "Title Bar." Since we aren't using the AI tools right now, it often makes sense to close the "Chat" window, which is the right side of the screen. You can close this in two ways: Click the "X" mark or click the "Toggle Secondary Side Bar" button, the furthest righthand button. You can then bring the Chat window back by clicking the "Toggle Secondary Side Bar" button again. Try it now.
 
+```{r}
+knitr::include_graphics("getting-started/images/chat-buttons-cs.png")
+```
+
 * The "Activity Bar" is the narrow vertical strip on the far left with icons for Explorer, Search, Source Control, Extensions, etc.  By default, the "Explorer" button is selected, showing that the only thing in the project is a (hidden) folder called `.devcontainer`. Click on that folder to show its contents.
 
 Your screen should now look like this:
@@ -128,7 +132,7 @@ This shows all the R tutorials which are currently installed. If you hover your 
 knitr::include_graphics("getting-started/images/cs-9.png")
 ```
 
-Clicking the tutorial arrow starts a new R session, labeled "R Tutorial" on the rightside of the panel. We now have 4 different terminals: two bash and two R. In this case, a "terminal" is any connection to the (cloud) computer itself or two a program running on it, like R. In fact, the bash shell is just another program which runs in the computer. 
+Clicking the tutorial arrow starts a new R session, labeled "R Tutorial" on the rightside of the panel. We now have 4 different terminals: two bash and two R. In this case, a "terminal" is any connection to the (cloud) computer itself or two a program running on it, like R. In fact, the [bash shell](https://opensource.com/resources/what-bash) is just another program which runs in the computer. 
 
 The R Tutorial session shows the tutorial being built and its current state, which is "listening," i.e., waiting for you to complete the tutorial.  While the tutorial is running, this R session is unavailable for other work.
 
