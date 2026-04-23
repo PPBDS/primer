@@ -28,15 +28,15 @@ Your screen should look something like this:
 knitr::include_graphics("getting-started/images/cs-1.png")
 ```
 
-You can also create your own codespace from scratch. But, since this all very new, we have created the basic setup files, mainly `devcontainer.json`, in a sensible fashion in this GitHub repository. In particular, we ensure that R is installed along with some important packages and some useful extensions for VS Code.
+You can also create your own codespace from scratch. But, since this is all very new, we have created the basic setup files, mainly `devcontainer.json`, in a sensible fashion in this GitHub repository. In particular, we ensure that R is installed along with some important packages and some useful extensions for VS Code.
 
-Click on the "Use this template" green rectangle in the upper right. Select the "Create a new repository" option.
+Click the green "Use this template" button in the upper right. Select the "Create a new repository" option.
 
 ```{r}
 knitr::include_graphics("getting-started/images/cs-2.png")
 ```
 
-VS Code takes you to this next screen, allowing you to name the new repository, which will be a copy of the `PPBDS/codespace-starter` repo, but under your control because it is located on your GitHub account instead of under the `PPBDS` account. Note the `davidkane9` in the screenshot, which is my GitHub account.
+GitHub takes you to the next screen, where you can name the new repository. This repository will be a copy of the `PPBDS/codespace-starter` repo, but it will be under your control because it is located in your GitHub account rather than the `PPBDS` account. Note the `davidkane9` in the screenshot, which is my GitHub account.
 
 Use `my-repo` as the name of the new repository. Click the green "Create repository" button.
 
@@ -48,7 +48,7 @@ The next screenshot shows that you are now on your GitHub account in the newly c
 knitr::include_graphics("getting-started/images/cs-2b.png")
 ```
 
-Click on the green "Code" button. It shows two options: "Local" and "Codespaces". You use "Local" if you want to work on your own machine. Select "Codespaces" to work in the cloud.
+Click on the green "Code" button. It shows two options: "Local" and "Codespaces." You use "Local" if you want to work on your own machine. Select "Codespaces" to work in the cloud.
 
 
 ```{r}
@@ -58,7 +58,7 @@ knitr::include_graphics("getting-started/images/cs-2c.png")
 Click on the green "Create codespace on main" button.
 
 
-This will take a few minutes to run. Read the rest of this chapter while you are waiting. Behind the scenes, GitHub is creating a virtual machine in the cloud with all the necessary tools for doing data science. That machine is called a "codespace." GitHub allows for free usage of codespaces for 60 hours a month, and probably more if you join [GitHub Education](https://github.com/education), an option which we highly recommend for students.
+This will take a few minutes to run. Read the rest of this chapter while you are waiting. Behind the scenes, GitHub is creating a virtual machine in the cloud with all the necessary tools for doing data science. That machine is called a "codespace." GitHub allows 60 hours of free Codespaces usage each month, and probably more if you join [GitHub Education](https://github.com/education), an option that we highly recommend for students.
 
 Once your codespace starts up, it should look like this:
 
@@ -68,11 +68,11 @@ knitr::include_graphics("getting-started/images/cs-3.png")
 
 <!-- DK: Need another image.  -->
 
-This is Visual Studio Code--aka "VS Code" or even "VScode"--an integrated development environment (IDE) for coding and data science. Highlights:
+This is Visual Studio Code, also known as "VS Code," an integrated development environment (IDE) for coding and data science. Highlights:
 
-* This codespace is in the cloud. The URL will be a combination of the GitHub determined human-readable but somewhat nonsensical name--`special-couscous` in this case--and a bunch of letters and numbers. There is no need to remember this URL. GitHub keeps track of things. You can see all your current codespaces [here](https://github.com/codespaces).
+* This codespace is in the cloud. The URL will be a combination of the GitHub-determined human-readable but somewhat nonsensical name--`special-couscous` in this case--and a bunch of letters and numbers. There is no need to remember this URL. GitHub keeps track of things. You can see all your current codespaces [here](https://github.com/codespaces).
 
-* In the upper righthand corner are the "Customize Layout ..." buttons. These are part of the VS Code "Title Bar." Since we aren't using the AI tools right now, it often makes sense to close the "Chat" window, which is the right side of the screen. You can close this in two ways: Click the "X" mark or click the "Toggle Secondary Side Bar" button, the furthest righthand button. You can then bring the Chat window back by clicking the "Toggle Secondary Side Bar" button again. Try it now.
+* In the upper right-hand corner are the "Customize Layout ..." buttons. These are part of the VS Code "Title Bar." Since we aren't using the AI tools right now, it often makes sense to close the "Chat" window, which appears on the right side of the screen. You can close this in two ways: Click the "X" mark or click the "Toggle Secondary Side Bar" button, the furthest right-hand button. You can then bring the Chat window back by clicking the "Toggle Secondary Side Bar" button again. Try it now.
 
 ```{r}
 knitr::include_graphics("getting-started/images/chat-buttons-cs.png")
@@ -88,7 +88,7 @@ knitr::include_graphics("getting-started/images/cs-4.png")
 
 * The "Editor" is the large central area where you edit files. If you click on the `devcontainer.json` file in the `.devcontainer` folder, the file will be opened in the editor. Do that now.
 
-* The "Panel" is the horizontal area below the Editor, containing the Terminal, Output, Problems, Debug Console, and Ports tabs. Our main focus is in the Terminal tab. This is where we "talk" to both the (cloud) computer itself and to the R program which it provides. 
+* The "Panel" is the horizontal area below the Editor, containing the Terminal, Output, Problems, Debug Console, and Ports tabs. Our main focus is the Terminal tab. This is where we "talk" to both the (cloud) computer itself and to the R program that it provides. 
 
 * The Terminal currently shows a "bash" shell. We will learn more about shells later. Click on the `+` sign to the right of the "Ports" tab. This will start a second bash shell. Your screen should now look like this:
 
@@ -104,7 +104,7 @@ knitr::include_graphics("getting-started/images/cs-5.png")
 knitr::include_graphics("getting-started/images/cs-6.png")
 ```
 
-* Select "R Terminal." This will start an R session via which you can "talk" to R in the same way that a bash shell allows you to talk to the computer.
+* Select "R Terminal." This will start an R session that lets you "talk" to R in the same way that a bash shell allows you to talk to the computer.
 
 * Click on the "R Interactive" option which should appear beneath the two bash lines on the right side of the Panel.
 
@@ -116,7 +116,7 @@ knitr::include_graphics("getting-started/images/cs-6.png")
 knitr::include_graphics("getting-started/images/cs-7.png")
 ```
 
-An IDE like VS Code is designed to organize all the different work we do as data scientists. We need to talk to the computer via the shell, talk to R, see plots and so on.
+An IDE like VS Code is designed to organize all the different work we do as data scientists. We need to talk to the computer via the shell, talk to R, view plots, and so on.
 
 ### Tutorials {.unnumbered}
 
@@ -573,5 +573,4 @@ Let's get started!
 ```{r}
 knitr::include_graphics("getting-started/images/ending.gif")
 ```
-
 
