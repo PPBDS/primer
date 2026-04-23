@@ -225,6 +225,24 @@ Tutorials are R Markdown files with `learnr::tutorial` output. They live in the 
 
 For new chapters, produce a single `.qmd` file. For new tutorials, produce a single `.Rmd` file with the structure described in §5. Do not emit partial diffs; produce complete files David can drop in place.
 
+**Creating a new tutorial directory.** When authoring a new example tutorial from scratch, create the directory and its contents explicitly — do not assume they exist. The surviving tutorials in `inst/tutorials/` are the five misc ones (01–05) plus `99-project`; every example tutorial (06–17) starts from an empty directory.
+
+Minimum layout for a new tutorial — run these creations in order when starting fresh:
+
+1. `mkdir -p primer.tutorials/inst/tutorials/NN-name` — the tutorial directory.
+2. Create `primer.tutorials/inst/tutorials/NN-name/tutorial.Rmd` — the tutorial file, with the full structure from §5 (YAML header, setup chunk, three child-document inclusions, virtue sections, exercises, Summary, download-answers child document).
+
+**Additional structure for tutorials with an expensive fit** (per §5.6 — `**Expensive fit:** Yes` in the §17 entry):
+
+3. `mkdir -p primer.tutorials/inst/tutorials/NN-name/data-raw` — holds the `prefit.R` script that regenerates the stored fit.
+4. Create `primer.tutorials/inst/tutorials/NN-name/data-raw/prefit.R` — runnable R script that fits the model and writes `../data/fit_<n>.rds`. Header comment should record the package versions used to fit.
+5. `mkdir -p primer.tutorials/inst/tutorials/NN-name/data` — holds the `.rds` output.
+6. Run `Rscript data-raw/prefit.R` from the tutorial directory to generate the `.rds` — do *not* commit the `.rds` unless the fit genuinely needs caching and its size is reasonable. The `.rds` is what the setup chunk loads via `readRDS(system.file(...))`.
+
+Tutorials **without** an `**Expensive fit:**` flag should not create the `data/` or `data-raw/` subdirectories. An empty-or-almost-empty `data/` is a code smell — per §5.6, authors reviewing existing tutorials should delete unreferenced `.rds` files on sight.
+
+**Directory-creation is explicit, not implicit.** When an authoring session generates a new tutorial, it should issue the `mkdir` calls (or the equivalent file-creation moves) as part of the generation workflow. Do not assume a tutorial directory exists just because §17 lists it — if the filesystem check fails, create the directory, then write the `tutorial.Rmd`.
+
 ---
 
 ## 4. Chapter structure
@@ -353,6 +371,39 @@ None of these preambles describe what the *current* virtue does. That is the fir
 It is OK — though not ideal — for a reader to skip, say, Courage and still make useful sense of Temperance, because Temperance's preamble shows the fitted DGM; and it is OK to skip Justice and start on Courage because Courage's preamble shows the Population Table. Repetition is not a bug; being forced to flip pages is.
 
 Detailed per-virtue preamble specs for Introduction, Wisdom, Justice, and Summary are not yet fully written out — see §16 Open items.
+
+### 5.6 Pre-fitting expensive models
+
+§5.2 requires the setup chunk to be cheap — a tutorial launch that takes more than a few seconds breaks the student's flow. Most fits in the curriculum are cheap (linear regression on 50 rows of NHANES, logistic on 5K rows of Mail). A handful are not: the causal forest at position 12 (Kenya), potentially the shaming fit on the full 344K rows, potentially the ordinal fit on full CES.
+
+**Default: fit in setup.** Do not create a `data/fit_<n>.rds` just because a model exists. Linear, logistic, multinomial, and ordinal fits on a slice-sampled subset are all cheap enough to fit directly in setup. The `.rds` pattern adds complexity (binary artifacts in git, silent-drift risk, R-version coupling) that isn't worth paying for a fit that takes 50 ms.
+
+**Pre-fit pattern, when warranted.** If fitting the model takes more than about three seconds even on a reasonable subset, pre-fit offline and store the result. Convention:
+
+- **Script location.** `inst/tutorials/NN-name/data-raw/prefit.R` — a runnable R script that reads the raw data, fits the model, and calls `saveRDS(fit_<n>, "../data/fit_<n>.rds")`. Structure it so `Rscript data-raw/prefit.R` from the tutorial directory regenerates the `.rds` from scratch. Include a header comment with the package versions used to fit, so later maintainers know when the `.rds` was created.
+- **Output location.** `inst/tutorials/NN-name/data/fit_<n>.rds` (single subdirectory, one `.rds` per stored object).
+- **Setup-chunk load.** Use `system.file()` so the path works whether the package is installed or loaded via `pkgload::load_all()`:
+  ```r
+  fit_<n> <- readRDS(system.file(
+    "tutorials/NN-name/data/fit_<n>.rds",
+    package = "primer.tutorials"
+  ))
+  ```
+- **Show the fitting code anyway.** Even though `fit_<n>` is loaded from disk, the Courage section should still show the `linear_reg() |> fit(...)` code students would run themselves. The `.rds` is a cache, not a replacement for the code. Students see the fit being "created"; under the hood, it's restored from `.rds`.
+- **Do not store pre-computed `tidy()` or `predictions()` output separately.** If the fit is in `.rds`, downstream `tidy()`/`marginaleffects` calls on it are cheap and should run live. A hybrid where *both* the fit is cached *and* a pre-computed `tidy()` output is cached is not the convention — it is an earlier partial implementation and should be collapsed to one `.rds` per tutorial.
+
+**§17 flag.** Any tutorial using this pattern gets an explicit field in its §17 entry:
+```
+- **Expensive fit:** Yes — `grf::multi_arm_causal_forest` with 2000 trees is too slow for in-setup fitting. Pre-fit via `data-raw/prefit.R`; setup loads from `data/fit_kenya.rds`.
+```
+Tutorials without this flag should not have an `.rds` file. Authors reviewing existing tutorials should delete unreferenced `.rds` files on sight.
+
+**Regeneration workflow.** When the model spec changes, the author re-runs `Rscript data-raw/prefit.R` manually. A package-level helper (`primer.tutorials::rebuild_prefits()`, to be added) can walk `inst/tutorials/*/data-raw/prefit.R` and regenerate every `.rds` in the package — useful after bulk curriculum changes or R / dependency upgrades. Do not wire this into CI for the whole package; the cost (rebuilding the causal forest, for example) is too high to run on every push. Trigger it manually when `NEWS.md` documents a model-affecting change.
+
+**Drift check.** To catch the case where the fitting code in the tutorial has diverged from the `.rds`, include a small comment in the setup chunk of any prefitted tutorial noting when the `.rds` was last regenerated:
+```r
+# fit_kenya loaded from data/fit_kenya.rds (regenerated 2026-05-14 via data-raw/prefit.R)
+```
 
 ---
 
@@ -1277,6 +1328,12 @@ Canonical definitions from §11 appropriate here: Justice, Population Table, Val
 **On randomization failing.**
 > *The great advantage of randomized assignment of treatment is that it guarantees unconfoundedness, if the randomization is done correctly. There is no way for treatment assignment to be correlated with anything, including potential outcomes, if treatment assignment is random, and if the experimental set up worked as designed. Sadly, in the real world, there are sometimes problems.*
 
+**On survey oversampling (representativeness).**
+> *Many national surveys (NHANES, CPS, the census ACS) deliberately oversample specific demographic groups — older adults, racial and ethnic minorities, rural residents — so that those subgroups have enough observations for stable estimates. The raw data is not representative of the general population on that axis; the survey ships sampling weights to let analysts reweight back to representativeness. Ignore the weights and your sample over-represents whoever was oversampled. Every subsequent estimate inherits the bias.*
+
+**On voluntary participation (representativeness).**
+> *Voluntary surveys are answered by people who choose to answer. That choice is correlated with the thing being measured — politically engaged voters answer political surveys at higher rates, employed adults answer at home-phone surveys at lower rates. Voluntary participation is almost never missing-at-random, and the direction of the bias is usually predictable.*
+
 ### 12.4 Courage
 
 Canonical definitions from §11 appropriate here: Courage, Data Generating Mechanism.
@@ -1389,6 +1446,12 @@ Canonical definitions from §11 appropriate here: Temperance, Preceptor's Poster
 
 **On the world's uncertainty.**
 > *The world is always more uncertain than our models would have us believe.* (Last line of every chapter and the last line of every tutorial's Summary section.)
+
+**On ordinal coefficients (proportional-odds / cumulative logit).**
+> *In a proportional-odds model, a coefficient like β for "Very Conservative" (relative to the reference category "Moderate") represents a change in the log-odds of being at or below each category of the outcome. Negative β means the unit is more likely to be at the higher end of the outcome scale; positive β means more likely to be at the lower end. The reference category is determined by the factor's level ordering. The interpretation is one coefficient, many thresholds — the model uses the same β but different cutpoints to separate each adjacent pair of outcome categories.*
+
+**On percentage-point increases (logistic probability-scale interpretation).**
+> *A logistic coefficient on the log-odds scale is hard to read. For probability-scale interpretation, compute `avg_comparisons()` or subtract two `avg_predictions()` and multiply by 100 to get a percentage-point change: "sending the 'Self' postcard raises the probability of applying by X percentage points compared to sending no postcard." Percentage points (the raw difference) are different from percent changes (the ratio). Always say which you mean.*
 
 ---
 
@@ -1611,6 +1674,75 @@ Between Exercises 8 and 9, consider inserting an AI-prompted plot with outcome o
 
 If the modeling requires a cleaned tibble `x` (e.g., filtering to one year, dropping NAs), insert 1–3 AI-prompted code exercises that build the cleaned `x`. Follow with a QMD-world exercise that asks the student to copy/paste the pipeline into a new code chunk, render, and `show_file("XX.qmd", chunk = "Last")`.
 
+**Canonical data-prep patterns.** The cleaned `x` is built with a handful of recurring transformations. New tutorials should reuse these patterns — they are codified here so authors don't have to reverse-engineer them from existing tutorials:
+
+- **Slice-sample for setup-chunk speed** (used in almost every tutorial).
+  ```r
+  x <- <raw_tibble> |>
+    filter(<scoping>) |>
+    select(<outcome>, <covariates>) |>
+    drop_na() |>
+    slice_sample(n = 50)   # or whatever N keeps the fit cheap
+  ```
+  Set `set.seed(N)` on the line before the pipeline so the sample is reproducible across renders. The sample size (`n = 50` for NHANES, `n = 5000` for Mail) is chosen so the fit finishes in a few seconds — see §5.2 *Setup chunk must be cheap*.
+
+- **Stratified sample when treatment arms are imbalanced** (Mail; applies to any RCT with a huge control arm).
+  ```r
+  x <- <raw_tibble> |>
+    filter(<scoping>) |>
+    drop_na() |>
+    group_by(treatment) |>
+    slice_sample(n = 1500) |>
+    ungroup()
+  ```
+  `slice_sample()` *after* `group_by()` samples within each group. Without this, a naive `slice_sample(n = 5000)` on a 936K-row tibble with a 95% control arm pulls almost no treated units.
+
+- **Composite-score construction** (Shaming: `voter_class` from prior election turnout).
+  ```r
+  x <- shaming |>
+    mutate(civ_engage = primary_00 + primary_02 + primary_04 +
+                        general_00 + general_02 + general_04) |>
+    mutate(voter_class = factor(
+      case_when(civ_engage %in% c(5, 6) ~ "Always Vote",
+                civ_engage %in% c(3, 4) ~ "Sometimes Vote",
+                civ_engage %in% c(1, 2) ~ "Rarely Vote"),
+      levels = c("Rarely Vote", "Sometimes Vote", "Always Vote")))
+  ```
+  Two moves: (a) sum several 0/1 indicator columns into a composite score, (b) bin the score into ordered categories with `factor(..., levels = ...)` to fix the reference level. Without the explicit `levels`, R uses alphabetical ordering and the dummy-coding reference becomes whichever level sorts first — usually not what you want.
+
+- **Factor recoding for presentation** (NES: multinomial outcome).
+  ```r
+  x <- nes |>
+    filter(year == 1992) |>
+    select(sex, pres_vote) |>
+    drop_na() |>
+    mutate(pres_vote = as.factor(case_when(
+      pres_vote == "Democrat"    ~ "Clinton",
+      pres_vote == "Republican"  ~ "Bush",
+      pres_vote == "Third Party" ~ "Perot")))
+  ```
+  Replaces generic party labels with candidate names so students and readers see "Clinton/Bush/Perot" rather than "Democrat/Republican/Third Party." Purely a presentation choice; the model doesn't care.
+
+- **Case-fix for presentation** (Stops: `"black"` → `"Black"`).
+  ```r
+  x <- stops |>
+    filter(race %in% c("black", "white")) |>
+    mutate(race = str_to_title(race), sex = str_to_title(sex))
+  ```
+  `str_to_title()` capitalizes the first letter of each word. Use it on categorical variables whose raw levels are all-lowercase; the resulting plot labels and parameter-table terms are then properly cased.
+
+- **Factor-coercion for `logistic_reg()`** (Shaming, Mail).
+  ```r
+  x <- <raw> |>
+    ...
+    mutate(voted = as.factor(primary_06))
+  ```
+  Required because `tidymodels`' `logistic_reg(engine = "glm")` refuses a raw 0/1 integer outcome — see §13.4 *Factor-outcome gotcha*.
+
+- **Outcome-range filtering** (Colleges: `filter(tuition > 2)`). When the data includes sentinel or implausible values in the outcome or key covariate, filter them out explicitly before modeling. Document the filter in a comment so the Justice section can name it as a selection mechanism (§11).
+
+These patterns appear in roughly this order across the tutorials — slice-sample is ubiquitous; factor-level control and composite-score construction show up from Medium onward as the models need richer covariate structure.
+
 **Exercise 10.** [per-tutorial, written-with-answer] The narrow specific question.
 - Prompt: *What is the narrow, specific question we will try to answer?*
 - Message: per-tutorial.
@@ -1742,9 +1874,29 @@ Parts 1 and 2 are deliberately repetitive with Justice — they show the same Po
 - Message: `"Courage creates the data generating mechanism."`
 - End: *Having decided on the basic mathematical structure of the model at the end of Justice — a choice mostly driven by the distribution of our outcome variable — we now turn toward estimating the model.*
 
+**Model-family routing and engines.** Most tutorials use `tidymodels` directly — `linear_reg()`, `logistic_reg()`, `multinom_reg()`. The one exception is **ordinal outcomes**: `tidymodels` does not provide an ordinal-regression engine, so those tutorials (currently CES at position 9) call `MASS::polr()` directly rather than via `parsnip`. The pattern:
+
+```r
+# setup chunk — NOTE load order
+library(MASS)       # load BEFORE tidyverse so select() is shadowed correctly
+library(tidyverse)  # tidyverse's select() wins; MASS's select() is hidden
+library(tidymodels)
+
+# fit
+fit_<n> <- polr(ordinal_outcome ~ covariates, data = x)
+```
+
+Loading `MASS` *after* `tidyverse` silently breaks `dplyr::select()` across the rest of the tutorial — every subsequent `select()` call resolves to `MASS::select()` and fails. Flag the load-order requirement in any ordinal tutorial's setup chunk with a comment. Do not call `conflicted` or `conflicts_prefer()` — the students aren't ready for package-conflict resolution at this tier; the load-order workaround is sufficient.
+
+`broom::tidy()` works on `polr()` objects, so downstream `tidy(fit_<n>, conf.int = TRUE)` exercises don't need adjustment.
+
+**Interaction terms.** Interactions appear across model families — `logistic_reg() |> fit(voted ~ treatment*voter_class, ...)` in Shaming (position 6), `linear_reg() |> fit(lived_after ~ election_age*sex, ...)` in Governors (position 10), `linear_reg() |> fit(arrested ~ race*zone, ...)` in Stops (position 11 recast). The `A*B` formula shorthand expands to `A + B + A:B` — the two main effects plus their interaction. Use it inside `fit()` the same way in every model family; the machinery is formula-side, not engine-side. Interpretation requires `marginaleffects::plot_predictions(..., condition = c("A", "B"))` to visualize the two-dimensional effect surface (§13.5).
+
 **Exercise 2.** [per-tutorial, code] Start the model.
-- Prompt: *Because our outcome variable is [binary/continuous/multinomial/ordinal], start to create the model by entering `<appropriate model function>`* (e.g., `linear_reg(engine = "lm")`, `logistic_reg(engine = "glm")`, `multinom_reg(engine = "glmnet")`).
-- End: the tidymodels knowledge drop (§12.4).
+- Prompt: *Because our outcome variable is [binary/continuous/multinomial/ordinal], start to create the model by entering `<appropriate model function>`* — `linear_reg(engine = "lm")` for continuous, `logistic_reg(engine = "glm")` for binary, `multinom_reg(engine = "nnet")` for multinomial, `MASS::polr()` (no parsnip wrapper) for ordinal.
+- End: the tidymodels knowledge drop (§12.4); in ordinal tutorials, add a sentence explaining that ordinal regression is the one model family outside the tidymodels umbrella.
+
+**Factor-outcome gotcha for `logistic_reg()`.** `tidymodels`' `logistic_reg(engine = "glm") |> fit(y ~ x, data = d)` requires `y` to be a **factor**, not a raw 0/1 integer. If `y` is integer, the call fails with an opaque error. Fix in data-prep with `mutate(y = as.factor(y))`. Flag this in the relevant tutorial's Wisdom data-prep exercise; it is easy to miss and hard for students to debug on their own.
 
 **Exercise 3.** [per-tutorial, code] Fit a single-variable model.
 - Prompt: *Continue the pipe to `fit(<outcome> ~ <single categorical covariate>, data = <tibble>)`.* Use a two-level categorical if possible.
@@ -1911,6 +2063,10 @@ This ordering determines how much Temperance real-estate the parameter block con
 - End: discuss the estimate and uncertainty the plot shows. Explain how to read the estimate and confidence interval from the plot.
 
 Insert additional `plot_predictions()` exercises as needed — different arguments, options like `points`, or `draw = FALSE` to return a tibble. `plot_comparisons()` belongs here when the question calls for differences rather than level estimates (see §12.5).
+
+**Multi-variable conditioning.** `plot_predictions(fit_<n>, condition = c("var1", "var2"))` visualizes the effect surface across two covariates — canonical when the model has an interaction term (`A*B` in the formula). This pattern appears in Shaming (`treatment` × `voter_class`), Governors (`election_age` × `sex`), and Stops (`race` × `zone`). The two-variable form renders as small multiples: one panel per level of `var2`, with `var1` on the x-axis.
+
+**Multinomial caveat.** `marginaleffects` does not fully support multinomial outcomes from `multinom_reg(engine = "nnet")`. `predictions()` works (returns one row per unit per outcome category), but `plot_predictions()` and `comparisons()` may need manual post-processing: extract the tibble with `draw = FALSE`, pivot to long form by outcome category, and build the final ggplot by hand. Note this in the NES tutorial's Temperance section; the same caveat applies to any future tutorial using a multinomial fit. The ordinal case (`MASS::polr`) does not have this problem — `marginaleffects` handles `polr` natively.
 
 **Exercise 9.** [per-tutorial, written-without-answer] Final `plot_predictions()` call.
 - Prompt: the version whose output will be the basis for the final plot. CP/CR.
@@ -2124,6 +2280,23 @@ Canonical homepages the tutorials reference most often:
 
 Exceptions: inside `library(packagename)` code, ggplot `caption = "Source: … via primer.data"` strings, and other literal-code contexts, the package name is plain (no bold, no link, no backticks beyond what the code syntax itself implies) because markdown does not render inside those contexts.
 
+### 14.11 Visualization house style
+
+Every student-produced plot (EDA in Wisdom, final plot in Temperance) should use the same four-slot layout:
+
+- **Title**: the key variables being shown. E.g., *"Height by Sex Among USMC Recruits"*. Short, declarative, identifies what is being plotted.
+- **Subtitle**: the *takeaway* — the one thing a reader should remember from the plot. E.g., *"Male recruits are on average about 16 cm taller than female recruits"*. Subtitles are the plot's thesis; without one, a plot just "shows data."
+- **Caption**: the data source. E.g., *"Source: NHANES via primer.data"*. Include the year range when relevant.
+- **Axis labels**: human-readable, with units. E.g., *"Height (cm)"* rather than *"height"*. Capitalization normal-case unless proper nouns.
+
+Legend labels follow the axis rule (human-readable, units where relevant). When a scale is categorical, use `str_to_title()` on the raw data before plotting so the legend shows *"Black / White"* rather than *"black / white"* (§13.2 data-prep patterns).
+
+`ggplot2::theme_minimal()` or `theme_classic()` is the default — tutorials should not ship custom themes. Color scales inherit from ggplot defaults unless a specific palette is pedagogically necessary (e.g. a red-blue political scale for voter-behavior plots).
+
+**AI-assisted plotting.** Most tutorials ask students to prompt AI for the plot code (§9) rather than build up ggplot layer-by-layer. When the author shows "our version" of the plot after the student exercise, that reference plot should obey the four-slot rule above so students see what "good" looks like.
+
+**Do not ship cargo-culted helpers.** Examples flagged in past tutorials include `tidytext::scale_x_reordered()` with a comment like `# Needed (?)` — if an author is unsure whether a helper function is necessary, they should test both with and without it and commit the simpler one. A tutorial is not the place to debug dependency uncertainty.
+
 ---
 
 ## 15. R tooling
@@ -2142,6 +2315,36 @@ The tutorial setup chunk (§5.2) loads the full package stack. For chapters, set
 **Data package**: whichever one holds the tutorial's dataset (`primer.data` most of the time).
 
 **Setup chunk must be cheap**. A model fit that takes more than a few seconds breaks the student's flow. Use a subset of the data if needed; fit the full model with `#| cache: true` in the tutorial body rather than in setup.
+
+### 15.1 Quarto rendering conventions
+
+The tutorial's setup chunk and the student's `analysis.qmd` rely on a small, stable set of Quarto chunk options and YAML directives. Collected here so authors don't have to hunt them down across tutorials.
+
+**YAML header** (tutorial and student QMD both). In the student's `analysis.qmd`, `execute.echo: false` is added in Introduction Exercise 3 and kept thereafter:
+```yaml
+execute:
+  echo: false
+```
+
+**Chunk options used frequently:**
+
+| Option | Purpose | Where |
+|---|---|---|
+| `#| echo: false` | Hide the code; show only the result. | Setup chunks; any author-shown `gt` / `tidy()` / plot chunk where students should see output but not the code. Applies per-chunk when YAML-level `echo: false` is not set. |
+| `#| message: false` | Suppress package-load messages ("Attaching tidyverse" etc.). | Setup chunks. |
+| `#| warning: false` | Suppress R warnings. | Rarely — use sparingly; warnings often matter. |
+| `#| results: asis` | Pass output through pandoc without wrapping in a code block. | Required for the §10 `gt` + inline-block-div + pandoc-raw-HTML pattern. Without it, the emitted HTML gets markdown-parsed and scopes wrap incorrectly. |
+| `#| cache: true` | Quarto saves the chunk's objects on first render and loads them on subsequent renders as long as the code is unchanged. | Any chunk that fits an expensive model (causal forest, large RF, bootstrapped posterior). Pair with `*_cache` in `.gitignore` (§13.4 Exercise 13) so the cache directory doesn't go to GitHub. |
+| `#| include: false` | Run the chunk but hide *both* code and output. | Almost never needed in tutorials. Mentioned here for completeness. |
+
+**Setup chunk idiom** — the tutorial's top setup chunk typically uses:
+```r
+knitr::opts_chunk$set(echo = FALSE)
+options(tutorial.exercise.timelimit = 600, tutorial.storage = "local")
+```
+Leave the rendering behavior to chunk-level overrides when needed. `options(tutorial.exercise.timelimit = ...)` gives each student-code exercise 10 minutes (600s); `tutorial.storage = "local"` tells learnr to persist student answers between sessions on the student's machine.
+
+**Keyboard shortcut reference** — `Cmd/Ctrl + Shift + K` renders a QMD; `Cmd/Ctrl + Enter` sends the current line to the R prompt. These are the only two shortcut bindings tutorials can assume students know; both are standard across Positron, RStudio, and VS Code with the R extension.
 
 ---
 
@@ -2170,6 +2373,8 @@ Key parameters for each tutorial in the `primer.tutorials` package. Use these en
 - Positions 11 and 12 are the non-parametric (random forest or equivalent) tutorials.
 
 Preceptor Table and Population Table columns are listed by spanner in order. Population Tables always have a leading `Source` column (not under any spanner) and a `Unit/Time` spanner with two columns. Preceptor Tables have no Time column — time is implicit. Causal models have a `Treatment` spanner separate from `Covariate(s)`. Potential outcome columns are named "Outcome if [treatment value]".
+
+**Expensive-fit flag.** Tutorials whose final model is too slow to fit in the setup chunk (more than ~3 seconds even on a slice-sampled subset) include an `**Expensive fit:** Yes — <reason>` field. Those tutorials load the fit from a pre-generated `.rds` in `data/`, regenerated by `data-raw/prefit.R`. See §5.6 for the pattern and load-snippet. Tutorials without this flag must not include an `.rds` cache of the fit — the fit happens live in setup.
 
 **Directory numbering.** Physical directory names on disk match the target numbering. Nine example tutorials currently exist (06, 07, 08, 10, 11, 12, 14, 15, 16) with **three gap slots (09, 13, 17) where the dataset and framing are chosen but the exercise content has yet to be authored**. Target tutorial 09 is **SPS** (Seguro Popular, binary treatment), 13 is **Mail** (Philadelphia mail-in voting, 3-arm), 17 is **Kenya** (voter registration, 6-arm multi-arm causal forest — curriculum capstone). Per §1.5, positions 11 and 12 (target tutorials 16 and 17) are the non-parametric tutorials; target tutorial 16 at `16-stops` is slated for a random-forest **recast** of the old predictive-linear stops tutorial.
 
@@ -2421,6 +2626,7 @@ Preceptor Table and Population Table columns are listed by spanner in order. Pop
 - **Student project:** `kenya`
 - **Data prep:** `kenya |> select(treatment, reg_byrv13, poverty, distance, pop_density, mean_age) |> drop_na()` → `x` *(polling-station-level, ~1,600 rows — no downsampling needed)*
 - **Final model (sketch):** `fit_kenya <- grf::multi_arm_causal_forest(X = as.matrix(x |> select(poverty, distance, pop_density, mean_age)), Y = x$reg_byrv13, W = x$treatment, num.trees = 2000)`  *(confirm exact `grf` API when authoring; the package has moved around)*
+- **Expensive fit:** Yes — causal forest with 2000 trees exceeds the setup-chunk time budget. Pre-fit via `inst/tutorials/17-kenya/data-raw/prefit.R`; setup loads from `inst/tutorials/17-kenya/data/fit_kenya.rds` per §5.6. Reducing `num.trees` to 500 is a fallback if the stored object is too large for the package.
 - **Preceptor Table:** Unit (Polling Station) | Potential Outcomes (six columns: Reg Rate if Control, if SMS, if Local, if Canvass, if Local+SMS, if Local+Canvass) | Treatment (Intervention) | Covariates (Poverty, Distance, Density, Mean Age)
 - **Population Table:** Source | Unit/Time (Polling Station, Year) | Potential Outcomes (six columns) | Treatment | Covariates
 - **Authoring notes:**

@@ -18,7 +18,7 @@ To see available tutorials, run:
 \code{learnr::available_tutorials("primer.tutorials")}
 
 To start a tutorial, run:
-\code{learnr::run_tutorial("14-stops", package = "primer.tutorials")}
+\code{learnr::run_tutorial("01-probability", package = "primer.tutorials")}
 }
 
 \section{About the Primer}{

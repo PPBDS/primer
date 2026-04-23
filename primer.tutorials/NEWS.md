@@ -1,4 +1,6 @@
-# primer.tutorials (development version)
+# primer.tutorials 1.5.1
+
+* Institute new Claude driven procedure.
 
 * Absorbed into the `PPBDS/primer` monorepo. The package now lives at `primer.tutorials/` inside the book repo and installs via `remotes::install_github("PPBDS/primer", subdir = "primer.tutorials")`.
 
