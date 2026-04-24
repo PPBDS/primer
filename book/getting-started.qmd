@@ -14,7 +14,7 @@ Sign up for a GitHub account by following the instructions at the [GitHub homepa
 
 Use a permanent email address for this account, not one to which you lose access when, for example, you change schools or jobs. On GitHub, your projects are organized into "repositories," usually called "repos."
 
-### Your first codespace  {.unnumbered}
+### Starting a codespace  {.unnumbered}
 
 Instead of working on your computer, you will work in a [GitHub codespace](https://github.com/features/codespaces).
 
@@ -85,7 +85,54 @@ knitr::include_graphics("getting-started/images/cs-3.png")
 
 The blue dash has disappeared. Several more extensions have been installed. The GitHub name, `fictional winner`, now appears next to the repo name as well as in the quick access window above the editor.
 
-GitHub allows 60 hours of free Codespaces usage each month, and probably more if you join [GitHub Education](https://github.com/education), an option that we highly recommend for students.
+
+### Closing a codespace  {.unnumbered}
+
+GitHub allows 60 hours of free Codespaces usage each month, and probably more if you join [GitHub Education](https://github.com/education), an option that we highly recommend for students. It also provides for lots of free storage. However, if you want to avoid paying, you need to be aware of your usage.
+
+A codespace is your responsibility in the same way that your laptop is your responsibility.  An unused codespace will be deleted after 30 days.
+
+There are three common approaches to closely codespaces.
+
+First, just leave the codespace along and it will close on its own. GitHub monitors codespaces. By default, it will close your codespace if it is not being used for 30 minutes, although I recommend changing that default to 15 minutes.
+
+Second, type `Cmd + Shift + P` (on Mac) or `Ctrl + Shift + P` (on Windows/Linux) to bring up the Command Palette. (Throughout this book, shortcuts are written like `Cmd/Ctrl + Shift + P`, meaning the `command` key on Mac or the `control` key on Windows/Linux.) The Command Palette provides access to all of the VS Code commands. Type `stop` into the search bar. 
+
+
+```{r}
+knitr::include_graphics("getting-started/images/command-palette.png")
+```
+
+
+Select "Codespaces: Stop Current Codespace." Note how search in the Command Palette works. As long as you remember at least one of the words in the command you are looking for, it will find that command. Searching for general topics, like "codespace" also works well. 
+
+Third, you can go to your main codespace control panel at `https://github.com/codespaces`.
+
+```{r}
+knitr::include_graphics("getting-started/images/codespaces-1.png")
+```
+
+This will show all your codespaces, both active and inactive. The `...` to the lower right provide several common commands, the most relevant for us now being "Stop codespace." Selecting that button is the third way to stop a codespace.
+
+<!-- Could add some red arrows to the Active and Last active information in the lower left, along with discussion. -->
+
+```{r}
+knitr::include_graphics("getting-started/images/codespaces-2.png")
+```
+
+You can restart a codespace from the same location. The set of commands brought up by clicking on `...` is slightly different now. Selecting "Open in browser" restarts the codespace.
+
+
+```{r}
+knitr::include_graphics("getting-started/images/codespaces-3.png")
+```
+
+
+
+### Using a codespace  {.unnumbered}
+
+
+
 
 Visual Studio Code, also known as "VS Code," is an integrated development environment (IDE) for coding and data science. Highlights:
 
@@ -116,7 +163,7 @@ knitr::include_graphics("getting-started/images/cs-4b.png")
 
 * The "Panel" is the horizontal area below the Editor, containing the Terminal, Output, Problems, Debug Console, and Ports tabs. Our main focus is the Terminal tab. This is where we "talk" to both the (cloud) computer itself and to the R program that it provides. 
 
-* The Terminal currently shows a "bash" shell. We will learn more about shells later. Click on the `+` sign to the right of the "Ports" tab. This will start a second bash shell. Your screen should now look like this:
+* The Terminal currently shows a "bash" shell. We will learn more about shells later. Click on the `+` sign to the right of the "Ports" tab. This will start a second bash shell. Your Panel should now look like this:
 
 ```{r}
 knitr::include_graphics("getting-started/images/cs-5.png")
@@ -126,7 +173,7 @@ knitr::include_graphics("getting-started/images/cs-5.png")
 
 * Note the two bash shells on the right side of the Panel. We can click on each to move back and forth between them. 
 
-* In addition to shells, we can also start R under the Terminal. Instead of clicking the `+` sign, click the small downward pointing arrow next to it. This will show a variety of options.
+* In addition to shells, we can also start an R session under the Terminal. Instead of clicking the `+` sign, click the small downward pointing arrow next to it. This will show a variety of options.
 
 ```{r}
 knitr::include_graphics("getting-started/images/cs-6.png")
@@ -148,19 +195,19 @@ An IDE like VS Code is designed to organize all the different work we do as data
 
 ### Tutorials {.unnumbered}
 
-If you hover your cursor over the Activity Bar on the far lefthand side, you can see the names of the different options. The second from the bottom is labeled "R Tutorials." Click on it. (You might need to click twice.)
+If you hover your cursor over the Activity Bar on the far lefthand side, you can see the names of the different options. The second from the bottom is labeled "R Tutorials." Click on it. (You might need to click twice.) This brings up all the R packages with tutorials. Click on the package name `tutorial.helpers`.
 
 ```{r}
 knitr::include_graphics("getting-started/images/cs-8.png")
 ```
 
-This shows all the R tutorials which are currently installed. If you hover your cursor over a tutorial, a rightward pointing arrow appears. Clicking that arrow starts the tutorial. Start the "Getting Started" tutorial from the **tutorial.helpers** package. Do so now.
+Doing so shows all the R tutorials which are in the `tutorial.helpers` package. If you hover your cursor over a tutorial, a rightward pointing arrow appears. Clicking that arrow starts the tutorial. Start the `getting-started` tutorial from the **tutorial.helpers** package. Do so now.
 
 ```{r}
 knitr::include_graphics("getting-started/images/cs-9.png")
 ```
 
-Clicking the tutorial arrow starts a new R session, labeled "R Tutorial" on the rightside of the panel. We now have 4 different terminals: two bash and two R. In this case, a "terminal" is any connection to the (cloud) computer itself or two a program running on it, like R. In fact, the [bash shell](https://opensource.com/resources/what-bash) is just another program which runs in the computer. 
+Clicking the tutorial arrow starts a new R session, labeled "R Tutorial" on the right side of the panel. We now have 4 different terminals: two bash and two R. In this case, a "terminal" is any connection to the (cloud) computer itself or two a program running on it, like R. In fact, the [bash shell](https://opensource.com/resources/what-bash) is just another program which runs in the computer. 
 
 The R Tutorial session shows the tutorial being built and its current state, which is "listening," i.e., waiting for you to complete the tutorial.  While the tutorial is running, this R session is unavailable for other work.
 
@@ -442,7 +489,7 @@ Let's install another package:
 ```{r}
 #| eval: false
 #| code-fold: false
-pak("tutorial.helpers")
+pak("PPBDS/tutorial.helpers")
 ```
 
 This package provides infrastructure for doing tutorials, a common approach for learning R. After you install this package, run this command in the Console:
@@ -502,7 +549,7 @@ Because Positron is still evolving, there is no easy way to start a tutorial. In
 ```{r}
 #| eval: false
 #| code-fold: false
-learnr::run_tutorial(name = "getting-started", 
+learnr::run_tutorial(name = "getting-started-with-positron", 
                      package = "tutorial.helpers")
 ```
 
@@ -511,7 +558,7 @@ The first argument to `run_tutorial()` is the `name` of the tutorial and the sec
 ```{r}
 #| eval: false
 #| code-fold: false
-learnr::run_tutorial("getting-started", "tutorial.helpers")
+learnr::run_tutorial("getting-started-with-positron", "tutorial.helpers")
 ```
 
 The Console will show output as the tutorial is starting up because Positron is running the code which creates the tutorial.
@@ -547,7 +594,7 @@ Complete the "Getting Started" tutorial from the **tutorial.helpers** package. R
 ```{r}
 #| eval: false
 #| code-fold: false
-learnr::run_tutorial(name = "getting-started", 
+learnr::run_tutorial(name = "getting-started-with-positron", 
                      package = "tutorial.helpers")
 ```
 
@@ -569,15 +616,15 @@ You should have done the following:
 # Only run this options() line if NOT on Cloud platform
 # options("pkgType" = "binary"). 
 install.packages("pak")
-pak::pak(c("tidyverse", "tutorial.helpers"))
+pak::pak("tidyverse")
 ```
 
-  - Installed, from Github, the **positron.tutorials** package:
+  - Installed, from Github, these packages:
 
 ```{r}
 #| eval: false
 #| code-fold: false
-pak::pak("PPBDS/positron.tutorials")
+pak::pak(c("PPBDS/tutorial.helpers", "PPBDS/positron.tutorials"))
 ```
 
   - Run `tutorial.helpers::set_positron_settings()` at the Console in order to make some sensible changes to your Positron and Rprofile settings.
@@ -588,12 +635,12 @@ pak::pak("PPBDS/positron.tutorials")
 tutorial.helpers::set_positron_settings()
 ```
 
-  - Completed the "Getting Started" tutorial from the **tutorial.helpers** package:
+  - Completed the "Getting Started with Positron" tutorial from the **tutorial.helpers** package:
   
 ```{r}
 #| eval: false
 #| code-fold: false
-learnr::run_tutorial("getting-started", package = "tutorial.helpers")
+learnr::run_tutorial("getting-started-with-positron", package = "tutorial.helpers")
 ```
 
 Let's get started!
