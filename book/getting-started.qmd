@@ -38,11 +38,11 @@ knitr::include_graphics("getting-started/images/cs-2.png")
 
 GitHub takes you to the next screen, where you can name the new repository. This repository will be a copy of the `PPBDS/codespace-starter` repo, but it will be under your control because it is located in your GitHub account rather than the `PPBDS` account. Note the `davidkane9` in the screenshot, which is my GitHub account.
 
-Use `my-repo` as the name of the new repository. Click the green "Create repository" button.
+Use `getting-started` as the name of the new repository. Click the green "Create repository" button.
 
 **When completing tutorials, you should usually give the repo the same name as the tutorial you are working on.**
 
-The next screenshot shows that you are now on your GitHub account in the newly created repo, `my-repo`. 
+The next screenshot shows that you are now on your GitHub account in the newly created repo, `getting-started`. 
 
 ```{r}
 knitr::include_graphics("getting-started/images/cs-2b.png")
@@ -57,20 +57,39 @@ knitr::include_graphics("getting-started/images/cs-2c.png")
 
 Click on the green "Create codespace on main" button.
 
+This will take a few minutes to run. Read the rest of this chapter while you are waiting. Behind the scenes, GitHub is creating a virtual machine in the cloud with all the necessary tools for doing data science. That machine is called a "codespace." 
 
-This will take a few minutes to run. Read the rest of this chapter while you are waiting. Behind the scenes, GitHub is creating a virtual machine in the cloud with all the necessary tools for doing data science. That machine is called a "codespace." GitHub allows 60 hours of free Codespaces usage each month, and probably more if you join [GitHub Education](https://github.com/education), an option that we highly recommend for students.
+You can tell that the codespace is not ready by noticing the "Setting up remote connection: Building codespace..." message in the lower right. GitHub is creating a codespace following the instructions in the `devcontainer.json` file located in the `.devcontainer` directory.
 
-Once your codespace starts up, it should look like this:
+```{r}
+knitr::include_graphics("getting-started/images/cs-2d.png")
+```
+
+When that message disappears, it means that your codespace is built. But you still need to connect to it, as indicated by the "Opening remote" message in the lower left. 
+
+```{r}
+knitr::include_graphics("getting-started/images/cs-2e.png")
+```
+
+Once that disappears, you are connected to your codespace, but it usually still has a few things to install. You can tell that it is not finished by looking in the upper left. 
+
+```{r}
+knitr::include_graphics("getting-started/images/cs-2f.png")
+```
+
+First, note the blue dash moving above the repo name. That indicates that the process is not complete. Second, only the five default "extensions" appear along the left edge. Our `devcontainer.json` file installs several more at the end. Third, the codespace is not displaying its GitHub assigned name. The process is complete when your codespace looks like this:  
 
 ```{r}
 knitr::include_graphics("getting-started/images/cs-3.png")
 ```
 
-<!-- DK: Need another image.  -->
+The blue dash has disappeared. Several more extensions have been installed. The GitHub name, `fictional winner`, now appears next to the repo name as well as in the quick access window above the editor.
 
-This is Visual Studio Code, also known as "VS Code," an integrated development environment (IDE) for coding and data science. Highlights:
+GitHub allows 60 hours of free Codespaces usage each month, and probably more if you join [GitHub Education](https://github.com/education), an option that we highly recommend for students.
 
-* This codespace is in the cloud. The URL will be a combination of the GitHub-determined human-readable but somewhat nonsensical name--`special-couscous` in this case--and a bunch of letters and numbers. There is no need to remember this URL. GitHub keeps track of things. You can see all your current codespaces [here](https://github.com/codespaces).
+Visual Studio Code, also known as "VS Code," is an integrated development environment (IDE) for coding and data science. Highlights:
+
+* This codespace is in the cloud. The URL will be a combination of the GitHub-determined human-readable but somewhat nonsensical name--`fictional winner` in this case--and a bunch of letters and numbers. There is no need to remember this URL. GitHub keeps track of things. You can see all your current codespaces [here](https://github.com/codespaces).
 
 * In the upper right-hand corner are the "Customize Layout ..." buttons. These are part of the VS Code "Title Bar." Since we aren't using the AI tools right now, it often makes sense to close the "Chat" window, which appears on the right side of the screen. You can close this in two ways: Click the "X" mark or click the "Toggle Secondary Side Bar" button, the furthest right-hand button. You can then bring the Chat window back by clicking the "Toggle Secondary Side Bar" button again. Try it now.
 
@@ -80,13 +99,20 @@ knitr::include_graphics("getting-started/images/chat-buttons-cs.png")
 
 * The "Activity Bar" is the narrow vertical strip on the far left with icons for Explorer, Search, Source Control, Extensions, etc.  By default, the "Explorer" button is selected, showing that the only thing in the project is a (hidden) folder called `.devcontainer`. Click on that folder to show its contents.
 
-Your screen should now look like this:
+<!-- DK: Could put in a bunch more images . . . -->
 
 ```{r}
 knitr::include_graphics("getting-started/images/cs-4.png")
 ```
 
-* The "Editor" is the large central area where you edit files. If you click on the `devcontainer.json` file in the `.devcontainer` folder, the file will be opened in the editor. Do that now.
+Click on the `devcontainer.json` file. Doing so opens that file in the Editor window. Your screen should now look like this:
+
+```{r}
+knitr::include_graphics("getting-started/images/cs-4b.png")
+```
+
+
+* The "Editor" is the large central area where you edit files. 
 
 * The "Panel" is the horizontal area below the Editor, containing the Terminal, Output, Problems, Debug Console, and Ports tabs. Our main focus is the Terminal tab. This is where we "talk" to both the (cloud) computer itself and to the R program that it provides. 
 
@@ -95,6 +121,8 @@ knitr::include_graphics("getting-started/images/cs-4.png")
 ```{r}
 knitr::include_graphics("getting-started/images/cs-5.png")
 ```
+
+<!-- DK: Maybe close the codespace and open it again? -->
 
 * Note the two bash shells on the right side of the Panel. We can click on each to move back and forth between them. 
 
@@ -525,7 +553,7 @@ learnr::run_tutorial(name = "getting-started",
 
 Once you have done so, you can start to learn about data science.
 
-## Summary for local {.unnumbered}
+### Summary for local {.unnumbered}
 
 You should have done the following:
 
