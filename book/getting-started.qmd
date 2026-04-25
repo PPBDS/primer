@@ -12,7 +12,11 @@ We provide two different computing approaches for doing data science: first, wor
 
 Sign up for a GitHub account by following the instructions at the [GitHub homepage](https://github.com/). **Follow [this advice](https://happygitwithr.com/github-acct.html#username-advice) when choosing your username.** 
 
-Use a permanent email address for this account, not one to which you lose access when, for example, you change schools or jobs. On GitHub, your projects are organized into "repositories," usually called "repos."
+Use a permanent email address for this account — not one tied to your current school or job, which you'll lose access to when you move on. Your GitHub account is for life; your school email isn't.
+
+If you're a current student, you can still qualify for the [GitHub Student Developer Pack](https://education.github.com/pack) (free Copilot, extra Codespaces hours, and 100+ other perks). After signing up, add your school email as a secondary email in your GitHub settings and apply for Education benefits — you don't need to use the school email as your primary account email. If your school doesn't issue email addresses, you can also apply by uploading a student ID or enrollment letter.
+
+On GitHub, your projects are organized into "repositories," usually called "repos."
 
 ### Starting a codespace  {.unnumbered}
 
@@ -21,8 +25,6 @@ Instead of working on your computer, you will work in a [GitHub codespace](https
 Once you are logged on to your GitHub account, go to [this URL](https://github.com/PPBDS/codespace-starter) in your browser:
 
 `https://github.com/PPBDS/codespace-starter`
-
-Your screen should look something like this:
 
 ```{r}
 knitr::include_graphics("getting-started/images/cs-1.png")
@@ -42,13 +44,15 @@ Use `getting-started` as the name of the new repository. Click the green "Create
 
 **When completing tutorials, you should usually give the repo the same name as the tutorial you are working on.**
 
-The next screenshot shows that you are now on your GitHub account in the newly created repo, `getting-started`. 
+This chapter has two purposes: first, introduce you to GitHub Codespaces and VS Code and, second, help you complete the Getting Started tutorial.
+
+The next screenshot shows that you are now on your GitHub account, about to create the `getting-started` repo. 
 
 ```{r}
 knitr::include_graphics("getting-started/images/cs-2b.png")
 ```
 
-Click on the green "Code" button. It shows two options: "Local" and "Codespaces." You use "Local" if you want to work on your own machine. Select "Codespaces" to work in the cloud.
+After clicking the green "Create Repository" button, your screen should look like the one below. Click on the green "Code" button. It shows two options: "Local" and "Codespaces." You use "Local" if you want to work on your own machine. Select "Codespaces" to work in the cloud.
 
 
 ```{r}
