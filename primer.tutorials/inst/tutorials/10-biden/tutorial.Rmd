@@ -1,0 +1,1609 @@
+---
+title: "Biden Support in 2024"
+author: David Kane
+tutorial:
+  id: 10-biden
+output:
+  learnr::tutorial:
+    progressive: yes
+    allow_skip: yes
+runtime: shiny_prerendered
+description: "Tutorial #10 for Preceptor's Primer"
+---
+
+```{r setup, include = FALSE}
+# learnr, tutorial.helpers, and gt are required for the tutorial to work.
+# gt is needed because we show a Preceptor Table built with it, even
+# though we don't show students how to build it.
+
+library(learnr)
+library(tutorial.helpers)
+library(gt)
+
+# Packages below are what we want students to load themselves at the
+# R prompt. They are listed in the tutorial so that (a) we have access
+# to their functions for rendering, and (b) students get a knowledge drop
+# for each.
+
+library(tidyverse)
+library(tidymodels)
+library(broom)
+library(marginaleffects)
+library(easystats)
+
+# Create the data
+poll_data <- tibble(biden = as.factor(c(rep("Yes", 655), rep("No", 904)))) |>
+  slice_sample(prop = 1)
+
+# Fit the model used throughout the tutorial.
+fit_biden <- logistic_reg(engine = "glm") |>
+  fit(biden ~ 1, data = poll_data)
+
+knitr::opts_chunk$set(echo = FALSE)
+options(tutorial.exercise.timelimit = 600,
+        tutorial.storage = "local")
+```
+
+```{r copy-code-chunk, child = system.file("child_documents/copy_button.Rmd", package = "tutorial.helpers")}
+```
+
+```{r info-section, child = system.file("child_documents/info_section.Rmd", package = "tutorial.helpers")}
+```
+
+## Introduction
+
+This tutorial supports [*Preceptor's Primer for Bayesian Data Science: Using the Cardinal Virtues for Inference*](https://ppbds.github.io/primer/) by [David Kane](https://davidkane.info/).
+
+The world confronts us. Make decisions we must.
+
+Imagine that you are the chair of the Democratic National Committee in early 2024 deciding where to devote time and money. Polls show close races in several key states. You want to know: what proportion of votes will Biden actually receive? There are many decisions to make.
+
+###
+
+### Exercise 1
+
+What are the four [Cardinal Virtues](https://en.wikipedia.org/wiki/Cardinal_virtues), in order, which we use to guide our data science work?
+
+```{r introduction-1}
+question_text(NULL,
+    message = "Wisdom, Justice, Courage, and Temperance.",
+    answer(NULL, correct = TRUE),
+    allow_retry = FALSE,
+    incorrect = NULL,
+    rows = 6)
+```
+
+###
+
+The best way to ensure that students remember these concepts more than a few months after the course ends is spaced repetition, although we focus more on the repetition than on the spacing.
+
+### Exercise 2
+
+You should be working inside a GitHub repo named `biden`, opened in a Codespace from the [`PPBDS/codespace-starter`](https://github.com/PPBDS/codespace-starter) template. If you are not there yet, please create that repo and open it in a Codespace now — see the [package README](https://github.com/PPBDS/primer/tree/main/primer.tutorials#working-environments-and-repo-setup) if you need setup instructions or are working locally instead. Once you're inside the `biden` repo, create a new Quarto document titled `"Biden"` with yourself as the author, render it, and save it as `analysis.qmd`. Create a `.gitignore` file with `analysis_files` on the first line followed by a blank line. Save and push. At the R prompt, run `show_file(".gitignore")`. If that fails, it's probably because you haven't loaded `library(tutorial.helpers)` at the R prompt. CP/CR.
+
+```{r introduction-2}
+question_text(NULL,
+    answer(NULL, correct = TRUE),
+    allow_retry = TRUE,
+    try_again_button = "Edit Answer",
+    incorrect = NULL,
+    rows = 3)
+```
+
+###
+
+Professionals keep their data science work in the cloud because laptops fail.
+
+### Exercise 3
+
+In your QMD, put `library(tidyverse)` and `library(tidymodels)` in a new code chunk. Render the file. Notice that the file does not look good because the code is visible and there are messages. Add `#| message: false` to remove the messages in this setup chunk. Also add the following to the YAML header to remove all code echos from the HTML:
+
+```
+execute:
+  echo: false
+```
+
+At the R prompt, run `show_file("analysis.qmd", chunk = "Last")`. CP/CR.
+
+```{r introduction-3}
+question_text(NULL,
+    answer(NULL, correct = TRUE),
+    allow_retry = TRUE,
+    try_again_button = "Edit Answer",
+    incorrect = NULL,
+    rows = 3)
+```
+
+###
+
+Render again. Everything looks nice, albeit empty, because we have added code to make the file look better and more professional.
+
+### Exercise 4
+
+Place your cursor in the QMD file on the `library(tidyverse)` line. Use `Cmd/Ctrl + Enter` to execute that line. Note that this sends the line to the R prompt and runs it. CP/CR.
+
+```{r introduction-4}
+question_text(NULL,
+    answer(NULL, correct = TRUE),
+    allow_retry = TRUE,
+    try_again_button = "Edit Answer",
+    incorrect = NULL,
+    rows = 3)
+```
+
+###
+
+QMD World and R World are not the same. Rendering runs in a fresh session — packages loaded at the R prompt are invisible to the render. Always make sure that what you load interactively is also in your QMD setup chunk.
+
+### Exercise 5
+
+Place your cursor in the QMD file on the `library(tidymodels)` line. Use `Cmd/Ctrl + Enter` to execute that line. This workflow — writing things in the QMD so you have a permanent copy, and then executing them at the R prompt with `Cmd/Ctrl + Enter` — is the most common approach to data science. There is QMD World and R World. It is your responsibility to keep them in sync. CP/CR.
+
+```{r introduction-5}
+question_text(NULL,
+    answer(NULL, correct = TRUE),
+    allow_retry = TRUE,
+    try_again_button = "Edit Answer",
+    incorrect = NULL,
+    rows = 3)
+```
+
+###
+
+A YouGov poll of 1,559 U.S. adult citizens conducted in March 2024 is available in the `poll_data` tibble. It contains a single column, `biden`, a factor variable indicating whether the respondent would vote for Biden (`"Yes"`) or not (`"No"`).
+
+### Exercise 6
+
+Biden support is the broad topic of this tutorial. Given that topic, which variable in `poll_data` should we use as our outcome variable?
+
+```{r introduction-6}
+question_text(NULL,
+    message = "We will use `biden` as our outcome variable — a binary Yes/No indicating whether the respondent would vote for Joe Biden.",
+    answer(NULL, correct = TRUE),
+    allow_retry = FALSE,
+    incorrect = NULL,
+    rows = 6)
+```
+
+###
+
+We will use `biden` as our outcome variable.
+
+```{r introduction-6-plot, echo = FALSE, fig.width = 5, fig.height = 3}
+poll_data |>
+  count(biden) |>
+  mutate(pct = round(n / sum(n) * 100, 1)) |>
+  ggplot(aes(x = biden, y = n, fill = biden)) +
+  geom_col(show.legend = FALSE) +
+  geom_text(aes(label = paste0(n, " (", pct, "%)")), vjust = -0.4, size = 3.5) +
+  scale_fill_manual(values = c("No" = "#cc3333", "Yes" = "#3366cc")) +
+  labs(
+    title = "Biden Support in YouGov Poll",
+    subtitle = "58% of 1,559 respondents do not support Biden",
+    caption = "Source: YouGov, March 2024",
+    x = "Would vote for Biden?",
+    y = "Count"
+  ) +
+  theme_minimal()
+```
+
+### Exercise 7
+
+Specify two different groups of voters which have different values for some plausible covariate and which might have different average values for Biden support.
+
+```{r introduction-7}
+question_text(NULL,
+    message = "Consider voters aged 18–30 versus voters aged 65 or older. Younger voters have historically leaned more Democratic, so the 18–30 group likely has higher average Biden support than the 65+ group.",
+    answer(NULL, correct = TRUE),
+    allow_retry = FALSE,
+    incorrect = NULL,
+    rows = 6)
+```
+
+###
+
+In predictive models, do not use words like "cause," "influence," "impact," or anything else which suggests causation. The best phrasing is in terms of "differences" between groups of units with different values for a covariate of interest.
+
+### Exercise 8
+
+Write a predictive question connecting the outcome `biden` to the overall population of 2024 voters.
+
+```{r introduction-8}
+question_text(NULL,
+    message = "What proportion of all votes will be cast for Joe Biden in the 2024 election?",
+    answer(NULL, correct = TRUE),
+    allow_retry = FALSE,
+    incorrect = NULL,
+    rows = 6)
+```
+
+###
+
+This question is narrow enough that the Cardinal Virtues apparatus handles it cleanly — one binary outcome, a clear unit (voter), and a specific time window (the 2024 election). Alternatives a campaign strategist might ask: *How does Biden support vary by age?* or *How has Biden support changed since the last poll?* Those questions would require covariates, making the Preceptor Table more complex.
+
+## Wisdom
+
+Data science starts with some broad questions and a data set which might help us to answer them.
+
+Imagine that you are the chair of the Democratic National Committee in early 2024 deciding where to devote time and money. Polls show close races in several key states. You want to know: what proportion of votes will Biden actually receive? There are many decisions to make.
+
+The specific question: What proportion of all votes will be cast for Joe Biden in the 2024 election?
+
+We will work from a YouGov poll of 1,559 U.S. adult citizens conducted in March 2024, available in the `poll_data` tibble.
+
+###
+
+### Exercise 1
+
+In your own words, describe the key components of Wisdom when working on a data science problem.
+
+```{r wisdom-1}
+question_text(NULL,
+    message = "Wisdom begins with a question and then moves on to the creation of a Preceptor Table and an examination of our data.",
+    answer(NULL, correct = TRUE),
+    allow_retry = FALSE,
+    incorrect = NULL,
+    rows = 6)
+```
+
+###
+
+*The combination of some data and an aching desire for an answer does not ensure that a reasonable answer can be extracted from a given body of data.* — John W. Tukey
+
+### Exercise 2
+
+In your own words, define a Preceptor Table.
+
+```{r wisdom-2}
+question_text(NULL,
+    message = "A Preceptor Table is the smallest possible table of data with rows and columns such that, if there is no missing data, we can easily calculate the quantity of interest.",
+    answer(NULL, correct = TRUE),
+    allow_retry = FALSE,
+    incorrect = NULL,
+    rows = 6)
+```
+
+###
+
+The Preceptor Table does not include all the covariates which you will eventually include in your model. It only includes, along with the outcome(s), covariates which are mentioned in your question.
+
+### Exercise 3
+
+Ask AI to write R code that creates a bar chart showing the distribution of `biden` support — the count of `"Yes"` and `"No"` responses — in `poll_data`. Include a title, subtitle noting the key finding, and a caption crediting YouGov.
+
+```{r wisdom-3, exercise = TRUE}
+
+```
+
+```{r wisdom-3-hint-1, eval = FALSE}
+poll_data |>
+  count(biden) |>
+  ggplot(aes(x = biden, y = n, fill = biden)) +
+  geom_col(show.legend = FALSE) +
+  labs(title = "...", subtitle = "...", caption = "Source: YouGov, March 2024",
+       x = "Would vote for Biden?", y = "Count")
+```
+
+```{r wisdom-3-test, include = FALSE}
+poll_data |> count(biden)
+```
+
+###
+
+The poll shows 655 respondents (42%) supporting Biden and 904 (58%) not. This gap drives everything that follows — the model will estimate a probability close to 42%.
+
+### Exercise 4
+
+At the R prompt, run `poll_data |> count(biden) |> mutate(pct = round(n / sum(n), 3))`. CP/CR.
+
+```{r wisdom-4}
+question_text(NULL,
+    answer(NULL, correct = TRUE),
+    allow_retry = TRUE,
+    try_again_button = "Edit Answer",
+    incorrect = NULL,
+    rows = 3)
+```
+
+###
+
+The two rows confirm our counts: 655 Yes (42.3%) and 904 No (57.7%). `count()` followed by `mutate(pct = n/sum(n))` is a quick way to get both counts and proportions from a categorical variable. You can never look at the data too much.
+
+### Exercise 5
+
+Describe the key components of Preceptor Tables in general, without worrying about this specific problem. Use words like "units," "outcomes," and "covariates."
+
+```{r wisdom-5}
+question_text(NULL,
+    message = "The rows of the Preceptor Table are the units. The outcome is at least one of the columns. If the problem is causal, there will be at least two (potential) outcome columns. The other columns are covariates. If the problem is causal, at least one of the covariates will be considered a treatment.",
+    answer(NULL, correct = TRUE),
+    allow_retry = FALSE,
+    incorrect = NULL,
+    rows = 6)
+```
+
+###
+
+This problem is predictive, so there is no treatment covariate and no potential outcomes. The Preceptor Table needs only the unit and one outcome column — the simplest possible structure.
+
+### Exercise 6
+
+What are the units for this problem?
+
+```{r wisdom-6}
+question_text(NULL,
+    message = "Each row represents one eligible voter casting a ballot in the 2024 U.S. presidential election. The question concerns all roughly 150 million Americans expected to vote in November 2024.",
+    answer(NULL, correct = TRUE),
+    allow_retry = FALSE,
+    incorrect = NULL,
+    rows = 6)
+```
+
+###
+
+Specifying the Preceptor Table forces us to think clearly about the units and outcomes implied by the question. The resulting discussion sometimes leads us to modify the question with which we started. No data science project follows a single direction. We always backtrack. There is always dialogue. We model units, but we only really care about aggregates.
+
+### Exercise 7
+
+What is the outcome variable for this problem?
+
+```{r wisdom-7}
+question_text(NULL,
+    message = "The outcome is Biden support — whether this voter casts their ballot for Joe Biden. In the data, this is self-reported survey preference ('Yes' or 'No'). In the Preceptor Table, it is the actual vote cast on Election Day.",
+    answer(NULL, correct = TRUE),
+    allow_retry = FALSE,
+    incorrect = NULL,
+    rows = 6)
+```
+
+###
+
+The outcome variable that we really care about is often not the outcome variable which our data includes. This compromise — working with what we have rather than what we really want — is a part of most data science work in the real world.
+
+### Exercise 8
+
+What is a covariate which you think might be useful for this problem, regardless of whether or not it might be included in the data?
+
+```{r wisdom-8}
+question_text(NULL,
+    message = "Party identification would be useful — Democrats overwhelmingly support Biden while Republicans overwhelmingly oppose him. The data does not include party identification, but the model would improve substantially if it did.",
+    answer(NULL, correct = TRUE),
+    allow_retry = FALSE,
+    incorrect = NULL,
+    rows = 6)
+```
+
+###
+
+The term "covariates" is used in at least three ways in data science. First, it is all the variables which might be useful, regardless of whether or not we have the data. Second, it is all the variables for which we have data. Third, it is the set of variables in the data which we end up using in the model.
+
+### Exercise 9
+
+What are the treatments, if any, for this problem?
+
+```{r wisdom-9}
+question_text(NULL,
+    message = "This is a predictive model with no treatments — only covariates. There is nothing we can manipulate here; we are just trying to estimate voter preferences as they are.",
+    answer(NULL, correct = TRUE),
+    allow_retry = FALSE,
+    incorrect = NULL,
+    rows = 6)
+```
+
+###
+
+With a predictive model, each individual unit has only one observed outcome. There are not two potential outcomes because none of the covariates are treated as treatment variables. Predictive models have no "treatments" — only covariates.
+
+### Exercise 10
+
+What moment in time does the Preceptor Table refer to?
+
+```{r wisdom-10}
+question_text(NULL,
+    message = "The Preceptor Table refers to Election Day 2024 — November 5, 2024. The question asks about actual votes cast on that specific day.",
+    answer(NULL, correct = TRUE),
+    allow_retry = FALSE,
+    incorrect = NULL,
+    rows = 6)
+```
+
+###
+
+A Preceptor Table can never really refer to an exact instant in time since nothing is instantaneous in this fallen world. For practical purposes we treat "Election Day 2024" as the moment, accepting that voting happens over the course of the day.
+
+### Exercise 11
+
+Describe in words the Preceptor Table for this problem.
+
+```{r wisdom-11}
+question_text(NULL,
+    message = "The Preceptor Table has one row per eligible voter casting a ballot in the 2024 U.S. presidential election — roughly 150 million rows. It has one outcome column, Biden Support (Yes/No), and no covariates — the question asks only about the overall proportion, so we need only the unit and the outcome.",
+    answer(NULL, correct = TRUE),
+    allow_retry = FALSE,
+    incorrect = NULL,
+    rows = 6)
+```
+
+###
+
+```{r preceptor-table, echo = FALSE, results = "asis"}
+p_tibble <- tibble::tribble(
+  ~`Voter`     , ~`Biden Support`,
+  "Voter 1"    , "Yes",
+  "Voter 2"    , "No",
+  "..."        , "...",
+  "Voter 1559" , "Yes"
+)
+
+pre_title_footnote   <- "If all the information in this table were available, we could answer the question: What proportion of all votes will be cast for Joe Biden in the 2024 election?"
+pre_units_footnote   <- "Each row represents one of the roughly 150 million Americans expected to cast a ballot in the 2024 presidential election. The labels 'Voter 1', 'Voter 1559' are placeholders; the true Preceptor Table would contain every voter on Election Day."
+pre_outcome_footnote <- "Biden support indicates whether this voter casts their ballot for Joe Biden in the 2024 presidential election: 'Yes' or 'No'. This is the actual vote cast, not stated preference in a survey. The two can differ — a respondent who told a pollster 'Yes' might vote for a third-party candidate on Election Day."
+
+pre_gt_html <- gt::gt(p_tibble, id = "preceptor_tbl") |>
+  gt::tab_header(title = "Preceptor Table") |>
+  gt::tab_spanner(label = "Unit"   , id = "unit_span",
+                  columns = c(`Voter`)) |>
+  gt::tab_spanner(label = "Outcome", id = "outcome_span",
+                  columns = c(`Biden Support`)) |>
+  gt::cols_align(align = "left" , columns = c(`Voter`)) |>
+  gt::cols_align(align = "right", columns = c(`Biden Support`)) |>
+  gt::fmt_markdown(columns = gt::everything()) |>
+  gt::tab_options(
+    heading.title.font.size   = "1.5em",
+    heading.title.font.weight = "bolder",
+    column_labels.font.weight = "normal"
+  ) |>
+  gt::tab_style(
+    style     = gt::cell_text(weight = "bold"),
+    locations = gt::cells_column_spanners()
+  ) |>
+  gt::tab_style(
+    style     = gt::cell_text(align = "left"),
+    locations = gt::cells_column_spanners(spanners = "unit_span")
+  ) |>
+  gt::tab_style(
+    style     = gt::cell_text(align = "right"),
+    locations = gt::cells_column_spanners(spanners = "outcome_span")
+  ) |>
+  gt::tab_footnote(footnote = pre_title_footnote,
+                   locations = gt::cells_title()) |>
+  gt::tab_footnote(footnote = pre_units_footnote,
+                   locations = gt::cells_column_spanners(spanners = "unit_span")) |>
+  gt::tab_footnote(footnote = pre_outcome_footnote,
+                   locations = gt::cells_column_spanners(spanners = "outcome_span")) |>
+  gt::opt_css(
+    css = "
+      #preceptor_tbl .gt_footnote {
+        max-width: 1px;
+        word-break: break-word;
+      }
+    "
+  ) |>
+  gt::as_raw_html()
+
+cat(
+  "```{=html}\n",
+  '<div style="display: inline-block; width: auto; max-width: 100%;">',
+  pre_gt_html,
+  "</div>\n",
+  "```\n",
+  sep = ""
+)
+```
+
+### Exercise 12
+
+We will be creating a summary paragraph over the course of this tutorial. Write the first two sentences. The first sentence is a general statement about the overall topic, mentioning the general class of outcome and at least one covariate. The second introduces the data source and the specific question — when/where gathered, how many observations, who collected it.
+
+```{r wisdom-12}
+question_text(NULL,
+    message = "Survey data from YouGov helps predict election outcomes by estimating the proportion of voters supporting each candidate. This analysis uses a March 2024 poll of 1,559 U.S. adult citizens to estimate the proportion of votes Joe Biden would receive in the 2024 presidential election.",
+    answer(NULL, correct = TRUE),
+    allow_retry = FALSE,
+    incorrect = NULL,
+    rows = 6)
+```
+
+###
+
+Read our answer. It will not be the same as yours. You can change your answer to incorporate some of our ideas, but do not copy/paste our answer exactly. Add your two sentences to your QMD, `Cmd/Ctrl + Shift + K`, and commit/push.
+
+## Justice
+
+Wisdom gives us the Preceptor Table and the data.
+
+```{r justice-preceptor-table, echo = FALSE, results = "asis"}
+p_tibble_j <- tibble::tribble(
+  ~`Voter`     , ~`Biden Support`,
+  "Voter 1"    , "Yes",
+  "Voter 2"    , "No",
+  "..."        , "...",
+  "Voter 1559" , "Yes"
+)
+
+pre_title_footnote_j   <- "If all the information in this table were available, we could answer the question: What proportion of all votes will be cast for Joe Biden in the 2024 election?"
+pre_units_footnote_j   <- "Each row represents one of the roughly 150 million Americans expected to cast a ballot in the 2024 presidential election. The labels 'Voter 1', 'Voter 1559' are placeholders; the true Preceptor Table would contain every voter on Election Day."
+pre_outcome_footnote_j <- "Biden support indicates whether this voter casts their ballot for Joe Biden in the 2024 presidential election: 'Yes' or 'No'. This is the actual vote cast, not stated preference in a survey. The two can differ — a respondent who told a pollster 'Yes' might vote for a third-party candidate on Election Day."
+
+pre_gt_html_j <- gt::gt(p_tibble_j, id = "preceptor_tbl_j") |>
+  gt::tab_header(title = "Preceptor Table") |>
+  gt::tab_spanner(label = "Unit"   , id = "unit_span_j",
+                  columns = c(`Voter`)) |>
+  gt::tab_spanner(label = "Outcome", id = "outcome_span_j",
+                  columns = c(`Biden Support`)) |>
+  gt::cols_align(align = "left" , columns = c(`Voter`)) |>
+  gt::cols_align(align = "right", columns = c(`Biden Support`)) |>
+  gt::fmt_markdown(columns = gt::everything()) |>
+  gt::tab_options(
+    heading.title.font.size   = "1.5em",
+    heading.title.font.weight = "bolder",
+    column_labels.font.weight = "normal"
+  ) |>
+  gt::tab_style(
+    style     = gt::cell_text(weight = "bold"),
+    locations = gt::cells_column_spanners()
+  ) |>
+  gt::tab_style(
+    style     = gt::cell_text(align = "left"),
+    locations = gt::cells_column_spanners(spanners = "unit_span_j")
+  ) |>
+  gt::tab_style(
+    style     = gt::cell_text(align = "right"),
+    locations = gt::cells_column_spanners(spanners = "outcome_span_j")
+  ) |>
+  gt::tab_footnote(footnote = pre_title_footnote_j,
+                   locations = gt::cells_title()) |>
+  gt::tab_footnote(footnote = pre_units_footnote_j,
+                   locations = gt::cells_column_spanners(spanners = "unit_span_j")) |>
+  gt::tab_footnote(footnote = pre_outcome_footnote_j,
+                   locations = gt::cells_column_spanners(spanners = "outcome_span_j")) |>
+  gt::opt_css(
+    css = "
+      #preceptor_tbl_j .gt_footnote {
+        max-width: 1px;
+        word-break: break-word;
+      }
+    "
+  ) |>
+  gt::as_raw_html()
+
+cat(
+  "```{=html}\n",
+  '<div style="display: inline-block; width: auto; max-width: 100%;">',
+  pre_gt_html_j,
+  "</div>\n",
+  "```\n",
+  sep = ""
+)
+```
+
+```{r justice-data-table, echo = FALSE, results = "asis"}
+data_tibble <- tibble::tribble(
+  ~`Voter`    , ~`Biden Support`,
+  "Voter 1"   , "No",
+  "Voter 2"   , "No",
+  "Voter 3"   , "Yes",
+  "Voter 4"   , "No",
+  "Voter 5"   , "Yes",
+  "..."       , "..."
+)
+
+data_title_footnote   <- "YouGov poll of 1,559 U.S. adult citizens, March 2024. Respondents were recruited from YouGov's online opt-in panel and post-stratification weighted to approximate the U.S. adult population by age, gender, race/ethnicity, education, and 2020 vote choice."
+data_outcome_footnote <- "Self-reported answer to a question about 2024 presidential vote intention, coded 'Yes' if the respondent indicated they would vote for Joe Biden and 'No' otherwise. Measured in March 2024; respondents' preferences may shift before Election Day in November."
+
+data_gt_html <- gt::gt(data_tibble, id = "data_tbl") |>
+  gt::tab_header(title = "Data: YouGov Poll, March 2024") |>
+  gt::tab_spanner(label = "Unit"   , id = "unit_span_d",
+                  columns = c(`Voter`)) |>
+  gt::tab_spanner(label = "Outcome", id = "outcome_span_d",
+                  columns = c(`Biden Support`)) |>
+  gt::cols_align(align = "left" , columns = c(`Voter`)) |>
+  gt::cols_align(align = "right", columns = c(`Biden Support`)) |>
+  gt::fmt_markdown(columns = gt::everything()) |>
+  gt::tab_options(
+    heading.title.font.size   = "1.5em",
+    heading.title.font.weight = "bolder",
+    column_labels.font.weight = "normal"
+  ) |>
+  gt::tab_style(
+    style     = gt::cell_text(weight = "bold"),
+    locations = gt::cells_column_spanners()
+  ) |>
+  gt::tab_style(
+    style     = gt::cell_text(align = "left"),
+    locations = gt::cells_column_spanners(spanners = "unit_span_d")
+  ) |>
+  gt::tab_style(
+    style     = gt::cell_text(align = "right"),
+    locations = gt::cells_column_spanners(spanners = "outcome_span_d")
+  ) |>
+  gt::tab_footnote(footnote = data_title_footnote,
+                   locations = gt::cells_title()) |>
+  gt::tab_footnote(footnote = data_outcome_footnote,
+                   locations = gt::cells_column_spanners(spanners = "outcome_span_d")) |>
+  gt::opt_css(
+    css = "
+      #data_tbl .gt_footnote {
+        max-width: 1px;
+        word-break: break-word;
+      }
+    "
+  ) |>
+  gt::as_raw_html()
+
+cat(
+  "```{=html}\n",
+  '<div style="display: inline-block; width: auto; max-width: 100%;">',
+  data_gt_html,
+  "</div>\n",
+  "```\n",
+  sep = ""
+)
+```
+
+###
+
+### Exercise 1
+
+In your own words, name the five key components of Justice when working on a data science problem.
+
+```{r justice-1}
+question_text(NULL,
+    message = "Justice concerns the Population Table and the four key assumptions which underlie it: validity, stability, representativeness, and unconfoundedness.",
+    answer(NULL, correct = TRUE),
+    allow_retry = FALSE,
+    incorrect = NULL,
+    rows = 6)
+```
+
+###
+
+Justice is about concerns that you (or your critics) might have — reasons why the model you create might not work as well as you hope.
+
+### Exercise 2
+
+In your own words, define "validity" as we use the term.
+
+```{r justice-2}
+question_text(NULL,
+    message = "Validity is the consistency, or lack thereof, in the columns of the data set and the corresponding columns in the Preceptor Table.",
+    answer(NULL, correct = TRUE),
+    allow_retry = FALSE,
+    incorrect = NULL,
+    rows = 6)
+```
+
+###
+
+Validity is always about the columns in the Preceptor Table and the data. Just because columns from these two different tables have the same name does not mean that they are the same thing.
+
+### Exercise 3
+
+Provide one reason why the assumption of validity might not hold for the outcome variable `biden`. Use the words "column" or "columns" in your answer.
+
+```{r justice-3}
+question_text(NULL,
+    message = "The outcome column in the data measures self-reported survey preference — 'Would you vote for Biden?' — while the Preceptor Table's outcome column measures the actual vote cast on Election Day. These are related but not identical. A respondent who says 'Yes' in March might vote for a third-party candidate in November, or a 'No' respondent might switch. The two columns are measuring different things.",
+    answer(NULL, correct = TRUE),
+    allow_retry = FALSE,
+    incorrect = NULL,
+    rows = 6)
+```
+
+###
+
+In order to consider the Preceptor Table and the data to be drawn from the same population, the columns from one must have a valid correspondence with the columns in the other. Validity, if true (or at least reasonable), allows us to construct the Population Table, which is the first step in Justice.
+
+### Exercise 4
+
+In your own words, define a Population Table.
+
+```{r justice-4}
+question_text(NULL,
+    message = "The Population Table includes a row for each unit/time combination in the underlying population from which both the Preceptor Table and the data are drawn.",
+    answer(NULL, correct = TRUE),
+    allow_retry = FALSE,
+    incorrect = NULL,
+    rows = 6)
+```
+
+###
+
+The Population Table is almost always much bigger than the combination of the Preceptor Table and the data, because if we can really assume that both are part of the same population, then that population must cover a broad universe of time and units.
+
+### Exercise 5
+
+Specify the unit/time combinations which define each row in this Population Table.
+
+```{r justice-5}
+question_text(NULL,
+    message = "Each row is one U.S. adult citizen at a specific point in time — either during the YouGov survey window (March 2024) or on Election Day (November 2024). The broader population spans all U.S. adults who could have been surveyed or who could vote in the 2024 election.",
+    answer(NULL, correct = TRUE),
+    allow_retry = FALSE,
+    incorrect = NULL,
+    rows = 6)
+```
+
+###
+
+```{r population-table, echo = FALSE, results = "asis"}
+population_tibble <- tibble::tribble(
+  ~Source    , ~`Voter`          , ~`Year`, ~`Biden Support`,
+  "..."      , "..."             , "..."  , "..."           ,
+  "Data"     , "Voter 1"         , "2024" , "No"            ,
+  "Data"     , "Voter 2"         , "2024" , "No"            ,
+  "Data"     , "..."             , "..."  , "..."           ,
+  "Data"     , "Voter 1559"      , "2024" , "Yes"           ,
+  "..."      , "..."             , "..."  , "..."           ,
+  "Preceptor", "Marcus Williams" , "2024" , "Yes"           ,
+  "Preceptor", "Sarah Chen"      , "2024" , "No"            ,
+  "Preceptor", "..."             , "..."  , "..."           ,
+  "Preceptor", "Jennifer Lopez"  , "2024" , "Yes"           ,
+  "..."      , "..."             , "..."  , "..."
+)
+
+pop_title_footnote   <- "This table combines data from the YouGov March 2024 poll with the Preceptor Table's Election Day 2024 voters, drawn from the broader population of U.S. adults eligible to vote in 2024."
+pop_units_footnote   <- "Data rows are individual respondents from YouGov's March 2024 poll — approximately 1,559 adults recruited from an opt-in online panel and weighted to approximate U.S. adults. Preceptor rows are voters casting ballots on November 5, 2024 — approximately 155 million total. The eight-month gap between the survey (March 2024) and the election (November 2024) is a stability concern. YouGov's opt-in panel methodology introduces a representativeness concern: those who participate in online panels tend to be more politically engaged and internet-savvy than the broader electorate."
+pop_outcome_footnote <- "In Data rows, Biden support is self-reported preference measured in March 2024 ('Would you vote for Biden?'). In Preceptor rows, Biden support is the actual vote cast on Election Day. These operationalizations differ — reported preferences and actual votes are not the same column, even when they share a label. This is the validity concern identified in Exercise 3."
+
+pop_gt_html <- gt::gt(population_tibble, id = "population_tbl") |>
+  gt::tab_header(title = "Population Table") |>
+  gt::tab_spanner(label = "Unit/Time", id = "unit_span",
+                  columns = c(`Voter`, `Year`)) |>
+  gt::tab_spanner(label = "Outcome"  , id = "outcome_span",
+                  columns = c(`Biden Support`)) |>
+  gt::cols_align(align = "left" , columns = c(`Source`, `Voter`)) |>
+  gt::cols_align(align = "right", columns = c(`Year`, `Biden Support`)) |>
+  gt::fmt_markdown(columns = gt::everything()) |>
+  gt::tab_options(
+    heading.title.font.size   = "1.5em",
+    heading.title.font.weight = "bolder",
+    column_labels.font.weight = "normal"
+  ) |>
+  gt::tab_style(
+    style     = gt::cell_text(weight = "bold"),
+    locations = gt::cells_column_spanners()
+  ) |>
+  gt::tab_style(
+    style     = gt::cell_text(align = "left"),
+    locations = gt::cells_column_spanners(spanners = "unit_span")
+  ) |>
+  gt::tab_style(
+    style     = gt::cell_text(align = "right"),
+    locations = gt::cells_column_spanners(spanners = "outcome_span")
+  ) |>
+  gt::tab_footnote(footnote = pop_title_footnote,
+                   locations = gt::cells_title()) |>
+  gt::tab_footnote(footnote = pop_units_footnote,
+                   locations = gt::cells_column_spanners(spanners = "unit_span")) |>
+  gt::tab_footnote(footnote = pop_outcome_footnote,
+                   locations = gt::cells_column_spanners(spanners = "outcome_span")) |>
+  gt::opt_css(
+    css = "
+      #population_tbl .gt_footnote {
+        max-width: 1px;
+        word-break: break-word;
+      }
+    "
+  ) |>
+  gt::as_raw_html()
+
+cat(
+  "```{=html}\n",
+  '<div style="display: inline-block; width: auto; max-width: 100%;">',
+  pop_gt_html,
+  "</div>\n",
+  "```\n",
+  sep = ""
+)
+```
+
+The exact time period used — whether hour, day, month, year, or whatever — is relatively arbitrary. The important thing to note is that the Population Table, unlike the Preceptor Table, covers a period of time over which things may change.
+
+### Exercise 6
+
+In your own words, define the assumption of "stability" when employed in the context of data science.
+
+```{r justice-6}
+question_text(NULL,
+    message = "Stability means that the relationship between the columns in the Population Table is the same for three categories of rows: the data, the Preceptor Table, and the larger population from which both are drawn.",
+    answer(NULL, correct = TRUE),
+    allow_retry = FALSE,
+    incorrect = NULL,
+    rows = 6)
+```
+
+###
+
+Stability is all about time. Is the relationship among the columns in the Population Table stable over time? The longer the time period between the data and the Preceptor Table, the more suspect stability becomes.
+
+### Exercise 7
+
+Provide one reason why the assumption of stability might not be true in this case.
+
+```{r justice-7}
+question_text(NULL,
+    message = "The poll was conducted in March 2024 while the election takes place in November 2024 — eight months later. Candidate positions shift, major events occur (party conventions, presidential debates, October surprises), and public opinion moves. The proportion of voters supporting Biden in March may not be the same proportion who vote for him in November. Stability may not hold across this time gap.",
+    answer(NULL, correct = TRUE),
+    allow_retry = FALSE,
+    incorrect = NULL,
+    rows = 6)
+```
+
+###
+
+A change in time or the distribution of the data does not, in and of itself, demonstrate a violation of stability. Stability is about the parameters: the underlying model coefficients. For this intercept-only model, stability fails if the log-odds of Biden support shifts between March and November.
+
+### Exercise 8
+
+We use our data to make inferences about the overall population. We use information about the population to make inferences about the Preceptor Table: Data → Population → Preceptor Table. In your own words, define the assumption of "representativeness."
+
+```{r justice-8}
+question_text(NULL,
+    message = "Representativeness, or the lack thereof, concerns two relationships among the rows in the Population Table. The first is between the data and the other rows. The second is between the other rows and the Preceptor Table.",
+    answer(NULL, correct = TRUE),
+    allow_retry = FALSE,
+    incorrect = NULL,
+    rows = 6)
+```
+
+###
+
+Ideally, we would like both the Preceptor Table and our data to be random samples from the population. Sadly, this is almost never the case.
+
+### Exercise 9
+
+We do not use the data directly to estimate missing values in the Preceptor Table. Instead, we use the data to learn about the overall population. Provide one reason, involving the relationship between the data and the population, why the assumption of representativeness might not be true in this case.
+
+```{r justice-9}
+question_text(NULL,
+    message = "YouGov uses an opt-in online panel, which tends to over-represent adults who are more politically engaged, younger, and more comfortable with the internet than the general population. Registered voters who rarely go online — often older, rural, or lower-income — are likely under-represented in the data. The data rows may not be representative of the full population of U.S. adults who will vote.",
+    answer(NULL, correct = TRUE),
+    allow_retry = FALSE,
+    incorrect = NULL,
+    rows = 6)
+```
+
+###
+
+When representativeness is violated, the estimates for the model parameters will be biased. YouGov applies post-stratification weights to partially correct for panel-composition bias, but the weighting cannot fix gaps in coverage — people outside the panel are simply not there.
+
+### Exercise 10
+
+We use information about the population to make inferences about the Preceptor Table. Provide one reason, involving the relationship between the Population and the Preceptor Table, why the assumption of representativeness might not be true in this case.
+
+```{r justice-10}
+question_text(NULL,
+    message = "The Preceptor Table asks about actual voters on Election Day. The broader population of U.S. adults includes many people who are eligible to vote but will not — roughly 40% of eligible voters typically abstain. If Biden supporters are more or less likely to turn out than his opponents, the population of all adults (from which the survey samples) may not be representative of the population of actual Election Day voters (which the Preceptor Table targets).",
+    answer(NULL, correct = TRUE),
+    allow_retry = FALSE,
+    incorrect = NULL,
+    rows = 6)
+```
+
+###
+
+Validity is about the columns in our Population Table. Stability and representativeness are about the rows.
+
+### Exercise 11
+
+A statistical model consists of two parts: the probability family and the link function. The probability family is the probability distribution which generates the randomness in our data. The link function is the mathematical formula which links our data to the unknown parameters. Add `library(broom)` to the QMD file. Place your cursor on that line. Use `Cmd/Ctrl + Enter`. CP/CR.
+
+```{r justice-11}
+question_text(NULL,
+    answer(NULL, correct = TRUE),
+    allow_retry = TRUE,
+    try_again_button = "Edit Answer",
+    incorrect = NULL,
+    rows = 3)
+```
+
+###
+
+Because our outcome is binary, we use a Bernoulli probability family: $Y \sim \text{Bernoulli}(\rho)$. The link function is the logistic (log-odds): $\log[\rho / (1 - \rho)] = \beta_0$.
+
+### Exercise 12
+
+Add `library(marginaleffects)` to the QMD file. Place your cursor on that line. Use `Cmd/Ctrl + Enter`. CP/CR.
+
+```{r justice-12}
+question_text(NULL,
+    answer(NULL, correct = TRUE),
+    allow_retry = TRUE,
+    try_again_button = "Edit Answer",
+    incorrect = NULL,
+    rows = 3)
+```
+
+###
+
+The **[marginaleffects](https://marginaleffects.com/)** package translates logistic regression results from the log-odds scale back to the probability scale — where the question actually lives.
+
+### Exercise 13
+
+Write one sentence highlighting a potential weakness in your model. Derive it from possible problems with the assumptions above. We will add this to our summary paragraph. So far our version of the summary paragraph looks like this: *"Survey data from YouGov helps predict election outcomes by estimating the proportion of voters supporting each candidate. This analysis uses a March 2024 poll of 1,559 U.S. adult citizens to estimate the proportion of votes Joe Biden would receive in the 2024 presidential election."* Your version will be somewhat different.
+
+```{r justice-13}
+question_text(NULL,
+    message = "However, the eight-month gap between the poll (March 2024) and the election (November 2024), combined with YouGov's opt-in online panel over-representing politically engaged voters, means our estimate may be both biased and out-of-date by Election Day.",
+    answer(NULL, correct = TRUE),
+    allow_retry = FALSE,
+    incorrect = NULL,
+    rows = 6)
+```
+
+###
+
+Add a weakness sentence to the summary paragraph in your QMD. You can modify your paragraph, but don't copy/paste our answer exactly. `Cmd/Ctrl + Shift + K`, then commit/push.
+
+## Courage
+
+Justice gives us the Population Table and the abstract data generating mechanism.
+
+```{r courage-population-table, echo = FALSE, results = "asis"}
+population_tibble_c <- tibble::tribble(
+  ~Source    , ~`Voter`          , ~`Year`, ~`Biden Support`,
+  "..."      , "..."             , "..."  , "..."           ,
+  "Data"     , "Voter 1"         , "2024" , "No"            ,
+  "Data"     , "Voter 2"         , "2024" , "No"            ,
+  "Data"     , "..."             , "..."  , "..."           ,
+  "Data"     , "Voter 1559"      , "2024" , "Yes"           ,
+  "..."      , "..."             , "..."  , "..."           ,
+  "Preceptor", "Marcus Williams" , "2024" , "Yes"           ,
+  "Preceptor", "Sarah Chen"      , "2024" , "No"            ,
+  "Preceptor", "..."             , "..."  , "..."           ,
+  "Preceptor", "Jennifer Lopez"  , "2024" , "Yes"           ,
+  "..."      , "..."             , "..."  , "..."
+)
+
+pop_title_footnote_c   <- "This table combines data from the YouGov March 2024 poll with the Preceptor Table's Election Day 2024 voters, drawn from the broader population of U.S. adults eligible to vote in 2024."
+pop_units_footnote_c   <- "Data rows are individual respondents from YouGov's March 2024 poll — approximately 1,559 adults recruited from an opt-in online panel and weighted to approximate U.S. adults. Preceptor rows are voters casting ballots on November 5, 2024 — approximately 155 million total."
+pop_outcome_footnote_c <- "In Data rows, Biden support is self-reported preference measured in March 2024. In Preceptor rows, Biden support is the actual vote cast on Election Day."
+
+pop_gt_html_c <- gt::gt(population_tibble_c, id = "population_tbl_c") |>
+  gt::tab_header(title = "Population Table") |>
+  gt::tab_spanner(label = "Unit/Time", id = "unit_span_c",
+                  columns = c(`Voter`, `Year`)) |>
+  gt::tab_spanner(label = "Outcome"  , id = "outcome_span_c",
+                  columns = c(`Biden Support`)) |>
+  gt::cols_align(align = "left" , columns = c(`Source`, `Voter`)) |>
+  gt::cols_align(align = "right", columns = c(`Year`, `Biden Support`)) |>
+  gt::fmt_markdown(columns = gt::everything()) |>
+  gt::tab_options(
+    heading.title.font.size   = "1.5em",
+    heading.title.font.weight = "bolder",
+    column_labels.font.weight = "normal"
+  ) |>
+  gt::tab_style(
+    style     = gt::cell_text(weight = "bold"),
+    locations = gt::cells_column_spanners()
+  ) |>
+  gt::tab_style(
+    style     = gt::cell_text(align = "left"),
+    locations = gt::cells_column_spanners(spanners = "unit_span_c")
+  ) |>
+  gt::tab_style(
+    style     = gt::cell_text(align = "right"),
+    locations = gt::cells_column_spanners(spanners = "outcome_span_c")
+  ) |>
+  gt::tab_footnote(footnote = pop_title_footnote_c,
+                   locations = gt::cells_title()) |>
+  gt::tab_footnote(footnote = pop_units_footnote_c,
+                   locations = gt::cells_column_spanners(spanners = "unit_span_c")) |>
+  gt::tab_footnote(footnote = pop_outcome_footnote_c,
+                   locations = gt::cells_column_spanners(spanners = "outcome_span_c")) |>
+  gt::opt_css(
+    css = "
+      #population_tbl_c .gt_footnote {
+        max-width: 1px;
+        word-break: break-word;
+      }
+    "
+  ) |>
+  gt::as_raw_html()
+
+cat(
+  "```{=html}\n",
+  '<div style="display: inline-block; width: auto; max-width: 100%;">',
+  pop_gt_html_c,
+  "</div>\n",
+  "```\n",
+  sep = ""
+)
+```
+
+Remember that Courage creates the data generating mechanism.
+
+$$P(\text{Biden Support} = \text{Yes}) = \frac{1}{1 + e^{-(\beta_0 + \beta_1 X_1 + \cdots + \beta_n X_n)}}$$
+
+with $Y \sim \text{Bernoulli}(\rho)$, where $\rho$ is the probability above.
+
+###
+
+### Exercise 1
+
+Because our outcome variable is binary, start to create the model by entering `logistic_reg(engine = "glm")`.
+
+```{r courage-1, exercise = TRUE}
+
+```
+
+```{r courage-1-hint-1, eval = FALSE}
+logistic_reg(engine = "glm")
+```
+
+```{r courage-1-test, include = FALSE}
+logistic_reg(engine = "glm")
+```
+
+###
+
+The [**tidymodels**](https://www.tidymodels.org/) framework is the most popular one in the R world for estimating models. [*Tidy Modeling with R*](https://www.tmwr.org/) by Max Kuhn and Julia Silge is a great introduction.
+
+### Exercise 2
+
+Continue the pipe to `fit(biden ~ 1, data = poll_data)`. The `~ 1` formula means intercept-only — no predictors.
+
+```{r courage-2, exercise = TRUE}
+
+```
+
+```{r courage-2-hint-1, eval = FALSE}
+logistic_reg(engine = "glm") |>
+  fit(biden ~ 1, data = poll_data)
+```
+
+```{r courage-2-test, include = FALSE}
+logistic_reg(engine = "glm") |>
+  fit(biden ~ 1, data = poll_data)
+```
+
+###
+
+An intercept-only logistic model has a single parameter, $\beta_0$, which sits on the log-odds scale. For this poll, $\beta_0 \approx \log(655/904) \approx -0.322$. Converting to a probability requires the inverse logit: $\rho = 1/(1 + e^{-\beta_0})$.
+
+### Exercise 3
+
+Continue the pipe with `tidy(conf.int = TRUE)`.
+
+```{r courage-3, exercise = TRUE}
+
+```
+
+```{r courage-3-hint-1, eval = FALSE}
+logistic_reg(engine = "glm") |>
+  fit(biden ~ 1, data = poll_data) |>
+  tidy(conf.int = TRUE)
+```
+
+```{r courage-3-test, include = FALSE}
+logistic_reg(engine = "glm") |>
+  fit(biden ~ 1, data = poll_data) |>
+  tidy(conf.int = TRUE)
+```
+
+###
+
+The intercept estimate is approximately $-0.322$ with a 95% confidence interval of roughly $-0.422$ to $-0.222$. All on the log-odds scale — the next section converts to probabilities. Unlike a multi-predictor model, there is no further variable selection here: the intercept is the entire model.
+
+### Exercise 4
+
+Behind the scenes, an object called `fit_biden` has been created. Type `fit_biden` and hit "Run Code."
+
+```{r courage-4, exercise = TRUE}
+
+```
+
+```{r courage-4-hint-1, eval = FALSE}
+fit_biden
+```
+
+```{r courage-4-test, include = FALSE}
+fit_biden
+```
+
+###
+
+In data science, we deal with words, math, and code, but the most important of these is code. We created the mathematical structure of the model and then wrote a model formula in order to estimate the unknown parameters.
+
+### Exercise 5
+
+We need `fit_biden` to exist in R World. Copy/paste this code to the R prompt and execute it:
+
+```
+fit_biden <- logistic_reg(engine = "glm") |>
+  fit(biden ~ 1, data = poll_data)
+```
+
+CP/CR.
+
+```{r courage-5}
+question_text(NULL,
+    answer(NULL, correct = TRUE),
+    allow_retry = TRUE,
+    try_again_button = "Edit Answer",
+    incorrect = NULL,
+    rows = 3)
+```
+
+###
+
+Just because something exists in the tutorial (or in the QMD) does not mean that it is at the R prompt. You should be aware of what exists in R World, which is generally called your "workspace."
+
+### Exercise 6
+
+At the R prompt, load the [easystats](https://easystats.github.io/easystats/) package. CP/CR.
+
+```{r courage-6}
+question_text(NULL,
+    answer(NULL, correct = TRUE),
+    allow_retry = TRUE,
+    try_again_button = "Edit Answer",
+    incorrect = NULL,
+    rows = 3)
+```
+
+###
+
+We don't add easystats to the QMD because we are only using it for an interactive check of our fitted model. However, the [easystats ecosystem](https://easystats.github.io/easystats/) has a variety of interesting functions and packages which you might want to explore.
+
+### Exercise 7
+
+At the R prompt, run `check_predictions(extract_fit_engine(fit_biden))`. CP/CR.
+
+```{r courage-7}
+question_text(NULL,
+    answer(NULL, correct = TRUE),
+    allow_retry = TRUE,
+    try_again_button = "Edit Answer",
+    incorrect = NULL,
+    rows = 3)
+```
+
+###
+
+The purpose of `check_predictions()` is to compare your actual data with data simulated from your fitted model. For this binary model, the simulated proportion of "Yes" responses should be close to the observed 42%. If your DGM is reasonable, simulated data should not look too dissimilar from actual data.
+
+### Exercise 8
+
+Create a new code chunk in your QMD. Add the chunk option `#| cache: true`. Copy/paste the R code for the final model into the chunk, assigning the result to `fit_biden`. (This includes `fit()` but not `tidy()`.) Place your cursor on the `fit_biden` line and use `Cmd/Ctrl + Enter`. `Cmd/Ctrl + Shift + K`. Rendering may be slow the first time but cached thereafter. At the R prompt, run `tutorial.helpers::show_file("analysis.qmd", chunk = "Last")`. CP/CR.
+
+```{r courage-8}
+question_text(NULL,
+    answer(NULL, correct = TRUE),
+    allow_retry = TRUE,
+    try_again_button = "Edit Answer",
+    incorrect = NULL,
+    rows = 3)
+```
+
+###
+
+Including `#| cache: true` causes Quarto to cache the results of the chunk. The next time you render your QMD, as long as you have not changed the code, Quarto will just load up the saved fitted object.
+
+### Exercise 9
+
+Add `*_cache` to `.gitignore`. Cached objects are often large and don't belong on GitHub. At the R prompt, run `tutorial.helpers::show_file(".gitignore")`. CP/CR.
+
+```{r courage-9}
+question_text(NULL,
+    answer(NULL, correct = TRUE),
+    allow_retry = TRUE,
+    try_again_button = "Edit Answer",
+    incorrect = NULL,
+    rows = 3)
+```
+
+###
+
+Because of the change in your `.gitignore`, the cache directory should not appear in the Source Control panel — Git is ignoring it. Commit and push.
+
+### Exercise 10
+
+At the R prompt, run `tidy(fit_biden, conf.int = TRUE)`. This returns 95% intervals for all the parameters.
+
+```{r courage-10, exercise = TRUE}
+
+```
+
+```{r courage-10-hint-1, eval = FALSE}
+tidy(fit_biden, conf.int = TRUE)
+```
+
+```{r courage-10-test, include = FALSE}
+tidy(fit_biden, conf.int = TRUE)
+```
+
+###
+
+`tidy()` is part of the [**broom**](https://broom.tidymodels.org/) package, used to summarize information from a wide variety of models. The `p.value` column appears in the output, but we do not use it — null hypothesis testing is a mistake. There is only the data, the models, and the summaries therefrom.
+
+### Exercise 11
+
+Create a new code chunk in your QMD. Ask AI to make a nice-looking table from the tibble returned by `tidy(fit_biden, conf.int = TRUE)`. You don't need all the columns — term, estimate, and confidence intervals are typical. You may need to load [knitr](https://yihui.org/knitr/), [gt](https://gt.rstudio.com/), or [kableExtra](https://haozhu233.github.io/kableExtra/) in the setup chunk. Insert your table code. `Cmd/Ctrl + Shift + K`. At the R prompt, `tutorial.helpers::show_file("analysis.qmd", chunk = "Last")`. CP/CR.
+
+```{r courage-11}
+question_text(NULL,
+    answer(NULL, correct = TRUE),
+    allow_retry = TRUE,
+    try_again_button = "Edit Answer",
+    incorrect = NULL,
+    rows = 3)
+```
+
+###
+
+Here is our version:
+
+```{r courage-11-our-table, echo = FALSE}
+tidy(fit_biden, conf.int = TRUE) |>
+  select(term, estimate, conf.low, conf.high) |>
+  mutate(across(where(is.numeric), \(x) signif(x, 3))) |>
+  knitr::kable(
+    col.names = c("Term", "Estimate", "95% CI Lower", "95% CI Upper"),
+    caption = "Logistic regression parameters (log-odds scale)"
+  )
+```
+
+At the very least, your table should include a title or caption and, ideally, a note indicating the scale (log-odds) so readers know what they are looking at.
+
+### Exercise 12
+
+Add a sentence to your project summary explaining the structure of the model. Something like: "I/we model Biden support, a binary outcome, as a logistic function of no covariates." Recall the beginning of our summary: *"Survey data from YouGov helps predict election outcomes by estimating the proportion of voters supporting each candidate. This analysis uses a March 2024 poll of 1,559 U.S. adult citizens to estimate the proportion of votes Joe Biden would receive in the 2024 presidential election. However, the eight-month gap between the poll and the election, combined with YouGov's opt-in panel methodology, means our estimate may be both biased and out-of-date by Election Day."*
+
+```{r courage-12}
+question_text(NULL,
+    message = "We model Biden support, a binary Yes/No outcome, as a logistic function of no covariates — an intercept-only model that estimates the overall proportion of votes Biden would receive.",
+    answer(NULL, correct = TRUE),
+    allow_retry = FALSE,
+    incorrect = NULL,
+    rows = 6)
+```
+
+###
+
+Read our answer. Do not copy/paste exactly. Add your model-structure sentence to the summary paragraph. `Cmd/Ctrl + Shift + K`, then commit/push.
+
+## Temperance
+
+Courage provides the data generating mechanism. We can express the DGM in four ways:
+
+Remember that Temperance interprets the data generating mechanism and then uses it to answer, with the help of graphics, the question(s) with which we began. Humility reminds us that this answer is always false.
+
+**In words.** We describe Biden support as a logistic function of no covariates.
+
+**In R code.** `logistic_reg(engine = "glm") |> fit(biden ~ 1, data = poll_data)`
+
+**In a parameter table.**
+
+```{r temperance-param-table, echo = FALSE}
+tidy(fit_biden, conf.int = TRUE) |>
+  select(term, estimate, conf.low, conf.high) |>
+  mutate(across(where(is.numeric), \(x) signif(x, 3))) |>
+  knitr::kable(
+    col.names = c("Term", "Estimate", "95% CI Lower", "95% CI Upper"),
+    caption = "Fitted parameters (log-odds scale)"
+  )
+```
+
+**As a mathematical formula.**
+
+$$P(\text{Biden Support} = \text{Yes}) = \frac{1}{1 + e^{-(-0.322)}} \approx 0.420$$
+
+with $Y \sim \text{Bernoulli}(\rho)$.
+
+The intercept $\hat{\beta}_0 \approx -0.322$ (95% CI: $-0.422$ to $-0.222$). Converting from log-odds to probability: $\rho = 1/(1 + e^{0.322}) \approx 0.420$, or about 42%.
+
+###
+
+### Exercise 1
+
+What is the specific question we are trying to answer?
+
+```{r temperance-1}
+question_text(NULL,
+    message = "What proportion of all votes will be cast for Joe Biden in the 2024 election?",
+    answer(NULL, correct = TRUE),
+    allow_retry = FALSE,
+    incorrect = NULL,
+    rows = 6)
+```
+
+###
+
+Data science projects begin with a decision which we face. To make that decision wisely, we would like to have good estimates of many unknown numbers. Yet, in order to make progress, we need to drill down to one specific question. This leads to the creation of a data generating mechanism, which can then be used to answer lots of questions.
+
+### Exercise 2
+
+Look at the parameter table in the preamble. What does the intercept estimate of approximately $-0.322$ mean, and why is it negative if Biden receives 42% support?
+
+```{r temperance-2}
+question_text(NULL,
+    message = "The intercept is on the log-odds scale: log(0.420 / 0.580) ≈ log(0.724) ≈ -0.322. The log-odds is negative whenever the probability is below 50% — Biden is below 50% in this poll, so the log-odds is negative. The value -0.322 is hard to interpret directly; converting via 1/(1 + exp(0.322)) gives the more readable 42% probability.",
+    answer(NULL, correct = TRUE),
+    allow_retry = FALSE,
+    incorrect = NULL,
+    rows = 6)
+```
+
+###
+
+Most of the time, parameters in a model have no direct relationship with any population value in which we might be interested. The intercept of $-0.322$ does correspond to something real in this simple case — the log-odds of overall Biden support — but in more complex models that connection disappears. Parameters are tools for answering questions. In the modern world, all parameters are nuisance parameters.
+
+### Exercise 3
+
+In the end, we don't really care about parameters. Parameters are imaginary, like unicorns. We care about answers to our questions. In the modern world, all parameters are nuisance parameters. Add `library(marginaleffects)` to the QMD. Place your cursor on that line. Use `Cmd/Ctrl + Enter`. CP/CR.
+
+```{r temperance-3}
+question_text(NULL,
+    answer(NULL, correct = TRUE),
+    allow_retry = TRUE,
+    try_again_button = "Edit Answer",
+    incorrect = NULL,
+    rows = 3)
+```
+
+###
+
+We should be modest in the claims we make. The posteriors we create are never the "truth." The assumptions we made to create the model are never perfect. Yet decisions made with flawed posteriors are almost always better than decisions made without them.
+
+### Exercise 4
+
+At the R prompt, run `predictions(fit_biden)`. CP/CR.
+
+```{r temperance-4}
+question_text(NULL,
+    answer(NULL, correct = TRUE),
+    allow_retry = TRUE,
+    try_again_button = "Edit Answer",
+    incorrect = NULL,
+    rows = 3)
+```
+
+###
+
+`predictions()` returns a data frame with one row for each observation in the data set used to fit the model — here, 1,559 rows, one per poll respondent. Every row gets the same estimated probability (≈ 0.420) because the model has no covariates; the prediction is constant across all units.
+
+### Exercise 5
+
+At the R prompt, run `avg_predictions(fit_biden)`. CP/CR.
+
+```{r temperance-5}
+question_text(NULL,
+    answer(NULL, correct = TRUE),
+    allow_retry = TRUE,
+    try_again_button = "Edit Answer",
+    incorrect = NULL,
+    rows = 3)
+```
+
+###
+
+`avg_predictions()` aggregates the 1,559 unit-level predictions into a single average estimate — approximately 0.420 (42%), with a 95% CI from about 0.396 to 0.444. This is our answer: the model estimates Biden's vote share at roughly 42%.
+
+### Exercise 6
+
+At the R prompt, run `avg_comparisons(fit_biden)`. CP/CR.
+
+```{r temperance-6}
+question_text(NULL,
+    answer(NULL, correct = TRUE),
+    allow_retry = TRUE,
+    try_again_button = "Edit Answer",
+    incorrect = NULL,
+    rows = 3)
+```
+
+###
+
+`avg_comparisons()` returns an empty tibble — the model has no covariates, so there is nothing to compare. Comparisons answer "how does Y change when X changes?" For this intercept-only model there is no X, so there is nothing for the function to compute. The **[marginaleffects](https://marginaleffects.com/)** [Comparisons chapter](https://marginaleffects.com/chapters/comparisons.html) shows what this looks like for models that do have predictors — which we will see in later tutorials.
+
+### Exercise 7
+
+At the R prompt, run `avg_predictions(fit_biden)`. CP/CR.
+
+```{r temperance-7}
+question_text(NULL,
+    answer(NULL, correct = TRUE),
+    allow_retry = TRUE,
+    try_again_button = "Edit Answer",
+    incorrect = NULL,
+    rows = 3)
+```
+
+###
+
+The output shows a single row: the average predicted probability that a respondent votes for Biden (≈ 0.420), with a 95% confidence interval (roughly 0.396 to 0.444). `plot_predictions()` requires a covariate to condition on, which this intercept-only model lacks — so `avg_predictions()` is the right tool here.
+
+### Exercise 8
+
+At the R prompt, run `avg_predictions(fit_biden)` and note the `estimate`, `conf.low`, and `conf.high` columns. CP/CR.
+
+```{r temperance-8}
+question_text(NULL,
+    answer(NULL, correct = TRUE),
+    allow_retry = TRUE,
+    try_again_button = "Edit Answer",
+    incorrect = NULL,
+    rows = 3)
+```
+
+###
+
+`avg_predictions()` returns a tibble you can pipe directly into ggplot. Because this is an intercept-only model there is nothing to condition on — the average prediction *is* the whole story.
+
+### Exercise 9
+
+Work with AI to create a beautiful plot using `avg_predictions(fit_biden)` as the data source. Do this in your QMD. Title: key variable shown. Subtitle: the most important takeaway (the estimated proportion and its uncertainty). Caption: data source. Axis labels: human-readable. Paste the plot code below.
+
+```{r temperance-9}
+question_text(NULL,
+    answer(NULL, correct = TRUE),
+    allow_retry = TRUE,
+    try_again_button = "Edit Answer",
+    incorrect = NULL,
+    rows = 3)
+```
+
+###
+
+Here is our version:
+
+```{r temperance-9-our-plot, echo = FALSE, fig.width = 5, fig.height = 4}
+tidy(extract_fit_engine(fit_biden), conf.int = TRUE) |>
+  filter(term == "(Intercept)") |>
+  transmute(
+    estimate  = plogis(estimate),
+    conf.low  = plogis(conf.low),
+    conf.high = plogis(conf.high)
+  ) |>
+  ggplot(aes(x = 1, y = estimate, ymin = conf.low, ymax = conf.high)) +
+  geom_pointrange(size = 1.0, color = "steelblue") +
+  scale_y_continuous(limits = c(0, 1), labels = scales::percent_format(accuracy = 1)) +
+  labs(
+    title = "Estimated Biden Vote Share in 2024",
+    subtitle = "Model predicts ~42% (95% CI: 40%–44%) from March 2024 YouGov poll",
+    caption = "Source: YouGov, March 2024, via primer.data",
+    x = NULL,
+    y = "Predicted probability of voting for Biden"
+  ) +
+  theme_minimal() +
+  theme(axis.text.x = element_blank(), axis.ticks.x = element_blank())
+```
+
+Data science often involves back-and-forth work. First, make a single chunk of code work well — this requires interactive work between the QMD and the R prompt. Second, ensure that the entire QMD runs correctly on its own.
+
+### Exercise 10
+
+Finalize the new graphics chunk in your QMD. `Cmd/Ctrl + Shift + K` to ensure it all works. At the R prompt, `tutorial.helpers::show_file("analysis.qmd", chunk = "Last")`. CP/CR.
+
+```{r temperance-10}
+question_text(NULL,
+    answer(NULL, correct = TRUE),
+    allow_retry = TRUE,
+    try_again_button = "Edit Answer",
+    incorrect = NULL,
+    rows = 3)
+```
+
+###
+
+Always remember: the map is not the territory. A beautiful graphic tells a story, but that story is always an imperfect representation of reality. Our models depend on assumptions that are never completely true.
+
+### Exercise 11
+
+Write the last sentence of your summary paragraph. It describes at least one Quantity of Interest and a measure of uncertainty.
+
+```{r temperance-11}
+question_text(NULL,
+    message = "The model estimates Biden's vote share at approximately 42% (95% CI: 40%–44%), based on a March 2024 YouGov poll of 1,559 U.S. adults.",
+    answer(NULL, correct = TRUE),
+    allow_retry = FALSE,
+    incorrect = NULL,
+    rows = 6)
+```
+
+###
+
+Add a final sentence to your summary paragraph, but don't copy/paste our answer exactly. `Cmd/Ctrl + Shift + K`.
+
+### Exercise 12
+
+Write a few sentences explaining why the estimates for the quantities of interest, and the uncertainty, might be wrong. Suggest alternative estimates and a wider confidence interval if warranted.
+
+```{r temperance-12}
+question_text(NULL,
+    message = "Our estimate is based on a poll conducted eight months before the election, from an opt-in online panel that over-represents politically engaged voters. Voter preferences can shift dramatically over a campaign — debates, economic news, and late-breaking events all move the numbers. I would widen the confidence interval considerably, perhaps to 37%–49%, to account for the polling methodology uncertainty and the time gap to Election Day. You might or might not adjust the point estimate; I would adjust toward 44% given that late-deciding voters often break toward the challenger.",
+    answer(NULL, correct = TRUE),
+    allow_retry = FALSE,
+    incorrect = NULL,
+    rows = 6)
+```
+
+###
+
+Always go back to your Preceptor Table — the information which, if you had it, would make answering your question easy. In almost all real-world cases, the Preceptor Table and the data are fairly different. So, even a perfectly estimated statistical model is rarely as useful as we might like.
+
+### Exercise 13
+
+Rearrange the material in your QMD so the order is graphic, then paragraph. The chunk that creates the fitted model must occur before the chunk that creates the graphic. You can keep or discard the math at your discretion. `Cmd/Ctrl + Shift + K`. At the R prompt, `tutorial.helpers::show_file("analysis.qmd")`. CP/CR.
+
+```{r temperance-13}
+question_text(NULL,
+    answer(NULL, correct = TRUE),
+    allow_retry = TRUE,
+    try_again_button = "Edit Answer",
+    incorrect = NULL,
+    rows = 3)
+```
+
+###
+
+This is the version of your QMD file at which your teacher is most likely to look closely.
+
+### Exercise 14
+
+Publish your rendered QMD to GitHub Pages. In the Terminal (not the R prompt!), run `quarto publish gh-pages analysis.qmd`. Copy/paste the resulting URL below.
+
+```{r temperance-14}
+question_text(NULL,
+    answer(NULL, correct = TRUE),
+    allow_retry = TRUE,
+    try_again_button = "Edit Answer",
+    incorrect = NULL,
+    rows = 3)
+```
+
+###
+
+Commit/push everything.
+
+### Exercise 15
+
+Copy/paste the URL to your GitHub repo.
+
+```{r temperance-15}
+question_text(NULL,
+    answer(NULL, correct = TRUE),
+    allow_retry = TRUE,
+    try_again_button = "Edit Answer",
+    incorrect = NULL,
+    rows = 3)
+```
+
+###
+
+We can never know all the entries in the Preceptor Table. That knowledge is reserved for God. If all our assumptions are correct, then our DGM is true — it accurately describes the way in which the world works. There is no better way to predict the future, or to model the past, than to use it. Sadly, this will only be the case with toy examples involving things like coins and dice.
+
+The world confronts us. Make decisions we must.
+
+## Summary
+
+```{r summary-plot, echo = FALSE, fig.width = 5, fig.height = 4}
+tidy(extract_fit_engine(fit_biden), conf.int = TRUE) |>
+  filter(term == "(Intercept)") |>
+  transmute(
+    estimate  = plogis(estimate),
+    conf.low  = plogis(conf.low),
+    conf.high = plogis(conf.high)
+  ) |>
+  ggplot(aes(x = 1, y = estimate, ymin = conf.low, ymax = conf.high)) +
+  geom_pointrange(size = 1.0, color = "steelblue") +
+  scale_y_continuous(limits = c(0, 1), labels = scales::percent_format(accuracy = 1)) +
+  labs(
+    title = "Estimated Biden Vote Share in 2024",
+    subtitle = "Model predicts ~42% (95% CI: 40%–44%) from March 2024 YouGov poll",
+    caption = "Source: YouGov, March 2024, via primer.data",
+    x = NULL,
+    y = "Predicted probability of voting for Biden"
+  ) +
+  theme_minimal() +
+  theme(axis.text.x = element_blank(), axis.ticks.x = element_blank())
+```
+
+Survey data from YouGov helps predict election outcomes by estimating the proportion of voters supporting each candidate. This analysis uses a March 2024 poll of 1,559 U.S. adult citizens to estimate the proportion of votes Joe Biden would receive in the 2024 presidential election. However, the eight-month gap between the poll and the election, combined with YouGov's opt-in online panel over-representing politically engaged voters, means our estimate may be both biased and out-of-date by Election Day. We model Biden support, a binary Yes/No outcome, as a logistic function of no covariates — an intercept-only model that estimates the overall proportion of support. The model estimates Biden's vote share at approximately 42% (95% CI: 40%–44%), based on the March 2024 poll. Our estimate is based on data collected eight months before the election from an opt-in online panel; a wider interval of perhaps 37%–49% better reflects the true uncertainty once polling methodology and temporal drift are accounted for.
+
+The world is always more uncertain than our models would have us believe.
+
+```{r download-answers, child = system.file("child_documents/download_answers.Rmd", package = "tutorial.helpers")}
+```
