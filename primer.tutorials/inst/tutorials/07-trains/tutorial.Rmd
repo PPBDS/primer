@@ -382,9 +382,26 @@ The two distributions overlap considerably, but the Treated group is shifted sli
 
 ### Exercise 4
 
-Describe the key components of Preceptor Tables in general, without worrying about this specific problem. Use words like "units," "outcomes," and "covariates."
+Ask AI to write R code that plots the individual `att_end` values in `trains` as a jitter plot, with `treatment` on the x-axis and `att_end` on the y-axis, along with a point showing the group mean. Include a descriptive title, subtitle, axis labels, and caption. Paste the code below and run it.
 
 ```{r wisdom-4}
+question_text(NULL,
+  message = "    trains |>\n      ggplot(aes(x = treatment, y = att_end)) +\n      geom_jitter(width = 0.15, alpha = 0.4) +\n      stat_summary(fun = mean, geom = \"point\", size = 4, color = \"steelblue\") +\n      labs(\n        title = \"Individual Immigration Attitudes by Treatment Group\",\n        subtitle = \"Blue dot = group mean; Treated mean is about 1.5 points higher\",\n        x = \"Treatment Assignment\",\n        y = \"Attitude Score (3-15 scale)\",\n        caption = \"Source: Enos (2014) via primer.data\"\n      ) +\n      theme_minimal()",
+  answer(NULL, correct = TRUE),
+  allow_retry = FALSE,
+  incorrect = NULL,
+  rows = 12)
+```
+
+###
+
+The jitter plot shows all 115 individual scores. There is substantial within-group variation — the groups overlap a lot — but the blue mean points confirm the small positive shift for the Treated group. With only 115 commuters, the effect is real but modest.
+
+### Exercise 5
+
+Describe the key components of Preceptor Tables in general, without worrying about this specific problem. Use words like "units," "outcomes," and "covariates."
+
+```{r wisdom-5}
 question_text(NULL,
   message = "The rows of the Preceptor Table are the units. The outcome is at least one of the columns. If the problem is causal, there will be at least two (potential) outcome columns. The other columns are covariates. If the problem is causal, at least one of the covariates will be considered a treatment.",
   answer(NULL, correct = TRUE),
@@ -397,11 +414,11 @@ question_text(NULL,
 
 This problem is causal, so one of the covariates is a treatment. In our problem, the treatment is `treatment` --- exposure (or not) to Spanish-speakers. There is a potential outcome for each of the two possible values of the treatment: one for Treated and one for Control.
 
-### Exercise 5
+### Exercise 6
 
 What are the units for this problem?
 
-```{r wisdom-5}
+```{r wisdom-6}
 question_text(NULL,
   message = "Each row represents one Boston-area Metra commuter during the two weeks of Enos's experiment in 2012. There are 115 such commuters in the data.",
   answer(NULL, correct = TRUE),
@@ -414,11 +431,11 @@ question_text(NULL,
 
 Specifying the Preceptor Table forces us to think clearly about the units and outcomes implied by the question. No data science project follows a single direction. We always backtrack. There is always dialogue.
 
-### Exercise 6
+### Exercise 7
 
 What is the outcome variable for this problem?
 
-```{r wisdom-6}
+```{r wisdom-7}
 question_text(NULL,
   message = "Keep track of two 'outcome' variables: the one in our Preceptor Table and the one in our data. In this case, both are `att_end` --- each commuter's immigration attitude after the experimental window, measured on an integer scale from 3 to 15, where higher values indicate stronger opposition to immigration.",
   answer(NULL, correct = TRUE),
@@ -431,11 +448,11 @@ question_text(NULL,
 
 The outcome variable that we really care about is often not the outcome variable which our data includes. This compromise --- working with what we have rather than what we really want --- is a part of most data science work in the real world.
 
-### Exercise 7
+### Exercise 8
 
 What is a covariate which you think might be useful for this problem, regardless of whether or not it might be included in the data?
 
-```{r wisdom-7}
+```{r wisdom-8}
 question_text(NULL,
   message = "Prior political ideology is a candidate --- we might expect the Spanish-speaker exposure to affect conservatives and liberals differently. Age, education, and frequency of train use are other candidates.",
   answer(NULL, correct = TRUE),
@@ -448,11 +465,11 @@ question_text(NULL,
 
 The term "covariates" is used in at least three ways in data science. First, it is all the variables which might be useful, regardless of whether or not we have the data. Second, it is all the variables for which we have data. Third, it is the set of variables in the data which we end up using in the model.
 
-### Exercise 8
+### Exercise 9
 
 What are the treatments for this problem?
 
-```{r wisdom-8}
+```{r wisdom-9}
 question_text(NULL,
   message = "There is one treatment: `treatment`, which takes the values 'Treated' (the commuter was on a platform where Spanish-speaking confederates appeared) or 'Control' (no exposure). The treatment is binary, so each commuter has two potential outcomes --- the attitude they would report if Treated and the attitude they would report if Control.",
   answer(NULL, correct = TRUE),
@@ -465,11 +482,11 @@ question_text(NULL,
 
 Remember that a treatment is just another covariate which, for the purposes of this specific problem, we are assuming can be manipulated --- thereby creating two or more different potential outcomes for each unit.
 
-### Exercise 9
+### Exercise 10
 
 What moment in time does the Preceptor Table refer to?
 
-```{r wisdom-9}
+```{r wisdom-10}
 question_text(NULL,
   message = "The two-week window of Enos's experiment in January 2012. Each commuter is measured once, at the end of that window, after two weeks of potential exposure or non-exposure.",
   answer(NULL, correct = TRUE),
@@ -482,11 +499,11 @@ question_text(NULL,
 
 A Preceptor Table can never really refer to an exact instant in time since nothing is instantaneous in this fallen world.
 
-### Exercise 10
+### Exercise 11
 
 Describe in words the Preceptor Table for this problem.
 
-```{r wisdom-10}
+```{r wisdom-11}
 question_text(NULL,
   message = "The Preceptor Table has four columns: one identifying each commuter, two potential-outcome columns (`Attitude if Exposed` and `Attitude if Not Exposed`), and one treatment column (`Spanish Exposure`). Each row represents one Boston-area commuter during the January 2012 experiment window.",
   answer(NULL, correct = TRUE),
@@ -590,7 +607,7 @@ cat(
 )
 ```
 
-### Exercise 11
+### Exercise 12
 
 The `trains` tibble is small (115 rows) and clean enough that no data-prep pipeline is needed --- we can fit directly on the full tibble. In `analysis.qmd`, add a code chunk that just runs `glimpse(trains)`. Render the QMD with `Cmd/Ctrl + Shift + K`. At the R prompt, run:
 
@@ -600,7 +617,7 @@ show_file("analysis.qmd", chunk = "Last")
 
 CP/CR.
 
-```{r wisdom-11}
+```{r wisdom-12}
 question_text(NULL,
   message = "    > show_file(\"analysis.qmd\", chunk = \"Last\")\n    ```{r}\n    glimpse(trains)\n    ```",
   answer(NULL, correct = TRUE),
@@ -613,11 +630,11 @@ question_text(NULL,
 
 You can never look at the data too much. --- Mark Engerman
 
-### Exercise 12
+### Exercise 13
 
 Write the first two sentences of the summary paragraph. The first sentence is a general statement about the overall topic, mentioning the general class of outcome and at least one covariate. The second sentence introduces the data source and the specific question.
 
-```{r wisdom-12}
+```{r wisdom-13}
 question_text(NULL,
   message = "Attitudes toward immigration respond to brief encounters with speakers of another language, at least in the short run. Using data from Ryan Enos's January 2012 randomized experiment on Boston-area Metra platforms (115 commuters, randomly assigned to exposure or non-exposure to Spanish-speaking confederates for two weeks), we estimate the average causal effect of that exposure on anti-immigration attitudes.",
   answer(NULL, correct = TRUE),
@@ -949,11 +966,11 @@ pop_gt_html <- gt::gt(pop_tibble, id = "population_tbl") |>
     locations = gt::cells_column_spanners(spanners = "outcome_span")
   ) |>
   gt::text_transform(
-    locations = gt::cells_body(columns = `Attitude if Not Exposed`, rows = c(8, 11)),
+    locations = gt::cells_body(columns = `Attitude if Not Exposed`, rows = c(7, 10)),
     fn        = function(x) hatch_p(x)
   ) |>
   gt::text_transform(
-    locations = gt::cells_body(columns = `Attitude if Exposed`, rows = 9),
+    locations = gt::cells_body(columns = `Attitude if Exposed`, rows = 8),
     fn        = function(x) hatch_p(x)
   ) |>
   gt::tab_footnote(footnote = pop_title_footnote,
@@ -965,7 +982,7 @@ pop_gt_html <- gt::gt(pop_tibble, id = "population_tbl") |>
   gt::tab_footnote(footnote = pop_treatment_footnote,
                    locations = gt::cells_column_spanners(spanners = "treatment_span")) |>
   gt::tab_footnote(footnote = pop_effect_footnote,
-                   locations = gt::cells_body(columns = `Commuter`, rows = 9)) |>
+                   locations = gt::cells_body(columns = `Commuter`, rows = 8)) |>
   gt::opt_css(
     css = "
       #population_tbl .gt_footnote {
@@ -1229,11 +1246,11 @@ pop_gt_html_c <- gt::gt(pop_tibble_c, id = "population_tbl_courage") |>
     locations = gt::cells_column_spanners(spanners = "outcome_span")
   ) |>
   gt::text_transform(
-    locations = gt::cells_body(columns = `Attitude if Not Exposed`, rows = c(8, 11)),
+    locations = gt::cells_body(columns = `Attitude if Not Exposed`, rows = c(7, 10)),
     fn        = function(x) hatch_c(x)
   ) |>
   gt::text_transform(
-    locations = gt::cells_body(columns = `Attitude if Exposed`, rows = 9),
+    locations = gt::cells_body(columns = `Attitude if Exposed`, rows = 8),
     fn        = function(x) hatch_c(x)
   ) |>
   gt::tab_footnote(footnote = pop_title_footnote_c,
@@ -1494,34 +1511,21 @@ tidy(fit_att, conf.int = TRUE)
 
 ### Exercise 11
 
-Here is a nicer-looking version of that parameter table, rendered with **[knitr](https://yihui.org/knitr/)**:
-
-```{r}
-#| echo: false
-library(knitr)
-
-tidy(fit_att, conf.int = TRUE) |>
-  select(term, estimate, conf.low, conf.high) |>
-  mutate(across(where(is.numeric), \(x) signif(x, 3))) |>
-  kable(
-    caption = "Estimates and 95% Confidence Intervals for Parameters.  Source: Enos (2014) via primer.data"
-  )
-```
-
-Read the table carefully, then continue.
+Create a new code chunk in your QMD. Ask AI to make a nice-looking table from the tibble returned by `tidy(fit_att, conf.int = TRUE)`. Include only the `term`, `estimate`, `conf.low`, and `conf.high` columns, rounded to three significant figures. You may use **[knitr](https://yihui.org/knitr/)**, **[gt](https://gt.rstudio.com/)**, or any other table package — add it to your setup chunk if needed. Include a title or caption naming the data source. Render with `Cmd/Ctrl + Shift + K`. At the R prompt, run `show_file("analysis.qmd", chunk = "Last")`. CP/CR.
 
 ```{r courage-11}
 question_text(NULL,
-  message = "(No command to run --- this exercise is a pause to make sure you have read the table above.)",
+  message = "    > show_file(\"analysis.qmd\", chunk = \"Last\")\n    ```{r}\n    library(knitr)\n    tidy(fit_att, conf.int = TRUE) |>\n      select(term, estimate, conf.low, conf.high) |>\n      mutate(across(where(is.numeric), \\(x) signif(x, 3))) |>\n      kable(\n        caption = \"Parameter Estimates and 95% CIs. Source: Enos (2014) via primer.data\"\n      )\n    ```",
   answer(NULL, correct = TRUE),
-  allow_retry = FALSE,
+  allow_retry = TRUE,
+  try_again_button = "Edit Answer",
   incorrect = NULL,
-  rows = 3)
+  rows = 8)
 ```
 
 ###
 
-We care about using our model to estimate quantities of interest, not about the parameters themselves.
+At the very least, your table should include a title and a caption with the data source. We care about using our model to estimate quantities of interest, not about the parameters themselves.
 
 ### Exercise 12
 
@@ -1568,7 +1572,7 @@ fit_att |>
 
 $$\text{att\_end} = 8.45 + 1.55 \cdot \text{treatmentTreated} + \epsilon$$
 
-with $\epsilon \sim N(0, 7.72)$.
+with $\epsilon \sim N(0, 7.72)$ (a residual SD of about 2.78 points on the 3–15 scale).
 
 ###
 
