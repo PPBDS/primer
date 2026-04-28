@@ -96,9 +96,13 @@ GitHub allows 60 hours of free Codespaces usage each month, and probably more if
 
 A codespace is your responsibility in the same way that your laptop is your responsibility.  An unused codespace will be deleted after 30 days.
 
-There are three common approaches to closely codespaces.
+There are three common approaches to close codespaces.
 
-First, just leave the codespace along and it will close on its own. GitHub monitors codespaces. By default, it will close your codespace if it is not being used for 30 minutes, although I recommend changing that default to 15 minutes.
+<!-- AR: Should we highlight that closing the browser viewing the Codespace does not stop the codespace from running? I feel like this is potentially confusing. -->
+
+First, just leave the codespace alone and it will close on its own. GitHub monitors codespaces. By default, it will close your codespace if it is not being used for 30 minutes, although I recommend changing that default to 15 minutes.
+
+<!-- AR: in Firefox on Mac, 'Cmd + Shift + P' opens a private window and doesn't trigger Command Palette. Add that Command Palette can be accesses by typing '>' into the Command Palette to search and run commands? -->
 
 Second, type `Cmd + Shift + P` (on Mac) or `Ctrl + Shift + P` (on Windows/Linux) to bring up the Command Palette. (Throughout this book, shortcuts are written like `Cmd/Ctrl + Shift + P`, meaning the `command` key on Mac or the `control` key on Windows/Linux.) The Command Palette provides access to all of the VS Code commands. Type `stop` into the search bar. 
 
@@ -230,6 +234,8 @@ knitr::include_graphics("getting-started/images/cs-11.png")
 Read and follow the instructions. At the end of the tutorial, you should download your answers. 
 
 ### Stopping and deleting a codespace {.unnumbered}
+
+<!-- AR: Some of this material is repeated from "Closing a Codespace Section" -->
 
 You can see all your codespaces [here](https://github.com/codespaces). Although GitHub provides you with lots of free hours, "lots" is not endless. It is your responsibility to keep track of your usage. GitHub helps by stopping any codespace which has been inactive for 30 minutes. (You can change this default if you like by going [here](https://github.com/settings/codespaces) and updating Default Idle Timeout for your Github account. I use 15 minutes.)
 
