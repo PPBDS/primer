@@ -233,12 +233,9 @@ Read and follow the instructions. At the end of the tutorial, you should downloa
 
 You can see all your codespaces [here](https://github.com/codespaces). Although GitHub provides you with lots of free hours, "lots" is not endless. It is your responsibility to keep track of your usage. GitHub helps by stopping any codespace which has been inactive for 30 minutes. (You can change this default if you like by going [here](https://github.com/settings/codespaces) and updating Default Idle Timeout for your Github account. I use 15 minutes.)
 
-You can stop a codespace by hand by clicking on the blue codespace button in the lower lefthand corner, thereby bring up a variety of possible commads. Type "stop" in the search bar and one of the options will be "Stop Current Codespace." Select it.
-```{r}
-knitr::include_graphics("getting-started/images/stopCodespace.png")
-```
+Use 'Cmd + Shift + P' to open the Command Palette and type "stop" in the search bar. Select "Codespaces: Stop Current Codespace" to stop running the Codespace 
 
-This codespace will be stopped. However, you can restart it at anytime by going to your [codespaces page](https://github.com/codespaces):
+You can restart the Codespace anytime by going to your [codespaces page](https://github.com/codespaces):
 
 ```{r}
 knitr::include_graphics("getting-started/images/cs-12.png")
