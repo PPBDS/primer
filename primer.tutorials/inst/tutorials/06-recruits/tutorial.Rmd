@@ -1,8 +1,8 @@
 ---
-title: NHANES
+title: Recruits
 author: David Kane
 tutorial:
-  id: 06-nhanes
+  id: 06-recruits
 output:
   learnr::tutorial:
     progressive: yes
@@ -18,7 +18,7 @@ library(gt)
 
 library(tidyverse)
 library(tidymodels)
-library(primer.data)
+library(primer.tutorials)
 library(broom)
 library(marginaleffects)
 
@@ -26,14 +26,9 @@ knitr::opts_chunk$set(echo = FALSE)
 options(tutorial.exercise.timelimit = 600,
         tutorial.storage = "local")
 
-x <- nhanes |>
-  filter(age >= 18 & age <= 27) |>
-  select(height, sex) |>
-  drop_na()
-
 fit_height <- linear_reg() |>
   set_engine("lm") |>
-  fit(height ~ sex, data = x)
+  fit(height ~ sex, data = recruits)
 ```
 
 ```{r copy-code-chunk, child = system.file("child_documents/copy_button.Rmd", package = "tutorial.helpers")}
@@ -71,9 +66,9 @@ The best way to (try to) ensure that students remember these concepts more than 
 
 ### Exercise 2
 
-You should be working inside a GitHub repo named `nhanes`, opened in a Codespace from the [`PPBDS/codespace-starter`](https://github.com/PPBDS/codespace-starter) template. If you are not there yet, please create that repo and open it in a Codespace now --- see the [package README](https://github.com/PPBDS/primer/tree/main/primer.tutorials#working-environments-and-repo-setup) if you need setup instructions or are working locally instead.
+You should be working inside a GitHub repo named `recruits`, opened in a Codespace from the [`PPBDS/codespace-starter`](https://github.com/PPBDS/codespace-starter) template. If you are not there yet, please create that repo and open it in a Codespace now --- see the [package README](https://github.com/PPBDS/primer/tree/main/primer.tutorials#working-environments-and-repo-setup) if you need setup instructions or are working locally instead.
 
-Once you're inside the `nhanes` repo, create a new Quarto document titled `"NHANES"` with yourself as the author, render it, and save it as `analysis.qmd`.
+Once you're inside the `recruits` repo, create a new Quarto document titled `"Recruits"` with yourself as the author, render it, and save it as `analysis.qmd`.
 
 Create a `.gitignore` file with `analysis_files` on the first line followed by a blank line. Save and push.
 
@@ -104,7 +99,7 @@ Professionals keep their data science work in the cloud because laptops fail. Us
 
 ### Exercise 3
 
-In your QMD, put `library(tidyverse)` and `library(primer.data)` in a new code chunk. Render the file.
+In your QMD, put `library(tidyverse)` and `library(primer.tutorials)` in a new code chunk. Render the file.
 
 Notice that the file does not look good because the code is visible and there are messages cluttering the output. To fix this, add `#| message: false` to this setup chunk to remove the messages. Also add the following to the YAML header, between the `---` delimiters, to hide the code itself:
 
@@ -123,7 +118,7 @@ CP/CR.
 
 ```{r introduction-3}
 question_text(NULL,
-  message = "    > show_file(\"analysis.qmd\", chunk = \"Last\")\n    ```{r}\n    #| message: false\n    library(tidyverse)\n    library(primer.data)\n    ```",
+  message = "    > show_file(\"analysis.qmd\", chunk = \"Last\")\n    ```{r}\n    #| message: false\n    library(tidyverse)\n    library(primer.tutorials)\n    ```",
   answer(NULL, correct = TRUE),
   allow_retry = FALSE,
   incorrect = NULL,
@@ -155,13 +150,13 @@ Two worlds matter in data science: *QMD World* (the file where your code lives) 
 
 ### Exercise 5
 
-Place your cursor in the QMD file on the `library(primer.data)` line. Use `Cmd/Ctrl + Enter` to execute that line.
+Place your cursor in the QMD file on the `library(primer.tutorials)` line. Use `Cmd/Ctrl + Enter` to execute that line.
 
 CP/CR.
 
 ```{r introduction-5}
 question_text(NULL,
-  message = "    > library(primer.data)\n    >",
+  message = "    > library(primer.tutorials)\n    >",
   answer(NULL, correct = TRUE),
   allow_retry = FALSE,
   incorrect = NULL,
@@ -170,15 +165,15 @@ question_text(NULL,
 
 ###
 
-A version of the data from the National Health and Nutrition Examination Survey is available in the `nhanes` tibble from the **[primer.data](https://github.com/PPBDS/primer.data)** package. NHANES is an ongoing survey conducted by the Centers for Disease Control and Prevention.
+The teaching dataset for this tutorial is `recruits`, available in the **[primer.tutorials](https://github.com/PPBDS/primer.tutorials)** package once that package is loaded. It is a 50-row sample drawn from the National Health and Nutrition Examination Survey (NHANES, an ongoing survey conducted by the Centers for Disease Control and Prevention), restricted to ages 18--27 and to the columns relevant for our question.
 
 ### Exercise 6
 
-At the R prompt, type `?nhanes` and paste the Description below.
+At the R prompt, type `?recruits` and paste the Description below.
 
 ```{r introduction-6}
 question_text(NULL,
-  message = "The National Health and Nutrition Examination Survey (NHANES) is a research survey distributed to adults and children across the United States to examine health and nutritional status nationwide. It is unique in that it conducts both interviews and physical examination to produce their data. The survey is run by the National Center for Health Statistics (NCHS), a part of the Centers for Disease Control and Prevention.",
+  message = "A 50-row sample drawn from the National Health and Nutrition Examination Survey (NHANES, via primer.data::nhanes) for the 06-recruits tutorial. Restricted to ages 18--27 and to the columns relevant for the tutorial's question. The split between sexes (40 male, 10 female) is deliberately uneven so the two group means have visibly different standard errors --- a feature the tutorial's Temperance section asks students to notice and explain.",
   answer(NULL, correct = TRUE),
   allow_retry = FALSE,
   incorrect = NULL,
@@ -187,11 +182,11 @@ question_text(NULL,
 
 ###
 
-Note that NHANES intentionally oversamples some demographic groups --- older adults, racial and ethnic minorities --- so that each subgroup has enough observations to be studied on its own. The raw tibble is not representative of the general population; the survey ships sampling weights to correct for this. We will not use the weights in this tutorial, which we should flag as a concern later in Justice.
+Note that NHANES intentionally oversamples some demographic groups --- older adults, racial and ethnic minorities --- so that each subgroup has enough observations to be studied on its own. The raw NHANES survey is not representative of the general population; the survey ships sampling weights to correct for this. Our `recruits` sample inherits these issues and amplifies them: we drew 40 men and 10 women rather than matching their representation in NHANES. We should flag both as concerns later in Justice.
 
 ### Exercise 7
 
-Height of young adults is the broad topic of this tutorial. Given that topic, which variable in `nhanes` should we use as our outcome variable?
+Height of young adults is the broad topic of this tutorial. Given that topic, which variable in `recruits` should we use as our outcome variable?
 
 ```{r introduction-7}
 question_text(NULL,
@@ -210,24 +205,22 @@ We will use `height` as our outcome variable.
 #| echo: false
 #| message: false
 #| warning: false
-nhanes |>
-  filter(age >= 18 & age <= 27) |>
-  drop_na(height) |>
+recruits |>
   ggplot(aes(x = height)) +
   geom_density(fill = "grey70", color = "grey30") +
   labs(
-    title = "Height of Young Adults",
+    title = "Height in Our 50-Recruit Sample",
     subtitle = "A broad, asymmetric peak with a heavy left shoulder --- a hint that sex matters for height",
     x = "Height (cm)",
     y = "Density",
-    caption = "Source: NHANES via primer.data"
+    caption = "Source: 50-row sample from NHANES via primer.tutorials::recruits"
   ) +
   theme_minimal()
 ```
 
 ### Exercise 8
 
-Which variable in `nhanes` do you think might have an important connection to `height`?
+Which variable in `recruits` do you think might have an important connection to `height`?
 
 ```{r introduction-8}
 question_text(NULL,
@@ -325,11 +318,11 @@ The Preceptor Table does not include all the covariates which you will eventuall
 
 ### Exercise 3
 
-Before we worry about defining the Preceptor Table for this problem, let's look at our data more carefully. Ask AI to write R code that plots the distribution of `height` in the `nhanes` tibble, filtered to young adults aged 18 through 27 (the USMC recruit range), using a density plot with a descriptive title, subtitle, axis labels, and caption. Paste the code below and run it.
+Before we worry about defining the Preceptor Table for this problem, let's look at our data more carefully. Ask AI to write R code that plots the distribution of `height` in the `recruits` tibble, using a density plot with a descriptive title, subtitle, axis labels, and caption. Paste the code below and run it.
 
 ```{r wisdom-3}
 question_text(NULL,
-  message = "    nhanes |>\n      filter(age >= 18 & age <= 27) |>\n      drop_na(height) |>\n      ggplot(aes(x = height)) +\n      geom_density(fill = \"grey70\", color = \"grey30\") +\n      labs(\n        title = \"Height of Young Adults\",\n        subtitle = \"A heavy left shoulder hints that sex matters\",\n        x = \"Height (cm)\", y = \"Density\",\n        caption = \"Source: NHANES via primer.data\"\n      ) +\n      theme_minimal()",
+  message = "    recruits |>\n      ggplot(aes(x = height)) +\n      geom_density(fill = \"grey70\", color = \"grey30\") +\n      labs(\n        title = \"Height in Our 50-Recruit Sample\",\n        subtitle = \"A heavy left shoulder hints that sex matters\",\n        x = \"Height (cm)\", y = \"Density\",\n        caption = \"Source: 50-row sample from NHANES via primer.tutorials::recruits\"\n      ) +\n      theme_minimal()",
   answer(NULL, correct = TRUE),
   allow_retry = FALSE,
   incorrect = NULL,
@@ -342,30 +335,28 @@ question_text(NULL,
 #| echo: false
 #| message: false
 #| warning: false
-nhanes |>
-  filter(age >= 18 & age <= 27) |>
-  drop_na(height) |>
+recruits |>
   ggplot(aes(x = height)) +
   geom_density(fill = "grey70", color = "grey30") +
   labs(
-    title = "Height of Young Adults",
+    title = "Height in Our 50-Recruit Sample",
     subtitle = "A heavy left shoulder hints that sex matters",
     x = "Height (cm)",
     y = "Density",
-    caption = "Source: NHANES via primer.data"
+    caption = "Source: 50-row sample from NHANES via primer.tutorials::recruits"
   ) +
   theme_minimal()
 ```
 
-The distribution of `height` among young adults has an uneven peak with a noticeable shoulder on the low end --- a hint that `sex` matters for our predictions.
+The distribution of `height` in our sample is uneven with a noticeable shoulder on the low end --- a hint that `sex` matters for our predictions. With only 50 rows the curve is rougher than it would be on the full NHANES, but the qualitative pattern survives.
 
 ### Exercise 4
 
-Now look at how `height` varies with `sex`. Ask AI to write R code that plots `height` by `sex` as overlapping density curves (same age filter), with a descriptive title, subtitle, axis labels, and caption. Paste the code below and run it.
+Now look at how `height` varies with `sex`. Ask AI to write R code that plots `height` by `sex` as overlapping density curves, with a descriptive title, subtitle, axis labels, and caption. Paste the code below and run it.
 
 ```{r wisdom-4}
 question_text(NULL,
-  message = "    nhanes |>\n      filter(age >= 18 & age <= 27) |>\n      drop_na(height, sex) |>\n      ggplot(aes(x = height, fill = sex)) +\n      geom_density(alpha = 0.5) +\n      labs(\n        title = \"Height by Sex, Young Adults\",\n        subtitle = \"Male and female distributions are offset by about 15 cm\",\n        x = \"Height (cm)\", y = \"Density\", fill = \"Sex\",\n        caption = \"Source: NHANES via primer.data\"\n      ) +\n      theme_minimal()",
+  message = "    recruits |>\n      ggplot(aes(x = height, fill = sex)) +\n      geom_density(alpha = 0.5) +\n      labs(\n        title = \"Height by Sex in Our 50-Recruit Sample\",\n        subtitle = \"Male and female distributions are offset by about 9 cm\",\n        x = \"Height (cm)\", y = \"Density\", fill = \"Sex\",\n        caption = \"Source: 50-row sample from NHANES via primer.tutorials::recruits\"\n      ) +\n      theme_minimal()",
   answer(NULL, correct = TRUE),
   allow_retry = FALSE,
   incorrect = NULL,
@@ -378,23 +369,21 @@ question_text(NULL,
 #| echo: false
 #| message: false
 #| warning: false
-nhanes |>
-  filter(age >= 18 & age <= 27) |>
-  drop_na(height, sex) |>
+recruits |>
   ggplot(aes(x = height, fill = sex)) +
   geom_density(alpha = 0.5) +
   labs(
-    title = "Height by Sex, Young Adults",
-    subtitle = "Male and female distributions are offset by about 15 cm",
+    title = "Height by Sex in Our 50-Recruit Sample",
+    subtitle = "Male and female distributions are offset by about 9 cm",
     x = "Height (cm)",
     y = "Density",
     fill = "Sex",
-    caption = "Source: NHANES via primer.data"
+    caption = "Source: 50-row sample from NHANES via primer.tutorials::recruits"
   ) +
   theme_minimal()
 ```
 
-The two distributions are clearly offset --- male young adults are on average taller than female young adults by roughly 15 centimeters. That systematic difference is what our model will try to capture.
+The two distributions are clearly offset --- male recruits are on average taller than female recruits by roughly 9 centimeters in this sample. That systematic difference is what our model will try to capture. Note also how much rougher the female density looks: there are only 10 female rows in `recruits` against 40 male rows, so the female curve is built from far fewer points.
 
 ### Exercise 5
 
@@ -470,7 +459,7 @@ What are the treatments, if any, for this problem?
 
 ```{r wisdom-9}
 question_text(NULL,
-  message = "There are no treatments in this problem because we are building a predictive model. Nothing in `nhanes` can be manipulated --- we cannot assign a recruit a different sex or a different height. Predictive models have covariates, not treatments.",
+  message = "There are no treatments in this problem because we are building a predictive model. Nothing in `recruits` can be manipulated --- we cannot assign a recruit a different sex or a different height. Predictive models have covariates, not treatments.",
   answer(NULL, correct = TRUE),
   allow_retry = FALSE,
   incorrect = NULL,
@@ -587,49 +576,32 @@ cat(
 
 ### Exercise 12
 
-Before we can fit a model, we need a cleaned tibble. Ask AI to write R code that creates a tibble called `x` by taking `nhanes`, filtering to ages 18 through 27 (the USMC recruit range), keeping only `height` and `sex`, and dropping rows with missing values. Paste the code below and run it.
-
-```{r wisdom-12}
-question_text(NULL,
-  message = "    x <- nhanes |>\n      filter(age >= 18 & age <= 27) |>\n      select(height, sex) |>\n      drop_na()",
-  answer(NULL, correct = TRUE),
-  allow_retry = FALSE,
-  incorrect = NULL,
-  rows = 10)
-```
-
-###
-
-`filter(age >= 18 & age <= 27)` restricts the sample to the demographic range of new USMC recruits. `drop_na()` silently removes rows that are missing `height` or `sex` --- a simplification Justice will revisit.
-
-### Exercise 13
-
-In `analysis.qmd`, add a new code chunk and copy/paste the pipeline above. Render the QMD with `Cmd/Ctrl + Shift + K`. Then, at the R prompt, run:
+Because `recruits` is already prepared (filtered to ages 18--27, restricted to `height`, `sex`, and `age`, and missing rows dropped), there is no data-prep code to write. Take a moment to verify the breakdown that matters most for what comes next. At the R prompt, run:
 
 ```
-show_file("analysis.qmd", chunk = "Last")
+recruits |> count(sex)
 ```
 
 CP/CR.
 
-```{r wisdom-13}
+```{r wisdom-12}
 question_text(NULL,
-  message = "    > show_file(\"analysis.qmd\", chunk = \"Last\")\n    ```{r}\n    x <- nhanes |>\n      filter(age >= 18 & age <= 27) |>\n      select(height, sex) |>\n      drop_na()\n    ```",
+  message = "    > recruits |> count(sex)\n    # A tibble: 2 × 2\n      sex        n\n      <chr>  <int>\n    1 Female    10\n    2 Male      40",
   answer(NULL, correct = TRUE),
   allow_retry = FALSE,
   incorrect = NULL,
-  rows = 8)
+  rows = 6)
 ```
 
 ###
 
-You can never look at the data too much. --- Mark Engerman
+The split between sexes is deliberate: 40 male rows and 10 female. We did not choose this to reflect the male/female proportions among real USMC recruits, but to make a particular feature of the model visible later --- when we estimate the average height for each group, the larger group will give a tighter estimate (smaller confidence interval) than the smaller group. You can never look at the data too much. --- Mark Engerman
 
-### Exercise 14
+### Exercise 13
 
 We will be creating a summary paragraph over the course of this tutorial. Write the first two sentences. The first sentence is a general statement about the overall topic, mentioning the general class of outcome and at least one covariate. The second sentence introduces the data source and the specific question --- when/where gathered, how many observations, who collected it.
 
-```{r wisdom-14}
+```{r wisdom-13}
 question_text(NULL,
   message = "People vary in height, and that variation is strongly patterned by sex. Using data from the National Health and Nutrition Examination Survey (NHANES) conducted by the Centers for Disease Control and Prevention, we seek to estimate the average height of male and female USMC recruits for the coming year.",
   answer(NULL, correct = TRUE),
@@ -1014,7 +986,7 @@ We do not use the data directly to estimate missing values in the Preceptor Tabl
 
 ```{r justice-9}
 question_text(NULL,
-  message = "NHANES is a voluntary survey. People who agree to participate (and who show up for the Mobile Examination Center visit) are not a random sample of US young adults --- they skew toward people with time, transportation, and some trust in government research. If NHANES participants differ systematically in height from non-participants (say, because willingness to travel to a MEC correlates with health and income, which correlate with height), then the data's heights are a biased estimate of the population's heights.",
+  message = "NHANES is a voluntary survey. People who agree to participate (and who show up for the Mobile Examination Center visit) are not a random sample of US young adults --- they skew toward people with time, transportation, and some trust in government research. On top of that, the `recruits` tibble we are fitting on is itself a non-random subsample of NHANES: 40 male rows and 10 female rows, deliberately unbalanced. Both layers --- the survey participation and our 40/10 choice --- mean the data we model is not a random sample of US young adults.",
   answer(NULL, correct = TRUE),
   allow_retry = FALSE,
   incorrect = NULL,
@@ -1236,7 +1208,7 @@ The **[tidymodels](https://www.tidymodels.org/)** framework is the most popular 
 
 ### Exercise 3
 
-Continue the pipe to `fit(height ~ sex, data = x)`.
+Continue the pipe to `fit(height ~ sex, data = recruits)`.
 
 ```{r courage-3, exercise = TRUE}
 
@@ -1251,7 +1223,7 @@ Continue the pipe to `fit(height ~ sex, data = x)`.
 
 ```{r courage-3-test, include = FALSE}
 linear_reg(engine = "lm") |>
-  fit(height ~ sex, data = x)
+  fit(height ~ sex, data = recruits)
 ```
 
 ###
@@ -1275,7 +1247,7 @@ Continue the pipe with `tidy(conf.int = TRUE)`.
 
 ```{r courage-4-test, include = FALSE}
 linear_reg(engine = "lm") |>
-  fit(height ~ sex, data = x) |>
+  fit(height ~ sex, data = recruits) |>
   tidy(conf.int = TRUE)
 ```
 
@@ -1310,14 +1282,14 @@ We need `fit_height` to exist in R World so that later `marginaleffects` calls c
 ```
 fit_height <- linear_reg() |>
   set_engine("lm") |>
-  fit(height ~ sex, data = x)
+  fit(height ~ sex, data = recruits)
 ```
 
 CP/CR.
 
 ```{r courage-6}
 question_text(NULL,
-  message = "    > fit_height <- linear_reg() |>\n    +   set_engine(\"lm\") |>\n    +   fit(height ~ sex, data = x)\n    >",
+  message = "    > fit_height <- linear_reg() |>\n    +   set_engine(\"lm\") |>\n    +   fit(height ~ sex, data = recruits)\n    >",
   answer(NULL, correct = TRUE),
   allow_retry = FALSE,
   incorrect = NULL,
@@ -1332,9 +1304,9 @@ Just because something exists in the tutorial (or in the QMD) does not mean that
 
 With the parameters estimated, we can write the fitted model as a concrete formula:
 
-$$\hat{\text{height}} = 163 + 13.6 \cdot \text{sexMale}$$
+$$\hat{\text{height}} = 165.9 + 8.9 \cdot \text{sexMale}$$
 
-Note the differences from the abstract form shown in the preamble. First, we have replaced the parameters $\beta_0$ and $\beta_1$ with our best estimates (rounded to three significant figures). Second, we have dropped the error term because this formula generates our estimated outcome, not a description of its randomness. Third, the left-hand side is $\widehat{\text{height}}$ instead of $\text{height}$ because this formula generates our estimated (or predicted) height --- a hat indicates an estimated value.
+Note the differences from the abstract form shown in the preamble. First, we have replaced the parameters $\beta_0$ and $\beta_1$ with our best estimates (rounded to one decimal place, fine enough that the estimates and their confidence-interval bounds remain visibly distinct). Second, we have dropped the error term because this formula generates our estimated outcome, not a description of its randomness. Third, the left-hand side is $\widehat{\text{height}}$ instead of $\text{height}$ because this formula generates our estimated (or predicted) height --- a hat indicates an estimated value.
 
 **This is our data generating mechanism.**
 
@@ -1360,7 +1332,7 @@ Create a new code chunk in your QMD. Add the chunk option `#| cache: true`. Copy
 ```
 fit_height <- linear_reg() |>
   set_engine("lm") |>
-  fit(height ~ sex, data = x)
+  fit(height ~ sex, data = recruits)
 ```
 
 `Cmd/Ctrl + Shift + K`. Rendering might take a moment the first time as Quarto caches the fit. At the R prompt, run:
@@ -1373,7 +1345,7 @@ CP/CR.
 
 ```{r courage-8}
 question_text(NULL,
-  message = "    > show_file(\"analysis.qmd\", chunk = \"Last\")\n    ```{r}\n    #| cache: true\n    fit_height <- linear_reg() |>\n      set_engine(\"lm\") |>\n      fit(height ~ sex, data = x)\n    ```",
+  message = "    > show_file(\"analysis.qmd\", chunk = \"Last\")\n    ```{r}\n    #| cache: true\n    fit_height <- linear_reg() |>\n      set_engine(\"lm\") |>\n      fit(height ~ sex, data = recruits)\n    ```",
   answer(NULL, correct = TRUE),
   allow_retry = FALSE,
   incorrect = NULL,
@@ -1439,13 +1411,13 @@ library(knitr)
 
 tidy(fit_height, conf.int = TRUE) |>
   select(term, estimate, conf.low, conf.high) |>
-  mutate(across(where(is.numeric), \(x) signif(x, 3))) |>
+  mutate(across(where(is.numeric), \(x) round(x, 1))) |>
   kable(
-    caption = "Estimates and 95% Confidence Intervals for Parameters.  Source: NHANES via primer.data"
+    caption = "Estimates and 95% Confidence Intervals for Parameters.  Source: 50-row sample from NHANES via primer.tutorials::recruits"
   )
 ```
 
-Rounding to three significant figures keeps the displayed values consistent with the fitted DGM formula from Exercise 7. At the very least, a table like this should include a title and a caption with the data source.
+Rounding to one decimal place keeps the displayed values consistent with the fitted DGM formula from Exercise 7 and is fine enough that the estimate and the confidence-interval bounds are visibly distinguishable in every row. A blanket "three significant figures" would risk collapsing values close to one another --- like an intercept of 165.9 and its upper bound 170.0 --- into ambiguous displays. You need rounding finer than the standard error to keep adjacent values apart. At the very least, a table like this should include a title and a caption with the data source.
 
 Read the table carefully, then continue.
 
@@ -1472,7 +1444,7 @@ Recall the beginning of our version of the summary:
 
 ```{r courage-12}
 question_text(NULL,
-  message = "We model height as a linear function of sex.",
+  message = "We model height as a normally distributed variable which is a linear function of sex.",
   answer(NULL, correct = TRUE),
   allow_retry = FALSE,
   incorrect = NULL,
@@ -1488,14 +1460,14 @@ Read our answer. Do not copy/paste exactly. Add your two sentences to the summar
 
 Courage provides the data generating mechanism. We can express the DGM in four ways:
 
-**In words:** We describe height as a linear function of sex.
+**In words:** We model height as a normally distributed variable which is a linear function of sex.
 
 **In R code:**
 
 ```r
 fit_height <- linear_reg() |>
   set_engine("lm") |>
-  fit(height ~ sex, data = x)
+  fit(height ~ sex, data = recruits)
 ```
 
 **In a parameter table:**
@@ -1505,14 +1477,14 @@ fit_height <- linear_reg() |>
 fit_height |>
   tidy(conf.int = TRUE) |>
   select(term, estimate, conf.low, conf.high) |>
-  mutate(across(where(is.numeric), \(x) signif(x, 3)))
+  mutate(across(where(is.numeric), \(x) round(x, 1)))
 ```
 
 **As a mathematical formula:**
 
-$$\text{height} = 163 + 13.6 \cdot \text{sexMale} + \epsilon$$
+$$\text{height} = 165.9 + 8.9 \cdot \text{sexMale} + \epsilon$$
 
-with $\epsilon \sim N(0, 52.2)$.
+with $\epsilon \sim N(0, 41.0)$.
 
 ###
 
@@ -1531,7 +1503,7 @@ question_text(NULL,
 
 ###
 
-Courage gave us the data generating mechanism. Temperance guides us in the use of the DGM --- or the "model" --- to answer the question(s) with which we began. Our tool for doing so is the **[marginaleffects](https://marginaleffects.com/)** package; its companion book *[Model to Meaning](https://marginaleffects.com/)* by Vincent Arel-Bundock is the reference we'll lean on throughout Temperance, starting with the [Predictions chapter](https://marginaleffects.com/chapters/predictions.html).
+Courage gave us the data generating mechanism. Temperance guides us in the use of the DGM --- or the "model" --- to answer the question(s) with which we began. Our tool for doing so is the **[marginaleffects](https://marginaleffects.com/)** package, with companion book *[Model to Meaning](https://marginaleffects.com/)* by Vincent Arel-Bundock.
 
 ### Exercise 2
 
@@ -1541,17 +1513,17 @@ Before jumping to the full DGM, consider a simpler version of the model --- one 
 #| echo: false
 linear_reg() |>
   set_engine("lm") |>
-  fit(height ~ 1, data = x) |>
+  fit(height ~ 1, data = recruits) |>
   tidy(conf.int = TRUE) |>
   select(term, estimate, conf.low, conf.high) |>
-  mutate(across(where(is.numeric), \(x) signif(x, 3)))
+  mutate(across(where(is.numeric), \(x) round(x, 1)))
 ```
 
-Write a sentence interpreting the 170 estimate for `(Intercept)` in this simple model.
+Write a sentence interpreting the 173.0 estimate for `(Intercept)` in this simple model.
 
 ```{r temperance-2}
 question_text(NULL,
-  message = "The average height of a young adult in our sample is 170 centimeters. This is the expected value we would predict if we ignored every covariate --- including sex.",
+  message = "The expected value of the height of a young adult is 173.0 centimeters. Because this model has no covariates, every young adult gets the same prediction --- the intercept.",
   answer(NULL, correct = TRUE),
   allow_retry = FALSE,
   incorrect = NULL,
@@ -1560,7 +1532,7 @@ question_text(NULL,
 
 ###
 
-The simplest model has one parameter: the overall mean. That mean is the "best guess" when we know nothing about the individual beyond their being a young adult. The richer DGM breaks this mean down by sex, and that split is where the useful answer to our question lives.
+Without a covariate, the model can only emit one prediction --- the same one for every unit. Adding `sex` lets the DGM produce different predictions for different units, which is the whole point of having a covariate.
 
 ### Exercise 3
 
@@ -1571,14 +1543,14 @@ Now consider the full DGM, `height ~ sex`:
 fit_height |>
   tidy(conf.int = TRUE) |>
   select(term, estimate, conf.low, conf.high) |>
-  mutate(across(where(is.numeric), \(x) signif(x, 3)))
+  mutate(across(where(is.numeric), \(x) round(x, 1)))
 ```
 
-Write a sentence interpreting the 163 estimate for `(Intercept)`.
+Write a sentence interpreting the 165.9 estimate for `(Intercept)`.
 
 ```{r temperance-3}
 question_text(NULL,
-  message = "The expected value of the height of a female USMC recruit is 163 centimeters because, for female recruits, `sexMale` is zero.",
+  message = "The expected value of the height of a female USMC recruit is 165.9 centimeters because, for female recruits, `sexMale` is zero.",
   answer(NULL, correct = TRUE),
   allow_retry = FALSE,
   incorrect = NULL,
@@ -1591,11 +1563,11 @@ Most of the time parameters in a model have no direct relationship with any popu
 
 ### Exercise 4
 
-Write a sentence interpreting the 13.6 estimate for `sexMale`.
+Write a sentence interpreting the 8.9 estimate for `sexMale`.
 
 ```{r temperance-4}
 question_text(NULL,
-  message = "When compared with female recruits, male recruits have a 13.6 centimeter higher expected value for height.",
+  message = "When compared with female recruits, male recruits have an 8.9 centimeter higher expected value for height.",
   answer(NULL, correct = TRUE),
   allow_retry = FALSE,
   incorrect = NULL,
@@ -1612,7 +1584,7 @@ Write a sentence interpreting the confidence interval for `sexMale`.
 
 ```{r temperance-5}
 question_text(NULL,
-  message = "We do not know the true value for the coefficient on `sexMale`, but we can be 95% confident that it lies somewhere between 12.8 and 14.4 centimeters.",
+  message = "We do not know the true value for the coefficient on `sexMale`, but we can be 95% confident that it lies somewhere between 4.3 and 13.4 centimeters.",
   answer(NULL, correct = TRUE),
   allow_retry = FALSE,
   incorrect = NULL,
@@ -1621,7 +1593,7 @@ question_text(NULL,
 
 ###
 
-We care if the confidence interval for a given variable excludes zero. If not, we can't be sure whether the relationship between the variable and the outcome is positive or negative. Here, zero is well outside the interval --- male recruits are unambiguously taller than female recruits in this model.
+We care if the confidence interval for a given variable excludes zero. If not, we can't be sure whether the relationship between the variable and the outcome is positive or negative. Here, zero is well outside the interval, so the model says the *expected* height of male recruits is greater than the expected height of female recruits. That does not mean every male is taller than every female --- the two height distributions overlap, and there are plenty of female recruits taller than some male recruits.
 
 ### Exercise 6
 
@@ -1671,7 +1643,7 @@ CP/CR.
 
 ```{r temperance-8}
 question_text(NULL,
-  message = "    > predictions(fit_height)\n    \n     Estimate Std. Error   z Pr(>|z|)  2.5 % 97.5 %\n        162.9      0.283 576   <0.001  162.4  163.5\n        176.6      0.285 620   <0.001  176.0  177.1\n        162.9      0.283 576   <0.001  162.4  163.5\n        ... (1,295 rows total, one per observation)\n    \n    Type: numeric",
+  message = "    > predictions(fit_height)\n    \n     Estimate Std. Error    z Pr(>|z|)  2.5 % 97.5 %\n        174.8       1.01  173   <0.001  172.5  177.0\n        165.9       2.02   81.9 <0.001  161.8  170.0\n        174.8       1.01  173   <0.001  172.5  177.0\n        ... (50 rows total, one per observation)\n    \n    Type: numeric",
   answer(NULL, correct = TRUE),
   allow_retry = FALSE,
   incorrect = NULL,
@@ -1680,7 +1652,7 @@ question_text(NULL,
 
 ###
 
-`predictions()` returns a data frame with one row for each observation in the data set used to fit the model. The 50 rows correspond to our 50-row sample. Each row's `estimate` is that row's model-predicted height.
+`predictions()` returns a data frame with one row for each observation in the data set used to fit the model. The 50 rows correspond to our 50-row `recruits` sample. Each row's `estimate` is that row's model-predicted height. Note already that the standard error column has two distinct values --- about 1.01 for male rows and about 2.02 for female rows. We will come back to this.
 
 ### Exercise 9
 
@@ -1690,7 +1662,7 @@ CP/CR.
 
 ```{r temperance-9}
 question_text(NULL,
-  message = "    > plot_predictions(fit_height, condition = \"sex\")\n\n(A plot opens showing two point estimates --- one for `Female` near 163 cm and one for `Male` near 177 cm --- each with a narrow 95% confidence interval.)",
+  message = "    > plot_predictions(fit_height, condition = \"sex\")\n\n(A plot opens showing two point estimates --- one for `Female` near 166 cm and one for `Male` near 175 cm --- each with a 95% confidence interval. The Female interval is visibly wider than the Male interval.)",
   answer(NULL, correct = TRUE),
   allow_retry = FALSE,
   incorrect = NULL,
@@ -1703,7 +1675,7 @@ plot_predictions(fit_height, condition = "sex")
 
 ###
 
-You should see two point estimates (one for Female, one for Male) with 95% confidence intervals. The gap between them is the model's estimate of the average height difference by sex.
+You should see two point estimates (one for Female, one for Male) with 95% confidence intervals. The gap between them is the model's estimate of the average height difference by sex. The Female interval is visibly wider than the Male interval --- the predicted height for a female recruit is less certain than the predicted height for a male recruit. That is the consequence of having drawn 10 female rows but 40 male rows: the standard error of a group mean shrinks roughly with the square root of the group's sample size, so quadrupling the sample size halves the standard error, and the female interval ends up about twice as wide as the male interval.
 
 ### Exercise 10
 
@@ -1713,7 +1685,7 @@ CP/CR.
 
 ```{r temperance-10}
 question_text(NULL,
-  message = "    > plot_predictions(fit_height, condition = \"sex\", draw = FALSE)\n      rowid estimate std.error statistic p.value conf.low conf.high    sex\n    1     1    162.9      0.283       576       0    162.4     163.5 Female\n    2     2    176.6      0.285       620       0    176.0     177.1   Male",
+  message = "    > plot_predictions(fit_height, condition = \"sex\", draw = FALSE)\n      rowid estimate std.error statistic  p.value conf.low conf.high    sex\n    1     1    165.9      2.02      81.9   <0.001    161.8     170.0 Female\n    2     2    174.8      1.01     173      <0.001    172.5     177.0   Male",
   answer(NULL, correct = TRUE),
   allow_retry = FALSE,
   incorrect = NULL,
@@ -1736,7 +1708,7 @@ Paste the plot code below.
 
 ```{r temperance-11}
 question_text(NULL,
-  message = "    plot_predictions(fit_height, condition = \"sex\", draw = FALSE) |>\n      ggplot(aes(x = sex, y = estimate)) +\n      geom_pointrange(aes(ymin = conf.low, ymax = conf.high),\n                      color = \"grey20\", size = 1.1) +\n      labs(\n        title = \"Forecast Height for USMC Recruits\",\n        subtitle = \"Male recruits are expected to be about 14 cm taller\",\n        x = \"Sex\",\n        y = \"Expected Height (cm)\",\n        caption = \"Source: NHANES via primer.data\"\n      ) +\n      theme_minimal()",
+  message = "    plot_predictions(fit_height, condition = \"sex\", draw = FALSE) |>\n      ggplot(aes(x = sex, y = estimate)) +\n      geom_pointrange(aes(ymin = conf.low, ymax = conf.high),\n                      color = \"grey20\", size = 1.1) +\n      labs(\n        title = \"Forecast Height for USMC Recruits\",\n        subtitle = \"Male recruits are expected to be about 9 cm taller\",\n        x = \"Sex\",\n        y = \"Expected Height (cm)\",\n        caption = \"Source: 50-row sample from NHANES via primer.tutorials::recruits\"\n      ) +\n      theme_minimal()",
   answer(NULL, correct = TRUE),
   allow_retry = FALSE,
   incorrect = NULL,
@@ -1757,10 +1729,10 @@ plot_predictions(fit_height, condition = "sex", draw = FALSE) |>
                   color = "grey20", size = 1.1) +
   labs(
     title = "Forecast Height for USMC Recruits",
-    subtitle = "Male recruits are expected to be about 14 cm taller than female recruits",
+    subtitle = "Male recruits are expected to be about 9 cm taller than female recruits",
     x = "Sex",
     y = "Expected Height (cm)",
-    caption = "Source: NHANES via primer.data"
+    caption = "Source: 50-row sample from NHANES via primer.tutorials::recruits"
   ) +
   theme_minimal()
 ```
@@ -1779,7 +1751,7 @@ CP/CR.
 
 ```{r temperance-12}
 question_text(NULL,
-  message = "    > show_file(\"analysis.qmd\", chunk = \"Last\")\n    ```{r}\n    plot_predictions(fit_height, condition = \"sex\", draw = FALSE) |>\n      ggplot(aes(x = sex, y = estimate)) +\n      geom_pointrange(aes(ymin = conf.low, ymax = conf.high)) +\n      labs(\n        title = \"Forecast Height for USMC Recruits\",\n        subtitle = \"Male recruits are expected to be about 14 cm taller\",\n        x = \"Sex\", y = \"Expected Height (cm)\",\n        caption = \"Source: NHANES via primer.data\"\n      ) +\n      theme_minimal()\n    ```",
+  message = "    > show_file(\"analysis.qmd\", chunk = \"Last\")\n    ```{r}\n    plot_predictions(fit_height, condition = \"sex\", draw = FALSE) |>\n      ggplot(aes(x = sex, y = estimate)) +\n      geom_pointrange(aes(ymin = conf.low, ymax = conf.high)) +\n      labs(\n        title = \"Forecast Height for USMC Recruits\",\n        subtitle = \"Male recruits are expected to be about 9 cm taller\",\n        x = \"Sex\", y = \"Expected Height (cm)\",\n        caption = \"Source: 50-row sample from NHANES via primer.tutorials::recruits\"\n      ) +\n      theme_minimal()\n    ```",
   answer(NULL, correct = TRUE),
   allow_retry = FALSE,
   incorrect = NULL,
@@ -1796,7 +1768,7 @@ Write the last sentence of your summary paragraph. It describes at least one Qua
 
 ```{r temperance-13}
 question_text(NULL,
-  message = "We estimate that the average male USMC recruit will be about 177 cm tall and the average female recruit about 163 cm, with 95% confidence intervals of roughly a few centimeters in each direction.",
+  message = "We estimate that the average male USMC recruit will be about 175 cm tall and the average female recruit about 166 cm, with the female interval visibly wider than the male interval because we have far fewer female observations in our sample.",
   answer(NULL, correct = TRUE),
   allow_retry = FALSE,
   incorrect = NULL,
@@ -1813,7 +1785,7 @@ Write a few sentences explaining why the estimates for the quantities of interes
 
 ```{r temperance-14}
 question_text(NULL,
-  message = "USMC recruits are more physically fit and probably taller than the general young-adult population measured by NHANES. A better point estimate would nudge male recruit heights upward by a centimeter or two and female recruit heights similarly. The confidence interval should be wider than what the model reports --- our sample of 50 is small, and the bigger sources of uncertainty (the NHANES-to-USMC validity gap and the voluntary-participation representativeness gap) aren't captured by the model's standard error.",
+  message = "USMC recruits are more physically fit and probably taller than the general young-adult population measured by NHANES. A better point estimate would nudge male recruit heights upward by a centimeter or two and female recruit heights similarly. The confidence intervals should be wider than what the model reports --- our 50-row sample is small (only 10 of those rows are female), and the bigger sources of uncertainty (the NHANES-to-USMC validity gap and the voluntary-participation representativeness gap) aren't captured by the model's standard error.",
   answer(NULL, correct = TRUE),
   allow_retry = FALSE,
   incorrect = NULL,
@@ -1836,7 +1808,7 @@ CP/CR.
 
 ```{r temperance-15}
 question_text(NULL,
-  message = "    > show_file(\"analysis.qmd\")\n    ---\n    title: \"NHANES\"\n    author: \"<your name>\"\n    execute:\n      echo: false\n    ---\n    \n    ```{r}\n    #| message: false\n    library(tidyverse)\n    library(tidymodels)\n    library(primer.data)\n    library(broom)\n    library(marginaleffects)\n    ```\n    \n    ```{r}\n    x <- nhanes |>\n      filter(age >= 18 & age <= 27) |>\n      select(height, sex) |>\n      drop_na()\n    ```\n    \n    ```{r}\n    #| cache: true\n    fit_height <- linear_reg() |>\n      set_engine(\"lm\") |>\n      fit(height ~ sex, data = x)\n    ```\n    \n    ```{r}\n    plot_predictions(fit_height, condition = \"sex\", draw = FALSE) |>\n      ggplot(aes(x = sex, y = estimate)) +\n      geom_pointrange(aes(ymin = conf.low, ymax = conf.high)) +\n      labs(\n        title = \"Forecast Height for USMC Recruits\",\n        subtitle = \"Male recruits are expected to be about 14 cm taller\",\n        x = \"Sex\", y = \"Expected Height (cm)\",\n        caption = \"Source: NHANES via primer.data\"\n      ) +\n      theme_minimal()\n    ```\n    \n    People vary in height, and that variation is strongly patterned by sex. Using data from the National Health and Nutrition Examination Survey (NHANES) conducted by the Centers for Disease Control and Prevention, we seek to estimate the average height of male and female USMC recruits for the coming year. One concern is that USMC recruits are more physically fit than the general young-adult population and so may be systematically taller, meaning that the NHANES-based estimates probably understate recruit heights. We model height as a linear function of sex. We estimate that the average male USMC recruit will be about 177 cm tall and the average female recruit about 163 cm.",
+  message = "    > show_file(\"analysis.qmd\")\n    ---\n    title: \"Recruits\"\n    author: \"<your name>\"\n    execute:\n      echo: false\n    ---\n    \n    ```{r}\n    #| message: false\n    library(tidyverse)\n    library(tidymodels)\n    library(primer.tutorials)\n    library(broom)\n    library(marginaleffects)\n    ```\n    \n    ```{r}\n    #| cache: true\n    fit_height <- linear_reg() |>\n      set_engine(\"lm\") |>\n      fit(height ~ sex, data = recruits)\n    ```\n    \n    ```{r}\n    plot_predictions(fit_height, condition = \"sex\", draw = FALSE) |>\n      ggplot(aes(x = sex, y = estimate)) +\n      geom_pointrange(aes(ymin = conf.low, ymax = conf.high)) +\n      labs(\n        title = \"Forecast Height for USMC Recruits\",\n        subtitle = \"Male recruits are expected to be about 9 cm taller\",\n        x = \"Sex\", y = \"Expected Height (cm)\",\n        caption = \"Source: 50-row sample from NHANES via primer.tutorials::recruits\"\n      ) +\n      theme_minimal()\n    ```\n    \n    People vary in height, and that variation is strongly patterned by sex. Using a 50-row teaching sample drawn from the National Health and Nutrition Examination Survey (NHANES, conducted by the Centers for Disease Control and Prevention), we seek to estimate the average height of male and female USMC recruits for the coming year. One concern is that USMC recruits are more physically fit than the general young-adult population and so may be systematically taller, meaning that the NHANES-based estimates probably understate recruit heights. We model height as a normally distributed variable which is a linear function of sex. We estimate that the average male recruit will be about 175 cm tall and the average female recruit about 166 cm, with confidence intervals that are visibly wider for the female estimate because there are only ten female rows in our sample.",
   answer(NULL, correct = TRUE),
   allow_retry = FALSE,
   incorrect = NULL,
@@ -1859,7 +1831,7 @@ Copy/paste the resulting URL below.
 
 ```{r temperance-16}
 question_text(NULL,
-  message = "https://<your-github-username>.github.io/nhanes/analysis.html",
+  message = "https://<your-github-username>.github.io/recruits/analysis.html",
   answer(NULL, correct = TRUE),
   allow_retry = FALSE,
   incorrect = NULL,
@@ -1876,7 +1848,7 @@ Copy/paste the URL to your GitHub repo.
 
 ```{r temperance-17}
 question_text(NULL,
-  message = "https://github.com/<your-github-username>/nhanes",
+  message = "https://github.com/<your-github-username>/recruits",
   answer(NULL, correct = TRUE),
   allow_retry = FALSE,
   incorrect = NULL,
@@ -1902,15 +1874,15 @@ plot_predictions(fit_height, condition = "sex", draw = FALSE) |>
                   color = "grey20", size = 1.1) +
   labs(
     title = "Forecast Height for USMC Recruits",
-    subtitle = "Male recruits are expected to be about 14 cm taller than female recruits",
+    subtitle = "Male recruits are expected to be about 9 cm taller than female recruits",
     x = "Sex",
     y = "Expected Height (cm)",
-    caption = "Source: NHANES via primer.data"
+    caption = "Source: 50-row sample from NHANES via primer.tutorials::recruits"
   ) +
   theme_minimal()
 ```
 
-People vary in height, and that variation is strongly patterned by sex. Using data from the National Health and Nutrition Examination Survey (NHANES) conducted by the Centers for Disease Control and Prevention, we seek to estimate the average height of male and female USMC recruits for the coming year. One concern is that USMC recruits are more physically fit than the general young-adult population and so may be systematically taller, meaning that the NHANES-based estimates probably understate recruit heights. We model height as a linear function of sex. We estimate that the average male USMC recruit will be about 177 cm tall and the average female recruit about 163 cm, with 95% confidence intervals of roughly a few centimeters in each direction.
+People vary in height, and that variation is strongly patterned by sex. Using a 50-row teaching sample drawn from the National Health and Nutrition Examination Survey (NHANES, conducted by the Centers for Disease Control and Prevention), we seek to estimate the average height of male and female USMC recruits for the coming year. One concern is that USMC recruits are more physically fit than the general young-adult population and so may be systematically taller, meaning that the NHANES-based estimates probably understate recruit heights. We model height as a normally distributed variable which is a linear function of sex. We estimate that the average male recruit will be about 175 cm tall and the average female recruit about 166 cm, with the female interval visibly wider than the male interval because we have only ten female rows in our sample.
 
 This forecast would help you estimate how many small-versus-large uniforms to order. It does not address every question the logistics office will face --- it says nothing about weight, shoulder width, or inseam. But it gives a defensible starting point.
 

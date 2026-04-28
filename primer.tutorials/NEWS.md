@@ -1,6 +1,6 @@
 # primer.tutorials (development version)
 
-
+* Renamed `06-nhanes` to `06-recruits` and added a curated `recruits` dataset to the package. `recruits` is a 50-row teaching cut of NHANES (40 male, 10 female young adults aged 18--27) drawn deterministically by `data-raw/recruits.R`, documented in `R/recruits.R`, and lazy-loaded via `LazyData: true`. The deliberate 40/10 split gives the male and female group means visibly different standard errors, which the tutorial's Temperance section asks students to notice and explain. The tutorial's setup chunk now references `recruits` directly (no slice or filter); the student repo and YAML id are `06-recruits`. The shipped-dataset pattern (`data-raw/<name>.R` + `data/<name>.rda` + `R/<name>.R`) is documented in CLAUDE.md §3.1 and is reusable for other tutorials that need a curated cut of an upstream tibble.
 
 # primer.tutorials 1.5.1
 

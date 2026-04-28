@@ -128,7 +128,7 @@ The Easy → Medium transition hands the tool to the student. The Medium → Dif
 
 **Worked example: using the fitted model to answer questions (`marginaleffects`) across three levels.** Temperance's job is to get from the fitted DGM to the question we actually asked. Raw parameters rarely *are* the answer — log-odds, multinomial coefficients, and interaction terms are not on the outcome scale a student or stakeholder can read. The `marginaleffects` package — [**Model to Meaning: How to Interpret Statistical Models in R and Python**](https://marginaleffects.com/) by Vincent Arel-Bundock — is the tool for that transformation. Every Temperance section links the relevant chapter of the book at least once (see §13.5).
 
-- **Easy.** Predictions only. `predictions()`, `avg_predictions()`, `plot_predictions()`. The frame: *"The model's coefficients are on an awkward scale. `predictions()` gives us back numbers on the outcome scale — probabilities, counts, years, whatever the question actually needs."* Skip `comparisons()`; skip the five-decision framework; skip grid types. Knowledge drops emphasize that predictions answer *"what does the model say Y is when X = …?"* Link each tutorial's Temperance section to the [Predictions chapter](https://marginaleffects.com/chapters/predictions.html). The current §13.5 Exercises 7–9 already operate at this level.
+- **Easy.** Predictions only. `predictions()`, `avg_predictions()`, `plot_predictions()`. The frame: *"The model's coefficients are on an awkward scale. `predictions()` gives us back numbers on the outcome scale — probabilities, counts, years, whatever the question actually needs."* Skip `comparisons()`; skip the five-decision framework; skip grid types. Knowledge drops emphasize that predictions answer *"what does the model say Y is when X = …?"* Mention the marginaleffects package and the *Model to Meaning* book in Temperance Exercise 1's End (no chapter-specific link). The current §13.5 Exercises 7–9 already operate at this level.
 
 - **Medium.** Add comparisons. `comparisons()`, `avg_comparisons()`, `plot_comparisons()`. The frame: *"Predictions tell us the level of Y. Comparisons tell us how Y changes when X changes. Most of the questions we actually ask — causal effects, group differences — are comparisons, not predictions."* Canonical pitfall to drill: deducing a comparison by subtracting two predictions (point estimate is often right; the confidence interval is wrong). Introduce the `avg_*()` family for aggregation — unit-level estimates vs. aggregated summaries. Link to the [Comparisons chapter](https://marginaleffects.com/chapters/comparisons.html).
 
@@ -229,7 +229,7 @@ When you pause to ask, make it easy for David to answer: short list of options, 
 
 Chapters are Quarto files with the top-level `#` already set by the book structure; use `##` for virtue-level sections. Filename convention: `NN-name.qmd` where `NN` is the two-digit chapter number and `name` is the dataset (for example chapters) or a descriptive slug (for miscellaneous chapters) — e.g. `04-cardinal-virtues.qmd`, `08-trains.qmd`, `13-colleges.qmd`.
 
-Tutorials are R Markdown files with `learnr::tutorial` output. They live in the `primer.tutorials` package under `inst/tutorials/NN-name/tutorial.Rmd`, where `NN` is the two-digit chapter number (e.g. `07-nhanes`, `14-stops`). The tutorial's `id` in the YAML is `NN-name`, lowercase, dashes for spaces, identical to the directory name. For example tutorials, `name` is the dataset's tibble name (`nhanes`, `trains`, `nes`, `governors`, `shaming`, `ces`, `colleges`, `stops`) — chosen even when the dataset name is an acronym unfamiliar to students. Student repo names in operational exercises match the tutorial directory name, so everything (directory, id, repo) shares one string per tutorial.
+Tutorials are R Markdown files with `learnr::tutorial` output. They live in the `primer.tutorials` package under `inst/tutorials/NN-name/tutorial.Rmd`, where `NN` is the two-digit chapter number (e.g. `06-recruits`, `14-ces`). The tutorial's `id` in the YAML is `NN-name`, lowercase, dashes for spaces, identical to the directory name. For example tutorials, `name` is the tibble the tutorial fits on — usually the upstream dataset's name (`trains`, `nes`, `governors`, `shaming`, `ces`, `colleges`, `stops`), but a *role-based* name when the tutorial ships its own packaged cut (`recruits` for the NHANES cut in `06-recruits`; see §3.1). Student repo names in operational exercises match the tutorial directory name, so everything (directory, id, repo, packaged tibble where applicable) shares one string per tutorial.
 
 For new chapters, produce a single `.qmd` file. For new tutorials, produce a single `.Rmd` file with the structure described in §5. Do not emit partial diffs; produce complete files David can drop in place.
 
@@ -250,6 +250,38 @@ Minimum layout for a new tutorial — run these creations in order when starting
 Tutorials **without** an `**Expensive fit:**` flag should not create the `data/` or `data-raw/` subdirectories. An empty-or-almost-empty `data/` is a code smell — per §5.6, authors reviewing existing tutorials should delete unreferenced `.rds` files on sight.
 
 **Directory-creation is explicit, not implicit.** When an authoring session generates a new tutorial, it should issue the `mkdir` calls (or the equivalent file-creation moves) as part of the generation workflow. Do not assume a tutorial directory exists just because §17 lists it — if the filesystem check fails, create the directory, then write the `tutorial.Rmd`.
+
+### 3.1 Tutorial-specific datasets shipped with `primer.tutorials`
+
+Some tutorials need a curated cut of an upstream dataset rather than the full upstream tibble — to make uncertainty visible at the picture, to balance group sizes, to limit columns, or to lock a sample so every student gets the same rows. We ship those cuts as datasets in the `primer.tutorials` package itself, using the standard CRAN `data/` + `data-raw/` + `R/` pattern. The first such dataset is `recruits` (a 50-row, 40-male / 10-female cut of NHANES used by `06-recruits`); the same pattern applies to any future tutorial-specific cut.
+
+**Layout.** Three pieces, all in the `primer.tutorials` package root:
+
+1. **`data-raw/<name>.R`** — runnable script that pulls upstream data, applies the transformation, calls `set.seed()`, and ends with `usethis::use_data(<name>, overwrite = TRUE)`. Keep a header comment that explains the source, the transformation, and any deliberate features (e.g. *"the 40/10 split is intentional to give differential SEs"*). Re-run with `Rscript data-raw/<name>.R` from the package root.
+2. **`data/<name>.rda`** — the binary serialized object, written by `usethis::use_data()`. With `LazyData: true` in DESCRIPTION (set), the dataset lazy-loads when `library(primer.tutorials)` runs.
+3. **`R/<name>.R`** — roxygen documentation, ending with the dataset name as a string (`"recruits"`). Required: `R CMD check` fails on a `data/` object without a doc page. Include a `@format` block describing each column and a `@source` referencing both the upstream dataset (e.g. `primer.data::nhanes`) and the construction script (`data-raw/<name>.R`). After editing, run `devtools::document(".")` and `devtools::install(".")` to regenerate `man/` and reload.
+
+**Wiring (one-time, already done):**
+
+- `DESCRIPTION` includes `LazyData: true`.
+- `.Rbuildignore` includes `^data-raw$` so the source script does not ship in the built tarball.
+
+**Tutorial-side conventions.** When a tutorial uses a packaged dataset:
+
+- Setup chunk loads `library(primer.tutorials)` (not `library(primer.data)`), and references the dataset directly. No `slice_sample()`, no filtering, no `x` intermediate.
+- Student-facing exercises that load libraries put `library(primer.tutorials)` in the QMD (in place of, or alongside, `library(primer.data)`).
+- The `?<dataset>` exercise asks the student to look at the *packaged* dataset's help page (e.g. `?recruits`), not the upstream `?nhanes`.
+- The Justice / Wisdom prose names the upstream source ("a 50-row teaching sample drawn from NHANES…"), but the analysis code references the packaged tibble.
+
+**When to ship vs. when to slice in-tutorial.** Ship a dataset when one of the following is true:
+
+- The transformation is non-trivial (composite covariates, stratified sampling, joins).
+- The tutorial benefits from every student seeing exactly the same rows (uniform canonical answers, reproducible plots).
+- A `slice_sample()` in the setup chunk would force `set.seed()` ceremony or produce different fits on different runs.
+
+A blanket rule that *every* tutorial use a packaged dataset is overkill — datasets like `trains` are already small, balanced, and don't need re-cutting. Use the pattern when there is a real reason; ad-hoc filtering that a single `filter() |> select()` line can do in setup does not need its own `.rda`.
+
+**Naming convention.** The packaged tibble's name should describe the *role* it plays in the tutorial (`recruits`, `voters`, `households`), not the upstream dataset name + size suffix (`nhanes_50`). The role-based name survives later N changes; the size-suffix name doesn't. Use the same name for the tutorial directory (`06-recruits`), the YAML `id` (`06-recruits`), and the student repo. One string per tutorial.
 
 ---
 
@@ -1433,6 +1465,8 @@ Canonical definitions from §11 appropriate here: Temperance, Preceptor's Poster
 **On confidence intervals excluding zero.**
 > *We care if the confidence interval for a given variable excludes zero. If not, we can't be sure whether the relationship between the variable and the outcome is positive or negative. In that case, why would we include the variable in the model at all?*
 
+**On expected values vs. individual units.** A model coefficient describes a shift in the **expected** outcome between groups, not a guarantee about every unit in one group versus every unit in the other. β > 0 for `sexMale` says the *expected* height of male recruits is greater than the *expected* height of female recruits — it does *not* say every male is taller than every female. The two height distributions overlap; there are plenty of females taller than some males. Be careful in canonical answers and knowledge drops not to slide from the expected-value claim ("males are on average taller") to the per-unit claim ("males are taller than females") — the second is a much stronger and almost always false statement, and it is exactly the kind of reading we are trying to teach students *not* to give. The same trap applies to every parameter in every linear, logistic, multinomial, and ordinal model in the curriculum.
+
 **On "adjust" vs. "control."**
 > *We recommend the verb "adjust" in place of "control" when discussing the effect of including other variables in the model. "The causal effect is 1.5, adjusting for age and party." "Adjusting" demonstrates humility; "controlling" does not.*
 
@@ -2044,7 +2078,7 @@ Loading `MASS` *after* `tidyverse` silently breaks `dplyr::select()` across the 
 - End: show our table and our code. Closing knowledge drop: *At the very least, your table should include a title and a caption with the data source. The more you use AI, the better you will get at doing so.*
 
 **Exercise 16.** [per-tutorial, written-with-answer] Model-structure sentence.
-- Prompt: *Add a sentence to your project summary explaining the structure of the model. Something like: "I/we model XX [concept of outcome, not variable name], [values of XX], as a [linear/logistic/multinomial/ordinal] function of XX [and maybe other covariates]." Recall the beginning of our summary: [paste what we suggested at the end of Justice].*
+- Prompt: *Add a sentence to your project summary explaining the structure of the model. Something like: "I/we model XX [concept of outcome, not variable name] as a [normally distributed / Bernoulli / multinomial / ordinal] variable which is a [linear/logistic/multinomial/ordinal] function of XX [and maybe other covariates]." Name the outcome's distributional family before the functional-form clause — Justice's choice of probability family is part of the model, not just the link function. Recall the beginning of our summary: [paste what we suggested at the end of Justice].*
 - Message: per-tutorial.
 - End: *Read our answer. Do not copy/paste exactly. Add your two sentences to the summary paragraph. `Cmd/Ctrl + Shift + K`, then commit/push.*
 
@@ -2057,13 +2091,13 @@ Loading `MASS` *after* `tidyverse` silently breaks `dplyr::select()` across the 
 1. The four ways to describe the DGM (below), shown in sequence with their bold headers (**In words:**, **In R code:**, **In a parameter table:**, **As a mathematical formula:**).
 2. A Continue button (`###` with no heading) before `### Exercise 1`. Students must hit Continue to advance — they should not see Exercise 1 on the same screen as the preamble.
 
-**Do not include the marginaleffects book link in the preamble.** That link lives in Exercise 1's End (the canonical-definition knowledge drop), where it introduces the **[marginaleffects](https://marginaleffects.com/)** package as Temperance's tool and points at the relevant chapter of *[Model to Meaning](https://marginaleffects.com/)* for the tier. Easy tutorials cite the [Predictions chapter](https://marginaleffects.com/chapters/predictions.html); Medium adds Comparisons; Hard adds Challenge and Framework.
+**Do not include the marginaleffects book link in the preamble.** Mention of the package and its companion book belongs in Exercise 1's End (the canonical-definition knowledge drop), and even there it stays brief: name the **[marginaleffects](https://marginaleffects.com/)** package as Temperance's tool and the *[Model to Meaning](https://marginaleffects.com/)* book by Vincent Arel-Bundock as the reference. Do **not** link a specific chapter from Exercise 1's End — chapter-specific links (Predictions, Comparisons, Challenge, Framework) belong, if anywhere, near a later exercise that actually uses that chapter's tools. In practice we rarely link a specific chapter at all; the package and book mention is enough to point students who want the reference to it.
 
 **Do not include a dummy-variable explanatory paragraph after the concrete formula.** The preamble's math block is the formula and the error-distribution line — no trailing "`sexMale` is a dummy variable: 1 for male..." paragraph. If dummy-variable meaning matters for a specific tutorial, it belongs in an Exercise 3–5 End (where interpretation lives), not in the preamble.
 
 **Four ways to describe a model.** Most Temperance preambles combine some subset of these four:
 
-1. **Words.** *"We describe [outcome] as a [functional form] of [covariates]."* This is the same sentence added to the summary paragraph in §13.4 Exercise 16 and the canonical answer to the Courage model-structure question. Reuse verbatim — do not rewrite.
+1. **Words.** *"We model [outcome] as a [outcome distribution] variable which is a [functional form] of [covariates]."* The verb is **model**, not "describe" — we are not narrating the model, we are committing to one. The sentence names the outcome's distributional family (normally distributed, Bernoulli, multinomial, ordinal) before the functional-form clause; without it the sentence understates what was actually decided in Justice. Examples: *"We model height as a normally distributed variable which is a linear function of sex."* *"We model voter turnout as a Bernoulli variable which is a logistic function of treatment, age, sex, and prior voting."* *"We model presidential vote as a multinomial variable which is a multinomial logistic function of sex."* Reuse verbatim across the Temperance preamble, the §13.4 Exercise 16 summary-paragraph sentence, and the Courage model-structure question's canonical answer.
 2. **R code.** The fitting call itself — e.g. `linear_reg(engine = "lm") |> fit(att_end ~ treatment, data = trains)` → `fit_att`. Rendered as a code block; not re-run in the preamble.
 3. **Parameter table.** The estimated parameter values. *Easy:* rough `tidy(fit_<n>, conf.int = TRUE)` output. *Medium:* nicer table via `knitr::kable()`, `gt`, or equivalent. *Difficult:* close to publication quality. The Primer does not teach students to build these tables in Easy or Medium — the author ships them. In Difficult tutorials with few parameters, a student exercise using AI to produce the table is possible; in Difficult tutorials with many covariates or many-level categoricals, the table is too complex to hand to a student, and the author ships it.
 4. **Concrete mathematical formula.** The fitted model in LaTeX with variable names and estimated coefficient values substituted in — the "true" DGM. This is the form the Temperance preamble uses for math. Never asked of students in Easy or Medium. Possibly asked (via AI) in Difficult tutorials with simple models; author-shipped otherwise.
@@ -2105,6 +2139,20 @@ Loading `MASS` *after* `tidyverse` silently breaks `dplyr::select()` across the 
 - **Medium and Hard (positions 5–12, target tutorials 10–17).** Skip the simple-model step. Go straight to interpreting the final DGM. M/H tutorials pack in `comparisons()`, grid choices, and (for Hard) the explicit five-decisions framework (§1.3 *marginaleffects worked example*), which crowds out a second parameter-interpretation block. Students have seen the one-covariate interpretation pattern several times in Easy — by position 5 it does not need to be re-established.
 
 In Courage, we have already fit *exactly the model we will interpret here*. For Easy tutorials, the simple-model-interpretation variant runs on a model that Courage has not shown — either a smaller fit Courage skipped past, or a one-covariate reduction of the final model. Either way, Temperance displays a `tidy()` table for that simple fit, asks for an interpretation of one of its coefficients, and then moves on.
+
+**Interpretation language: stay at the model level, don't drift to the data.** The canonical answer for any parameter-interpretation exercise — simple model or final DGM — talks about *what the model says*, not *what the data shows*. Use the **expected value** framing: *"The expected value of [outcome] for a [unit description] is [coefficient]."* Do **not** equate a coefficient with a sample summary statistic, even when (as for an intercept-only OLS) they happen to coincide. Saying "the average height of a young adult in our sample is 169.7 centimeters" trains students to confuse the parameter with the sample mean; in general (non-linear models, models with covariates, anything beyond a degenerate case) parameters do not equal any easily-calculated data summary, and we should not encourage that habit.
+
+The **simple-model warm-up** (Easy tutorials only) uses the same template as the final-DGM interpretation, just dropped into a no-covariate or one-covariate setting. Worked example for the NHANES intercept-only fit `height ~ 1` (β₀ = 169.7):
+
+> *"The expected value of the height of a young adult is 169.7 centimeters. Because this model has no covariates, every young adult gets the same prediction — the intercept."*
+
+The first sentence applies the §13.5 *Interpretation pattern* "expected value of [outcome] for a [unit description]" to the no-covariate case. The second sentence makes the model-level point: with no covariate to condition on, the DGM emits the same prediction for every unit. The same template carries forward to the final DGM (`height ~ sex`), where the female-recruit prediction is *"The expected value of the height of a female USMC recruit is 162.9 centimeters because, for female recruits, sexMale is zero."* — same first clause, different unit description, plus the why-this-row-of-the-coefficient-table clause.
+
+**End-of-warm-up knowledge drop.** The End for the simple-model warm-up exercise should bridge from "the DGM has only one prediction" to "the next model adds a covariate and gets one prediction per group." Canonical wording:
+
+> *"Without a covariate, the model can only emit one prediction — the same one for every unit. Adding `[covariate]` lets the DGM produce different predictions for different units, which is the whole point of having a covariate."*
+
+Replace `[covariate]` with the actual variable the next exercise's model adds (e.g. `sex` for NHANES). Do **not** say things like "the simplest model has one parameter: the overall mean" or "that mean is the best guess when we know nothing" — those phrasings reintroduce the parameter-equals-sample-mean confusion that the *Interpretation language* paragraph above forbids. Stay at the model level: parameters produce predictions; covariates let the model produce *different* predictions for *different* units.
 
 **Interpretability ceiling by model family.** Not every model's parameters are equally interpretable. The student-facing interpretation work scales accordingly:
 
@@ -2341,11 +2389,28 @@ Operational exercises can be abbreviated in later tutorials once students have d
 
 ### 14.9 Rounding consistency for parameter tables
 
-Every **author-shown** parameter table in a tutorial — the Temperance preamble's `tidy()` display, each of Temperance Exercises 2–4, the Courage preamble's parameter summary when present, the concrete DGM math — uses the **same rounding**. Default: `signif(3)`, applied via `|> mutate(across(where(is.numeric), \(x) signif(x, 3)))` appended to the `tidy()` pipeline. Numeric values that appear in exercise `message` text (the canonical answer) must match the rounded display — no "the intercept is 162.18" in the prose while the table shows 162, and no "the intercept is 162" in the prose while the table shows 162.18.
+Every **author-shown** parameter table in a tutorial — the Temperance preamble's `tidy()` display, each of Temperance Exercises 2–4, the Courage preamble's parameter summary when present, the concrete DGM math — uses the **same rounding**. Numeric values that appear in exercise `message` text (the canonical answer) must match the rounded display — no "the intercept is 162.18" in the prose while the table shows 163, and no "the intercept is 163" in the prose while the table shows 162.9.
 
 One rounding, one tutorial, everywhere the reader sees parameters. A student who compares their answer to ours should not get tripped up by mismatched digits.
 
-The one exception is a **student-written code exercise** whose point is to teach `tidy()` itself (e.g. the Courage exercise where the student pipes into `tidy(conf.int = TRUE)` for the first time). There, the raw unrounded output is what `tidy()` actually produces; adding `signif()` would muddy the learning goal. After that one teaching exercise, every subsequent display of parameters uses the chosen rounding.
+**Resolution must be finer than the standard error.** A blanket `signif(3)` is *wrong* whenever a coefficient's magnitude is much larger than its standard error — the intercept and the upper CI bound collapse to the same displayed value. Concrete failure: NHANES height regression has intercept 162.94 with CI [162.38, 163.49]; `signif(3)` displays 163 / 162 / 163, with the estimate matching its own upper bound. The student looks at the table and cannot tell what the model actually says.
+
+**Default: round to a fixed number of decimal places, chosen so estimate and CI bounds stay visibly distinct in every row.** Practically this means looking at the smallest standard error (or CI half-width) in the table and picking decimal places one finer than that:
+
+| Smallest SE in table | Decimal places | Helper |
+|---|---|---|
+| ≥ 0.5 (e.g. NHANES, Trains) | 1 | `mutate(across(where(is.numeric), \(x) round(x, 1)))` |
+| 0.05 – 0.5 (e.g. logistic log-odds) | 2 | `round(x, 2)` |
+| 0.005 – 0.05 (e.g. Colleges grad-rate proportions) | 3 | `round(x, 3)` |
+| smaller | 4+ | `round(x, 4)` etc. |
+
+Use `round(x, n)` with a fixed `n` rather than `signif(x, 3)`. Sig figs are misleading on regression output: each row's *natural precision* is set by its standard error, not by the magnitude of the estimate. Within a row, the same decimal-place precision is applied to estimate, conf.low, and conf.high; across rows in the same table, the decimal-place count stays the same so the visual alignment of the columns is preserved.
+
+**Per-row variation is allowed.** When a single table mixes coefficients with very different magnitudes (e.g. the residual variance σ² alongside log-odds coefficients), the global decimal-place rule will over-precise some rows and under-precise others. The fix is to render σ² (or any anomalous row) in its own block, formatted appropriately, rather than to force all rows to the same `round(n)` call. The principle is: **each row's rounding must keep its estimate and CI distinguishable** — when the global rule fails for one row, that row gets its own treatment.
+
+**Concrete numbers in LaTeX and prose match the table.** The concrete DGM in the Temperance preamble (`$\hat{Y} = 162.9 + 13.6 \cdot X + \epsilon$`) carries the same digits the parameter table shows. The Temperance exercise prompts that quote a number ("Write a sentence interpreting the 162.9 estimate") and their canonical answers ("The expected value is 162.9 centimeters") match too. Verbal rounding in the *summary paragraph* — "about 163 cm" — is OK because it is explicitly verbal, but the concrete formulas and the canonical exercise answers are not the place for that.
+
+The one exception is a **student-written code exercise** whose point is to teach `tidy()` itself (e.g. the Courage exercise where the student pipes into `tidy(conf.int = TRUE)` for the first time). There, the raw unrounded output is what `tidy()` actually produces; adding `round()` would muddy the learning goal. After that one teaching exercise, every subsequent display of parameters uses the chosen rounding.
 
 ### 14.10 Package-name formatting
 
@@ -2514,19 +2579,19 @@ Preceptor Table and Population Table columns are listed by spanner in order. Pop
 
 ---
 
-### 06 — NHANES  *(Position 1, Easy predictive)*
+### 06 — Recruits  *(Position 1, Easy predictive)*
 
 - **Type:** example
 - **"Imagine":** You are in charge of ordering uniforms for next year's Marine Corps bootcamp recruits.
-- **Dataset:** NHANES (`primer.data`)
+- **Dataset:** `recruits` (`primer.tutorials`) — a 50-row teaching cut of NHANES, 40 male and 10 female young adults aged 18–27, columns `height`, `sex`, `age`. Built by `data-raw/recruits.R`; documented in `R/recruits.R`. The 40/10 split is deliberate so the two group means have visibly different standard errors — a feature the Temperance section asks students to notice and explain.
 - **Outcome:** `height` (continuous, cm)
 - **Treatment / Key covariate:** `sex` (Male/Female)
 - **Question (QoI):** What is the average height of male and female USMC recruits?
 - **Model:** Linear regression, one categorical predictor
 - **Causal / Predictive:** Predictive
-- **Student project:** `nhanes`
-- **Data prep:** `nhanes |> filter(age >= 18 & age <= 27) |> select(height, sex) |> drop_na() |> slice_sample(n = 50)` → `x`
-- **Final model:** `linear_reg() |> set_engine("lm") |> fit(height ~ sex, data = x)` → `fit_height`
+- **Student project:** `recruits`
+- **Data prep:** none in the tutorial — the `recruits` tibble is already filtered and sliced. Setup chunk uses `recruits` directly (no intermediate `x`).
+- **Final model:** `linear_reg() |> set_engine("lm") |> fit(height ~ sex, data = recruits)` → `fit_height`
 - **Preceptor Table:** Unit (Young Adult) | Outcome (Height cm) | Covariate (Sex)
 - **Population Table:** Source | Unit/Time (Young Adult, Year) | Outcome (Height cm) | Covariate (Sex)
 
