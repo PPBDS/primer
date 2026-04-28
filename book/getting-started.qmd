@@ -12,9 +12,7 @@ We provide two different computing approaches for doing data science: first, wor
 
 Sign up for a GitHub account by following the instructions at the [GitHub homepage](https://github.com/). **Follow [this advice](https://happygitwithr.com/github-acct.html#username-advice) when choosing your username.** 
 
-Use a permanent email address for this account — not one tied to your current school or job, which you'll lose access to when you move on. Your GitHub account is for life; your school email isn't.
-
-If you're a current student, you can still qualify for the [GitHub Student Developer Pack](https://education.github.com/pack) (free Copilot, extra Codespaces hours, and 100+ other perks). After signing up, add your school email as a secondary email in your GitHub settings and apply for Education benefits — you don't need to use the school email as your primary account email. If your school doesn't issue email addresses, you can also apply by uploading a student ID or enrollment letter.
+Use a permanent email address for this account — not one tied to your current school or job, which you'll lose access to when you move on. Your GitHub account is for life; your school email isn't. However, if you are a student or teacher, you will want to [assign your school email](https://github.com/settings/emails) as a second email to your account so that you can qualify for the [GitHub Student Developer Pack](https://education.github.com/pack) (free Copilot, extra Codespaces hours, and 100+ other perks). If your school doesn't issue email addresses, you can also apply by uploading a student ID or enrollment letter.
 
 On GitHub, your projects are organized into "repositories," usually called "repos."
 
@@ -81,7 +79,14 @@ Once that disappears, you are connected to your codespace, but it usually still 
 knitr::include_graphics("getting-started/images/cs-2f.png")
 ```
 
-First, note the blue dash moving above the repo name. That indicates that the process is not complete. Second, only the five default "extensions" appear along the left edge. Our `devcontainer.json` file installs several more at the end. Third, the codespace is not displaying its GitHub assigned name. The process is complete when your codespace looks like this:  
+First, note the blue dash moving above the repo name. That indicates that the process is not complete. Second, only the five default "extensions" appear along the left edge. Our `devcontainer.json` file installs several more at the end. Third, the codespace is not displaying its GitHub assigned name. The last step of the process will often show a message like this:
+
+```{r}
+knitr::include_graphics("getting-started/images/cs-2g.png")
+```
+
+
+The process is complete when your codespace looks like this:  
 
 ```{r}
 knitr::include_graphics("getting-started/images/cs-3.png")
@@ -131,12 +136,7 @@ You can restart a codespace from the same location. The set of commands brought 
 knitr::include_graphics("getting-started/images/codespaces-3.png")
 ```
 
-
-
 ### Using a codespace  {.unnumbered}
-
-
-
 
 Visual Studio Code, also known as "VS Code," is an integrated development environment (IDE) for coding and data science. Highlights:
 
@@ -199,6 +199,8 @@ An IDE like VS Code is designed to organize all the different work we do as data
 
 ### Tutorials {.unnumbered}
 
+<!-- DK: This section could use a few more screens, more slowly. But even better would be a video! -->
+
 If you hover your cursor over the Activity Bar on the far lefthand side, you can see the names of the different options. The second from the bottom is labeled "R Tutorials." Click on it. (You might need to click twice.) This brings up all the R packages with tutorials. Click on the package name `tutorial.helpers`.
 
 ```{r}
@@ -229,33 +231,6 @@ knitr::include_graphics("getting-started/images/cs-11.png")
 
 Read and follow the instructions. At the end of the tutorial, you should download your answers. 
 
-### Stopping and deleting a codespace {.unnumbered}
-
-You can see all your codespaces [here](https://github.com/codespaces). Although GitHub provides you with lots of free hours, "lots" is not endless. It is your responsibility to keep track of your usage. GitHub helps by stopping any codespace which has been inactive for 30 minutes. (You can change this default if you like by going [here](https://github.com/settings/codespaces) and updating Default Idle Timeout for your Github account. I use 15 minutes.)
-
-You can stop a codespace by hand by clicking on the blue codespace button in the lower lefthand corner, thereby bring up a variety of possible commads. Type "stop" in the search bar and one of the options will be "Stop Current Codespace." Select it.
-```{r}
-knitr::include_graphics("getting-started/images/stopCodespace.png")
-```
-
-This codespace will be stopped. However, you can restart it at anytime by going to your [codespaces page](https://github.com/codespaces):
-
-```{r}
-knitr::include_graphics("getting-started/images/cs-12.png")
-```
-
-I only have one codespace. It was started from one of my repos, as we know. Selecting it, and also clicking on the three dots--`...`--in the upper left, we have some options:
-
-
-```{r}
-knitr::include_graphics("getting-started/images/cs-13.png")
-```
-
-We can restart the codespace by selecting "Open in Browser." As you might expect, click on "Delete" deletes the codespace permanently.
-
-
-Your data science journey begins now!
-
 ### Summary for cloud {.unnumbered}
 
 You should have done the following:
@@ -264,7 +239,7 @@ You should have done the following:
 
   - Created a codespace using https://github.com/PPBDS/codespace-starter as a template.
 
-  - Completed your first tutorial.
+  - Completed your first tutorial, "Getting Started," from the **tutorial.helpers** package.
 
   - Stopped and deleted the codespace.
 
