@@ -215,14 +215,17 @@ colleges |>
   drop_na(grad_rate) |>
   ggplot(aes(x = grad_rate)) +
   geom_density(fill = "grey70", color = "grey30") +
+  scale_x_continuous(labels = scales::label_percent()) +
   labs(
     title = "Graduation Rates Across US Colleges",
-    subtitle = "Most colleges graduate 50 to 80 percent of their students within six years",
+    subtitle = "Most colleges graduate 50% to 80% of their students within six years",
     x = "Graduation Rate",
-    y = "Density",
+    y = NULL,
     caption = "Source: IPEDS 2013 via primer.data"
   ) +
-  theme_minimal()
+  theme_minimal() +
+  theme(axis.text.y  = element_blank(),
+        axis.ticks.y = element_blank())
 ```
 
 ### Exercise 8
@@ -231,7 +234,7 @@ Which variable in `colleges` do you think might have an important connection to 
 
 ```{r introduction-8}
 question_text(NULL,
-  message = "One candidate is `tuition`. Colleges that charge more tend to have more resources per student, higher admission standards, and students from wealthier families --- all of which correlate with graduation. Another candidate is `selectivity`, which directly captures how choosy the college is about whom it admits.",
+  message = "One candidate is `tuition`. Colleges that charge more tend to have more resources per student, higher admission standards, and students from wealthier families --- all of which correlate with graduation rates. Another candidate is `selectivity`, which directly captures how choosy the college is about whom it admits.",
   answer(NULL, correct = TRUE),
   allow_retry = FALSE,
   incorrect = NULL,
@@ -265,7 +268,7 @@ Write a predictive question connecting the outcome `grad_rate` to `tuition`, the
 
 ```{r introduction-10}
 question_text(NULL,
-  message = "What is the relationship between a college's tuition and its graduation rate?",
+  message = "What is the difference in expected graduation rates between colleges with tuition of $20,000 and colleges with tuition of $30,000?",
   answer(NULL, correct = TRUE),
   allow_retry = FALSE,
   incorrect = NULL,
@@ -274,7 +277,7 @@ question_text(NULL,
 
 ###
 
-The relationship between tuition and graduation rate is a reasonable first question but not the only one worth asking. A student picking a college might also want to know the graduation rate at specific schools they're considering (point predictions, not just averages), or the range of graduation rates for similar-cost colleges (to calibrate expectations). The average question is the simplest, and we will stick with it --- the matching chapter considers the broader family.
+School tuition in this data is the *stated* tuition --- the sticker price. At many colleges, most students receive significant financial aid, so the average tuition actually paid is far lower than the recorded number. Our question therefore compares colleges by sticker price, not by net price. A version of the question that compared net prices would need a different dataset.
 
 
 ## Wisdom
@@ -283,7 +286,7 @@ Data science starts with some broad questions and a data set which might help us
 
 Imagine that you are a data scientist at a non-profit helping students find the best college. There are many decisions to make.
 
-The specific question: *What is the relationship between a college's tuition and its graduation rate?*
+The specific question: *What is the difference in expected graduation rates between colleges with tuition of $20,000 and colleges with tuition of $30,000?*
 
 We will work from the Department of Education's 2013 IPEDS database, available in the `colleges` tibble of the **[primer.data](https://github.com/PPBDS/primer.data)** package.
 
@@ -325,46 +328,11 @@ The Preceptor Table does not include all the covariates which you will eventuall
 
 ### Exercise 3
 
-Let's look at our data more carefully. Ask AI to write R code that plots the distribution of `grad_rate` in `colleges` (filtered to schools with tuition > $20,000), using a density plot with a descriptive title, subtitle, axis labels, and caption. Paste the code below and run it.
+We saw the distribution of `grad_rate` on its own in the Introduction. Now look at how `grad_rate` varies with `tuition`. Ask AI to write R code that plots `grad_rate` on the y-axis against `tuition` on the x-axis using points with `alpha = 0.4`, a smooth trend line, and descriptive labels. Paste the code below.
 
 ```{r wisdom-3}
 question_text(NULL,
-  message = "    colleges |>\n      filter(tuition > 2) |>\n      drop_na(grad_rate) |>\n      ggplot(aes(x = grad_rate)) +\n      geom_density(fill = \"grey70\", color = \"grey30\") +\n      labs(\n        title = \"Graduation Rates Across US Colleges\",\n        subtitle = \"Most colleges graduate 50--80% of students within six years\",\n        x = \"Graduation Rate\", y = \"Density\",\n        caption = \"Source: IPEDS 2013 via primer.data\"\n      ) +\n      theme_minimal()",
-  answer(NULL, correct = TRUE),
-  allow_retry = FALSE,
-  incorrect = NULL,
-  rows = 10)
-```
-
-###
-
-```{r}
-#| echo: false
-#| message: false
-#| warning: false
-colleges |>
-  filter(tuition > 2) |>
-  drop_na(grad_rate) |>
-  ggplot(aes(x = grad_rate)) +
-  geom_density(fill = "grey70", color = "grey30") +
-  labs(
-    title = "Graduation Rates Across US Colleges",
-    subtitle = "Most colleges graduate 50--80% of students within six years",
-    x = "Graduation Rate", y = "Density",
-    caption = "Source: IPEDS 2013 via primer.data"
-  ) +
-  theme_minimal()
-```
-
-The distribution is broad with a peak around 60% graduation. A long left tail captures the non-selective schools where completing a degree in six years is much less common.
-
-### Exercise 4
-
-Now look at how `grad_rate` varies with `tuition`. Ask AI to write R code that plots `grad_rate` on the y-axis against `tuition` on the x-axis using points with `alpha = 0.4`, a smooth trend line, and descriptive labels. Paste the code below.
-
-```{r wisdom-4}
-question_text(NULL,
-  message = "    colleges |>\n      filter(tuition > 2) |>\n      drop_na(grad_rate, tuition) |>\n      ggplot(aes(x = tuition, y = grad_rate)) +\n      geom_point(alpha = 0.4, color = \"grey30\") +\n      geom_smooth(method = \"lm\", color = \"steelblue\", se = FALSE) +\n      labs(\n        title = \"Graduation Rate by Tuition\",\n        subtitle = \"Higher-tuition colleges tend to graduate more students\",\n        x = \"Tuition ($10,000)\", y = \"Graduation Rate\",\n        caption = \"Source: IPEDS 2013 via primer.data\"\n      ) +\n      theme_minimal()",
+  message = "    colleges |>\n      filter(tuition > 2) |>\n      drop_na(grad_rate, tuition) |>\n      ggplot(aes(x = tuition, y = grad_rate)) +\n      geom_point(alpha = 0.4, color = \"grey30\") +\n      geom_smooth(method = \"lm\", color = \"steelblue\", se = FALSE) +\n      scale_x_continuous(labels = scales::label_dollar(scale = 10000)) +\n      scale_y_continuous(labels = scales::label_percent()) +\n      labs(\n        title = \"Graduation Rate by Tuition\",\n        subtitle = \"Higher-tuition colleges tend to have higher graduation rates\",\n        x = \"Tuition\", y = \"Graduation Rate\",\n        caption = \"Source: IPEDS 2013 via primer.data\"\n      ) +\n      theme_minimal()",
   answer(NULL, correct = TRUE),
   allow_retry = FALSE,
   incorrect = NULL,
@@ -383,23 +351,23 @@ colleges |>
   ggplot(aes(x = tuition, y = grad_rate)) +
   geom_point(alpha = 0.4, color = "grey30") +
   geom_smooth(method = "lm", color = "steelblue", se = FALSE) +
+  scale_x_continuous(labels = scales::label_dollar(scale = 10000)) +
+  scale_y_continuous(labels = scales::label_percent()) +
   labs(
     title = "Graduation Rate by Tuition",
-    subtitle = "Higher-tuition colleges tend to graduate more students",
-    x = "Tuition ($10,000)",
+    subtitle = "Higher-tuition colleges tend to have higher graduation rates",
+    x = "Tuition",
     y = "Graduation Rate",
     caption = "Source: IPEDS 2013 via primer.data"
   ) +
   theme_minimal()
 ```
 
-A clear positive slope, with lots of scatter. Tuition captures something real, but a long way from the whole story.
-
-### Exercise 5
+### Exercise 4
 
 Describe the key components of Preceptor Tables in general, without worrying about this specific problem. Use words like "units," "outcomes," and "covariates."
 
-```{r wisdom-5}
+```{r wisdom-4}
 question_text(NULL,
   message = "The rows of the Preceptor Table are the units. The outcome is at least one of the columns. If the problem is causal, there will be at least two (potential) outcome columns. The other columns are covariates. If the problem is causal, at least one of the covariates will be considered a treatment.",
   answer(NULL, correct = TRUE),
@@ -412,13 +380,13 @@ question_text(NULL,
 
 This problem is predictive, so there is one outcome column: `grad_rate`. The key covariate is `tuition`.
 
-### Exercise 6
+### Exercise 5
 
 What are the units for this problem?
 
-```{r wisdom-6}
+```{r wisdom-5}
 question_text(NULL,
-  message = "Each row is one US four-year college or university in the 2013 IPEDS snapshot. The Preceptor Table would have a row for every such institution --- roughly 900 in total.",
+  message = "Each row is one US four-year college or university *today* --- in 2026, when the non-profit is helping its students choose. The Preceptor Table would have a row for every such institution, roughly 900 in total. Note the time mismatch: our data is from 2013, so the Preceptor Table and the data refer to the same set of colleges but at very different points in time.",
   answer(NULL, correct = TRUE),
   allow_retry = FALSE,
   incorrect = NULL,
@@ -429,11 +397,11 @@ question_text(NULL,
 
 We model units, but we only really care about aggregates.
 
-### Exercise 7
+### Exercise 6
 
 What is the outcome variable for this problem?
 
-```{r wisdom-7}
+```{r wisdom-6}
 question_text(NULL,
   message = "`grad_rate` --- the proportion of entering students who graduate within six years, a number between 0 and 1.",
   answer(NULL, correct = TRUE),
@@ -446,11 +414,11 @@ question_text(NULL,
 
 The outcome we really care about --- "did this college's graduates succeed in life?" --- is not measured in our data. `grad_rate` is a narrow proxy: it tells us completion, not outcomes after graduation.
 
-### Exercise 8
+### Exercise 7
 
 What is a covariate which you think might be useful for this problem, regardless of whether or not it might be included in the data?
 
-```{r wisdom-8}
+```{r wisdom-7}
 question_text(NULL,
   message = "`selectivity` is a strong candidate --- more selective schools admit students who are more likely to graduate regardless of the school's support. SAT score distribution, percent of first-generation students, and endowment per student are others.",
   answer(NULL, correct = TRUE),
@@ -463,11 +431,11 @@ question_text(NULL,
 
 The term "covariates" is used in at least three ways. First, it is all the variables which might be useful, regardless of whether or not we have the data. Second, it is all the variables for which we have data. Third, it is the set of variables in the data which we end up using in the model.
 
-### Exercise 9
+### Exercise 8
 
 What are the treatments, if any, for this problem?
 
-```{r wisdom-9}
+```{r wisdom-8}
 question_text(NULL,
   message = "There are no treatments. This is a predictive model --- nothing in the `colleges` dataset can be manipulated (we cannot force a college to charge more tuition or to become more selective). Predictive models have covariates only.",
   answer(NULL, correct = TRUE),
@@ -480,13 +448,13 @@ question_text(NULL,
 
 Remember that a treatment is just another covariate which, for the purposes of a specific problem, we are assuming can be manipulated.
 
-### Exercise 10
+### Exercise 9
 
 What moment in time does the Preceptor Table refer to?
 
-```{r wisdom-10}
+```{r wisdom-9}
 question_text(NULL,
-  message = "The 2013 academic year --- the snapshot IPEDS collected. The graduation rate is the six-year rate, so each row's `grad_rate` technically refers to the cohort that entered in 2007.",
+  message = "Today, in 2026 --- when the non-profit's students are choosing colleges. The graduation rate is the six-year rate, so each row's `grad_rate` would refer to the cohort that entered in 2020. Our data is from 2013, but the Preceptor Table is about now.",
   answer(NULL, correct = TRUE),
   allow_retry = FALSE,
   incorrect = NULL,
@@ -497,13 +465,13 @@ question_text(NULL,
 
 A Preceptor Table can never really refer to an exact instant in time.
 
-### Exercise 11
+### Exercise 10
 
 Describe in words the Preceptor Table for this problem.
 
-```{r wisdom-11}
+```{r wisdom-10}
 question_text(NULL,
-  message = "The Preceptor Table has three columns: one identifying each college, one for `grad_rate`, and one for `tuition`. Each row represents one US four-year institution in 2013.",
+  message = "The Preceptor Table has three columns: one identifying each college, one for `grad_rate`, and one for `tuition`. Each row represents one US four-year institution in 2026 --- the year of the question, not the year of the data.",
   answer(NULL, correct = TRUE),
   allow_retry = FALSE,
   incorrect = NULL,
@@ -523,7 +491,7 @@ pre_tibble <- tibble::tribble(
   "Regional Private College",    "0.52",             "3.4"
 )
 
-pre_title_footnote     <- "A Preceptor Table is the smallest table such that, if every cell were filled with its true value, answering the question 'What is the relationship between a college's tuition and its graduation rate?' would be easy."
+pre_title_footnote     <- "A Preceptor Table is the smallest table such that, if every cell were filled with its true value, answering the question 'What is the difference in expected graduation rates between colleges with tuition of $20,000 and colleges with tuition of $30,000?' would be easy."
 pre_units_footnote     <- "Each row is one US four-year college or university. Missing rows represent the other institutions not shown."
 pre_outcome_footnote   <- "Six-year graduation rate, a proportion between 0 and 1. Reflects the entering class from six years before the snapshot year."
 pre_covariate_footnote <- "Annual tuition and fees in units of $10,000. A value of 3 means $30,000 per year."
@@ -584,11 +552,11 @@ cat(
 )
 ```
 
-### Exercise 12
+### Exercise 11
 
 We need a cleaned tibble. Ask AI to write R code that creates a tibble called `x` by taking `colleges`, selecting only `tuition`, `grad_rate`, and `selectivity`, filtering to rows with tuition above $20,000 (so `tuition > 2`), and dropping rows with missing values. Paste the code below.
 
-```{r wisdom-12}
+```{r wisdom-11}
 question_text(NULL,
   message = "    x <- colleges |>\n      select(tuition, grad_rate, selectivity) |>\n      filter(tuition > 2) |>\n      drop_na()",
   answer(NULL, correct = TRUE),
@@ -601,7 +569,7 @@ question_text(NULL,
 
 `filter(tuition > 2)` restricts to schools charging at least $20,000/year, which removes a handful of community-college-priced entries in the IPEDS snapshot that don't fit the four-year residential model we care about. `drop_na()` silently removes rows missing any of the three variables --- a simplification Justice will revisit.
 
-### Exercise 13
+### Exercise 12
 
 In `analysis.qmd`, add a new code chunk and copy/paste the pipeline above. Render the QMD. At the R prompt, run:
 
@@ -611,7 +579,7 @@ show_file("analysis.qmd", chunk = "Last")
 
 CP/CR.
 
-```{r wisdom-13}
+```{r wisdom-12}
 question_text(NULL,
   message = "    > show_file(\"analysis.qmd\", chunk = \"Last\")\n    ```{r}\n    x <- colleges |>\n      select(tuition, grad_rate, selectivity) |>\n      filter(tuition > 2) |>\n      drop_na()\n    ```",
   answer(NULL, correct = TRUE),
@@ -624,13 +592,13 @@ question_text(NULL,
 
 You can never look at the data too much. --- Mark Engerman
 
-### Exercise 14
+### Exercise 13
 
 Write the first two sentences of the summary paragraph. The first sentence is a general statement about the overall topic, mentioning the general class of outcome and at least one covariate. The second sentence introduces the data source and the specific question.
 
-```{r wisdom-14}
+```{r wisdom-13}
 question_text(NULL,
-  message = "Where students go to college and what they pay for it varies enormously, and so does the likelihood that they will finish. Using 2013 IPEDS data on roughly 900 US four-year colleges and universities, we examine how graduation rate varies with tuition and selectivity.",
+  message = "Where students go to college and what they pay for it varies enormously, and so does the likelihood that they will finish. We help today's students choose by examining how graduation rate varies with tuition and selectivity, using 2013 IPEDS data on roughly 900 US four-year colleges and universities --- the most recent reliable national snapshot we have.",
   answer(NULL, correct = TRUE),
   allow_retry = FALSE,
   incorrect = NULL,
@@ -657,7 +625,7 @@ pre_tibble_j <- tibble::tribble(
   "Regional Private College",    "0.52",             "3.4"
 )
 
-pre_title_footnote_j     <- "A Preceptor Table is the smallest table such that, if every cell were filled with its true value, answering the question 'What is the relationship between a college's tuition and its graduation rate?' would be easy."
+pre_title_footnote_j     <- "A Preceptor Table is the smallest table such that, if every cell were filled with its true value, answering the question 'What is the difference in expected graduation rates between colleges with tuition of $20,000 and colleges with tuition of $30,000?' would be easy."
 pre_units_footnote_j     <- "Each row is one US four-year college or university."
 pre_outcome_footnote_j   <- "Six-year graduation rate, 0 to 1."
 pre_covariate_footnote_j <- "Annual tuition in units of $10,000."
@@ -866,7 +834,7 @@ Specify the unit/time combinations which define each row in this Population Tabl
 
 ```{r justice-5}
 question_text(NULL,
-  message = "Each row is one US four-year college in a given year. Data rows are the 542 colleges in our filtered 2013 IPEDS snapshot. Preceptor rows are the same population of US four-year colleges in 2013 (IPEDS covers essentially all of them, so the data and Preceptor rows largely overlap). Other rows cover the broader span of US four-year colleges across reporting years.",
+  message = "Each row is one US four-year college in a given year. Data rows are the 542 colleges in our filtered 2013 IPEDS snapshot. Preceptor rows are US four-year colleges in 2026 --- the year the non-profit's students are choosing. Many of the same institutions appear in both blocks, but the rows describe them at different times: the 2013 row for Amherst and the 2026 row for Amherst are different rows in the Population Table even though they share an institution.",
   answer(NULL, correct = TRUE),
   allow_retry = FALSE,
   incorrect = NULL,
@@ -886,15 +854,15 @@ pop_tibble <- tibble::tribble(
   "Data"     , "..."              , "..."  , "..."             , "..."               , "..."         ,
   "Data"     , "College 542"      , "2013" , "0.48"            , "2.15"              , "Lowly Selective",
   "..."      , "..."              , "..."  , "..."             , "..."               , "..."         ,
-  "Preceptor", "Amherst College"  , "2013" , "0.95"            , "5.10"              , "Elite"       ,
-  "Preceptor", "Flagship State"   , "2013" , "0.68"            , "2.50"              , "Moderately Selective",
+  "Preceptor", "Amherst College"  , "2026" , "0.95"            , "8.40"              , "Elite"       ,
+  "Preceptor", "Flagship State"   , "2026" , "0.68"            , "3.20"              , "Moderately Selective",
   "Preceptor", "..."              , "..."  , "..."             , "..."               , "..."         ,
-  "Preceptor", "Regional Private" , "2013" , "0.52"            , "3.40"              , "Lowly Selective",
+  "Preceptor", "Regional Private" , "2026" , "0.52"            , "5.10"              , "Lowly Selective",
   "..."      , "..."              , "..."  , "..."             , "..."               , "..."
 )
 
-pop_title_footnote     <- "This table combines the 2013 IPEDS snapshot with the Preceptor Table's view of US four-year colleges in 2013, drawn from the same population of institutions."
-pop_units_footnote     <- "Each row is one college at one point in time. Data and Preceptor rows refer to the same population in the same year; the two sets largely overlap."
+pop_title_footnote     <- "This table combines the 2013 IPEDS snapshot with the Preceptor Table's view of the same colleges in 2026, when the non-profit's students are choosing. The data and Preceptor rows refer to overlapping institutions but at different points in time."
+pop_units_footnote     <- "Each row is one college at one point in time. Data rows are from the 2013 IPEDS snapshot. Preceptor rows are 2026 colleges --- many of the same institutions, but with tuition and graduation rates that may have drifted over the 13-year gap."
 pop_outcome_footnote   <- "Six-year graduation rate, 0 to 1."
 pop_covariate_footnote <- "Tuition in units of $10,000. Selectivity is IPEDS's five-level ordered factor."
 
@@ -977,7 +945,7 @@ Provide one reason why stability might not hold.
 
 ```{r justice-7}
 question_text(NULL,
-  message = "The relationship between tuition and graduation rate has drifted over time. Tuition has risen much faster than inflation, and colleges have competed for students in ways that change admissions and graduation practices. A relationship estimated from 2013 data may not match the underlying parameter in, say, 2023.",
+  message = "The relationship between tuition and graduation rate has drifted over time. Between 2013 (when our data was collected) and 2026 (when the question is asked), tuition has risen much faster than inflation, and colleges have competed for students in ways that change admissions and graduation practices. A coefficient estimated from 2013 data may not match the underlying parameter in 2026, which is the only one our question actually cares about.",
   answer(NULL, correct = TRUE),
   allow_retry = FALSE,
   incorrect = NULL,
@@ -1028,7 +996,7 @@ Provide one reason, involving the relationship between the Population and the Pr
 
 ```{r justice-10}
 question_text(NULL,
-  message = "Our Preceptor Table and the data share units. But the non-profit's students are considering specific colleges, not all US four-year colleges on average. If the students are looking at elite private schools, the broader IPEDS average isn't directly informative for them --- the Preceptor Table that would actually answer their question is a narrower slice than what we have.",
+  message = "The non-profit's students are considering specific colleges in 2026, not the average US four-year college on average across all years. If the students are looking at elite private schools today, the broader 2013 IPEDS average isn't directly informative for them --- the Preceptor Table that would actually answer their question is a narrower slice (and a more recent snapshot) than what our data captures.",
   answer(NULL, correct = TRUE),
   allow_retry = FALSE,
   incorrect = NULL,
@@ -1081,11 +1049,11 @@ The link function for a continuous outcome is linear. Our model will be a linear
 
 Write one sentence highlighting a potential weakness in your model. So far our summary paragraph looks like this:
 
-> Where students go to college and what they pay for it varies enormously, and so does the likelihood that they will finish. Using 2013 IPEDS data on roughly 900 US four-year colleges and universities, we examine how graduation rate varies with tuition and selectivity.
+> Where students go to college and what they pay for it varies enormously, and so does the likelihood that they will finish. We help today's students choose by examining how graduation rate varies with tuition and selectivity, using 2013 IPEDS data on roughly 900 US four-year colleges and universities --- the most recent reliable national snapshot we have.
 
 ```{r justice-13}
 question_text(NULL,
-  message = "One concern is that our filter to `tuition > 2` drops low-tuition colleges --- so any estimated relationship only applies to schools charging at least $20,000 a year, not to the full range of US four-year institutions.",
+  message = "One concern is the 13-year gap between our data (2013) and the question (2026). Tuition has risen much faster than inflation over that span, and the relationship between price and graduation rate may have shifted. The 2013 coefficients we estimate may not reflect what they would be if we could fit the same model on today's colleges.",
   answer(NULL, correct = TRUE),
   allow_retry = FALSE,
   incorrect = NULL,
@@ -1385,15 +1353,18 @@ fitted_df <- tibble(
 
 ggplot(fitted_df, aes(x = value, fill = source)) +
   geom_density(alpha = 0.5) +
+  scale_x_continuous(labels = scales::label_percent()) +
   labs(
     title = "Actual vs. Fitted Graduation Rates",
     subtitle = "The fitted distribution is narrower --- our model smooths out the tails",
     x = "Graduation Rate",
-    y = "Density",
+    y = NULL,
     fill = "Source",
     caption = "Source: IPEDS 2013 via primer.data"
   ) +
-  theme_minimal()
+  theme_minimal() +
+  theme(axis.text.y  = element_blank(),
+        axis.ticks.y = element_blank())
 ```
 
 Read the plot carefully, then continue.
@@ -1407,17 +1378,13 @@ question_text(NULL,
   rows = 3)
 ```
 
-###
-
-In a good model, the distribution of fitted values looks like the distribution of the actual outcome. Big divergences mean our model is missing something. Here the fitted distribution is noticeably narrower than the actual one, which is expected: a linear model produces one predicted value per (tuition, selectivity) combination, so the spread of fitted values reflects only variation in those predictors. The real graduation rates vary for lots of reasons the model doesn't see, which widens the actual distribution.
-
 ### Exercise 10
 
 With the parameters estimated, we can write the fitted model as a concrete formula:
 
-$$\hat{\text{grad\_rate}} = 0.487 + 0.0897 \cdot \text{tuition} - 0.0784 \cdot \text{Highly Selective} - 0.128 \cdot \text{Moderately Selective} - 0.213 \cdot \text{Lowly Selective} - 0.205 \cdot \text{Non-selective}$$
+$$\hat{\text{grad\_rate}} = 0.487 + 0.090 \cdot \text{tuition} - 0.078 \cdot \text{Highly Selective} - 0.128 \cdot \text{Moderately Selective} - 0.213 \cdot \text{Lowly Selective} - 0.205 \cdot \text{Non-selective}$$
 
-Each selectivity term is a dummy 0/1 variable (e.g. `Highly Selective` is 1 if the college is Highly Selective, 0 otherwise). The baseline case --- an Elite college with every selectivity dummy = 0 --- has predicted graduation rate $0.487 + 0.0897 \cdot \text{tuition}$. Values rounded to three significant figures.
+Each selectivity term is a dummy 0/1 variable (e.g. `Highly Selective` is 1 if the college is Highly Selective, 0 otherwise). The baseline case --- an Elite college with every selectivity dummy = 0 --- has predicted graduation rate $0.487 + 0.090 \cdot \text{tuition}$. Values rounded to three decimal places, fine enough that each estimate and its confidence-interval bounds are visibly distinct.
 
 **This is our data generating mechanism.**
 
@@ -1514,7 +1481,7 @@ library(knitr)
 
 tidy(fit_colleges, conf.int = TRUE) |>
   select(term, estimate, conf.low, conf.high) |>
-  mutate(across(where(is.numeric), \(x) signif(x, 3))) |>
+  mutate(across(where(is.numeric), \(x) round(x, 3))) |>
   kable(
     caption = "Estimates and 95% Confidence Intervals for Parameters.  Source: IPEDS 2013 via primer.data"
   )
@@ -1541,7 +1508,7 @@ Add a sentence to your project summary explaining the structure of the model.
 
 ```{r courage-15}
 question_text(NULL,
-  message = "We model graduation rate as a linear function of tuition and selectivity.",
+  message = "We model graduation rate as a normally distributed variable which is a linear function of tuition and selectivity.",
   answer(NULL, correct = TRUE),
   allow_retry = FALSE,
   incorrect = NULL,
@@ -1557,7 +1524,7 @@ Add your sentence to the summary paragraph. `Cmd/Ctrl + Shift + K`, then commit/
 
 Courage provides the data generating mechanism. We can express the DGM in four ways:
 
-**In words:** We describe graduation rate as a linear function of tuition and selectivity.
+**In words:** We model graduation rate as a normally distributed variable which is a linear function of tuition and selectivity.
 
 **In R code:**
 
@@ -1574,14 +1541,14 @@ fit_colleges <- linear_reg() |>
 fit_colleges |>
   tidy(conf.int = TRUE) |>
   select(term, estimate, conf.low, conf.high) |>
-  mutate(across(where(is.numeric), \(x) signif(x, 3)))
+  mutate(across(where(is.numeric), \(x) round(x, 3)))
 ```
 
 **As a mathematical formula:**
 
-$$\text{grad\_rate} = 0.487 + 0.0897 \cdot \text{tuition} - 0.0784 \cdot \text{Highly Selective} - 0.128 \cdot \text{Moderately Selective} - 0.213 \cdot \text{Lowly Selective} - 0.205 \cdot \text{Non-selective} + \epsilon$$
+$$\text{grad\_rate} = 0.487 + 0.090 \cdot \text{tuition} - 0.078 \cdot \text{Highly Selective} - 0.128 \cdot \text{Moderately Selective} - 0.213 \cdot \text{Lowly Selective} - 0.205 \cdot \text{Non-selective} + \epsilon$$
 
-with $\epsilon \sim N(0, 0.00760)$.
+with $\epsilon \sim N(0, 0.008)$.
 
 ###
 
@@ -1613,14 +1580,14 @@ linear_reg() |>
   fit(grad_rate ~ 1, data = x) |>
   tidy(conf.int = TRUE) |>
   select(term, estimate, conf.low, conf.high) |>
-  mutate(across(where(is.numeric), \(x) signif(x, 3)))
+  mutate(across(where(is.numeric), \(x) round(x, 3)))
 ```
 
 Write a sentence interpreting the 0.62 estimate for `(Intercept)` in this simple model.
 
 ```{r temperance-2}
 question_text(NULL,
-  message = "The average graduation rate across our 542 colleges is 0.62 --- about 62% of students finish within six years. This is the expected value we would predict if we ignored every covariate.",
+  message = "The expected value of the graduation rate of a US four-year college is 0.62 --- about 62%. Because this model has no covariates, every college gets the same prediction --- the intercept.",
   answer(NULL, correct = TRUE),
   allow_retry = FALSE,
   incorrect = NULL,
@@ -1629,7 +1596,7 @@ question_text(NULL,
 
 ###
 
-The simplest model has one parameter: the overall mean. That mean is the "best guess" when we know nothing about the college. The richer DGM breaks this mean down by tuition and selectivity.
+Without any covariate, the model can only emit one prediction --- the same one for every college. Adding `tuition` and `selectivity` lets the DGM produce different predictions for different colleges, which is the whole point of having covariates.
 
 ### Exercise 3
 
@@ -1640,14 +1607,14 @@ Now consider the full DGM, `grad_rate ~ tuition + selectivity`:
 fit_colleges |>
   tidy(conf.int = TRUE) |>
   select(term, estimate, conf.low, conf.high) |>
-  mutate(across(where(is.numeric), \(x) signif(x, 3)))
+  mutate(across(where(is.numeric), \(x) round(x, 3)))
 ```
 
-Write a sentence interpreting the 0.0897 estimate for `tuition`.
+Write a sentence interpreting the 0.090 estimate for `tuition`.
 
 ```{r temperance-3}
 question_text(NULL,
-  message = "When comparing two colleges in the same selectivity tier but with tuition $10,000 apart, the higher-tuition college has an expected graduation rate 0.0897 higher --- about 9 percentage points --- adjusting for selectivity.",
+  message = "When comparing two colleges in the same selectivity tier but with tuition $10,000 apart, the higher-tuition college has an expected graduation rate 0.090 higher --- about 9 percentage points --- adjusting for selectivity.",
   answer(NULL, correct = TRUE),
   allow_retry = FALSE,
   incorrect = NULL,
@@ -1660,11 +1627,11 @@ Whenever we consider non-treatment variables, we must never use terms like "caus
 
 ### Exercise 4
 
-Write a sentence interpreting the `-0.213` estimate for `selectivityLowly Selective`.
+Write a sentence interpreting the -0.213 estimate for `selectivityLowly Selective`.
 
 ```{r temperance-4}
 question_text(NULL,
-  message = "Lowly Selective colleges have an expected graduation rate 0.213 lower --- about 21 percentage points --- than Elite colleges at the same tuition level. The comparison is to the reference category, which is Elite (the first level of the factor).",
+  message = "Lowly Selective colleges have an expected graduation rate 0.213 lower --- about 21 percentage points --- than Elite colleges at comparable tuition. The comparison is to the reference category, which is Elite (the first level of the factor).",
   answer(NULL, correct = TRUE),
   allow_retry = FALSE,
   incorrect = NULL,
@@ -1681,7 +1648,7 @@ Write a sentence interpreting the confidence interval for `tuition`.
 
 ```{r temperance-5}
 question_text(NULL,
-  message = "We do not know the true value for the tuition coefficient, but we can be 95% confident that it lies between 0.0738 and 0.106 --- that is, between about 7 and 11 percentage points of graduation rate per $10,000 of tuition, adjusting for selectivity.",
+  message = "We do not know the true value for the tuition coefficient, but we can be 95% confident that it lies between 0.074 and 0.106 --- that is, between about 7 and 11 percentage points of graduation rate per $10,000 of tuition, adjusting for selectivity.",
   answer(NULL, correct = TRUE),
   allow_retry = FALSE,
   incorrect = NULL,
@@ -1690,7 +1657,7 @@ question_text(NULL,
 
 ###
 
-We care if the confidence interval for a given variable excludes zero. If not, we can't be sure whether the relationship between the variable and the outcome is positive or negative.
+We care if the confidence interval for a given variable excludes zero. If not, we can't be sure whether the relationship between the variable and the outcome is positive or negative. Here, zero is well outside the interval, so the model says higher-tuition colleges have a higher *expected* graduation rate than lower-tuition colleges in the same selectivity tier. That does not mean every higher-tuition college has a higher graduation rate than every lower-tuition one --- the two distributions overlap, and there are plenty of low-tuition colleges that graduate more of their students than some high-tuition colleges.
 
 ### Exercise 6
 
@@ -1719,7 +1686,7 @@ What is the specific question we are trying to answer?
 
 ```{r temperance-7}
 question_text(NULL,
-  message = "What is the relationship between a college's tuition and its graduation rate, adjusting for selectivity?",
+  message = "What is the difference in expected graduation rates between colleges with tuition of $20,000 and colleges with tuition of $30,000?",
   answer(NULL, correct = TRUE),
   allow_retry = FALSE,
   incorrect = NULL,
@@ -1803,7 +1770,7 @@ Paste the plot code below.
 
 ```{r temperance-11}
 question_text(NULL,
-  message = "    plot_predictions(fit_colleges, condition = c(\"tuition\", \"selectivity\"), draw = FALSE) |>\n      ggplot(aes(x = tuition, y = estimate, color = selectivity)) +\n      geom_ribbon(aes(ymin = conf.low, ymax = conf.high, fill = selectivity),\n                  alpha = 0.15, color = NA) +\n      geom_line(size = 1) +\n      labs(\n        title = \"Predicted Graduation Rate by Tuition and Selectivity\",\n        subtitle = \"Within each selectivity tier, every $10k of tuition adds ~9 percentage points\",\n        x = \"Tuition ($10,000)\", y = \"Predicted Graduation Rate\",\n        color = \"Selectivity\", fill = \"Selectivity\",\n        caption = \"Source: IPEDS 2013 via primer.data\"\n      ) +\n      theme_minimal()",
+  message = "    plot_predictions(fit_colleges, condition = c(\"tuition\", \"selectivity\"), draw = FALSE) |>\n      ggplot(aes(x = tuition, y = estimate, color = selectivity)) +\n      geom_ribbon(aes(ymin = conf.low, ymax = conf.high, fill = selectivity),\n                  alpha = 0.15, color = NA) +\n      geom_line(size = 1) +\n      scale_x_continuous(labels = scales::label_dollar(scale = 10000)) +\n      scale_y_continuous(labels = scales::label_percent()) +\n      labs(\n        title = \"Predicted Graduation Rate by Tuition and Selectivity\",\n        subtitle = \"Within each selectivity tier, every $10k of tuition adds ~9 percentage points\",\n        x = \"Tuition\", y = \"Predicted Graduation Rate\",\n        color = \"Selectivity\", fill = \"Selectivity\",\n        caption = \"Source: IPEDS 2013 via primer.data\"\n      ) +\n      theme_minimal()",
   answer(NULL, correct = TRUE),
   allow_retry = FALSE,
   incorrect = NULL,
@@ -1821,10 +1788,12 @@ plot_predictions(fit_colleges, condition = c("tuition", "selectivity"), draw = F
   geom_ribbon(aes(ymin = conf.low, ymax = conf.high, fill = selectivity),
               alpha = 0.15, color = NA) +
   geom_line(size = 1) +
+  scale_x_continuous(labels = scales::label_dollar(scale = 10000)) +
+  scale_y_continuous(labels = scales::label_percent()) +
   labs(
     title = "Predicted Graduation Rate by Tuition and Selectivity",
     subtitle = "Within each selectivity tier, every $10k of tuition adds ~9 percentage points",
-    x = "Tuition ($10,000)",
+    x = "Tuition",
     y = "Predicted Graduation Rate",
     color = "Selectivity",
     fill = "Selectivity",
@@ -1839,7 +1808,7 @@ Finalize the graphics chunk in your QMD. `Cmd/Ctrl + Shift + K`. At the R prompt
 
 ```{r temperance-12}
 question_text(NULL,
-  message = "    > show_file(\"analysis.qmd\", chunk = \"Last\")\n    ```{r}\n    plot_predictions(fit_colleges, condition = c(\"tuition\", \"selectivity\"), draw = FALSE) |>\n      ggplot(aes(x = tuition, y = estimate, color = selectivity)) +\n      geom_ribbon(aes(ymin = conf.low, ymax = conf.high, fill = selectivity),\n                  alpha = 0.15, color = NA) +\n      geom_line(size = 1) +\n      labs(\n        title = \"Predicted Graduation Rate by Tuition and Selectivity\",\n        subtitle = \"Within each selectivity tier, every $10k of tuition adds ~9 percentage points\",\n        x = \"Tuition ($10,000)\", y = \"Predicted Graduation Rate\",\n        color = \"Selectivity\", fill = \"Selectivity\",\n        caption = \"Source: IPEDS 2013 via primer.data\"\n      ) +\n      theme_minimal()\n    ```",
+  message = "    > show_file(\"analysis.qmd\", chunk = \"Last\")\n    ```{r}\n    plot_predictions(fit_colleges, condition = c(\"tuition\", \"selectivity\"), draw = FALSE) |>\n      ggplot(aes(x = tuition, y = estimate, color = selectivity)) +\n      geom_ribbon(aes(ymin = conf.low, ymax = conf.high, fill = selectivity),\n                  alpha = 0.15, color = NA) +\n      geom_line(size = 1) +\n      scale_x_continuous(labels = scales::label_dollar(scale = 10000)) +\n      scale_y_continuous(labels = scales::label_percent()) +\n      labs(\n        title = \"Predicted Graduation Rate by Tuition and Selectivity\",\n        subtitle = \"Within each selectivity tier, every $10k of tuition adds ~9 percentage points\",\n        x = \"Tuition\", y = \"Predicted Graduation Rate\",\n        color = \"Selectivity\", fill = \"Selectivity\",\n        caption = \"Source: IPEDS 2013 via primer.data\"\n      ) +\n      theme_minimal()\n    ```",
   answer(NULL, correct = TRUE),
   allow_retry = FALSE,
   incorrect = NULL,
@@ -1873,7 +1842,7 @@ Write a few sentences explaining why the estimates might be wrong.
 
 ```{r temperance-14}
 question_text(NULL,
-  message = "Our filter to `tuition > 2` drops low-tuition colleges, so the estimated slope doesn't apply to schools charging under $20,000. Our `grad_rate` outcome excludes students who transfer and graduate elsewhere, which undercounts completion. And selectivity is only a five-level summary of a much richer admissions picture. The confidence intervals the model reports reflect sampling variation around the 542 rows; they don't account for any of those framing or measurement issues.",
+  message = "The biggest concern is the 13-year gap between our 2013 data and the 2026 question --- the slope we estimate may not be the slope today. Beyond that, our filter to `tuition > 2` drops low-tuition colleges, so even within 2013 the estimated slope doesn't apply to schools charging under $20,000. Our `grad_rate` outcome excludes students who transfer and graduate elsewhere, which undercounts completion. And selectivity is only a five-level summary of a much richer admissions picture. The confidence intervals the model reports reflect sampling variation around the 542 rows; they don't account for any of those framing, measurement, or time issues.",
   answer(NULL, correct = TRUE),
   allow_retry = FALSE,
   incorrect = NULL,
@@ -1890,7 +1859,7 @@ Rearrange the material in your QMD so the order is graphic, then summary paragra
 
 ```{r temperance-15}
 question_text(NULL,
-  message = "    > show_file(\"analysis.qmd\")\n    ---\n    title: \"Colleges\"\n    author: \"<your name>\"\n    execute:\n      echo: false\n    ---\n    \n    ```{r}\n    #| message: false\n    library(tidyverse)\n    library(tidymodels)\n    library(primer.data)\n    library(broom)\n    library(marginaleffects)\n    ```\n    \n    ```{r}\n    x <- colleges |>\n      select(tuition, grad_rate, selectivity) |>\n      filter(tuition > 2) |>\n      drop_na()\n    ```\n    \n    ```{r}\n    #| cache: true\n    fit_colleges <- linear_reg() |>\n      set_engine(\"lm\") |>\n      fit(grad_rate ~ tuition + selectivity, data = x)\n    ```\n    \n    ```{r}\n    plot_predictions(fit_colleges, condition = c(\"tuition\", \"selectivity\"), draw = FALSE) |>\n      ggplot(aes(x = tuition, y = estimate, color = selectivity)) +\n      geom_ribbon(aes(ymin = conf.low, ymax = conf.high, fill = selectivity),\n                  alpha = 0.15, color = NA) +\n      geom_line(size = 1) +\n      labs(\n        title = \"Predicted Graduation Rate by Tuition and Selectivity\",\n        subtitle = \"Within each selectivity tier, every $10k of tuition adds ~9 percentage points\",\n        x = \"Tuition ($10,000)\", y = \"Predicted Graduation Rate\",\n        color = \"Selectivity\", fill = \"Selectivity\",\n        caption = \"Source: IPEDS 2013 via primer.data\"\n      ) +\n      theme_minimal()\n    ```\n    \n    Where students go to college and what they pay for it varies enormously, and so does the likelihood that they will finish. Using 2013 IPEDS data on roughly 900 US four-year colleges and universities, we examine how graduation rate varies with tuition and selectivity. Our filter to tuition above $20,000 drops low-tuition colleges, so the estimated relationship applies only to schools charging at least $20,000 a year. We model graduation rate as a linear function of tuition and selectivity. We estimate that within a given selectivity tier, each $10,000 of tuition is associated with about 9 percentage points more graduation rate; Elite colleges graduate about 20 percentage points more students than Lowly Selective ones at comparable tuition.",
+  message = "    > show_file(\"analysis.qmd\")\n    ---\n    title: \"Colleges\"\n    author: \"<your name>\"\n    execute:\n      echo: false\n    ---\n    \n    ```{r}\n    #| message: false\n    library(tidyverse)\n    library(tidymodels)\n    library(primer.data)\n    library(broom)\n    library(marginaleffects)\n    ```\n    \n    ```{r}\n    x <- colleges |>\n      select(tuition, grad_rate, selectivity) |>\n      filter(tuition > 2) |>\n      drop_na()\n    ```\n    \n    ```{r}\n    #| cache: true\n    fit_colleges <- linear_reg() |>\n      set_engine(\"lm\") |>\n      fit(grad_rate ~ tuition + selectivity, data = x)\n    ```\n    \n    ```{r}\n    plot_predictions(fit_colleges, condition = c(\"tuition\", \"selectivity\"), draw = FALSE) |>\n      ggplot(aes(x = tuition, y = estimate, color = selectivity)) +\n      geom_ribbon(aes(ymin = conf.low, ymax = conf.high, fill = selectivity),\n                  alpha = 0.15, color = NA) +\n      geom_line(size = 1) +\n      labs(\n        title = \"Predicted Graduation Rate by Tuition and Selectivity\",\n        subtitle = \"Within each selectivity tier, every $10k of tuition adds ~9 percentage points\",\n        x = \"Tuition ($10,000)\", y = \"Predicted Graduation Rate\",\n        color = \"Selectivity\", fill = \"Selectivity\",\n        caption = \"Source: IPEDS 2013 via primer.data\"\n      ) +\n      theme_minimal()\n    ```\n    \n    Where students go to college and what they pay for it varies enormously, and so does the likelihood that they will finish. We help today's students choose by examining how graduation rate varies with tuition and selectivity, using 2013 IPEDS data on roughly 900 US four-year colleges and universities --- the most recent reliable national snapshot we have. The 13-year gap between our data and the question is a real concern: tuition has risen much faster than inflation since 2013, and the price/graduation relationship may have shifted. We model graduation rate as a normally distributed variable which is a linear function of tuition and selectivity. We estimate that within a given selectivity tier, each $10,000 of tuition is associated with about 9 percentage points higher graduation rate, with a 95% confidence interval of 7 to 11 percentage points; Elite colleges have graduation rates about 20 percentage points higher than Lowly Selective ones at comparable tuition.",
   answer(NULL, correct = TRUE),
   allow_retry = FALSE,
   incorrect = NULL,
@@ -1955,10 +1924,12 @@ plot_predictions(fit_colleges, condition = c("tuition", "selectivity"), draw = F
   geom_ribbon(aes(ymin = conf.low, ymax = conf.high, fill = selectivity),
               alpha = 0.15, color = NA) +
   geom_line(size = 1) +
+  scale_x_continuous(labels = scales::label_dollar(scale = 10000)) +
+  scale_y_continuous(labels = scales::label_percent()) +
   labs(
     title = "Predicted Graduation Rate by Tuition and Selectivity",
     subtitle = "Within each selectivity tier, every $10k of tuition adds ~9 percentage points",
-    x = "Tuition ($10,000)",
+    x = "Tuition",
     y = "Predicted Graduation Rate",
     color = "Selectivity",
     fill = "Selectivity",
@@ -1967,7 +1938,7 @@ plot_predictions(fit_colleges, condition = c("tuition", "selectivity"), draw = F
   theme_minimal()
 ```
 
-Where students go to college and what they pay for it varies enormously, and so does the likelihood that they will finish. Using 2013 IPEDS data on roughly 900 US four-year colleges and universities, we examine how graduation rate varies with tuition and selectivity. Our filter to tuition above $20,000 drops low-tuition colleges, so the estimated relationship applies only to schools charging at least $20,000 a year. We model graduation rate as a linear function of tuition and selectivity. We estimate that within a given selectivity tier, each $10,000 of tuition is associated with about 9 percentage points more graduation rate, with a 95% confidence interval of 7 to 11 percentage points; Elite colleges graduate about 20 percentage points more students than Lowly Selective ones at comparable tuition.
+Where students go to college and what they pay for it varies enormously, and so does the likelihood that they will finish. We help today's students choose by examining how graduation rate varies with tuition and selectivity, using 2013 IPEDS data on roughly 900 US four-year colleges and universities --- the most recent reliable national snapshot we have. The 13-year gap between our data and the question is a real concern: tuition has risen much faster than inflation since 2013, and the price/graduation relationship may have shifted. We model graduation rate as a normally distributed variable which is a linear function of tuition and selectivity. We estimate that within a given selectivity tier, each $10,000 of tuition is associated with about 9 percentage points higher graduation rate, with a 95% confidence interval of 7 to 11 percentage points; Elite colleges have graduation rates about 20 percentage points higher than Lowly Selective ones at comparable tuition.
 
 This forecast would help a student gauge whether a specific school's graduation rate is typical for its tier or unusual. It does not address every question a student might face --- it says nothing about outcomes after graduation, nor about the experience of students within a given college. But it gives a defensible starting point.
 

@@ -212,10 +212,12 @@ recruits |>
     title = "Height in Our 50-Recruit Sample",
     subtitle = "A broad, asymmetric peak with a heavy left shoulder --- a hint that sex matters for height",
     x = "Height (cm)",
-    y = "Density",
+    y = NULL,
     caption = "Source: 50-row sample from NHANES via primer.tutorials::recruits"
   ) +
-  theme_minimal()
+  theme_minimal() +
+  theme(axis.text.y  = element_blank(),
+        axis.ticks.y = element_blank())
 ```
 
 ### Exercise 8
@@ -318,45 +320,11 @@ The Preceptor Table does not include all the covariates which you will eventuall
 
 ### Exercise 3
 
-Before we worry about defining the Preceptor Table for this problem, let's look at our data more carefully. Ask AI to write R code that plots the distribution of `height` in the `recruits` tibble, using a density plot with a descriptive title, subtitle, axis labels, and caption. Paste the code below and run it.
+We saw the overall distribution of `height` in the Introduction. Now look at how `height` varies with `sex`. Ask AI to write R code that plots `height` by `sex` as overlapping density curves, with a descriptive title, subtitle, axis labels, and caption. Paste the code below and run it.
 
 ```{r wisdom-3}
 question_text(NULL,
-  message = "    recruits |>\n      ggplot(aes(x = height)) +\n      geom_density(fill = \"grey70\", color = \"grey30\") +\n      labs(\n        title = \"Height in Our 50-Recruit Sample\",\n        subtitle = \"A heavy left shoulder hints that sex matters\",\n        x = \"Height (cm)\", y = \"Density\",\n        caption = \"Source: 50-row sample from NHANES via primer.tutorials::recruits\"\n      ) +\n      theme_minimal()",
-  answer(NULL, correct = TRUE),
-  allow_retry = FALSE,
-  incorrect = NULL,
-  rows = 10)
-```
-
-###
-
-```{r}
-#| echo: false
-#| message: false
-#| warning: false
-recruits |>
-  ggplot(aes(x = height)) +
-  geom_density(fill = "grey70", color = "grey30") +
-  labs(
-    title = "Height in Our 50-Recruit Sample",
-    subtitle = "A heavy left shoulder hints that sex matters",
-    x = "Height (cm)",
-    y = "Density",
-    caption = "Source: 50-row sample from NHANES via primer.tutorials::recruits"
-  ) +
-  theme_minimal()
-```
-
-The distribution of `height` in our sample is uneven with a noticeable shoulder on the low end --- a hint that `sex` matters for our predictions. With only 50 rows the curve is rougher than it would be on the full NHANES, but the qualitative pattern survives.
-
-### Exercise 4
-
-Now look at how `height` varies with `sex`. Ask AI to write R code that plots `height` by `sex` as overlapping density curves, with a descriptive title, subtitle, axis labels, and caption. Paste the code below and run it.
-
-```{r wisdom-4}
-question_text(NULL,
-  message = "    recruits |>\n      ggplot(aes(x = height, fill = sex)) +\n      geom_density(alpha = 0.5) +\n      labs(\n        title = \"Height by Sex in Our 50-Recruit Sample\",\n        subtitle = \"Male and female distributions are offset by about 9 cm\",\n        x = \"Height (cm)\", y = \"Density\", fill = \"Sex\",\n        caption = \"Source: 50-row sample from NHANES via primer.tutorials::recruits\"\n      ) +\n      theme_minimal()",
+  message = "    recruits |>\n      ggplot(aes(x = height, fill = sex)) +\n      geom_density(alpha = 0.5) +\n      labs(\n        title = \"Height by Sex in Our 50-Recruit Sample\",\n        subtitle = \"Male and female distributions are offset by about 9 cm\",\n        x = \"Height (cm)\", y = NULL, fill = \"Sex\",\n        caption = \"Source: 50-row sample from NHANES via primer.tutorials::recruits\"\n      ) +\n      theme_minimal() +\n      theme(axis.text.y  = element_blank(),\n            axis.ticks.y = element_blank())",
   answer(NULL, correct = TRUE),
   allow_retry = FALSE,
   incorrect = NULL,
@@ -376,20 +344,20 @@ recruits |>
     title = "Height by Sex in Our 50-Recruit Sample",
     subtitle = "Male and female distributions are offset by about 9 cm",
     x = "Height (cm)",
-    y = "Density",
+    y = NULL,
     fill = "Sex",
     caption = "Source: 50-row sample from NHANES via primer.tutorials::recruits"
   ) +
-  theme_minimal()
+  theme_minimal() +
+  theme(axis.text.y  = element_blank(),
+        axis.ticks.y = element_blank())
 ```
 
-The two distributions are clearly offset --- male recruits are on average taller than female recruits by roughly 9 centimeters in this sample. That systematic difference is what our model will try to capture. Note also how much rougher the female density looks: there are only 10 female rows in `recruits` against 40 male rows, so the female curve is built from far fewer points.
-
-### Exercise 5
+### Exercise 4
 
 Describe the key components of Preceptor Tables in general, without worrying about this specific problem. Use words like "units," "outcomes," and "covariates."
 
-```{r wisdom-5}
+```{r wisdom-4}
 question_text(NULL,
   message = "The rows of the Preceptor Table are the units. The outcome is at least one of the columns. If the problem is causal, there will be at least two (potential) outcome columns. The other columns are covariates. If the problem is causal, at least one of the covariates will be considered a treatment.",
   answer(NULL, correct = TRUE),
@@ -402,11 +370,11 @@ question_text(NULL,
 
 This problem is predictive, so there is only one outcome column: `height`. We compare average heights between male and female young adults.
 
-### Exercise 6
+### Exercise 5
 
 What are the units for this problem?
 
-```{r wisdom-6}
+```{r wisdom-5}
 question_text(NULL,
   message = "Each row represents one USMC recruit expected to enlist during the coming year. There are roughly 5,000 such recruits per year.",
   answer(NULL, correct = TRUE),
@@ -419,11 +387,11 @@ question_text(NULL,
 
 Specifying the Preceptor Table forces us to think clearly about the units and outcomes implied by the question. No data science project follows a single direction. We always backtrack. There is always dialogue. We model units, but we only really care about aggregates.
 
-### Exercise 7
+### Exercise 6
 
 What is the outcome variable for this problem?
 
-```{r wisdom-7}
+```{r wisdom-6}
 question_text(NULL,
   message = "Keep track of two 'outcome' variables: the one in our Preceptor Table and the one in our data. In this case, they share the name `height` --- both refer to a young adult's standing height in centimeters --- though the *measurement procedure* behind each column differs.",
   answer(NULL, correct = TRUE),
@@ -436,11 +404,11 @@ question_text(NULL,
 
 The outcome variable that we really care about is often not the outcome variable which our data includes. This compromise --- working with what we have rather than what we really want --- is a part of most data science work in the real world.
 
-### Exercise 8
+### Exercise 7
 
 What is a covariate which you think might be useful for this problem, regardless of whether or not it might be included in the data?
 
-```{r wisdom-8}
+```{r wisdom-7}
 question_text(NULL,
   message = "Age at enlistment is a candidate. Height is nearly-but-not-quite stable by the age-18 window we care about, so a ten-year-older recruit is almost the same height as a fresh one. Another candidate is race or ethnicity, since height distributions vary across ancestry groups.",
   answer(NULL, correct = TRUE),
@@ -453,11 +421,11 @@ question_text(NULL,
 
 The term "covariates" is used in at least three ways in data science. First, it is all the variables which *might* be useful, regardless of whether or not we have the data. Second, it is all the variables for which we have data. Third, it is the set of variables in the data which we end up using in the model.
 
-### Exercise 9
+### Exercise 8
 
 What are the treatments, if any, for this problem?
 
-```{r wisdom-9}
+```{r wisdom-8}
 question_text(NULL,
   message = "There are no treatments in this problem because we are building a predictive model. Nothing in `recruits` can be manipulated --- we cannot assign a recruit a different sex or a different height. Predictive models have covariates, not treatments.",
   answer(NULL, correct = TRUE),
@@ -470,11 +438,11 @@ question_text(NULL,
 
 Remember that a treatment is just another covariate which, for the purposes of this specific problem, we are assuming can be manipulated --- thereby creating two or more different potential outcomes for each unit. Predictive models have no such variable.
 
-### Exercise 10
+### Exercise 9
 
 What moment in time does the Preceptor Table refer to?
 
-```{r wisdom-10}
+```{r wisdom-9}
 question_text(NULL,
   message = "The coming year --- specifically, the moment at which each recruit arrives at bootcamp and has their height recorded at enlistment.",
   answer(NULL, correct = TRUE),
@@ -487,11 +455,11 @@ question_text(NULL,
 
 A Preceptor Table can never really refer to an exact instant in time since nothing is instantaneous in this fallen world. In practice, the Preceptor Table's "moment" is a narrow window: recruit intake for a single calendar year.
 
-### Exercise 11
+### Exercise 10
 
 Describe in words the Preceptor Table for this problem.
 
-```{r wisdom-11}
+```{r wisdom-10}
 question_text(NULL,
   message = "The Preceptor Table has three columns: one identifying each USMC recruit, one for `height`, and one for `sex`. Each row represents one recruit expected to enlist during the coming year.",
   answer(NULL, correct = TRUE),
@@ -574,7 +542,7 @@ cat(
 )
 ```
 
-### Exercise 12
+### Exercise 11
 
 Because `recruits` is already prepared (filtered to ages 18--27, restricted to `height`, `sex`, and `age`, and missing rows dropped), there is no data-prep code to write. Take a moment to verify the breakdown that matters most for what comes next. At the R prompt, run:
 
@@ -584,7 +552,7 @@ recruits |> count(sex)
 
 CP/CR.
 
-```{r wisdom-12}
+```{r wisdom-11}
 question_text(NULL,
   message = "    > recruits |> count(sex)\n    # A tibble: 2 × 2\n      sex        n\n      <chr>  <int>\n    1 Female    10\n    2 Male      40",
   answer(NULL, correct = TRUE),
@@ -597,11 +565,11 @@ question_text(NULL,
 
 The split between sexes is deliberate: 40 male rows and 10 female. We did not choose this to reflect the male/female proportions among real USMC recruits, but to make a particular feature of the model visible later --- when we estimate the average height for each group, the larger group will give a tighter estimate (smaller confidence interval) than the smaller group. You can never look at the data too much. --- Mark Engerman
 
-### Exercise 13
+### Exercise 12
 
 We will be creating a summary paragraph over the course of this tutorial. Write the first two sentences. The first sentence is a general statement about the overall topic, mentioning the general class of outcome and at least one covariate. The second sentence introduces the data source and the specific question --- when/where gathered, how many observations, who collected it.
 
-```{r wisdom-13}
+```{r wisdom-12}
 question_text(NULL,
   message = "People vary in height, and that variation is strongly patterned by sex. Using data from the National Health and Nutrition Examination Survey (NHANES) conducted by the Centers for Disease Control and Prevention, we seek to estimate the average height of male and female USMC recruits for the coming year.",
   answer(NULL, correct = TRUE),

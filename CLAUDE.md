@@ -692,6 +692,8 @@ The Preceptor Table clarifies *the question*. Its footnotes discuss what each co
 **Structure.** Four rows (three example rows plus a blank middle row at position 3). Columns grouped under spanners:
 
 - **Unit** — one column identifying what a row represents. No separate Time column: time is implicit, either specified in the question ("…in 2010") or "now" if unstated. When a unit only makes sense with a year (a candidate in a specific election), fold the year into the unit string: `"Ann Richards (1990)"` rather than adding a column.
+
+  **The Preceptor Table's time is the *question's* time, not the *data's* time.** When the data was collected years before the question is asked, the Preceptor Table reflects the moment of the question. Concrete: a non-profit in 2026 helping students choose colleges has a 2026 Preceptor Table even when the data is from a 2013 IPEDS snapshot. The Population Table will then have Data rows in 2013 and Preceptor rows in 2026 — same institutions, different times, different rows. This time gap is the *stability* concern, not a defect in the framing. The wrong move is to set the Preceptor Table's time to match the data's time ("the 2013 Preceptor Table"); that erases the gap by fiat and makes the stability discussion incoherent. Always set the Preceptor Table's time from the question; let the data's time be whatever the data's time is; let Justice surface the difference.
 - **Potential Outcomes** (causal, two or more columns) or **Outcome** (predictive, one column). Causal columns are named after the counterfactual: `Lifespan if Win`, `Lifespan if Lose`. Every cell in these columns has a value — the Preceptor Table shows the unobservable truth, so there are no `"?"` cells; the cells that could never be observed in reality are instead rendered with a diagonal cross-hatch (see *Hatch convention* below).
 - **Treatment** (causal only) — exactly one column, always present in causal Preceptor Tables. The treatment gets its own spanner (rather than being folded under `Covariate(s)`), even though it is conceptually a covariate. It is distinct enough from other covariates — it is *the* variable whose causal effect the question is about — that it warrants its own section of the table. Predictive tables never have a `Treatment` spanner or treatment column.
 - **Covariate** / **Covariates** — only present when the question forces conditioning on a non-treatment variable.
@@ -1720,8 +1722,24 @@ The `[per-tutorial, written-with-answer]` tag below applies across all three tie
 **Exercise 15.** [per-tutorial, written-with-answer] State the question.
 - **Appears in every tutorial at every tier** — this is the one exercise in the causal/predictive block that every tutorial keeps.
 - Prompt: *Write a [causal or predictive] question connecting the outcome `XX` to `XX`, the [treatment / covariate of interest].*
-- Message pattern: the specific question. Causal: *"What is the average causal effect of [treatment] on [outcome]?"* Predictive: *"What is the difference in [outcome] between [group A] and [group B]?"*
-- **End (per-tutorial).** Two-to-three sentences of commentary on the chosen question. The End should: (a) note briefly why the question we chose is reasonable — usually that it exercises every step of the Cardinal Virtues cleanly — and (b) name one or two *other* questions a practitioner in the scenario might reasonably ask instead (a different QoI, a different unit, a different time window). Keep it tutorial-specific: for NHANES, point at the tallest-recruit/percentile variants; for Trains, point at heterogeneous treatment effects; for Shaming, point at cost-effectiveness per postcard. Do **not** use the generic "This is the first version of the question..." drop from §12.1; that drop is a fallback, not the default. The Preceptor-Table transition ("we will use a Preceptor Table to answer this question") does not need to appear here — Wisdom §13.2 Exercise 1's canonical definition of Wisdom already carries it.
+- **The specific question must specify one or more numbers to compute.** Predictive and causal questions ask for specific numerical quantities — not a vague "relationship," "connection," or "association." A question like *"What is the relationship between a college's tuition and its graduation rate?"* is **wrong**: "relationship" doesn't tell you what to compute, and the canonical Temperance answer can't pin down a value. Replace with a specific comparison or one or more specific expected values.
+- **Templates by outcome type:**
+  - **Numeric outcome (continuous).** Predictive: *"What is the difference in expected [outcome] between [group A] and [group B]?"* (e.g., *"What is the difference in expected graduation rates between colleges with tuition of $20,000 and colleges with tuition of $30,000?"*) Causal: *"What is the average causal effect of [treatment] on [outcome]?"* — fine because "the average causal effect" *is* a specific number, β in the linear model with binary treatment. The expected-value form *"What is the expected [outcome] for a [unit description]?"* is also acceptable.
+  - **Binary outcome.** Predictive: *"What is the difference in the probability of [event] between [group A] and [group B]?"* Causal: *"What is the average causal effect of [treatment] on the probability of [event]?"*
+  - **Multinomial / ordinal outcome.** Predictive: *"What is the difference in the probability of [specific outcome category] between [group A] and [group B]?"* — pick *one* category to ask about; do not ask about "the distribution" of multinomial outcomes since that is a vector, not a number.
+- **What "specific" rules out:**
+  - Vague nouns: *"the relationship,"* *"the connection,"* *"the association,"* *"the link."*
+  - Trend questions: *"How does Y vary with X?"* — vary how much? at what point on X? Replace with a specific X1-vs-X2 comparison.
+  - Distribution questions: *"What is the distribution of Y by X?"* — distributions are not single numbers.
+- **What "specific" allows:** asking for two or more specific numbers in one question is fine, as long as each piece is itself a clear, computable quantity. *"What is the average height of male and female USMC recruits?"* asks for two expected values; both are unique and computable, so the question is specific. The comparison form (the *difference* between two numbers) is also acceptable and is sometimes cleaner because it produces a single answer; authors can pick either. The rule is about specifying *what numbers to compute*, not about being limited to one number per question.
+- **End (per-tutorial).** Two-to-three sentences of commentary on the chosen question. The default content is **a concrete subtlety about one of the variables in the question** — a measurement quirk, a definitional ambiguity, a coding choice — that is worth flagging at this point in the tutorial. The goal is to make the student notice that the variables they are about to model are not transparent labels but constructed measurements with histories. Examples:
+  - **Colleges (tuition).** *"School tuition in this data is the stated tuition --- the sticker price. At many colleges, most students receive significant financial aid, so the average tuition actually paid is far lower than the recorded number. Our question therefore compares colleges by sticker price, not by net price."*
+  - **Trains (treatment).** *"The 'treatment' here is being on a Metra platform during the two-week window when Spanish-speaking confederates rode the same morning trains. Whether that exposure is comparable to a present-day MBTA platform conversation is a question we will revisit in Justice."*
+  - **Shaming (voted).** *"The outcome is whether the registered voter showed up to the 2006 primary. Voting records misclassify in both directions --- some non-voters appear in the rolls because of paperwork lag, and a small number of votes are uncounted --- so the column slightly understates true turnout."*
+  
+  An alternative content pattern is **the QoI-variety drop** — naming one or two *other* questions a practitioner in the scenario might reasonably ask instead (max, percentile, simulation, heterogeneous treatment effect). This pattern is acceptable when the variables are well understood and the more interesting pedagogical move is to expand the family of questions. Use the variable-subtlety pattern by default; the QoI-variety pattern as a deliberate choice when the variables don't have a flag worth surfacing.
+  
+  Do **not** use the generic "This is the first version of the question..." drop from §12.1; that drop is a fallback, not the default. The Preceptor-Table transition ("we will use a Preceptor Table to answer this question") does not need to appear here — Wisdom §13.2 Exercise 1's canonical definition of Wisdom already carries it.
 
 ### 13.2 Wisdom
 
@@ -1748,7 +1766,16 @@ Per §14.6, the preamble does **not** describe what Wisdom does; Exercise 1 belo
 - Message: `"A Preceptor Table is the smallest possible table of data with rows and columns such that, if there is no missing data, we can easily calculate the quantity of interest."`
 - End: *The Preceptor Table does not include all the covariates which you will eventually include in your model. It only includes, along with the outcome(s), covariates which are mentioned in your question.*
 
-Between Exercises 2 and 3, insert at least two problem-specific EDA exercises (AI-prompted code, §9). One typically explores the outcome variable; the other explores the treatment (causal) or key covariate (predictive). Provide knowledge drops that highlight what the plot reveals.
+Between Exercises 2 and 3, insert at least one problem-specific EDA exercise (AI-prompted code, §9) that **shows the outcome variable in relation to a key covariate** (the treatment for causal tutorials, the covariate of interest for predictive tutorials). Provide a knowledge drop that highlights what the plot reveals.
+
+**Do not duplicate the Introduction's outcome plot here.** §13.1 Exercise 9 already ships an author-rendered plot of the outcome variable — usually a univariate density of the outcome alone, sometimes the outcome already split by the key covariate. Wisdom must move past that view, not repeat it. Concretely:
+
+- If the Intro plot is the outcome alone (06-recruits, 08-colleges), Wisdom's first EDA exercise asks for outcome × covariate.
+- If the Intro plot is already outcome × covariate (07-trains shows `att_end` density colored by `treatment`), Wisdom's first EDA exercise asks for the *same data from a different angle* — a jitter of individual values with overlaid means, a boxplot, a scatter against a continuous covariate, a faceted view, etc.
+
+The exercise opener should explicitly acknowledge the Intro plot — *"We saw the distribution of [outcome] on its own in the Introduction. Now look at how [outcome] varies with [covariate]…"* — so the student understands why the new view is different from what they have already seen.
+
+Two EDA exercises (one outcome-only, one outcome × covariate) is fine when neither duplicates the Intro plot, but with the Intro plot in place this is rare. Default to one Wisdom EDA exercise; add a second (e.g. a faceted or ridge view) only when the problem genuinely needs it.
 
 **Exercise 3.** [canonical] Components of a Preceptor Table.
 - Prompt: *Describe the key components of Preceptor Tables in general, without worrying about this specific problem. Use words like "units," "outcomes," and "covariates."*
@@ -2459,6 +2486,49 @@ Legend labels follow the axis rule (human-readable, units where relevant). When 
 `ggplot2::theme_minimal()` or `theme_classic()` is the default — tutorials should not ship custom themes. Color scales inherit from ggplot defaults unless a specific palette is pedagogically necessary (e.g. a red-blue political scale for voter-behavior plots).
 
 **AI-assisted plotting.** Most tutorials ask students to prompt AI for the plot code (§9) rather than build up ggplot layer-by-layer. When the author shows "our version" of the plot after the student exercise, that reference plot should obey the four-slot rule above so students see what "good" looks like.
+
+**Density plots: drop the y-axis entirely.** A density plot's y-axis values (the kernel-density-estimate height) carry no information a student can use — the numbers are abstract, the absolute scale isn't interpretable, and the message lives entirely in the *shape* of the curve and the x-axis. Strip the y-axis label, ticks, and tick text:
+
+```r
+recruits |>
+  ggplot(aes(x = height)) +
+  geom_density(fill = "grey70", color = "grey30") +
+  labs(
+    title    = "Height in Our 50-Recruit Sample",
+    subtitle = "A heavy left shoulder hints that sex matters",
+    x        = "Height (cm)",
+    y        = NULL,
+    caption  = "Source: 50-row sample from NHANES via primer.tutorials::recruits"
+  ) +
+  theme_minimal() +
+  theme(axis.text.y  = element_blank(),
+        axis.ticks.y = element_blank())
+```
+
+This applies to every `geom_density()` plot the curriculum produces — EDA plots, by-group overlays, model-checking comparisons of actual-vs-fitted distributions, etc. Do **not** label the y-axis "Density" — the word means nothing to students at this stage of the curriculum, and having a numeric y-axis present invites readers to try to read values off of it that cannot be meaningfully interpreted. Histograms (`geom_histogram()` with raw counts) keep the y-axis because counts *are* meaningful; the rule above is density-specific.
+
+**Format proportions and rates as percentages on axes.** When a variable is a proportion (graduation rate, probability, share), display its axis labels as percentages, not decimals:
+
+```r
+scale_x_continuous(labels = scales::label_percent())
+```
+
+`50%` is more legible than `0.5` for a general reader, harmonizes with the subtitle when the subtitle says *"50% to 80%"*, and matches the way the variable is described in everyday speech. Apply on whichever axis (x or y) shows the proportion. The underlying data values stay as proportions (0–1); `label_percent()` only affects the displayed tick labels.
+
+**Format dollar amounts and other "human" units in the axis labels themselves.** When a variable is in raw units that aren't human-friendly — e.g. `tuition` in `colleges` is stored in units of $10,000, so a value of 3 means $30,000 — apply a `scales::label_*()` formatter so the tick labels read in the units a person uses to discuss the variable:
+
+```r
+# tuition stored in $10,000 units; show $20,000, $30,000, etc.
+scale_x_continuous(labels = scales::label_dollar(scale = 10000))
+```
+
+When the formatter handles the units, the axis title can drop the parenthetical unit annotation: prefer `x = "Tuition"` over `x = "Tuition ($10,000)"`. The dollar amounts appear in the tick labels themselves; restating the unit in the title is redundant. The general rule: **the axis labels should read the way a person would say the value out loud** — `$30,000`, `50%`, `175 cm`, `2014` — not the way the variable happens to be encoded in the tibble. Useful `scales::label_*()` helpers: `label_dollar()`, `label_percent()`, `label_comma()`, `label_number(suffix = " cm")`, `label_date()`.
+
+**Do not write a knowledge drop after a plot.** The plot's title and subtitle carry the takeaway; the EDA exercise ends when the student has seen the plot. Don't append a paragraph that re-narrates the plot ("the distribution is broad, with a peak around …", "the jitter plot shows N individual scores, the means confirm…"). If the plot's message isn't visible in the picture itself, fix the plot — usually by sharpening the subtitle. Save prose for places where it does pedagogical work that the picture cannot. This rule applies uniformly: EDA plots in the Introduction and in Wisdom, model-checking plots in Courage, and the final plot in Temperance / Summary all stand on their own.
+
+What this rule **does not** prohibit:
+- A short *lead-in* before the plot that orients the student ("One way to check the model is to compare actual and fitted distributions"). The rule is about post-plot prose, not pre-plot prose.
+- The next exercise's content, which begins immediately under the next `### Exercise N` header. The flow is: prose lead-in → plot → next exercise. No drop in between.
 
 **Do not ship cargo-culted helpers.** Examples flagged in past tutorials include `tidytext::scale_x_reordered()` with a comment like `# Needed (?)` — if an author is unsure whether a helper function is necessary, they should test both with and without it and commit the simpler one. A tutorial is not the place to debug dependency uncertainty.
 
