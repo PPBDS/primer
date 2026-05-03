@@ -1,8 +1,8 @@
 ---
-title: "Biden Support in 2024"
+title: "Smokes"
 author: David Kane
 tutorial:
-  id: 10-biden
+  id: 10-smokes
 output:
   learnr::tutorial:
     progressive: yes
@@ -12,36 +12,22 @@ description: "Tutorial #10 for Preceptor's Primer"
 ---
 
 ```{r setup, include = FALSE}
-# learnr, tutorial.helpers, and gt are required for the tutorial to work.
-# gt is needed because we show a Preceptor Table built with it, even
-# though we don't show students how to build it.
-
 library(learnr)
 library(tutorial.helpers)
 library(gt)
 
-# Packages below are what we want students to load themselves at the
-# R prompt. They are listed in the tutorial so that (a) we have access
-# to their functions for rendering, and (b) students get a knowledge drop
-# for each.
-
 library(tidyverse)
 library(tidymodels)
+library(primer.tutorials)
 library(broom)
 library(marginaleffects)
-library(easystats)
-
-# Create the data
-poll_data <- tibble(biden = as.factor(c(rep("Yes", 655), rep("No", 904)))) |>
-  slice_sample(prop = 1)
-
-# Fit the model used throughout the tutorial.
-fit_biden <- logistic_reg(engine = "glm") |>
-  fit(biden ~ 1, data = poll_data)
 
 knitr::opts_chunk$set(echo = FALSE)
 options(tutorial.exercise.timelimit = 600,
         tutorial.storage = "local")
+
+fit_smokes <- logistic_reg(engine = "glm") |>
+  fit(smoke ~ age + sex, data = smokes)
 ```
 
 ```{r copy-code-chunk, child = system.file("child_documents/copy_button.Rmd", package = "tutorial.helpers")}
@@ -50,13 +36,15 @@ options(tutorial.exercise.timelimit = 600,
 ```{r info-section, child = system.file("child_documents/info_section.Rmd", package = "tutorial.helpers")}
 ```
 
+
 ## Introduction
+###
 
 This tutorial supports [*Preceptor's Primer for Bayesian Data Science: Using the Cardinal Virtues for Inference*](https://ppbds.github.io/primer/) by [David Kane](https://davidkane.info/).
 
 The world confronts us. Make decisions we must.
 
-Imagine that you are the chair of the Democratic National Committee in early 2024 deciding where to devote time and money. Polls show close races in several key states. You want to know: what proportion of votes will Biden actually receive? There are many decisions to make.
+Imagine that you are a public-health analyst at a state health department designing the next anti-smoking campaign. To target outreach effectively, you want to know which adults are most likely to be smokers, broken out by basic demographics like age and sex --- the variables you can actually segment on when buying ads or staffing clinics. There are many decisions to make.
 
 ###
 
@@ -66,28 +54,40 @@ What are the four [Cardinal Virtues](https://en.wikipedia.org/wiki/Cardinal_virt
 
 ```{r introduction-1}
 question_text(NULL,
-    message = "Wisdom, Justice, Courage, and Temperance.",
-    answer(NULL, correct = TRUE),
-    allow_retry = FALSE,
-    incorrect = NULL,
-    rows = 6)
+  message = "Wisdom, Justice, Courage, and Temperance.",
+  answer(NULL, correct = TRUE),
+  allow_retry = FALSE,
+  incorrect = NULL,
+  rows = 2)
 ```
 
 ###
 
-The best way to ensure that students remember these concepts more than a few months after the course ends is spaced repetition, although we focus more on the repetition than on the spacing.
+The best way to ensure that students remember these concepts more than a few months after the course ends is spaced repetition --- although by tutorial 10 we focus more on the repetition than the spacing.
 
 ### Exercise 2
 
-You should be working inside a GitHub repo named `biden`, opened in a Codespace from the [`PPBDS/codespace-starter`](https://github.com/PPBDS/codespace-starter) template. If you are not there yet, please create that repo and open it in a Codespace now — see the [package README](https://github.com/PPBDS/primer/tree/main/primer.tutorials#working-environments-and-repo-setup) if you need setup instructions or are working locally instead. Once you're inside the `biden` repo, create a new Quarto document titled `"Biden"` with yourself as the author, render it, and save it as `analysis.qmd`. Create a `.gitignore` file with `analysis_files` on the first line followed by a blank line. Save and push. At the R prompt, run `show_file(".gitignore")`. If that fails, it's probably because you haven't loaded `library(tutorial.helpers)` at the R prompt. CP/CR.
+You should be working inside a GitHub repo named `smokes`, opened in a Codespace from the [`PPBDS/codespace-starter`](https://github.com/PPBDS/codespace-starter) template. If you are not there yet, create that repo and open it in a Codespace now --- see the [package README](https://github.com/PPBDS/primer/tree/main/primer.tutorials#working-environments-and-repo-setup) for setup instructions or for working locally.
+
+Once you're inside the `smokes` repo, create a new Quarto document titled `"Smokes"` with yourself as the author, render it, and save it as `analysis.qmd`.
+
+Create a `.gitignore` file with `analysis_files` on the first line followed by a blank line. Save and push.
+
+At the R prompt, run:
+
+```
+show_file(".gitignore")
+```
+
+CP/CR.
 
 ```{r introduction-2}
 question_text(NULL,
-    answer(NULL, correct = TRUE),
-    allow_retry = TRUE,
-    try_again_button = "Edit Answer",
-    incorrect = NULL,
-    rows = 3)
+  message = "    > show_file(\".gitignore\")\n    analysis_files",
+  answer(NULL, correct = TRUE),
+  allow_retry = FALSE,
+  incorrect = NULL,
+  rows = 3)
 ```
 
 ###
@@ -96,140 +96,179 @@ Professionals keep their data science work in the cloud because laptops fail.
 
 ### Exercise 3
 
-In your QMD, put `library(tidyverse)` and `library(tidymodels)` in a new code chunk. Render the file. Notice that the file does not look good because the code is visible and there are messages. Add `#| message: false` to remove the messages in this setup chunk. Also add the following to the YAML header to remove all code echos from the HTML:
+In your QMD, put `library(tidyverse)` and `library(primer.tutorials)` in a new code chunk. Render the file. Add `#| message: false` to suppress the messages, and add the following to the YAML header to hide the code:
 
 ```
 execute:
   echo: false
 ```
 
-At the R prompt, run `show_file("analysis.qmd", chunk = "Last")`. CP/CR.
+Render again. At the R prompt, run:
+
+```
+show_file("analysis.qmd", chunk = "Last")
+```
+
+CP/CR.
 
 ```{r introduction-3}
 question_text(NULL,
-    answer(NULL, correct = TRUE),
-    allow_retry = TRUE,
-    try_again_button = "Edit Answer",
-    incorrect = NULL,
-    rows = 3)
+  message = "    > show_file(\"analysis.qmd\", chunk = \"Last\")\n    ```{r}\n    #| message: false\n    library(tidyverse)\n    library(primer.tutorials)\n    ```",
+  answer(NULL, correct = TRUE),
+  allow_retry = FALSE,
+  incorrect = NULL,
+  rows = 5)
 ```
 
 ###
 
-Render again. Everything looks nice, albeit empty, because we have added code to make the file look better and more professional.
+The render runs in a fresh R session, so it doesn't see anything you have loaded at your interactive prompt --- the isolation is usually a feature, not a bug, because it means the rendered output doesn't depend on whatever is loaded in your Console at the moment you happen to render.
 
 ### Exercise 4
 
-Place your cursor in the QMD file on the `library(tidyverse)` line. Use `Cmd/Ctrl + Enter` to execute that line. Note that this sends the line to the R prompt and runs it. CP/CR.
+Place your cursor on the `library(tidyverse)` line. Use `Cmd/Ctrl + Enter` to send the line to the R prompt.
+
+CP/CR.
 
 ```{r introduction-4}
 question_text(NULL,
-    answer(NULL, correct = TRUE),
-    allow_retry = TRUE,
-    try_again_button = "Edit Answer",
-    incorrect = NULL,
-    rows = 3)
+  message = "    > library(tidyverse)\n    ── Attaching core tidyverse packages ─ tidyverse 2.0.0 ─\n    ✔ dplyr     ✔ forcats   ✔ ggplot2  ✔ lubridate\n    ✔ purrr     ✔ readr     ✔ stringr  ✔ tibble     ✔ tidyr\n    ── Conflicts ─ tidyverse_conflicts() ─\n    ✖ dplyr::filter() masks stats::filter()\n    ✖ dplyr::lag()    masks stats::lag()",
+  answer(NULL, correct = TRUE),
+  allow_retry = FALSE,
+  incorrect = NULL,
+  rows = 3)
 ```
 
 ###
 
-QMD World and R World are not the same. Rendering runs in a fresh session — packages loaded at the R prompt are invisible to the render. Always make sure that what you load interactively is also in your QMD setup chunk.
+When the same function name lives in two loaded packages, the last-loaded package wins. `dplyr::filter()` from tidyverse masks `stats::filter()` from base R, which is what we want. When you write reusable code, reach for the explicit `dplyr::filter` so the result no longer depends on load order.
 
 ### Exercise 5
 
-Place your cursor in the QMD file on the `library(tidymodels)` line. Use `Cmd/Ctrl + Enter` to execute that line. This workflow — writing things in the QMD so you have a permanent copy, and then executing them at the R prompt with `Cmd/Ctrl + Enter` — is the most common approach to data science. There is QMD World and R World. It is your responsibility to keep them in sync. CP/CR.
+Place your cursor on the `library(primer.tutorials)` line. Use `Cmd/Ctrl + Enter`.
+
+CP/CR.
 
 ```{r introduction-5}
 question_text(NULL,
-    answer(NULL, correct = TRUE),
-    allow_retry = TRUE,
-    try_again_button = "Edit Answer",
-    incorrect = NULL,
-    rows = 3)
+  message = "    > library(primer.tutorials)\n    >",
+  answer(NULL, correct = TRUE),
+  allow_retry = FALSE,
+  incorrect = NULL,
+  rows = 3)
 ```
 
 ###
 
-A YouGov poll of 1,559 U.S. adult citizens conducted in March 2024 is available in the `poll_data` tibble. It contains a single column, `biden`, a factor variable indicating whether the respondent would vote for Biden (`"Yes"`) or not (`"No"`).
+The **[primer.tutorials](https://ppbds.github.io/primer/)** package ships several teaching datasets alongside the tutorials themselves. The one we will use is `smokes`: a 1,000-row sample drawn from the educational version of NHANES (the National Health and Nutrition Examination Survey, conducted by the U.S. Centers for Disease Control and Prevention).
 
 ### Exercise 6
 
-Biden support is the broad topic of this tutorial. Given that topic, which variable in `poll_data` should we use as our outcome variable?
+At the R prompt, type `?smokes` and paste the Description below.
 
 ```{r introduction-6}
 question_text(NULL,
-    message = "We will use `biden` as our outcome variable — a binary Yes/No indicating whether the respondent would vote for Joe Biden.",
-    answer(NULL, correct = TRUE),
-    allow_retry = FALSE,
-    incorrect = NULL,
-    rows = 6)
+  message = "A 1,000-row sample drawn from the educational NHANES dataset bundled in the NHANES CRAN package (a 10,000-row subset of the 2009-2012 NHANES waves). Restricted to adults aged 20-80 with non-missing values on smoking status, age, and sex. Used by the 10-smokes tutorial as a Medium-tier predictive logistic regression problem: who has ever smoked at least 100 cigarettes, as a function of age and sex.",
+  answer(NULL, correct = TRUE),
+  allow_retry = FALSE,
+  incorrect = NULL,
+  rows = 5)
 ```
 
 ###
 
-We will use `biden` as our outcome variable.
-
-```{r introduction-6-plot, echo = FALSE, fig.width = 5, fig.height = 3}
-poll_data |>
-  count(biden) |>
-  mutate(pct = round(n / sum(n) * 100, 1)) |>
-  ggplot(aes(x = biden, y = n, fill = biden)) +
-  geom_col(show.legend = FALSE) +
-  geom_text(aes(label = paste0(n, " (", pct, "%)")), vjust = -0.4, size = 3.5) +
-  scale_fill_manual(values = c("No" = "#cc3333", "Yes" = "#3366cc")) +
-  labs(
-    title = "Biden Support in YouGov Poll",
-    subtitle = "58% of 1,559 respondents do not support Biden",
-    caption = "Source: YouGov, March 2024",
-    x = "Would vote for Biden?",
-    y = "Count"
-  ) +
-  theme_minimal()
-```
+The threshold *"ever smoked at least 100 cigarettes"* is the standard public-health definition of an *ever-smoker*. It captures lifetime exposure rather than current status: someone who smoked daily as a college student and quit twenty years ago is still an ever-smoker.
 
 ### Exercise 7
 
-Specify two different groups of voters which have different values for some plausible covariate and which might have different average values for Biden support.
+Smoking status is the broad topic of this tutorial. Given that topic, which variable in `smokes` should we use as our outcome variable?
 
 ```{r introduction-7}
 question_text(NULL,
-    message = "Consider voters aged 18–30 versus voters aged 65 or older. Younger voters have historically leaned more Democratic, so the 18–30 group likely has higher average Biden support than the 65+ group.",
-    answer(NULL, correct = TRUE),
-    allow_retry = FALSE,
-    incorrect = NULL,
-    rows = 6)
+  message = "Our outcome variable is `smoke` --- a factor with levels `\"No\"` and `\"Yes\"` indicating whether the respondent has ever smoked at least 100 cigarettes in their lifetime. The 100-cigarette threshold is the standard public-health definition of an ever-smoker.",
+  answer(NULL, correct = TRUE),
+  allow_retry = FALSE,
+  incorrect = NULL,
+  rows = 4)
 ```
 
 ###
 
-In predictive models, do not use words like "cause," "influence," "impact," or anything else which suggests causation. The best phrasing is in terms of "differences" between groups of units with different values for a covariate of interest.
+We will use `smoke` as our outcome variable. Below is the share of respondents in the sample who answer `Yes`, broken out by sex.
+
+```{r}
+#| echo: false
+#| message: false
+#| warning: false
+smokes |>
+  count(sex, smoke) |>
+  group_by(sex) |>
+  mutate(share = n / sum(n)) |>
+  filter(smoke == "Yes") |>
+  ggplot(aes(x = sex, y = share, fill = sex)) +
+  geom_col(width = 0.6) +
+  geom_text(aes(label = scales::label_percent(accuracy = 1)(share)),
+            vjust = -0.5, size = 5) +
+  scale_y_continuous(labels = scales::label_percent(),
+                     limits = c(0, 0.6)) +
+  labs(
+    title    = "Share of Ever-Smokers in Our 1,000-Adult Sample",
+    subtitle = "Men are about 13 percentage points more likely to be ever-smokers than women",
+    x        = NULL,
+    y        = NULL,
+    caption  = "Source: 1,000-row NHANES 2009-2012 cut via primer.tutorials::smokes"
+  ) +
+  theme_minimal() +
+  theme(legend.position = "none",
+        axis.text.y     = element_blank(),
+        axis.ticks.y    = element_blank(),
+        panel.grid      = element_blank())
+```
 
 ### Exercise 8
 
-Write a predictive question connecting the outcome `biden` to the overall population of 2024 voters.
+Specify two different groups of adults which have different values for `sex` and which might have different probabilities of being ever-smokers.
 
 ```{r introduction-8}
 question_text(NULL,
-    message = "What proportion of all votes will be cast for Joe Biden in the 2024 election?",
-    answer(NULL, correct = TRUE),
-    allow_retry = FALSE,
-    incorrect = NULL,
-    rows = 6)
+  message = "Consider two groups: women aged 30 and men aged 70. The two groups differ both on `sex` (Female vs. Male) and on `age` (30 vs. 70). The plot above already suggests men are more likely than women to be ever-smokers; if smoking propensity also rises with age, the older men in this comparison may be even more likely than the younger women to be ever-smokers.",
+  answer(NULL, correct = TRUE),
+  allow_retry = FALSE,
+  incorrect = NULL,
+  rows = 5)
 ```
 
 ###
 
-This question is narrow enough that the Cardinal Virtues apparatus handles it cleanly — one binary outcome, a clear unit (voter), and a specific time window (the 2024 election). Alternatives a campaign strategist might ask: *How does Biden support vary by age?* or *How has Biden support changed since the last poll?* Those questions would require covariates, making the Preceptor Table more complex.
+In predictive models, do not use words like *"cause,"* *"influence,"* or *"impact"* --- the best phrasing is in terms of *differences* between groups of adults with different values for the covariates. The fact that older men are more often ever-smokers does not mean that being older or being male *causes* smoking; it means that, in this sample, that group has a higher share. Predictive models have no treatments --- only covariates.
+
+### Exercise 9
+
+Write a predictive question connecting the outcome `smoke` to `age` and `sex`. The question should specify a particular number to compute.
+
+```{r introduction-9}
+question_text(NULL,
+  message = "What is the difference in the probability of being an ever-smoker between a 30-year-old woman and a 70-year-old man?",
+  answer(NULL, correct = TRUE),
+  allow_retry = FALSE,
+  incorrect = NULL,
+  rows = 3)
+```
+
+###
+
+The 100-cigarette threshold is what makes the outcome a clean lifetime measure: someone who smoked heavily for two years in their twenties and quit will still register as `Yes`, even though they are no longer a current smoker. The question we are asking is about *ever-having-smoked*, not about *currently-smoking* --- and a state health department deciding where to put cessation outreach probably cares about both.
+
 
 ## Wisdom
 
 Data science starts with some broad questions and a data set which might help us to answer them.
 
-Imagine that you are the chair of the Democratic National Committee in early 2024 deciding where to devote time and money. Polls show close races in several key states. You want to know: what proportion of votes will Biden actually receive? There are many decisions to make.
+Imagine that you are a public-health analyst at a state health department designing the next anti-smoking campaign. To target outreach effectively, you want to know which adults are most likely to be smokers, broken out by basic demographics like age and sex --- the variables you can actually segment on when buying ads or staffing clinics. There are many decisions to make.
 
-The specific question: What proportion of all votes will be cast for Joe Biden in the 2024 election?
+The specific question: *What is the difference in the probability of being an ever-smoker between a 30-year-old woman and a 70-year-old man?*
 
-We will work from a YouGov poll of 1,559 U.S. adult citizens conducted in March 2024, available in the `poll_data` tibble.
+We will work from a 1,000-adult sample of NHANES 2009--2012, available in the `smokes` tibble of the **[primer.tutorials](https://ppbds.github.io/primer/)** package.
 
 ###
 
@@ -239,214 +278,217 @@ In your own words, describe the key components of Wisdom when working on a data 
 
 ```{r wisdom-1}
 question_text(NULL,
-    message = "Wisdom begins with a question and then moves on to the creation of a Preceptor Table and an examination of our data.",
-    answer(NULL, correct = TRUE),
-    allow_retry = FALSE,
-    incorrect = NULL,
-    rows = 6)
+  message = "Wisdom begins with a question and then moves on to the creation of a Preceptor Table and an examination of our data.",
+  answer(NULL, correct = TRUE),
+  allow_retry = FALSE,
+  incorrect = NULL,
+  rows = 3)
 ```
 
 ###
 
-*The combination of some data and an aching desire for an answer does not ensure that a reasonable answer can be extracted from a given body of data.* — John W. Tukey
+> *The combination of some data and an aching desire for an answer does not ensure that a reasonable answer can be extracted from a given body of data.* --- John W. Tukey
 
 ### Exercise 2
 
-In your own words, define a Preceptor Table.
+Define a Preceptor Table.
 
 ```{r wisdom-2}
 question_text(NULL,
-    message = "A Preceptor Table is the smallest possible table of data with rows and columns such that, if there is no missing data, we can easily calculate the quantity of interest.",
-    answer(NULL, correct = TRUE),
-    allow_retry = FALSE,
-    incorrect = NULL,
-    rows = 6)
+  message = "A Preceptor Table is the smallest possible table of data with rows and columns such that, if there is no missing data, we can easily calculate the quantity of interest.",
+  answer(NULL, correct = TRUE),
+  allow_retry = FALSE,
+  incorrect = NULL,
+  rows = 6)
 ```
 
 ###
 
-The Preceptor Table does not include all the covariates which you will eventually include in your model. It only includes, along with the outcome(s), covariates which are mentioned in your question.
+The Preceptor Table only includes the variables mentioned in the question. For a predictive model, that is one outcome column plus the covariates we are conditioning on; no treatment, no potential outcomes.
 
 ### Exercise 3
 
-Ask AI to write R code that creates a bar chart showing the distribution of `biden` support — the count of `"Yes"` and `"No"` responses — in `poll_data`. Include a title, subtitle noting the key finding, and a caption crediting YouGov.
+The Introduction plot showed the share of ever-smokers split by sex. Now look at how `smoke` varies with `age`, our other covariate. Ask AI to write R code that plots the share of ever-smokers vs. age in five-year bins, faceted by sex, with a smoothed line and the y-axis labeled as a percentage. Paste the code below.
 
-```{r wisdom-3, exercise = TRUE}
-
-```
-
-```{r wisdom-3-hint-1, eval = FALSE}
-poll_data |>
-  count(biden) |>
-  ggplot(aes(x = biden, y = n, fill = biden)) +
-  geom_col(show.legend = FALSE) +
-  labs(title = "...", subtitle = "...", caption = "Source: YouGov, March 2024",
-       x = "Would vote for Biden?", y = "Count")
-```
-
-```{r wisdom-3-test, include = FALSE}
-poll_data |> count(biden)
+```{r wisdom-3}
+question_text(NULL,
+  message = "    smokes |>\n      mutate(age_bin = 5 * (age %/% 5)) |>\n      group_by(sex, age_bin) |>\n      summarize(share_yes = mean(smoke == \"Yes\"), .groups = \"drop\") |>\n      ggplot(aes(x = age_bin, y = share_yes, color = sex)) +\n      geom_point(size = 3) +\n      geom_smooth(se = FALSE, method = \"loess\", linewidth = 1.1) +\n      scale_y_continuous(labels = scales::label_percent(),\n                         limits = c(0, 1)) +\n      facet_wrap(~ sex) +\n      labs(\n        title    = \"Share of Ever-Smokers by Age and Sex\",\n        subtitle = \"Older respondents are more likely to be ever-smokers, especially among men\",\n        x        = \"Age (binned to 5 years)\",\n        y        = NULL,\n        caption  = \"Source: 1,000-row NHANES cut via primer.tutorials::smokes\"\n      ) +\n      theme_minimal() +\n      theme(legend.position = \"none\")",
+  answer(NULL, correct = TRUE),
+  allow_retry = FALSE,
+  incorrect = NULL,
+  rows = 18)
 ```
 
 ###
 
-The poll shows 655 respondents (42%) supporting Biden and 904 (58%) not. This gap drives everything that follows — the model will estimate a probability close to 42%.
+```{r}
+#| echo: false
+#| message: false
+#| warning: false
+smokes |>
+  mutate(age_bin = 5 * (age %/% 5)) |>
+  group_by(sex, age_bin) |>
+  summarize(share_yes = mean(smoke == "Yes"), .groups = "drop") |>
+  ggplot(aes(x = age_bin, y = share_yes, color = sex)) +
+  geom_point(size = 3) +
+  geom_smooth(se = FALSE, method = "loess", linewidth = 1.1) +
+  scale_y_continuous(labels = scales::label_percent(),
+                     limits = c(0, 1)) +
+  facet_wrap(~ sex) +
+  labs(
+    title    = "Share of Ever-Smokers by Age and Sex",
+    subtitle = "Older respondents are more likely to be ever-smokers, especially among men",
+    x        = "Age (binned to 5 years)",
+    y        = NULL,
+    caption  = "Source: 1,000-row NHANES cut via primer.tutorials::smokes"
+  ) +
+  theme_minimal() +
+  theme(legend.position = "none")
+```
 
 ### Exercise 4
 
-At the R prompt, run `poll_data |> count(biden) |> mutate(pct = round(n / sum(n), 3))`. CP/CR.
+Describe the key components of Preceptor Tables in general, without worrying about this specific problem. Use words like "units," "outcomes," and "covariates."
 
 ```{r wisdom-4}
 question_text(NULL,
-    answer(NULL, correct = TRUE),
-    allow_retry = TRUE,
-    try_again_button = "Edit Answer",
-    incorrect = NULL,
-    rows = 3)
+  message = "The rows of the Preceptor Table are the units. The outcome is at least one of the columns. If the problem is causal, there will be at least two (potential) outcome columns. The other columns are covariates. If the problem is causal, at least one of the covariates will be considered a treatment.",
+  answer(NULL, correct = TRUE),
+  allow_retry = FALSE,
+  incorrect = NULL,
+  rows = 6)
 ```
 
 ###
 
-The two rows confirm our counts: 655 Yes (42.3%) and 904 No (57.7%). `count()` followed by `mutate(pct = n/sum(n))` is a quick way to get both counts and proportions from a categorical variable. You can never look at the data too much.
+This problem is predictive, so there is exactly one outcome column (`smoke`) and no treatment. We compare two groups of adults with different covariate values --- in our case, a 30-year-old woman versus a 70-year-old man.
 
 ### Exercise 5
 
-Describe the key components of Preceptor Tables in general, without worrying about this specific problem. Use words like "units," "outcomes," and "covariates."
+What are the units for this problem?
 
 ```{r wisdom-5}
 question_text(NULL,
-    message = "The rows of the Preceptor Table are the units. The outcome is at least one of the columns. If the problem is causal, there will be at least two (potential) outcome columns. The other columns are covariates. If the problem is causal, at least one of the covariates will be considered a treatment.",
-    answer(NULL, correct = TRUE),
-    allow_retry = FALSE,
-    incorrect = NULL,
-    rows = 6)
+  message = "Each row is one U.S. adult aged 20-80, observed at the time of the NHANES interview. The full educational NHANES dataset covers about 6,000 such adults across the 2009-2012 waves; our analysis sample is 1,000 of them, drawn at random with `set.seed(2026)` so the sample is reproducible.",
+  answer(NULL, correct = TRUE),
+  allow_retry = FALSE,
+  incorrect = NULL,
+  rows = 4)
 ```
 
 ###
 
-This problem is predictive, so there is no treatment covariate and no potential outcomes. The Preceptor Table needs only the unit and one outcome column — the simplest possible structure.
+Specifying the unit forces a question precise enough to answer. We model individual adults here, but a state health department actually wants to know about *aggregates* --- how many ever-smokers are in a target ZIP code, not which specific person.
 
 ### Exercise 6
 
-What are the units for this problem?
+What is the outcome variable for this problem?
 
 ```{r wisdom-6}
 question_text(NULL,
-    message = "Each row represents one eligible voter casting a ballot in the 2024 U.S. presidential election. The question concerns all roughly 150 million Americans expected to vote in November 2024.",
-    answer(NULL, correct = TRUE),
-    allow_retry = FALSE,
-    incorrect = NULL,
-    rows = 6)
+  message = "Keep track of two outcome variables: the one in our Preceptor Table and the one in our data. In this case, both are `smoke` --- a factor taking the values `\"Yes\"` and `\"No\"` based on the standard public-health threshold of having smoked at least 100 cigarettes in one's lifetime.",
+  answer(NULL, correct = TRUE),
+  allow_retry = FALSE,
+  incorrect = NULL,
+  rows = 4)
 ```
 
 ###
 
-Specifying the Preceptor Table forces us to think clearly about the units and outcomes implied by the question. The resulting discussion sometimes leads us to modify the question with which we started. No data science project follows a single direction. We always backtrack. There is always dialogue. We model units, but we only really care about aggregates.
+The outcome we really care about for an anti-smoking campaign --- *"who is currently smoking and could plausibly be moved to quit?"* --- is fuzzier than what `smoke` measures. `smoke` records *ever-smoker* status. Someone who smoked heavily in their twenties and quit thirty years ago still answers `Yes`, but is not the target of a cessation program.
 
 ### Exercise 7
 
-What is the outcome variable for this problem?
+What is a covariate which you think might be useful for this problem, regardless of whether or not it is in the data?
 
 ```{r wisdom-7}
 question_text(NULL,
-    message = "The outcome is Biden support — whether this voter casts their ballot for Joe Biden. In the data, this is self-reported survey preference ('Yes' or 'No'). In the Preceptor Table, it is the actual vote cast on Election Day.",
-    answer(NULL, correct = TRUE),
-    allow_retry = FALSE,
-    incorrect = NULL,
-    rows = 6)
+  message = "Educational attainment is a strong candidate. In U.S. data, smoking rates have fallen much faster among college graduates than among adults without a four-year degree, so education would help separate two adults of the same age and sex. We do not have education in this trimmed `smokes` tibble, but the original NHANES dataset does.",
+  answer(NULL, correct = TRUE),
+  allow_retry = FALSE,
+  incorrect = NULL,
+  rows = 4)
 ```
 
 ###
 
-The outcome variable that we really care about is often not the outcome variable which our data includes. This compromise — working with what we have rather than what we really want — is a part of most data science work in the real world.
+The term *covariates* is used in three ways: variables that *might* matter, variables we have data for, and variables we end up putting in the model. Education would matter; it is in the source data; we did not include it in this teaching cut. Most candidates a researcher lists never make it into the final model.
 
 ### Exercise 8
 
-What is a covariate which you think might be useful for this problem, regardless of whether or not it might be included in the data?
+What are the treatments, if any, for this problem?
 
 ```{r wisdom-8}
 question_text(NULL,
-    message = "Party identification would be useful — Democrats overwhelmingly support Biden while Republicans overwhelmingly oppose him. The data does not include party identification, but the model would improve substantially if it did.",
-    answer(NULL, correct = TRUE),
-    allow_retry = FALSE,
-    incorrect = NULL,
-    rows = 6)
+  message = "There are no treatments. This is a predictive model: we compare ever-smoker status between groups of adults defined by their age and sex, and do not assume that any of those covariates can be manipulated. Predictive models have no treatments --- only covariates.",
+  answer(NULL, correct = TRUE),
+  allow_retry = FALSE,
+  incorrect = NULL,
+  rows = 4)
 ```
 
 ###
 
-The term "covariates" is used in at least three ways in data science. First, it is all the variables which might be useful, regardless of whether or not we have the data. Second, it is all the variables for which we have data. Third, it is the set of variables in the data which we end up using in the model.
+Without a treatment, the language we use changes. We talk about *differences in expected probabilities between groups*, not about *causal effects of one variable on another*. Same data, same model, different framing.
 
 ### Exercise 9
 
-What are the treatments, if any, for this problem?
+What moment in time does the Preceptor Table refer to?
 
 ```{r wisdom-9}
 question_text(NULL,
-    message = "This is a predictive model with no treatments — only covariates. There is nothing we can manipulate here; we are just trying to estimate voter preferences as they are.",
-    answer(NULL, correct = TRUE),
-    allow_retry = FALSE,
-    incorrect = NULL,
-    rows = 6)
+  message = "The present, conventionally taken to be the year 2026 in which we are designing the campaign. Our data, by contrast, was collected during the 2009-2012 NHANES waves, so there is more than a decade between when the data was gathered and when our question is being asked.",
+  answer(NULL, correct = TRUE),
+  allow_retry = FALSE,
+  incorrect = NULL,
+  rows = 4)
 ```
 
 ###
 
-With a predictive model, each individual unit has only one observed outcome. There are not two potential outcomes because none of the covariates are treated as treatment variables. Predictive models have no "treatments" — only covariates.
+A Preceptor Table can never really refer to an exact instant in time --- *"the present"* is a smear, not a moment. The 13-year gap between data and Preceptor Table is going to come up again in Justice when we discuss stability.
 
 ### Exercise 10
 
-What moment in time does the Preceptor Table refer to?
+Describe in words the Preceptor Table for this problem.
 
 ```{r wisdom-10}
 question_text(NULL,
-    message = "The Preceptor Table refers to Election Day 2024 — November 5, 2024. The question asks about actual votes cast on that specific day.",
-    answer(NULL, correct = TRUE),
-    allow_retry = FALSE,
-    incorrect = NULL,
-    rows = 6)
+  message = "The Preceptor Table has three columns: one identifying each adult, one outcome column (`Ever Smoked`), and two covariate columns (`Age` and `Sex`). Each row represents one U.S. adult in 2026. Because this is a predictive model, the outcome column is single-valued and observable in principle for every adult --- there are no potential outcomes.",
+  answer(NULL, correct = TRUE),
+  allow_retry = FALSE,
+  incorrect = NULL,
+  rows = 6)
 ```
 
 ###
 
-A Preceptor Table can never really refer to an exact instant in time since nothing is instantaneous in this fallen world. For practical purposes we treat "Election Day 2024" as the moment, accepting that voting happens over the course of the day.
-
-### Exercise 11
-
-Describe in words the Preceptor Table for this problem.
-
-```{r wisdom-11}
-question_text(NULL,
-    message = "The Preceptor Table has one row per eligible voter casting a ballot in the 2024 U.S. presidential election — roughly 150 million rows. It has one outcome column, Biden Support (Yes/No), and no covariates — the question asks only about the overall proportion, so we need only the unit and the outcome.",
-    answer(NULL, correct = TRUE),
-    allow_retry = FALSE,
-    incorrect = NULL,
-    rows = 6)
-```
-
-###
-
-```{r preceptor-table, echo = FALSE, results = "asis"}
-p_tibble <- tibble::tribble(
-  ~`Voter`     , ~`Biden Support`,
-  "Voter 1"    , "Yes",
-  "Voter 2"    , "No",
-  "..."        , "...",
-  "Voter 1559" , "Yes"
+```{r}
+#| echo: false
+#| results: asis
+pre_tibble <- tibble::tribble(
+  ~`Adult`,            ~`Ever Smoked`, ~`Age`, ~`Sex`,
+  "Maria Alvarez",     "No",           "30",   "Female",
+  "Anthony Carter",    "Yes",          "70",   "Male",
+  "...",               "...",          "...",  "...",
+  "Linda Whitfield",   "No",           "55",   "Female"
 )
 
-pre_title_footnote   <- "If all the information in this table were available, we could answer the question: What proportion of all votes will be cast for Joe Biden in the 2024 election?"
-pre_units_footnote   <- "Each row represents one of the roughly 150 million Americans expected to cast a ballot in the 2024 presidential election. The labels 'Voter 1', 'Voter 1559' are placeholders; the true Preceptor Table would contain every voter on Election Day."
-pre_outcome_footnote <- "Biden support indicates whether this voter casts their ballot for Joe Biden in the 2024 presidential election: 'Yes' or 'No'. This is the actual vote cast, not stated preference in a survey. The two can differ — a respondent who told a pollster 'Yes' might vote for a third-party candidate on Election Day."
+pre_title_footnote     <- "If all the information in this table were available, we could answer the question: What is the difference in the probability of being an ever-smoker between a 30-year-old woman and a 70-year-old man?"
+pre_units_footnote     <- "Each row is one U.S. adult aged 20-80 in 2026, the year the campaign would be deployed. The example rows above use plausible names chosen to span the relevant age and sex range; missing rows represent the rest of the adult population we would target."
+pre_outcome_footnote   <- "Whether the adult has ever smoked at least 100 cigarettes in their lifetime --- the standard public-health definition of an ever-smoker. Factor with values `Yes` and `No`."
+pre_covariate_footnote <- "Age in years (integer, 20-80) and self-reported sex (Female or Male). Sex is shown as a binary because that is what the data collected; non-binary respondents would not be representable in the table as drawn."
 
-pre_gt_html <- gt::gt(p_tibble, id = "preceptor_tbl") |>
+pre_gt_html <- gt::gt(pre_tibble, id = "preceptor_tbl") |>
   gt::tab_header(title = "Preceptor Table") |>
-  gt::tab_spanner(label = "Unit"   , id = "unit_span",
-                  columns = c(`Voter`)) |>
-  gt::tab_spanner(label = "Outcome", id = "outcome_span",
-                  columns = c(`Biden Support`)) |>
-  gt::cols_align(align = "left" , columns = c(`Voter`)) |>
-  gt::cols_align(align = "right", columns = c(`Biden Support`)) |>
+  gt::tab_spanner(label = "Unit",       id = "unit_span",
+                  columns = c(`Adult`)) |>
+  gt::tab_spanner(label = "Outcome",    id = "outcome_span",
+                  columns = c(`Ever Smoked`)) |>
+  gt::tab_spanner(label = "Covariates", id = "covariates_span",
+                  columns = c(`Age`, `Sex`)) |>
+  gt::cols_align(align = "left",  columns = c(`Adult`, `Ever Smoked`, `Sex`)) |>
+  gt::cols_align(align = "right", columns = c(`Age`)) |>
   gt::fmt_markdown(columns = gt::everything()) |>
   gt::tab_options(
     heading.title.font.size   = "1.5em",
@@ -454,16 +496,12 @@ pre_gt_html <- gt::gt(p_tibble, id = "preceptor_tbl") |>
     column_labels.font.weight = "normal"
   ) |>
   gt::tab_style(
-    style     = gt::cell_text(weight = "bold"),
+    style = gt::cell_text(weight = "bold"),
     locations = gt::cells_column_spanners()
   ) |>
   gt::tab_style(
-    style     = gt::cell_text(align = "left"),
-    locations = gt::cells_column_spanners(spanners = "unit_span")
-  ) |>
-  gt::tab_style(
-    style     = gt::cell_text(align = "right"),
-    locations = gt::cells_column_spanners(spanners = "outcome_span")
+    style = gt::cell_text(align = "left"),
+    locations = gt::cells_column_spanners(spanners = c("unit_span", "outcome_span", "covariates_span"))
   ) |>
   gt::tab_footnote(footnote = pre_title_footnote,
                    locations = gt::cells_title()) |>
@@ -471,6 +509,8 @@ pre_gt_html <- gt::gt(p_tibble, id = "preceptor_tbl") |>
                    locations = gt::cells_column_spanners(spanners = "unit_span")) |>
   gt::tab_footnote(footnote = pre_outcome_footnote,
                    locations = gt::cells_column_spanners(spanners = "outcome_span")) |>
+  gt::tab_footnote(footnote = pre_covariate_footnote,
+                   locations = gt::cells_column_spanners(spanners = "covariates_span")) |>
   gt::opt_css(
     css = "
       #preceptor_tbl .gt_footnote {
@@ -491,48 +531,49 @@ cat(
 )
 ```
 
-### Exercise 12
+### Exercise 11
 
-We will be creating a summary paragraph over the course of this tutorial. Write the first two sentences. The first sentence is a general statement about the overall topic, mentioning the general class of outcome and at least one covariate. The second introduces the data source and the specific question — when/where gathered, how many observations, who collected it.
+Write the first two sentences of the summary paragraph. The first introduces the topic; the second introduces the data and the specific question.
 
-```{r wisdom-12}
+```{r wisdom-11}
 question_text(NULL,
-    message = "Survey data from YouGov helps predict election outcomes by estimating the proportion of voters supporting each candidate. This analysis uses a March 2024 poll of 1,559 U.S. adult citizens to estimate the proportion of votes Joe Biden would receive in the 2024 presidential election.",
-    answer(NULL, correct = TRUE),
-    allow_retry = FALSE,
-    incorrect = NULL,
-    rows = 6)
+  message = "Lifetime smoking is one of the strongest predictors of long-term health outcomes, and a state health department designing an anti-smoking campaign needs to know who its likely targets are. Using a 1,000-adult sample from the 2009-2012 NHANES waves, we estimate the difference in the probability of being an ever-smoker between a 30-year-old woman and a 70-year-old man.",
+  answer(NULL, correct = TRUE),
+  allow_retry = FALSE,
+  incorrect = NULL,
+  rows = 5)
 ```
 
 ###
 
-Read our answer. It will not be the same as yours. You can change your answer to incorporate some of our ideas, but do not copy/paste our answer exactly. Add your two sentences to your QMD, `Cmd/Ctrl + Shift + K`, and commit/push.
+Read our answer. It will not be the same as yours. You can change your answer to incorporate some of our ideas, but do not copy/paste exactly. Add your two sentences to the summary paragraph in your QMD. `Cmd/Ctrl + Shift + K`, then commit/push.
+
 
 ## Justice
 
 Wisdom gives us the Preceptor Table and the data.
 
-```{r justice-preceptor-table, echo = FALSE, results = "asis"}
-p_tibble_j <- tibble::tribble(
-  ~`Voter`     , ~`Biden Support`,
-  "Voter 1"    , "Yes",
-  "Voter 2"    , "No",
-  "..."        , "...",
-  "Voter 1559" , "Yes"
+```{r}
+#| echo: false
+#| results: asis
+pre_tibble_j <- tibble::tribble(
+  ~`Adult`,            ~`Ever Smoked`, ~`Age`, ~`Sex`,
+  "Maria Alvarez",     "No",           "30",   "Female",
+  "Anthony Carter",    "Yes",          "70",   "Male",
+  "...",               "...",          "...",  "...",
+  "Linda Whitfield",   "No",           "55",   "Female"
 )
 
-pre_title_footnote_j   <- "If all the information in this table were available, we could answer the question: What proportion of all votes will be cast for Joe Biden in the 2024 election?"
-pre_units_footnote_j   <- "Each row represents one of the roughly 150 million Americans expected to cast a ballot in the 2024 presidential election. The labels 'Voter 1', 'Voter 1559' are placeholders; the true Preceptor Table would contain every voter on Election Day."
-pre_outcome_footnote_j <- "Biden support indicates whether this voter casts their ballot for Joe Biden in the 2024 presidential election: 'Yes' or 'No'. This is the actual vote cast, not stated preference in a survey. The two can differ — a respondent who told a pollster 'Yes' might vote for a third-party candidate on Election Day."
-
-pre_gt_html_j <- gt::gt(p_tibble_j, id = "preceptor_tbl_j") |>
+pre_gt_html_j <- gt::gt(pre_tibble_j, id = "preceptor_tbl_j") |>
   gt::tab_header(title = "Preceptor Table") |>
-  gt::tab_spanner(label = "Unit"   , id = "unit_span_j",
-                  columns = c(`Voter`)) |>
-  gt::tab_spanner(label = "Outcome", id = "outcome_span_j",
-                  columns = c(`Biden Support`)) |>
-  gt::cols_align(align = "left" , columns = c(`Voter`)) |>
-  gt::cols_align(align = "right", columns = c(`Biden Support`)) |>
+  gt::tab_spanner(label = "Unit",       id = "unit_span",
+                  columns = c(`Adult`)) |>
+  gt::tab_spanner(label = "Outcome",    id = "outcome_span",
+                  columns = c(`Ever Smoked`)) |>
+  gt::tab_spanner(label = "Covariates", id = "covariates_span",
+                  columns = c(`Age`, `Sex`)) |>
+  gt::cols_align(align = "left",  columns = c(`Adult`, `Ever Smoked`, `Sex`)) |>
+  gt::cols_align(align = "right", columns = c(`Age`)) |>
   gt::fmt_markdown(columns = gt::everything()) |>
   gt::tab_options(
     heading.title.font.size   = "1.5em",
@@ -540,23 +581,13 @@ pre_gt_html_j <- gt::gt(p_tibble_j, id = "preceptor_tbl_j") |>
     column_labels.font.weight = "normal"
   ) |>
   gt::tab_style(
-    style     = gt::cell_text(weight = "bold"),
+    style = gt::cell_text(weight = "bold"),
     locations = gt::cells_column_spanners()
   ) |>
   gt::tab_style(
-    style     = gt::cell_text(align = "left"),
-    locations = gt::cells_column_spanners(spanners = "unit_span_j")
+    style = gt::cell_text(align = "left"),
+    locations = gt::cells_column_spanners(spanners = c("unit_span", "outcome_span", "covariates_span"))
   ) |>
-  gt::tab_style(
-    style     = gt::cell_text(align = "right"),
-    locations = gt::cells_column_spanners(spanners = "outcome_span_j")
-  ) |>
-  gt::tab_footnote(footnote = pre_title_footnote_j,
-                   locations = gt::cells_title()) |>
-  gt::tab_footnote(footnote = pre_units_footnote_j,
-                   locations = gt::cells_column_spanners(spanners = "unit_span_j")) |>
-  gt::tab_footnote(footnote = pre_outcome_footnote_j,
-                   locations = gt::cells_column_spanners(spanners = "outcome_span_j")) |>
   gt::opt_css(
     css = "
       #preceptor_tbl_j .gt_footnote {
@@ -577,28 +608,32 @@ cat(
 )
 ```
 
-```{r justice-data-table, echo = FALSE, results = "asis"}
+```{r}
+#| echo: false
+#| results: asis
 data_tibble <- tibble::tribble(
-  ~`Voter`    , ~`Biden Support`,
-  "Voter 1"   , "No",
-  "Voter 2"   , "No",
-  "Voter 3"   , "Yes",
-  "Voter 4"   , "No",
-  "Voter 5"   , "Yes",
-  "..."       , "..."
+  ~`Respondent`,        ~`Year`, ~`Ever Smoked`, ~`Age`, ~`Sex`,
+  "Sarah Chen",         "2010",  "No",           "32",   "Female",
+  "Robert Davis",       "2011",  "Yes",          "68",   "Male",
+  "...",                "...",   "...",          "...",  "...",
+  "Patricia Williams",  "2012",  "No",           "44",   "Female"
 )
 
-data_title_footnote   <- "YouGov poll of 1,559 U.S. adult citizens, March 2024. Respondents were recruited from YouGov's online opt-in panel and post-stratification weighted to approximate the U.S. adult population by age, gender, race/ethnicity, education, and 2020 vote choice."
-data_outcome_footnote <- "Self-reported answer to a question about 2024 presidential vote intention, coded 'Yes' if the respondent indicated they would vote for Joe Biden and 'No' otherwise. Measured in March 2024; respondents' preferences may shift before Election Day in November."
+data_title_footnote     <- "National Health and Nutrition Examination Survey (NHANES) 2009--2012, conducted by the U.S. Centers for Disease Control and Prevention. Adults aged 20--80 are interviewed in person; smoking status is self-reported as part of the questionnaire."
+data_units_footnote     <- "Each row is one NHANES respondent at the time of their interview. NHANES is a multi-year, multi-stage probability sample drawn from the U.S. civilian non-institutionalized population; our 1,000-row teaching cut takes a uniform random subsample of the educational NHANES file (`set.seed(2026)`)."
+data_outcome_footnote   <- "Self-reported response to the question *Have you smoked at least 100 cigarettes in your entire life?* Stored as a factor with levels `No` and `Yes`. The 100-cigarette threshold is what NHANES uses to define an ever-smoker, so all respondents are coded the same way."
+data_covariate_footnote <- "Age is reported in completed years; respondents at the upper end (80+) are top-coded at 80 in the educational file. Sex is reported by the respondent and recorded as Female or Male."
 
 data_gt_html <- gt::gt(data_tibble, id = "data_tbl") |>
-  gt::tab_header(title = "Data: YouGov Poll, March 2024") |>
-  gt::tab_spanner(label = "Unit"   , id = "unit_span_d",
-                  columns = c(`Voter`)) |>
-  gt::tab_spanner(label = "Outcome", id = "outcome_span_d",
-                  columns = c(`Biden Support`)) |>
-  gt::cols_align(align = "left" , columns = c(`Voter`)) |>
-  gt::cols_align(align = "right", columns = c(`Biden Support`)) |>
+  gt::tab_header(title = "Data: NHANES 2009--2012, Adults Aged 20--80") |>
+  gt::tab_spanner(label = "Unit/Time",  id = "unit_span",
+                  columns = c(`Respondent`, `Year`)) |>
+  gt::tab_spanner(label = "Outcome",    id = "outcome_span",
+                  columns = c(`Ever Smoked`)) |>
+  gt::tab_spanner(label = "Covariates", id = "covariates_span",
+                  columns = c(`Age`, `Sex`)) |>
+  gt::cols_align(align = "left",  columns = c(`Respondent`, `Ever Smoked`, `Sex`)) |>
+  gt::cols_align(align = "right", columns = c(`Year`, `Age`)) |>
   gt::fmt_markdown(columns = gt::everything()) |>
   gt::tab_options(
     heading.title.font.size   = "1.5em",
@@ -606,21 +641,21 @@ data_gt_html <- gt::gt(data_tibble, id = "data_tbl") |>
     column_labels.font.weight = "normal"
   ) |>
   gt::tab_style(
-    style     = gt::cell_text(weight = "bold"),
+    style = gt::cell_text(weight = "bold"),
     locations = gt::cells_column_spanners()
   ) |>
   gt::tab_style(
-    style     = gt::cell_text(align = "left"),
-    locations = gt::cells_column_spanners(spanners = "unit_span_d")
-  ) |>
-  gt::tab_style(
-    style     = gt::cell_text(align = "right"),
-    locations = gt::cells_column_spanners(spanners = "outcome_span_d")
+    style = gt::cell_text(align = "left"),
+    locations = gt::cells_column_spanners(spanners = c("unit_span", "outcome_span", "covariates_span"))
   ) |>
   gt::tab_footnote(footnote = data_title_footnote,
                    locations = gt::cells_title()) |>
+  gt::tab_footnote(footnote = data_units_footnote,
+                   locations = gt::cells_column_spanners(spanners = "unit_span")) |>
   gt::tab_footnote(footnote = data_outcome_footnote,
-                   locations = gt::cells_column_spanners(spanners = "outcome_span_d")) |>
+                   locations = gt::cells_column_spanners(spanners = "outcome_span")) |>
+  gt::tab_footnote(footnote = data_covariate_footnote,
+                   locations = gt::cells_column_spanners(spanners = "covariates_span")) |>
   gt::opt_css(
     css = "
       #data_tbl .gt_footnote {
@@ -645,20 +680,20 @@ cat(
 
 ### Exercise 1
 
-In your own words, name the five key components of Justice when working on a data science problem.
+In your own words, describe the components of Justice when working on a data science problem.
 
 ```{r justice-1}
 question_text(NULL,
-    message = "Justice concerns the Population Table and the four key assumptions which underlie it: validity, stability, representativeness, and unconfoundedness.",
-    answer(NULL, correct = TRUE),
-    allow_retry = FALSE,
-    incorrect = NULL,
-    rows = 6)
+  message = "Justice concerns the Population Table, the four key assumptions which underlie it (validity, stability, representativeness, and unconfoundedness), and selects the formula for the data generating mechanism.",
+  answer(NULL, correct = TRUE),
+  allow_retry = FALSE,
+  incorrect = NULL,
+  rows = 4)
 ```
 
 ###
 
-Justice is about concerns that you (or your critics) might have — reasons why the model you create might not work as well as you hope.
+Justice surfaces the worries you (or your critics) might have about whether your model will work. The "formula for the data generating mechanism" has two pieces with formal names: a probability family (the distribution of the outcome --- here, Bernoulli, since the outcome is binary) and a link function (how the outcome's expected value depends on the covariates --- here, the logit). We will use those terms freely starting in the Hard tutorials.
 
 ### Exercise 2
 
@@ -666,33 +701,33 @@ In your own words, define "validity" as we use the term.
 
 ```{r justice-2}
 question_text(NULL,
-    message = "Validity is the consistency, or lack thereof, in the columns of the data set and the corresponding columns in the Preceptor Table.",
-    answer(NULL, correct = TRUE),
-    allow_retry = FALSE,
-    incorrect = NULL,
-    rows = 6)
+  message = "Validity is the consistency, or lack thereof, in the columns of the data set and the corresponding columns in the Preceptor Table.",
+  answer(NULL, correct = TRUE),
+  allow_retry = FALSE,
+  incorrect = NULL,
+  rows = 4)
 ```
 
 ###
 
-Validity is always about the columns in the Preceptor Table and the data. Just because columns from these two different tables have the same name does not mean that they are the same thing.
+Validity is always about the columns, never the rows. The names of two columns matching across tables is no guarantee that they measure the same thing.
 
 ### Exercise 3
 
-Provide one reason why the assumption of validity might not hold for the outcome variable `biden`. Use the words "column" or "columns" in your answer.
+Provide one reason why the assumption of validity might not hold for the outcome variable `smoke` or for one of the covariates.
 
 ```{r justice-3}
 question_text(NULL,
-    message = "The outcome column in the data measures self-reported survey preference — 'Would you vote for Biden?' — while the Preceptor Table's outcome column measures the actual vote cast on Election Day. These are related but not identical. A respondent who says 'Yes' in March might vote for a third-party candidate in November, or a 'No' respondent might switch. The two columns are measuring different things.",
-    answer(NULL, correct = TRUE),
-    allow_retry = FALSE,
-    incorrect = NULL,
-    rows = 6)
+  message = "The `smoke` column in NHANES is *self-reported*: respondents answer the question themselves rather than being verified against pharmacy records or biomarkers. Adults who smoked occasionally as teenagers may misremember whether they ever crossed the 100-cigarette threshold; current smokers may slightly underreport in clinical settings. The Preceptor Table column `Ever Smoked` is meant to capture the truth, not the answer respondents give to a survey, so the two columns measure the same concept only if recall and reporting bias roughly cancel out across respondents.",
+  answer(NULL, correct = TRUE),
+  allow_retry = FALSE,
+  incorrect = NULL,
+  rows = 6)
 ```
 
 ###
 
-In order to consider the Preceptor Table and the data to be drawn from the same population, the columns from one must have a valid correspondence with the columns in the other. Validity, if true (or at least reasonable), allows us to construct the Population Table, which is the first step in Justice.
+Validity, if reasonable, is what lets us treat the Preceptor Table and the data as drawn from the same population. NHANES is one of the better-validated U.S. health surveys --- it includes physical examinations and lab work alongside self-report --- but the smoking question is still self-reported, so this validity worry is real even if not catastrophic.
 
 ### Exercise 4
 
@@ -700,16 +735,16 @@ In your own words, define a Population Table.
 
 ```{r justice-4}
 question_text(NULL,
-    message = "The Population Table includes a row for each unit/time combination in the underlying population from which both the Preceptor Table and the data are drawn.",
-    answer(NULL, correct = TRUE),
-    allow_retry = FALSE,
-    incorrect = NULL,
-    rows = 6)
+  message = "The Population Table includes a row for each unit/time combination in the underlying population from which both the Preceptor Table and the data are drawn.",
+  answer(NULL, correct = TRUE),
+  allow_retry = FALSE,
+  incorrect = NULL,
+  rows = 4)
 ```
 
 ###
 
-The Population Table is almost always much bigger than the combination of the Preceptor Table and the data, because if we can really assume that both are part of the same population, then that population must cover a broad universe of time and units.
+The Population Table is almost always larger than the Preceptor Table and the data combined: it covers the full universe of unit/time combinations both samples are drawn from.
 
 ### Exercise 5
 
@@ -717,43 +752,48 @@ Specify the unit/time combinations which define each row in this Population Tabl
 
 ```{r justice-5}
 question_text(NULL,
-    message = "Each row is one U.S. adult citizen at a specific point in time — either during the YouGov survey window (March 2024) or on Election Day (November 2024). The broader population spans all U.S. adults who could have been surveyed or who could vote in the 2024 election.",
-    answer(NULL, correct = TRUE),
-    allow_retry = FALSE,
-    incorrect = NULL,
-    rows = 6)
+  message = "Each row is one U.S. adult aged 20-80 at one point in time. Data rows are 1,000 NHANES respondents interviewed during 2009-2012. Preceptor rows are U.S. adults aged 20-80 in 2026, the year we are designing the campaign. The same adult could appear in both blocks if they were 20 in 2009 and are still alive in 2026, but most rows are different people.",
+  answer(NULL, correct = TRUE),
+  allow_retry = FALSE,
+  incorrect = NULL,
+  rows = 5)
 ```
 
 ###
 
-```{r population-table, echo = FALSE, results = "asis"}
-population_tibble <- tibble::tribble(
-  ~Source    , ~`Voter`          , ~`Year`, ~`Biden Support`,
-  "..."      , "..."             , "..."  , "..."           ,
-  "Data"     , "Voter 1"         , "2024" , "No"            ,
-  "Data"     , "Voter 2"         , "2024" , "No"            ,
-  "Data"     , "..."             , "..."  , "..."           ,
-  "Data"     , "Voter 1559"      , "2024" , "Yes"           ,
-  "..."      , "..."             , "..."  , "..."           ,
-  "Preceptor", "Marcus Williams" , "2024" , "Yes"           ,
-  "Preceptor", "Sarah Chen"      , "2024" , "No"            ,
-  "Preceptor", "..."             , "..."  , "..."           ,
-  "Preceptor", "Jennifer Lopez"  , "2024" , "Yes"           ,
-  "..."      , "..."             , "..."  , "..."
+```{r}
+#| echo: false
+#| results: asis
+pop_tibble <- tibble::tribble(
+  ~Source    , ~`Adult`,             ~`Year`, ~`Ever Smoked`, ~`Age`, ~`Sex`,
+  "..."      , "...",                "..."  , "...",          "...",  "...",
+  "Data"     , "Sarah Chen",         "2010" , "No",           "32",   "Female",
+  "Data"     , "Robert Davis",       "2011" , "Yes",          "68",   "Male",
+  "Data"     , "...",                "..."  , "...",          "...",  "...",
+  "Data"     , "Patricia Williams",  "2012" , "No",           "44",   "Female",
+  "..."      , "...",                "..."  , "...",          "...",  "...",
+  "Preceptor", "Maria Alvarez",      "2026" , "No",           "30",   "Female",
+  "Preceptor", "Anthony Carter",     "2026" , "Yes",          "70",   "Male",
+  "Preceptor", "...",                "..."  , "...",          "...",  "...",
+  "Preceptor", "Linda Whitfield",    "2026" , "No",           "55",   "Female",
+  "..."      , "...",                "..."  , "...",          "...",  "..."
 )
 
-pop_title_footnote   <- "This table combines data from the YouGov March 2024 poll with the Preceptor Table's Election Day 2024 voters, drawn from the broader population of U.S. adults eligible to vote in 2024."
-pop_units_footnote   <- "Data rows are individual respondents from YouGov's March 2024 poll — approximately 1,559 adults recruited from an opt-in online panel and weighted to approximate U.S. adults. Preceptor rows are voters casting ballots on November 5, 2024 — approximately 155 million total. The eight-month gap between the survey (March 2024) and the election (November 2024) is a stability concern. YouGov's opt-in panel methodology introduces a representativeness concern: those who participate in online panels tend to be more politically engaged and internet-savvy than the broader electorate."
-pop_outcome_footnote <- "In Data rows, Biden support is self-reported preference measured in March 2024 ('Would you vote for Biden?'). In Preceptor rows, Biden support is the actual vote cast on Election Day. These operationalizations differ — reported preferences and actual votes are not the same column, even when they share a label. This is the validity concern identified in Exercise 3."
+pop_title_footnote     <- "Population: U.S. adults aged 20--80, drawn from a much larger universe that the NHANES sample (Data rows) and the 2026 campaign-target population (Preceptor rows) are both subsets of. The 13--17 year gap between the two blocks is the heart of the stability discussion below."
+pop_units_footnote     <- "Each row is one adult at one point in time. Data rows are NHANES respondents (2009--2012); Preceptor rows are U.S. adults in 2026, the year of the campaign."
+pop_outcome_footnote   <- "Whether the adult has smoked at least 100 cigarettes in their lifetime. In Data rows, the answer is what the respondent told the NHANES interviewer; in Preceptor rows, the answer is the actual ever-smoker status of each adult in 2026."
+pop_covariate_footnote <- "Age in years and self-reported sex. The covariate definitions are the same in both blocks; what differs is the era and the population the rows are drawn from."
 
-pop_gt_html <- gt::gt(population_tibble, id = "population_tbl") |>
+pop_gt_html <- gt::gt(pop_tibble, id = "population_tbl") |>
   gt::tab_header(title = "Population Table") |>
-  gt::tab_spanner(label = "Unit/Time", id = "unit_span",
-                  columns = c(`Voter`, `Year`)) |>
-  gt::tab_spanner(label = "Outcome"  , id = "outcome_span",
-                  columns = c(`Biden Support`)) |>
-  gt::cols_align(align = "left" , columns = c(`Source`, `Voter`)) |>
-  gt::cols_align(align = "right", columns = c(`Year`, `Biden Support`)) |>
+  gt::tab_spanner(label = "Unit/Time",  id = "unit_span",
+                  columns = c(`Adult`, `Year`)) |>
+  gt::tab_spanner(label = "Outcome",    id = "outcome_span",
+                  columns = c(`Ever Smoked`)) |>
+  gt::tab_spanner(label = "Covariates", id = "covariates_span",
+                  columns = c(`Age`, `Sex`)) |>
+  gt::cols_align(align = "left",  columns = c(`Source`, `Adult`, `Ever Smoked`, `Sex`)) |>
+  gt::cols_align(align = "right", columns = c(`Year`, `Age`)) |>
   gt::fmt_markdown(columns = gt::everything()) |>
   gt::tab_options(
     heading.title.font.size   = "1.5em",
@@ -761,16 +801,12 @@ pop_gt_html <- gt::gt(population_tibble, id = "population_tbl") |>
     column_labels.font.weight = "normal"
   ) |>
   gt::tab_style(
-    style     = gt::cell_text(weight = "bold"),
+    style = gt::cell_text(weight = "bold"),
     locations = gt::cells_column_spanners()
   ) |>
   gt::tab_style(
-    style     = gt::cell_text(align = "left"),
-    locations = gt::cells_column_spanners(spanners = "unit_span")
-  ) |>
-  gt::tab_style(
-    style     = gt::cell_text(align = "right"),
-    locations = gt::cells_column_spanners(spanners = "outcome_span")
+    style = gt::cell_text(align = "left"),
+    locations = gt::cells_column_spanners(spanners = c("unit_span", "outcome_span", "covariates_span"))
   ) |>
   gt::tab_footnote(footnote = pop_title_footnote,
                    locations = gt::cells_title()) |>
@@ -778,6 +814,8 @@ pop_gt_html <- gt::gt(population_tibble, id = "population_tbl") |>
                    locations = gt::cells_column_spanners(spanners = "unit_span")) |>
   gt::tab_footnote(footnote = pop_outcome_footnote,
                    locations = gt::cells_column_spanners(spanners = "outcome_span")) |>
+  gt::tab_footnote(footnote = pop_covariate_footnote,
+                   locations = gt::cells_column_spanners(spanners = "covariates_span")) |>
   gt::opt_css(
     css = "
       #population_tbl .gt_footnote {
@@ -798,41 +836,39 @@ cat(
 )
 ```
 
-The exact time period used — whether hour, day, month, year, or whatever — is relatively arbitrary. The important thing to note is that the Population Table, unlike the Preceptor Table, covers a period of time over which things may change.
-
 ### Exercise 6
 
-In your own words, define the assumption of "stability" when employed in the context of data science.
+In your own words, define the assumption of "stability."
 
 ```{r justice-6}
 question_text(NULL,
-    message = "Stability means that the relationship between the columns in the Population Table is the same for three categories of rows: the data, the Preceptor Table, and the larger population from which both are drawn.",
-    answer(NULL, correct = TRUE),
-    allow_retry = FALSE,
-    incorrect = NULL,
-    rows = 6)
+  message = "Stability means that the relationship between the columns in the Population Table is the same for three categories of rows: the data, the Preceptor Table, and the larger population from which both are drawn.",
+  answer(NULL, correct = TRUE),
+  allow_retry = FALSE,
+  incorrect = NULL,
+  rows = 4)
 ```
 
 ###
 
-Stability is all about time. Is the relationship among the columns in the Population Table stable over time? The longer the time period between the data and the Preceptor Table, the more suspect stability becomes.
+Stability is best understood as a statement about *parameters*, not distributions. The relationship between age, sex, and ever-smoker status in our model is captured by a handful of coefficients --- an intercept, a slope on age, an offset for sex. Stability says those coefficients are the same in our 2009--2012 NHANES sample as they are for U.S. adults in 2026.
 
 ### Exercise 7
 
-Provide one reason why the assumption of stability might not be true in this case.
+Provide one reason why stability might not hold in this case.
 
 ```{r justice-7}
 question_text(NULL,
-    message = "The poll was conducted in March 2024 while the election takes place in November 2024 — eight months later. Candidate positions shift, major events occur (party conventions, presidential debates, October surprises), and public opinion moves. The proportion of voters supporting Biden in March may not be the same proportion who vote for him in November. Stability may not hold across this time gap.",
-    answer(NULL, correct = TRUE),
-    allow_retry = FALSE,
-    incorrect = NULL,
-    rows = 6)
+  message = "Smoking has been declining in the United States for decades. The slope of ever-smoker status on age in 2026 may be steeper than it was in 2009-2012 because the older cohorts in 2026 grew up when smoking was much more common, while younger 2026 adults grew up after most of the cultural and regulatory crackdowns. So the parameter governing the relationship between age and ever-smoker status may have shifted between the era our data was collected and the era we want to predict --- not just because the share of smokers has changed (a distribution shift) but because the way age maps onto smoking status has itself changed (a slope shift).",
+  answer(NULL, correct = TRUE),
+  allow_retry = FALSE,
+  incorrect = NULL,
+  rows = 7)
 ```
 
 ###
 
-A change in time or the distribution of the data does not, in and of itself, demonstrate a violation of stability. Stability is about the parameters: the underlying model coefficients. For this intercept-only model, stability fails if the log-odds of Biden support shifts between March and November.
+The most common student mistake on stability is to conflate it with a distribution shift. *"Smoking rates have fallen since 2010"* is true, but it does not, by itself, violate stability --- a lower share of ever-smokers across the board would not change the slope of `smoke` on `age`. What violates stability is a change in the *relationship* between covariates and outcome: the slope on age, the offset for sex, the intercept. A change in the *level* of smoking (the marginal share) is not the same as a change in the *parameter* connecting age to smoking. Distributional change is everywhere; parameter change is what hurts us.
 
 ### Exercise 8
 
@@ -840,134 +876,145 @@ We use our data to make inferences about the overall population. We use informat
 
 ```{r justice-8}
 question_text(NULL,
-    message = "Representativeness, or the lack thereof, concerns two relationships among the rows in the Population Table. The first is between the data and the other rows. The second is between the other rows and the Preceptor Table.",
-    answer(NULL, correct = TRUE),
-    allow_retry = FALSE,
-    incorrect = NULL,
-    rows = 6)
+  message = "Representativeness, or the lack thereof, concerns two relationships among the rows in the Population Table. The first is between the data and the other rows. The second is between the other rows and the Preceptor Table.",
+  answer(NULL, correct = TRUE),
+  allow_retry = FALSE,
+  incorrect = NULL,
+  rows = 4)
 ```
 
 ###
 
-Ideally, we would like both the Preceptor Table and our data to be random samples from the population. Sadly, this is almost never the case.
+Ideally we would like both the Preceptor Table and the data to be random samples from the population. NHANES is closer to that ideal than most surveys --- it is a stratified probability sample drawn from the U.S. civilian non-institutionalized population --- but it is not perfect, and the gaps matter for our question.
 
 ### Exercise 9
 
-We do not use the data directly to estimate missing values in the Preceptor Table. Instead, we use the data to learn about the overall population. Provide one reason, involving the relationship between the data and the population, why the assumption of representativeness might not be true in this case.
+Provide one reason, involving the relationship between the data and the population, why representativeness might not hold.
 
 ```{r justice-9}
 question_text(NULL,
-    message = "YouGov uses an opt-in online panel, which tends to over-represent adults who are more politically engaged, younger, and more comfortable with the internet than the general population. Registered voters who rarely go online — often older, rural, or lower-income — are likely under-represented in the data. The data rows may not be representative of the full population of U.S. adults who will vote.",
-    answer(NULL, correct = TRUE),
-    allow_retry = FALSE,
-    incorrect = NULL,
-    rows = 6)
+  message = "NHANES deliberately oversamples certain demographic subgroups (older adults, Hispanic and non-Hispanic Black respondents, low-income households) so that those subgroups have enough observations for stable estimates. The educational version we draw from also drops the survey weights that would let us reweight back to a representative sample. Our 1,000-row sample therefore over-represents the oversampled groups relative to the U.S. adult population, which might bias our estimate of the relationship between age, sex, and ever-smoker status in directions we cannot easily check.",
+  answer(NULL, correct = TRUE),
+  allow_retry = FALSE,
+  incorrect = NULL,
+  rows = 6)
 ```
 
 ###
 
-When representativeness is violated, the estimates for the model parameters will be biased. YouGov applies post-stratification weights to partially correct for panel-composition bias, but the weighting cannot fix gaps in coverage — people outside the panel are simply not there.
+A non-representative sample does not *guarantee* a biased estimate --- the bias might wash out by chance. But chance is the only mechanism that would save us, and we have no principled reason to expect it to work in our favor. *"Might be biased"* is the correct stance, not *"will be biased."*
 
 ### Exercise 10
 
-We use information about the population to make inferences about the Preceptor Table. Provide one reason, involving the relationship between the Population and the Preceptor Table, why the assumption of representativeness might not be true in this case.
+We use information about the population to make inferences about the Preceptor Table. Provide one reason, involving the relationship between the population and the Preceptor Table, why representativeness might not hold.
 
 ```{r justice-10}
 question_text(NULL,
-    message = "The Preceptor Table asks about actual voters on Election Day. The broader population of U.S. adults includes many people who are eligible to vote but will not — roughly 40% of eligible voters typically abstain. If Biden supporters are more or less likely to turn out than his opponents, the population of all adults (from which the survey samples) may not be representative of the population of actual Election Day voters (which the Preceptor Table targets).",
-    answer(NULL, correct = TRUE),
-    allow_retry = FALSE,
-    incorrect = NULL,
-    rows = 6)
+  message = "Our Preceptor Table represents adults the state campaign would actually target --- residents of the state, in 2026, reachable by radio, mail, or social-media advertising. The U.S. adult population that NHANES samples from is different in two ways: it is national, not state-specific, and it includes adults who are unreachable by any reasonable outreach effort (incarcerated adults, undocumented adults who avoid census contact, adults who do not speak English or Spanish). Even if our model fits the U.S. adult population perfectly, the Preceptor Table's narrower target population may have a different age-and-sex relationship to ever-smoker status than the broader U.S. population does.",
+  answer(NULL, correct = TRUE),
+  allow_retry = FALSE,
+  incorrect = NULL,
+  rows = 7)
 ```
 
 ###
 
-Validity is about the columns in our Population Table. Stability and representativeness are about the rows.
+Stability looks across time periods; representativeness looks within time periods. Both are about whether the rows we have stand in for the rows we care about, but they pull in different directions: stability worries that 2009 isn't 2026, while representativeness worries that NHANES respondents aren't the same kind of people as our state campaign's target list.
 
 ### Exercise 11
 
-A statistical model consists of two parts: the probability family and the link function. The probability family is the probability distribution which generates the randomness in our data. The link function is the mathematical formula which links our data to the unknown parameters. Add `library(broom)` to the QMD file. Place your cursor on that line. Use `Cmd/Ctrl + Enter`. CP/CR.
+A statistical model consists of two parts: the probability family and the link function. The probability family is the distribution which generates the randomness in our data; the link function is the mathematical formula connecting the data to the unknown parameters.
+
+Add `library(tidymodels)` to the QMD file. Place your cursor on that line. Use `Cmd/Ctrl + Enter`.
+
+CP/CR.
 
 ```{r justice-11}
 question_text(NULL,
-    answer(NULL, correct = TRUE),
-    allow_retry = TRUE,
-    try_again_button = "Edit Answer",
-    incorrect = NULL,
-    rows = 3)
+  message = "    > library(tidymodels)\n    ── Attaching packages ──────── tidymodels 1.x.x ──\n    ✔ broom        ✔ recipes\n    ✔ dials        ✔ rsample\n    ✔ infer        ✔ tune\n    ✔ modeldata    ✔ workflows\n    ✔ parsnip      ✔ workflowsets\n    ✔ purrr        ✔ yardstick\n    ── Conflicts ──── tidymodels_conflicts() ──\n    ✖ purrr::discard() masks scales::discard()\n    ✖ dplyr::filter()  masks stats::filter()",
+  answer(NULL, correct = TRUE),
+  allow_retry = FALSE,
+  incorrect = NULL,
+  rows = 3)
 ```
 
 ###
 
-Because our outcome is binary, we use a Bernoulli probability family: $Y \sim \text{Bernoulli}(\rho)$. The link function is the logistic (log-odds): $\log[\rho / (1 - \rho)] = \beta_0$.
+Our outcome variable `smoke` is binary. The probability family is therefore Bernoulli: $Y \sim \text{Bernoulli}(\rho)$, where $\rho$ is the probability that `smoke = "Yes"` for a given adult.
 
 ### Exercise 12
 
-Add `library(marginaleffects)` to the QMD file. Place your cursor on that line. Use `Cmd/Ctrl + Enter`. CP/CR.
+Add `library(broom)` to the QMD file. Place your cursor on that line. Use `Cmd/Ctrl + Enter`.
+
+CP/CR.
 
 ```{r justice-12}
 question_text(NULL,
-    answer(NULL, correct = TRUE),
-    allow_retry = TRUE,
-    try_again_button = "Edit Answer",
-    incorrect = NULL,
-    rows = 3)
+  message = "    > library(broom)\n    >",
+  answer(NULL, correct = TRUE),
+  allow_retry = FALSE,
+  incorrect = NULL,
+  rows = 3)
 ```
 
 ###
 
-The **[marginaleffects](https://marginaleffects.com/)** package translates logistic regression results from the log-odds scale back to the probability scale — where the question actually lives.
+The link function for a binary outcome is the logit: $\log\!\big(\rho/(1-\rho)\big) = \beta_0 + \beta_1 X_1 + \cdots + \beta_n X_n$. Our model will be a logistic regression --- the first one in the curriculum.
 
 ### Exercise 13
 
-Write one sentence highlighting a potential weakness in your model. Derive it from possible problems with the assumptions above. We will add this to our summary paragraph. So far our version of the summary paragraph looks like this: *"Survey data from YouGov helps predict election outcomes by estimating the proportion of voters supporting each candidate. This analysis uses a March 2024 poll of 1,559 U.S. adult citizens to estimate the proportion of votes Joe Biden would receive in the 2024 presidential election."* Your version will be somewhat different.
+Write one sentence highlighting a potential weakness in your model. So far our summary paragraph looks like this:
+
+> Lifetime smoking is one of the strongest predictors of long-term health outcomes, and a state health department designing an anti-smoking campaign needs to know who its likely targets are. Using a 1,000-adult sample from the 2009--2012 NHANES waves, we estimate the difference in the probability of being an ever-smoker between a 30-year-old woman and a 70-year-old man.
+
+Your version will be somewhat different.
 
 ```{r justice-13}
 question_text(NULL,
-    message = "However, the eight-month gap between the poll (March 2024) and the election (November 2024), combined with YouGov's opt-in online panel over-representing politically engaged voters, means our estimate may be both biased and out-of-date by Election Day.",
-    answer(NULL, correct = TRUE),
-    allow_retry = FALSE,
-    incorrect = NULL,
-    rows = 6)
+  message = "One concern is that the relationship between age and ever-smoker status has shifted between when the data was gathered (2009-2012) and the present (2026): smoking is dropping unevenly across age cohorts, so applying a 13-year-old slope to today's adults may misstate the magnitudes by enough to matter for campaign targeting.",
+  answer(NULL, correct = TRUE),
+  allow_retry = FALSE,
+  incorrect = NULL,
+  rows = 5)
 ```
 
 ###
 
-Add a weakness sentence to the summary paragraph in your QMD. You can modify your paragraph, but don't copy/paste our answer exactly. `Cmd/Ctrl + Shift + K`, then commit/push.
+Add a weakness sentence to your summary paragraph in your QMD. Don't copy/paste our answer exactly. `Cmd/Ctrl + Shift + K`, then commit/push.
+
 
 ## Courage
 
 Justice gives us the Population Table and the abstract data generating mechanism.
 
-```{r courage-population-table, echo = FALSE, results = "asis"}
-population_tibble_c <- tibble::tribble(
-  ~Source    , ~`Voter`          , ~`Year`, ~`Biden Support`,
-  "..."      , "..."             , "..."  , "..."           ,
-  "Data"     , "Voter 1"         , "2024" , "No"            ,
-  "Data"     , "Voter 2"         , "2024" , "No"            ,
-  "Data"     , "..."             , "..."  , "..."           ,
-  "Data"     , "Voter 1559"      , "2024" , "Yes"           ,
-  "..."      , "..."             , "..."  , "..."           ,
-  "Preceptor", "Marcus Williams" , "2024" , "Yes"           ,
-  "Preceptor", "Sarah Chen"      , "2024" , "No"            ,
-  "Preceptor", "..."             , "..."  , "..."           ,
-  "Preceptor", "Jennifer Lopez"  , "2024" , "Yes"           ,
-  "..."      , "..."             , "..."  , "..."
+```{r}
+#| echo: false
+#| results: asis
+pop_tibble_c <- tibble::tribble(
+  ~Source    , ~`Adult`,             ~`Year`, ~`Ever Smoked`, ~`Age`, ~`Sex`,
+  "..."      , "...",                "..."  , "...",          "...",  "...",
+  "Data"     , "Sarah Chen",         "2010" , "No",           "32",   "Female",
+  "Data"     , "Robert Davis",       "2011" , "Yes",          "68",   "Male",
+  "Data"     , "...",                "..."  , "...",          "...",  "...",
+  "Data"     , "Patricia Williams",  "2012" , "No",           "44",   "Female",
+  "..."      , "...",                "..."  , "...",          "...",  "...",
+  "Preceptor", "Maria Alvarez",      "2026" , "No",           "30",   "Female",
+  "Preceptor", "Anthony Carter",     "2026" , "Yes",          "70",   "Male",
+  "Preceptor", "...",                "..."  , "...",          "...",  "...",
+  "Preceptor", "Linda Whitfield",    "2026" , "No",           "55",   "Female",
+  "..."      , "...",                "..."  , "...",          "...",  "..."
 )
 
-pop_title_footnote_c   <- "This table combines data from the YouGov March 2024 poll with the Preceptor Table's Election Day 2024 voters, drawn from the broader population of U.S. adults eligible to vote in 2024."
-pop_units_footnote_c   <- "Data rows are individual respondents from YouGov's March 2024 poll — approximately 1,559 adults recruited from an opt-in online panel and weighted to approximate U.S. adults. Preceptor rows are voters casting ballots on November 5, 2024 — approximately 155 million total."
-pop_outcome_footnote_c <- "In Data rows, Biden support is self-reported preference measured in March 2024. In Preceptor rows, Biden support is the actual vote cast on Election Day."
-
-pop_gt_html_c <- gt::gt(population_tibble_c, id = "population_tbl_c") |>
+pop_gt_html_c <- gt::gt(pop_tibble_c, id = "population_tbl_c") |>
   gt::tab_header(title = "Population Table") |>
-  gt::tab_spanner(label = "Unit/Time", id = "unit_span_c",
-                  columns = c(`Voter`, `Year`)) |>
-  gt::tab_spanner(label = "Outcome"  , id = "outcome_span_c",
-                  columns = c(`Biden Support`)) |>
-  gt::cols_align(align = "left" , columns = c(`Source`, `Voter`)) |>
-  gt::cols_align(align = "right", columns = c(`Year`, `Biden Support`)) |>
+  gt::tab_spanner(label = "Unit/Time",  id = "unit_span",
+                  columns = c(`Adult`, `Year`)) |>
+  gt::tab_spanner(label = "Outcome",    id = "outcome_span",
+                  columns = c(`Ever Smoked`)) |>
+  gt::tab_spanner(label = "Covariates", id = "covariates_span",
+                  columns = c(`Age`, `Sex`)) |>
+  gt::cols_align(align = "left",  columns = c(`Source`, `Adult`, `Ever Smoked`, `Sex`)) |>
+  gt::cols_align(align = "right", columns = c(`Year`, `Age`)) |>
   gt::fmt_markdown(columns = gt::everything()) |>
   gt::tab_options(
     heading.title.font.size   = "1.5em",
@@ -975,23 +1022,13 @@ pop_gt_html_c <- gt::gt(population_tibble_c, id = "population_tbl_c") |>
     column_labels.font.weight = "normal"
   ) |>
   gt::tab_style(
-    style     = gt::cell_text(weight = "bold"),
+    style = gt::cell_text(weight = "bold"),
     locations = gt::cells_column_spanners()
   ) |>
   gt::tab_style(
-    style     = gt::cell_text(align = "left"),
-    locations = gt::cells_column_spanners(spanners = "unit_span_c")
+    style = gt::cell_text(align = "left"),
+    locations = gt::cells_column_spanners(spanners = c("unit_span", "outcome_span", "covariates_span"))
   ) |>
-  gt::tab_style(
-    style     = gt::cell_text(align = "right"),
-    locations = gt::cells_column_spanners(spanners = "outcome_span_c")
-  ) |>
-  gt::tab_footnote(footnote = pop_title_footnote_c,
-                   locations = gt::cells_title()) |>
-  gt::tab_footnote(footnote = pop_units_footnote_c,
-                   locations = gt::cells_column_spanners(spanners = "unit_span_c")) |>
-  gt::tab_footnote(footnote = pop_outcome_footnote_c,
-                   locations = gt::cells_column_spanners(spanners = "outcome_span_c")) |>
   gt::opt_css(
     css = "
       #population_tbl_c .gt_footnote {
@@ -1012,11 +1049,11 @@ cat(
 )
 ```
 
-Remember that Courage creates the data generating mechanism.
-
-$$P(\text{Biden Support} = \text{Yes}) = \frac{1}{1 + e^{-(\beta_0 + \beta_1 X_1 + \cdots + \beta_n X_n)}}$$
+$$P(Y = 1) = \frac{1}{1 + e^{-(\beta_0 + \beta_1 X_1 + \beta_2 X_2 + \cdots + \beta_n X_n)}}$$
 
 with $Y \sim \text{Bernoulli}(\rho)$, where $\rho$ is the probability above.
+
+Remember that Courage creates the data generating mechanism.
 
 ###
 
@@ -1029,7 +1066,7 @@ Because our outcome variable is binary, start to create the model by entering `l
 ```
 
 ```{r courage-1-hint-1, eval = FALSE}
-logistic_reg(engine = "glm")
+logistic_reg(engine = ...)
 ```
 
 ```{r courage-1-test, include = FALSE}
@@ -1038,570 +1075,751 @@ logistic_reg(engine = "glm")
 
 ###
 
-The [**tidymodels**](https://www.tidymodels.org/) framework is the most popular one in the R world for estimating models. [*Tidy Modeling with R*](https://www.tmwr.org/) by Max Kuhn and Julia Silge is a great introduction.
+**[tidymodels](https://www.tidymodels.org/)** is the most popular framework for estimating models among R users. The `logistic_reg()` function is the binary-outcome counterpart to the `linear_reg()` function we used in earlier tutorials --- different probability family, different link, same pipeline.
 
 ### Exercise 2
 
-Continue the pipe to `fit(biden ~ 1, data = poll_data)`. The `~ 1` formula means intercept-only — no predictors.
+Continue the pipe to `fit(smoke ~ sex, data = smokes)`. This is the simplest candidate model: `smoke` regressed on the binary covariate `sex`.
 
 ```{r courage-2, exercise = TRUE}
 
 ```
 
+<button onclick = "transfer_code(this)">Copy previous code</button>
+
 ```{r courage-2-hint-1, eval = FALSE}
-logistic_reg(engine = "glm") |>
-  fit(biden ~ 1, data = poll_data)
+... |>
+  fit(smoke ~ sex, data = smokes)
 ```
 
 ```{r courage-2-test, include = FALSE}
 logistic_reg(engine = "glm") |>
-  fit(biden ~ 1, data = poll_data)
+  fit(smoke ~ sex, data = smokes)
 ```
 
 ###
 
-An intercept-only logistic model has a single parameter, $\beta_0$, which sits on the log-odds scale. For this poll, $\beta_0 \approx \log(655/904) \approx -0.322$. Converting to a probability requires the inverse logit: $\rho = 1/(1 + e^{-\beta_0})$.
+The `tidymodels` framework requires the outcome of a `logistic_reg()` to be a *factor*, not a 0/1 integer. The `smoke` column in our `smokes` tibble is already a factor with levels `c("No", "Yes")` --- the order matters: `"Yes"` is the second level, so it is the level the model treats as the *event* whose probability the coefficients describe.
 
 ### Exercise 3
 
-Continue the pipe with `tidy(conf.int = TRUE)`.
+Here is the parameter table for this first model:
 
-```{r courage-3, exercise = TRUE}
-
+```{r}
+#| echo: false
+logistic_reg(engine = "glm") |>
+  fit(smoke ~ sex, data = smokes) |>
+  tidy(conf.int = TRUE) |>
+  select(term, estimate, conf.low, conf.high) |>
+  mutate(across(where(is.numeric), \(x) round(x, 2)))
 ```
 
-```{r courage-3-hint-1, eval = FALSE}
-logistic_reg(engine = "glm") |>
-  fit(biden ~ 1, data = poll_data) |>
-  tidy(conf.int = TRUE)
-```
+Write a sentence interpreting the `sexMale` estimate of 0.54.
 
-```{r courage-3-test, include = FALSE}
-logistic_reg(engine = "glm") |>
-  fit(biden ~ 1, data = poll_data) |>
-  tidy(conf.int = TRUE)
+```{r courage-3}
+question_text(NULL,
+  message = "Comparing two adults of different sex (one Male, one Female), the log-odds of being an ever-smoker are about 0.54 higher for Male than for Female. The 95% confidence interval (0.29 to 0.80) excludes zero, so we are reasonably confident the difference goes in the direction shown. Note the language: this is a comparison between two groups, not a claim that being male causes smoking.",
+  answer(NULL, correct = TRUE),
+  allow_retry = FALSE,
+  incorrect = NULL,
+  rows = 6)
 ```
 
 ###
 
-The intercept estimate is approximately $-0.322$ with a 95% confidence interval of roughly $-0.422$ to $-0.222$. All on the log-odds scale — the next section converts to probabilities. Unlike a multi-predictor model, there is no further variable selection here: the intercept is the entire model.
+The character variable `sex` becomes a 0/1 dummy called `sexMale`: 1 for Male, 0 for Female. The intercept (-0.54) is the log-odds of being an ever-smoker for the reference level (Female), and `sexMale` is the offset for switching to Male. *Log-odds* is not the scale we actually want to interpret; we will leave that translation to `marginaleffects` in the Temperance section. For now, the take-aways are: (1) the coefficient is positive, so Male adults have a higher probability of being ever-smokers, and (2) the confidence interval excludes zero, so this difference is not just sampling noise.
 
 ### Exercise 4
 
-Behind the scenes, an object called `fit_biden` has been created. Type `fit_biden` and hit "Run Code."
+Now fit a candidate that uses age instead: `fit(smoke ~ age, data = smokes)`. This swaps in the continuous covariate.
 
 ```{r courage-4, exercise = TRUE}
 
 ```
 
+<button onclick = "transfer_code(this)">Copy previous code</button>
+
 ```{r courage-4-hint-1, eval = FALSE}
-fit_biden
+... |>
+  fit(smoke ~ age, data = smokes)
 ```
 
 ```{r courage-4-test, include = FALSE}
-fit_biden
+logistic_reg(engine = "glm") |>
+  fit(smoke ~ age, data = smokes)
 ```
 
 ###
 
-In data science, we deal with words, math, and code, but the most important of these is code. We created the mathematical structure of the model and then wrote a model formula in order to estimate the unknown parameters.
+When a logistic-regression covariate is continuous (like `age`), the dummy-variable machinery does not apply --- the coefficient is the change in log-odds *per one-year increase* in age. Whether that one-unit comparison is the natural one to report is a different question (a one-year age comparison is small; a forty-year comparison is big).
 
 ### Exercise 5
 
-We need `fit_biden` to exist in R World. Copy/paste this code to the R prompt and execute it:
+Here is the parameter table for the age-only model:
+
+```{r}
+#| echo: false
+logistic_reg(engine = "glm") |>
+  fit(smoke ~ age, data = smokes) |>
+  tidy(conf.int = TRUE) |>
+  select(term, estimate, conf.low, conf.high) |>
+  mutate(across(where(is.numeric), \(x) round(x, 3)))
+```
+
+Write a sentence interpreting the `age` estimate.
+
+```{r courage-5}
+question_text(NULL,
+  message = "Comparing two adults differing by one year of age, the log-odds of being an ever-smoker are about 0.007 higher for the older adult. The 95% confidence interval (-0.001 to 0.014) just barely crosses zero, so we cannot quite tell with this much data whether the relationship between age and ever-smoker status is positive, negative, or essentially flat.",
+  answer(NULL, correct = TRUE),
+  allow_retry = FALSE,
+  incorrect = NULL,
+  rows = 6)
+```
+
+###
+
+A coefficient whose CI just barely crosses zero is the harder pedagogical case. *"Barely"* is not the same as *"clearly insignificant."* The reasonable read is that age has a small positive association with ever-smoker status that we cannot quite pin down at this sample size. We will keep `age` in the final model anyway --- not because its CI clears zero, but because the question explicitly asks about a 30-year-old vs. a 70-year-old, so we need a slope on age to answer it.
+
+### Exercise 6
+
+Now fit the final model: `fit(smoke ~ age + sex, data = smokes)`.
+
+```{r courage-6, exercise = TRUE}
 
 ```
-fit_biden <- logistic_reg(engine = "glm") |>
-  fit(biden ~ 1, data = poll_data)
+
+<button onclick = "transfer_code(this)">Copy previous code</button>
+
+```{r courage-6-hint-1, eval = FALSE}
+... |>
+  fit(smoke ~ age + sex, data = smokes)
+```
+
+```{r courage-6-test, include = FALSE}
+logistic_reg(engine = "glm") |>
+  fit(smoke ~ age + sex, data = smokes)
+```
+
+###
+
+This is the model the rest of the tutorial uses. Now that the model has more than one covariate, every interpretation needs an *adjustment clause*: *"comparing two adults of different sex but the same age,"* not just *"comparing two adults of different sex."*
+
+### Exercise 7
+
+Here is the parameter table for the final model:
+
+```{r}
+#| echo: false
+logistic_reg(engine = "glm") |>
+  fit(smoke ~ age + sex, data = smokes) |>
+  tidy(conf.int = TRUE) |>
+  select(term, estimate, conf.low, conf.high) |>
+  mutate(across(where(is.numeric), \(x) round(x, 3)))
+```
+
+Write a sentence interpreting the `sexMale` estimate of 0.545 in the final model.
+
+```{r courage-7}
+question_text(NULL,
+  message = "Comparing two adults of the same age but different sex, the log-odds of being an ever-smoker are about 0.55 higher for Male than for Female (95% CI: 0.29 to 0.80, adjusting for age). The estimate is essentially unchanged from the sex-only model, which makes sense: in this dataset, age and sex are roughly uncorrelated, so adjusting for age does not move the sex coefficient.",
+  answer(NULL, correct = TRUE),
+  allow_retry = FALSE,
+  incorrect = NULL,
+  rows = 6)
+```
+
+###
+
+The more variables we add, the harder it gets to interpret any one coefficient --- but interpretation also matters less, because what we ultimately want is not coefficients but predictions on the outcome scale. The *adjustment clause* (*"adjusting for age"*) is mandatory whenever the model has more than one covariate. Skipping it is the single most common student mistake on multi-covariate interpretation.
+
+### Exercise 8
+
+Behind the scenes of this tutorial, an object called `fit_smokes` has been created which is the result of the final model. Type `fit_smokes` and hit "Run Code."
+
+```{r courage-8, exercise = TRUE}
+
+```
+
+```{r courage-8-hint-1, eval = FALSE}
+fit_smokes
+```
+
+```{r courage-8-test, include = FALSE}
+fit_smokes
+```
+
+###
+
+In data science, **we deal with words, math, and code, but the most important of these is code.**
+
+### Exercise 9
+
+We need `fit_smokes` to exist in R World. Copy/paste this code to the R prompt and execute it:
+
+```
+fit_smokes <- logistic_reg(engine = "glm") |>
+  fit(smoke ~ age + sex, data = smokes)
 ```
 
 CP/CR.
 
-```{r courage-5}
-question_text(NULL,
-    answer(NULL, correct = TRUE),
-    allow_retry = TRUE,
-    try_again_button = "Edit Answer",
-    incorrect = NULL,
-    rows = 3)
-```
-
-###
-
-Just because something exists in the tutorial (or in the QMD) does not mean that it is at the R prompt. You should be aware of what exists in R World, which is generally called your "workspace."
-
-### Exercise 6
-
-At the R prompt, load the [easystats](https://easystats.github.io/easystats/) package. CP/CR.
-
-```{r courage-6}
-question_text(NULL,
-    answer(NULL, correct = TRUE),
-    allow_retry = TRUE,
-    try_again_button = "Edit Answer",
-    incorrect = NULL,
-    rows = 3)
-```
-
-###
-
-We don't add easystats to the QMD because we are only using it for an interactive check of our fitted model. However, the [easystats ecosystem](https://easystats.github.io/easystats/) has a variety of interesting functions and packages which you might want to explore.
-
-### Exercise 7
-
-At the R prompt, run `check_predictions(extract_fit_engine(fit_biden))`. CP/CR.
-
-```{r courage-7}
-question_text(NULL,
-    answer(NULL, correct = TRUE),
-    allow_retry = TRUE,
-    try_again_button = "Edit Answer",
-    incorrect = NULL,
-    rows = 3)
-```
-
-###
-
-The purpose of `check_predictions()` is to compare your actual data with data simulated from your fitted model. For this binary model, the simulated proportion of "Yes" responses should be close to the observed 42%. If your DGM is reasonable, simulated data should not look too dissimilar from actual data.
-
-### Exercise 8
-
-Create a new code chunk in your QMD. Add the chunk option `#| cache: true`. Copy/paste the R code for the final model into the chunk, assigning the result to `fit_biden`. (This includes `fit()` but not `tidy()`.) Place your cursor on the `fit_biden` line and use `Cmd/Ctrl + Enter`. `Cmd/Ctrl + Shift + K`. Rendering may be slow the first time but cached thereafter. At the R prompt, run `tutorial.helpers::show_file("analysis.qmd", chunk = "Last")`. CP/CR.
-
-```{r courage-8}
-question_text(NULL,
-    answer(NULL, correct = TRUE),
-    allow_retry = TRUE,
-    try_again_button = "Edit Answer",
-    incorrect = NULL,
-    rows = 3)
-```
-
-###
-
-Including `#| cache: true` causes Quarto to cache the results of the chunk. The next time you render your QMD, as long as you have not changed the code, Quarto will just load up the saved fitted object.
-
-### Exercise 9
-
-Add `*_cache` to `.gitignore`. Cached objects are often large and don't belong on GitHub. At the R prompt, run `tutorial.helpers::show_file(".gitignore")`. CP/CR.
-
 ```{r courage-9}
 question_text(NULL,
-    answer(NULL, correct = TRUE),
-    allow_retry = TRUE,
-    try_again_button = "Edit Answer",
-    incorrect = NULL,
-    rows = 3)
+  message = "    > fit_smokes <- logistic_reg(engine = \"glm\") |>\n    +   fit(smoke ~ age + sex, data = smokes)\n    >",
+  answer(NULL, correct = TRUE),
+  allow_retry = FALSE,
+  incorrect = NULL,
+  rows = 5)
 ```
 
 ###
 
-Because of the change in your `.gitignore`, the cache directory should not appear in the Source Control panel — Git is ignoring it. Commit and push.
+QMD World and R World are not the same. The fit object exists in this tutorial's R session, in your interactive R session, and (after rendering) in the QMD render's separate R session --- three places, three workspaces. Keep them in sync.
 
 ### Exercise 10
 
-At the R prompt, run `tidy(fit_biden, conf.int = TRUE)`. This returns 95% intervals for all the parameters.
+At the R prompt, load the **[easystats](https://easystats.github.io/easystats/)** package.
 
-```{r courage-10, exercise = TRUE}
+CP/CR.
 
-```
-
-```{r courage-10-hint-1, eval = FALSE}
-tidy(fit_biden, conf.int = TRUE)
-```
-
-```{r courage-10-test, include = FALSE}
-tidy(fit_biden, conf.int = TRUE)
+```{r courage-10}
+question_text(NULL,
+  message = "    > library(easystats)\n    # Attaching packages: easystats 0.x.x (red = needs update)\n    ✔ bayestestR     ✔ correlation     ✔ datawizard \n    ✔ effectsize    ✔ insight         ✔ modelbased \n    ✔ parameters    ✔ performance     ✔ report \n    ✔ see",
+  answer(NULL, correct = TRUE),
+  allow_retry = FALSE,
+  incorrect = NULL,
+  rows = 4)
 ```
 
 ###
 
-`tidy()` is part of the [**broom**](https://broom.tidymodels.org/) package, used to summarize information from a wide variety of models. The `p.value` column appears in the output, but we do not use it — null hypothesis testing is a mistake. There is only the data, the models, and the summaries therefrom.
+We don't add `easystats` to the QMD because we are only using it for an interactive check of our fitted model. Loading it in the QMD would attach a long stack of packages we don't otherwise use.
 
 ### Exercise 11
 
-Create a new code chunk in your QMD. Ask AI to make a nice-looking table from the tibble returned by `tidy(fit_biden, conf.int = TRUE)`. You don't need all the columns — term, estimate, and confidence intervals are typical. You may need to load [knitr](https://yihui.org/knitr/), [gt](https://gt.rstudio.com/), or [kableExtra](https://haozhu233.github.io/kableExtra/) in the setup chunk. Insert your table code. `Cmd/Ctrl + Shift + K`. At the R prompt, `tutorial.helpers::show_file("analysis.qmd", chunk = "Last")`. CP/CR.
+At the R prompt, run:
+
+```
+check_predictions(extract_fit_engine(fit_smokes))
+```
+
+The `extract_fit_engine()` step is necessary because `easystats::check_predictions()` expects a `glm` object, not the `parsnip` wrapper that `tidymodels` produces.
+
+CP/CR.
 
 ```{r courage-11}
 question_text(NULL,
-    answer(NULL, correct = TRUE),
-    allow_retry = TRUE,
-    try_again_button = "Edit Answer",
-    incorrect = NULL,
-    rows = 3)
+  message = "    > check_predictions(extract_fit_engine(fit_smokes))\n\n(A plot opens. Green = your actual outcome distribution; blue = simulated draws from the fitted DGM. The two should look similar; for a binary outcome, the comparison is between the share of `Yes` in the data and the share simulated by the model.)",
+  answer(NULL, correct = TRUE),
+  allow_retry = FALSE,
+  incorrect = NULL,
+  rows = 5)
 ```
 
 ###
 
-Here is our version:
-
-```{r courage-11-our-table, echo = FALSE}
-tidy(fit_biden, conf.int = TRUE) |>
-  select(term, estimate, conf.low, conf.high) |>
-  mutate(across(where(is.numeric), \(x) signif(x, 3))) |>
-  knitr::kable(
-    col.names = c("Term", "Estimate", "95% CI Lower", "95% CI Upper"),
-    caption = "Logistic regression parameters (log-odds scale)"
-  )
-```
-
-At the very least, your table should include a title or caption and, ideally, a note indicating the scale (log-odds) so readers know what they are looking at.
+The purpose of `check_predictions()` is to compare your actual data with data simulated from your fitted model. If your DGM is reasonable, the simulated and actual distributions should look similar. For a binary outcome the comparison is necessarily simple: is the share of `Yes` close to what the model would generate? Here, yes --- and that is the floor, not the ceiling, of what model-checking does.
 
 ### Exercise 12
 
-Add a sentence to your project summary explaining the structure of the model. Something like: "I/we model Biden support, a binary outcome, as a logistic function of no covariates." Recall the beginning of our summary: *"Survey data from YouGov helps predict election outcomes by estimating the proportion of voters supporting each candidate. This analysis uses a March 2024 poll of 1,559 U.S. adult citizens to estimate the proportion of votes Joe Biden would receive in the 2024 presidential election. However, the eight-month gap between the poll and the election, combined with YouGov's opt-in panel methodology, means our estimate may be both biased and out-of-date by Election Day."*
+With the parameters estimated, we can write the fitted model as a concrete formula:
 
-```{r courage-12}
+$$\widehat{P(\text{Ever Smoked} = \text{Yes})} = \frac{1}{1 + e^{-(-0.875 + 0.007 \cdot \text{Age} + 0.545 \cdot \text{sexMale})}}$$
+
+`sexMale` is a dummy variable: 1 for Male, 0 for Female. The intercept (-0.875) is the log-odds of being an ever-smoker for a 0-year-old Female (an extrapolation: the data only includes adults aged 20--80, so the intercept is mathematically defined but not a sensible prediction on its own). The coefficient on `Age` (0.007) is the per-year change in log-odds; the coefficient on `sexMale` (0.545) is the offset between Female and Male, adjusting for age.
+
+**This is our data generating mechanism.**
+
+###
+
+A data generating mechanism is just a formula, something we can write down and implement with computer code. The non-linearity in logistic regression --- the $1/(1 + e^{-\eta})$ wrapper --- is what makes log-odds coefficients hard to read on the outcome scale. Translating coefficients back to probabilities is what `marginaleffects` does in Temperance.
+
+### Exercise 13
+
+Create a new code chunk in your QMD with `#| cache: true`. Copy/paste the code for estimating the model:
+
+```
+fit_smokes <- logistic_reg(engine = "glm") |>
+  fit(smoke ~ age + sex, data = smokes)
+```
+
+`Cmd/Ctrl + Shift + K`. At the R prompt, run:
+
+```
+show_file("analysis.qmd", chunk = "Last")
+```
+
+CP/CR.
+
+```{r courage-13}
 question_text(NULL,
-    message = "We model Biden support, a binary Yes/No outcome, as a logistic function of no covariates — an intercept-only model that estimates the overall proportion of votes Biden would receive.",
-    answer(NULL, correct = TRUE),
-    allow_retry = FALSE,
-    incorrect = NULL,
-    rows = 6)
+  message = "    > show_file(\"analysis.qmd\", chunk = \"Last\")\n    ```{r}\n    #| cache: true\n    fit_smokes <- logistic_reg(engine = \"glm\") |>\n      fit(smoke ~ age + sex, data = smokes)\n    ```",
+  answer(NULL, correct = TRUE),
+  allow_retry = FALSE,
+  incorrect = NULL,
+  rows = 8)
 ```
 
 ###
 
-Read our answer. Do not copy/paste exactly. Add your model-structure sentence to the summary paragraph. `Cmd/Ctrl + Shift + K`, then commit/push.
+`#| cache: true` tells Quarto to reuse the saved fit on subsequent renders. Re-render with `Cmd/Ctrl + Shift + K` --- it should be quick the second time.
+
+### Exercise 14
+
+Add `*_cache` to your `.gitignore`. Cached objects don't belong on GitHub.
+
+At the R prompt, run:
+
+```
+show_file(".gitignore")
+```
+
+CP/CR.
+
+```{r courage-14}
+question_text(NULL,
+  message = "    > show_file(\".gitignore\")\n    analysis_files\n    *_cache",
+  answer(NULL, correct = TRUE),
+  allow_retry = FALSE,
+  incorrect = NULL,
+  rows = 5)
+```
+
+###
+
+Commit and push.
+
+### Exercise 15
+
+At the R prompt, run `tidy()` on `fit_smokes` with `conf.int = TRUE`.
+
+```{r courage-15, exercise = TRUE}
+
+```
+
+```{r courage-15-hint-1, eval = FALSE}
+tidy(fit_smokes, conf.int = TRUE)
+```
+
+```{r courage-15-test, include = FALSE}
+tidy(fit_smokes, conf.int = TRUE)
+```
+
+###
+
+`tidy()` is part of **[broom](https://broom.tidymodels.org/)**, used to summarize information from a wide variety of models. The `estimate`, `conf.low`, and `conf.high` columns are all on the log-odds scale --- the same scale as the model's link function.
+
+### Exercise 16
+
+Create a new code chunk in your QMD. Ask AI to make a nice-looking table from the tibble returned by `tidy()`. Insert your table code, `Cmd/Ctrl + Shift + K`, and at the R prompt run:
+
+```
+show_file("analysis.qmd", chunk = "Last")
+```
+
+CP/CR.
+
+```{r courage-16}
+question_text(NULL,
+  message = "    > show_file(\"analysis.qmd\", chunk = \"Last\")\n    ```{r}\n    tidy(fit_smokes, conf.int = TRUE) |>\n      select(term, estimate, conf.low, conf.high) |>\n      knitr::kable(\n        caption = \"Logistic-regression estimates (log-odds scale) and 95% CIs.  Source: NHANES 2009-2012 via primer.tutorials::smokes\",\n        digits = 3\n      )\n    ```",
+  answer(NULL, correct = TRUE),
+  allow_retry = FALSE,
+  incorrect = NULL,
+  rows = 10)
+```
+
+###
+
+A nice table includes a title, a caption with the data source, and reasonable rounding. For logistic-regression coefficients on the log-odds scale, three decimal places usually keeps the small slopes (like the 0.007 on `age`) visible while not over-precising the bigger ones.
+
+### Exercise 17
+
+Add a sentence to your project summary explaining the model structure.
+
+```{r courage-17}
+question_text(NULL,
+  message = "We model whether an adult is an ever-smoker as a Bernoulli variable which is a logistic function of age and sex.",
+  answer(NULL, correct = TRUE),
+  allow_retry = FALSE,
+  incorrect = NULL,
+  rows = 5)
+```
+
+###
+
+Add your sentence to the summary paragraph. `Cmd/Ctrl + Shift + K`, then commit/push.
+
 
 ## Temperance
 
 Courage provides the data generating mechanism. We can express the DGM in four ways:
 
-Remember that Temperance interprets the data generating mechanism and then uses it to answer, with the help of graphics, the question(s) with which we began. Humility reminds us that this answer is always false.
+**In words:** We model whether an adult is an ever-smoker as a Bernoulli variable which is a logistic function of age and sex.
 
-**In words.** We describe Biden support as a logistic function of no covariates.
+**In R code:**
 
-**In R code.** `logistic_reg(engine = "glm") |> fit(biden ~ 1, data = poll_data)`
-
-**In a parameter table.**
-
-```{r temperance-param-table, echo = FALSE}
-tidy(fit_biden, conf.int = TRUE) |>
-  select(term, estimate, conf.low, conf.high) |>
-  mutate(across(where(is.numeric), \(x) signif(x, 3))) |>
-  knitr::kable(
-    col.names = c("Term", "Estimate", "95% CI Lower", "95% CI Upper"),
-    caption = "Fitted parameters (log-odds scale)"
-  )
+```r
+fit_smokes <- logistic_reg(engine = "glm") |>
+  fit(smoke ~ age + sex, data = smokes)
 ```
 
-**As a mathematical formula.**
+**In a parameter table:**
 
-$$P(\text{Biden Support} = \text{Yes}) = \frac{1}{1 + e^{-(-0.322)}} \approx 0.420$$
+```{r}
+#| echo: false
+fit_smokes |>
+  tidy(conf.int = TRUE) |>
+  select(term, estimate, conf.low, conf.high) |>
+  mutate(across(where(is.numeric), \(x) round(x, 3)))
+```
 
-with $Y \sim \text{Bernoulli}(\rho)$.
+**As a mathematical formula:**
 
-The intercept $\hat{\beta}_0 \approx -0.322$ (95% CI: $-0.422$ to $-0.222$). Converting from log-odds to probability: $\rho = 1/(1 + e^{0.322}) \approx 0.420$, or about 42%.
+$$\widehat{P(\text{Ever Smoked} = \text{Yes})} = \frac{1}{1 + e^{-(-0.875 + 0.007 \cdot \text{Age} + 0.545 \cdot \text{sexMale})}}$$
+
+Remember that Temperance interprets the data generating mechanism and then uses it to answer, with the help of graphics, the question(s) with which we began. Humility reminds us that this answer is always false.
 
 ###
 
 ### Exercise 1
 
-What is the specific question we are trying to answer?
+In the end, we don't really care about parameters, much less how to interpret them. Parameters are *imaginary*, like unicorns. We care about answers to our questions, on the outcome scale.
+
+Add `library(marginaleffects)` to the QMD file. Place your cursor on that line. Use `Cmd/Ctrl + Enter`.
+
+CP/CR.
 
 ```{r temperance-1}
 question_text(NULL,
-    message = "What proportion of all votes will be cast for Joe Biden in the 2024 election?",
-    answer(NULL, correct = TRUE),
-    allow_retry = FALSE,
-    incorrect = NULL,
-    rows = 6)
+  message = "    > library(marginaleffects)\n    >",
+  answer(NULL, correct = TRUE),
+  allow_retry = FALSE,
+  incorrect = NULL,
+  rows = 3)
 ```
 
 ###
 
-Data science projects begin with a decision which we face. To make that decision wisely, we would like to have good estimates of many unknown numbers. Yet, in order to make progress, we need to drill down to one specific question. This leads to the creation of a data generating mechanism, which can then be used to answer lots of questions.
+The tool for translating log-odds coefficients into outcome-scale probabilities is the **[marginaleffects](https://marginaleffects.com/)** package, with companion book *[Model to Meaning](https://marginaleffects.com/)* by Vincent Arel-Bundock.
 
 ### Exercise 2
 
-Look at the parameter table in the preamble. What does the intercept estimate of approximately $-0.322$ mean, and why is it negative if Biden receives 42% support?
+What is the specific question we are trying to answer?
 
 ```{r temperance-2}
 question_text(NULL,
-    message = "The intercept is on the log-odds scale: log(0.420 / 0.580) ≈ log(0.724) ≈ -0.322. The log-odds is negative whenever the probability is below 50% — Biden is below 50% in this poll, so the log-odds is negative. The value -0.322 is hard to interpret directly; converting via 1/(1 + exp(0.322)) gives the more readable 42% probability.",
-    answer(NULL, correct = TRUE),
-    allow_retry = FALSE,
-    incorrect = NULL,
-    rows = 6)
+  message = "What is the difference in the probability of being an ever-smoker between a 30-year-old woman and a 70-year-old man?",
+  answer(NULL, correct = TRUE),
+  allow_retry = FALSE,
+  incorrect = NULL,
+  rows = 3)
 ```
 
 ###
 
-Most of the time, parameters in a model have no direct relationship with any population value in which we might be interested. The intercept of $-0.322$ does correspond to something real in this simple case — the log-odds of overall Biden support — but in more complex models that connection disappears. Parameters are tools for answering questions. In the modern world, all parameters are nuisance parameters.
+A specific question must specify a number to compute. *"How does ever-smoker status vary with age and sex?"* is too vague --- it doesn't tell us what to subtract from what. *"The difference in probability between a 30-year-old woman and a 70-year-old man"* is one specific number we can produce.
 
 ### Exercise 3
 
-In the end, we don't really care about parameters. Parameters are imaginary, like unicorns. We care about answers to our questions. In the modern world, all parameters are nuisance parameters. Add `library(marginaleffects)` to the QMD. Place your cursor on that line. Use `Cmd/Ctrl + Enter`. CP/CR.
+At the R prompt, run:
+
+```
+predictions(extract_fit_engine(fit_smokes),
+            newdata = data.frame(age = c(30, 70, 30, 70),
+                                 sex = c("Female", "Female", "Male", "Male")))
+```
+
+The `extract_fit_engine()` step is required because `marginaleffects` needs the underlying `glm` object, not the `parsnip` wrapper.
+
+CP/CR.
 
 ```{r temperance-3}
 question_text(NULL,
-    answer(NULL, correct = TRUE),
-    allow_retry = TRUE,
-    try_again_button = "Edit Answer",
-    incorrect = NULL,
-    rows = 3)
+  message = "    > predictions(extract_fit_engine(fit_smokes),\n    +             newdata = data.frame(age = c(30, 70, 30, 70),\n    +                                  sex = c(\"Female\", \"Female\", \"Male\", \"Male\")))\n\n     Estimate Pr(>|z|)    S 2.5 % 97.5 % age    sex\n        0.340  < 0.001 27.1 0.291  0.392  30 Female\n        0.406  0.00219  8.8 0.348  0.466  70 Female\n        0.470  0.29664  1.8 0.415  0.526  30 Male  \n        0.541  0.19845  2.3 0.479  0.601  70 Male  \n\n    Type: invlink(link)",
+  answer(NULL, correct = TRUE),
+  allow_retry = FALSE,
+  incorrect = NULL,
+  rows = 8)
 ```
 
 ###
 
-We should be modest in the claims we make. The posteriors we create are never the "truth." The assumptions we made to create the model are never perfect. Yet decisions made with flawed posteriors are almost always better than decisions made without them.
+`predictions()` returns the model's predicted probability for each combination of covariate values. Reading the four rows above: a 30-year-old woman has a predicted probability of 0.34 of being an ever-smoker; a 70-year-old man has a predicted probability of 0.54. The difference is 0.20, or 20 percentage points --- the answer to our specific question.
 
 ### Exercise 4
 
-At the R prompt, run `predictions(fit_biden)`. CP/CR.
+At the R prompt, run:
+
+```
+plot_predictions(extract_fit_engine(fit_smokes),
+                 condition = c("age", "sex"))
+```
+
+CP/CR.
 
 ```{r temperance-4}
 question_text(NULL,
-    answer(NULL, correct = TRUE),
-    allow_retry = TRUE,
-    try_again_button = "Edit Answer",
-    incorrect = NULL,
-    rows = 3)
+  message = "    > plot_predictions(extract_fit_engine(fit_smokes),\n    +                  condition = c(\"age\", \"sex\"))\n\n(A plot opens with two curves --- one for Female, one for Male --- showing predicted probability of ever-smoker on the y-axis (about 0.30 to 0.55) against age on the x-axis (20 to 80). Both curves slope gently upward; Male is consistently 12-13 percentage points above Female.)",
+  answer(NULL, correct = TRUE),
+  allow_retry = FALSE,
+  incorrect = NULL,
+  rows = 5)
+```
+
+```{r temperance-4-test, include = FALSE}
+plot_predictions(extract_fit_engine(fit_smokes), condition = c("age", "sex"))
 ```
 
 ###
 
-`predictions()` returns a data frame with one row for each observation in the data set used to fit the model — here, 1,559 rows, one per poll respondent. Every row gets the same estimated probability (≈ 0.420) because the model has no covariates; the prediction is constant across all units.
+Two-variable conditioning (`condition = c("age", "sex")`) shows the effect surface of the model: how predicted probability moves jointly across both covariates. The shallow slope on age and the larger gap between sexes are the two stories the model is telling.
 
 ### Exercise 5
 
-At the R prompt, run `avg_predictions(fit_biden)`. CP/CR.
+Predictions tell us the level of the outcome at specific covariate values. *Comparisons* tell us how the outcome shifts when we change one covariate while holding others fixed. Most of the questions we ultimately ask --- *"how big is the sex difference?"*, *"how much does a 40-year age gap move things?"* --- are comparisons, not predictions.
+
+At the R prompt, run:
+
+```
+avg_comparisons(extract_fit_engine(fit_smokes), variables = "sex")
+```
+
+CP/CR.
 
 ```{r temperance-5}
 question_text(NULL,
-    answer(NULL, correct = TRUE),
-    allow_retry = TRUE,
-    try_again_button = "Edit Answer",
-    incorrect = NULL,
-    rows = 3)
+  message = "    > avg_comparisons(extract_fit_engine(fit_smokes), variables = \"sex\")\n\n     Estimate Std. Error    z Pr(>|z|)    S  2.5 % 97.5 %\n        0.133     0.0311 4.27   <0.001 15.6 0.0716  0.193\n\n    Term: sex\n    Type: response\n    Comparison: Male - Female",
+  answer(NULL, correct = TRUE),
+  allow_retry = FALSE,
+  incorrect = NULL,
+  rows = 6)
+```
+
+```{r temperance-5-test, include = FALSE}
+avg_comparisons(extract_fit_engine(fit_smokes), variables = "sex")
 ```
 
 ###
 
-`avg_predictions()` aggregates the 1,559 unit-level predictions into a single average estimate — approximately 0.420 (42%), with a 95% CI from about 0.396 to 0.444. This is our answer: the model estimates Biden's vote share at roughly 42%.
+The estimate of 0.133 is the average difference in predicted probability of being an ever-smoker between Male and Female adults, on the *response* scale (i.e., probabilities, not log-odds), averaged across the actual age distribution in our sample. About 13 percentage points. *Percentage points*, not *percent*: a difference of 13 percentage points (from, say, 37% to 50%) is a 35% relative increase, but those are different numbers and they answer different questions.
 
 ### Exercise 6
 
-At the R prompt, run `avg_comparisons(fit_biden)`. CP/CR.
+At the R prompt, run the same `plot_predictions` call as before with `draw = FALSE`.
+
+CP/CR.
 
 ```{r temperance-6}
 question_text(NULL,
-    answer(NULL, correct = TRUE),
-    allow_retry = TRUE,
-    try_again_button = "Edit Answer",
-    incorrect = NULL,
-    rows = 3)
+  message = "    > plot_predictions(extract_fit_engine(fit_smokes),\n    +                  condition = c(\"age\", \"sex\"),\n    +                  draw = FALSE)\n      rowid  estimate ...    age    sex  ...  conf.low  conf.high\n    1     1     0.339 ...     20 Female  ...     0.279      0.404\n    2     2     0.343 ...     21 Female  ...     0.284      0.408\n    ...\n    122   122   0.541 ...     80   Male  ...     0.479      0.601",
+  answer(NULL, correct = TRUE),
+  allow_retry = FALSE,
+  incorrect = NULL,
+  rows = 6)
+```
+
+```{r temperance-6-test, include = FALSE}
+plot_predictions(extract_fit_engine(fit_smokes), condition = c("age", "sex"), draw = FALSE)
 ```
 
 ###
 
-`avg_comparisons()` returns an empty tibble — the model has no covariates, so there is nothing to compare. Comparisons answer "how does Y change when X changes?" For this intercept-only model there is no X, so there is nothing for the function to compute. The **[marginaleffects](https://marginaleffects.com/)** [Comparisons chapter](https://marginaleffects.com/chapters/comparisons.html) shows what this looks like for models that do have predictors — which we will see in later tutorials.
+`plot_predictions()` returns a ggplot object, so you can keep adding ggplot layers. But it is often easier to start from the underlying tibble (`draw = FALSE`) and build the plot from scratch --- which gives you complete control over titles, labels, and color choices.
 
 ### Exercise 7
 
-At the R prompt, run `avg_predictions(fit_biden)`. CP/CR.
+Work with AI to create a beautiful plot starting from the output of `plot_predictions(..., draw = FALSE)`. Do this in your QMD. Title: key variables. Subtitle: takeaway. Caption: data source. Y-axis: percentages. Paste the plot code below.
 
 ```{r temperance-7}
 question_text(NULL,
-    answer(NULL, correct = TRUE),
-    allow_retry = TRUE,
-    try_again_button = "Edit Answer",
-    incorrect = NULL,
-    rows = 3)
+  message = "    plot_predictions(extract_fit_engine(fit_smokes),\n                     condition = c(\"age\", \"sex\"),\n                     draw = FALSE) |>\n      ggplot(aes(x = age, y = estimate, color = sex, fill = sex)) +\n      geom_ribbon(aes(ymin = conf.low, ymax = conf.high),\n                  alpha = 0.2, color = NA) +\n      geom_line(linewidth = 1.1) +\n      scale_y_continuous(labels = scales::label_percent(),\n                         limits = c(0, 0.7)) +\n      labs(\n        title    = \"Probability of Being an Ever-Smoker, by Age and Sex\",\n        subtitle = \"Men of any age are about 13 percentage points more likely than women to be ever-smokers\",\n        x        = \"Age\",\n        y        = NULL,\n        color    = \"Sex\",\n        fill     = \"Sex\",\n        caption  = \"Source: NHANES 2009-2012 via primer.tutorials::smokes\"\n      ) +\n      theme_minimal()",
+  answer(NULL, correct = TRUE),
+  allow_retry = FALSE,
+  incorrect = NULL,
+  rows = 18)
 ```
 
 ###
 
-The output shows a single row: the average predicted probability that a respondent votes for Biden (≈ 0.420), with a 95% confidence interval (roughly 0.396 to 0.444). `plot_predictions()` requires a covariate to condition on, which this intercept-only model lacks — so `avg_predictions()` is the right tool here.
+```{r}
+#| echo: false
+#| message: false
+#| warning: false
+plot_predictions(extract_fit_engine(fit_smokes),
+                 condition = c("age", "sex"),
+                 draw = FALSE) |>
+  ggplot(aes(x = age, y = estimate, color = sex, fill = sex)) +
+  geom_ribbon(aes(ymin = conf.low, ymax = conf.high),
+              alpha = 0.2, color = NA) +
+  geom_line(linewidth = 1.1) +
+  scale_y_continuous(labels = scales::label_percent(),
+                     limits = c(0, 0.7)) +
+  labs(
+    title    = "Probability of Being an Ever-Smoker, by Age and Sex",
+    subtitle = "Men of any age are about 13 percentage points more likely than women to be ever-smokers",
+    x        = "Age",
+    y        = NULL,
+    color    = "Sex",
+    fill     = "Sex",
+    caption  = "Source: NHANES 2009-2012 via primer.tutorials::smokes"
+  ) +
+  theme_minimal()
+```
 
 ### Exercise 8
 
-At the R prompt, run `avg_predictions(fit_biden)` and note the `estimate`, `conf.low`, and `conf.high` columns. CP/CR.
+Finalize the new graphics chunk in your QMD. `Cmd/Ctrl + Shift + K`. At the R prompt, run:
+
+```
+show_file("analysis.qmd", chunk = "Last")
+```
+
+CP/CR.
 
 ```{r temperance-8}
 question_text(NULL,
-    answer(NULL, correct = TRUE),
-    allow_retry = TRUE,
-    try_again_button = "Edit Answer",
-    incorrect = NULL,
-    rows = 3)
+  message = "    > show_file(\"analysis.qmd\", chunk = \"Last\")\n    ```{r}\n    plot_predictions(extract_fit_engine(fit_smokes),\n                     condition = c(\"age\", \"sex\"),\n                     draw = FALSE) |>\n      ggplot(aes(x = age, y = estimate, color = sex, fill = sex)) +\n      geom_ribbon(aes(ymin = conf.low, ymax = conf.high),\n                  alpha = 0.2, color = NA) +\n      geom_line(linewidth = 1.1) +\n      scale_y_continuous(labels = scales::label_percent(),\n                         limits = c(0, 0.7)) +\n      labs(\n        title    = \"Probability of Being an Ever-Smoker, by Age and Sex\",\n        subtitle = \"Men of any age are about 13 percentage points more likely than women to be ever-smokers\",\n        x = \"Age\", y = NULL, color = \"Sex\", fill = \"Sex\",\n        caption = \"Source: NHANES 2009-2012 via primer.tutorials::smokes\"\n      ) +\n      theme_minimal()\n    ```",
+  answer(NULL, correct = TRUE),
+  allow_retry = FALSE,
+  incorrect = NULL,
+  rows = 18)
 ```
 
 ###
 
-`avg_predictions()` returns a tibble you can pipe directly into ggplot. Because this is an intercept-only model there is nothing to condition on — the average prediction *is* the whole story.
+The map is not the territory. A clean graphic tells a story, but the story always rests on assumptions that are at best approximately true.
 
 ### Exercise 9
 
-Work with AI to create a beautiful plot using `avg_predictions(fit_biden)` as the data source. Do this in your QMD. Title: key variable shown. Subtitle: the most important takeaway (the estimated proportion and its uncertainty). Caption: data source. Axis labels: human-readable. Paste the plot code below.
+Write the last sentence of your summary paragraph. It describes at least one Quantity of Interest and a measure of uncertainty.
 
 ```{r temperance-9}
 question_text(NULL,
-    answer(NULL, correct = TRUE),
-    allow_retry = TRUE,
-    try_again_button = "Edit Answer",
-    incorrect = NULL,
-    rows = 3)
+  message = "We estimate that a 70-year-old man has a probability of about 54% of being an ever-smoker, compared to about 34% for a 30-year-old woman --- a gap of roughly 20 percentage points, with the underlying sex-by-age model showing a much larger sex gap (~13 pp, CI roughly 7 to 19 pp) than age gap (~6 pp over a 40-year span, CI crossing zero).",
+  answer(NULL, correct = TRUE),
+  allow_retry = FALSE,
+  incorrect = NULL,
+  rows = 5)
 ```
 
 ###
 
-Here is our version:
-
-```{r temperance-9-our-plot, echo = FALSE, fig.width = 5, fig.height = 4}
-tidy(extract_fit_engine(fit_biden), conf.int = TRUE) |>
-  filter(term == "(Intercept)") |>
-  transmute(
-    estimate  = plogis(estimate),
-    conf.low  = plogis(conf.low),
-    conf.high = plogis(conf.high)
-  ) |>
-  ggplot(aes(x = 1, y = estimate, ymin = conf.low, ymax = conf.high)) +
-  geom_pointrange(size = 1.0, color = "steelblue") +
-  scale_y_continuous(limits = c(0, 1), labels = scales::percent_format(accuracy = 1)) +
-  labs(
-    title = "Estimated Biden Vote Share in 2024",
-    subtitle = "Model predicts ~42% (95% CI: 40%–44%) from March 2024 YouGov poll",
-    caption = "Source: YouGov, March 2024, via primer.data",
-    x = NULL,
-    y = "Predicted probability of voting for Biden"
-  ) +
-  theme_minimal() +
-  theme(axis.text.x = element_blank(), axis.ticks.x = element_blank())
-```
-
-Data science often involves back-and-forth work. First, make a single chunk of code work well — this requires interactive work between the QMD and the R prompt. Second, ensure that the entire QMD runs correctly on its own.
+Add a final sentence to your summary paragraph, but don't copy/paste exactly. `Cmd/Ctrl + Shift + K`.
 
 ### Exercise 10
 
-Finalize the new graphics chunk in your QMD. `Cmd/Ctrl + Shift + K` to ensure it all works. At the R prompt, `tutorial.helpers::show_file("analysis.qmd", chunk = "Last")`. CP/CR.
+Write a few sentences explaining why the estimate might be wrong. Suggest alternative estimates if warranted.
 
 ```{r temperance-10}
 question_text(NULL,
-    answer(NULL, correct = TRUE),
-    allow_retry = TRUE,
-    try_again_button = "Edit Answer",
-    incorrect = NULL,
-    rows = 3)
+  message = "Our 1,000-row sample is drawn from NHANES 2009-2012, which oversamples certain demographic groups and which is a decade behind the year we want to predict for. Smoking has been falling unevenly across age cohorts since the 2010s, so the slope on age may understate how strongly *current* younger adults differ from older adults. The sex gap is more stable in the U.S. literature than the age slope, but it is shrinking, so 13 percentage points may be an overestimate for 2026. We should widen the confidence interval substantially: a defensible report would say the male-female gap is somewhere between 5 and 20 percentage points, and the 30-vs-70 difference is somewhere between -5 and +30 percentage points.",
+  answer(NULL, correct = TRUE),
+  allow_retry = FALSE,
+  incorrect = NULL,
+  rows = 8)
 ```
 
 ###
 
-Always remember: the map is not the territory. A beautiful graphic tells a story, but that story is always an imperfect representation of reality. Our models depend on assumptions that are never completely true.
+Always go back to your Preceptor Table. Even a perfectly estimated statistical model is rarely as useful as we'd like.
 
 ### Exercise 11
 
-Write the last sentence of your summary paragraph. It describes at least one Quantity of Interest and a measure of uncertainty.
+Rearrange the material in your QMD so the order is graphic, then summary paragraph. The chunk that creates `fit_smokes` must occur before the chunk that creates the graphic. `Cmd/Ctrl + Shift + K`. At the R prompt, run:
+
+```
+show_file("analysis.qmd")
+```
+
+CP/CR.
 
 ```{r temperance-11}
 question_text(NULL,
-    message = "The model estimates Biden's vote share at approximately 42% (95% CI: 40%–44%), based on a March 2024 YouGov poll of 1,559 U.S. adults.",
-    answer(NULL, correct = TRUE),
-    allow_retry = FALSE,
-    incorrect = NULL,
-    rows = 6)
+  message = "    > show_file(\"analysis.qmd\")\n    ---\n    title: \"Smokes\"\n    author: \"<your name>\"\n    execute:\n      echo: false\n    ---\n    \n    ```{r}\n    #| message: false\n    library(tidyverse)\n    library(tidymodels)\n    library(primer.tutorials)\n    library(broom)\n    library(marginaleffects)\n    ```\n    \n    ```{r}\n    #| cache: true\n    fit_smokes <- logistic_reg(engine = \"glm\") |>\n      fit(smoke ~ age + sex, data = smokes)\n    ```\n    \n    ```{r}\n    plot_predictions(extract_fit_engine(fit_smokes),\n                     condition = c(\"age\", \"sex\"),\n                     draw = FALSE) |>\n      ggplot(aes(x = age, y = estimate, color = sex, fill = sex)) +\n      geom_ribbon(aes(ymin = conf.low, ymax = conf.high),\n                  alpha = 0.2, color = NA) +\n      geom_line(linewidth = 1.1) +\n      scale_y_continuous(labels = scales::label_percent(),\n                         limits = c(0, 0.7)) +\n      labs(\n        title    = \"Probability of Being an Ever-Smoker, by Age and Sex\",\n        subtitle = \"Men of any age are about 13 percentage points more likely than women to be ever-smokers\",\n        x = \"Age\", y = NULL, color = \"Sex\", fill = \"Sex\",\n        caption = \"Source: NHANES 2009-2012 via primer.tutorials::smokes\"\n      ) +\n      theme_minimal()\n    ```\n    \n    Lifetime smoking is one of the strongest predictors of long-term health outcomes. Using a 1,000-adult sample from the 2009-2012 NHANES waves, we estimate the probability of being an ever-smoker as a function of age and sex. One concern is that smoking rates have shifted unevenly across cohorts since the data was collected, so the slope on age may misstate the relationship for 2026 adults. We model ever-smoker status as a Bernoulli variable which is a logistic function of age and sex. We estimate that a 70-year-old man has about a 54% chance of being an ever-smoker compared to about 34% for a 30-year-old woman, with the male-female gap (~13 pp) much more precisely estimated than the age gap.",
+  answer(NULL, correct = TRUE),
+  allow_retry = FALSE,
+  incorrect = NULL,
+  rows = 12)
 ```
 
 ###
 
-Add a final sentence to your summary paragraph, but don't copy/paste our answer exactly. `Cmd/Ctrl + Shift + K`.
+This is the version of your QMD your teacher is most likely to look at closely.
 
 ### Exercise 12
 
-Write a few sentences explaining why the estimates for the quantities of interest, and the uncertainty, might be wrong. Suggest alternative estimates and a wider confidence interval if warranted.
+Publish your rendered QMD to GitHub Pages. In the Terminal (not the R prompt!), run:
+
+```
+quarto publish gh-pages analysis.qmd
+```
+
+Copy/paste the resulting URL below.
 
 ```{r temperance-12}
 question_text(NULL,
-    message = "Our estimate is based on a poll conducted eight months before the election, from an opt-in online panel that over-represents politically engaged voters. Voter preferences can shift dramatically over a campaign — debates, economic news, and late-breaking events all move the numbers. I would widen the confidence interval considerably, perhaps to 37%–49%, to account for the polling methodology uncertainty and the time gap to Election Day. You might or might not adjust the point estimate; I would adjust toward 44% given that late-deciding voters often break toward the challenger.",
-    answer(NULL, correct = TRUE),
-    allow_retry = FALSE,
-    incorrect = NULL,
-    rows = 6)
-```
-
-###
-
-Always go back to your Preceptor Table — the information which, if you had it, would make answering your question easy. In almost all real-world cases, the Preceptor Table and the data are fairly different. So, even a perfectly estimated statistical model is rarely as useful as we might like.
-
-### Exercise 13
-
-Rearrange the material in your QMD so the order is graphic, then paragraph. The chunk that creates the fitted model must occur before the chunk that creates the graphic. You can keep or discard the math at your discretion. `Cmd/Ctrl + Shift + K`. At the R prompt, `tutorial.helpers::show_file("analysis.qmd")`. CP/CR.
-
-```{r temperance-13}
-question_text(NULL,
-    answer(NULL, correct = TRUE),
-    allow_retry = TRUE,
-    try_again_button = "Edit Answer",
-    incorrect = NULL,
-    rows = 3)
-```
-
-###
-
-This is the version of your QMD file at which your teacher is most likely to look closely.
-
-### Exercise 14
-
-Publish your rendered QMD to GitHub Pages. In the Terminal (not the R prompt!), run `quarto publish gh-pages analysis.qmd`. Copy/paste the resulting URL below.
-
-```{r temperance-14}
-question_text(NULL,
-    answer(NULL, correct = TRUE),
-    allow_retry = TRUE,
-    try_again_button = "Edit Answer",
-    incorrect = NULL,
-    rows = 3)
+  message = "https://<your-github-username>.github.io/smokes/analysis.html",
+  answer(NULL, correct = TRUE),
+  allow_retry = FALSE,
+  incorrect = NULL,
+  rows = 2)
 ```
 
 ###
 
 Commit/push everything.
 
-### Exercise 15
+### Exercise 13
 
 Copy/paste the URL to your GitHub repo.
 
-```{r temperance-15}
+```{r temperance-13}
 question_text(NULL,
-    answer(NULL, correct = TRUE),
-    allow_retry = TRUE,
-    try_again_button = "Edit Answer",
-    incorrect = NULL,
-    rows = 3)
+  message = "https://github.com/<your-github-username>/smokes",
+  answer(NULL, correct = TRUE),
+  allow_retry = FALSE,
+  incorrect = NULL,
+  rows = 2)
 ```
 
 ###
 
-We can never know all the entries in the Preceptor Table. That knowledge is reserved for God. If all our assumptions are correct, then our DGM is true — it accurately describes the way in which the world works. There is no better way to predict the future, or to model the past, than to use it. Sadly, this will only be the case with toy examples involving things like coins and dice.
+We can never know all the entries in the Preceptor Table. That knowledge is reserved for God.
 
 The world confronts us. Make decisions we must.
 
+
 ## Summary
 
-```{r summary-plot, echo = FALSE, fig.width = 5, fig.height = 4}
-tidy(extract_fit_engine(fit_biden), conf.int = TRUE) |>
-  filter(term == "(Intercept)") |>
-  transmute(
-    estimate  = plogis(estimate),
-    conf.low  = plogis(conf.low),
-    conf.high = plogis(conf.high)
-  ) |>
-  ggplot(aes(x = 1, y = estimate, ymin = conf.low, ymax = conf.high)) +
-  geom_pointrange(size = 1.0, color = "steelblue") +
-  scale_y_continuous(limits = c(0, 1), labels = scales::percent_format(accuracy = 1)) +
+```{r}
+#| echo: false
+#| message: false
+#| warning: false
+plot_predictions(extract_fit_engine(fit_smokes),
+                 condition = c("age", "sex"),
+                 draw = FALSE) |>
+  ggplot(aes(x = age, y = estimate, color = sex, fill = sex)) +
+  geom_ribbon(aes(ymin = conf.low, ymax = conf.high),
+              alpha = 0.2, color = NA) +
+  geom_line(linewidth = 1.1) +
+  scale_y_continuous(labels = scales::label_percent(),
+                     limits = c(0, 0.7)) +
   labs(
-    title = "Estimated Biden Vote Share in 2024",
-    subtitle = "Model predicts ~42% (95% CI: 40%–44%) from March 2024 YouGov poll",
-    caption = "Source: YouGov, March 2024, via primer.data",
-    x = NULL,
-    y = "Predicted probability of voting for Biden"
+    title    = "Probability of Being an Ever-Smoker, by Age and Sex",
+    subtitle = "Men of any age are about 13 percentage points more likely than women to be ever-smokers",
+    x        = "Age",
+    y        = NULL,
+    color    = "Sex",
+    fill     = "Sex",
+    caption  = "Source: NHANES 2009-2012 via primer.tutorials::smokes"
   ) +
-  theme_minimal() +
-  theme(axis.text.x = element_blank(), axis.ticks.x = element_blank())
+  theme_minimal()
 ```
 
-Survey data from YouGov helps predict election outcomes by estimating the proportion of voters supporting each candidate. This analysis uses a March 2024 poll of 1,559 U.S. adult citizens to estimate the proportion of votes Joe Biden would receive in the 2024 presidential election. However, the eight-month gap between the poll and the election, combined with YouGov's opt-in online panel over-representing politically engaged voters, means our estimate may be both biased and out-of-date by Election Day. We model Biden support, a binary Yes/No outcome, as a logistic function of no covariates — an intercept-only model that estimates the overall proportion of support. The model estimates Biden's vote share at approximately 42% (95% CI: 40%–44%), based on the March 2024 poll. Our estimate is based on data collected eight months before the election from an opt-in online panel; a wider interval of perhaps 37%–49% better reflects the true uncertainty once polling methodology and temporal drift are accounted for.
+Lifetime smoking is one of the strongest predictors of long-term health outcomes, and a state health department designing an anti-smoking campaign needs to know which adults are most likely to be smokers. Using a 1,000-adult sample from the 2009--2012 NHANES waves, we estimate the probability of being an ever-smoker as a function of age and sex. One concern is that smoking rates in the United States have shifted unevenly across age cohorts since the data was collected, so the slope on age may misstate the relationship between age and smoking for 2026 adults. We model ever-smoker status as a Bernoulli variable which is a logistic function of age and sex. We estimate that a 70-year-old man has about a 54% probability of being an ever-smoker, compared to about 34% for a 30-year-old woman --- a gap of roughly 20 percentage points, with the male-female component of the gap (~13 percentage points, 95% CI of about 7 to 19 percentage points) much more precisely estimated than the age component.
+
+This finding would inform a campaign-targeting decision: where to put cessation outreach, how to scale advertising buys by demographic segment, and how to weigh the relative importance of age and sex when designing creative material. It does not address every question a public-health analyst would face --- it says nothing about *current* smokers (who are a strict subset of ever-smokers and the actual cessation target), about race or income, or about how outreach should differ within sex by socioeconomic status. But it gives a defensible starting point.
 
 The world is always more uncertain than our models would have us believe.
 

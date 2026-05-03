@@ -12,12 +12,10 @@ description: "Tutorial #09 for Preceptor's Primer"
 ---
 
 ```{r setup, include = FALSE}
-# learnr, tutorial.helpers, and gt are required for the tutorial to work.
 library(learnr)
 library(tutorial.helpers)
 library(gt)
 
-# Packages students load themselves.
 library(tidyverse)
 library(tidymodels)
 library(primer.data)
@@ -28,31 +26,19 @@ knitr::opts_chunk$set(echo = FALSE)
 options(tutorial.exercise.timelimit = 600,
         tutorial.storage = "local")
 
-# <!-- Hello DK: This is Claude. I need you to verify the coefficient values
-# used in the Courage Exercise 10 concrete DGM formula and the Temperance
-# preamble formula. Run this setup chunk with set.seed(9), then run
-# tidy(fit_sps, conf.int = TRUE) and sigma(extract_fit_engine(fit_sps))^2
-# to get the actual values. The approximate values I used are:
-# intercept ≈ 6.80, treatmentEnrolled ≈ -0.27, age ≈ 0.016, sexMale ≈ 0.11,
-# sigma^2 ≈ 0.69. Update the LaTeX formulas and canonical message answers
-# in Temperance Exercises 2-4 if the real values differ substantially. -->
-set.seed(9)
+set.seed(2026)
 x <- sps |>
-  filter(t2_health_exp_3m > 0) |>
-  select(treatment, t2_health_exp_3m, age, sex) |>
+  select(treatment, t2_health_exp_3m, age, sex, education) |>
   drop_na() |>
-  mutate(
-    log_health_exp = log(t2_health_exp_3m),
-    treatment = factor(
-      if_else(as.character(treatment) == "1", "Enrolled", "Not enrolled"),
-      levels = c("Not enrolled", "Enrolled")
-    ),
-    sex = str_to_title(sex)
-  ) |>
-  slice_sample(n = 100)
+  mutate(treatment = factor(if_else(treatment == 1, "Enrolled", "Not enrolled"),
+                            levels = c("Not enrolled", "Enrolled"))) |>
+  group_by(treatment) |>
+  slice_sample(n = 250) |>
+  ungroup()
 
-fit_sps <- linear_reg(engine = "lm") |>
-  fit(log_health_exp ~ treatment + age + sex, data = x)
+fit_sps <- linear_reg() |>
+  set_engine("lm") |>
+  fit(t2_health_exp_3m ~ treatment, data = x)
 ```
 
 ```{r copy-code-chunk, child = system.file("child_documents/copy_button.Rmd", package = "tutorial.helpers")}
@@ -63,12 +49,13 @@ fit_sps <- linear_reg(engine = "lm") |>
 
 
 ## Introduction
+###
 
 This tutorial supports [*Preceptor's Primer for Bayesian Data Science: Using the Cardinal Virtues for Inference*](https://ppbds.github.io/primer/) by [David Kane](https://davidkane.info/).
 
 The world confronts us. Make decisions we must.
 
-Imagine that you are an analyst at an NGO working on health policy in Mexico. Your organization is evaluating whether to advocate for the continuation of Seguro Popular, a government health insurance program that was randomly rolled out across 74 communities in 2005. Before recommending a policy, you want to know: did the program actually reduce how much families spent out-of-pocket on health care? There are many decisions to make.
+Imagine that you are a health-policy analyst at Mexico's Ministry of Health deciding whether to continue funding Seguro Popular, the universal health-insurance program that Mexico randomized into communities starting in 2005. Households that signed up paid lower premiums and got covered care; the question your director cares about is whether enrollment actually lowered what families paid out of pocket. There are many decisions to make.
 
 ###
 
@@ -87,19 +74,31 @@ question_text(NULL,
 
 ###
 
-The best way to ensure that students remember these concepts more than a few months after the course ends is spaced repetition, although we focus more on the repetition than on the spacing.
+QMD World and R World are not the same. Several R sessions can run side by side --- one in your QMD render, one at your interactive prompt, one inside this tutorial --- each with its own workspace.
 
 ### Exercise 2
 
 You should be working inside a GitHub repo named `sps`, opened in a Codespace from the [`PPBDS/codespace-starter`](https://github.com/PPBDS/codespace-starter) template. If you are not there yet, please create that repo and open it in a Codespace now --- see the [package README](https://github.com/PPBDS/primer/tree/main/primer.tutorials#working-environments-and-repo-setup) if you need setup instructions or are working locally instead.
 
-Once you're inside the `sps` repo, create a new Quarto document titled `"Seguro Popular"` with yourself as the author, render it, and save it as `analysis.qmd`. Create a `.gitignore` file with `analysis_files` on the first line followed by a blank line. Save and push. At the R prompt, run `show_file(".gitignore")`. CP/CR.
+Once you're inside the `sps` repo, create a new Quarto document titled `"Seguro Popular"` with yourself as the author, render it, and save it as `analysis.qmd`.
+
+Create a `.gitignore` file with `analysis_files` on the first line followed by a blank line. Save and push.
+
+At the R prompt, run:
+
+```
+show_file(".gitignore")
+```
+
+If that fails, it's probably because you haven't loaded `library(tutorial.helpers)` at the R prompt.
+
+CP/CR.
 
 ```{r introduction-2}
 question_text(NULL,
+  message = "    > show_file(\".gitignore\")\n    analysis_files",
   answer(NULL, correct = TRUE),
-  allow_retry = TRUE,
-  try_again_button = "Edit Answer",
+  allow_retry = FALSE,
   incorrect = NULL,
   rows = 3)
 ```
@@ -110,14 +109,20 @@ Professionals keep their data science work in the cloud because laptops fail.
 
 ### Exercise 3
 
-In your QMD, put `library(tidyverse)` and `library(primer.data)` in a new code chunk. Render the file. Add `#| message: false` to suppress messages. Also add the following to the YAML header:
+In your QMD, put `library(tidyverse)` and `library(primer.data)` in a new code chunk. Render the file. Add `#| message: false` to suppress the messages, and add the following to the YAML header to hide the code:
 
 ```
 execute:
   echo: false
 ```
 
-Render again. At the R prompt, run `show_file("analysis.qmd", chunk = "Last")`. CP/CR.
+Render again. At the R prompt, run:
+
+```
+show_file("analysis.qmd", chunk = "Last")
+```
+
+CP/CR.
 
 ```{r introduction-3}
 question_text(NULL,
@@ -130,15 +135,17 @@ question_text(NULL,
 
 ###
 
-Rendering a QMD converts the code and prose into an HTML document that shows only what you want readers to see.
+Rendering a QMD converts code and prose into a self-contained HTML document. The render runs in a fresh R session, so it doesn't see anything you have loaded at your interactive prompt --- a feature, not a bug.
 
 ### Exercise 4
 
-Place your cursor in the QMD file on the `library(tidyverse)` line. Use `Cmd/Ctrl + Enter` to execute that line. CP/CR.
+Place your cursor on the `library(tidyverse)` line. Use `Cmd/Ctrl + Enter` to send the line to the R prompt.
+
+CP/CR.
 
 ```{r introduction-4}
 question_text(NULL,
-  message = "    > library(tidyverse)\n    ── Attaching core tidyverse packages ─ tidyverse 2.0.0 ─\n    ✔ dplyr    ✔ forcats  ✔ ggplot2  ✔ lubridate\n    ✔ purrr    ✔ readr    ✔ stringr  ✔ tibble   ✔ tidyr\n    ── Conflicts ── tidyverse_conflicts() ──\n    ✖ dplyr::filter() masks stats::filter()\n    ✖ dplyr::lag()    masks stats::lag()",
+  message = "    > library(tidyverse)\n    ── Attaching core tidyverse packages ─ tidyverse 2.0.0 ─\n    ✔ dplyr     ✔ forcats   ✔ ggplot2  ✔ lubridate\n    ✔ purrr     ✔ readr     ✔ stringr  ✔ tibble     ✔ tidyr\n    ── Conflicts ─ tidyverse_conflicts() ─\n    ✖ dplyr::filter() masks stats::filter()\n    ✖ dplyr::lag()    masks stats::lag()",
   answer(NULL, correct = TRUE),
   allow_retry = FALSE,
   incorrect = NULL,
@@ -147,11 +154,13 @@ question_text(NULL,
 
 ###
 
-`Cmd/Ctrl + Enter` is the workflow that keeps QMD World and R World in sync. Anything you want to survive between sessions goes in the QMD.
+The "Conflicts" lines name functions that exist in more than one loaded package. `dplyr::filter()` masks `stats::filter()` because tidyverse loads later; the last-loaded package wins.
 
 ### Exercise 5
 
-Place your cursor on the `library(primer.data)` line. Use `Cmd/Ctrl + Enter` to execute that line. CP/CR.
+Place your cursor on the `library(primer.data)` line. Use `Cmd/Ctrl + Enter`.
+
+CP/CR.
 
 ```{r introduction-5}
 question_text(NULL,
@@ -164,7 +173,7 @@ question_text(NULL,
 
 ###
 
-The `sps` tibble from the **[primer.data](https://github.com/PPBDS/primer.data)** package contains data from King et al.'s 2009 randomized evaluation of Seguro Popular, Mexico's public health insurance program, covering about 27,000 households across seven Mexican states.
+Data on Mexico's Seguro Popular randomized rollout is available in the `sps` tibble from the **[primer.data](https://github.com/PPBDS/primer.data)** package. The data came from a large 2005--06 trial in which the Mexican Ministry of Health randomly assigned communities to receive Seguro Popular early. We have one row per surveyed household, with information about enrollment, demographics, and out-of-pocket health expenditures.
 
 ### Exercise 6
 
@@ -172,7 +181,7 @@ At the R prompt, type `?sps` and paste the Description below.
 
 ```{r introduction-6}
 question_text(NULL,
-  message = "Data from King et al. (2009) evaluating Seguro Popular, a Mexican public health insurance program. Treatment was randomly assigned within 74 matched pairs of health clusters, covering households across seven Mexican states. Two rounds of surveys were conducted: a baseline in August-September 2005 and a follow-up in July-August 2006.",
+  message = "Data from a 2005--2006 health-insurance experiment in Mexico in which Seguro Popular was randomly rolled out across communities. Households were surveyed about their out-of-pocket spending on health care, with measurements taken at baseline and again roughly ten months later. The randomization makes this an unusually clean setting for estimating the causal effect of universal health insurance on household financial protection.",
   answer(NULL, correct = TRUE),
   allow_retry = FALSE,
   incorrect = NULL,
@@ -181,7 +190,7 @@ question_text(NULL,
 
 ###
 
-King et al. randomly assigned communities --- not individual households --- to either have Seguro Popular rolled out early (treatment) or to wait for the normal rollout (control). Households were surveyed before and after. This design makes it possible to estimate the causal effect of the program on health spending.
+The original analysis is King et al., *"Public policy for the poor? A randomised assessment of the Mexican universal health insurance programme,"* The Lancet, 2009.
 
 ### Exercise 7
 
@@ -193,12 +202,12 @@ question_text(NULL,
   answer(NULL, correct = TRUE),
   allow_retry = FALSE,
   incorrect = NULL,
-  rows = 6)
+  rows = 3)
 ```
 
 ###
 
-According to the Rubin Causal Model, there must be two (or more) potential outcomes for any discussion of causation to make sense. This is simplest to discuss when the treatment has only two different values, generating only two potential outcomes.
+According to the Rubin Causal Model, there must be two (or more) potential outcomes for any discussion of causation to make sense. This is simplest when the treatment has only two values, generating two potential outcomes per unit.
 
 ### Exercise 8
 
@@ -210,20 +219,20 @@ question_text(NULL,
   answer(NULL, correct = TRUE),
   allow_retry = FALSE,
   incorrect = NULL,
-  rows = 6)
+  rows = 3)
 ```
 
 ###
 
-If the treatment variable is continuous (like a lottery payment), then there are lots and lots of potential outcomes, one for each possible value of the treatment variable.
+For each household in the SPS data, we see what their out-of-pocket spending was *under the treatment they actually received* --- enrolled or not enrolled. We never see what the same household's spending would have been under the other arm. The causal effect for any single household is unobservable; we estimate the average causal effect across households.
 
 ### Exercise 9
 
-Health expenditure is the broad topic of this tutorial. Which variable in `sps` should we use as our outcome variable?
+Out-of-pocket health expenditure is the broad topic of this tutorial. Given that topic, which variable in `sps` should we use as our outcome variable?
 
 ```{r introduction-9}
 question_text(NULL,
-  message = "Our outcome variable is `t2_health_exp_3m`: the total health-related household expenditure in the three months before the follow-up survey, measured in pesos. The `t2_` prefix indicates that this is from the second survey round (the follow-up), which is what we care about when asking whether Seguro Popular reduced spending.",
+  message = "Our outcome variable is `t2_health_exp_3m` --- the household's reported total out-of-pocket health spending over the three months before the follow-up survey, in Mexican pesos.",
   answer(NULL, correct = TRUE),
   allow_retry = FALSE,
   incorrect = NULL,
@@ -232,33 +241,36 @@ question_text(NULL,
 
 ###
 
-We will use `t2_health_exp_3m` as our starting outcome variable.
+We will use `t2_health_exp_3m` as our outcome variable. Below is the distribution of follow-up spending in our 500-household sample, by treatment status.
 
 ```{r}
 #| echo: false
 #| message: false
 #| warning: false
-sps |>
-  filter(t2_health_exp_3m > 0) |>
-  ggplot(aes(x = t2_health_exp_3m)) +
-  geom_histogram(bins = 60, fill = "steelblue", color = "white") +
+x |>
+  ggplot(aes(x = t2_health_exp_3m, fill = treatment)) +
+  geom_density(alpha = 0.5) +
+  scale_x_continuous(labels = scales::label_dollar(prefix = "$"), limits = c(0, 5000)) +
   labs(
-    title = "Three-Month Health Expenditures (Positive Values Only)",
-    subtitle = "Heavy right skew: most households spend little, a few spend a lot",
-    x = "Health Expenditure (pesos)",
-    y = "Count",
-    caption = "Source: King et al. (2009) via primer.data"
+    title = "Out-of-Pocket Health Spending in the SPS Sample",
+    subtitle = "Most households spend little; both arms have a long right tail",
+    x = "3-month spending (pesos)",
+    y = NULL,
+    fill = "Treatment",
+    caption = "Source: King et al. (2009) SPS rollout via primer.data"
   ) +
-  theme_minimal()
+  theme_minimal() +
+  theme(axis.text.y  = element_blank(),
+        axis.ticks.y = element_blank())
 ```
 
 ### Exercise 10
 
-Our treatment variable will be `treatment`, which takes the values `1` (Seguro Popular enrolled) or `0` (control). Describe briefly what each value means and how, at least in theory, it is manipulable.
+Our treatment variable will be `treatment`, which takes two values. Describe briefly what each value means and how it was manipulated.
 
 ```{r introduction-10}
 question_text(NULL,
-  message = "`treatment` takes two values: 1 if the household's community was assigned to the early Seguro Popular rollout, or 0 if the community was in the control group. King et al., the researchers, manipulated this by randomly assigning communities to rollout timing within matched pairs.",
+  message = "`treatment` is `Enrolled` if the household was in a community whose Seguro Popular rollout had begun by the time of the follow-up survey, and `Not enrolled` otherwise. The Mexican Ministry of Health manipulated this variable by randomly choosing which communities to roll out first, so households did not select into treatment based on their own characteristics.",
   answer(NULL, correct = TRUE),
   allow_retry = FALSE,
   incorrect = NULL,
@@ -267,32 +279,32 @@ question_text(NULL,
 
 ###
 
-Any data set can be used to construct a causal model as long as there is at least one covariate that we can, at least in theory, manipulate. It does not matter whether or not anyone did, in fact, manipulate it.
+Any data set can be used to construct a causal model as long as there is at least one covariate that we can, at least in theory, manipulate. It does not matter whether or not anyone did, in fact, manipulate it --- though in this case the Ministry of Health really did.
 
 ### Exercise 11
 
-Given our treatment variable `treatment`, how many potential outcomes are there for each household? Explain why.
+Given our treatment variable, how many potential outcomes are there for each household? Explain why.
 
 ```{r introduction-11}
 question_text(NULL,
-  message = "There are two potential outcomes because `treatment` takes on two possible values: 1 (enrolled in Seguro Popular) and 0 (not enrolled). Every household has a potential health expenditure under each scenario, but we can only observe one.",
+  message = "There are two potential outcomes for each household because the treatment takes two values: `Enrolled` and `Not enrolled`. Each household has the spending it would have under enrollment and the spending it would have without enrollment; we observe only one of those, depending on which arm the household ended up in.",
   answer(NULL, correct = TRUE),
   allow_retry = FALSE,
   incorrect = NULL,
-  rows = 3)
+  rows = 5)
 ```
 
 ###
 
-The same data set can be used to create, separately, lots and lots of different models, both causal and predictive. This is a conceptual framework we apply to the data. It is never inherent in the data itself.
+The same data set can be used to create lots of different models, both causal and predictive. We just use different outcome variables and/or specify different treatments. This is a conceptual frame we apply to data; it is never inherent in the data itself.
 
 ### Exercise 12
 
-Pick a single household from the data. Specify the two values the treatment variable could take for that household, guess the potential outcome under each, and compute the causal effect.
+Pick a single household from the data. Specify the two values its treatment could take, guess the potential outcome under each, and compute the causal effect for that household.
 
 ```{r introduction-12}
 question_text(NULL,
-  message = "For the Ramirez family in the data, `treatment` could be 1 (Enrolled) or 0 (Not enrolled). If enrolled, their three-month out-of-pocket health spending might be 1,200 pesos. If not enrolled, it might be 1,600 pesos. The causal effect of enrollment is 1,200 − 1,600 = −400 pesos: enrollment reduces their spending by 400 pesos.",
+  message = "Take household 102 in our sample. Its treatment value `Enrolled` would yield three-month spending of, say, 400 pesos, while `Not enrolled` would yield 600 pesos. The causal effect on out-of-pocket spending of enrollment versus no enrollment is 400 - 600 = -200 pesos: enrolling reduces this household's spending by 200 pesos. Both numbers are guesses; we observe only one of them in the data.",
   answer(NULL, correct = TRUE),
   allow_retry = FALSE,
   incorrect = NULL,
@@ -301,7 +313,7 @@ question_text(NULL,
 
 ###
 
-A causal effect is the difference between two potential outcomes. "Difference" does not necessarily mean "subtraction" --- many potential outcomes are not numbers. Even for numeric outcomes, you can't simply say the effect is −400 without specifying the order of subtraction.
+A causal effect is the difference between two potential outcomes. *"Difference"* doesn't have to mean *"subtraction"* --- many potential outcomes are not numbers --- but here both are pesos, so subtraction works.
 
 ### Exercise 13
 
@@ -309,7 +321,7 @@ Write a causal question connecting the outcome `t2_health_exp_3m` to `treatment`
 
 ```{r introduction-13}
 question_text(NULL,
-  message = "What is the causal effect of Seguro Popular enrollment on household health expenditures?",
+  message = "What is the average causal effect of Seguro Popular enrollment on a household's three-month out-of-pocket health spending?",
   answer(NULL, correct = TRUE),
   allow_retry = FALSE,
   incorrect = NULL,
@@ -318,18 +330,18 @@ question_text(NULL,
 
 ###
 
-This is our initial question. After examining the data carefully in Wisdom, we will likely need to refine it. Questions evolve as we learn more about the data. A practitioner might also ask: does the effect differ between male-headed and female-headed households? Does it fade over time? For this tutorial we focus on the average effect; the chapter explores the heterogeneous variants.
+The variable `t2_health_exp_3m` is total household health spending over the three months before the follow-up survey: pharmacy purchases, doctor visits, hospital co-pays, the works. It does *not* include the premium households would have paid for Seguro Popular itself, so the question is about *care-related* spending, not the total cost of getting covered.
 
 
 ## Wisdom
 
 Data science starts with some broad questions and a data set which might help us to answer them.
 
-Imagine that you are an analyst at an NGO working on health policy in Mexico. Your organization is evaluating whether to advocate for the continuation of Seguro Popular, a government health insurance program that was randomly rolled out across 74 communities in 2005. Before recommending a policy, you want to know: did the program actually reduce how much families spent out-of-pocket on health care? There are many decisions to make.
+Imagine that you are a health-policy analyst at Mexico's Ministry of Health deciding whether to continue funding Seguro Popular, the universal health-insurance program that Mexico randomized into communities starting in 2005. Households that signed up paid lower premiums and got covered care; the question your director cares about is whether enrollment actually lowered what families paid out of pocket. There are many decisions to make.
 
-The initial question: *What is the causal effect of Seguro Popular enrollment on household health expenditures?*
+The specific question: *What is the average causal effect of Seguro Popular enrollment on a household's three-month out-of-pocket health spending?*
 
-We will work from the `sps` tibble of the **[primer.data](https://github.com/PPBDS/primer.data)** package, which contains data from King et al.'s 2009 study of Seguro Popular across seven Mexican states.
+We will work from the SPS rollout data, available in the `sps` tibble of the **[primer.data](https://github.com/PPBDS/primer.data)** package.
 
 ###
 
@@ -365,70 +377,48 @@ question_text(NULL,
 
 ###
 
-The Preceptor Table does not include all the covariates which you will eventually include in your model. It only includes, along with the outcome(s), covariates which are mentioned in your question.
+The Preceptor Table only includes the variables mentioned in the question; in causal models there are at least two potential-outcome columns, plus the treatment column.
 
 ### Exercise 3
 
-Let's look more carefully at the outcome variable. Ask AI to write R code that plots the distribution of `t2_health_exp_3m` in `sps` as a histogram, with a descriptive title, subtitle, axis labels, and caption. Paste the code below and run it.
+Look at how `t2_health_exp_3m` differs between the treatment and control groups. Ask AI to write R code that plots `t2_health_exp_3m` by `treatment` as a jitter plot, with `treatment` on the x-axis and the outcome on the y-axis (capped at 5000 pesos so the long tail doesn't crush the plot), plus a point showing the group mean. Paste the code below.
 
 ```{r wisdom-3}
 question_text(NULL,
-  message = "    sps |>\n      ggplot(aes(x = t2_health_exp_3m)) +\n      geom_histogram(bins = 60, fill = \"steelblue\", color = \"white\") +\n      labs(\n        title = \"Three-Month Health Expenditures\",\n        subtitle = \"Distribution is heavily right-skewed; many zeros\",\n        x = \"Health Expenditure (pesos)\",\n        y = \"Count\",\n        caption = \"Source: King et al. (2009) via primer.data\"\n      ) +\n      theme_minimal()",
+  message = "    x |>\n      filter(t2_health_exp_3m <= 5000) |>\n      ggplot(aes(x = treatment, y = t2_health_exp_3m)) +\n      geom_jitter(width = 0.2, alpha = 0.4) +\n      stat_summary(fun = mean, geom = \"point\", size = 4, color = \"steelblue\") +\n      scale_y_continuous(labels = scales::label_dollar(prefix = \"$\")) +\n      labs(\n        title = \"Out-of-Pocket Spending by Enrollment Status\",\n        subtitle = \"Blue dot = group mean\",\n        x = \"Treatment\",\n        y = \"3-month spending (pesos)\",\n        caption = \"Source: King et al. (2009) SPS rollout via primer.data\"\n      ) +\n      theme_minimal()",
   answer(NULL, correct = TRUE),
   allow_retry = FALSE,
   incorrect = NULL,
-  rows = 10)
+  rows = 12)
 ```
 
 ###
 
-The distribution is heavily right-skewed: most households spent little or nothing on health care in the three months before the follow-up survey, but a small number spent a great deal. This skew is typical of health expenditure data.
+```{r}
+#| echo: false
+#| message: false
+#| warning: false
+x |>
+  filter(t2_health_exp_3m <= 5000) |>
+  ggplot(aes(x = treatment, y = t2_health_exp_3m)) +
+  geom_jitter(width = 0.2, alpha = 0.4) +
+  stat_summary(fun = mean, geom = "point", size = 4, color = "steelblue") +
+  scale_y_continuous(labels = scales::label_dollar(prefix = "$")) +
+  labs(
+    title = "Out-of-Pocket Spending by Enrollment Status",
+    subtitle = "Blue dot = group mean",
+    x = "Treatment",
+    y = "3-month spending (pesos)",
+    caption = "Source: King et al. (2009) SPS rollout via primer.data"
+  ) +
+  theme_minimal()
+```
 
 ### Exercise 4
 
-At the R prompt, run this code and paste the output:
-
-```
-sps |> summarise(n_zero = sum(t2_health_exp_3m == 0, na.rm = TRUE),
-                 n_total = n(),
-                 pct_zero = round(100 * n_zero / n_total, 1))
-```
-
-```{r wisdom-4}
-question_text(NULL,
-  message = "    > sps |> summarise(n_zero = sum(t2_health_exp_3m == 0, na.rm = TRUE),\n    +                  n_total = n(),\n    +                  pct_zero = round(100 * n_zero / n_total, 1))\n    # A tibble: 1 × 3\n      n_zero n_total pct_zero\n       <int>   <int>    <dbl>\n    1   9853   27569     35.7",
-  answer(NULL, correct = TRUE),
-  allow_retry = FALSE,
-  incorrect = NULL,
-  rows = 5)
-```
-
-###
-
-About 36% of households reported zero health expenditures in the three months before the follow-up. These households are conceptually different from positive-spending households: they may avoid formal health care entirely, or they may have had a healthy period. Seguro Popular's effect on them is a different question from its effect on households that were already spending on care.
-
-### Exercise 5
-
-Given what you saw in the EDA --- a heavy right skew, many zero-spending households, and a strong prior that Seguro Popular affects positive spenders most directly --- how should we refine our question?
-
-```{r wisdom-5}
-question_text(NULL,
-  message = "We make two adjustments. First, we restrict to households with positive health expenditures. Households that spent nothing present a different problem: whether Seguro Popular nudges them to start seeking care is a separate question from whether it reduces what positive spenders pay. Second, the right-skewed distribution among positive spenders calls for a log transformation, which stabilizes variance and makes the regression model better-behaved. The revised question: By what percentage did Seguro Popular enrollment reduce health expenditures among households with positive health spending?",
-  answer(NULL, correct = TRUE),
-  allow_retry = FALSE,
-  incorrect = NULL,
-  rows = 8)
-```
-
-###
-
-Specifying the Preceptor Table forces us to think clearly about the units and outcomes implied by the question. No data science project follows a single direction. We always backtrack. There is always dialogue.
-
-### Exercise 6
-
 Describe the key components of Preceptor Tables in general, without worrying about this specific problem. Use words like "units," "outcomes," and "covariates."
 
-```{r wisdom-6}
+```{r wisdom-4}
 question_text(NULL,
   message = "The rows of the Preceptor Table are the units. The outcome is at least one of the columns. If the problem is causal, there will be at least two (potential) outcome columns. The other columns are covariates. If the problem is causal, at least one of the covariates will be considered a treatment.",
   answer(NULL, correct = TRUE),
@@ -439,104 +429,104 @@ question_text(NULL,
 
 ###
 
-This problem is causal, so one of the covariates is the treatment. In our problem, the treatment is Seguro Popular enrollment. Each household has two potential outcomes: log expenditure if enrolled and log expenditure if not enrolled.
+This problem is causal, so one of the covariates is a treatment. In our problem, the treatment is `treatment` --- whether a household had enrolled in Seguro Popular by the follow-up survey. There is a potential outcome for each of the two possible values of the treatment.
 
-### Exercise 7
+### Exercise 5
 
 What are the units for this problem?
 
-```{r wisdom-7}
+```{r wisdom-5}
 question_text(NULL,
-  message = "Each row represents one Mexican household with positive health expenditure during the three months before the July-August 2006 follow-up survey. We restrict to positive spenders because households with zero spending raise a different question.",
+  message = "Each row is one household in the universe of households eligible for Seguro Popular at the time of the rollout (roughly 2005--06). The original survey covered tens of thousands of households across 74 randomized communities; our analysis sample is a 500-household slice (250 enrolled, 250 not enrolled) drawn from that universe.",
   answer(NULL, correct = TRUE),
   allow_retry = FALSE,
   incorrect = NULL,
-  rows = 3)
+  rows = 4)
 ```
 
 ###
 
-We model units, but we only really care about aggregates.
+Specifying the unit forces a question precise enough to answer. We model households here, but a policy maker really cares about aggregate consequences across families.
 
-### Exercise 8
+### Exercise 6
 
 What is the outcome variable for this problem?
 
-```{r wisdom-8}
+```{r wisdom-6}
 question_text(NULL,
-  message = "Keep track of two 'outcome' variables: the one in our Preceptor Table and the one in our data. In this case, both use `t2_health_exp_3m` from the King et al. study, but we log-transform it. The Preceptor Table outcome is 'log of three-month health expenditure in pesos' for each household under each treatment condition.",
+  message = "Keep track of two outcome variables: the one in our Preceptor Table and the one in our data. In this case, both are `t2_health_exp_3m` --- the household's total out-of-pocket health spending over the three months prior to the follow-up survey, in Mexican pesos. The variable is bounded below by zero and has a long right tail (most households spend little; a few spend a great deal).",
   answer(NULL, correct = TRUE),
   allow_retry = FALSE,
   incorrect = NULL,
-  rows = 3)
+  rows = 4)
 ```
 
 ###
 
-The outcome variable that we really care about is often not the outcome variable which our data includes. Working with the log-transformed version rather than the raw pesos is a compromise --- the model behaves better, but interpretation requires back-transforming.
+The outcome we really care about --- *"did enrollment relieve financial strain on Mexican families?"* --- is fuzzier than what `t2_health_exp_3m` measures. The variable captures pesos out the door but not, say, foregone care or borrowing.
 
-### Exercise 9
+### Exercise 7
 
 What is a covariate which you think might be useful for this problem, regardless of whether or not it might be included in the data?
 
-```{r wisdom-9}
+```{r wisdom-7}
 question_text(NULL,
-  message = "Household income is a strong candidate --- wealthier households spend more on health care in absolute terms, and Seguro Popular may have reduced spending more for poorer households who previously faced catastrophic costs. Baseline health status, number of household members, and distance to the nearest clinic are other candidates.",
+  message = "Household income is a strong candidate. Lower-income households presumably benefit more in absolute terms from enrollment because they were spending a larger share of disposable income on health. We don't have direct income in our data, but `education` is a plausible proxy.",
   answer(NULL, correct = TRUE),
   allow_retry = FALSE,
   incorrect = NULL,
-  rows = 3)
+  rows = 4)
 ```
 
 ###
 
-The term "covariates" is used in at least three ways: all variables that might matter regardless of whether we have them, all variables in our data other than the outcome, and the subset we actually use in the model.
+The term *covariates* is used in three ways: variables that *might* matter, variables we have data for, and variables we end up putting in the model. Most of the candidates a researcher lists never make it into the final model.
 
-### Exercise 10
+### Exercise 8
 
-What are the treatments for this problem?
+What is the treatment for this problem?
 
-```{r wisdom-10}
+```{r wisdom-8}
 question_text(NULL,
-  message = "There is one treatment: Seguro Popular enrollment. It takes two values: enrolled (community assigned to early rollout) or not enrolled (community in the control group). Because both potential outcomes are health expenditures --- just under different enrollment states --- the treatment is binary and generates exactly two potential outcomes per household.",
+  message = "The treatment is `treatment`, which takes the values `Enrolled` and `Not enrolled`. The Ministry of Health manipulated treatment by random assignment of the rollout to communities; our `treatment` variable records, at follow-up, whether a household's community had been treated.",
   answer(NULL, correct = TRUE),
   allow_retry = FALSE,
   incorrect = NULL,
-  rows = 3)
+  rows = 4)
 ```
 
 ###
 
-Remember that a treatment is just another covariate which, for the purposes of this specific problem, we are assuming can be manipulated --- thereby creating two or more different potential outcomes for each unit.
+A treatment is just another covariate which, for the purposes of this specific problem, we are assuming can be manipulated. Because the assignment was randomized, the *can* in *"can be manipulated"* is real here, not hypothetical.
 
-### Exercise 11
+### Exercise 9
 
 What moment in time does the Preceptor Table refer to?
 
-```{r wisdom-11}
+```{r wisdom-9}
 question_text(NULL,
-  message = "The three-month period before the July-August 2006 follow-up survey --- approximately 10 months after the Seguro Popular rollout began in August-September 2005. Each household is measured once, capturing their spending after the program had time to take effect.",
+  message = "The follow-up survey window in 2005--06: roughly ten months after the rollout began. Our outcome (`t2_health_exp_3m`) refers to the three months before that follow-up moment.",
   answer(NULL, correct = TRUE),
   allow_retry = FALSE,
   incorrect = NULL,
-  rows = 3)
+  rows = 4)
 ```
 
 ###
 
-A Preceptor Table can never really refer to an exact instant in time since nothing is instantaneous in this fallen world.
+A Preceptor Table can never really refer to an exact instant in time. The follow-up was a survey window, not a single moment.
 
-### Exercise 12
+### Exercise 10
 
 Describe in words the Preceptor Table for this problem.
 
-```{r wisdom-12}
+```{r wisdom-10}
 question_text(NULL,
-  message = "The Preceptor Table has three columns: one identifying each household, two potential-outcome columns (log health expenditure if enrolled and log health expenditure if not enrolled), and one treatment column (Seguro Popular enrollment). Each row represents one Mexican household with positive health spending during the three months before the July 2006 follow-up.",
+  message = "The Preceptor Table has four columns: one identifying each household, two potential-outcome columns (`Spending if Enrolled` and `Spending if Not Enrolled`), and one treatment column (`Treatment`). Each row represents one household at the time of the SPS follow-up survey. For each household, only one potential outcome is observable; the other --- the counterfactual --- is unknown, and the Preceptor Table marks it as such.",
   answer(NULL, correct = TRUE),
   allow_retry = FALSE,
   incorrect = NULL,
-  rows = 5)
+  rows = 6)
 ```
 
 ###
@@ -549,35 +539,34 @@ hatch <- function(x) {
     '<span style="background-image: repeating-linear-gradient(',
     '45deg, rgba(0,0,0,0.12) 0 1px, transparent 1px 6px);',
     ' padding: 6px 10px; margin: -6px -10px; display: block;">',
-    x,
-    '</span>'
+    x, '</span>'
   )
 }
 
 pre_tibble <- tibble::tribble(
-  ~`Household`    , ~`Log Exp if Enrolled`, ~`Log Exp if Not Enrolled`, ~`Enrollment`,
-  "Garcia family" , "6.9"                 , "7.2"                     , "Enrolled"   ,
-  "Ramirez family", "7.8"                 , "8.1"                     , "Not enrolled",
-  "..."           , "..."                 , "..."                     , "..."         ,
-  "Morales family", "7.3"                 , "7.6"                     , "Not enrolled"
+  ~`Household`,           ~`Spending if Enrolled`, ~`Spending if Not Enrolled`, ~`Treatment`,
+  "Hidalgo (#102)",       "$420",                  "$680",                      "Enrolled",
+  "Ramirez (#247)",       "$0",                    "$120",                      "Not enrolled",
+  "...",                  "...",                   "...",                       "...",
+  "Castaneda (#491)",     "$1,800",                "$1,500",                    "Enrolled"
 )
 
-pre_title_footnote     <- "A Preceptor Table is the smallest table such that, if every cell were filled with its true value, answering the question 'By what percentage did Seguro Popular enrollment reduce health expenditures among households with positive health spending?' would be easy."
-pre_units_footnote     <- "Each row is one Mexican household with positive three-month health expenditure in the July 2006 follow-up survey. We restrict to positive spenders because households reporting zero expenditure raise a distinct question about whether Seguro Popular causes households to begin seeking care."
-pre_outcome_footnote   <- "Log of three-month health expenditure in pesos. The log transformation handles the right-skewed distribution of raw spending: a one-unit difference on the log scale corresponds to approximately a 100% × (e^β − 1) percent difference in raw pesos. The cross-hatched cells mark each household's unobservable potential outcome: the one we could never see, because the household actually experienced the other treatment."
-pre_treatment_footnote <- "Seguro Popular enrollment status at the time of the follow-up survey, taking values 'Enrolled' or 'Not enrolled'. Treatment was assigned at the community level by King et al., who randomly assigned communities within 74 matched pairs to an early rollout or a delayed rollout."
-pre_effect_footnote    <- "The causal effect for the Ramirez family is the difference between their two potential outcomes: 7.8 − 8.1 = −0.3 on the log scale. Because the Preceptor Table shows the unobservable truth, this is the true causal effect for them, not an estimate. On the raw expenditure scale, exp(−0.3) ≈ 0.74, meaning enrollment would have reduced their spending by about 26%."
+pre_title_footnote     <- "If all the information in this table were available, we could answer the question: What is the average causal effect of Seguro Popular enrollment on a household's three-month out-of-pocket health spending?"
+pre_units_footnote     <- "Each row is one household at the time of the 2005--06 SPS follow-up survey. The original study surveyed tens of thousands of households across 74 randomized communities."
+pre_outcome_footnote   <- "Out-of-pocket health spending in pesos, summed over the three months before the follow-up survey. The two columns hold each household's potential outcomes under the two values of treatment. The cross-hatched cell in each row marks the unobservable potential outcome --- the spending the household would have had under the treatment it did not actually receive."
+pre_treatment_footnote <- "The treatment is `Enrolled` if the household's community had received Seguro Popular by the follow-up survey, `Not enrolled` otherwise. The randomization was at the community level, not the household level."
+pre_effect_footnote    <- "Ramirez's causal effect is $0 - $120 = -$120: enrollment reduced this household's three-month spending by 120 pesos. The Preceptor Table shows the unobservable truth, so this is the actual causal effect for this household, not an estimate."
 
 pre_gt_html <- gt::gt(pre_tibble, id = "preceptor_tbl") |>
   gt::tab_header(title = "Preceptor Table") |>
-  gt::tab_spanner(label = "Unit",               id = "unit_span",
+  gt::tab_spanner(label = "Unit", id = "unit_span",
                   columns = c(`Household`)) |>
   gt::tab_spanner(label = "Potential Outcomes", id = "outcome_span",
-                  columns = c(`Log Exp if Enrolled`, `Log Exp if Not Enrolled`)) |>
-  gt::tab_spanner(label = "Treatment",          id = "treatment_span",
-                  columns = c(`Enrollment`)) |>
-  gt::cols_align(align = "left" , columns = c(`Household`, `Enrollment`)) |>
-  gt::cols_align(align = "right", columns = c(`Log Exp if Enrolled`, `Log Exp if Not Enrolled`)) |>
+                  columns = c(`Spending if Enrolled`, `Spending if Not Enrolled`)) |>
+  gt::tab_spanner(label = "Treatment", id = "treatment_span",
+                  columns = c(`Treatment`)) |>
+  gt::cols_align(align = "left",  columns = c(`Household`, `Treatment`)) |>
+  gt::cols_align(align = "right", columns = c(`Spending if Enrolled`, `Spending if Not Enrolled`)) |>
   gt::fmt_markdown(columns = gt::everything()) |>
   gt::tab_options(
     heading.title.font.size   = "1.5em",
@@ -585,24 +574,24 @@ pre_gt_html <- gt::gt(pre_tibble, id = "preceptor_tbl") |>
     column_labels.font.weight = "normal"
   ) |>
   gt::tab_style(
-    style     = gt::cell_text(weight = "bold"),
+    style = gt::cell_text(weight = "bold"),
     locations = gt::cells_column_spanners()
   ) |>
   gt::tab_style(
-    style     = gt::cell_text(align = "left"),
+    style = gt::cell_text(align = "left"),
     locations = gt::cells_column_spanners(spanners = c("unit_span", "treatment_span"))
   ) |>
   gt::tab_style(
-    style     = gt::cell_text(align = "right"),
+    style = gt::cell_text(align = "right"),
     locations = gt::cells_column_spanners(spanners = "outcome_span")
   ) |>
   gt::text_transform(
-    locations = gt::cells_body(columns = `Log Exp if Not Enrolled`, rows = 1),
-    fn        = function(x) hatch(x)
+    locations = gt::cells_body(columns = `Spending if Not Enrolled`, rows = c(1, 4)),
+    fn = function(x) hatch(x)
   ) |>
   gt::text_transform(
-    locations = gt::cells_body(columns = `Log Exp if Enrolled`, rows = c(2, 4)),
-    fn        = function(x) hatch(x)
+    locations = gt::cells_body(columns = `Spending if Enrolled`, rows = 2),
+    fn = function(x) hatch(x)
   ) |>
   gt::tab_footnote(footnote = pre_title_footnote,
                    locations = gt::cells_title()) |>
@@ -634,87 +623,36 @@ cat(
 )
 ```
 
-### Exercise 13
+### Exercise 11
 
-Now we need to build the cleaned tibble `x` that we will use for modeling. Ask AI to write R code that:
-1. Starts with `sps`
-2. Filters to rows where `t2_health_exp_3m > 0`
-3. Selects `treatment`, `t2_health_exp_3m`, `age`, and `sex`
-4. Drops rows with missing values
-5. Creates `log_health_exp = log(t2_health_exp_3m)`
-6. Recodes `treatment` as a factor with levels `"Not enrolled"` (0) and `"Enrolled"` (1)
-7. Title-cases `sex`
-8. Draws a random sample of 100 rows with `set.seed(9)`
-
-Assign the result to `x`. Paste the code below and run it.
-
-```{r wisdom-13, exercise = TRUE}
+Take a moment to confirm the structure of our analysis sample. At the R prompt, run:
 
 ```
-
-```{r wisdom-13-hint-1, eval = FALSE}
-set.seed(9)
-x <- sps |>
-  filter(t2_health_exp_3m > 0) |>
-  select(treatment, t2_health_exp_3m, age, sex) |>
-  drop_na() |>
-  mutate(
-    log_health_exp = log(t2_health_exp_3m),
-    treatment = factor(
-      if_else(as.character(treatment) == "1", "Enrolled", "Not enrolled"),
-      levels = c("Not enrolled", "Enrolled")
-    ),
-    sex = str_to_title(sex)
-  ) |>
-  slice_sample(n = 100)
+x |> count(treatment)
 ```
 
-```{r wisdom-13-test, include = FALSE}
-set.seed(9)
-x_test <- sps |>
-  filter(t2_health_exp_3m > 0) |>
-  select(treatment, t2_health_exp_3m, age, sex) |>
-  drop_na() |>
-  mutate(
-    log_health_exp = log(t2_health_exp_3m),
-    treatment = factor(
-      if_else(as.character(treatment) == "1", "Enrolled", "Not enrolled"),
-      levels = c("Not enrolled", "Enrolled")
-    ),
-    sex = str_to_title(sex)
-  ) |>
-  slice_sample(n = 100)
-x_test
-```
+CP/CR.
 
-###
-
-You can never look at the data too much. --- Mark Engerman
-
-### Exercise 14
-
-Add the `x` pipeline to your `analysis.qmd` in a new code chunk, with `set.seed(9)` on the line before. Render with `Cmd/Ctrl + Shift + K`. At the R prompt, run `show_file("analysis.qmd", chunk = "Last")`. CP/CR.
-
-```{r wisdom-14}
+```{r wisdom-11}
 question_text(NULL,
+  message = "    > x |> count(treatment)\n    # A tibble: 2 × 2\n      treatment        n\n      <fct>        <int>\n    1 Not enrolled   250\n    2 Enrolled       250",
   answer(NULL, correct = TRUE),
-  allow_retry = TRUE,
-  try_again_button = "Edit Answer",
+  allow_retry = FALSE,
   incorrect = NULL,
-  rows = 8)
+  rows = 6)
 ```
 
 ###
 
-`Cmd/Ctrl + Shift + K` ensures QMD World and R World stay in sync. Commit and push after each successful render.
+The sample is balanced 250 / 250 across the two arms because we drew it that way: stratifying on treatment keeps the two groups visible and gives both their own clean estimate. The original SPS data has many more households than 500 in either arm; we sampled down to keep this tutorial fast.
 
-### Exercise 15
+### Exercise 12
 
-Write the first two sentences of the summary paragraph. The first sentence is a general statement about the overall topic. The second introduces the data source and the specific question.
+Write the first two sentences of the summary paragraph. The first introduces the topic; the second introduces the data and the specific question.
 
-```{r wisdom-15}
+```{r wisdom-12}
 question_text(NULL,
-  message = "Seguro Popular, Mexico's public health insurance program, aimed to reduce the financial burden of medical care on households. Using data from King et al.'s 2009 randomized evaluation (household-level, seven Mexican states, community-level randomization), we estimate by what percentage Seguro Popular enrollment reduced out-of-pocket health expenditures among households that were already spending on medical care.",
+  message = "Households' out-of-pocket spending on health care is a key marker of financial vulnerability. Using a 500-household sample drawn from Mexico's 2005--06 randomized rollout of Seguro Popular, we estimate the average causal effect of enrollment on three-month out-of-pocket spending.",
   answer(NULL, correct = TRUE),
   allow_retry = FALSE,
   incorrect = NULL,
@@ -723,7 +661,7 @@ question_text(NULL,
 
 ###
 
-Read our answer. It will not be the same as yours. Do not copy/paste exactly. Add your two sentences to the summary paragraph. `Cmd/Ctrl + Shift + K`, then commit/push.
+Read our answer. It will not be the same as yours. You can change your answer to incorporate some of our ideas, but do not copy/paste exactly. Add your two sentences to the summary paragraph in your QMD. `Cmd/Ctrl + Shift + K`, then commit/push.
 
 
 ## Justice
@@ -733,40 +671,24 @@ Wisdom gives us the Preceptor Table and the data.
 ```{r}
 #| echo: false
 #| results: asis
-hatch_j <- function(x) {
-  paste0(
-    '<span style="background-image: repeating-linear-gradient(',
-    '45deg, rgba(0,0,0,0.12) 0 1px, transparent 1px 6px);',
-    ' padding: 6px 10px; margin: -6px -10px; display: block;">',
-    x,
-    '</span>'
-  )
-}
-
 pre_tibble_j <- tibble::tribble(
-  ~`Household`    , ~`Log Exp if Enrolled`, ~`Log Exp if Not Enrolled`, ~`Enrollment`,
-  "Garcia family" , "6.9"                 , "7.2"                     , "Enrolled"   ,
-  "Ramirez family", "7.8"                 , "8.1"                     , "Not enrolled",
-  "..."           , "..."                 , "..."                     , "..."         ,
-  "Morales family", "7.3"                 , "7.6"                     , "Not enrolled"
+  ~`Household`,           ~`Spending if Enrolled`, ~`Spending if Not Enrolled`, ~`Treatment`,
+  "Hidalgo (#102)",       "$420",                  "$680",                      "Enrolled",
+  "Ramirez (#247)",       "$0",                    "$120",                      "Not enrolled",
+  "...",                  "...",                   "...",                       "...",
+  "Castaneda (#491)",     "$1,800",                "$1,500",                    "Enrolled"
 )
 
-pre_title_j     <- "If all the information in this table were available, we could answer the question: By what percentage did Seguro Popular enrollment reduce health expenditures among households with positive health spending?"
-pre_units_j     <- "Each row is one Mexican positive-spending household in July 2006."
-pre_outcome_j   <- "Log three-month health expenditure. Hatched cells are unobservable counterfactuals."
-pre_treatment_j <- "Seguro Popular enrollment: 'Enrolled' or 'Not enrolled'."
-pre_effect_j    <- "Causal effect for Ramirez family: 7.8 − 8.1 = −0.3 (about −26% on the pesos scale)."
-
-pre_gt_html_j <- gt::gt(pre_tibble_j, id = "preceptor_tbl_j") |>
+pre_gt_html_j <- gt::gt(pre_tibble_j, id = "preceptor_tbl_justice") |>
   gt::tab_header(title = "Preceptor Table") |>
-  gt::tab_spanner(label = "Unit",               id = "unit_span",
+  gt::tab_spanner(label = "Unit", id = "unit_span",
                   columns = c(`Household`)) |>
   gt::tab_spanner(label = "Potential Outcomes", id = "outcome_span",
-                  columns = c(`Log Exp if Enrolled`, `Log Exp if Not Enrolled`)) |>
-  gt::tab_spanner(label = "Treatment",          id = "treatment_span",
-                  columns = c(`Enrollment`)) |>
-  gt::cols_align(align = "left" , columns = c(`Household`, `Enrollment`)) |>
-  gt::cols_align(align = "right", columns = c(`Log Exp if Enrolled`, `Log Exp if Not Enrolled`)) |>
+                  columns = c(`Spending if Enrolled`, `Spending if Not Enrolled`)) |>
+  gt::tab_spanner(label = "Treatment", id = "treatment_span",
+                  columns = c(`Treatment`)) |>
+  gt::cols_align(align = "left",  columns = c(`Household`, `Treatment`)) |>
+  gt::cols_align(align = "right", columns = c(`Spending if Enrolled`, `Spending if Not Enrolled`)) |>
   gt::fmt_markdown(columns = gt::everything()) |>
   gt::tab_options(
     heading.title.font.size   = "1.5em",
@@ -774,38 +696,28 @@ pre_gt_html_j <- gt::gt(pre_tibble_j, id = "preceptor_tbl_j") |>
     column_labels.font.weight = "normal"
   ) |>
   gt::tab_style(
-    style     = gt::cell_text(weight = "bold"),
+    style = gt::cell_text(weight = "bold"),
     locations = gt::cells_column_spanners()
   ) |>
   gt::tab_style(
-    style     = gt::cell_text(align = "left"),
+    style = gt::cell_text(align = "left"),
     locations = gt::cells_column_spanners(spanners = c("unit_span", "treatment_span"))
   ) |>
   gt::tab_style(
-    style     = gt::cell_text(align = "right"),
+    style = gt::cell_text(align = "right"),
     locations = gt::cells_column_spanners(spanners = "outcome_span")
   ) |>
   gt::text_transform(
-    locations = gt::cells_body(columns = `Log Exp if Not Enrolled`, rows = 1),
-    fn        = function(x) hatch_j(x)
+    locations = gt::cells_body(columns = `Spending if Not Enrolled`, rows = c(1, 4)),
+    fn = function(x) hatch(x)
   ) |>
   gt::text_transform(
-    locations = gt::cells_body(columns = `Log Exp if Enrolled`, rows = c(2, 4)),
-    fn        = function(x) hatch_j(x)
+    locations = gt::cells_body(columns = `Spending if Enrolled`, rows = 2),
+    fn = function(x) hatch(x)
   ) |>
-  gt::tab_footnote(footnote = pre_title_j,
-                   locations = gt::cells_title()) |>
-  gt::tab_footnote(footnote = pre_units_j,
-                   locations = gt::cells_column_spanners(spanners = "unit_span")) |>
-  gt::tab_footnote(footnote = pre_outcome_j,
-                   locations = gt::cells_column_spanners(spanners = "outcome_span")) |>
-  gt::tab_footnote(footnote = pre_treatment_j,
-                   locations = gt::cells_column_spanners(spanners = "treatment_span")) |>
-  gt::tab_footnote(footnote = pre_effect_j,
-                   locations = gt::cells_body(columns = `Household`, rows = 2)) |>
   gt::opt_css(
     css = "
-      #preceptor_tbl_j .gt_footnote {
+      #preceptor_tbl_justice .gt_footnote {
         max-width: 1px;
         word-break: break-word;
       }
@@ -827,31 +739,31 @@ cat(
 #| echo: false
 #| results: asis
 data_tibble <- tibble::tribble(
-  ~`Household`    , ~`Year`, ~`Log Health Exp`, ~`Enrollment`   , ~`Age`, ~`Sex`  ,
-  "Garcia family" , "2006" , "6.93"           , "Enrolled"      , "55"  , "Female",
-  "Ramirez family", "2006" , "8.11"           , "Not enrolled"  , "42"  , "Male"  ,
-  "..."           , "..."  , "..."            , "..."           , "..."  , "..."   ,
-  "Torres family" , "2006" , "7.28"           , "Not enrolled"  , "38"  , "Female"
+  ~`Household`,           ~`Year`, ~`3-month Spending`, ~`Treatment`, ~`Age`, ~`Sex`,
+  "Hidalgo (#102)",       "2005",  "$420",              "Enrolled",   "44",   "Female",
+  "Ramirez (#247)",       "2005",  "$120",              "Not enrolled","51",  "Male",
+  "...",                  "...",   "...",               "...",        "...",  "...",
+  "Castaneda (#491)",     "2005",  "$1,800",            "Enrolled",   "32",   "Female"
 )
 
-data_title_fn  <- "King, Gary, Emmanuela Gakidou, Kosuke Imai, Jason Lakin, Ryan T. Moore, Clayton Nall, Nirmala Ravishankar, Manett Vargas, Martha María Téllez-Rojo, Juan Eugenio Hernández Ávila, Mauricio Hernández Ávila, and Héctor Hernández Llamas (2009). 'Public Policy for the Poor? A Randomised Assessment of the Mexican Universal Health Insurance Programme.' The Lancet 373(9673). Community-level randomization within 74 matched pairs across seven Mexican states; household-level follow-up survey July–August 2006."
-data_units_fn  <- "Each row is one household from the King et al. follow-up survey, restricted to households with positive three-month health expenditures. About 17,700 of the 27,569 surveyed households had positive expenditures."
-data_outcome_fn <- "`log_health_exp` is the natural log of `t2_health_exp_3m`: total household health-related expenditure (consultations, medications, hospitalizations) in the three months before the July 2006 survey, measured in Mexican pesos. Log transformation reduces the strong right skew of raw spending."
-data_treatment_fn <- "`treatment` records whether the household's community was assigned to the early Seguro Popular rollout (Enrolled) or to the control group (Not enrolled). Assignment was made at the community level within matched pairs by the researchers; individual households had no choice."
-data_covariates_fn <- "`age` is the respondent's age in years. `sex` is Male or Female. Both covariates are included in the model to improve precision and reduce confounding from any baseline differences between enrolled and non-enrolled communities."
+data_title_footnote     <- "Mexican Ministry of Health Seguro Popular evaluation, 2005--06 (King et al. 2009). Roughly 30,000 surveyed households across 74 randomized communities. Our analysis filters to households with complete records on treatment, follow-up spending, and the demographic covariates, then samples 250 enrolled and 250 not-enrolled households for a balanced 500-row analysis."
+data_units_footnote     <- "Each row is one household at the time of the 2005--06 follow-up survey. The example rows above use real names and ID numbers chosen to span the spending range; missing rows represent the other 496 households not shown."
+data_outcome_footnote   <- "Three-month total out-of-pocket health spending, in Mexican pesos, recorded at follow-up. Self-reported and bounded below by zero, with a long right tail."
+data_treatment_footnote <- "Whether the household's community had received Seguro Popular by the follow-up survey, recorded as `Enrolled` or `Not enrolled`. Random assignment was at the community level."
+data_covariate_footnote <- "Household head's age in years and self-reported sex."
 
 data_gt_html <- gt::gt(data_tibble, id = "data_tbl") |>
-  gt::tab_header(title = "Data: Seguro Popular Evaluation, Mexico 2006") |>
-  gt::tab_spanner(label = "Unit/Time"  , id = "unit_span",
+  gt::tab_header(title = "Data: Mexican SPS Rollout, 2005--06") |>
+  gt::tab_spanner(label = "Unit/Time", id = "unit_span",
                   columns = c(`Household`, `Year`)) |>
-  gt::tab_spanner(label = "Outcome"    , id = "outcome_span",
-                  columns = c(`Log Health Exp`)) |>
-  gt::tab_spanner(label = "Treatment"  , id = "treatment_span",
-                  columns = c(`Enrollment`)) |>
-  gt::tab_spanner(label = "Covariates" , id = "covariates_span",
+  gt::tab_spanner(label = "Outcome", id = "outcome_span",
+                  columns = c(`3-month Spending`)) |>
+  gt::tab_spanner(label = "Treatment", id = "treatment_span",
+                  columns = c(`Treatment`)) |>
+  gt::tab_spanner(label = "Covariates", id = "covariates_span",
                   columns = c(`Age`, `Sex`)) |>
-  gt::cols_align(align = "left",  columns = c(`Household`, `Enrollment`, `Sex`)) |>
-  gt::cols_align(align = "right", columns = c(`Year`, `Log Health Exp`, `Age`)) |>
+  gt::cols_align(align = "left",  columns = c(`Household`, `Treatment`, `Sex`)) |>
+  gt::cols_align(align = "right", columns = c(`Year`, `3-month Spending`, `Age`)) |>
   gt::fmt_markdown(columns = gt::everything()) |>
   gt::tab_options(
     heading.title.font.size   = "1.5em",
@@ -859,26 +771,26 @@ data_gt_html <- gt::gt(data_tibble, id = "data_tbl") |>
     column_labels.font.weight = "normal"
   ) |>
   gt::tab_style(
-    style     = gt::cell_text(weight = "bold"),
+    style = gt::cell_text(weight = "bold"),
     locations = gt::cells_column_spanners()
   ) |>
   gt::tab_style(
-    style     = gt::cell_text(align = "left"),
+    style = gt::cell_text(align = "left"),
     locations = gt::cells_column_spanners(spanners = c("unit_span", "treatment_span", "covariates_span"))
   ) |>
   gt::tab_style(
-    style     = gt::cell_text(align = "right"),
+    style = gt::cell_text(align = "right"),
     locations = gt::cells_column_spanners(spanners = "outcome_span")
   ) |>
-  gt::tab_footnote(footnote = data_title_fn,
+  gt::tab_footnote(footnote = data_title_footnote,
                    locations = gt::cells_title()) |>
-  gt::tab_footnote(footnote = data_units_fn,
+  gt::tab_footnote(footnote = data_units_footnote,
                    locations = gt::cells_column_spanners(spanners = "unit_span")) |>
-  gt::tab_footnote(footnote = data_outcome_fn,
+  gt::tab_footnote(footnote = data_outcome_footnote,
                    locations = gt::cells_column_spanners(spanners = "outcome_span")) |>
-  gt::tab_footnote(footnote = data_treatment_fn,
+  gt::tab_footnote(footnote = data_treatment_footnote,
                    locations = gt::cells_column_spanners(spanners = "treatment_span")) |>
-  gt::tab_footnote(footnote = data_covariates_fn,
+  gt::tab_footnote(footnote = data_covariate_footnote,
                    locations = gt::cells_column_spanners(spanners = "covariates_span")) |>
   gt::opt_css(
     css = "
@@ -904,20 +816,20 @@ cat(
 
 ### Exercise 1
 
-In your own words, name the five key components of Justice when working on a data science problem.
+In your own words, describe the components of Justice when working on a data science problem.
 
 ```{r justice-1}
 question_text(NULL,
-  message = "Justice concerns the Population Table and the four key assumptions which underlie it: validity, stability, representativeness, and unconfoundedness.",
+  message = "Justice reviews the Population Table and selects the formula for the data generating mechanism.",
   answer(NULL, correct = TRUE),
   allow_retry = FALSE,
   incorrect = NULL,
-  rows = 5)
+  rows = 4)
 ```
 
 ###
 
-Justice is about concerns that you (or your critics) might have, reasons why the model you create might not work as well as you hope.
+Justice is about concerns that you (or your critics) might have, reasons why the model you create might not work as well as you hope. The exercises that follow walk through several such concerns by name. Justice also picks the formula for the data generating mechanism --- different outcome variables call for different formulas, a piece that gets more technical names in later tutorials.
 
 ### Exercise 2
 
@@ -929,20 +841,20 @@ question_text(NULL,
   answer(NULL, correct = TRUE),
   allow_retry = FALSE,
   incorrect = NULL,
-  rows = 5)
+  rows = 4)
 ```
 
 ###
 
-Validity is always about the columns in the Preceptor Table and the data. Just because columns from these two different tables have the same name does not mean that they are the same thing.
+Validity is always about the columns. Just because two columns share a name does not mean they are the same thing.
 
 ### Exercise 3
 
-Provide one reason why the assumption of validity might not hold for the outcome variable or for the treatment. Use the words "column" or "columns" in your answer.
+Provide one reason why the assumption of validity might not hold for the outcome variable `t2_health_exp_3m` or for the treatment.
 
 ```{r justice-3}
 question_text(NULL,
-  message = "The `log_health_exp` column in the data measures spending reported by household respondents in a survey, which may not equal actual expenditure. Respondents may underreport out-of-pocket payments they made informally or forget smaller purchases like over-the-counter medications. The outcome column in the Preceptor Table represents true spending, but our data column may systematically understate it, especially in the control group if those households relied more on informal payments.",
+  message = "The `t2_health_exp_3m` column in the data is a *self-reported* spending total over the prior three months, with all the recall error that implies. The `Spending if [treatment]` columns in the Preceptor Table are the actual amounts the household paid; the two columns measure the same concept only if recall is unbiased on average. Households facing financial strain may underreport (to seem to be coping) or overreport (to express grievance), so the data column may not match the Preceptor Table column it is meant to stand in for.",
   answer(NULL, correct = TRUE),
   allow_retry = FALSE,
   incorrect = NULL,
@@ -951,7 +863,7 @@ question_text(NULL,
 
 ###
 
-In order to consider the Preceptor Table and the data to be drawn from the same population, the columns from one must have a valid correspondence with the columns in the other. Validity, if true (or at least reasonable), allows us to construct the Population Table.
+Validity, if true, allows us to construct the Population Table. Self-reported spending is always a noisy proxy for actual spending; the question is whether the noise is unbiased.
 
 ### Exercise 4
 
@@ -963,12 +875,12 @@ question_text(NULL,
   answer(NULL, correct = TRUE),
   allow_retry = FALSE,
   incorrect = NULL,
-  rows = 5)
+  rows = 4)
 ```
 
 ###
 
-The Population Table is almost always much bigger than the combination of the Preceptor Table and the data, because both are drawn from a larger population that covers a broad universe of time and households.
+The Population Table is almost always much bigger than the data and the Preceptor Table combined.
 
 ### Exercise 5
 
@@ -976,11 +888,11 @@ Specify the unit/time combinations which define each row in this Population Tabl
 
 ```{r justice-5}
 question_text(NULL,
-  message = "Each row is one Mexican household with positive health spending at a specific time. Data rows are the roughly 17,700 positive-spending households surveyed in King et al.'s follow-up in July-August 2006 across seven states. Preceptor rows are the Mexican households our NGO wants to draw conclusions about today --- a broader, more recent population of households that might benefit from a Seguro Popular-style program.",
+  message = "Each row is one household at one point in time. Data rows are the 500 households in our sampled SPS analysis subset, surveyed in 2005--06. Preceptor rows are the same population of Mexican households in 2005--06 (the universe the original survey sampled from); because both blocks share era and target population, our example rows happen to be the same three households shown twice --- once with the observed potential outcome and once with both potential outcomes filled in.",
   answer(NULL, correct = TRUE),
   allow_retry = FALSE,
   incorrect = NULL,
-  rows = 5)
+  rows = 6)
 ```
 
 ###
@@ -988,47 +900,39 @@ question_text(NULL,
 ```{r}
 #| echo: false
 #| results: asis
-hatch_p <- function(x) {
-  paste0(
-    '<span style="background-image: repeating-linear-gradient(',
-    '45deg, rgba(0,0,0,0.12) 0 1px, transparent 1px 6px);',
-    ' padding: 6px 10px; margin: -6px -10px; display: block;">',
-    x,
-    '</span>'
-  )
-}
-
 pop_tibble <- tibble::tribble(
-  ~Source     , ~`Household`     , ~`Year`, ~`Log Exp if Enrolled`, ~`Log Exp if Not Enrolled`, ~`Enrollment`   ,
-  "..."       , "..."            , "..."  , "..."                 , "..."                     , "..."           ,
-  "Data"      , "Garcia family"  , "2006" , "6.9"                 , "..."                     , "Enrolled"      ,
-  "Data"      , "Ramirez family" , "2006" , "..."                 , "8.1"                     , "Not enrolled"  ,
-  "Data"      , "..."            , "..."  , "..."                 , "..."                     , "..."           ,
-  "Data"      , "Torres family"  , "2006" , "..."                 , "7.3"                     , "Not enrolled"  ,
-  "..."       , "..."            , "..."  , "..."                 , "..."                     , "..."           ,
-  "Preceptor" , "Mendez family"  , "2025" , "7.1"                 , "7.4"                     , "Enrolled"      ,
-  "Preceptor" , "Flores family"  , "2025" , "6.8"                 , "7.2"                     , "Not enrolled"  ,
-  "Preceptor" , "..."            , "..."  , "..."                 , "..."                     , "..."           ,
-  "Preceptor" , "Vargas family"  , "2025" , "8.0"                 , "8.4"                     , "Not enrolled"  ,
-  "..."       , "..."            , "..."  , "..."                 , "..."                     , "..."
+  ~Source    , ~`Household`,            ~`Year`, ~`3-month Spending`,    ~`Treatment`,    ~`Age`, ~`Sex`,
+  "..."      , "...",                   "..."  , "...",                  "...",           "...",  "...",
+  "Data"     , "Hidalgo (#102)",        "2005" , "$420",                 "Enrolled",      "44",   "Female",
+  "Data"     , "Ramirez (#247)",        "2005" , "$120",                 "Not enrolled",  "51",   "Male",
+  "Data"     , "...",                   "..."  , "...",                  "...",           "...",  "...",
+  "Data"     , "Castaneda (#491)",      "2005" , "$1,800",               "Enrolled",      "32",   "Female",
+  "..."      , "...",                   "..."  , "...",                  "...",           "...",  "...",
+  "Preceptor", "Hidalgo (#102)",        "2005" , "$420 / $680",          "Enrolled",      "44",   "Female",
+  "Preceptor", "Ramirez (#247)",        "2005" , "$0 / $120",            "Not enrolled",  "51",   "Male",
+  "Preceptor", "...",                   "..."  , "...",                  "...",           "...",  "...",
+  "Preceptor", "Castaneda (#491)",      "2005" , "$1,800 / $1,500",      "Enrolled",      "32",   "Female",
+  "..."      , "...",                   "..."  , "...",                  "...",           "...",  "..."
 )
 
-pop_title_fn  <- "This table combines King et al.'s 2006 survey data with the Preceptor Table's 2025 Mexican households, all drawn from the broader population of Mexican households with positive health spending that would be affected by Seguro Popular."
-pop_units_fn  <- "Data rows are positive-spending households from the 2006 King et al. follow-up across seven Mexican states. Preceptor rows are current Mexican households our NGO wants to draw conclusions about. The roughly 19-year gap between 2006 and 2025 raises stability concerns: Mexico's health system, income levels, and patterns of medical care have changed substantially."
-pop_outcome_fn  <- "Log three-month health expenditure in pesos. In Data rows, only the potential outcome corresponding to the actual treatment is observed; the other is marked '...' because no one measured it. In Preceptor rows, both potential outcomes are filled in --- the unobservable one hatched --- because Preceptor rows show the unobservable truth. Note also that households with zero spending in 2006 are excluded from this table; the Population Table is scoped to positive spenders, which means households that avoided formal health care entirely are outside our population."
-pop_treatment_fn <- "In Data rows, enrollment is the randomized assignment from King et al.'s 2005-06 experiment. In Preceptor rows, enrollment would reflect whether a household's community participates in a future Seguro Popular-style rollout. The political and administrative context of a future enrollment is not the same as a randomized research rollout, which is a validity concern."
-pop_effect_fn  <- "The causal effect for the Flores family is the difference between their two potential outcomes: 6.8 − 7.2 = −0.4 on the log scale. Because the Preceptor rows show the unobservable truth, this is the true causal effect for them, not an estimate. On the pesos scale, exp(−0.4) ≈ 0.67, meaning enrollment would reduce their spending by about 33%."
+pop_title_footnote     <- "Population: Mexican households eligible for Seguro Popular at the time of the randomized rollout (2005--06). Data rows are the 500 households in our sampled analysis subset; Preceptor rows are the same households described with both potential outcomes filled in (counterfactual hatched in the Preceptor Table itself). The example rows are real households shown to illustrate the structure --- the same three units appear in both blocks."
+pop_units_footnote     <- "Each row is one household at one point in time. The Data block records what we observed (one potential outcome per household, given the household's actual treatment); the Preceptor block records the unobservable truth (both potential outcomes filled in)."
+pop_outcome_footnote   <- "Three-month spending in pesos. In Data rows, only the value under the household's actual treatment is observed --- the counterfactual is unknown. In Preceptor rows, both potential outcomes are filled in (here written as `enrolled / not enrolled`); the counterfactual was hatched in the Preceptor Table proper."
+pop_treatment_footnote <- "Whether the household's community had received Seguro Popular by the follow-up survey. Same column meaning in both blocks; randomization at the community level is what makes the Data and Preceptor blocks compatible."
+pop_covariate_footnote <- "Household head's age and self-reported sex; same in both blocks because both refer to the same households."
 
 pop_gt_html <- gt::gt(pop_tibble, id = "population_tbl") |>
   gt::tab_header(title = "Population Table") |>
-  gt::tab_spanner(label = "Unit/Time"         , id = "unit_span",
+  gt::tab_spanner(label = "Unit/Time", id = "unit_span",
                   columns = c(`Household`, `Year`)) |>
-  gt::tab_spanner(label = "Potential Outcomes", id = "outcome_span",
-                  columns = c(`Log Exp if Enrolled`, `Log Exp if Not Enrolled`)) |>
-  gt::tab_spanner(label = "Treatment"         , id = "treatment_span",
-                  columns = c(`Enrollment`)) |>
-  gt::cols_align(align = "left" , columns = c(`Source`, `Household`, `Enrollment`)) |>
-  gt::cols_align(align = "right", columns = c(`Year`, `Log Exp if Enrolled`, `Log Exp if Not Enrolled`)) |>
+  gt::tab_spanner(label = "Outcome", id = "outcome_span",
+                  columns = c(`3-month Spending`)) |>
+  gt::tab_spanner(label = "Treatment", id = "treatment_span",
+                  columns = c(`Treatment`)) |>
+  gt::tab_spanner(label = "Covariates", id = "covariates_span",
+                  columns = c(`Age`, `Sex`)) |>
+  gt::cols_align(align = "left",  columns = c(`Source`, `Household`, `Treatment`, `Sex`)) |>
+  gt::cols_align(align = "right", columns = c(`Year`, `3-month Spending`, `Age`)) |>
   gt::fmt_markdown(columns = gt::everything()) |>
   gt::tab_options(
     heading.title.font.size   = "1.5em",
@@ -1036,35 +940,27 @@ pop_gt_html <- gt::gt(pop_tibble, id = "population_tbl") |>
     column_labels.font.weight = "normal"
   ) |>
   gt::tab_style(
-    style     = gt::cell_text(weight = "bold"),
+    style = gt::cell_text(weight = "bold"),
     locations = gt::cells_column_spanners()
   ) |>
   gt::tab_style(
-    style     = gt::cell_text(align = "left"),
-    locations = gt::cells_column_spanners(spanners = c("unit_span", "treatment_span"))
+    style = gt::cell_text(align = "left"),
+    locations = gt::cells_column_spanners(spanners = c("unit_span", "treatment_span", "covariates_span"))
   ) |>
   gt::tab_style(
-    style     = gt::cell_text(align = "right"),
+    style = gt::cell_text(align = "right"),
     locations = gt::cells_column_spanners(spanners = "outcome_span")
   ) |>
-  gt::text_transform(
-    locations = gt::cells_body(columns = `Log Exp if Not Enrolled`, rows = 7),
-    fn        = function(x) hatch_p(x)
-  ) |>
-  gt::text_transform(
-    locations = gt::cells_body(columns = `Log Exp if Enrolled`, rows = c(8, 10)),
-    fn        = function(x) hatch_p(x)
-  ) |>
-  gt::tab_footnote(footnote = pop_title_fn,
+  gt::tab_footnote(footnote = pop_title_footnote,
                    locations = gt::cells_title()) |>
-  gt::tab_footnote(footnote = pop_units_fn,
+  gt::tab_footnote(footnote = pop_units_footnote,
                    locations = gt::cells_column_spanners(spanners = "unit_span")) |>
-  gt::tab_footnote(footnote = pop_outcome_fn,
+  gt::tab_footnote(footnote = pop_outcome_footnote,
                    locations = gt::cells_column_spanners(spanners = "outcome_span")) |>
-  gt::tab_footnote(footnote = pop_treatment_fn,
+  gt::tab_footnote(footnote = pop_treatment_footnote,
                    locations = gt::cells_column_spanners(spanners = "treatment_span")) |>
-  gt::tab_footnote(footnote = pop_effect_fn,
-                   locations = gt::cells_body(columns = `Household`, rows = 8)) |>
+  gt::tab_footnote(footnote = pop_covariate_footnote,
+                   locations = gt::cells_column_spanners(spanners = "covariates_span")) |>
   gt::opt_css(
     css = "
       #population_tbl .gt_footnote {
@@ -1087,7 +983,7 @@ cat(
 
 ### Exercise 6
 
-In your own words, define the assumption of "stability" when employed in the context of data science.
+In your own words, define the assumption of "stability."
 
 ```{r justice-6}
 question_text(NULL,
@@ -1095,71 +991,20 @@ question_text(NULL,
   answer(NULL, correct = TRUE),
   allow_retry = FALSE,
   incorrect = NULL,
-  rows = 5)
+  rows = 4)
 ```
 
 ###
 
-Stability is all about time. Is the relationship among the columns in the Population Table stable over time? The roughly 19 years between the King et al. study and today is a real concern.
+The most natural way for stability to fail is *time*: data from one era used to answer a question about another era. Here our Data and Preceptor rows share the 2005--06 SPS follow-up window, so the time gap is essentially zero. The next exercise sharpens what *"the relationship"* really means.
 
 ### Exercise 7
 
-Provide one reason why the assumption of stability might not be true in this case.
+Provide one reason why stability might not hold in this case.
 
 ```{r justice-7}
 question_text(NULL,
-  message = "Mexico's health system has changed substantially since 2006. Seguro Popular itself was restructured into INSABI in 2020, and drug availability and service quality in public clinics has fluctuated. The relationship between enrollment and out-of-pocket spending --- the key parameter --- may be different today than it was in 2006 if the insurance's effective coverage has changed.",
-  answer(NULL, correct = TRUE),
-  allow_retry = FALSE,
-  incorrect = NULL,
-  rows = 5)
-```
-
-###
-
-Stability is about the parameters of the model --- $\beta_0$, $\beta_1$, and so on. A change in the distribution of household incomes over time is not a stability violation; a change in the relationship between enrollment and spending is.
-
-### Exercise 8
-
-In your own words, define the assumption of "representativeness."
-
-```{r justice-8}
-question_text(NULL,
-  message = "Representativeness, or the lack thereof, concerns two relationships among the rows in the Population Table. The first is between the data and the other rows. The second is between the other rows and the Preceptor Table.",
-  answer(NULL, correct = TRUE),
-  allow_retry = FALSE,
-  incorrect = NULL,
-  rows = 5)
-```
-
-###
-
-Ideally, we would like both the Preceptor Table and our data to be random samples from the population. Sadly, this is almost never the case.
-
-### Exercise 9
-
-Provide one reason, involving the relationship between the data and the population, why representativeness might not hold.
-
-```{r justice-9}
-question_text(NULL,
-  message = "King et al.'s study covered seven specific Mexican states, chosen because they had the administrative capacity to implement the study. Other Mexican states --- particularly very poor or very rural ones --- were not included. If the effect of Seguro Popular on spending differs across states (which is plausible, since baseline access to care varies dramatically), the study's sample does not represent the national population of interest.",
-  answer(NULL, correct = TRUE),
-  allow_retry = FALSE,
-  incorrect = NULL,
-  rows = 5)
-```
-
-###
-
-When representativeness is violated, the estimates for the model parameters will be biased.
-
-### Exercise 10
-
-Provide one reason, involving the relationship between the Population and the Preceptor Table, why representativeness might not hold.
-
-```{r justice-10}
-question_text(NULL,
-  message = "Our Preceptor Table refers to Mexican households today --- but our NGO's actual policy question may be about a specific region or income group. If the households our organization cares about (say, indigenous communities in Oaxaca) are systematically different from the 2006 survey population in their baseline access to care and spending patterns, then even a perfectly estimated model from the King et al. data will not represent the population we want to answer about.",
+  message = "The communities randomized into the rollout were drawn from the country's poorest and least-served regions. The causal effect of enrollment in those communities --- where uninsured spending was already a real burden --- may be different (probably larger) than the causal effect would be in wealthier urban communities. If the *parameter* of interest is the average causal effect for the whole population, our 500-household sample may estimate something other than that, because the slope of spending on treatment may differ across regions.",
   answer(NULL, correct = TRUE),
   allow_retry = FALSE,
   incorrect = NULL,
@@ -1168,32 +1013,66 @@ question_text(NULL,
 
 ###
 
-Validity is about the columns in our Population Table. Stability and representativeness are about the rows.
+A change in the *distribution* of any single variable does not, by itself, violate stability. The mean spending could differ between regions; the mix of household sizes could differ; the age distribution of household heads could differ. None of those would violate stability on their own. What violates stability is a change in the *parameter* connecting treatment to spending --- the slope, the causal-effect coefficient. Distribution shifts are everywhere; parameter shifts are what hurt us.
 
-### Exercise 11
+### Exercise 8
+
+We use our data to make inferences about the overall population. We use information about the population to make inferences about the Preceptor Table: Data → Population → Preceptor Table. In your own words, define the assumption of "representativeness."
+
+```{r justice-8}
+question_text(NULL,
+  message = "Representativeness, or the lack thereof, concerns two relationships among the rows in the Population Table. The first is between the data and the other rows. The second is between the other rows and the Preceptor Table.",
+  answer(NULL, correct = TRUE),
+  allow_retry = FALSE,
+  incorrect = NULL,
+  rows = 4)
+```
+
+###
+
+Ideally we would like both the Preceptor Table and the data to be random samples from the population. Here the Ministry randomized treatment assignment but not survey participation: which households actually answered the follow-up survey is a different selection process from which communities were treated.
+
+### Exercise 9
+
+Provide one reason, involving the relationship between the data and the population, why representativeness might not hold.
+
+```{r justice-9}
+question_text(NULL,
+  message = "Households that answered both the baseline and follow-up surveys are not a random sample of all eligible households. Households that moved, dissolved, or refused the follow-up are systematically absent --- and their absence is plausibly correlated with health-spending pressure (a household that fell into financial crisis between waves may be more likely to drop out). Our 500-row sample inherits whatever attrition pattern was in the original analysis dataset, and may underrepresent households for whom the program would have mattered most.",
+  answer(NULL, correct = TRUE),
+  allow_retry = FALSE,
+  incorrect = NULL,
+  rows = 6)
+```
+
+###
+
+A non-representative sample doesn't *guarantee* a biased estimate --- the bias might wash out by chance. But "by chance" is the only mechanism left to defend the estimate, and we have no principled reason to expect it to work in our favor. Representativeness also has a *second* link, between the population and the Preceptor Table, which later tutorials will exercise; for this tutorial the data-to-population link is the focus.
+
+### Exercise 10
 
 In your own words, define the assumption of "unconfoundedness."
 
-```{r justice-11}
+```{r justice-10}
 question_text(NULL,
   message = "Unconfoundedness means that the treatment assignment is independent of the potential outcomes, when we condition on pre-treatment covariates.",
   answer(NULL, correct = TRUE),
   allow_retry = FALSE,
   incorrect = NULL,
-  rows = 5)
+  rows = 4)
 ```
 
 ###
 
-This assumption is only relevant for causal models. The easiest way to ensure unconfoundedness is to assign treatment randomly.
+This assumption is only relevant for causal models. We describe a model as *confounded* if it is not true. The easiest way to ensure unconfoundedness is to assign treatment randomly --- which the Mexican Ministry of Health actually did here, rolling out Seguro Popular into communities chosen at random.
 
-### Exercise 12
+### Exercise 11
 
-Provide one reason why the assumption of unconfoundedness might not be true in this case.
+Provide one reason why the assumption of unconfoundedness might not be true (or might be weaker than it looks) in this case.
 
-```{r justice-12}
+```{r justice-11}
 question_text(NULL,
-  message = "King et al. randomized at the community level --- entire communities were assigned to treatment or control, not individual households. Within a community, all households got the same assignment, so any community-level characteristic that predicts spending (local clinic quality, distance to hospitals, community wealth) is correlated with treatment. This cluster-level assignment means individual household-level unconfoundedness is only as good as the community-level randomization was, which depends on how well matched the 74 pairs actually were.",
+  message = "Randomization in the SPS rollout was at the *community* level, not the household level. Within a treated community, every household was offered enrollment, but actual sign-up was voluntary. Households that signed up may differ from households in the same community that did not --- in unobserved ways like trust in government, prior insurance experience, or chronic-illness burden. So while the *intent-to-treat* comparison (any household in a treated community vs. any in a control community) is unconfounded by design, the comparison many policy analysts actually want (enrolled households vs. eligible-but-not-enrolled) involves a self-selected step that randomization does not protect.",
   answer(NULL, correct = TRUE),
   allow_retry = FALSE,
   incorrect = NULL,
@@ -1202,15 +1081,17 @@ question_text(NULL,
 
 ###
 
-The great advantage of cluster randomization is that it makes unconfoundedness plausible at the community level --- communities were randomly assigned, so no systematic difference drove assignment. Individual-level confounders within communities remain, but the key parameters can still be identified if the matching of pairs was successful.
+The great advantage of randomization is that it guarantees unconfoundedness *for the assignment that was randomized*. When the variable we ultimately care about (actual enrollment) sits one step downstream of the randomized variable (community assignment), randomization gets us most of the way --- but not all of it.
 
-### Exercise 13
+### Exercise 12
 
-Add `library(tidymodels)` to the QMD file. Place your cursor on that line. Use `Cmd/Ctrl + Enter`. CP/CR.
+A statistical model consists of two parts: the probability family and the link function. Add `library(tidymodels)` to the QMD file. Place your cursor on that line. Use `Cmd/Ctrl + Enter`.
 
-```{r justice-13}
+CP/CR.
+
+```{r justice-12}
 question_text(NULL,
-  message = "    > library(tidymodels)\n    ── Attaching packages ──────── tidymodels 1.x.x ──\n    ✔ broom       ✔ recipes\n    ✔ dials       ✔ rsample\n    ✔ infer       ✔ tune\n    ✔ modeldata   ✔ workflows\n    ✔ parsnip     ✔ workflowsets\n    ✔ purrr       ✔ yardstick\n    ── Conflicts ──── tidymodels_conflicts() ──\n    ✖ purrr::discard() masks scales::discard()\n    ✖ dplyr::filter()  masks stats::filter()",
+  message = "    > library(tidymodels)\n    ── Attaching packages ──────── tidymodels 1.x.x ──\n    ✔ broom        ✔ recipes\n    ✔ dials        ✔ rsample\n    ✔ infer        ✔ tune\n    ✔ modeldata    ✔ workflows\n    ✔ parsnip      ✔ workflowsets\n    ✔ purrr        ✔ yardstick\n    ── Conflicts ──── tidymodels_conflicts() ──\n    ✖ purrr::discard() masks scales::discard()\n    ✖ dplyr::filter()  masks stats::filter()",
   answer(NULL, correct = TRUE),
   allow_retry = FALSE,
   incorrect = NULL,
@@ -1219,13 +1100,15 @@ question_text(NULL,
 
 ###
 
-Our outcome variable `log_health_exp` is continuous. The probability family is Normal: $Y \sim N(\mu, \sigma^2)$.
+Our outcome variable `t2_health_exp_3m` is a continuous quantity (pesos). The probability family is Normal: $Y \sim N(\mu, \sigma^2)$.
 
-### Exercise 14
+### Exercise 13
 
-Add `library(broom)` to the QMD file. Place your cursor on that line. Use `Cmd/Ctrl + Enter`. CP/CR.
+Add `library(broom)` to the QMD file. Place your cursor on that line. Use `Cmd/Ctrl + Enter`.
 
-```{r justice-14}
+CP/CR.
+
+```{r justice-13}
 question_text(NULL,
   message = "    > library(broom)\n    >",
   answer(NULL, correct = TRUE),
@@ -1236,17 +1119,19 @@ question_text(NULL,
 
 ###
 
-The link function for a continuous outcome is linear: $\mu = \beta_0 + \beta_1 X_1 + \ldots$ Our model will be a linear regression with treatment and two adjustment covariates (age and sex).
+The link function for a continuous outcome is the identity (linear): $\mu = \beta_0 + \beta_1 X_1 + \cdots + \beta_n X_n$. Our model will be a linear regression.
 
-### Exercise 15
+### Exercise 14
 
 Write one sentence highlighting a potential weakness in your model. So far our summary paragraph looks like this:
 
-> Seguro Popular, Mexico's public health insurance program, aimed to reduce the financial burden of medical care on households. Using data from King et al.'s 2009 randomized evaluation (household-level, seven Mexican states, community-level randomization), we estimate by what percentage Seguro Popular enrollment reduced out-of-pocket health expenditures among households that were already spending on medical care.
+> Households' out-of-pocket spending on health care is a key marker of financial vulnerability. Using a 500-household sample drawn from Mexico's 2005--06 randomized rollout of Seguro Popular, we estimate the average causal effect of enrollment on three-month out-of-pocket spending.
 
-```{r justice-15}
+Your version will be somewhat different.
+
+```{r justice-14}
 question_text(NULL,
-  message = "The study was conducted in seven specific Mexican states in 2006; whether its results apply to other regions of Mexico today, after nearly two decades of changes to the health system, is an open question.",
+  message = "One concern is that randomization happened at the community level, not the household level: within a treated community, enrollment was voluntary, so the comparison of enrolled vs. not-enrolled households is partly a comparison of self-selected groups, which our model cannot fully untangle.",
   answer(NULL, correct = TRUE),
   allow_retry = FALSE,
   incorrect = NULL,
@@ -1255,7 +1140,7 @@ question_text(NULL,
 
 ###
 
-Add a weakness sentence to the summary paragraph in your QMD. `Cmd/Ctrl + Shift + K`, then commit/push.
+Add a weakness sentence to your summary paragraph in your QMD. Don't copy/paste our answer exactly. `Cmd/Ctrl + Shift + K`, then commit/push.
 
 
 ## Courage
@@ -1265,46 +1150,33 @@ Justice gives us the Population Table and the abstract data generating mechanism
 ```{r}
 #| echo: false
 #| results: asis
-hatch_c <- function(x) {
-  paste0(
-    '<span style="background-image: repeating-linear-gradient(',
-    '45deg, rgba(0,0,0,0.12) 0 1px, transparent 1px 6px);',
-    ' padding: 6px 10px; margin: -6px -10px; display: block;">',
-    x,
-    '</span>'
-  )
-}
-
 pop_tibble_c <- tibble::tribble(
-  ~Source     , ~`Household`     , ~`Year`, ~`Log Exp if Enrolled`, ~`Log Exp if Not Enrolled`, ~`Enrollment`   ,
-  "..."       , "..."            , "..."  , "..."                 , "..."                     , "..."           ,
-  "Data"      , "Garcia family"  , "2006" , "6.9"                 , "..."                     , "Enrolled"      ,
-  "Data"      , "Ramirez family" , "2006" , "..."                 , "8.1"                     , "Not enrolled"  ,
-  "Data"      , "..."            , "..."  , "..."                 , "..."                     , "..."           ,
-  "Data"      , "Torres family"  , "2006" , "..."                 , "7.3"                     , "Not enrolled"  ,
-  "..."       , "..."            , "..."  , "..."                 , "..."                     , "..."           ,
-  "Preceptor" , "Mendez family"  , "2025" , "7.1"                 , "7.4"                     , "Enrolled"      ,
-  "Preceptor" , "Flores family"  , "2025" , "6.8"                 , "7.2"                     , "Not enrolled"  ,
-  "Preceptor" , "..."            , "..."  , "..."                 , "..."                     , "..."           ,
-  "Preceptor" , "Vargas family"  , "2025" , "8.0"                 , "8.4"                     , "Not enrolled"  ,
-  "..."       , "..."            , "..."  , "..."                 , "..."                     , "..."
+  ~Source    , ~`Household`,            ~`Year`, ~`3-month Spending`,    ~`Treatment`,    ~`Age`, ~`Sex`,
+  "..."      , "...",                   "..."  , "...",                  "...",           "...",  "...",
+  "Data"     , "Hidalgo (#102)",        "2005" , "$420",                 "Enrolled",      "44",   "Female",
+  "Data"     , "Ramirez (#247)",        "2005" , "$120",                 "Not enrolled",  "51",   "Male",
+  "Data"     , "...",                   "..."  , "...",                  "...",           "...",  "...",
+  "Data"     , "Castaneda (#491)",      "2005" , "$1,800",               "Enrolled",      "32",   "Female",
+  "..."      , "...",                   "..."  , "...",                  "...",           "...",  "...",
+  "Preceptor", "Hidalgo (#102)",        "2005" , "$420 / $680",          "Enrolled",      "44",   "Female",
+  "Preceptor", "Ramirez (#247)",        "2005" , "$0 / $120",            "Not enrolled",  "51",   "Male",
+  "Preceptor", "...",                   "..."  , "...",                  "...",           "...",  "...",
+  "Preceptor", "Castaneda (#491)",      "2005" , "$1,800 / $1,500",      "Enrolled",      "32",   "Female",
+  "..."      , "...",                   "..."  , "...",                  "...",           "...",  "..."
 )
 
-pop_title_c     <- "This table combines King et al.'s 2006 household data with Preceptor rows representing current Mexican households."
-pop_units_c     <- "Data rows: positive-spending households from the 2006 King et al. survey. Preceptor rows: 2025 Mexican households of interest to our NGO."
-pop_outcome_c   <- "Log three-month health expenditure. Data-row counterfactuals shown as '...'; Preceptor-row unobservable potential outcomes are hatched."
-pop_treatment_c <- "Enrollment in Seguro Popular, randomized at the community level in the 2005-06 experiment."
-
-pop_gt_html_c <- gt::gt(pop_tibble_c, id = "population_tbl_c") |>
+pop_gt_html_c <- gt::gt(pop_tibble_c, id = "population_tbl_courage") |>
   gt::tab_header(title = "Population Table") |>
-  gt::tab_spanner(label = "Unit/Time"         , id = "unit_span",
+  gt::tab_spanner(label = "Unit/Time", id = "unit_span",
                   columns = c(`Household`, `Year`)) |>
-  gt::tab_spanner(label = "Potential Outcomes", id = "outcome_span",
-                  columns = c(`Log Exp if Enrolled`, `Log Exp if Not Enrolled`)) |>
-  gt::tab_spanner(label = "Treatment"         , id = "treatment_span",
-                  columns = c(`Enrollment`)) |>
-  gt::cols_align(align = "left" , columns = c(`Source`, `Household`, `Enrollment`)) |>
-  gt::cols_align(align = "right", columns = c(`Year`, `Log Exp if Enrolled`, `Log Exp if Not Enrolled`)) |>
+  gt::tab_spanner(label = "Outcome", id = "outcome_span",
+                  columns = c(`3-month Spending`)) |>
+  gt::tab_spanner(label = "Treatment", id = "treatment_span",
+                  columns = c(`Treatment`)) |>
+  gt::tab_spanner(label = "Covariates", id = "covariates_span",
+                  columns = c(`Age`, `Sex`)) |>
+  gt::cols_align(align = "left",  columns = c(`Source`, `Household`, `Treatment`, `Sex`)) |>
+  gt::cols_align(align = "right", columns = c(`Year`, `3-month Spending`, `Age`)) |>
   gt::fmt_markdown(columns = gt::everything()) |>
   gt::tab_options(
     heading.title.font.size   = "1.5em",
@@ -1312,36 +1184,20 @@ pop_gt_html_c <- gt::gt(pop_tibble_c, id = "population_tbl_c") |>
     column_labels.font.weight = "normal"
   ) |>
   gt::tab_style(
-    style     = gt::cell_text(weight = "bold"),
+    style = gt::cell_text(weight = "bold"),
     locations = gt::cells_column_spanners()
   ) |>
   gt::tab_style(
-    style     = gt::cell_text(align = "left"),
-    locations = gt::cells_column_spanners(spanners = c("unit_span", "treatment_span"))
+    style = gt::cell_text(align = "left"),
+    locations = gt::cells_column_spanners(spanners = c("unit_span", "treatment_span", "covariates_span"))
   ) |>
   gt::tab_style(
-    style     = gt::cell_text(align = "right"),
+    style = gt::cell_text(align = "right"),
     locations = gt::cells_column_spanners(spanners = "outcome_span")
   ) |>
-  gt::text_transform(
-    locations = gt::cells_body(columns = `Log Exp if Not Enrolled`, rows = 7),
-    fn        = function(x) hatch_c(x)
-  ) |>
-  gt::text_transform(
-    locations = gt::cells_body(columns = `Log Exp if Enrolled`, rows = c(8, 10)),
-    fn        = function(x) hatch_c(x)
-  ) |>
-  gt::tab_footnote(footnote = pop_title_c,
-                   locations = gt::cells_title()) |>
-  gt::tab_footnote(footnote = pop_units_c,
-                   locations = gt::cells_column_spanners(spanners = "unit_span")) |>
-  gt::tab_footnote(footnote = pop_outcome_c,
-                   locations = gt::cells_column_spanners(spanners = "outcome_span")) |>
-  gt::tab_footnote(footnote = pop_treatment_c,
-                   locations = gt::cells_column_spanners(spanners = "treatment_span")) |>
   gt::opt_css(
     css = "
-      #population_tbl_c .gt_footnote {
+      #population_tbl_courage .gt_footnote {
         max-width: 1px;
         word-break: break-word;
       }
@@ -1375,12 +1231,12 @@ question_text(NULL,
   answer(NULL, correct = TRUE),
   allow_retry = FALSE,
   incorrect = NULL,
-  rows = 5)
+  rows = 4)
 ```
 
 ###
 
-At the end of Justice we decided the mathematical structure --- a Normal family with a linear link, because `log_health_exp` is continuous. Courage fills in the covariates and estimates the unknown parameters.
+Justice fixed the structural choices --- continuous outcome, linear regression, identity link. Courage now picks specific covariates and estimates the parameters.
 
 ### Exercise 2
 
@@ -1400,11 +1256,11 @@ linear_reg(engine = "lm")
 
 ###
 
-The **[tidymodels](https://www.tidymodels.org/)** framework is the most popular one in the R world for estimating models.
+**[tidymodels](https://www.tidymodels.org/)** is the most popular framework for estimating models among R users.
 
 ### Exercise 3
 
-Continue the pipe to `fit(log_health_exp ~ treatment, data = x)`.
+Continue the pipe to `fit(t2_health_exp_3m ~ treatment, data = x)`. This is the central causal model: outcome on the binary, randomized `treatment`.
 
 ```{r courage-3, exercise = TRUE}
 
@@ -1414,46 +1270,50 @@ Continue the pipe to `fit(log_health_exp ~ treatment, data = x)`.
 
 ```{r courage-3-hint-1, eval = FALSE}
 ... |>
-  fit(log_health_exp ~ ..., data = ...)
+  fit(t2_health_exp_3m ~ treatment, data = x)
 ```
 
 ```{r courage-3-test, include = FALSE}
 linear_reg(engine = "lm") |>
-  fit(log_health_exp ~ treatment, data = x)
+  fit(t2_health_exp_3m ~ treatment, data = x)
 ```
 
 ###
 
-The factor variable `treatment` is turned into a 0/1 dummy variable called `treatmentEnrolled`. Its value is 1 if the household is enrolled and 0 if not enrolled. The intercept becomes the expected log expenditure for the reference level (Not enrolled).
+The character variable `treatment` becomes a 0/1 dummy called `treatmentEnrolled`: 1 for households in treated communities, 0 for control. The intercept becomes the expected outcome for the reference level (`Not enrolled`).
 
 ### Exercise 4
 
-Continue the pipe with `tidy(conf.int = TRUE)`.
+Here is the parameter table for this first model:
 
-```{r courage-4, exercise = TRUE}
-
+```{r}
+#| echo: false
+linear_reg() |>
+  set_engine("lm") |>
+  fit(t2_health_exp_3m ~ treatment, data = x) |>
+  tidy(conf.int = TRUE) |>
+  select(term, estimate, conf.low, conf.high) |>
+  mutate(across(where(is.numeric), \(x) round(x, 0)))
 ```
 
-<button onclick = "transfer_code(this)">Copy previous code</button>
+Write a sentence interpreting the `treatmentEnrolled` estimate of -62.
 
-```{r courage-4-hint-1, eval = FALSE}
-...
-  tidy(... = TRUE)
-```
-
-```{r courage-4-test, include = FALSE}
-linear_reg(engine = "lm") |>
-  fit(log_health_exp ~ treatment, data = x) |>
-  tidy(conf.int = TRUE)
+```{r courage-4}
+question_text(NULL,
+  message = "Our point estimate of the average causal effect of enrollment on three-month out-of-pocket health spending is -62 pesos: enrolled households spent, on average, about 62 pesos less over the three months before the follow-up survey than they would have spent without enrollment. The 95% confidence interval ranges from -376 to +253 pesos --- it includes zero, so we cannot rule out the possibility that the true effect is zero (or even slightly positive).",
+  answer(NULL, correct = TRUE),
+  allow_retry = FALSE,
+  incorrect = NULL,
+  rows = 7)
 ```
 
 ###
 
-The intercept is the expected log health expenditure for a not-enrolled household. The `treatmentEnrolled` coefficient is the average causal effect of enrollment --- how much lower (in log pesos) an enrolled household's spending is relative to a not-enrolled household.
+Causal language is appropriate here because community-level treatment was randomized. We say *"the average causal effect"* and *"would have spent"* --- the Rubin Causal Model vocabulary --- because the identification strategy (randomization) earns us the causal reading. The CI's inclusion of zero is itself important: a real-world intervention need not move the average, and the most honest report of this estimate acknowledges that we have not nailed down the effect's sign.
 
 ### Exercise 5
 
-Now change the call to `fit(log_health_exp ~ treatment + age + sex, data = x)`. Run it and look at the output.
+Now fit a second candidate that adjusts for `age`: `fit(t2_health_exp_3m ~ treatment + age, data = x)`. This adds a continuous covariate to the causal model.
 
 ```{r courage-5, exercise = TRUE}
 
@@ -1462,47 +1322,51 @@ Now change the call to `fit(log_health_exp ~ treatment + age + sex, data = x)`. 
 <button onclick = "transfer_code(this)">Copy previous code</button>
 
 ```{r courage-5-hint-1, eval = FALSE}
-linear_reg(engine = "lm") |>
-  fit(log_health_exp ~ treatment + age + sex, data = x)
+... |>
+  fit(t2_health_exp_3m ~ treatment + age, data = x)
 ```
 
 ```{r courage-5-test, include = FALSE}
 linear_reg(engine = "lm") |>
-  fit(log_health_exp ~ treatment + age + sex, data = x)
+  fit(t2_health_exp_3m ~ treatment + age, data = x)
 ```
 
 ###
 
-Adding `age` and `sex` improves precision by absorbing variation in spending that is unrelated to enrollment. They also adjust for any residual baseline differences between the enrolled and not-enrolled groups that the community-level randomization did not fully eliminate.
+In an observational study, adjusting for a covariate can move the treatment estimate substantially --- that's what we do when we suspect confounding. Randomization is supposed to balance covariates between Treated and Control groups, so adjustment should not move the estimate much. Let's check.
 
 ### Exercise 6
 
-Continue the pipe with `tidy(conf.int = TRUE)`.
+Here is the parameter table for the adjusted model:
 
-```{r courage-6, exercise = TRUE}
-
+```{r}
+#| echo: false
+linear_reg() |>
+  set_engine("lm") |>
+  fit(t2_health_exp_3m ~ treatment + age, data = x) |>
+  tidy(conf.int = TRUE) |>
+  select(term, estimate, conf.low, conf.high) |>
+  mutate(across(where(is.numeric), \(x) round(x, 0)))
 ```
 
-<button onclick = "transfer_code(this)">Copy previous code</button>
+Write a sentence interpreting the `age` slope (6) and the new `treatmentEnrolled` estimate (-48).
 
-```{r courage-6-hint-1, eval = FALSE}
-...
-  tidy(conf.int = TRUE)
-```
-
-```{r courage-6-test, include = FALSE}
-linear_reg(engine = "lm") |>
-  fit(log_health_exp ~ treatment + age + sex, data = x) |>
-  tidy(conf.int = TRUE)
+```{r courage-6}
+question_text(NULL,
+  message = "The slope on `age` is about 6 pesos per year, with a 95% confidence interval that crosses zero (-4 to +15): when we compare two groups of households in the same treatment condition but differing by one year in head-of-household age, their expected three-month spending is essentially indistinguishable. The treatmentEnrolled estimate barely moves (-62 to -48) when age is added --- which is what we expect from a randomized experiment, where treatment assignment is by design unrelated to age.",
+  answer(NULL, correct = TRUE),
+  allow_retry = FALSE,
+  incorrect = NULL,
+  rows = 7)
 ```
 
 ###
 
-The more variables we add, the more difficult it is to interpret the meaning of any particular coefficient. But we don't really care about coefficients --- we care about answering our question. Parameters are tools.
+Notice the language for `age`: *"when we compare two groups of households... in the same treatment condition but differing by one year of age."* `age` is *not* a treatment in this study; it's a covariate. So we describe a comparison, not a causal effect of aging on spending. Causal language is reserved for the variable whose assignment was randomized. The fact that the `treatmentEnrolled` estimate barely moves under adjustment is itself evidence that randomization worked --- in an observational study, adjusting for a real confounder would visibly shift the treatment estimate. Our final model is the simpler `t2_health_exp_3m ~ treatment` (Exercise 3), since age adds essentially nothing.
 
 ### Exercise 7
 
-An object called `fit_sps` has been created behind the scenes. Type `fit_sps` and hit "Run Code."
+Behind the scenes of this tutorial, an object called `fit_sps` has been created which is the result of the final model. Type `fit_sps` and hit "Run Code."
 
 ```{r courage-7, exercise = TRUE}
 
@@ -1518,7 +1382,7 @@ fit_sps
 
 ###
 
-In data science, we deal with words, math, and code, but the most important of these is code.
+In data science, **we deal with words, math, and code, but the most important of these is code.**
 
 ### Exercise 8
 
@@ -1526,14 +1390,14 @@ We need `fit_sps` to exist in R World. Copy/paste this code to the R prompt and 
 
 ```
 fit_sps <- linear_reg(engine = "lm") |>
-  fit(log_health_exp ~ treatment + age + sex, data = x)
+  fit(t2_health_exp_3m ~ treatment, data = x)
 ```
 
 CP/CR.
 
 ```{r courage-8}
 question_text(NULL,
-  message = "    > fit_sps <- linear_reg(engine = \"lm\") |>\n    +   fit(log_health_exp ~ treatment + age + sex, data = x)\n    >",
+  message = "    > fit_sps <- linear_reg(engine = \"lm\") |>\n    +   fit(t2_health_exp_3m ~ treatment, data = x)\n    >",
   answer(NULL, correct = TRUE),
   allow_retry = FALSE,
   incorrect = NULL,
@@ -1542,88 +1406,64 @@ question_text(NULL,
 
 ###
 
-Just because something exists in the tutorial does not mean that it is at the R prompt. You should be aware of what exists in R World, which is generally called your "workspace."
+Just because something exists in the tutorial does not mean it exists at your R prompt. Keep both worlds in sync.
 
 ### Exercise 9
 
-Here is how the distribution of the actual log health expenditures (blue) compares to the distribution of fitted values from `fit_sps` (coral):
+One way to check whether our model is reasonable is to compare the distribution of the actual outcome with the distribution of fitted values. If the model is well-specified, the two should look similar.
 
 ```{r}
 #| echo: false
 #| message: false
 #| warning: false
-fitted_vals <- predict(fit_sps, new_data = x) |> pull(.pred)
-tibble(
-  type  = c(rep("Actual", nrow(x)), rep("Fitted", nrow(x))),
-  value = c(x$log_health_exp, fitted_vals)
-) |>
-  ggplot(aes(x = value, fill = type)) +
+fitted_df <- tibble(
+  value  = c(x$t2_health_exp_3m, predict(extract_fit_engine(fit_sps))),
+  source = c(rep("Actual", nrow(x)),
+             rep("Fitted", nrow(x)))
+)
+
+ggplot(fitted_df, aes(x = value, fill = source)) +
   geom_density(alpha = 0.5) +
-  scale_fill_manual(values = c("Actual" = "steelblue", "Fitted" = "coral")) +
+  scale_x_continuous(labels = scales::label_dollar(prefix = "$"), limits = c(0, 5000)) +
   labs(
-    title = "Actual vs. Fitted Log Health Expenditures",
-    subtitle = "Fitted values are less spread out than the actual outcome",
-    x = "Log Health Expenditure (pesos)",
-    y = "Density",
-    fill = NULL,
-    caption = "Source: King et al. (2009) via primer.data"
+    title = "Actual vs. Fitted Spending",
+    subtitle = "The fitted distribution is much narrower --- our model has only two predicted values",
+    x = "3-month spending (pesos)",
+    y = NULL,
+    fill = "Source",
+    caption = "Source: King et al. (2009) SPS rollout via primer.data"
   ) +
-  theme_minimal()
-```
-
-Read the plot above, then continue.
-
-```{r courage-9}
-question_text(NULL,
-  message = "(No command to run --- this exercise is a pause to examine the model-check plot above.)",
-  answer(NULL, correct = TRUE),
-  allow_retry = FALSE,
-  incorrect = NULL,
-  rows = 2)
+  theme_minimal() +
+  theme(axis.text.y  = element_blank(),
+        axis.ticks.y = element_blank())
 ```
 
 ###
-
-In a good model, the distribution of fitted values looks like the distribution of the actual outcome. The fitted values are always less spread out than the actual data because the model explains only some of the variation. Big divergences in shape mean the model is missing something important.
 
 ### Exercise 10
 
-With the parameters estimated, we can write the fitted model as a concrete formula. Here are the estimated parameters:
+With the parameters estimated, we can write the fitted model as a concrete formula:
 
-```{r}
-#| echo: false
-fit_sps |>
-  tidy(conf.int = TRUE) |>
-  select(term, estimate, conf.low, conf.high) |>
-  mutate(across(where(is.numeric), \(x) signif(x, 3)))
-```
+$$\widehat{\text{Spending}} = 783 - 62 \cdot \text{treatmentEnrolled}$$
 
-Based on the table above, the fitted DGM is:
+`treatmentEnrolled` is a dummy variable: 1 for enrolled households, 0 for control. The intercept (783) is the expected three-month spending for a control household; the coefficient (-62) is the average causal effect of enrollment.
 
-$$\widehat{\text{log\_health\_exp}} = \hat\beta_0 + \hat\beta_t \cdot \text{treatmentEnrolled} + \hat\beta_a \cdot \text{age} + \hat\beta_s \cdot \text{sexMale}$$
-
-with $\epsilon \sim N(0, \hat\sigma^2)$.
-
-`treatmentEnrolled` is 1 for enrolled households, 0 for not-enrolled. `sexMale` is 1 for male-headed households, 0 for female-headed. The intercept is the expected log expenditure for a not-enrolled, female-headed household at age 0 --- a useful mathematical reference, even if no such household exists. **This is our data generating mechanism.**
-
-Read the formula above, then continue.
-
-```{r courage-10}
-question_text(NULL,
-  message = "(No command to run --- this exercise is a pause to read the concrete DGM formula above.)",
-  answer(NULL, correct = TRUE),
-  allow_retry = FALSE,
-  incorrect = NULL,
-  rows = 2)
-```
+**This is our data generating mechanism.**
 
 ###
 
-A data generating mechanism is just a formula, something which we can write down and implement with computer code.
+A data generating mechanism is just a formula, something we can write down and implement with computer code. Of course there is randomness baked into the DGM, but we won't worry about that detail here.
 
 ### Exercise 11
 
-Create a new code chunk in your QMD. Add the chunk option `#| cache: true`. Copy/paste the code for estimating the final model into the chunk, assigning the result to `fit_sps`. Also make sure `set.seed(9)` and the `x` pipeline appear before this chunk. `Cmd/Ctrl + Shift + K`. At the R prompt, run:
+Create a new code chunk in your QMD with `#| cache: true`. Copy/paste the code for estimating the model:
+
+```
+fit_sps <- linear_reg(engine = "lm") |>
+  fit(t2_health_exp_3m ~ treatment, data = x)
+```
+
+`Cmd/Ctrl + Shift + K`. At the R prompt, run:
 
 ```
 show_file("analysis.qmd", chunk = "Last")
@@ -1633,7 +1473,7 @@ CP/CR.
 
 ```{r courage-11}
 question_text(NULL,
-  message = "    > show_file(\"analysis.qmd\", chunk = \"Last\")\n    ```{r}\n    #| cache: true\n    fit_sps <- linear_reg(engine = \"lm\") |>\n      fit(log_health_exp ~ treatment + age + sex, data = x)\n    ```",
+  message = "    > show_file(\"analysis.qmd\", chunk = \"Last\")\n    ```{r}\n    #| cache: true\n    fit_sps <- linear_reg(engine = \"lm\") |>\n      fit(t2_health_exp_3m ~ treatment, data = x)\n    ```",
   answer(NULL, correct = TRUE),
   allow_retry = FALSE,
   incorrect = NULL,
@@ -1642,11 +1482,19 @@ question_text(NULL,
 
 ###
 
-Including `#| cache: true` causes Quarto to cache the chunk's results. The next render, as long as the code is unchanged, just loads the saved object.
+`#| cache: true` tells Quarto to reuse the saved fit on subsequent renders. Re-render with `Cmd/Ctrl + Shift + K` --- it should be quick the second time.
 
 ### Exercise 12
 
-Add `*_cache` to your `.gitignore` file. At the R prompt, run `show_file(".gitignore")`. CP/CR.
+Add `*_cache` to your `.gitignore`. Cached objects don't belong on GitHub.
+
+At the R prompt, run:
+
+```
+show_file(".gitignore")
+```
+
+CP/CR.
 
 ```{r courage-12}
 question_text(NULL,
@@ -1659,11 +1507,11 @@ question_text(NULL,
 
 ###
 
-Cached objects are often large and don't belong on GitHub. Commit and push after adding `*_cache`.
+Commit and push.
 
 ### Exercise 13
 
-At the R prompt, run `tidy()` on `fit_sps` with `conf.int = TRUE`. CP/CR.
+At the R prompt, run `tidy()` on `fit_sps` with `conf.int = TRUE`.
 
 ```{r courage-13, exercise = TRUE}
 
@@ -1679,33 +1527,38 @@ tidy(fit_sps, conf.int = TRUE)
 
 ###
 
-`tidy()` is part of the **[broom](https://broom.tidymodels.org/)** package, which standardizes the output of model objects into tidy tibbles.
+`tidy()` is part of **[broom](https://broom.tidymodels.org/)**, used to summarize information from a wide variety of models.
 
 ### Exercise 14
 
-Create a new code chunk in your QMD. Ask AI to make a nice-looking table from `tidy(fit_sps, conf.int = TRUE)`. Include only `term`, `estimate`, `conf.low`, and `conf.high`, rounded to three significant figures. Add a title or caption naming the data source. Render with `Cmd/Ctrl + Shift + K`. At the R prompt, run `show_file("analysis.qmd", chunk = "Last")`. CP/CR.
+Create a new code chunk in your QMD. Ask AI to make a nice-looking table from the tibble returned by `tidy()`. Insert your table code, `Cmd/Ctrl + Shift + K`, and at the R prompt run:
+
+```
+show_file("analysis.qmd", chunk = "Last")
+```
+
+CP/CR.
 
 ```{r courage-14}
 question_text(NULL,
-  message = "    > show_file(\"analysis.qmd\", chunk = \"Last\")\n    ```{r}\n    library(knitr)\n    tidy(fit_sps, conf.int = TRUE) |>\n      select(term, estimate, conf.low, conf.high) |>\n      mutate(across(where(is.numeric), \\(x) signif(x, 3))) |>\n      kable(\n        caption = \"Parameter Estimates and 95% CIs. Source: King et al. (2009) via primer.data\"\n      )\n    ```",
+  message = "    > show_file(\"analysis.qmd\", chunk = \"Last\")\n    ```{r}\n    tidy(fit_sps, conf.int = TRUE) |>\n      select(term, estimate, conf.low, conf.high) |>\n      knitr::kable(\n        caption = \"Estimates and 95% CIs.  Source: King et al. (2009) SPS rollout via primer.data\",\n        digits = 0\n      )\n    ```",
   answer(NULL, correct = TRUE),
-  allow_retry = TRUE,
-  try_again_button = "Edit Answer",
+  allow_retry = FALSE,
   incorrect = NULL,
-  rows = 8)
+  rows = 10)
 ```
 
 ###
 
-At the very least, your table should include a title and a caption with the data source. We care about using our model to estimate quantities of interest, not about the parameters themselves.
+A nice table includes a title, a caption with the data source, and reasonable rounding. The more you use AI for these housekeeping tasks, the better you'll get at telling it what you want.
 
 ### Exercise 15
 
-Add a sentence to your project summary explaining the structure of the model.
+Add a sentence to your project summary explaining the model structure.
 
 ```{r courage-15}
 question_text(NULL,
-  message = "We model log household health expenditure as a linear function of Seguro Popular enrollment, age, and sex.",
+  message = "We model three-month out-of-pocket spending as a normally distributed variable which is a linear function of treatment.",
   answer(NULL, correct = TRUE),
   allow_retry = FALSE,
   incorrect = NULL,
@@ -1721,13 +1574,13 @@ Add your sentence to the summary paragraph. `Cmd/Ctrl + Shift + K`, then commit/
 
 Courage provides the data generating mechanism. We can express the DGM in four ways:
 
-**In words:** We describe log household health expenditure as a linear function of Seguro Popular enrollment, age, and sex.
+**In words:** We model three-month out-of-pocket spending as a normally distributed variable which is a linear function of treatment.
 
 **In R code:**
 
 ```r
 fit_sps <- linear_reg(engine = "lm") |>
-  fit(log_health_exp ~ treatment + age + sex, data = x)
+  fit(t2_health_exp_3m ~ treatment, data = x)
 ```
 
 **In a parameter table:**
@@ -1737,25 +1590,14 @@ fit_sps <- linear_reg(engine = "lm") |>
 fit_sps |>
   tidy(conf.int = TRUE) |>
   select(term, estimate, conf.low, conf.high) |>
-  mutate(across(where(is.numeric), \(x) signif(x, 3))) |>
-  knitr::kable(
-    col.names = c("Term", "Estimate", "95% CI Lower", "95% CI Upper"),
-    caption   = "Fitted parameters (log-expenditure scale). Source: King et al. (2009) via primer.data"
-  )
+  mutate(across(where(is.numeric), \(x) round(x, 0)))
 ```
 
-<!-- Hello DK: This is Claude. I need you to verify that the coefficient values
-in the formula below match the rendered parameter table output above. Run
-tidy(fit_sps, conf.int = TRUE) |> mutate(across(where(is.numeric), \(x) signif(x, 3)))
-to confirm. Update the LaTeX if the real values differ. -->
+**As a mathematical formula:**
 
-**As a mathematical formula** (values from the parameter table above):
+$$\text{Spending} = 783 - 62 \cdot \text{treatmentEnrolled} + \epsilon$$
 
-$$\widehat{\text{log\_health\_exp}} = 6.80 - 0.27 \cdot \text{treatmentEnrolled} + 0.016 \cdot \text{age} + 0.11 \cdot \text{sexMale} + \epsilon$$
-
-with $\epsilon \sim N(0, 0.69)$ (a residual SD of about 0.83 on the log scale).
-
-`treatmentEnrolled` is 1 for enrolled households and 0 for not-enrolled. `sexMale` is 1 for male-headed and 0 for female-headed. The intercept (6.80) represents a not-enrolled, female-headed household at age 0 --- a mathematical baseline.
+with $\epsilon \sim N(0, 3{,}206{,}129)$ (a residual standard deviation of about 1,791 pesos --- spending varies a lot from household to household).
 
 ###
 
@@ -1774,75 +1616,17 @@ question_text(NULL,
 
 ###
 
-Courage gave us the data generating mechanism. Temperance guides us in using it to answer our question. Our tool is the **[marginaleffects](https://marginaleffects.com/)** package; its companion book *[Model to Meaning](https://marginaleffects.com/)* by Vincent Arel-Bundock is our reference, starting with the [Predictions chapter](https://marginaleffects.com/chapters/predictions.html).
+Courage gave us the DGM, including its parameter values. Temperance puts those parameters to work. The tool is the **[marginaleffects](https://marginaleffects.com/)** package, with companion book *[Model to Meaning](https://marginaleffects.com/)* by Vincent Arel-Bundock.
 
 ### Exercise 2
 
-Before interpreting the full DGM, consider a simpler version --- one that includes only the treatment and ignores age and sex. Here is the fitted intercept-and-treatment model:
+In the end, we don't really care about parameters, much less how to interpret them. Parameters are *imaginary*, like unicorns.
 
-```{r}
-#| echo: false
-linear_reg(engine = "lm") |>
-  fit(log_health_exp ~ treatment, data = x) |>
-  tidy(conf.int = TRUE) |>
-  select(term, estimate, conf.low, conf.high) |>
-  mutate(across(where(is.numeric), \(x) signif(x, 3)))
-```
+Add `library(marginaleffects)` to the QMD file. Place your cursor on that line. Use `Cmd/Ctrl + Enter`.
 
-Write a sentence interpreting the `(Intercept)` estimate in this simple model.
+CP/CR.
 
 ```{r temperance-2}
-question_text(NULL,
-  message = "The expected log health expenditure for a not-enrolled household is about 7.59 on the log scale. On the pesos scale, this corresponds to roughly exp(7.59) ≈ 1,980 pesos in three-month spending --- the baseline spending level for households that did not receive Seguro Popular.",
-  answer(NULL, correct = TRUE),
-  allow_retry = FALSE,
-  incorrect = NULL,
-  rows = 5)
-```
-
-###
-
-The simplest model with one treatment variable has two parameters: the intercept (expected outcome for the reference group) and the slope (the average causal effect of the treatment). Once we add covariates, the intercept shifts to represent the reference group at the baseline values of those covariates.
-
-### Exercise 3
-
-Now interpret the `treatmentEnrolled` coefficient in the full DGM (from the parameter table in the preamble).
-
-```{r temperance-3}
-question_text(NULL,
-  message = "The average causal effect of Seguro Popular enrollment is about −0.27 on the log scale, adjusting for age and sex. Because exp(−0.27) ≈ 0.76, enrolled households spent on average about 24% less on health care than not-enrolled households with the same age and sex.",
-  answer(NULL, correct = TRUE),
-  allow_retry = FALSE,
-  incorrect = NULL,
-  rows = 6)
-```
-
-###
-
-Because `treatment` is a randomly assigned treatment, we can use causal language here. The coefficient represents the average causal effect of enrollment on log expenditure. When we say "adjusting for age and sex," we mean that we are comparing enrolled and not-enrolled households that are otherwise similar on those two variables.
-
-### Exercise 4
-
-Interpret the `age` coefficient from the full DGM.
-
-```{r temperance-4}
-question_text(NULL,
-  message = "Each additional year of age is associated with a log expenditure about 0.016 higher, adjusting for enrollment status and sex. On the pesos scale, exp(0.016) ≈ 1.016, so an additional year of age is associated with about 1.6% higher health spending. This is a very small but plausible association: older household members tend to need more medical care.",
-  answer(NULL, correct = TRUE),
-  allow_retry = FALSE,
-  incorrect = NULL,
-  rows = 6)
-```
-
-###
-
-For a non-treatment variable like `age`, we do not use causal language. We can only say that households with older respondents are *associated with* higher spending, not that age *causes* higher spending. Use phrases like "is associated with" or "comparing households that differ by one year in age."
-
-### Exercise 5
-
-Add `library(marginaleffects)` to the QMD file. Place your cursor on that line. Use `Cmd/Ctrl + Enter`. CP/CR.
-
-```{r temperance-5}
 question_text(NULL,
   message = "    > library(marginaleffects)\n    >",
   answer(NULL, correct = TRUE),
@@ -1853,15 +1637,15 @@ question_text(NULL,
 
 ###
 
-We should be modest in the claims we make. The posteriors we create are never the "truth."
+We should be modest in the claims we make. The posteriors we create are never the truth.
 
-### Exercise 6
+### Exercise 3
 
 What is the specific question we are trying to answer?
 
-```{r temperance-6}
+```{r temperance-3}
 question_text(NULL,
-  message = "By what percentage did Seguro Popular enrollment reduce health expenditures among households with positive health spending?",
+  message = "What is the average causal effect of Seguro Popular enrollment on a household's three-month out-of-pocket health spending?",
   answer(NULL, correct = TRUE),
   allow_retry = FALSE,
   incorrect = NULL,
@@ -1870,106 +1654,87 @@ question_text(NULL,
 
 ###
 
-In order to make progress, we need to drill down to one specific question. Notice how our question evolved: we started with "what is the causal effect of enrollment on expenditures?", discovered that zero-spending households and a skewed distribution complicated things, and arrived at a question about percentage reduction among positive spenders.
+To make a decision wisely, we need good estimates of many unknown numbers. Drilling down to one specific question is how we make progress.
 
-### Exercise 7
+### Exercise 4
 
-At the R prompt, run `predictions(fit_sps)`. CP/CR.
+At the R prompt, run `predictions()` on `fit_sps`. CP/CR.
 
-```{r temperance-7}
+```{r temperance-4}
 question_text(NULL,
+  message = "    > predictions(fit_sps)\n    \n     Estimate Std. Error    z Pr(>|z|)  2.5 % 97.5 %\n          721        113 6.36   <0.001    499    944\n          783        113 6.91   <0.001    560   1005\n          721        113 6.36   <0.001    499    944\n          ... (500 rows total, one per household)\n    \n    Type: numeric",
   answer(NULL, correct = TRUE),
-  allow_retry = TRUE,
-  try_again_button = "Edit Answer",
+  allow_retry = FALSE,
   incorrect = NULL,
-  rows = 5)
+  rows = 6)
 ```
 
 ###
 
-`predictions()` returns one row per observation in the data used to fit the model --- 100 rows here, one per household in our sample. Each row contains the model's predicted log expenditure for that household.
+`predictions()` returns one row per observation (500 here) with the model's predicted spending for each household. Because our model has only one covariate, there are only two distinct fitted values: 721 pesos for the enrolled rows, 783 pesos for the not-enrolled rows.
 
-### Exercise 8
+### Exercise 5
 
-At the R prompt, run `plot_predictions(fit_sps, condition = "treatment")`. CP/CR.
+At the R prompt, run `plot_predictions(fit_sps, condition = "treatment")`.
 
-```{r temperance-8}
+CP/CR.
+
+```{r temperance-5}
 question_text(NULL,
+  message = "    > plot_predictions(fit_sps, condition = \"treatment\")\n\n(A plot opens with two point estimates --- one for `Not enrolled` near 780 pesos and one for `Enrolled` near 720 pesos --- each with a 95% confidence interval. The intervals overlap heavily, reflecting that we cannot tell the two means apart with this much data.)",
   answer(NULL, correct = TRUE),
-  allow_retry = TRUE,
-  try_again_button = "Edit Answer",
+  allow_retry = FALSE,
   incorrect = NULL,
   rows = 5)
 ```
 
-```{r temperance-8-test, include = FALSE}
+```{r temperance-5-test, include = FALSE}
 plot_predictions(fit_sps, condition = "treatment")
 ```
 
 ###
 
-You should see two point estimates --- one for `Not enrolled` and one for `Enrolled` --- each with a 95% confidence interval. The gap between them, on the log scale, is the estimated average causal effect of Seguro Popular enrollment.
+The two intervals overlap considerably, which is the visible form of our parameter-table conclusion: the difference in expected spending between the two arms is small relative to the noise.
 
-### Exercise 9
+### Exercise 6
 
-At the R prompt, run `plot_predictions(fit_sps, condition = c("treatment", "sex"))`. CP/CR.
+At the R prompt, run the same call with `draw = FALSE`.
 
-```{r temperance-9}
+CP/CR.
+
+```{r temperance-6}
 question_text(NULL,
+  message = "    > plot_predictions(fit_sps, condition = \"treatment\", draw = FALSE)\n      rowid estimate std.error statistic p.value conf.low conf.high   treatment\n    1     1      783     113     6.91   <0.001    560      1005 Not enrolled\n    2     2      721     113     6.36   <0.001    499       944     Enrolled",
   answer(NULL, correct = TRUE),
-  allow_retry = TRUE,
-  try_again_button = "Edit Answer",
+  allow_retry = FALSE,
   incorrect = NULL,
   rows = 5)
 ```
 
-```{r temperance-9-test, include = FALSE}
-plot_predictions(fit_sps, condition = c("treatment", "sex"))
-```
-
-###
-
-This plot shows predicted log expenditure by both enrollment status and sex. The two lines (or panels) show whether the enrollment effect looks similar for male and female respondents. In a model without an interaction term --- which is what we have --- the lines will be parallel by construction; the model assumes the enrollment effect is the same for men and women.
-
-### Exercise 10
-
-At the R prompt, run `plot_predictions(fit_sps, condition = "treatment", draw = FALSE)`. CP/CR.
-
-```{r temperance-10}
-question_text(NULL,
-  answer(NULL, correct = TRUE),
-  allow_retry = TRUE,
-  try_again_button = "Edit Answer",
-  incorrect = NULL,
-  rows = 5)
-```
-
-```{r temperance-10-test, include = FALSE}
+```{r temperance-6-test, include = FALSE}
 plot_predictions(fit_sps, condition = "treatment", draw = FALSE)
 ```
 
 ###
 
-Because `plot_predictions()` returns a ggplot object, you can continue with ggplot commands like `labs()`. But it can be useful to see the underlying values in the tibble and build your own plot directly.
+`plot_predictions()` returns a ggplot object, so you can keep adding ggplot layers like `labs()`. But it's often easier to start from the underlying tibble (`draw = FALSE`) and build the plot from scratch.
 
-### Exercise 11
+### Exercise 7
 
-Work with AI to create a beautiful plot starting from the output of `plot_predictions(fit_sps, condition = "treatment", draw = FALSE)`. Do this in your QMD. Title: key variables. Subtitle: the key takeaway about the enrollment effect. Caption: data source. Axis labels: human-readable, noting that the y-axis is on the log scale.
+Work with AI to create a beautiful plot starting from the output of `plot_predictions(..., draw = FALSE)`. Do this in your QMD. Title: key variables. Subtitle: takeaway. Caption: data source. Axis labels: human-readable.
 
 Paste the plot code below.
 
-```{r temperance-11}
+```{r temperance-7}
 question_text(NULL,
-  message = "    plot_predictions(fit_sps, condition = \"treatment\", draw = FALSE) |>\n      ggplot(aes(x = treatment, y = estimate)) +\n      geom_pointrange(aes(ymin = conf.low, ymax = conf.high),\n                      color = \"grey20\", size = 1.1) +\n      labs(\n        title = \"Causal Effect of Seguro Popular Enrollment on Health Spending\",\n        subtitle = \"Enrolled households spent about 24% less than not-enrolled households\",\n        x = \"Enrollment Status\",\n        y = \"Expected Log Health Expenditure (log pesos)\",\n        caption = \"Source: King et al. (2009) via primer.data\"\n      ) +\n      theme_minimal()",
+  message = "    plot_predictions(fit_sps, condition = \"treatment\", draw = FALSE) |>\n      ggplot(aes(x = treatment, y = estimate)) +\n      geom_pointrange(aes(ymin = conf.low, ymax = conf.high),\n                      color = \"grey20\", size = 1.1) +\n      scale_y_continuous(labels = scales::label_dollar(prefix = \"$\")) +\n      labs(\n        title = \"Predicted 3-Month Out-of-Pocket Spending by Enrollment Status\",\n        subtitle = \"Enrolled households spend ~60 pesos less, but the CI crosses zero\",\n        x = \"Treatment\",\n        y = \"Predicted 3-month spending\",\n        caption = \"Source: King et al. (2009) SPS rollout via primer.data\"\n      ) +\n      theme_minimal()",
   answer(NULL, correct = TRUE),
   allow_retry = FALSE,
   incorrect = NULL,
-  rows = 12)
+  rows = 14)
 ```
 
 ###
-
-Here is our version:
 
 ```{r}
 #| echo: false
@@ -1979,40 +1744,47 @@ plot_predictions(fit_sps, condition = "treatment", draw = FALSE) |>
   ggplot(aes(x = treatment, y = estimate)) +
   geom_pointrange(aes(ymin = conf.low, ymax = conf.high),
                   color = "grey20", size = 1.1) +
+  scale_y_continuous(labels = scales::label_dollar(prefix = "$")) +
   labs(
-    title = "Causal Effect of Seguro Popular Enrollment on Health Spending",
-    subtitle = "Enrolled households spent about 24% less than not-enrolled households",
-    x = "Enrollment Status",
-    y = "Expected Log Health Expenditure (log pesos)",
-    caption = "Source: King et al. (2009) via primer.data"
+    title = "Predicted 3-Month Out-of-Pocket Spending by Enrollment Status",
+    subtitle = "Enrolled households spend ~60 pesos less, but the CI crosses zero",
+    x = "Treatment",
+    y = "Predicted 3-month spending",
+    caption = "Source: King et al. (2009) SPS rollout via primer.data"
   ) +
   theme_minimal()
 ```
 
-### Exercise 12
+### Exercise 8
 
-Finalize the graphics chunk in your QMD. `Cmd/Ctrl + Shift + K`. At the R prompt, run `show_file("analysis.qmd", chunk = "Last")`. CP/CR.
+Finalize the new graphics chunk in your QMD. `Cmd/Ctrl + Shift + K`. At the R prompt, run:
 
-```{r temperance-12}
+```
+show_file("analysis.qmd", chunk = "Last")
+```
+
+CP/CR.
+
+```{r temperance-8}
 question_text(NULL,
+  message = "    > show_file(\"analysis.qmd\", chunk = \"Last\")\n    ```{r}\n    plot_predictions(fit_sps, condition = \"treatment\", draw = FALSE) |>\n      ggplot(aes(x = treatment, y = estimate)) +\n      geom_pointrange(aes(ymin = conf.low, ymax = conf.high)) +\n      scale_y_continuous(labels = scales::label_dollar(prefix = \"$\")) +\n      labs(\n        title = \"Predicted 3-Month Out-of-Pocket Spending by Enrollment Status\",\n        subtitle = \"Enrolled households spend ~60 pesos less, but the CI crosses zero\",\n        x = \"Treatment\", y = \"Predicted 3-month spending\",\n        caption = \"Source: King et al. (2009) SPS rollout via primer.data\"\n      ) +\n      theme_minimal()\n    ```",
   answer(NULL, correct = TRUE),
-  allow_retry = TRUE,
-  try_again_button = "Edit Answer",
+  allow_retry = FALSE,
   incorrect = NULL,
-  rows = 8)
+  rows = 12)
 ```
 
 ###
 
-The map is not the territory. A beautiful graphic tells a story, but that story is always an imperfect representation of reality.
+The map is not the territory. A clean graphic tells a story, but the story always rests on assumptions that are at best approximately true.
 
-### Exercise 13
+### Exercise 9
 
 Write the last sentence of your summary paragraph. It describes at least one Quantity of Interest and a measure of uncertainty.
 
-```{r temperance-13}
+```{r temperance-9}
 question_text(NULL,
-  message = "We estimate that Seguro Popular enrollment reduced three-month health expenditures by about 24% among positive-spending households (a log-scale coefficient of −0.27, 95% CI approximately −0.62 to 0.08), though the confidence interval includes zero, indicating substantial uncertainty.",
+  message = "We estimate that enrollment in Seguro Popular reduced three-month out-of-pocket spending by about 60 pesos on average, with a 95% confidence interval that runs from a 380-peso reduction to a 250-peso increase --- a range wide enough that we cannot rule out no effect.",
   answer(NULL, correct = TRUE),
   allow_retry = FALSE,
   incorrect = NULL,
@@ -2021,15 +1793,15 @@ question_text(NULL,
 
 ###
 
-Add a final sentence to your summary paragraph. `Cmd/Ctrl + Shift + K`.
+Add a final sentence to your summary paragraph, but don't copy/paste exactly. `Cmd/Ctrl + Shift + K`.
 
-### Exercise 14
+### Exercise 10
 
-Write a few sentences explaining why the estimates might be wrong.
+Write a few sentences explaining why the estimates might be wrong. Suggest alternative estimates if warranted.
 
-```{r temperance-14}
+```{r temperance-10}
 question_text(NULL,
-  message = "The study was conducted in 2005-06 in seven specific Mexican states; applying the results to Mexico in 2025 requires assuming that the relationship between enrollment and spending has not changed over 19 years, which is unlikely given the health system reforms since then. We also restricted our analysis to positive spenders, so the 36% of households that reported zero spending are excluded --- they may have changed their behavior too, just in ways our model cannot see. The confidence interval should probably be wider than the model's nominal range, because neither the temporal stability of the effect nor the representativeness of the 2006 sample is accounted for in the standard errors.",
+  message = "Our 500-household sample is balanced 250/250 across treatment arms by construction, but it is drawn from a survey with substantial follow-up attrition and from communities chosen by the Ministry from the country's poorer regions. Both pull our estimate away from a national average. The randomization happened at the community, not household, level --- so the comparison of *enrolled* vs. *not enrolled* households conflates the randomized intent-to-treat effect with self-selection into enrollment within treated communities. The point estimate could plausibly be anywhere from -200 to +50 pesos rather than the -62 we report; we should widen the confidence interval substantially to account for these issues that the model's standard error does not see.",
   answer(NULL, correct = TRUE),
   allow_retry = FALSE,
   incorrect = NULL,
@@ -2038,26 +1810,32 @@ question_text(NULL,
 
 ###
 
-Always go back to your Preceptor Table. Even a perfectly estimated statistical model is rarely as useful as we might like.
+Always go back to your Preceptor Table. Even a perfectly estimated statistical model is rarely as useful as we'd like.
 
-### Exercise 15
+### Exercise 11
 
-Rearrange the material in your QMD so the order is graphic, then summary paragraph. The chunk that creates `fit_sps` must occur before the chunk that creates the graphic. `Cmd/Ctrl + Shift + K`. At the R prompt, run `show_file("analysis.qmd")`. CP/CR.
+Rearrange the material in your QMD so the order is graphic, then summary paragraph. The chunk that creates `fit_sps` must occur before the chunk that creates the graphic. `Cmd/Ctrl + Shift + K`. At the R prompt, run:
 
-```{r temperance-15}
+```
+show_file("analysis.qmd")
+```
+
+CP/CR.
+
+```{r temperance-11}
 question_text(NULL,
+  message = "    > show_file(\"analysis.qmd\")\n    ---\n    title: \"Seguro Popular\"\n    author: \"<your name>\"\n    execute:\n      echo: false\n    ---\n    \n    ```{r}\n    #| message: false\n    library(tidyverse)\n    library(tidymodels)\n    library(primer.data)\n    library(broom)\n    library(marginaleffects)\n    ```\n    \n    ```{r}\n    set.seed(2026)\n    x <- sps |>\n      select(treatment, t2_health_exp_3m, age, sex, education) |>\n      drop_na() |>\n      mutate(treatment = factor(if_else(treatment == 1, \"Enrolled\", \"Not enrolled\"),\n                                levels = c(\"Not enrolled\", \"Enrolled\"))) |>\n      group_by(treatment) |>\n      slice_sample(n = 250) |>\n      ungroup()\n    ```\n    \n    ```{r}\n    #| cache: true\n    fit_sps <- linear_reg(engine = \"lm\") |>\n      fit(t2_health_exp_3m ~ treatment, data = x)\n    ```\n    \n    ```{r}\n    plot_predictions(fit_sps, condition = \"treatment\", draw = FALSE) |>\n      ggplot(aes(x = treatment, y = estimate)) +\n      geom_pointrange(aes(ymin = conf.low, ymax = conf.high)) +\n      scale_y_continuous(labels = scales::label_dollar(prefix = \"$\")) +\n      labs(\n        title = \"Predicted 3-Month Out-of-Pocket Spending by Enrollment Status\",\n        subtitle = \"Enrolled households spend ~60 pesos less, but the CI crosses zero\",\n        x = \"Treatment\", y = \"Predicted 3-month spending\",\n        caption = \"Source: King et al. (2009) SPS rollout via primer.data\"\n      ) +\n      theme_minimal()\n    ```\n    \n    Households' out-of-pocket spending on health care is a key marker of financial vulnerability. Using a 500-household sample drawn from Mexico's 2005--06 randomized rollout of Seguro Popular, we estimate the average causal effect of enrollment on three-month out-of-pocket spending. One concern is that randomization happened at the community level, not the household level. We model three-month spending as a normally distributed variable which is a linear function of treatment. We estimate that enrollment reduced spending by about 60 pesos on average, with a 95% confidence interval wide enough to include zero --- our data cannot rule out no effect.",
   answer(NULL, correct = TRUE),
-  allow_retry = TRUE,
-  try_again_button = "Edit Answer",
+  allow_retry = FALSE,
   incorrect = NULL,
   rows = 10)
 ```
 
 ###
 
-This is the version of your QMD file at which your teacher is most likely to look closely.
+This is the version of your QMD your teacher is most likely to look at closely.
 
-### Exercise 16
+### Exercise 12
 
 Publish your rendered QMD to GitHub Pages. In the Terminal (not the R prompt!), run:
 
@@ -2067,7 +1845,7 @@ quarto publish gh-pages analysis.qmd
 
 Copy/paste the resulting URL below.
 
-```{r temperance-16}
+```{r temperance-12}
 question_text(NULL,
   message = "https://<your-github-username>.github.io/sps/analysis.html",
   answer(NULL, correct = TRUE),
@@ -2080,11 +1858,11 @@ question_text(NULL,
 
 Commit/push everything.
 
-### Exercise 17
+### Exercise 13
 
 Copy/paste the URL to your GitHub repo.
 
-```{r temperance-17}
+```{r temperance-13}
 question_text(NULL,
   message = "https://github.com/<your-github-username>/sps",
   answer(NULL, correct = TRUE),
@@ -2110,17 +1888,20 @@ plot_predictions(fit_sps, condition = "treatment", draw = FALSE) |>
   ggplot(aes(x = treatment, y = estimate)) +
   geom_pointrange(aes(ymin = conf.low, ymax = conf.high),
                   color = "grey20", size = 1.1) +
+  scale_y_continuous(labels = scales::label_dollar(prefix = "$")) +
   labs(
-    title = "Causal Effect of Seguro Popular Enrollment on Health Spending",
-    subtitle = "Enrolled households spent about 24% less than not-enrolled households",
-    x = "Enrollment Status",
-    y = "Expected Log Health Expenditure (log pesos)",
-    caption = "Source: King et al. (2009) via primer.data"
+    title = "Predicted 3-Month Out-of-Pocket Spending by Enrollment Status",
+    subtitle = "Enrolled households spend ~60 pesos less, but the CI crosses zero",
+    x = "Treatment",
+    y = "Predicted 3-month spending",
+    caption = "Source: King et al. (2009) SPS rollout via primer.data"
   ) +
   theme_minimal()
 ```
 
-Seguro Popular, Mexico's public health insurance program, aimed to reduce the financial burden of medical care on households. Using data from King et al.'s 2009 randomized evaluation across seven Mexican states, we estimate by what percentage Seguro Popular enrollment reduced out-of-pocket health expenditures among households that were already spending on medical care. After EDA revealed that about 36% of households reported zero spending --- a different question entirely --- we restricted to positive spenders and log-transformed the outcome. The study was conducted in seven specific Mexican states in 2006; whether its results apply to other regions of Mexico today is an open question. We model log household health expenditure as a linear function of Seguro Popular enrollment, age, and sex. We estimate that enrollment reduced three-month health expenditures by about 24% among positive-spending households, though the confidence interval is wide and includes zero.
+Households' out-of-pocket spending on health care is a key marker of financial vulnerability. Using a 500-household sample drawn from Mexico's 2005--06 randomized rollout of Seguro Popular, we estimate the average causal effect of enrollment on three-month out-of-pocket spending. One concern is that randomization happened at the community level rather than the household level: within a treated community, enrollment was voluntary, so the comparison of enrolled vs. not-enrolled households is partly a comparison of self-selected groups. We model three-month spending as a normally distributed variable which is a linear function of treatment. We estimate that enrollment reduced average three-month spending by about 60 pesos, with a 95% confidence interval running from roughly -380 to +250 pesos --- a range wide enough that we cannot rule out no effect.
+
+This finding would inform a policy decision about whether to renew or expand a Seguro Popular--like program, and about how to interpret similar randomized rollouts of social-insurance programs in other settings. It does not address every question a policy analyst would face --- it says nothing about catastrophic health spending in particular, about non-financial outcomes like health status, or about how the effect varies across regions or income tiers. But it gives a defensible starting point.
 
 The world is always more uncertain than our models would have us believe.
 

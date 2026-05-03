@@ -68,71 +68,60 @@ Transitions are gradual, not sharp. The last Easy tutorial should be just slight
 
 This principle works hand-in-hand with spaced repetition (§8): a recurring concept doesn't merely reappear, it reappears at the next level of sophistication, so each visit teaches something new.
 
-**Most definitions stay stable across tiers; what scales is the discussion around them.** A student who learns the canonical §11 wording in an early chapter should see the same wording in later chapters — that is how spaced repetition cements it. What changes across Easy, Medium, and Difficult treatments is the depth of the *surrounding* material: the counter-examples chosen, the knowledge drops attached, the techniques mentioned, the edge cases probed. Mark Easy/Medium/Difficult variants on knowledge drops (§12), counter-examples, and exercise prompts (§13) — not on the canonical definitions themselves.
+**Most definitions stay stable across tiers; what scales is the discussion around them.** A student who learns the canonical Key Concepts wording in an early chapter should see the same wording in later chapters — that is how spaced repetition cements it. What changes across Easy, Medium, and Difficult treatments is the depth of the *surrounding* material: the counter-examples chosen, the knowledge drops attached, the techniques mentioned, the edge cases probed. Mark Easy/Medium/Difficult variants on knowledge drops (§12), counter-examples, and exercise prompts (§13) — not on the canonical definitions themselves.
 
-**Some definitions, however, are themselves tier-staged.** When a concept's full canonical wording is too sophisticated for early tutorials, the §11 wording is the *Hard* version, and Easy and (sometimes) Medium tutorials use simpler framings that grow toward it. Three patterns exist:
+**Some definitions, however, are themselves tier-staged.** When a concept's full canonical wording is too sophisticated for early tutorials, the Key Concepts wording is the *Hard* version, and Easy and (sometimes) Medium tutorials use simpler framings that grow toward it. Three patterns exist:
 
-- **No staging** (most concepts). Canonical wording from Easy onward. Examples: Wisdom, Courage, Temperance, Preceptor Table, causal effect, fundamental problem of causal inference, Population Table, **Stability**. For these, the canonical §11 wording is the same at every tier; what scales across E/M/H is the *knowledge drop* that follows the definition exercise — a "post-definition theme" that grows in sophistication tier by tier.
+- **No staging** (most concepts). Canonical wording from Easy onward. Examples: Wisdom, Courage, Temperance, Preceptor Table, causal effect, fundamental problem of causal inference, Population Table, **Stability**. For these, the canonical wording is the same at every tier; what scales across E/M/H is the *knowledge drop* that follows the definition exercise — a "post-definition theme" that grows in sophistication tier by tier.
 - **Two tiers** (Easy → canonical at Medium). The simpler form covers Easy plus the first half of Medium; canonical takes over at the back half of Medium and stays. Examples: Representativeness, Unconfoundedness.
-- **Three tiers** (E / M / H). Each tier has its own wording, mapping one-for-one to the EMH split. Example: Justice (see worked example below).
+- **Three tiers** (E / M / H). Each tier has its own wording, mapping one-for-one to the EMH split. Example: Justice.
 
 When a definition has tier-staged variants, the End of the corresponding §13 Ex 1 is **always devoted to placing the definition in the context of increasing sophistication** — naming the technical terms or distinctions that the next tier will introduce, even if there is not time to go into the details. The aim is for students to see what's coming. (When a definition has no staging, the End can do something else.)
 
-The §11 entry for any tier-staged concept is always the canonical Hard wording. Easy and Medium variants live in the §1.3 worked example for that concept; the §13 exercise spec references the worked example for which wording to use at which tier.
+**Where the variants themselves are written down.** The actual wordings, scope expansions, theme-by-tier drops, and counter-examples for every tier-staged definition live in the `Key Concepts` book chapter (`book/key-concepts.qmd`), under each definition's *Where this comes from* subsection. Key Concepts uses content-based labels (e.g. "Single-link frame", "Outcome-only scope", "Stability and time", "The simpler frame") rather than EMH-tier labels — the chapter does not name the EMH split because that is curriculum machinery, not pedagogical content. CLAUDE.md retains the *tier-routing rules* below (which version goes in which tutorial position) but no longer carries the wordings or the discussion. When you need to write or rewrite a §13 Ex 1 message, look up the relevant Key Concepts entry.
 
-**Worked example: representativeness across three levels.**
+**Tier-routing: representativeness.** Two-tier staging.
 
-- **Easy.** Representativeness is the similarity between a subset of the units in a population and the overall population itself. The discussion stays on the *data → population* link: are the data representative of the population? The cleanest way to ensure this is a random sample, but that is rarely the case. All counter-examples concern this single link.
+- **Easy.** Use the *Single-link frame*. Discussion stays on the data ↔ population link only.
+- **Medium and Hard.** Switch to the canonical *Two-link frame* (data ↔ population ↔ Preceptor Table) and stay there. Counter-examples deepen across Medium → Hard but the wording does not change.
 
-- **Medium.** Switch to the canonical §11 wording: representativeness concerns two relationships among the rows in the Population Table — *data ↔ other rows*, and *other rows ↔ Preceptor Table*. Counter-examples and discussion span both directions. Even with a random-sample dataset and an unbiased DGM, a Preceptor Table whose units are not representative of the broader population yields biased results.
-
-- **Difficult.** Same canonical definition as Medium. What changes: more sophisticated counter-examples and knowledge drops, plus mention of advanced remedies (post-stratification, inverse-probability weighting, raking). We do not teach these techniques in depth — there is no room — but we name them so students know what to reach for when they encounter the problem in practice.
-
-Note that the definition shifts only between Easy and Medium, then stays fixed. That is the typical pattern: a temporary intro framing in Easy, the canonical §11 form from Medium onward, and the discussion deepening continuously across all three.
+The wordings, the counter-examples, and the advanced-remedy discussion (post-stratification, IPW, raking) live in `Key Concepts` → *Representativeness* → *Where this comes from*.
 
 **Terminology introduction points (sampling mechanism, selection mechanism).** The phrase *sampling mechanism* is first introduced in the middle of the Easy tier and is used from then on in knowledge drops and example answers — every subsequent tutorial can assume the reader has seen it. The phrase *selection mechanism* is first introduced in the middle of the Medium tier and likewise propagates forward. Before writing any given tutorial, check where it sits in the sequence: if it is before the introduction point of one of these phrases, use only the plainer vocabulary; if it is after, use the technical term freely. This staggered introduction is why the two phrases are defined as canonical concepts in §11 but not introduced together.
 
-**Worked example: validity across three levels.**
+**Tier-routing: validity.** No staging of the wording — the canonical Key Concepts definition is plain enough for the first tutorial. What scales across tiers is the *scope* of mismatch the discussion considers.
 
-- **Easy.** Canonical §11 wording from the start. Scope is restricted to the **outcome column** and obvious measurement mismatches. Counter-examples: unit mismatches (cm vs. inches, years vs. months), scale mismatches (1–7 Likert vs. 0–10), timing mismatches (income last year vs. income at treatment time), naming collisions (household income vs. personal income). Remedies: identify, document, and adjust either the Preceptor Table's concept or the question to match what the data actually measures.
+- **Easy.** *Outcome-only scope.* Restrict the discussion to the outcome column.
+- **Medium.** *Covariates and treatment scope.* Expand to non-outcome columns, including treatment operationalization and derived columns.
+- **Hard.** *Construct scope.* Construct validity --- subtle conceptual mismatches. Name (do not teach) advanced remedies: measurement invariance testing, item response theory, cross-walking between instruments, IV when the proxy is biased.
 
-- **Medium.** Same canonical definition. Scope expands to **covariates and (in causal models) the treatment**, and introduces **derived variables** — columns constructed from raw data. Counter-examples: treatment operationalization mismatch (e.g., Enos's platform-confederate experiment as one operationalization of "Spanish exposure" vs. a different instantiation in the Preceptor Table), covariate encoding (education as years completed vs. as highest degree), concept drift over time ("Republican" in 1990 vs. 2024), derived columns (a "partisanship" index built from three survey items). Remedies expand: rescaling or redefining outcome and covariates, adjusting the question to match what is truly measurable, folding measurement error into how the DGM is specified.
+The scope-by-scope counter-examples and remedies live in `Key Concepts` → *Validity* → *Where this comes from*. Use validity as the guide for other concepts: only introduce an Easy-specific *wording* when the canonical version would genuinely obstruct a new student. Most of the time, scope-based staging is sufficient.
 
-- **Difficult.** Same canonical definition. Discussion moves to **construct validity** — subtle conceptual mismatches rather than obvious ones. Counter-examples: psychological constructs (is a three-item "attitude toward immigration" scale really measuring what the question means by "attitude"?), economic constructs (BLS-defined unemployment vs. colloquial usage; "wealth" as self-reported assets minus debts), policy constructs that drift across jurisdictions ("arrested" across different states' definitions). Advanced remedies to name, not teach: measurement invariance testing, item response theory, cross-walking between instruments, cognitive interviewing, instrumental variables when the proxy is known to be biased.
+**Tier-routing: stability.** No staging of the wording — the canonical definition holds at every tier. What scales is the *theme of the post-definition drop* attached to §13.3 Ex 6's End.
 
-Unlike representativeness, validity's definition does not shift between Easy and Medium. The canonical §11 wording — "consistency, or lack thereof, in the columns of the data set and the corresponding columns in the Preceptor Table" — is plain-English enough for a first-chapter student, so no intro framing is needed. What deepens across the three levels is entirely the scope (outcome → covariates/treatment → constructs), the sophistication of the counter-examples, and the remedies named. Use this as the guide for other concepts: only introduce an Easy-specific framing when the §11 wording would genuinely obstruct a new student.
+- **Easy.** Theme: *Stability and time*. Frame stability as primarily a temporal concern; the longer the gap between data and Preceptor Table, the more stability is at risk. Easy-tier authors may also seed a forward-pointer to the parameters-vs-distributions point coming at Medium.
+- **Medium.** Theme: *Stability is about parameters, not distributions*. The load-bearing Medium-level insight. Plan to revisit "distribution change ≠ stability violation" across several Medium-tier drops; the point resists landing in one pass.
+- **Hard.** Theme: *Three DGMs and the parallel to representativeness*. Make the row-level (representativeness) vs parameter-level (stability) parallel explicit at least once per Hard tutorial. Name (do not teach) advanced remedies: time-varying coefficients, state-space models, changepoint analysis, DiD with time fixed effects, structural-break tests, the Lucas critique.
 
-**Worked example: stability across three levels.**
+The theme-by-theme content lives in `Key Concepts` → *Stability* → *Where this comes from*. The Ends across tiers are *thematic* — different wording each time, but the same theme at any given tier (see §12 on knowledge drops as templates).
 
-**Stability's canonical §11 wording is tier-stable.** Easy students get the same definition Hard students do: *"Stability means that the relationship between the columns in the Population Table is the same for three categories of rows: the data, the Preceptor Table, and the larger population from which both are drawn."* It's plain enough to use in the first example tutorial and rich enough to carry through the last. What scales across tiers is the **knowledge drop after the definition exercise** (§13.3 Ex 6 End) — the post-definition theme that takes the canonical wording one step further into the underlying ideas.
+**Tier-routing: unconfoundedness.** Causal-only — predictive tutorials skip the assumption entirely. Two-tier definitional shift, plus a third frame at Hard for advanced designs.
 
-- **Easy.** Theme: **stability and time.** The drop frames stability as primarily about time: when the data is from one era and the Preceptor Table from another, the relationship between covariates and outcome may have drifted. The longer the gap, the more stability is at risk. Counter-examples stay close to student intuition — pre- vs. post-pandemic consumer behavior, interest-rate behavior in 2007 vs. 2020, a 13-year gap between IPEDS 2013 and 2026. Remedies: narrow the time gap, use the most recent subset of the data, adjust the Preceptor Table's time scope. Easy-tier authors may also seed a forward-pointer: *"the relationship in question is really about model parameters, a piece we'll return to next tutorial."*
+- **Easy.** Use the *Intuition: random assignment* frame. Stay at student-intuition level. Scope: binary treatment, surface-level confounding.
+- **Medium.** Switch to the canonical wording and stay there. Introduce the *Conditioning on pre-treatment covariates* apparatus: pre-vs-post-treatment distinction, *selection on observables*, randomized vs. observational. Heavy upgrade — plan to revisit across several Medium-tier tutorials rather than dropping it all at once.
+- **Hard.** *Selection on unobservables.* Name (do not teach) the advanced designs: IV, RDD, DiD with parallel-trends, propensity-score methods, sensitivity analysis.
 
-- **Medium.** Theme: **stability is about parameters, not distributions.** This is the load-bearing Medium-level insight. A change in the distribution of any single variable over time — tuition rising, a treatment becoming more common, the demographic mix of a city shifting — does *not*, by itself, constitute a stability violation. What matters is whether β₀, β₁, and so on are the same across the three row categories of the Population Table. Counter-examples: Enos Metra 2012 → MBTA 2026 where the *parameter* on Spanish exposure may have shifted even if the rider distribution hasn't; education's income coefficient across decades; intercepts drifting while slopes hold, or the reverse. Plan to revisit "distribution change ≠ stability violation" in several Medium-tier drops before moving on; the insight resists landing in one pass.
+The wordings, counter-examples, and design discussion live in `Key Concepts` → *Unconfoundedness* → *Where this comes from*. A predictive tutorial sandwiched between two causal ones means the next causal tutorial may need a half-exercise to re-ground why the assumption applies here and did not last time.
 
-- **Hard.** Theme: **three DGMs and the parallel to representativeness.** Stability is best understood as a statement about three possible DGMs: the DGM that produced our data, the DGM that governs the Preceptor Table's units, and the DGM of the broader population from which both are drawn. Nothing forces them to be the same. Stability is the assumption that all three DGMs are identical — same intercepts, same slopes, same residual variance. If they are, we estimate parameters from the data and use them to fill in the missing cells of the Preceptor Table. If they are not, no amount of data will rescue us. **The connection to representativeness is the Hard-tier payoff:** representativeness asks whether the *rows* in each block of the Population Table look alike across data ↔ population ↔ Preceptor Table; stability asks whether the *parameters* governing those rows are alike across the same blocks. Both are assumptions about underlying sameness across the data/Preceptor divide; one is row-level, one is parameter-level. Hard tutorials should make this parallel explicit at least once. Advanced remedies to name (not teach): time-varying coefficients, state-space models, changepoint or regime-switching analysis, difference-in-differences with time fixed effects, structural-break tests; structural breaks, regime shifts, and the Lucas critique.
+**Tier-routing: Justice's definition.** Three-tier ladder — each tier's wording adds something the previous did not name.
 
-The Ends across tiers are *thematic* — different wording each time, but the same theme at any given tier. Two Easy tutorials at the same point in the curriculum should both use a "time" Ex 6 End, but in different sentences. See §12 intro on knowledge drops as templates rather than verbatim text.
+- **Easy.** *The simpler frame.* No four-assumption enumeration; uses *"formula for the data generating mechanism"* as the catch-all for what canonical Justice calls *"probability family and link function."*
+- **Medium.** *The four-assumption frame.* Adds the validity / stability / representativeness / unconfoundedness enumeration; still uses *"formula"* in place of the technical terms.
+- **Hard.** *The canonical frame.* Replaces *"formula"* with *probability family* and *link function*.
 
-**Worked example: unconfoundedness across three levels.** Unlike the other three assumptions, unconfoundedness is causal-only — tutorials with predictive models skip it entirely, so every reappearance is in a causal context. A predictive tutorial between two causal tutorials means the next causal one may need to spend a half-exercise re-grounding why the assumption applies here and did not last time.
+The actual wordings live in `Key Concepts` → *Justice* → *Where this comes from*.
 
-- **Easy.** Intuition-level framing. Scope: binary treatment, surface-level confounding. Frame: *"Unconfoundedness asks: could something other than the treatment explain why the treated and untreated groups have different outcomes? If not — if nothing else is driving the difference — the treatment is unconfounded. The easiest way to guarantee this is to assign treatment randomly."* Counter-examples stay at student-intuition level: voters who self-select into volunteering with a campaign differ from those who don't; smokers differ from non-smokers in many ways besides smoking; people who choose college differ from those who don't in ability, family income, and geography. Remedies: randomize when you can; if you cannot, name the confounders you are worried about and check whether they are in your data.
-
-- **Medium.** Switch to canonical §11 wording and keep it. Introduces two pieces of apparatus: **conditioning on pre-treatment covariates**, with the critical distinction between *pre-treatment* and *post-treatment* covariates (only the former belong in the model; controlling for post-treatment variables that sit on the causal path induces bias); and **selection on observables**, the formal name for the assumption that all relevant confounders are measurable and present in your data. Also distinguishes randomized experiments (unconfoundedness guaranteed by design) from observational data (unconfoundedness is an assumption you defend). Counter-examples: Enos's Metra platform experiment and the Shaming experiment as "good" randomized cases that make the observational contrast vivid; education's effect on income as the classic ability-bias story; the post-treatment trap of controlling for "occupation" when estimating education → income. Remedies expand: identify and include measurable confounders, be strict about the pre-treatment cutoff, reason explicitly about which variables sit on the causal path between treatment and outcome.
-
-- **Difficult.** Same canonical definition. Discussion moves to **selection on unobservables** — confounders that cannot be measured even in principle — and the **research designs built to work around them**. Counter-examples: ability bias that no test captures; voluntary-program selection (job training, welfare-to-work) where the people who sign up differ in ways that are not in the data; time-varying confounding when past outcomes affect future treatment decisions. Advanced designs and remedies to name, not teach: instrumental variables, regression discontinuity, difference-in-differences with its own parallel-trends assumption, natural experiments, propensity-score matching and weighting, sensitivity analysis (how much unmeasured confounding would overturn the result?).
-
-Like stability, unconfoundedness has an Easy → Medium definitional shift and then fixes the canonical form from Medium onward. The Medium upgrade is heavy — the conditioning apparatus plus pre-vs-post-treatment plus the observables/unobservables framing — so plan to revisit these pieces across several Medium-tier tutorials rather than dropping them all at once. The Difficult upgrade is mostly about named designs (IV, RDD, DiD, propensity methods), which the Primer does not teach but names so students know the menu exists when they face unmeasured confounders in practice.
-
-**Worked example: Justice's definition across three levels.** Unlike the four assumption examples above (where the canonical wording stabilizes at Medium), Justice has a three-tier ladder: each tier introduces something the previous tier did not name.
-
-- **Easy.** Simpler wording: *"Justice reviews the Population Table and selects the formula for the data generating mechanism."* The four assumptions are *not* enumerated in the definition itself — though the rest of the Justice section's exercises walk through each by name (validity, stability, representativeness; in causal tutorials, also unconfoundedness). The phrase "formula for the data generating mechanism" stands in for the Hard-tier "probability family and link function" pair.
-
-- **Medium.** Add the four-assumption enumeration to the definition: *"Justice concerns the Population Table, the four key assumptions which underlie it (validity, stability, representativeness, and unconfoundedness), and selects the formula for the data generating mechanism."* The "formula" framing is still in plain language; the technical "probability family and link function" terms wait for Hard.
-
-- **Hard.** Canonical §11 wording: *"Justice concerns the Population Table, the four key assumptions which underlie it (validity, stability, representativeness, and unconfoundedness), and the choice of probability family and link function for the data generating mechanism."* The two technical terms — *probability family* (governs the outcome's distribution: Normal, Bernoulli, multinomial, ordinal) and *link function* (governs how the outcome's expected value depends on the covariates: identity, logit, etc.) — replace the looser "formula" framing.
-
-The End of Justice Ex 1 in any given tutorial follows the §1.3 rule for tier-staged definitions: it always previews the next tier of sophistication. At Easy, the End names the four-assumption enumeration as something coming and notes that the formula choice gets technical names later. At Medium, the End names "probability family" and "link function" as the Hard-tier upgrade. At Hard, no forward-pointer is needed.
+The End of Justice Ex 1 always previews the next tier of sophistication. At Easy, the End names the four-assumption enumeration as something coming and notes that the formula choice gets technical names later. At Medium, the End names "probability family" and "link function" as the Hard-tier upgrade. At Hard, no forward-pointer is needed.
 
 **Worked example: model checking across three levels.** Model checking — comparing the fitted values our DGM produces with the actual outcomes in the data — is different from the four assumption worked examples above. It is not a property we hope for; it is a diagnostic we perform. The same Easy / Medium / Difficult staging applies, but what scales is how much the check steers model choice and how much vocabulary we attach to it.
 
@@ -1212,7 +1201,13 @@ cat(
 
 ## 11. Canonical definitions
 
-These are the ground truth for the project's key definitions. Use the wording below verbatim as the `message` text in written-answer exercises that ask for a definition. Use the same wording (or a close paraphrase) in chapter prose.
+**Ground truth has moved.** Canonical definitions used to live here. They now live in the `Key Concepts` book chapter (`book/key-concepts.qmd`), which is the single source of truth for every definition the project uses. CLAUDE.md is no longer authoritative for the wording; when you author a tutorial or chapter, the Key Concepts entry is what gets the final word, and any older wording cached anywhere else (older drafts, prior tutorials, this file's own §1.3 worked examples, anywhere) is superseded.
+
+The wordings below are mirrored from Key Concepts as a *convenience copy* for authoring sessions that don't want to open the book chapter. **Treat them as a snapshot, not as the truth** — if they ever drift from `key-concepts.qmd`, the chapter wins. When you change a definition, change it in `key-concepts.qmd` first, then update the snapshot here.
+
+The §1.3 worked examples elsewhere in this file no longer carry the *definitional* content of staged definitions (representativeness, validity, stability, unconfoundedness, justice). That content has moved to Key Concepts under each definition's *Where this comes from* subsection, with content-named labels (e.g. "Single-link frame", "Outcome-only scope", "Stability and time") rather than the EMH-tier labels the worked examples use here. What remains in §1.3 is the *tier-routing rule*: which version a given tutorial-tier should use when. CLAUDE.md owns *which version to use when*; Key Concepts owns *what each version says*.
+
+Use the wording below verbatim as the `message` text in written-answer exercises that ask for a definition. Use the same wording (or a close paraphrase) in chapter prose.
 
 ### Four Cardinal Virtues
 
@@ -1671,7 +1666,7 @@ Within a section, keep exercises in the order given. Not every tutorial includes
 
 | Position | Tutorial | Tier | Ex 1 asks |
 |---|---|---|---|
-| 5 | 10 Biden | Medium-P | Wisdom, Justice |
+| 5 | 10 Smokes | Medium-P | Wisdom, Justice |
 | 6 | 11 Shaming | Medium-C | Courage, Temperance |
 | 7 | 12 NES | Medium-P | Wisdom, Courage |
 | 8 | 13 TODO | Medium-C | Justice, Temperance |
@@ -2317,7 +2312,7 @@ This ordering determines how much real estate the Courage parameter block consum
 
 **EMH progression for the Courage interpretation block (§13.4 Exercises 5, 8, 11):**
 - **Easy** (positions 1–4, target tutorials 06–09). All linear models. The three-fit progression — binary or multi-level categorical (Fit A), the other categorical type or continuous (Fit B), final combined (Fit C) — is the curriculum's first place to practice interpretation across covariate types. The adjustment clause appears for the first time at Fit C's interpretation question.
-- **Medium** (positions 5–8, target tutorials 10–13). First link functions (logit in Biden at position 5, Shaming at position 6; multinomial in NES at position 7). Adjustment clauses are mandatory. Students are **not** asked to produce link-scale interpretations; the author notes the link-scale form once, and Courage's interpretation Ends focus on identifying reference categories, the sign of β, and why we need `marginaleffects`. Interactions, when they appear, force conditional interpretation — *"the effect of X depends on the value of Z."*
+- **Medium** (positions 5–8, target tutorials 10–13). First link functions (logit in Smokes at position 5, Shaming at position 6; multinomial in NES at position 7). Adjustment clauses are mandatory. Students are **not** asked to produce link-scale interpretations; the author notes the link-scale form once, and Courage's interpretation Ends focus on identifying reference categories, the sign of β, and why we need `marginaleffects`. Interactions, when they appear, force conditional interpretation — *"the effect of X depends on the value of Z."*
 - **Hard** (positions 9–12, target tutorials 14–17). Cumulative logit (CES at position 9), RDD causal identification (Governors at position 10), and non-parametric models (random forests at positions 11 and 12). Non-parametric models replace the three-fit Courage block with a single "why parameters don't help" exercise per §14.8. Where the multi-fit block remains, keep at least one fit whose interpretation question requires the student to articulate *why* the parameter is opaque — the failure to interpret is itself the lesson, and it sets up the Temperance `marginaleffects` work that follows.
 
 **Exercise 2.** [operational] Load `marginaleffects`.
@@ -2868,21 +2863,37 @@ Preceptor Table and Population Table columns are listed by spanner in order. Pop
 
 ---
 
-### 10 — Biden  *(Position 5, Medium predictive)*
+### 10 — Smokes  *(Position 5, Medium predictive)*
 
 - **Type:** example
-- **"Imagine":** You are the chair of the Democratic National Committee in early 2024 deciding where to devote time and money.
-- **Dataset:** YouGov poll, 1,559 U.S. adult citizens, March 2024 (constructed inline as a tibble)
-- **Outcome:** `biden` — binary support for Biden (Yes/No)
-- **Treatment / Key covariate:** none (intercept-only model)
-- **Question (QoI):** What proportion of all votes will be cast for Joe Biden in the 2024 election?
-- **Model:** Logistic regression, intercept-only
-- **Causal / Predictive:** Predictive
-- **Student project:** `biden`
-- **Data prep:** `tibble(biden = as.factor(c(rep("Yes", 655), rep("No", 904)))) |> slice_sample(prop = 1)` → `poll_data`
-- **Final model:** `logistic_reg() |> fit(biden ~ 1, data = poll_data)` → `fit_biden`
-- **Preceptor Table:** Unit (Voter) | Outcome (Biden Support)
-- **Population Table:** Source | Unit/Time (Voter, Year) | Outcome (Biden Support)
+- **Status:** **Replaced.** Earlier drafts at this slot used a constructed Biden 2024 YouGov tibble (intercept-only logistic) and then a 2024 NES Democratic-vote design. Both have a political framing the curriculum has plenty of elsewhere (positions 6, 7, 8, 9, 11, 12). The current design swaps in a non-political binary outcome — whether an adult has ever smoked — using a curated NHANES cut packaged in `primer.tutorials::smokes`. Same dataset family students saw at position 1 (06 Recruits drew its `recruits` cut from NHANES too), so the data is familiar; the model and outcome are new.
+- **"Imagine":** You are a public-health analyst at a state health department designing the next anti-smoking campaign. To target outreach, you want to know which adults are most likely to be smokers, broken out by basic demographics like age and sex. There are many decisions to make.
+- **Dataset:** `smokes` (`primer.tutorials`) — a 1,000-row teaching cut of the NHANES 2009--2012 educational subset bundled in the **NHANES** CRAN package. Restricted to adults aged 20--80 with non-missing values on smoking status, age, and sex. Built by `data-raw/smokes.R`; documented in `R/smokes.R`.
+- **Outcome:** `smoke` — factor with levels `"No"` and `"Yes"`; "Yes" means the respondent has ever smoked at least 100 cigarettes (the standard public-health "ever-smoker" definition). Stored as a factor for `logistic_reg(engine = "glm")` (factor-outcome gotcha, §13.4).
+- **Treatment / Key covariate:** `sex` (binary: Female / Male) is the covariate with the clean signal. `age` (continuous, 20--80) has a borderline coefficient whose CI just barely crosses zero — pedagogically useful as the "this covariate doesn't help much" Fit B.
+- **Question (QoI):** What is the difference in the probability of having ever smoked between a 30-year-old woman and a 70-year-old man? *(One specific number per §13.1; uses both covariates.)*
+- **Model:** Logistic regression on the link scale; interpretation lives downstream in `marginaleffects` (probability scale). Per §13.5 *Interpretability ceiling*, link-scale coefficients are noted in a knowledge drop but not the focus of student interpretation.
+- **Causal / Predictive:** Predictive. Comparison language only — *"the probability that a [Male] is a smoker is X percentage points higher than the probability that a [Female] is a smoker, adjusting for age."* No causal framing — the model says nothing about *what causes* smoking.
+- **Student project:** `smokes`
+- **Data prep:** none in the tutorial — the `smokes` tibble is already filtered, sampled, and factor-coded. Setup chunk loads `library(primer.tutorials)` and uses `smokes` directly (no intermediate `x`).
+- **Final model:** `logistic_reg(engine = "glm") |> fit(smoke ~ age + sex, data = smokes)` → `fit_smokes`
+- **Courage three-fit block** (per §13.4):
+  - Fit A: `smoke ~ sex` (binary, clean signal)
+  - Fit B: `smoke ~ age` (continuous, borderline — the "covariate barely helps" lesson)
+  - Fit C (final): `smoke ~ age + sex` (combined, with link-scale interpretation cautions)
+- **Preceptor Table:** Unit (Adult) | Outcome (Ever Smoked) | Covariates (Age, Sex)
+- **Population Table:** Source | Unit/Time (Adult, Year) | Outcome (Ever Smoked) | Covariates (Age, Sex)
+- **Authoring notes:**
+  - **Approximate fit values** (from the 1,000-row analysis sample, set.seed(2026)):
+    - Fit A `smoke ~ sex`: intercept (Female) ≈ -0.54, sexMale ≈ +0.54 (CI [0.29, 0.80]).
+    - Fit B `smoke ~ age`: intercept ≈ -0.60, age ≈ +0.007 (CI [-0.001, +0.014] — borderline).
+    - Fit C `smoke ~ age + sex`: intercept ≈ -0.88, age ≈ +0.007 (CI [-0.001, +0.015]), sexMale ≈ +0.55 (CI [0.29, 0.80]).
+    - Predicted probability of being an ever-smoker: 30y Female ≈ 0.34, 70y Female ≈ 0.41, 30y Male ≈ 0.47, 70y Male ≈ 0.54. The QoI (70y Male − 30y Female) ≈ 0.54 − 0.34 ≈ 0.20, about 20 percentage points.
+  - **Link-scale cautions are mandatory at Medium.** Fit C's interpretation question must *not* ask the student to translate the log-odds coefficient on `sex` into outcome-scale terms. The author notes the link-scale form ("a coefficient of +0.55 on `sexMale` means the log-odds of being an ever-smoker are 0.55 higher for men than women") in a knowledge drop, then hands off to Temperance's `predictions()` for probability-scale answers. This is the curriculum's first link-function tutorial; build the handoff carefully.
+  - **Why age stays in the final model despite a borderline coefficient.** Pedagogically, Fit B teaches "this covariate barely moves the needle on its own"; Fit C *keeps* age anyway so that interpretation of `sexMale` in Fit C requires the adjustment clause ("adjusting for age") that Easy tutorials introduced and Medium tutorials must keep mandatory.
+  - **"Specific question" verification.** The QoI subtracts two probabilities (70y Male P=0.54, 30y Female P=0.34). The answer is one specific number (0.20, or 20 percentage points). The §13.1 specific-number rule is satisfied.
+  - **Real-names + overlap rule (§10.2).** The Preceptor Table and Population Table use real-sounding adult identifiers (e.g. NHANES participant IDs paired with last names plausible for the survey population). At least one identifier appears in both the Data block (with one observed `smoke` value) and the Preceptor block (with both potential outcomes — though for a *predictive* tutorial there is just one outcome column, no hatching).
+  - **Reframing student-progress note.** Position 5's directory was `10-biden` in earlier drafts and is being renamed to `10-smokes`. Existing student progress records keyed on the old `10-biden` ID will not carry forward. Document the rename in `NEWS.md` and bump the package version.
 
 ---
 
@@ -2898,9 +2909,14 @@ Preceptor Table and Population Table columns are listed by spanner in order. Pop
 - **Causal / Predictive:** Causal
 - **Student project:** `shaming`
 - **Data prep:** `shaming |> mutate(civ_engage = primary_00 + primary_02 + primary_04 + general_00 + general_02 + general_04) |> select(primary_06, treatment, sex, age, civ_engage) |> mutate(voter_class = factor(case_when(civ_engage %in% c(5, 6) ~ "Always Vote", civ_engage %in% c(3, 4) ~ "Sometimes Vote", civ_engage %in% c(1, 2) ~ "Rarely Vote"), levels = c("Rarely Vote", "Sometimes Vote", "Always Vote"))) |> mutate(voted = as.factor(primary_06))` → `x`
-- **Final model:** `logistic_reg(engine = "glm") |> fit(voted ~ age + sex + treatment*voter_class, data = x)` → `fit_vote`
-- **Preceptor Table:** Unit (Voter) | Potential Outcomes (Voted if Postcard, Voted if No Postcard) | Treatment (Mailing Type)
-- **Population Table:** Source | Unit/Time (Voter, Year) | Potential Outcomes (Voted if Postcard, Voted if No Postcard) | Treatment (Mailing Type)
+- **Final model:** `logistic_reg(engine = "glm") |> fit(voted ~ age + sex + treatment*voter_class, data = x)` → `fit_shaming`
+- **Preceptor Table:** Unit (Voter) | Potential Outcomes (Voted if No Postcard, Voted if Civic Duty, Voted if Hawthorne, Voted if Self, Voted if Neighbors) | Treatment (Mailing Type) | Covariate (Voter Class)
+- **Population Table:** Source | Unit/Time (Voter, Year) | Potential Outcomes (five columns, one per treatment arm) | Treatment (Mailing Type) | Covariates (Voter Class, Age, Sex)
+- **Authoring notes:**
+  - **Five potential-outcome columns.** Faithful to Gerber-Green-Larimer 2008's five-arm design (No Postcard / Civic Duty / Hawthorne / Self / Neighbors). The Preceptor Table is wide; the §10 inline-block-div pattern handles it. Each row has one observed potential outcome and four hatched (unobservable) ones.
+  - **Full-data fit (~344K rows) takes ~1 second.** Below the §5.6 prefit threshold; fit lives in setup chunk. CIs are tight — Neighbors gives +8.1 pp turnout (CI 7.6 to 8.6), Self +4.8 pp, Hawthorne +2.5 pp, Civic Duty +1.8 pp.
+  - **Interaction with `voter_class`.** Heterogeneous treatment effects are the substantive payoff: Neighbors gives +9.0 pp among Always Vote and +8.6 pp among Sometimes Vote, but only +4.4 pp among Rarely Vote. The Temperance section uses `plot_predictions(condition = c("treatment", "voter_class"))` to make this visible.
+  - **Pairs thematically with Mail (position 8)** as the two multi-arm GOTV experiments at Medium causal. Same dataset family (postcards before an election), different treatment compositions.
 
 ---
 
