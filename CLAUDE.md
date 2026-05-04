@@ -18,7 +18,7 @@ The goal is that this file is the only reference either of us needs when startin
 8. **Spaced repetition** — the curriculum-level pattern
 9. **AI-mediated code exercises** — how students use AI to write code
 10. **Preceptor and Population Tables** — `gt` code, conventions
-11. **Canonical definitions** — verbatim text for §11-referenced concepts
+11. **Canonical definitions** — convenience snapshot of the Key Concepts chapter wordings (the chapter is the source of truth)
 12. **Knowledge drop library** — pedagogical beats, organized by virtue
 13. **Master exercise list** — per-virtue exercise template
 14. **Guidance for tutorial authors** — cross-cutting rules
@@ -82,12 +82,12 @@ When a definition has tier-staged variants, the End of the corresponding §13 Ex
 
 **Tier-routing: representativeness.** Two-tier staging.
 
-- **Easy.** Use the *Single-link frame*. Discussion stays on the data ↔ population link only.
-- **Medium and Hard.** Switch to the canonical *Two-link frame* (data ↔ population ↔ Preceptor Table) and stay there. Counter-examples deepen across Medium → Hard but the wording does not change.
+- **Easy.** Use the *Single-link frame*. Discussion stays on the data → population link only.
+- **Medium and Hard.** Switch to the canonical *Two-link frame* (data → population → Preceptor Table) and stay there. Counter-examples deepen across Medium → Hard but the wording does not change.
 
 The wordings, the counter-examples, and the advanced-remedy discussion (post-stratification, IPW, raking) live in `Key Concepts` → *Representativeness* → *Where this comes from*.
 
-**Terminology introduction points (sampling mechanism, selection mechanism).** The phrase *sampling mechanism* is first introduced in the middle of the Easy tier and is used from then on in knowledge drops and example answers — every subsequent tutorial can assume the reader has seen it. The phrase *selection mechanism* is first introduced in the middle of the Medium tier and likewise propagates forward. Before writing any given tutorial, check where it sits in the sequence: if it is before the introduction point of one of these phrases, use only the plainer vocabulary; if it is after, use the technical term freely. This staggered introduction is why the two phrases are defined as canonical concepts in §11 but not introduced together.
+**Terminology introduction points (sampling mechanism, selection mechanism).** The phrase *sampling mechanism* is first introduced in the middle of the Easy tier and is used from then on in knowledge drops and example answers — every subsequent tutorial can assume the reader has seen it. The phrase *selection mechanism* is first introduced in the middle of the Medium tier and likewise propagates forward. Before writing any given tutorial, check where it sits in the sequence: if it is before the introduction point of one of these phrases, use only the plainer vocabulary; if it is after, use the technical term freely. This staggered introduction is why the two phrases are defined as canonical concepts in Key Concepts but not introduced together at the same point in the curriculum.
 
 **Tier-routing: validity.** No staging of the wording — the canonical Key Concepts definition is plain enough for the first tutorial. What scales across tiers is the *scope* of mismatch the discussion considers.
 
@@ -162,9 +162,9 @@ The question `marginaleffects` answers — "what is the model saying, on the out
 
 The Primer is designed so that most example tutorials (and the chapters that match them) can be generated from this file plus the seed specifications in §17. The reason the system works this way, rather than as a set of hand-written artifacts edited individually forever:
 
-**Cross-cutting changes are expensive to propagate manually.** If we change the canonical definition of stability, or adjust how the Easy → Medium transition for representativeness works, the hand-edit path requires walking through all the tutorials (and their matching chapters) — and we will miss things. The regeneration path updates §11 (or §1.3, or wherever the change lives) and rebuilds the affected tutorials from the updated spec. Consistency is enforced by construction.
+**Cross-cutting changes are expensive to propagate manually.** If we change the canonical definition of stability, or adjust how the Easy → Medium transition for representativeness works, the hand-edit path requires walking through all the tutorials (and their matching chapters) — and we will miss things. The regeneration path updates Key Concepts (the canonical wording) or §1.3 (the tier-routing rules) or §13 (the exercise specifications), then rebuilds the affected tutorials from the updated spec. Consistency is enforced by construction.
 
-**Definition-only edits do not need a rebuild.** Changing just the wording of a §11 canonical definition works as find-and-replace in every tutorial. Regeneration earns its keep for *structural* changes: progression pacing (is Medium too steep between Tutorial 7 and Tutorial 8?), coverage (has this tutorial asked the canonical exercises from §13 that are due this tutorial?), cross-tutorial consistency (do the Difficult tutorials consistently drive model revision from the PPC per §1.3?). These are hard to see when each tutorial is considered in isolation and hard to fix without walking the whole sequence.
+**Definition-only edits do not need a rebuild.** Changing just the wording of a canonical definition in Key Concepts works as find-and-replace in every tutorial. Regeneration earns its keep for *structural* changes: progression pacing (is Medium too steep between Tutorial 7 and Tutorial 8?), coverage (has this tutorial asked the canonical exercises from §13 that are due this tutorial?), cross-tutorial consistency (do the Difficult tutorials consistently drive model revision from the PPC per §1.3?). These are hard to see when each tutorial is considered in isolation and hard to fix without walking the whole sequence.
 
 **The seed lives in §17.** Each example tutorial's entry in §17 specifies the "Imagine that you are…" scenario, the dataset, the outcome variable, the treatment / key covariate, the question (QoI), the model, and the Preceptor and Population Table column structure. That — plus the rules in §4–§14 — is enough to regenerate a tutorial from scratch. The §17 entries are the stable core; everything around them (exercise wording, knowledge drops, specific transitions) is derivative.
 
@@ -438,6 +438,33 @@ The `download_answers.Rmd` child document generates an HTML file the student dow
 
 Each of the six sections opens with `##`. Each exercise opens with `### Exercise N` where `N` restarts at 1 within each section. Each exercise has a chunk label of the form `<section>-<N>` — `introduction-1`, `wisdom-3`, `justice-11`, etc.
 
+**Section-header formatting.** Every `## SectionHeader` is immediately followed by a `###` (Continue button) on the next line — *every* section, including Summary. The `###` opener gives the section header its own paused screen, separate from the preamble that follows. Conversely, **do not insert a trailing `###` between the section preamble and `### Exercise 1`**: the preamble runs directly into the first exercise. The shape is:
+
+```
+## Wisdom
+###
+
+[preamble: opening sentence, Imagine paragraph, specific question, dataset name]
+
+### Exercise 1
+
+[exercise prose]
+```
+
+Not:
+
+```
+## Wisdom
+
+[preamble]
+
+###
+
+### Exercise 1
+```
+
+The `###` between exercises (the End-of-exercise Continue button before the End drop) is unchanged — that's a different role and stays as is. Only the section-opener `###` (immediately after `##`) and the absence of a trailing `###` (immediately before `### Exercise 1`) are governed by this rule.
+
 ### 5.5 Section preambles
 
 The **preamble** of a virtue section is the content between the section header (`## Wisdom`, `## Justice`, `## Temperance`, etc.) and the first `### Exercise N` block. Preambles are prose, knowledge drops, and/or author-rendered output — never student-facing exercises. They orient the student, review work done earlier in the tutorial, or set up what this section will do.
@@ -591,7 +618,7 @@ question_text(NULL,
 ```
 ```
 
-The text in `message` is read closely by students, who compare their answer to ours. Our answer must be excellent. Use the wording in §11 verbatim for definitional questions.
+The text in `message` is read closely by students, who compare their answer to ours. Our answer must be excellent. Use the wording from Key Concepts verbatim for definitional questions (the §11 snapshot is a convenience copy).
 
 ### 7.3 Written exercise without model answer
 
@@ -1325,7 +1352,7 @@ Use the wording below verbatim as the `message` text in written-answer exercises
 
 ## 12. Knowledge drop library
 
-Short prose fragments — typically one or two sentences — that go in the End of an exercise. Organized by virtue. Cross-references to §11 indicate that the knowledge drop corresponds to a canonical definition already covered there.
+Short prose fragments — typically one or two sentences — that go in the End of an exercise. Organized by virtue. Cross-references to Key Concepts indicate that the knowledge drop corresponds to a canonical definition covered there (the §11 snapshot is a convenience copy).
 
 **Knowledge drops are *thematic templates*, not verbatim text.** Each drop below names a theme — *"stability is about time"*, *"parameters are imaginary"*, *"covariates are used in three different ways"* — and gives a sample wording. **Tutorials should rephrase the drop in fresh language**, even when reusing the same theme across tutorials at the same tier. Students who read tutorial 6, then 7, then 8 and find the same paragraph pasted three times stop reading; if the wording is fresh each time, the theme registers more strongly because the student has to re-parse it. The canonical answer text inside `question_text(message = ...)` *is* fixed verbatim — that's the answer key — but the End drops that follow are author-rephrased. Aim for the same theme, different sentences.
 
@@ -1370,7 +1397,7 @@ Knowledge drops are deliberately short. Students won't read more than two senten
 
 ### 12.2 Wisdom
 
-Canonical definitions from §11 appropriate here: Wisdom, Preceptor Table, Preceptor Table (detailed), Units, Variables, Outcome, Covariates, Treatment, Quantity of Interest.
+Canonical definitions appropriate here (see Key Concepts): Wisdom, Preceptor Table, Preceptor Table (detailed), Units, Variables, Outcome, Covariates, Treatment, Quantity of Interest.
 
 **The Tukey walk-away.**
 > *The combination of some data and an aching desire for an answer does not ensure that a reasonable answer can be extracted from a given body of data.* — John W. Tukey
@@ -1401,7 +1428,7 @@ Canonical definitions from §11 appropriate here: Wisdom, Preceptor Table, Prece
 
 ### 12.3 Justice
 
-Canonical definitions from §11 appropriate here: Justice, Population Table, Validity, Stability, Representativeness, Unconfoundedness.
+Canonical definitions appropriate here (see Key Concepts): Justice, Population Table, Validity, Stability, Representativeness, Unconfoundedness.
 
 **On Justice being about concerns.**
 > *Justice is about concerns that you (or your critics) might have, reasons why the model you create might not work as well as you hope.*
@@ -1456,7 +1483,7 @@ Canonical definitions from §11 appropriate here: Justice, Population Table, Val
 
 ### 12.4 Courage
 
-Canonical definitions from §11 appropriate here: Courage, Data Generating Mechanism.
+Canonical definitions appropriate here (see Key Concepts): Courage, Data Generating Mechanism.
 
 **On tidymodels.**
 > *The [tidymodels](https://www.tidymodels.org/) framework is the most popular one for estimating models among R users. [Tidy Modeling with R](https://www.tmwr.org/) by Max Kuhn and Julia Silge is a great introduction.*
@@ -1504,7 +1531,7 @@ Canonical definitions from §11 appropriate here: Courage, Data Generating Mecha
 
 ### 12.5 Temperance
 
-Canonical definitions from §11 appropriate here: Temperance, Preceptor's Posterior.
+Canonical definitions appropriate here (see Key Concepts): Temperance, Preceptor's Posterior.
 
 **On Courage handing off to Temperance.**
 > *Courage gave us the data generating mechanism. Temperance guides us in the use of the DGM — or the "model" — we have created to answer the question(s) with which we began. We create posteriors for the quantities of interest.*
@@ -1687,7 +1714,14 @@ If a tutorial is being drafted without a pre-flight tier check, the default is M
 2. **Bookend sentence.** *"The world confronts us. Make decisions we must."* Verbatim. This sentence appears at both ends of every tutorial — it also closes the Temperance section (§13.5 Exercise 17 End).
 3. **"Imagine that you are …" paragraph.** One paragraph motivating the problem with a real person facing real decisions. Always starts with *"Imagine that you are …"* and always ends with *"There are many decisions to make."* The exact wording is per-tutorial and comes from the `**"Imagine":**` field of the §17 seed entry. The same paragraph is reused verbatim in the Wisdom preamble (§13.2) and in the matching chapter.
 
-Follow with a `###` Continue button before `### Exercise 1`. The three paragraphs sit on one screen; the student hits Continue to move to the first exercise.
+**The closing line ("There are many decisions to make") has to be earned.** It is in every Imagine paragraph; for it to land, the body of the paragraph must actually establish the multiplicity it claims. The recipe:
+
+- **The protagonist has a boss with big-picture goals, not specific data-science requests.** A campaign manager's boss is the candidate, who wants to *win the election*. A public-health analyst's boss is the Minister, who wants to *improve health outcomes*. The boss does not ask for "a causal estimate of treatment X on outcome Y" --- they don't think in those terms, and most of them would not recognize the phrase. They have a goal and a budget; they trust the analyst to find evidence that helps.
+- **The analyst chooses what to model.** Many causal and predictive models would help with the boss's goal. The analyst is the one picking which model to build. Name two or three plausible alternatives in the paragraph so the reader sees the choice is real.
+- **This tutorial is one of many models.** The Imagine paragraph makes explicit that the model the tutorial builds is one piece, not the whole picture. *"This tutorial builds just one of them: \[specific QoI\]."*
+- **The estimate is an input to the decision, not the decision.** Say so directly. *"The estimate alone won't decide anything, but it is one good input."* This earns the closing line without overclaiming.
+
+A good Imagine paragraph reads like a sketch of a real person doing a real job, with a boss who has goals and a budget that doesn't stretch to all of them. A bad Imagine paragraph reads like a homework prompt that names a topic and a question. See §5.4 for the section-header formatting convention that determines where `###` Continue buttons sit around the preamble; the three paragraphs above run directly into `### Exercise 1` with no trailing `###` between them.
 
 **Pacing across the EMH tiers.** The Introduction is mostly operational — repo setup, adding libraries to the QMD, turning off code echo, sending commands to the R prompt, etc. The exercise list below is pitched at **Medium** pace: concise, one operational step per exercise, assuming the student has been through this workflow once before. The pace changes with tier:
 
@@ -1825,7 +1859,7 @@ By the end of Wisdom, the student has a specific question, a Preceptor Table tha
 4. **One or two sentences naming the dataset.** The Introduction identifies the dataset; Wisdom is where we will explore it. Write as a plain statement — *"We will work from the NHANES survey (conducted by the CDC), available in the `nhanes` tibble of the `primer.data` package."* Do not make claims about what the data will show, and do not mention measurement or validity concerns — those come later.
 5. A Continue button (`###` with no heading) before `### Exercise 1`.
 
-Per §14.6, the preamble does **not** describe what Wisdom does; Exercise 1 below asks the student to describe Wisdom using the canonical §11 wording. *Exception:* when Exercise 1 is skipped (Medium tutorials not on the Wisdom rotation, Hard tutorials not on the Wisdom rotation; see §13 pre-flight list), add the canonical definition to this preamble as a reminder — *"Remember that Wisdom begins with a question and then moves on to the creation of a Preceptor Table and an examination of our data."* The reminder replaces the exercise; preamble absorbs what Ex 1 would have asked.
+Per §14.6, the preamble does **not** describe what Wisdom does; Exercise 1 below asks the student to describe Wisdom using the canonical Key Concepts wording. *Exception:* when Exercise 1 is skipped (Medium tutorials not on the Wisdom rotation, Hard tutorials not on the Wisdom rotation; see §13 pre-flight list), add the canonical definition to this preamble as a reminder — *"Remember that Wisdom begins with a question and then moves on to the creation of a Preceptor Table and an examination of our data."* The reminder replaces the exercise; preamble absorbs what Ex 1 would have asked.
 
 **Exercise 1.** [canonical, tier-dependent presence] Components of Wisdom.
 - **Tier:** Easy = always ask; Medium = ask in 2 of the 4 Medium tutorials per the rotation in §13's pre-flight list; Hard = ask only in position 12 (last tutorial, all four definitions) and in one other Hard position per the rotation. When *not* asked, the Wisdom preamble (§13.2) includes a *"Remember that …"* reminder with the canonical definition verbatim.
@@ -1954,7 +1988,7 @@ If the modeling requires a cleaned tibble `x` (e.g., filtering to one year, drop
   ```
   Required because `tidymodels`' `logistic_reg(engine = "glm")` refuses a raw 0/1 integer outcome — see §13.4 *Factor-outcome gotcha*.
 
-- **Outcome-range filtering** (Colleges: `filter(tuition > 2)`). When the data includes sentinel or implausible values in the outcome or key covariate, filter them out explicitly before modeling. Document the filter in a comment so the Justice section can name it as a selection mechanism (§11).
+- **Outcome-range filtering** (Colleges: `filter(tuition > 2)`). When the data includes sentinel or implausible values in the outcome or key covariate, filter them out explicitly before modeling. Document the filter in a comment so the Justice section can name it as a selection mechanism (see Key Concepts).
 
 These patterns appear in roughly this order across the tutorials — slice-sample is ubiquitous; factor-level control and composite-score construction show up from Medium onward as the models need richer covariate structure.
 
@@ -2496,7 +2530,7 @@ For `predictions()` and `plot_predictions()` exercises, include a `-test` chunk.
 
 ### 14.6 Virtue section openers
 
-**Preambles do not describe what the virtue does.** That job belongs to the first exercise of each virtue section, which asks the student to describe the virtue's components using the canonical §11 wording (Wisdom begins with a question…; Justice concerns the Population Table…; Courage creates the data generating mechanism; Temperance interprets the DGM…). The preamble must not pre-empt this — no "In Wisdom we will build a Preceptor Table," no "Justice is the virtue of asking hard questions about the data," no "Temperance uses the model to answer the question." Those sentences take the work out of the student's mouth.
+**Preambles do not describe what the virtue does.** That job belongs to the first exercise of each virtue section, which asks the student to describe the virtue's components using the canonical Key Concepts wording (Wisdom begins with a question…; Justice concerns the Population Table…; Courage creates the data generating mechanism; Temperance interprets the DGM…). The preamble must not pre-empt this — no "In Wisdom we will build a Preceptor Table," no "Justice is the virtue of asking hard questions about the data," no "Temperance uses the model to answer the question." Those sentences take the work out of the student's mouth.
 
 What the preamble is for is spelled out in §5.5: it reprints the upstream artifacts this virtue needs (the Preceptor Table, the data table, the Population Table, the fitted DGM, etc.) so the section is usable by a reader who skipped or forgot what came before. Preamble prose stays tight and specific to *this problem* — naming the dataset, restating the question, showing the Preceptor Table — and leaves the virtue-level generalities to the first exercise.
 
@@ -2729,7 +2763,7 @@ Things flagged but not yet resolved. Revisit when relevant.
 
 - **Curriculum learning goals — explicit specification.** Write down, in CLAUDE.md, what students should understand after completing all 14 tutorials. We need these goals explicit because the Easy / Medium / Difficult progressions (§1.3) are supposed to *build toward* them, and we cannot calibrate the progressions without knowing the targets. Candidate home: a new §1.4 or its own top-level section. Aim for 10–20 concrete things a student should be able to do, explain, or notice by the end of Tutorial 14. Current worked examples in §1.3 (representativeness, validity, stability, unconfoundedness, model checking) implicitly define a handful of these goals — enumerate them all.
 
-- **Justice exercises for sampling and selection mechanism.** §11 now defines assignment, sampling, and selection mechanism as canonical concepts, and §12.3 has disambiguation knowledge drops. Still pending: adding explicit Justice exercises to the §13.3 master exercise list that ask students to name the sampling mechanism and the selection mechanism for the problem at hand, alongside the existing representativeness/stability/validity/unconfoundedness exercises.
+- **Justice exercises for sampling and selection mechanism.** Key Concepts now defines assignment, sampling, and selection mechanism as canonical concepts (with the Heckman-terminology-collision note), and §12.3 has disambiguation knowledge drops. Still pending: adding explicit Justice exercises to the §13.3 master exercise list that ask students to name the sampling mechanism and the selection mechanism for the problem at hand, alongside the existing representativeness/stability/validity/unconfoundedness exercises.
 - **The DGM randomness detail** — we defer discussion of the randomness in the DGM in Courage Exercise 11's knowledge drop. Decide in which tutorial this gets unwrapped.
 - **AI tool article absorption** — `https://ppbds.github.io/tutorial.helpers/articles/ai.html` may have more AI-workflow specifics than §9 currently captures. Worth re-reading and absorbing the next time we touch §9.
 

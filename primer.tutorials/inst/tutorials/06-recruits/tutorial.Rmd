@@ -45,7 +45,7 @@ This tutorial supports [*Preceptor's Primer for Bayesian Data Science: Using the
 
 The world confronts us. Make decisions we must.
 
-Imagine that you are in charge of ordering uniforms for next year's Marine Corps bootcamp recruits. There are many factors to consider: the cost of different designs, the number of male and female recruits, the distributions of heights and weights, and so on. There are many decisions to make.
+Imagine that you are a logistics analyst at U.S. Marine Corps Supply, planning next year's bootcamp uniform order. The Quartermaster General has a big-picture goal --- every recruit kitted out at the right size on day one, within a fixed procurement budget --- and trusts you to figure out what to order and in what quantities. Many models would inform the order: distributions of height, weight, chest, foot length; the male-female mix in incoming recruits; the size-tail dynamics that drive how many extra-large uniforms to keep in inventory. This tutorial builds just one of them: the average height of male and female recruits. The number alone won't determine the order, but the height-by-sex split is one good input to the larger forecast. There are many decisions to make.
 
 ### Exercise 1
 
@@ -273,16 +273,15 @@ The average height by sex is a convenient question --- a single number per sex, 
 
 
 ## Wisdom
+###
 
 Data science starts with some broad questions and a data set which might help us to answer them.
 
-Imagine that you are in charge of ordering uniforms for next year's Marine Corps bootcamp recruits. There are many factors to consider: the cost of different designs, the number of male and female recruits, the distributions of heights and weights, and so on. There are many decisions to make.
+Imagine that you are a logistics analyst at U.S. Marine Corps Supply, planning next year's bootcamp uniform order. The Quartermaster General has a big-picture goal --- every recruit kitted out at the right size on day one, within a fixed procurement budget --- and trusts you to figure out what to order and in what quantities. Many models would inform the order: distributions of height, weight, chest, foot length; the male-female mix in incoming recruits; the size-tail dynamics that drive how many extra-large uniforms to keep in inventory. This tutorial builds just one of them: the average height of male and female recruits. The number alone won't determine the order, but the height-by-sex split is one good input to the larger forecast. There are many decisions to make.
 
 The specific question: *What is the average height of male and female USMC recruits?*
 
 We will work from the National Health and Nutrition Examination Survey (NHANES), conducted by the Centers for Disease Control and Prevention, available in the `nhanes` tibble of the **[primer.data](https://github.com/PPBDS/primer.data)** package.
-
-###
 
 ### Exercise 1
 
@@ -584,6 +583,7 @@ Read our answer. It will not be the same as yours. You can change your answer to
 
 
 ## Justice
+###
 
 Wisdom gives us the Preceptor Table and the data.
 
@@ -732,8 +732,6 @@ cat(
   sep = ""
 )
 ```
-
-###
 
 ### Exercise 1
 
@@ -1032,6 +1030,7 @@ Add a weakness sentence to the summary paragraph in your QMD. You can modify you
 
 
 ## Courage
+###
 
 Justice gives us the Population Table and the abstract data generating mechanism.
 
@@ -1117,8 +1116,6 @@ cat(
 $$Y = \beta_0 + \beta_1 X_1 + \beta_2 X_2 + \cdots + \beta_n X_n + \epsilon$$
 
 with $\epsilon \sim N(0, \sigma^2)$.
-
-###
 
 ### Exercise 1
 
@@ -1443,6 +1440,7 @@ Read our answer. Do not copy/paste exactly. Add your two sentences to the summar
 
 
 ## Temperance
+###
 
 Courage provides the data generating mechanism. We can express the DGM in four ways:
 
@@ -1471,8 +1469,6 @@ fit_height |>
 $$\text{height} = 165.9 + 8.9 \cdot \text{sexMale} + \epsilon$$
 
 with $\epsilon \sim N(0, 41.0)$.
-
-###
 
 ### Exercise 1
 
@@ -1759,6 +1755,7 @@ The world confronts us. Make decisions we must.
 
 
 ## Summary
+###
 
 ```{r}
 #| echo: false

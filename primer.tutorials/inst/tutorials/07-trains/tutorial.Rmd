@@ -44,7 +44,7 @@ This tutorial supports [*Preceptor's Primer for Bayesian Data Science: Using the
 
 The world confronts us. Make decisions we must.
 
-Imagine that you are a campaign manager for a Republican congressional candidate in Georgia who wants to increase anti-immigration sentiment among voters. There are many decisions to make.
+Imagine that you are the data scientist for a Republican congressional campaign in Georgia. The candidate has a big-picture goal --- win the November election --- and trusts you to figure out where the campaign's limited time, money, and attention should go. Many causal and predictive models would inform that allocation: which voters are persuadable, which messages move opinion, how voter turnout shifts with mailings or door-knocks, how exposure to immigrant neighbors changes attitudes about immigration. This tutorial builds just one of them: the causal effect of overhearing Spanish on a commuter platform on voters' immigration attitudes. The estimate alone won't decide what messaging the campaign uses, but it is one good input to thinking about how everyday exposure shapes opinion. There are many decisions to make.
 
 ### Exercise 1
 
@@ -320,16 +320,15 @@ The average causal effect is the conventional quantity of interest for a randomi
 
 
 ## Wisdom
+###
 
 Data science starts with some broad questions and a data set which might help us to answer them.
 
-Imagine that you are a campaign manager for a Republican congressional candidate in Georgia who wants to increase anti-immigration sentiment among voters. There are many decisions to make.
+Imagine that you are the data scientist for a Republican congressional campaign in Georgia. The candidate has a big-picture goal --- win the November election --- and trusts you to figure out where the campaign's limited time, money, and attention should go. Many causal and predictive models would inform that allocation: which voters are persuadable, which messages move opinion, how voter turnout shifts with mailings or door-knocks, how exposure to immigrant neighbors changes attitudes about immigration. This tutorial builds just one of them: the causal effect of overhearing Spanish on a commuter platform on voters' immigration attitudes. The estimate alone won't decide what messaging the campaign uses, but it is one good input to thinking about how everyday exposure shapes opinion. There are many decisions to make.
 
 The specific question: *What is the average causal effect of exposure to Spanish-speakers on attitudes toward immigration?*
 
 We will work from Enos's (2014) Boston-Metra platform experiment, available in the `trains` tibble of the **[primer.data](https://github.com/PPBDS/primer.data)** package.
-
-###
 
 ### Exercise 1
 
@@ -630,6 +629,7 @@ Read our answer. It will not be the same as yours. Do not copy/paste exactly. Ad
 
 
 ## Justice
+###
 
 Wisdom gives us the Preceptor Table and the data.
 
@@ -798,8 +798,6 @@ cat(
   sep = ""
 )
 ```
-
-###
 
 ### Exercise 1
 
@@ -1145,6 +1143,7 @@ Add a weakness sentence to the summary paragraph in your QMD. `Cmd/Ctrl + Shift 
 
 
 ## Courage
+###
 
 Justice gives us the Population Table and the abstract data generating mechanism.
 
@@ -1248,8 +1247,6 @@ cat(
 $$Y = \beta_0 + \beta_1 X_1 + \beta_2 X_2 + \cdots + \beta_n X_n + \epsilon$$
 
 with $\epsilon \sim N(0, \sigma^2)$.
-
-###
 
 ### Exercise 1
 
@@ -1556,6 +1553,7 @@ Add your sentence to the summary paragraph. `Cmd/Ctrl + Shift + K`, then commit/
 
 
 ## Temperance
+###
 
 Courage provides the data generating mechanism. We can express the DGM in four ways:
 
@@ -1583,8 +1581,6 @@ fit_att |>
 $$\text{Attitude} = 8.45 + 1.55 \cdot \text{treatmentTreated} + \epsilon$$
 
 with $\epsilon \sim N(0, 7.72)$ (a residual SD of about 2.78 points on the 3–15 scale).
-
-###
 
 ### Exercise 1
 
@@ -1851,6 +1847,7 @@ The world confronts us. Make decisions we must.
 
 
 ## Summary
+###
 
 ```{r}
 #| echo: false

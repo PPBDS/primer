@@ -57,9 +57,7 @@ This tutorial supports [*Preceptor's Primer for Bayesian Data Science: Using the
 
 The world confronts us. Make decisions we must.
 
-Imagine that you are running for Governor of Texas and must decide how to allocate campaign resources. Get-out-the-vote (GOTV) mailings are a classic tool: a postcard arrives at a registered voter's door reminding them that the election is coming and (sometimes) gently shaming them about not voting. The question your campaign manager wants you to answer is which postcard wording moves the most voters --- and which voters move the most. There are many decisions to make.
-
-###
+Imagine that you are the data scientist for a campaign for Governor of Texas. The candidate has a big-picture goal --- win the November election --- and trusts you to figure out where the campaign's limited budget should go. Many causal and predictive models would inform that allocation: which voters are persuadable, which postcards or robocalls or door-knocks actually move turnout, which media markets are the most cost-effective, how late in the cycle each tactic still works. This tutorial builds just one of them: the causal effect of social-pressure get-out-the-vote postcards on whether a registered voter shows up at the polls. The estimate alone won't determine where to spend, but the postcard-effectiveness piece is one good input to the larger campaign-allocation decision. There are many decisions to make.
 
 ### Exercise 1
 
@@ -291,18 +289,17 @@ The treatment variable here records the *experimentally assigned* postcard, not 
 
 
 ## Wisdom
+###
 
 Data science starts with some broad questions and a data set which might help us to answer them.
 
-Imagine that you are running for Governor of Texas and must decide how to allocate campaign resources. Get-out-the-vote (GOTV) mailings are a classic tool: a postcard arrives at a registered voter's door reminding them that the election is coming and (sometimes) gently shaming them about not voting. The question your campaign manager wants you to answer is which postcard wording moves the most voters --- and which voters move the most. There are many decisions to make.
+Imagine that you are the data scientist for a campaign for Governor of Texas. The candidate has a big-picture goal --- win the November election --- and trusts you to figure out where the campaign's limited budget should go. Many causal and predictive models would inform that allocation: which voters are persuadable, which postcards or robocalls or door-knocks actually move turnout, which media markets are the most cost-effective, how late in the cycle each tactic still works. This tutorial builds just one of them: the causal effect of social-pressure get-out-the-vote postcards on whether a registered voter shows up at the polls. The estimate alone won't determine where to spend, but the postcard-effectiveness piece is one good input to the larger campaign-allocation decision. There are many decisions to make.
 
 The specific question: *What is the average causal effect of the Neighbors postcard, relative to no postcard, on the probability that a registered voter casts a ballot in the August 2006 Michigan primary?*
 
 We will work from the Gerber-Green-Larimer 2006 Michigan experiment, available in the `shaming` tibble of the **[primer.data](https://github.com/PPBDS/primer.data)** package.
 
 Remember that Wisdom begins with a question and then moves on to the creation of a Preceptor Table and an examination of our data.
-
-###
 
 ### Exercise 1
 
@@ -648,6 +645,7 @@ Read our answer. It will not be the same as yours. Add your two sentences to the
 
 
 ## Justice
+###
 
 Wisdom gives us the Preceptor Table and the data.
 
@@ -818,8 +816,6 @@ cat(
 ```
 
 Remember that Justice concerns the Population Table, the four key assumptions which underlie it (validity, stability, representativeness, and unconfoundedness), and selects the formula for the data generating mechanism.
-
-###
 
 ### Exercise 1
 
@@ -1185,6 +1181,7 @@ Add a weakness sentence to your summary paragraph in your QMD. Don't copy/paste 
 
 
 ## Courage
+###
 
 Justice gives us the Population Table and the abstract data generating mechanism.
 
@@ -1287,8 +1284,6 @@ cat(
 $$P(Y = 1) = \frac{1}{1 + e^{-(\beta_0 + \beta_1 X_1 + \beta_2 X_2 + \cdots + \beta_n X_n)}}$$
 
 with $Y \sim \text{Bernoulli}(\rho)$, where $\rho$ is the probability above.
-
-###
 
 ### Exercise 1
 
@@ -1712,6 +1707,7 @@ Add your sentence to the summary paragraph. `Cmd/Ctrl + Shift + K`, then commit/
 
 
 ## Temperance
+###
 
 Courage provides the data generating mechanism. We can express the DGM in four ways:
 
@@ -1750,8 +1746,6 @@ $$\begin{aligned}
 &{} - 0.051 \cdot (\text{Civic Duty} \times \text{Always}) + 0.063 \cdot (\text{Hawthorne} \times \text{Always}) \\
 &{} - 0.006 \cdot (\text{Self} \times \text{Always}) + 0.006 \cdot (\text{Neighbors} \times \text{Always})
 \end{aligned}$$
-
-###
 
 ### Exercise 1
 
@@ -2087,6 +2081,7 @@ The world confronts us. Make decisions we must.
 
 
 ## Summary
+###
 
 ```{r}
 #| echo: false

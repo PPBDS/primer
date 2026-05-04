@@ -44,9 +44,7 @@ This tutorial supports [*Preceptor's Primer for Bayesian Data Science: Using the
 
 The world confronts us. Make decisions we must.
 
-Imagine that you are a public-health analyst at a state health department designing the next anti-smoking campaign. To target outreach effectively, you want to know which adults are most likely to be smokers, broken out by basic demographics like age and sex --- the variables you can actually segment on when buying ads or staffing clinics. There are many decisions to make.
-
-###
+Imagine that you are a public-health analyst at a state health department. The Public Health Commissioner has a big-picture goal --- reduce the smoking-attributable disease burden in the state --- and trusts you to figure out where the next anti-smoking campaign's outreach budget should go. Many causal and predictive models would help: who is most likely to be smoking now, which cessation messages move which subgroups, which geographic and demographic segments are the most cost-effective targets, how outreach effects fade once a campaign ends. This tutorial builds just one of them: the probability of being an ever-smoker as a function of age and sex --- the basic demographics on which outreach can actually be segmented when buying ads or staffing clinics. The estimate alone won't determine the campaign, but the demographic-targeting piece is one good input. There are many decisions to make.
 
 ### Exercise 1
 
@@ -261,16 +259,15 @@ The 100-cigarette threshold is what makes the outcome a clean lifetime measure: 
 
 
 ## Wisdom
+###
 
 Data science starts with some broad questions and a data set which might help us to answer them.
 
-Imagine that you are a public-health analyst at a state health department designing the next anti-smoking campaign. To target outreach effectively, you want to know which adults are most likely to be smokers, broken out by basic demographics like age and sex --- the variables you can actually segment on when buying ads or staffing clinics. There are many decisions to make.
+Imagine that you are a public-health analyst at a state health department. The Public Health Commissioner has a big-picture goal --- reduce the smoking-attributable disease burden in the state --- and trusts you to figure out where the next anti-smoking campaign's outreach budget should go. Many causal and predictive models would help: who is most likely to be smoking now, which cessation messages move which subgroups, which geographic and demographic segments are the most cost-effective targets, how outreach effects fade once a campaign ends. This tutorial builds just one of them: the probability of being an ever-smoker as a function of age and sex --- the basic demographics on which outreach can actually be segmented when buying ads or staffing clinics. The estimate alone won't determine the campaign, but the demographic-targeting piece is one good input. There are many decisions to make.
 
 The specific question: *What is the difference in the probability of being an ever-smoker between a 30-year-old woman and a 70-year-old man?*
 
 We will work from a 1,000-adult sample of NHANES 2009--2012, available in the `smokes` tibble of the **[primer.tutorials](https://ppbds.github.io/primer/)** package.
-
-###
 
 ### Exercise 1
 
@@ -550,6 +547,7 @@ Read our answer. It will not be the same as yours. You can change your answer to
 
 
 ## Justice
+###
 
 Wisdom gives us the Preceptor Table and the data.
 
@@ -675,8 +673,6 @@ cat(
   sep = ""
 )
 ```
-
-###
 
 ### Exercise 1
 
@@ -984,6 +980,7 @@ Add a weakness sentence to your summary paragraph in your QMD. Don't copy/paste 
 
 
 ## Courage
+###
 
 Justice gives us the Population Table and the abstract data generating mechanism.
 
@@ -1054,8 +1051,6 @@ $$P(Y = 1) = \frac{1}{1 + e^{-(\beta_0 + \beta_1 X_1 + \beta_2 X_2 + \cdots + \b
 with $Y \sim \text{Bernoulli}(\rho)$, where $\rho$ is the probability above.
 
 Remember that Courage creates the data generating mechanism.
-
-###
 
 ### Exercise 1
 
@@ -1452,6 +1447,7 @@ Add your sentence to the summary paragraph. `Cmd/Ctrl + Shift + K`, then commit/
 
 
 ## Temperance
+###
 
 Courage provides the data generating mechanism. We can express the DGM in four ways:
 
@@ -1479,8 +1475,6 @@ fit_smokes |>
 $$\widehat{P(\text{Ever Smoked} = \text{Yes})} = \frac{1}{1 + e^{-(-0.875 + 0.007 \cdot \text{Age} + 0.545 \cdot \text{sexMale})}}$$
 
 Remember that Temperance interprets the data generating mechanism and then uses it to answer, with the help of graphics, the question(s) with which we began. Humility reminds us that this answer is always false.
-
-###
 
 ### Exercise 1
 
@@ -1791,6 +1785,7 @@ The world confronts us. Make decisions we must.
 
 
 ## Summary
+###
 
 ```{r}
 #| echo: false

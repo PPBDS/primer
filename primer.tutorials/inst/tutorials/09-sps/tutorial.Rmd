@@ -55,9 +55,7 @@ This tutorial supports [*Preceptor's Primer for Bayesian Data Science: Using the
 
 The world confronts us. Make decisions we must.
 
-Imagine that you are a health-policy analyst at Mexico's Ministry of Health deciding whether to continue funding Seguro Popular, the universal health-insurance program that Mexico randomized into communities starting in 2005. Households that signed up paid lower premiums and got covered care; the question your director cares about is whether enrollment actually lowered what families paid out of pocket. There are many decisions to make.
-
-###
+Imagine that you are a health-policy analyst at Mexico's Ministry of Health. The Minister has a big-picture goal --- improve Mexican health outcomes within a limited budget --- and trusts you to find the evidence that helps her decide where the money should go. Seguro Popular, the universal health-insurance program Mexico randomized into communities starting in 2005, is one of many programs competing for that budget. Several causal and predictive models would inform the choice --- how enrollment changes household spending, hospital usage, mortality, debt. This tutorial builds just one of them: the causal effect of enrollment on out-of-pocket health spending. The estimate alone won't decide anything, but it is one good input to the larger decision. There are many decisions to make.
 
 ### Exercise 1
 
@@ -334,16 +332,15 @@ The variable `t2_health_exp_3m` is total household health spending over the thre
 
 
 ## Wisdom
+###
 
 Data science starts with some broad questions and a data set which might help us to answer them.
 
-Imagine that you are a health-policy analyst at Mexico's Ministry of Health deciding whether to continue funding Seguro Popular, the universal health-insurance program that Mexico randomized into communities starting in 2005. Households that signed up paid lower premiums and got covered care; the question your director cares about is whether enrollment actually lowered what families paid out of pocket. There are many decisions to make.
+Imagine that you are a health-policy analyst at Mexico's Ministry of Health. The Minister has a big-picture goal --- improve Mexican health outcomes within a limited budget --- and trusts you to find the evidence that helps her decide where the money should go. Seguro Popular, the universal health-insurance program Mexico randomized into communities starting in 2005, is one of many programs competing for that budget. Several causal and predictive models would inform the choice --- how enrollment changes household spending, hospital usage, mortality, debt. This tutorial builds just one of them: the causal effect of enrollment on out-of-pocket health spending. The estimate alone won't decide anything, but it is one good input to the larger decision. There are many decisions to make.
 
 The specific question: *What is the average causal effect of Seguro Popular enrollment on a household's three-month out-of-pocket health spending?*
 
 We will work from the SPS rollout data, available in the `sps` tibble of the **[primer.data](https://github.com/PPBDS/primer.data)** package.
-
-###
 
 ### Exercise 1
 
@@ -665,6 +662,7 @@ Read our answer. It will not be the same as yours. You can change your answer to
 
 
 ## Justice
+###
 
 Wisdom gives us the Preceptor Table and the data.
 
@@ -811,8 +809,6 @@ cat(
   sep = ""
 )
 ```
-
-###
 
 ### Exercise 1
 
@@ -1144,6 +1140,7 @@ Add a weakness sentence to your summary paragraph in your QMD. Don't copy/paste 
 
 
 ## Courage
+###
 
 Justice gives us the Population Table and the abstract data generating mechanism.
 
@@ -1218,8 +1215,6 @@ cat(
 $$Y = \beta_0 + \beta_1 X_1 + \beta_2 X_2 + \cdots + \beta_n X_n + \epsilon$$
 
 with $\epsilon \sim N(0, \sigma^2)$.
-
-###
 
 ### Exercise 1
 
@@ -1438,8 +1433,6 @@ ggplot(fitted_df, aes(x = value, fill = source)) +
         axis.ticks.y = element_blank())
 ```
 
-###
-
 ### Exercise 10
 
 With the parameters estimated, we can write the fitted model as a concrete formula:
@@ -1571,6 +1564,7 @@ Add your sentence to the summary paragraph. `Cmd/Ctrl + Shift + K`, then commit/
 
 
 ## Temperance
+###
 
 Courage provides the data generating mechanism. We can express the DGM in four ways:
 
@@ -1598,8 +1592,6 @@ fit_sps |>
 $$\text{Spending} = 783 - 62 \cdot \text{treatmentEnrolled} + \epsilon$$
 
 with $\epsilon \sim N(0, 3{,}206{,}129)$ (a residual standard deviation of about 1,791 pesos --- spending varies a lot from household to household).
-
-###
 
 ### Exercise 1
 
@@ -1879,6 +1871,7 @@ The world confronts us. Make decisions we must.
 
 
 ## Summary
+###
 
 ```{r}
 #| echo: false
