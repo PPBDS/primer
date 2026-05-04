@@ -22,6 +22,7 @@ book:
     - 02-sampling.qmd
     - 03-rubin-causal-model.qmd
     - 04-cardinal-virtues.qmd
+    - 06-recruits.qmd
     - key-concepts.qmd
     - set-up.qmd
 format:

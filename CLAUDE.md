@@ -54,9 +54,11 @@ Chapters are longer than tutorials. Every example chapter covers the same primar
 
 In addition, every example chapter includes a **paired question**: a second question that uses the same outcome variable and the same covariates as the primary question, but with the opposite framing. If the primary question is causal, the paired question is predictive; if the primary is predictive, the paired is causal. The paired question gets its own Preceptor Table and its own Population Table. The key insight is that the **same fitted model** serves both questions — the outcome and covariates are identical. What differs is the assumptions the analyst is willing to make and the language used to interpret results.
 
+**The paired question is required even when the implied causal manipulation is absurd.** Some predictive tutorials use covariates that are not realistically manipulable (sex, age in Recruits; tuition and selectivity in Colleges, where the "manipulation" is at the institutional level rather than the unit level). The paired causal question for those chapters has to *pretend* one covariate is a treatment and ask "what is the causal effect of X on Y?" anyway --- and the chapter then explicitly names the absurdity. The pedagogical point is that the predictive/causal distinction is *an analyst's commitment*, not a property of the data, and the absurd-counterfactual case makes the commitment visible. Don't skip the paired question to avoid awkwardness; lean into the awkwardness.
+
 The chapter therefore has two Preceptor Tables, two Population Tables, one fitted model, and two sets of answers in Temperance.
 
-The "Imagine that you are…" opener is the same in the chapter and the tutorial. Reuse, don't rewrite.
+The "Imagine that you are…" opener is the same in the chapter and the tutorial --- reuse the body verbatim. The closing line is the *one exception*: tutorials say *"This tutorial builds just one of them: \[QoI\]"*; chapters say *"This chapter builds two of them: \[primary\], framed both predictively and causally"* (or whatever wording fits the specific framings). Everything else in the Imagine paragraph stays identical across the artifact pair.
 
 ### 1.3 Progressive sophistication
 
@@ -338,7 +340,7 @@ Every example chapter has six top-level sections under `#`:
 
 Chapters include full image references (`knitr::include_graphics("other/images/Wisdom.jpg")` etc.) at the top of each virtue section. Chapters quote extensively — from Tukey, from Rumsfeld, from the Bible, from whomever fits. Quotes are good; use them.
 
-**Every example chapter includes a discussion of quantity-of-interest variety.** Each tutorial picks one narrow QoI — usually an expected value (*"the average height of male and female USMC recruits"*). The chapter should spend a paragraph or two inside Temperance naming the *other* QoIs a real practitioner would care about and showing which ones the fitted DGM already answers versus which ones need more work. For the NHANES chapter the riff is: *average height is convenient but tells you nothing about the tallest recruit you need to fit (a max), or about how many small-vs-large uniforms to order (quantiles — the 10th and 90th, say), or about how tall the tallest recruit out of a specific batch of three will be (a distribution over sample statistics, which needs simulation).* The chapter names these candidate QoIs, sketches how to get at each from the same fitted DGM, and describes the simulation step — take the DGM, draw `n` synthetic units, record the statistic of interest, repeat many times, build a PDF — without necessarily teaching the full mechanics. The point is that **"average" is one question in a family of questions**, and the DGM answers the whole family once you know how to ask.
+**Every example chapter includes a discussion of quantity-of-interest variety.** Each tutorial picks one narrow QoI — usually an expected value (*"the average height of male and female USMC recruits"*). The chapter should spend a paragraph or two inside Temperance naming the *other* QoIs a real practitioner would care about and showing which ones the fitted DGM already answers versus which ones need more work. For the Recruits chapter the riff is: *average height is convenient but tells you nothing about the tallest recruit you need to fit (a max), or about how many small-vs-large uniforms to order (quantiles — the 10th and 90th, say), or about how tall the tallest recruit out of a specific batch of three will be (a distribution over sample statistics, which needs simulation).* The chapter names these candidate QoIs, sketches how to get at each from the same fitted DGM, and describes the simulation step — take the DGM, draw `n` synthetic units, record the statistic of interest, repeat many times, build a PDF — without necessarily teaching the full mechanics. The point is that **"average" is one question in a family of questions**, and the DGM answers the whole family once you know how to ask.
 
 This topic is chapter-only at Easy and Medium tiers. Hard tutorials may surface it as a knowledge drop; see §12.6 Theme 5 for the progressive schedule.
 
@@ -2833,9 +2835,12 @@ Preceptor Table and Population Table columns are listed by spanner in order. Pop
 - **Causal / Predictive:** Predictive
 - **Student project:** `recruits`
 - **Data prep:** none in the tutorial — the `recruits` tibble is already filtered and sliced. Setup chunk uses `recruits` directly (no intermediate `x`).
-- **Final model:** `linear_reg() |> set_engine("lm") |> fit(height ~ sex, data = recruits)` → `fit_height`
+- **Final model:** `linear_reg() |> set_engine("lm") |> fit(height ~ sex, data = recruits)` → `fit_recruits`
 - **Preceptor Table:** Unit (Young Adult) | Outcome (Height cm) | Covariate (Sex)
 - **Population Table:** Source | Unit/Time (Young Adult, Year) | Outcome (Height cm) | Covariate (Sex)
+- **Paired question (chapter only):** What is the average causal effect of sex on a recruit's height? The implied manipulation is biologically absurd --- you cannot toggle a recruit's sex --- so the chapter explicitly names the absurdity and uses it to make the predictive/causal distinction visible (per §1.2's *paired-question-required-even-when-absurd* rule).
+- **Paired Preceptor Table (chapter only):** Unit (Young Adult) | Potential Outcomes (Height if Female, Height if Male) | Treatment (Sex). The two potential-outcome columns are filled with truth, with the unobservable counterfactual rendered with diagonal hatching (same convention as any causal Preceptor Table).
+- **QoI-variety candidates (chapter Temperance):** the average is one question; a campaign-quality answer for the Quartermaster also wants (a) the *maximum* (the tallest recruit you need to fit), (b) the 10th and 90th *percentiles* (how many extra-small and extra-large uniforms to order), and (c) the *distribution of a sample statistic* (e.g. the height of the tallest recruit out of a specific batch of three) which requires simulation from the DGM. The chapter sketches how to get each from the same fitted DGM; the simulation step gets a paragraph but not full mechanics.
 
 ---
 
