@@ -11,104 +11,79 @@ We provide two different computing approaches for doing data science: first, wor
 
 ## GitHub Codespaces with Visual Studio Code  {.unnumbered}
 
+This section has two purposes: first, introduce you to GitHub Codespaces and VS Code and, second, help you complete the Getting Started tutorial.
+
 ### GitHub  {.unnumbered}
 
-Sign up for a GitHub account by following the instructions at the [GitHub homepage](https://github.com/). **Follow [this advice](https://happygitwithr.com/github-acct.html#username-advice) when choosing your username.** 
+Sign up for a GitHub account by following the instructions on the [GitHub homepage](https://github.com/). **Follow [this advice](https://happygitwithr.com/github-acct.html#username-advice) when choosing your username.** 
 
 Use a permanent email address for this account — not one tied to your current school or job, which you'll lose access to when you move on. Your GitHub account is for life; your school email isn't. However, if you are a student or teacher, you will want to [assign your school email](https://github.com/settings/emails) as a second email to your account so that you can qualify for the [GitHub Student Developer Pack](https://education.github.com/pack) (free Copilot, extra Codespaces hours, and 100+ other perks). If your school doesn't issue email addresses, you can also apply by uploading a student ID or enrollment letter.
 
 On GitHub, your projects are organized into "repositories," usually called "repos."
 
-### Starting a codespace  {.unnumbered}
+### Starting a Codespace  {.unnumbered}
 
-Instead of working on your computer, you will work in a [GitHub codespace](https://github.com/features/codespaces).
+Instead of working on your computer, you will work in a [GitHub Codespace](https://github.com/features/Codespaces). This is a cloud-based [virtual machine](https://en.wikipedia.org/wiki/Virtual_machine) that we can set up for data science much more easily than configuring your own computer.
 
-Once you are logged on to your GitHub account, go to [this URL](https://github.com/PPBDS/codespace-starter) in your browser:
+Once you are logged in to your GitHub account, go to [this URL](https://github.com/PPBDS/Codespace-starter) in your browser:
 
-`https://github.com/PPBDS/codespace-starter`
+`https://github.com/PPBDS/Codespace-starter`
 
 ```{r}
 knitr::include_graphics("getting-started/images/cs-1.png")
 ```
 
-You can also create your own codespace from scratch. But, since this is all very new, we have created the basic setup files, mainly `devcontainer.json`, in a sensible fashion in this GitHub repository. In particular, we ensure that R is installed along with some important packages and some useful extensions for VS Code.
+You can also create your own Codespace from scratch. However, because this setup is new, we have created the basic setup files, mainly `devcontainer.json`, in a sensible fashion in this GitHub repository. In particular, we ensure that R is installed along with some important packages and useful extensions for VS Code.
 
-Click the green "Use this template" button in the upper right. Select the "Create a new repository" option.
-
-```{r}
-knitr::include_graphics("getting-started/images/cs-2.png")
-```
-
-GitHub takes you to the next screen, where you can name the new repository. This repository will be a copy of the `PPBDS/codespace-starter` repo, but it will be under your control because it is located in your GitHub account rather than the `PPBDS` account. Note the `davidkane9` in the screenshot, which is my GitHub account.
-
-Use `getting-started` as the name of the new repository. Click the green "Create repository" button.
-
-**When completing tutorials, you should usually give the repo the same name as the tutorial you are working on.**
-
-This chapter has two purposes: first, introduce you to GitHub Codespaces and VS Code and, second, help you complete the Getting Started tutorial.
-
-The next screenshot shows that you are now on your GitHub account, about to create the `getting-started` repo. 
+Click the green "Use this template" button in the upper right. Select the "Open in a Codespace" option.
 
 ```{r}
-knitr::include_graphics("getting-started/images/cs-2b.png")
+knitr::include_graphics("getting-started/images/open-cs-no-repo.png")
 ```
 
-After clicking the green "Create Repository" button, your screen should look like the one below. Click on the green "Code" button. It shows two options: "Local" and "Codespaces." You use "Local" if you want to work on your own machine. Select "Codespaces" to work in the cloud.
 
+This will take a few minutes to run. Read the rest of this chapter while you are waiting. Behind the scenes, GitHub is creating a virtual machine in the cloud with all the necessary tools for doing data science. That machine is called a "Codespace." 
 
-```{r}
-knitr::include_graphics("getting-started/images/cs-2c.png")
-```
-
-Click on the green "Create codespace on main" button.
-
-This will take a few minutes to run. Read the rest of this chapter while you are waiting. Behind the scenes, GitHub is creating a virtual machine in the cloud with all the necessary tools for doing data science. That machine is called a "codespace." 
-
-You can tell that the codespace is not ready by noticing the "Setting up remote connection: Building codespace..." message in the lower right. GitHub is creating a codespace following the instructions in the `devcontainer.json` file located in the `.devcontainer` directory.
+You can tell that the Codespace is not ready by noticing the "Setting up remote connection: Building Codespace..." message in the lower right. GitHub is creating a Codespace following the instructions in the `devcontainer.json` file located in the `.devcontainer` directory.
 
 ```{r}
 knitr::include_graphics("getting-started/images/cs-2d.png")
 ```
 
-When that message disappears, it means that your codespace is built. But you still need to connect to it, as indicated by the "Opening remote" message in the lower left. 
+When that message disappears, it means that your Codespace is built. But you still need to connect to it, as indicated by the "Opening remote" message in the lower left. 
 
 ```{r}
 knitr::include_graphics("getting-started/images/cs-2e.png")
 ```
 
-Once that disappears, you are connected to your codespace, but it usually still has a few things to install. You can tell that it is not finished by looking in the upper left. 
+Once that disappears, you are connected to your Codespace, but it usually still has a few things to install. You can tell that it is not finished by looking in the upper left. 
 
 ```{r}
 knitr::include_graphics("getting-started/images/cs-2f.png")
 ```
 
-First, note the blue dash moving above the repo name. That indicates that the process is not complete. Second, only the five default "extensions" appear along the left edge. Our `devcontainer.json` file installs several more at the end. Third, the codespace is not displaying its GitHub assigned name. The last step of the process will often show a message like this:
-
-```{r}
-knitr::include_graphics("getting-started/images/cs-2g.png")
-```
-
-
-The process is complete when your codespace looks like this:  
+First, note the blue dash moving above the repo name. That indicates that the process is not complete. Second, only the five default "extensions" appear along the left edge. Our `devcontainer.json` file installs several more at the end. Third, the Codespace is not displaying its GitHub-assigned name. The process is complete when your Codespace looks like this:  
 
 ```{r}
 knitr::include_graphics("getting-started/images/cs-3.png")
 ```
 
-The blue dash has disappeared. Several more extensions have been installed. The GitHub name, `fictional winner`, now appears next to the repo name as well as in the quick access window above the editor.
+The blue dash has disappeared. Several more extensions have been installed. The GitHub name, `fictional winner`, now appears next to the repo name as well as in the quick access window above the editor. Your name will be different, as GitHub assigns a unique name to each Codespace.
 
 
-### Closing a codespace  {.unnumbered}
+### Stopping a Codespace  {.unnumbered}
 
-GitHub allows 60 hours of free Codespaces usage each month, and probably more if you join [GitHub Education](https://github.com/education), an option that we highly recommend for students. It also provides for lots of free storage. However, if you want to avoid paying, you need to be aware of your usage.
+GitHub allows 60 hours of free Codespaces usage each month, and probably more if you join [GitHub Education](https://github.com/education), an option that we highly recommend for students. It also provides lots of free storage. However, if you want to avoid paying, you need to be aware of your usage.
 
-A codespace is your responsibility in the same way that your laptop is your responsibility.  An unused codespace will be deleted after 30 days.
+A Codespace is your responsibility in the same way that your laptop is your responsibility. An unused Codespace will be deleted after 30 days.
 
-There are three common approaches to closely codespaces.
+There are three common ways to close Codespaces.
 
-First, just leave the codespace along and it will close on its own. GitHub monitors codespaces. By default, it will close your codespace if it is not being used for 30 minutes, although I recommend changing that default to 15 minutes.
+First, just leave the Codespace alone, and it will close on its own. GitHub monitors Codespaces. By default, it will close your Codespace if it is not used for 30 minutes, although I recommend changing that default to 15 minutes.
 
-Second, type `Cmd + Shift + P` (on Mac) or `Ctrl + Shift + P` (on Windows/Linux) to bring up the Command Palette. (Throughout this book, shortcuts are written like `Cmd/Ctrl + Shift + P`, meaning the `command` key on Mac or the `control` key on Windows/Linux.) The Command Palette provides access to all of the VS Code commands. Type `stop` into the search bar. 
+Second, type `Cmd + Shift + P` (on Mac) or `Ctrl + Shift + P` (on Windows/Linux) to bring up the Command Palette. (Throughout this book, shortcuts are written like `Cmd/Ctrl + Shift + P`, meaning the `command` key on Mac or the `control` key on Windows/Linux.) The Command Palette provides access to all VS Code commands. Type `stop` into the search bar.
+
+On some browsers, the keyboard shortcut does not work. You can always access the Command Palette by clicking the search bar at the top of the window and typing `>` followed by the command you would like to use.
 
 
 ```{r}
@@ -116,15 +91,17 @@ knitr::include_graphics("getting-started/images/command-palette.png")
 ```
 
 
-Select "Codespaces: Stop Current Codespace." Note how search in the Command Palette works. As long as you remember at least one of the words in the command you are looking for, it will find that command. Searching for general topics, like "codespace" also works well. 
+Select "Codespaces: Stop Current Codespace." Note how search in the Command Palette works. As long as you remember at least one word in the command you are looking for, it will find that command. Searching for general topics, like "Codespace," also works well.
 
-Third, you can go to your main codespace control panel at `https://github.com/codespaces`.
+Once you run the command, you will see a progress bar in the lower right.
+
+Third, you can go to your main Codespaces control panel at `https://github.com/Codespaces`.
 
 ```{r}
 knitr::include_graphics("getting-started/images/codespaces-1.png")
 ```
 
-This will show all your codespaces, both active and inactive. The `...` to the lower right provide several common commands, the most relevant for us now being "Stop codespace." Selecting that button is the third way to stop a codespace.
+This will show all your Codespaces, both active and inactive. The `...` menu in the lower right provides several common commands. The most relevant one for us now is "Stop Codespace." Selecting that button is the third way to stop a Codespace.
 
 <!-- Could add some red arrows to the Active and Last active information in the lower left, along with discussion. -->
 
@@ -132,18 +109,21 @@ This will show all your codespaces, both active and inactive. The `...` to the l
 knitr::include_graphics("getting-started/images/codespaces-2.png")
 ```
 
-You can restart a codespace from the same location. The set of commands brought up by clicking on `...` is slightly different now. Selecting "Open in browser" restarts the codespace.
+You can restart a Codespace from the same location. The set of commands brought up by clicking `...` is slightly different now. Selecting "Open in browser" restarts the Codespace.
 
+You can also restart a Codespace by clicking on the title of a Codespace. This will open a new tab with your Codespace.
 
 ```{r}
 knitr::include_graphics("getting-started/images/codespaces-3.png")
 ```
 
-### Using a codespace  {.unnumbered}
+Simply closing the browser window *does not* stop your Codespace from running. Make sure to always stop running your Codespace to preserve your Codespace time.
+
+### Using a Codespace  {.unnumbered}
 
 Visual Studio Code, also known as "VS Code," is an integrated development environment (IDE) for coding and data science. Highlights:
 
-* This codespace is in the cloud. The URL will be a combination of the GitHub-determined human-readable but somewhat nonsensical name--`fictional winner` in this case--and a bunch of letters and numbers. There is no need to remember this URL. GitHub keeps track of things. You can see all your current codespaces [here](https://github.com/codespaces).
+* This Codespace is in the cloud. The URL will be a combination of the GitHub-determined human-readable but somewhat nonsensical name--`fictional winner` in this case--and a bunch of letters and numbers. There is no need to remember this URL. GitHub keeps track of things. You can see all your current Codespaces [here](https://github.com/Codespaces).
 
 * In the upper right-hand corner are the "Customize Layout ..." buttons. These are part of the VS Code "Title Bar." Since we aren't using the AI tools right now, it often makes sense to close the "Chat" window, which appears on the right side of the screen. You can close this in two ways: Click the "X" mark or click the "Toggle Secondary Side Bar" button, the furthest right-hand button. You can then bring the Chat window back by clicking the "Toggle Secondary Side Bar" button again. Try it now.
 
@@ -176,7 +156,9 @@ knitr::include_graphics("getting-started/images/cs-4b.png")
 knitr::include_graphics("getting-started/images/cs-5.png")
 ```
 
-<!-- DK: Maybe close the codespace and open it again? -->
+<!-- DK: Maybe close the Codespace and open it again? 
+
+AR: Added to end of the Starting a Codespace section (where we initially tell students how to close a Codespace, but didn't tell them how to re-open. -->
 
 * Note the two bash shells on the right side of the Panel. We can click on each to move back and forth between them. 
 
@@ -216,7 +198,7 @@ Doing so shows all the R tutorials which are in the `tutorial.helpers` package. 
 knitr::include_graphics("getting-started/images/cs-9.png")
 ```
 
-Clicking the tutorial arrow starts a new R session, labeled "R Tutorial" on the right side of the panel. We now have 4 different terminals: two bash and two R. In this case, a "terminal" is any connection to the (cloud) computer itself or two a program running on it, like R. In fact, the [bash shell](https://opensource.com/resources/what-bash) is just another program which runs in the computer. 
+Clicking the tutorial arrow starts a new R session, labeled "R Tutorial" on the right side of the panel. We now have 4 different terminals: two bash and two R. In this case, a "terminal" is any connection to the (cloud) computer itself or to a program running on it, like R. In fact, the [bash shell](https://opensource.com/resources/what-bash) is just another program which runs in the computer. 
 
 The R Tutorial session shows the tutorial being built and its current state, which is "listening," i.e., waiting for you to complete the tutorial.  While the tutorial is running, this R session is unavailable for other work.
 
@@ -226,7 +208,7 @@ You should also have been given an option to open the tutorial in the browser. Y
 knitr::include_graphics("getting-started/images/cs-10.png")
 ```
 
-The `http` address refers to a file located in your GitHub codespace but which is still visible on your local machine via the magic of "port forwarding," meaning that the codespace is allowing your browser to open it. Opening it in your browser shows:
+The `http` address refers to a file located in your GitHub Codespace but which is still visible on your local machine via the magic of "port forwarding," meaning that the Codespace is allowing your browser to open it. Opening it in your browser shows:
 
 ```{r}
 knitr::include_graphics("getting-started/images/cs-11.png")
@@ -234,17 +216,50 @@ knitr::include_graphics("getting-started/images/cs-11.png")
 
 Read and follow the instructions. At the end of the tutorial, you should download your answers. 
 
+### Stopping and deleting a Codespace {.unnumbered}
+
+You can see all your Codespaces [here](https://github.com/Codespaces). Although GitHub provides you with lots of free hours, "lots" is not endless. It is your responsibility to keep track of your usage. GitHub helps by stopping any Codespace which has been inactive for 30 minutes. (You can change this default if you like by going [here](https://github.com/settings/Codespaces) and updating Default Idle Timeout for your GitHub account. I use 15 minutes.)
+
+Use `Cmd + Shift + P` to open the Command Palette and type "stop" in the search bar. Select "Codespaces: Stop Current Codespace" to stop running the Codespace.
+
+You can restart the Codespace anytime by going to your [Codespaces page](https://github.com/Codespaces). You can also navigate to this page by clicking on the three horizontal bar icon in the upper left, then selecting "Codespaces" from the drop-down menu.
+
+```{r}
+knitr::include_graphics("getting-started/images/gh-hamburger-icon.png")
+knitr::include_graphics("getting-started/images/gh-cs-sidebar.png")
+```
+
+This will bring you here:
+
+```{r}
+knitr::include_graphics("getting-started/images/codespaces-1.png")
+```
+
+I only have one Codespace. It was started from one of my repos. Selecting it and clicking the three dots--`...`--in the upper left, we have some options:
+
+
+```{r}
+knitr::include_graphics("getting-started/images/codespaces-3.png")
+```
+
+We can restart the Codespace by clicking on its title or by selecting "Open in Browser." 
+
+As you might expect, clicking "Delete" deletes the Codespace permanently.
+
+
+Your data science journey begins now!
+
 ### Summary for cloud {.unnumbered}
 
 You should have done the following:
 
   - Signed up for a GitHub account.
 
-  - Created a codespace using https://github.com/PPBDS/codespace-starter as a template.
+  - Created a Codespace using https://github.com/PPBDS/Codespace-starter as a template.
 
   - Completed your first tutorial, "Getting Started," from the **tutorial.helpers** package.
 
-  - Stopped and deleted the codespace.
+  - Stopped and deleted the Codespace.
 
 Let's get started!
 
@@ -259,7 +274,7 @@ Should our devcontainer set some sensible defaults for Git, especially with rega
 
 Probably need to change the starting tutorial from Getting Started to Codespaces.
 
-Note: if the codespace stops, you lose the R session. And other stuff?
+Note: if the Codespace stops, you lose the R session. And other stuff?
 
 Talk about, and show, how the Toggle button changed to all empty once we closed the chat window.
 
@@ -275,7 +290,7 @@ As long as you have a not-too-old computer--almost always a Mac or Windows lapto
 
 We use [**R**](https://www.r-project.org/about.html) via [**Positron**](https://positron.posit.co). R is to Positron as a car's engine is to its dashboard.
 
-More precisely, R is a programming languages that runs computations, while Positron is an *integrated development environment (IDE)* that provides an interface with many convenient features. Just as having access to a speedometer and navigation system makes driving much easier, using Positron's interface makes working with R and Python much easier.
+More precisely, R is a programming language that runs computations, while Positron is an *integrated development environment (IDE)* that provides an interface with many convenient features. Just as having access to a speedometer and navigation system makes driving much easier, using Positron's interface makes working with R and Python much easier.
 
 Download and install R and Positron on your computer.
 
@@ -377,7 +392,7 @@ knitr::include_graphics("getting-started/images/r-versus-r-packages.png")
 
 R is like a new phone. While it has a certain number of features when you use it for the first time, it doesn't have everything. R packages are like the apps you download onto your phone.
 
-Consider an analogy to Instagram. If you have a new phone and want to share a photo with friends. You need to:
+Consider an analogy to Instagram. If you have a new phone and want to share a photo with friends, you need to:
 
 1.  *Install the app*: Since your phone is new and does not include the Instagram app, you need to download the app. You do this only once. (You might need to do this again in the future when there is an update to the app.)
 2.  *Open the app*: After you've installed Instagram, you need to open it. You need to do this every time you use the app.
@@ -424,7 +439,7 @@ need compilation? (Yes/no/cancel)
 
 Unless you have a good reason not to, always answer "no" to this question.
 
-**If you are using Windows, there may be a permission problem.** In particular, R may not have permission to install packages in the common area. In that case, it will ask you if you want to create a "Personal" library. You do And then installation should work fine. **But Positron sometimes blocks this message.** In that case, you need quit Positron and start up the R application by itself. In R itself, run `install.packages("pak")`. The message box about creating a personal library should appear. You say "Yes," and all should be well. You can then quit R, restart Positron and continue with the next steps below. 
+**If you are using Windows, there may be a permission problem.** In particular, R may not have permission to install packages in the common area. In that case, it will ask you if you want to create a "Personal" library. You do. And then installation should work fine. **But Positron sometimes blocks this message.** In that case, you need quit Positron and start up the R application by itself. In R itself, run `install.packages("pak")`. The message box about creating a personal library should appear. You say "Yes," and all should be well. You can then quit R, restart Positron and continue with the next steps below. 
 
 R packages generally live in one of two places:
 
