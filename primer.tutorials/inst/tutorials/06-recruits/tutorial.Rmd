@@ -165,7 +165,7 @@ question_text(NULL,
 
 ###
 
-The teaching dataset for this tutorial is `recruits`, available in the **[primer.tutorials](https://github.com/PPBDS/primer.tutorials)** package once that package is loaded. It is a 50-row sample drawn from the National Health and Nutrition Examination Survey (NHANES, an ongoing survey conducted by the Centers for Disease Control and Prevention), restricted to ages 18--27 and to the columns relevant for our question.
+The teaching dataset for this tutorial is `recruits`, available in the **[primer.tutorials](https://ppbds.github.io/primer/tutorials/)** package once that package is loaded. It is a 50-row sample drawn from the National Health and Nutrition Examination Survey (NHANES, an ongoing survey conducted by the Centers for Disease Control and Prevention), restricted to ages 18--27 and to the columns relevant for our question.
 
 ### Exercise 6
 

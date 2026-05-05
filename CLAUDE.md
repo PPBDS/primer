@@ -58,7 +58,7 @@ In addition, every example chapter includes a **paired question**: a second ques
 
 The chapter therefore has two Preceptor Tables, two Population Tables, one fitted model, and two sets of answers in Temperance.
 
-The "Imagine that you are…" opener is the same in the chapter and the tutorial --- reuse the body verbatim. The closing line is the *one exception*: tutorials say *"This tutorial builds just one of them: \[QoI\]"*; chapters say *"This chapter builds two of them: \[primary\], framed both predictively and causally"* (or whatever wording fits the specific framings). Everything else in the Imagine paragraph stays identical across the artifact pair.
+The "Imagine that you are…" opener is the same in the chapter and the tutorial --- reuse it verbatim. The *only* word that changes is *tutorial* → *chapter* in the sentence that names what the artifact focuses on (*"This tutorial focuses on…"* → *"This chapter focuses on…"*). The Imagine paragraph does not mention the predictive/causal pairing --- that is a Wisdom move, introduced once the reader has the apparatus to understand it; in Imagine we stay at the real-world level of decisions and estimates.
 
 ### 1.3 Progressive sophistication
 
@@ -345,6 +345,22 @@ Chapters include full image references (`knitr::include_graphics("other/images/W
 This topic is chapter-only at Easy and Medium tiers. Hard tutorials may surface it as a knowledge drop; see §12.6 Theme 5 for the progressive schedule.
 
 Chapters also benefit from an EDA section richer than the tutorial's — chapter authors should include at least one plot per covariate plus one plot showing the outcome conditional on the key covariate, and a paragraph naming anything strange in the data (missingness patterns, outliers, coding quirks). Tutorials budget two EDA plots; chapters can run three to five without bloat.
+
+**Chapters provide rich real-world background. Tutorials don't have time for; chapters do.** A central purpose of every example chapter is to give the reader *true factual depth* about the real-world problem and the data the chapter uses to answer it. Useful kinds of background include the history of the data source (when it began, who collects it, how it has evolved), the scale of the real-world problem (actual numbers --- how many recruits per year, how many voters in the dataset, how many households were eligible for the program), measurement procedures (how is height actually measured at enlistment? how does NHANES handle non-response? how does the postcard treatment get to a voter's door?), and demographic specifics (who is in the population, who is not). The chapter is where the reader gets to *know the problem and the data well enough to argue about it*.
+
+This is not motivational fluff. **Do not write sentences like "most data science failures come from skipping this step" or "this matters because students learn best when they care."** That kind of writing assumes the reader needs convincing. The reader is reading the chapter; that's the convincing already. What the reader actually needs is *facts they don't already have* --- and what facts the chapter chooses to share should not be random. Background details should *connect to the Population Table assumptions discussion later* in Justice. If a chapter explains how NHANES heights are measured (precise stadiometer, examiner-administered, shoes off), that fact can be picked up in Justice's validity discussion. If the chapter explains that USMC recruits are filtered by a fitness screen, that fact carries into Justice's representativeness discussion. The chapter's background section earns its keep when its details get *used* later --- when the reader can read the Justice section and recognize *"oh, this is why the chapter spent a paragraph on that earlier."*
+
+Don't make things up. If you don't know an actual number, omit the fact rather than guess. Vague factual assertions ("most experts agree...", "research suggests...") have no place; if a fact is worth including it should be specific and verifiable.
+
+### 4.1 Lessons to mention at least once
+
+Some pedagogical points are best made *once*, in a single chapter where the context fits, rather than repeated everywhere or hammered uniformly across the curriculum. (Compare §1.6, which catalogs commitments we *say often* in fresh wording each time.) This subsection collects them. The list is a working inventory; add entries as they come up during chapter writing. The point is not to teach every lesson everywhere; some lessons are best made once and well.
+
+| # | Lesson | Suggested tier | Brief gist |
+|---|---|---|---|
+| 1 | **Average vs. expected value** | Medium | The *average* (e.g. of next year's recruit heights) is a real physical fact about the world: line up the units and measure them, and you have a number. The *expected value* is a property of the model --- what the model says we should expect the average to be. The two are not the same. The average is the target the question asks about; the expected value is our model-based estimate of it, with uncertainty. The Easy chapters use precise language (don't say "expected" when you mean "average," or vice versa); the Medium chapter that elects to host this lesson should make the distinction explicit and explain why the gap matters. |
+
+When a one-off pedagogical point surfaces during chapter writing --- something worth saying once but not worth repeating --- add it here with a tier suggestion. Each entry should fit on a single table row; if the lesson needs a paragraph of context, link out to where it lives in full.
 
 ---
 
@@ -1719,11 +1735,12 @@ If a tutorial is being drafted without a pre-flight tier check, the default is M
 **The closing line ("There are many decisions to make") has to be earned.** It is in every Imagine paragraph; for it to land, the body of the paragraph must actually establish the multiplicity it claims. The recipe:
 
 - **The protagonist has a boss with big-picture goals, not specific data-science requests.** A campaign manager's boss is the candidate, who wants to *win the election*. A public-health analyst's boss is the Minister, who wants to *improve health outcomes*. The boss does not ask for "a causal estimate of treatment X on outcome Y" --- they don't think in those terms, and most of them would not recognize the phrase. They have a goal and a budget; they trust the analyst to find evidence that helps.
-- **The analyst chooses what to model.** Many causal and predictive models would help with the boss's goal. The analyst is the one picking which model to build. Name two or three plausible alternatives in the paragraph so the reader sees the choice is real.
-- **This tutorial is one of many models.** The Imagine paragraph makes explicit that the model the tutorial builds is one piece, not the whole picture. *"This tutorial builds just one of them: \[specific QoI\]."*
+- **The boss has many real-world *decisions* to make in service of that goal.** Name two or three concrete decisions in the paragraph: how many uniforms to purchase, from which vendors, in which sizes; which voters to target with which messaging; which programs to fund and which to cut; etc. The decisions are operational, not statistical --- the boss is choosing what to *do*, not what to *model*. This is the multiplicity the closing line refers to. **Do not say "many models would help"** --- that conflates "decisions the boss makes" with "models the analyst builds," and the word *models* is technical jargon that students at this point in the curriculum cannot yet ground. Talk about decisions.
+- **The analyst's job is to produce *estimates* that help with those decisions.** Estimates of facts: average heights, the probability a postcard moves turnout, the expected effect of a policy. Each artifact (tutorial or chapter) picks *one such estimate* and produces it carefully. The artifact's narrow focus is in service of the boss's broad agenda.
+- **Name the one estimate the artifact produces, with its uncertainty.** *"This tutorial focuses on \[one estimate\]: \[specific QoI\], with its associated uncertainty."* (For a chapter: *"This chapter focuses on..."*) The word *uncertainty* is non-negotiable --- a number without a confidence interval is half an answer.
 - **The estimate is an input to the decision, not the decision.** Say so directly. *"The estimate alone won't decide anything, but it is one good input."* This earns the closing line without overclaiming.
 
-A good Imagine paragraph reads like a sketch of a real person doing a real job, with a boss who has goals and a budget that doesn't stretch to all of them. A bad Imagine paragraph reads like a homework prompt that names a topic and a question. See §5.4 for the section-header formatting convention that determines where `###` Continue buttons sit around the preamble; the three paragraphs above run directly into `### Exercise 1` with no trailing `###` between them.
+A good Imagine paragraph reads like a sketch of a real person doing a real job, with a boss who has goals, decisions to make, and a budget that doesn't stretch to all of them. A bad Imagine paragraph reads like a homework prompt that names a topic and a question. See §5.4 for the section-header formatting convention that determines where `###` Continue buttons sit around the preamble; the three paragraphs above run directly into `### Exercise 1` with no trailing `###` between them.
 
 **Pacing across the EMH tiers.** The Introduction is mostly operational — repo setup, adding libraries to the QMD, turning off code echo, sending commands to the R prompt, etc. The exercise list below is pitched at **Medium** pace: concise, one operational step per exercise, assuming the student has been through this workflow once before. The pace changes with tier:
 
@@ -2583,15 +2600,16 @@ The one exception is a **student-written code exercise** whose point is to teach
 
 ### 14.10 Package-name formatting
 
-In prose (not in code), R package names use **bold + link to the package's home page**: **[primer.data](https://github.com/PPBDS/primer.data)**, **[tidymodels](https://www.tidymodels.org/)**, **[broom](https://broom.tidymodels.org/)**, **[marginaleffects](https://marginaleffects.com/)**. Do not surround package names with backticks unless they appear inside actual code — backticks are for code identifiers (object names like `nhanes`, function names like `tidy()`), not for package names in running text.
+**This rule applies to both tutorials and chapters.** In prose (not in code), R package names use **bold + link to the package's home page**: **[primer.data](https://github.com/PPBDS/primer.data)**, **[tidymodels](https://www.tidymodels.org/)**, **[broom](https://broom.tidymodels.org/)**, **[marginaleffects](https://marginaleffects.com/)**. Do not surround package names with backticks unless they appear inside actual code — backticks are for code identifiers (object names like `nhanes`, function names like `tidy()`), not for package names in running text.
 
 Prefer the package's own documentation site or GitHub page over CRAN. CRAN URLs are fallbacks when no dedicated homepage exists.
 
-Canonical homepages the tutorials reference most often:
+Canonical homepages the tutorials and chapters reference most often:
 
 | Package | Homepage |
 |---|---|
 | primer.data | `https://github.com/PPBDS/primer.data` |
+| primer.tutorials | `https://ppbds.github.io/primer/tutorials/` |
 | tutorial.helpers | `https://ppbds.github.io/tutorial.helpers/` |
 | tidyverse | `https://www.tidyverse.org/` |
 | tidymodels | `https://www.tidymodels.org/` |
@@ -2600,6 +2618,9 @@ Canonical homepages the tutorials reference most often:
 | easystats | `https://easystats.github.io/easystats/` |
 | learnr | `https://rstudio.github.io/learnr/` |
 | knitr | `https://yihui.org/knitr/` |
+| gt | `https://gt.rstudio.com/` |
+
+For prose mentions of `primer.tutorials`, the canonical URL is the package's web page at `https://ppbds.github.io/primer/tutorials/` (a subpath of the book's pkgdown site). The package's *source code* lives at `https://github.com/PPBDS/primer/tree/main/primer.tutorials` --- a subdirectory of the `primer` monorepo, not a separate repo --- but the source URL is for code references, not for the bold-and-link mention. Use the pkgdown URL in prose; use the GitHub subdirectory URL only when linking to the README or to a specific source file. Do not link to `github.com/PPBDS/primer.tutorials`; that URL does not exist.
 
 Exceptions: inside `library(packagename)` code, ggplot `caption = "Source: … via primer.data"` strings, and other literal-code contexts, the package name is plain (no bold, no link, no backticks beyond what the code syntax itself implies) because markdown does not render inside those contexts.
 

@@ -13,9 +13,9 @@ library(gt)
 library(knitr)
 ```
 
-The four [Cardinal Virtues](https://en.wikipedia.org/wiki/Cardinal_virtues) for working through a data science problem are *Wisdom*, *Justice*, *Courage*, and *Temperance*. This chapter --- the first example chapter in the *Primer* --- works through the simplest possible problem the four virtues have to handle: a predictive linear regression with one binary covariate. The matching tutorial is `06-recruits` in the **[primer.tutorials](https://github.com/PPBDS/primer.tutorials)** package; almost every line of code in that tutorial appears here, surrounded by more prose, more exploration, and a paired causal version of the same question.
+The four [Cardinal Virtues](https://en.wikipedia.org/wiki/Cardinal_virtues) for working through a data science problem are *Wisdom*, *Justice*, *Courage*, and *Temperance*. This chapter --- the first example chapter in the *Primer* --- works through the simplest possible problem the four virtues have to handle: a predictive linear regression with one binary covariate. The matching tutorial is `06-recruits` in the **[primer.tutorials](https://ppbds.github.io/primer/tutorials/)** package; almost every line of code in that tutorial appears here, surrounded by more prose, more exploration, and a paired causal version of the same question.
 
-Imagine that you are a logistics analyst at U.S. Marine Corps Supply, planning next year's bootcamp uniform order. The Quartermaster General has a big-picture goal --- every recruit kitted out at the right size on day one, within a fixed procurement budget --- and trusts you to figure out what to order and in what quantities. Many models would inform the order: distributions of height, weight, chest, foot length; the male-female mix in incoming recruits; the size-tail dynamics that drive how many extra-large uniforms to keep in inventory. This chapter takes one of them and reads it two ways: the same height-by-sex comparison, framed first predictively (a difference between two groups of recruits) and then causally (an effect of sex on height, with the absurdity of that framing made explicit). The numbers alone won't determine the order, but the height-by-sex split is one good input to the larger forecast. There are many decisions to make.
+Imagine that you are a logistics analyst at U.S. Marine Corps Supply, planning next year's bootcamp uniform order. The Quartermaster General has a big-picture goal --- every recruit kitted out at the right size on day one, within a fixed procurement budget --- and many decisions to make in service of it: how many uniforms to purchase, from which vendors, in which fabrics, in which sizes, and how many of each size to hold in inventory against the unexpected. The Quartermaster has not asked you for a "causal estimate" or a "predictive model"; those words don't appear in the procurement plan. What the Quartermaster asks for is *evidence that helps with the decisions*. This chapter focuses on one such piece of evidence: an estimate of the average height of male and female recruits expected to enlist next year, with its associated uncertainty. The estimate alone won't determine the order, but it is one good input. There are many decisions to make.
 
 The data we will work from is `recruits`, a 50-row teaching cut of NHANES (the National Health and Nutrition Examination Survey, conducted by the U.S. Centers for Disease Control and Prevention). It has three columns: `height` (centimeters), `sex` (Female / Male), and `age` (integer years, restricted to 18--27). The 40 male and 10 female rows are deliberately unbalanced --- a feature we will return to when we look at the model's standard errors.
 
@@ -30,17 +30,35 @@ knitr::include_graphics("other/images/Wisdom.jpg")
 
 > *Wisdom begins with a question and then moves on to the creation of a Preceptor Table and an examination of our data.*
 
-Wisdom commits us to a question that is precise enough to be answered. The Preceptor Table makes the commitment concrete: it is the smallest table that, *if every cell were filled in with the truth*, would make the question's answer easy to read off. Most data science failures come from skipping this step --- attempting to answer a vague question with whatever data happens to be in front of us, instead of attempting to answer a precise question with data chosen for the purpose.
+Wisdom commits us to a question that is precise enough to be answered. The Preceptor Table makes the commitment concrete: it is the smallest table that, *if every cell were filled in with the truth*, would make the question's answer easy to read off.
 
 > *The combination of some data and an aching desire for an answer does not ensure that a reasonable answer can be extracted from a given body of data.* --- John W. Tukey
+
+### The Marine Corps and the supply problem
+
+The U.S. Marine Corps takes in roughly 25,000 to 30,000 enlisted recruits each year, training them at one of two depots: Marine Corps Recruit Depot Parris Island in South Carolina (recruits from east of the Mississippi, plus all female recruits since 2019) and MCRD San Diego in California (men from west of the Mississippi). Recruits arrive for a 13-week training program. On day one, each new recruit is issued a "sea bag" --- a duffel of basic clothing and equipment including dress uniforms, utility uniforms (cammies), physical training gear, footwear, and headgear, all in sizes determined before the recruit walked through the door.
+
+The supply chain has to forecast the size mix in advance. The forecast can go wrong in either direction: too many extra-large jackets and the surplus sits in inventory; too few and recruits wait, schedules slip, and money is wasted on rush orders. The cost of a bad forecast is not negligible --- the Marine Corps spends a few hundred dollars per recruit on basic-issue gear, multiplied across tens of thousands of recruits a year. The Quartermaster's question is therefore concrete: how many of each size? Among the inputs to that forecast is the height distribution of incoming recruits, broken out by sex --- which is what this chapter estimates.
+
+A few features of the recruit population matter for what comes later. Recruits must clear a fitness screen and meet height/weight standards before enlistment, so the recruit population is *not* a random sample of U.S. young adults. The male-female ratio in the Marine Corps is heavily skewed (active-duty enlisted is about 91% male, 9% female), and the geographic origin of recruits varies (more than half come from the southern United States). All of these facts will come back when we discuss representativeness in Justice.
+
+### NHANES, the data source
+
+The data we use comes from the National Health and Nutrition Examination Survey (NHANES), the continuous version of an examination survey the National Center for Health Statistics has run since the early 1960s. NHANES draws a stratified, multistage probability sample from the U.S. civilian noninstitutionalized population, oversampling specific demographic groups --- older adults, racial and ethnic minorities, lower-income households --- so that subgroup estimates have adequate precision. Selected participants are interviewed at home and then visited at a Mobile Examination Center, a fleet of medical-grade trailers that travels around the country. Examiners measure height, weight, blood pressure, and a battery of other physical measurements; trained phlebotomists draw blood. Since 1999, NHANES has examined roughly 5,000 individuals per year and reports results in two-year cycles.
+
+The `recruits` tibble used in this chapter is a 50-row teaching cut drawn from the much larger NHANES file, restricted to ages 18--27 with non-missing height and sex, with the male-female split deliberately set to 40/10 to make the standard-error contrast visible later. The 40/10 split is *not* representative of the actual demographic mix of NHANES participants in this age range, and the educational version of NHANES that the cut is drawn from drops the survey weights that would let us reweight back to a representative sample.
+
+Two features of how NHANES measures height matter. First, height is recorded by a trained examiner using a fixed stadiometer, with the participant standing barefoot, heels together, head positioned to a standard plane. Second, the examination happens in a controlled clinical setting --- the same procedure for every participant, repeatable across years. Both features will return in the validity discussion in Justice, where we ask whether NHANES heights and USMC enlistment heights measure the same construct.
 
 ### The primary question
 
 The primary question for this chapter is *predictive*:
 
-> What is the average height of male and female USMC recruits next year?
+> What will be the average height of male and female USMC recruits next year?
 
-This is a comparison question. We want two specific numbers: the expected height for male recruits and the expected height for female recruits. The Preceptor Table that would let us answer it has three columns --- one identifying each recruit, one for `height`, and one for `sex` --- and one row per USMC recruit expected to enlist next year (about 5,000 such recruits per year).
+This is a *predictive* question --- the kind of question that calls for a predictive model. We want two specific numbers: an estimate of the average height of male recruits next year, and an estimate of the average height of female recruits next year, each with its uncertainty. The Preceptor Table that would let us answer it directly has three columns --- one identifying each recruit, one for `height`, and one for `sex` --- and one row per USMC recruit expected to enlist next year (the 25,000-to-30,000 figure cited above).
+
+A note on language. *Average height* and *expected height* are not the same thing. The *average* height of next year's recruits is a real physical fact: line up everyone who shows up, measure each one, divide by the count, and you have a number. We will not have those measurements (those recruits have not shown up yet), so we cannot compute the average directly. What our model will produce is an *expected* height --- the model's best guess of what the average should be, given our data and our assumptions. *Expected* and *average* are not the same; we will return to that distinction in later chapters. For now, the Preceptor Table is about averages we cannot directly observe; the model is about expected values that approximate them.
 
 ```{r}
 #| echo: false
@@ -73,11 +91,11 @@ pt_primary_html <- gt::gt(pt_primary_tibble, id = "pt_primary") |>
   gt::tab_style(style = gt::cell_text(align = "right"),
                 locations = gt::cells_column_spanners(spanners = "outcome_span")) |>
   gt::tab_footnote(
-    footnote = "If all the information in this table were available, we could answer the question: What is the average height of male and female USMC recruits next year?",
+    footnote = "If all the information in this table were available, we could answer the question: What will be the average height of male and female USMC recruits next year?",
     locations = gt::cells_title()
   ) |>
   gt::tab_footnote(
-    footnote = "Each row is one USMC recruit expected to enlist during the coming year, about 5,000 recruits in total.",
+    footnote = "Each row is one USMC recruit expected to enlist during the coming year, about 25,000 to 30,000 recruits in total.",
     locations = gt::cells_column_spanners(spanners = "unit_span")
   ) |>
   gt::tab_footnote(
@@ -96,7 +114,7 @@ cat("```{=html}\n",
     pt_primary_html, "</div>\n```\n", sep = "")
 ```
 
-The Preceptor Table is *imaginary* in the sense that we will never have its full content; even our 50-row sample will only let us guess at the missing cells. But the act of writing it down is what forces the question to be precise. *The smallest table that would answer the question* is exactly three columns wide and 5,000 rows tall. Anything more is irrelevant; anything less and the question is unanswerable.
+The Preceptor Table is *imaginary* in the sense that we will never have its full content; even our 50-row sample will only let us guess at the missing cells. But the act of writing it down is what forces the question to be precise. *The smallest table that would answer the question* is exactly three columns wide and 25,000-to-30,000 rows tall. Anything more is irrelevant; anything less and the question is unanswerable.
 
 ### Exploring the data
 
@@ -330,7 +348,7 @@ pop_primary_html <- gt::gt(pop_primary_tibble, id = "pop_primary") |>
   gt::tab_style(style = gt::cell_text(align = "right"),
                 locations = gt::cells_column_spanners(spanners = "outcome_span")) |>
   gt::tab_footnote(
-    footnote = "Data rows are 50 NHANES respondents aged 18-27, examined between 1999 and the most recent release. Preceptor rows are the ~5,000 USMC recruits expected to enlist in 2026. The two blocks share the broader population of US young adults aged 18-27 but differ in era, in self-selection, and in measurement procedure.",
+    footnote = "Data rows are 50 NHANES respondents aged 18-27, examined between 1999 and the most recent release. Preceptor rows are the 25,000-to-30,000 USMC recruits expected to enlist in 2026. The two blocks share the broader population of US young adults aged 18-27 but differ in era, in self-selection, and in measurement procedure.",
     locations = gt::cells_title()
   ) |>
   gt::opt_css(css = "#pop_primary .gt_footnote { max-width: 1px; word-break: break-word; }") |>
@@ -383,7 +401,7 @@ This is the substantive reason the paired causal question is absurd, not just rh
 
 ### The Population Table for the paired question
 
-The paired Population Table has the same row structure as the primary --- 50 NHANES Data rows and 5,000 Preceptor rows --- but two outcome columns instead of one (`Height if Female`, `Height if Male`). In Data rows, the unobserved counterfactual is `...`. In Preceptor rows, both potential outcomes are filled in, with the unobservable one hatched.
+The paired Population Table has the same row structure as the primary --- 50 NHANES Data rows and 25,000-to-30,000 Preceptor rows --- but two outcome columns instead of one (`Height if Female`, `Height if Male`). In Data rows, the unobserved counterfactual is `...`. In Preceptor rows, both potential outcomes are filled in, with the unobservable one hatched.
 
 ```{r}
 #| echo: false
@@ -614,7 +632,7 @@ plot_predictions(fit_recruits, condition = "sex", draw = FALSE) |>
   theme_minimal()
 ```
 
-The primary question was *"What is the average height of male and female USMC recruits next year?"* The model's answer:
+The primary question was *"What will be the average height of male and female USMC recruits next year?"* The model's answer:
 
 * The expected height of a male recruit is about 174.8 cm, with a 95% confidence interval of roughly [172.5, 177.0].
 * The expected height of a female recruit is about 165.9 cm, with a 95% confidence interval of roughly [161.8, 170.0].
@@ -635,7 +653,7 @@ The pedagogical point is not that the causal reading is *true* --- it isn't --- 
 
 The chapter has answered the specific question we asked: *the average height of male and female USMC recruits*. That is one question in a family. A campaign-quality answer for the Quartermaster would also want, at minimum:
 
-* **The maximum.** The Quartermaster doesn't really care about the average recruit's height; they care about the *tallest* recruit, because every recruit needs a uniform that fits. The maximum of 5,000 draws from a Normal distribution with $\mu \approx 175$ and $\sigma \approx 6.4$ is about 196 cm --- substantially taller than the average. The fitted DGM contains this answer; we just have to ask it.
+* **The maximum.** The Quartermaster doesn't really care about the average recruit's height; they care about the *tallest* recruit, because every recruit needs a uniform that fits. The maximum of 27,000 draws from a Normal distribution with $\mu \approx 175$ and $\sigma \approx 6.4$ is about 199 cm --- substantially taller than the average. The fitted DGM contains this answer; we just have to ask it.
 * **The 10th and 90th percentiles.** How many extra-small uniforms to keep in inventory, and how many extra-large? The 10th and 90th percentiles of the male and female height distributions tell us where the small and large tails sit. The fitted DGM contains these too.
 * **Distributions over sample statistics.** How tall will the *tallest* recruit out of a specific batch of three be? This is a question about the maximum of a sample of three draws, which is not a single parameter --- it is a distribution. To get the answer we *simulate from the DGM*: draw three synthetic recruits, record the maximum, repeat ten thousand times, build a histogram. The DGM is a generator; once we have it, any question we can phrase as *"draw n units, compute statistic, repeat"* has an answer.
 
