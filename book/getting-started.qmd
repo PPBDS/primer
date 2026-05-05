@@ -21,7 +21,7 @@ Use a permanent email address for this account — not one tied to your current 
 
 On GitHub, your projects are organized into "repositories," usually called "repos."
 
-### Creating a Codespace  {.unnumbered}
+### Starting a Codespace  {.unnumbered}
 
 Instead of working on your computer, you will work in a [GitHub Codespace](https://github.com/features/Codespaces). This is a cloud-based [virtual machine](https://en.wikipedia.org/wiki/Virtual_machine) that we can set up for data science much more easily than configuring your own computer.
 
@@ -71,7 +71,7 @@ knitr::include_graphics("getting-started/images/cs-3.png")
 The blue dash has disappeared. Several more extensions have been installed. The GitHub name, `fictional winner`, now appears next to the repo name as well as in the quick access window above the editor. Your name will be different, as GitHub assigns a unique name to each Codespace.
 
 
-### Starting a Codespace  {.unnumbered}
+### Stopping a Codespace  {.unnumbered}
 
 GitHub allows 60 hours of free Codespaces usage each month, and probably more if you join [GitHub Education](https://github.com/education), an option that we highly recommend for students. It also provides lots of free storage. However, if you want to avoid paying, you need to be aware of your usage.
 
@@ -98,7 +98,7 @@ Once you run the command, you will see a progress bar in the lower right.
 Third, you can go to your main Codespaces control panel at `https://github.com/Codespaces`.
 
 ```{r}
-knitr::include_graphics("getting-started/images/Codespaces-1.png")
+knitr::include_graphics("getting-started/images/codespaces-1.png")
 ```
 
 This will show all your Codespaces, both active and inactive. The `...` menu in the lower right provides several common commands. The most relevant one for us now is "Stop Codespace." Selecting that button is the third way to stop a Codespace.
