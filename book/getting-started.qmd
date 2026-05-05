@@ -20,7 +20,7 @@ If you're a current student, you can still qualify for the [GitHub Student Devel
 
 On GitHub, your projects are organized into "repositories," usually called "repos."
 
-### Starting a Codespace  {.unnumbered}
+### Creating a Codespace  {.unnumbered}
 
 Instead of working on your computer, you will work in a [GitHub Codespace](https://github.com/features/Codespaces). This is a cloud-based [virtual machine](https://en.wikipedia.org/wiki/Virtual_machine), that we can much more easily set-up for doing data science, instead of manually setting up for this work on your computer.
 
@@ -70,7 +70,7 @@ knitr::include_graphics("getting-started/images/cs-3.png")
 The blue dash has disappeared. Several more extensions have been installed. The GitHub name, `fictional winner`, now appears next to the repo name as well as in the quick access window above the editor. Your name will be different, as GitHub assigns a unique name to each Codespace.
 
 
-### Closing a Codespace  {.unnumbered}
+### Starting a Codespace  {.unnumbered}
 
 GitHub allows 60 hours of free Codespaces usage each month, and probably more if you join [GitHub Education](https://github.com/education), an option that we highly recommend for students. It also provides lots of free storage. However, if you want to avoid paying, you need to be aware of your usage.
 
@@ -115,6 +115,17 @@ knitr::include_graphics("getting-started/images/Codespaces-3.png")
 
 Simply closing the browser window *does not* stop your Codespace from running. Make sure to always stop running your Codespace to preserve your Codespace time.
 
+Go ahead and stop your Codespace using one of the methods above.
+
+Now let's re-open a Codespace that you just stopped. Go to `https://github.com/Codespaces`. You can also navigate to this page on from your GitHub homepage by selecting the three horizontal bar icon in the top right and then selecting "Codespaces" from the sidebar menu.
+
+```{r}
+knitr::include_graphics("getting-started/images/gh-hamburger-icon.png")
+knitr::include_graphics("getting-started/images/gh-cs-sidebar.png")
+```
+
+From this page, click on the title of the Codespace you'd like to open. This will open a new tab with your Codespace.
+
 ### Using a Codespace  {.unnumbered}
 
 Visual Studio Code, also known as "VS Code," is an integrated development environment (IDE) for coding and data science. Highlights:
@@ -152,7 +163,9 @@ knitr::include_graphics("getting-started/images/cs-4b.png")
 knitr::include_graphics("getting-started/images/cs-5.png")
 ```
 
-<!-- DK: Maybe close the Codespace and open it again? -->
+<!-- DK: Maybe close the Codespace and open it again? 
+
+AR: Added to end of the Starting a Codespace section (where we initially tell students how to close a Codespace, but didn't tell them how to re-open. -->
 
 * Note the two bash shells on the right side of the Panel. We can click on each to move back and forth between them. 
 
