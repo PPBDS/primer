@@ -1,0 +1,530 @@
+# Key Concepts {-}
+
+This chapter is the single source of truth for the definitions used throughout the book and the tutorials. Every other piece of the project --- the chapters, the tutorials, the in-class exercises, the authoring notes that guide their construction --- treats the wording here as canonical. If a definition appears anywhere else, it agrees with this chapter, or this chapter is what gets the final word.
+
+Read it straight through if you want the full theory. Consult it on demand if you need to look up one term.
+
+## A note on staged definitions
+
+A few concepts --- *validity*, *stability*, *representativeness*, *unconfoundedness*, and the *Justice* virtue itself --- have a single canonical form that the curriculum eventually holds the reader to, but earlier tutorials use simpler precursor framings to make the concept accessible. We present the canonical form first and then, in a *Where this comes from* subsection, describe the simpler frames the reader will have encountered before reaching this chapter. The precursors are not *wrong*; they are scaffolding. A reader who first met *representativeness* as a single-link concept ("are the data representative of the population?") and now meets it here as a two-link concept (data → population → Preceptor Table) has not been told a falsehood --- they have been brought along.
+
+## A note on examples
+
+Most definitions below are illustrated with two examples: a causal one and a predictive one. To keep the chapter coherent we use a recurring pair.
+
+* **Trains** (causal). Boston commuters in 2012, drawn from Enos's randomized field experiment in which Spanish-speaking confederates rode certain Metra platforms. Outcome: an immigration-attitude index from 3 to 15. Treatment: whether the commuter was on an exposed platform during the experimental window. The question: what is the average causal effect of Spanish-speaker exposure on immigration attitude?
+* **Recruits** (predictive). A 50-row teaching cut of NHANES restricted to young adults. Outcome: height in centimeters. Covariates: sex and age. The question: what is the average height of male and female USMC recruits?
+
+When neither example fits a particular concept, we substitute a third: **Colleges** (predictive), about U.S. four-year colleges, predicting graduation rate from tuition and selectivity, with the data drawn from a 2013 IPEDS snapshot and the question framed for 2026.
+
+
+## The Cardinal Virtues
+
+The four [Cardinal Virtues](https://en.wikipedia.org/wiki/Cardinal_virtues) --- *Wisdom*, *Justice*, *Courage*, and *Temperance* --- are the order of operations for any data science problem. References and allusions to them are a feature, not a bug: data science is a moral act, and the virtues are the moral apparatus we apply to it.
+
+### Wisdom
+
+> *Wisdom begins with a question and then moves on to the creation of a Preceptor Table and an examination of our data.*
+
+Wisdom is the first virtue because it forces us to commit to a question precise enough to be answered. The Preceptor Table makes that commitment concrete: we draw the table that, *if every cell were filled in with the truth*, would answer the question with no further inference. Most data science failures come from skipping this step --- attempting to answer a vague question with whatever data happens to be in front of us, instead of attempting to answer a precise question with data chosen for the purpose.
+
+Wisdom also includes a first look at the data: an Exploratory Data Analysis (EDA), in which we examine the outcome variable and the most important covariates. *You can never look too closely at your data.* The point of the EDA is not to make a polished plot; it is to notice things that will affect every subsequent decision (extreme values, missing patterns, coding quirks, distributional surprises).
+
+* **Trains.** Wisdom commits to the question *"what is the average causal effect of Spanish-speaker exposure on immigration attitude?"* and writes down the Preceptor Table: a row per commuter, two potential-outcome columns (`att_end if Exposed`, `att_end if Not Exposed`), one treatment column. The EDA looks at the distribution of `att_end` and how it differs between the treated and control groups.
+* **Recruits.** Wisdom commits to *"what is the average height of male and female USMC recruits?"* and writes down a four-column Preceptor Table: recruit, height, sex, age. The EDA shows the height distribution split by sex and the dependence (or lack thereof) of height on age within each sex group.
+
+### Justice
+
+> *Justice concerns the Population Table, the four key assumptions which underlie it (validity, stability, representativeness, and unconfoundedness), and the choice of probability family and link function for the data generating mechanism.*
+
+Justice is the most demanding virtue. Wisdom committed us to a question and wrote down the Preceptor Table. Justice asks whether the data we actually have can be combined with the Preceptor Table at all --- whether the two can plausibly be treated as samples from a single underlying population. It also commits us to a *probability family* (Normal for continuous outcomes, Bernoulli for binary, multinomial for unordered categorical, cumulative for ordinal) and a *link function* (the mathematical formula by which the outcome's expected value depends on the covariates).
+
+The bridge runs in one direction: *data → population → Preceptor Table*. The data tells us about the population from which both the data and the Preceptor Table are drawn; the population tells us about the Preceptor Table's units. Justice's job is to make sure both arrows are defensible. The four assumptions are how we name what could go wrong on each arrow: *validity* concerns the columns shared across the two tables, *stability* concerns the parameters connecting columns to outcomes across the three categories of rows, *representativeness* concerns whether the rows in each block are samples from the same broader universe, and *unconfoundedness* (causal models only) concerns whether treatment assignment in the Data block is independent of the potential outcomes.
+
+The phrase *concerns about your model* is a useful frame here. Justice is the section of the analysis where you (or your critics) raise concerns about whether the model will do what you want it to do --- and where you commit to defending it.
+
+* **Trains.** Justice writes down a Population Table whose Data rows are 2012 Chicago Metra commuters and whose Preceptor rows are 2026 Boston MBTA commuters. It worries about validity (is the immigration-attitude index in 2012 measuring the same construct in 2026?), stability (has the slope of attitude on Spanish exposure changed in fourteen years?), representativeness (Chicago suburbs vs. Boston suburbs), and unconfoundedness (Enos's randomization at the platform level handles this, but we should defend it). The probability family for `att_end` is Normal; the link function is identity.
+* **Recruits.** Justice writes down a Population Table whose Data rows are NHANES respondents 2009--2012 and whose Preceptor rows are present-day USMC recruits. It worries about validity (NHANES heights are measured in the Mobile Examination Center; recruit heights are measured at enlistment), stability (the height distribution of young adults is unusually stable across decades, so this is a soft concern), and representativeness (NHANES is a U.S. probability sample; USMC recruits are not). No unconfoundedness, because the model is predictive. The probability family is Normal; the link function is identity.
+
+#### Where this comes from
+
+The canonical wording above (with *probability family*, *link function*, and the four-assumption enumeration) is the form a fully-trained reader of the Primer eventually holds. Earlier in the curriculum the wording is simpler.
+
+* **The simpler frame.** *"Justice reviews the Population Table and selects the formula for the data generating mechanism."* The four assumptions are not enumerated in the definition itself --- though the rest of the Justice section in any given tutorial walks through each by name (validity, stability, representativeness; in causal tutorials, also unconfoundedness). The phrase *"formula for the data generating mechanism"* stands in for the canonical form's *probability family* and *link function*.
+* **The four-assumption frame.** *"Justice concerns the Population Table, the four key assumptions which underlie it (validity, stability, representativeness, and unconfoundedness), and selects the formula for the data generating mechanism."* This adds the four-assumption enumeration but still uses *"formula"* in place of the technical *probability family* and *link function* terms.
+* **The canonical frame.** As stated above. The two technical terms replace the looser *"formula"* framing.
+
+The simpler-frame and four-assumption-frame versions are not wrong; they are partial. A reader who first met the simpler frame in an early tutorial and meets the canonical frame here is being told what was already implicit.
+
+### Courage
+
+> *Courage creates the data generating mechanism.*
+
+Courage is the section of the analysis where the model is fitted. Justice settled the structural choices (probability family, link function, which assumptions we are willing to defend); Courage now picks specific covariates, writes the model formula, and uses computer code to estimate the unknown parameters. *The three languages of data science are words, math, and code, and the most important of these is code.*
+
+A *parameter* is something which does not exist in the real world. (If it did, or could, then it would be data.) A parameter is a mental abstraction, a building block we use to help us replace the question marks in the Preceptor Table. We will always be uncertain about a parameter's value, however much data we collect, because parameters are not part of the world; they are part of the model.
+
+Null hypothesis testing is a mistake. There is only the data, the models, and the summaries therefrom.
+
+* **Trains.** Courage fits a linear regression of `att_end` on `treatment`, possibly adjusting for age. The fitted model has a small handful of parameters (intercept, slope on treatment, residual variance). The fitted slope on treatment is the average causal effect we care about.
+* **Recruits.** Courage fits a linear regression of `height` on `sex` and `age`. The fitted model again has a handful of parameters. The fitted intercept-and-slope-on-`sexMale` together give us the expected height for each of the two sex groups.
+
+### Temperance
+
+> *Temperance interprets the data generating mechanism and then uses it to answer, with the help of graphics, the question(s) with which we began. Humility reminds us that this answer is always false.*
+
+Temperance is the bridge from the fitted model back to the question. Coefficients in a linear-regression model are usually on the same scale as the outcome and so can be interpreted directly; coefficients in non-linear models (logistic, multinomial, ordinal) are on a *link scale* (log-odds, multinomial logits, cumulative logits) which is not the scale on which we asked the question. Either way, *we don't really care about parameters; parameters are imaginary, like unicorns.* What we care about is what the model says about the world on the outcome scale: predictions, comparisons, posterior distributions for the quantities we actually wanted.
+
+The tool the Primer uses for the parameters → answers translation is the [`marginaleffects`](https://marginaleffects.com/) package. *Predictions* answer "what does the model say Y is when X = ...?" *Comparisons* answer "how does Y change when X changes?"
+
+Humility reminds us that the answer is always false. The posteriors we create are never the truth. The assumptions we made to construct the model are never perfect. Yet decisions made with flawed posteriors are almost always better than decisions made without them.
+
+* **Trains.** Temperance reads the slope on `treatment` --- around +1.5 points on the 3-to-15 attitude scale --- and presents it with its 95% confidence interval. It plots predicted `att_end` for the two treatment arms with intervals. It widens those intervals in prose to acknowledge the assumptions Justice flagged.
+* **Recruits.** Temperance reads the predicted heights for male and female recruits (about 175 cm and 162 cm) and presents the difference (about 13 cm) with its confidence interval. It notes that the per-sex group means are imprecise because the sample is small (40 male, 10 female), and that the female mean is the more imprecise of the two.
+
+
+## The Rubin Causal Model
+
+### Rubin Causal Model
+
+> *The [Rubin Causal Model](https://en.wikipedia.org/wiki/Rubin_causal_model) is an approach to the statistical analysis of cause and effect based on the framework of potential outcomes.*
+
+The Rubin Causal Model is the framework the Primer uses to think about causation. It is the dominant framework in modern statistics and its language --- *potential outcomes*, *treatment*, *unconfoundedness*, *fundamental problem of causal inference* --- is the vocabulary of the rest of this chapter's causal entries.
+
+Crucially, *the same dataset can be used to construct a causal model or a predictive model*; the difference lies in the analyst's commitments, not in the data itself. We say more about that distinction in *Predictive versus causal models* below.
+
+### Potential outcome
+
+> *A potential outcome is the outcome for an individual under a specified treatment. In a causal model there are at least two potential outcomes for each unit: the outcome under treatment and the outcome under control.*
+
+Potential outcomes are the building blocks of causal inference. For a unit with two treatment values, there are two potential outcomes per unit: the value the outcome *would have* taken under treatment, and the value it *would have* taken under control. In the Rubin framework, both potential outcomes are well-defined attributes of the unit; what makes the situation hard is that we observe only one (see *Fundamental problem of causal inference*).
+
+* **Trains.** A commuter has two potential outcomes for `att_end`: the value of their immigration-attitude score had they been on an exposed platform, and the value had they been on a control platform. The experiment reveals one of these per commuter.
+* **Recruits.** Predictive: there are no treatments and therefore no potential outcomes. Each recruit has a single observed height, full stop.
+
+### Causal effect
+
+> *A causal effect is the difference between two potential outcomes.*
+
+The causal effect of treatment on a unit is the difference between the unit's potential outcome under treatment and its potential outcome under control. The word *difference* does not have to mean *subtraction*: many potential outcomes are not numbers (e.g., a categorical outcome like "voted for which candidate"). But for numeric outcomes, subtraction works.
+
+The *average causal effect* across a population is the average of the unit-level causal effects. With a randomized treatment, this is what a regression of outcome on treatment estimates.
+
+* **Trains.** For a single commuter, the causal effect of Spanish-speaker exposure on immigration attitude is `att_end if Exposed - att_end if Not Exposed`. We never observe both; the unit-level effect is unobservable. The average causal effect across commuters is what the experiment estimates --- about 1.5 points on the 3-to-15 scale.
+* **Recruits.** Predictive --- no causal effects.
+
+### Fundamental problem of causal inference
+
+> *The fundamental problem of causal inference is that we can only observe one potential outcome.*
+
+For each unit, exactly one potential outcome is observable: the one corresponding to the treatment the unit actually received. The other potential outcome is the *counterfactual* and is, in a literal sense, unknowable. Causal inference is therefore a *missing data* problem: we are estimating the average of a quantity (the unit-level causal effect) that we never observe for any single unit.
+
+The Preceptor Table makes this vivid. In a causal Preceptor Table, every cell is filled in with the truth, but the cells corresponding to counterfactual potential outcomes are rendered with diagonal hatching to signal *"this value exists but is unobservable in reality."* In the Data block of the Population Table, those same cells are written as `...` to signal *"this value is unknown."* The two notations differ because the underlying claims differ: in the Preceptor Table the truth exists (we just can't see it); in the data we don't have it.
+
+### Predictive versus causal models
+
+> *Predictive models have only one outcome column. Causal models have more than one (potential) outcome column because we need more than one potential outcome in order to estimate a causal effect.*
+
+The distinction between predictive and causal models is *not* a property of the data; it is a commitment made by the analyst. The same dataset --- and the same R code --- can be used to fit a predictive model or a causal model. What differs is whether the analyst is willing to treat one of the covariates as a *treatment* (a variable that can in principle be manipulated, generating two or more potential outcomes per unit). When yes: causal. When no: predictive.
+
+The Preceptor Table is the cleanest place to see the distinction. A predictive Preceptor Table has one outcome column; a causal Preceptor Table has at least two (potential outcome) columns plus a treatment column. The number of outcome columns is the bookkeeping of the analyst's commitment.
+
+The language we use to describe results also differs. With predictive models, we talk about *differences between groups of units with different covariate values* and avoid words like *cause*, *raise*, *change*. With causal models (under unconfoundedness, see below), we use causal language deliberately. The rule is *match your language to your identification strategy*.
+
+* **Trains.** Causal: `treatment` is treated as a manipulable covariate (and was, in fact, randomly assigned by Enos). The Preceptor Table has two outcome columns.
+* **Recruits.** Predictive: `sex` and `age` are not manipulable in any practical sense (you cannot change a 30-year-old man into a 70-year-old woman to see what happens to height). The Preceptor Table has one outcome column.
+
+
+## Tabular structure
+
+### Units
+
+> *Units are the rows, both in the Preceptor Table and in the data. They are determined by the original question, which also determines the quantity of interest.*
+
+The unit is *what a row represents*. Specifying the unit forces clarity: are we modeling individual people, individual households, individual schools, individual states? Different unit choices lead to different Preceptor Tables and often to different answers, even from the same underlying data. (A predictive model of *household* income is not the same as a predictive model of *individual* income.)
+
+The unit usually carries a *time* component, even when not made explicit. A row representing "Maria Alvarez in 2026" is not the same as a row representing "Maria Alvarez in 2009"; the unit is a person-at-a-moment.
+
+* **Trains.** The unit is one Boston-area commuter at the time of the 2012 experiment.
+* **Recruits.** The unit is one young adult, observed at the time of the NHANES interview.
+
+### Variables
+
+> *Variables is the general term for the columns in both the Preceptor Table and the data. The term is more general still, since it may refer to data vectors we would like to have in order to answer the question but which are not available in the data.*
+
+A *variable* is a column in the table. The term covers everything: outcomes, covariates, treatments, and *variables we wish we had but don't*. Listing variables that don't appear in the data is part of Wisdom: they help us see what the data is missing relative to the Preceptor Table we would ideally have.
+
+### Outcome
+
+> *The outcome is the most important variable. It is determined by the question/QoI. By definition, it must be present in both the data and the Preceptor Table.*
+
+The outcome is the variable we most want to understand, explain, or predict. It is the variable on the left-hand side of the model formula. By definition, it appears in both the Preceptor Table and the data; without it, the question cannot be asked.
+
+The outcome we *care about* is sometimes not the outcome the *data measures*. (If we want to know about lifetime smoking but the data records "smoked in the past 30 days," we accept the compromise and frame the question accordingly.) Acknowledging the gap between the ideal outcome and the available outcome is part of the validity discussion in Justice.
+
+* **Trains.** Outcome: `att_end`, an integer from 3 to 15 measuring immigration attitude after the experimental window.
+* **Recruits.** Outcome: `height`, a continuous measurement in centimeters.
+
+### Covariates
+
+> *Covariates is the general term for all the variables which are not the outcome. The term is used in three ways: all variables that might matter (whether in the data or not), all variables in the data other than the outcome, and the subset of those variables actually used in the model.*
+
+Three usages of *covariates* in plain English. *All variables that might matter* is the broadest --- it includes variables we wish we had but don't. *All variables in the data other than the outcome* is what is actually available. *The subset used in the model* is what the analyst eventually chooses. Most candidates a researcher lists never make it into the final model.
+
+In a causal model, one covariate is also called the *treatment*. The treatment is a special covariate, but it is still a covariate.
+
+### Treatment
+
+> *A treatment is a covariate which we can, at least in theory, manipulate. Treatments appear in causal models, not predictive ones.*
+
+The treatment is the covariate whose causal effect on the outcome we want to estimate. A variable is a treatment because the analyst is willing to treat it as manipulable, not because the data contains an experimental flag. A randomized experimental treatment is the cleanest case (someone actually assigned values), but observational data can also support a causal treatment if the analyst is willing to defend unconfoundedness.
+
+* **Trains.** Treatment: `treatment`, randomly assigned at the platform level by Enos. Two values: *Exposed*, *Not Exposed*.
+* **Recruits.** No treatment; the model is predictive.
+
+### Quantity of Interest (QoI)
+
+> *The Quantity of Interest is the number we want to estimate --- the answer to a specific question. We almost always calculate a posterior probability distribution for the QoI, since in the real world we will never know it precisely.*
+
+The QoI is the specific number that answers the question. *"What is the relationship between tuition and graduation rate?"* is not a QoI --- *relationship* doesn't tell you what to compute. *"What is the difference in expected graduation rate between colleges with $20,000 tuition and colleges with $30,000 tuition?"* is a QoI: a single, computable number with a confidence interval.
+
+A QoI is most often an *expected value* (an average), but it can also be a percentile, a maximum, or a comparison. The Preceptor Table is the smallest table such that, with no missing data, the QoI is easy to calculate. If you cannot describe how to compute the QoI from a fully-filled-in Preceptor Table in one sentence, the QoI is not yet specific enough.
+
+* **Trains.** QoI: the average causal effect of Spanish-speaker exposure on `att_end`, averaged across the population of commuters in the Preceptor Table.
+* **Recruits.** QoI: two specific expected values --- the average height of male recruits and the average height of female recruits.
+
+### Preceptor Table
+
+> *A Preceptor Table is the smallest possible table of data with rows and columns such that, if there is no missing data, we can easily calculate the quantity of interest.*
+
+The Preceptor Table is the central organizing tool of Wisdom. It is a table that *would*, if every cell were filled in with the truth, make the QoI easy to compute. It is *imaginary*, in the sense that we will never have its full content; even our data, after Justice and Courage, will only let us guess at the missing cells. But the act of writing it down is what forces our question to be precise.
+
+> *The rows of the Preceptor Table are the units. The outcome is at least one of the columns. If the problem is causal, there will be at least two (potential) outcome columns. The other columns are covariates. If the problem is causal, at least one of the covariates will be considered a treatment.*
+
+Some practical conventions follow from this. The Preceptor Table refers to the time of the *question*, not the time of the data. (In Colleges, the data is from 2013 but the question is asked in 2026; the Preceptor Table is dated 2026.) The Preceptor Table includes only the variables the question forces us to include; if the question is *"what is the average X of Y?"* the Preceptor Table has one column for the unit Y and one for the outcome X --- nothing else. The Preceptor Table's footnotes clarify what each *concept* in the question means; they do not discuss the data or how it was collected (those concerns belong to the Population Table).
+
+The two tables below show these conventions in concrete form --- a predictive Preceptor Table from the Recruits scenario, and a causal Preceptor Table from the Trains scenario. The point of showing them together is the contrast: most of the structure is identical; the bookkeeping of the predictive/causal distinction lives almost entirely in the outcome columns.
+
+```{r}
+#| echo: false
+#| message: false
+#| warning: false
+
+hatch <- function(x) {
+  paste0(
+    '<span style="background-image: repeating-linear-gradient(',
+    '45deg, rgba(0,0,0,0.12) 0 1px, transparent 1px 6px);',
+    ' padding: 6px 10px; margin: -6px -10px; display: block;">',
+    x, '</span>'
+  )
+}
+
+recruits_pt <- tibble::tribble(
+  ~`Recruit`,        ~`Height (cm)`, ~`Sex`,
+  "Maria Alvarez",   "162",          "Female",
+  "Anthony Carter",  "180",          "Male",
+  "...",             "...",          "...",
+  "Linda Whitfield", "165",          "Female"
+)
+
+gt::gt(recruits_pt) |>
+  gt::tab_header(title = "Predictive Preceptor Table --- Recruits") |>
+  gt::tab_spanner(label = "Unit",      id = "unit_span",       columns = c(`Recruit`)) |>
+  gt::tab_spanner(label = "Outcome",   id = "outcome_span",    columns = c(`Height (cm)`)) |>
+  gt::tab_spanner(label = "Covariate", id = "covariates_span", columns = c(`Sex`)) |>
+  gt::cols_align(align = "left",  columns = c(`Recruit`, `Sex`)) |>
+  gt::cols_align(align = "right", columns = c(`Height (cm)`)) |>
+  gt::fmt_markdown(columns = gt::everything()) |>
+  gt::tab_footnote(
+    footnote = "If all the information in this table were available, we could answer the question: What is the average height of male and female USMC recruits?",
+    locations = gt::cells_title()
+  )
+```
+
+```{r}
+#| echo: false
+#| message: false
+#| warning: false
+
+trains_pt <- tibble::tribble(
+  ~`Commuter`,       ~`att_end if Exposed`, ~`att_end if Not Exposed`, ~`Spanish Exposure`,
+  "Patrick Sullivan", "11",                 "10",                      "Not exposed",
+  "Karen Walsh",      "13",                 "10",                      "Exposed",
+  "...",              "...",                "...",                     "...",
+  "Marcus Lee",       "9",                  "9",                       "Not exposed"
+)
+
+gt::gt(trains_pt) |>
+  gt::tab_header(title = "Causal Preceptor Table --- Trains") |>
+  gt::tab_spanner(label = "Unit",                id = "unit_span",
+                  columns = c(`Commuter`)) |>
+  gt::tab_spanner(label = "Potential Outcomes", id = "outcome_span",
+                  columns = c(`att_end if Exposed`, `att_end if Not Exposed`)) |>
+  gt::tab_spanner(label = "Treatment",           id = "treatment_span",
+                  columns = c(`Spanish Exposure`)) |>
+  gt::cols_align(align = "left",  columns = c(`Commuter`, `Spanish Exposure`)) |>
+  gt::cols_align(align = "right", columns = c(`att_end if Exposed`, `att_end if Not Exposed`)) |>
+  gt::fmt_markdown(columns = gt::everything()) |>
+  gt::text_transform(
+    locations = gt::cells_body(columns = `att_end if Exposed`, rows = c(1, 4)),
+    fn = function(x) hatch(x)
+  ) |>
+  gt::text_transform(
+    locations = gt::cells_body(columns = `att_end if Not Exposed`, rows = 2),
+    fn = function(x) hatch(x)
+  ) |>
+  gt::tab_footnote(
+    footnote = "If all the information in this table were available, we could answer the question: What is the average causal effect of overhearing Spanish on a commuter platform on immigration attitude?",
+    locations = gt::cells_title()
+  ) |>
+  gt::tab_footnote(
+    footnote = "Each row's cross-hatched cell marks the unobservable counterfactual --- the potential outcome under the treatment the commuter did not actually receive. The truth exists, but no empirical process could ever reveal it.",
+    locations = gt::cells_column_spanners(spanners = "outcome_span")
+  )
+```
+
+The two tables are nearly identical. Same number of rows, same role of `Unit`, same conventions for placeholder rows, same role of covariates. Two structural differences:
+
+* **Outcome columns.** The predictive table has *one* outcome column (`Height (cm)`); the causal table has *two* (`att_end if Exposed`, `att_end if Not Exposed`), one per potential outcome. The hatched cell in each causal row marks the unobservable counterfactual.
+* **Treatment.** The causal table has a Treatment column under its own spanner (`Spanish Exposure`), naming which potential outcome the commuter actually received. The predictive table has no treatment column --- only covariates.
+
+That is the entire bookkeeping of the predictive/causal distinction. One outcome column and no treatment versus two outcome columns and a treatment. Everything else is the same.
+
+### Population Table
+
+> *The Population Table includes a row for each unit/time combination in the underlying population from which both the Preceptor Table and the data are drawn.*
+
+The Population Table is the bridge from the data to the Preceptor Table. Each row is one unit at one moment in time; the table contains both the rows we have (the Data block) and the rows we want (the Preceptor block), together with the much larger universe of unit/time combinations both blocks are samples from.
+
+The Population Table is where the four Justice assumptions become concrete. *Validity* is about whether the *columns* in the Data block measure the same thing as the columns in the Preceptor block. *Stability* is about whether the *parameters* governing the relationships between columns are the same across the three categories of rows: data, Preceptor, broader population. *Representativeness* is about whether the *rows* in each block are samples from the larger universe in the same way. *Unconfoundedness* (causal models only) is about whether treatment assignment in the Data block is independent of the potential outcomes.
+
+In the Population Table, *unobservable potential outcomes are marked differently in the two blocks*. In Data rows, the unobserved counterfactual is written as `...` (we don't have it). In Preceptor rows, the unobservable counterfactual is rendered with diagonal hatching (the truth exists, but no empirical process could ever reveal it). The two notations are not interchangeable; the underlying claims they make are different.
+
+As with the Preceptor Table, showing a predictive and a causal Population Table together highlights how similar they are. Each has eleven rows --- separators, a Data block, a Preceptor block --- and the same column structure. The differences are concentrated in the outcome and treatment columns, exactly as in the Preceptor Tables.
+
+```{r}
+#| echo: false
+#| message: false
+#| warning: false
+
+recruits_pop <- tibble::tribble(
+  ~Source,     ~`Adult`,            ~`Year`, ~`Height (cm)`, ~`Sex`,
+  "...",       "...",               "...",   "...",          "...",
+  "Data",      "Sarah Chen",        "2010",  "165",          "Female",
+  "Data",      "Robert Davis",      "2010",  "178",          "Male",
+  "Data",      "...",               "...",   "...",          "...",
+  "Data",      "Patricia Williams", "2011",  "161",          "Female",
+  "...",       "...",               "...",   "...",          "...",
+  "Preceptor", "Maria Alvarez",     "2026",  "162",          "Female",
+  "Preceptor", "Anthony Carter",    "2026",  "180",          "Male",
+  "Preceptor", "...",               "...",   "...",          "...",
+  "Preceptor", "Linda Whitfield",   "2026",  "165",          "Female",
+  "...",       "...",               "...",   "...",          "..."
+)
+
+gt::gt(recruits_pop) |>
+  gt::tab_header(title = "Predictive Population Table --- Recruits") |>
+  gt::tab_spanner(label = "Unit/Time", id = "unit_span",       columns = c(`Adult`, `Year`)) |>
+  gt::tab_spanner(label = "Outcome",   id = "outcome_span",    columns = c(`Height (cm)`)) |>
+  gt::tab_spanner(label = "Covariate", id = "covariates_span", columns = c(`Sex`)) |>
+  gt::cols_align(align = "left",  columns = c(`Source`, `Adult`, `Sex`)) |>
+  gt::cols_align(align = "right", columns = c(`Year`, `Height (cm)`)) |>
+  gt::fmt_markdown(columns = gt::everything()) |>
+  gt::tab_footnote(
+    footnote = "Data rows are NHANES respondents (2009-2012); Preceptor rows are USMC recruits today (2026). Both blocks have one outcome column each --- no potential outcomes, no hatching.",
+    locations = gt::cells_title()
+  )
+```
+
+```{r}
+#| echo: false
+#| message: false
+#| warning: false
+
+trains_pop <- tibble::tribble(
+  ~Source,     ~`Commuter`,        ~`Year`, ~`att_end if Exposed`, ~`att_end if Not Exposed`, ~`Spanish Exposure`,
+  "...",       "...",              "...",   "...",                 "...",                     "...",
+  "Data",      "Sarah Thompson",   "2012",  "12",                  "...",                     "Exposed",
+  "Data",      "Michael Chen",     "2012",  "...",                 "8",                       "Not exposed",
+  "Data",      "...",              "...",   "...",                 "...",                     "...",
+  "Data",      "Rebecca Johnson",  "2012",  "14",                  "...",                     "Exposed",
+  "...",       "...",              "...",   "...",                 "...",                     "...",
+  "Preceptor", "Patrick Sullivan", "2026",  "11",                  "10",                      "Not exposed",
+  "Preceptor", "Karen Walsh",      "2026",  "13",                  "10",                      "Exposed",
+  "Preceptor", "...",              "...",   "...",                 "...",                     "...",
+  "Preceptor", "Marcus Lee",       "2026",  "9",                   "9",                       "Not exposed",
+  "...",       "...",              "...",   "...",                 "...",                     "..."
+)
+
+gt::gt(trains_pop) |>
+  gt::tab_header(title = "Causal Population Table --- Trains") |>
+  gt::tab_spanner(label = "Unit/Time",          id = "unit_span",
+                  columns = c(`Commuter`, `Year`)) |>
+  gt::tab_spanner(label = "Potential Outcomes", id = "outcome_span",
+                  columns = c(`att_end if Exposed`, `att_end if Not Exposed`)) |>
+  gt::tab_spanner(label = "Treatment",          id = "treatment_span",
+                  columns = c(`Spanish Exposure`)) |>
+  gt::cols_align(align = "left",  columns = c(`Source`, `Commuter`, `Spanish Exposure`)) |>
+  gt::cols_align(align = "right", columns = c(`Year`, `att_end if Exposed`, `att_end if Not Exposed`)) |>
+  gt::fmt_markdown(columns = gt::everything()) |>
+  # Preceptor rows: hatch the unobservable counterfactual.
+  # Row 8 (Patrick, Not exposed) → hatch `att_end if Exposed`
+  # Row 9 (Karen, Exposed)       → hatch `att_end if Not Exposed`
+  # Row 11 (Marcus, Not exposed) → hatch `att_end if Exposed`
+  gt::text_transform(
+    locations = gt::cells_body(columns = `att_end if Exposed`, rows = c(8, 11)),
+    fn = function(x) hatch(x)
+  ) |>
+  gt::text_transform(
+    locations = gt::cells_body(columns = `att_end if Not Exposed`, rows = 9),
+    fn = function(x) hatch(x)
+  ) |>
+  gt::tab_footnote(
+    footnote = "Data rows are 2012 Chicago Metra commuters from Enos's experiment; Preceptor rows are 2026 Boston MBTA commuters. Two notations mark unobservable potential outcomes: in Data rows, `...` means we don't have the value; in Preceptor rows, the cross-hatched cell means the truth exists but no empirical process could ever reveal it.",
+    locations = gt::cells_title()
+  )
+```
+
+The structural overlap is the point. Both tables have an eleven-row layout with a Data block, a Preceptor block, and `...` separators. Both have a leading `Source` column, a `Unit/Time` spanner with two columns (the unit plus the year), and a covariate or treatment spanner on the right. The differences:
+
+* **Outcome columns.** Predictive has one (`Height (cm)`); causal has two (`att_end if Exposed`, `att_end if Not Exposed`).
+* **Treatment.** Causal has a Treatment column under its own spanner; predictive has no treatment.
+* **Two notations for unobservable potential outcomes** (causal only). In Data rows, the unobserved counterfactual is `...` (we don't have the value). In Preceptor rows, it is hatched (the value exists in truth but is unobservable in reality). Predictive tables have neither, because predictive models have no potential outcomes.
+
+
+## The four assumptions
+
+The four assumptions are the heart of Justice. They are the assumptions that have to hold for a Population Table built from the data and the Preceptor Table to be coherent. They are the things you (or your critics) might worry about. None of them are testable from the data alone; all of them are choices the analyst makes and defends.
+
+### Validity
+
+> *Validity is the consistency, or lack thereof, in the columns of the data set and the corresponding columns in the Preceptor Table.*
+
+Validity is about *columns*. Two columns can have the same name and still measure different things; two columns can have different names and still measure the same thing. The validity question is whether the column in the Data block of the Population Table can be stacked on top of the column in the Preceptor block --- whether they can be treated as samples from the same underlying variable.
+
+When validity fails, the most common move is to adjust either the Preceptor Table's concept or the question itself to match what the data actually measures. *"What is the average lifetime cigarette consumption of U.S. adults?"* is hard to answer because the data measures *"smoked at least 100 cigarettes ever,"* a binary indicator. The honest move is to redefine the QoI to *"what fraction of U.S. adults are ever-smokers?"* --- a question the data can answer.
+
+* **Trains.** Validity concern: the immigration-attitude index Enos used in 2012 may not measure the same construct as a comparable index would in 2026 --- the political vocabulary around immigration has shifted considerably, and a 1-to-5 Likert about "would you allow more immigration" doesn't necessarily capture the same construct over time.
+* **Recruits.** Validity concern: NHANES heights are measured in stocking feet by trained examiners using a stadiometer; recruit heights are measured at enlistment, which may include shoes and may use different equipment. The two columns are close but not identical, and a one-centimeter systematic gap would not be surprising.
+
+#### Where this comes from
+
+The canonical wording above is plain enough that the curriculum uses it from the very first tutorial; what scales is the *scope* of what we ask validity about.
+
+* **Outcome-only scope.** Early tutorials treat validity as a worry about the *outcome column* only. Counter-examples are obvious measurement mismatches: cm vs. inches, years vs. months, 1--7 Likert vs. 0--10. The remedy is to identify the mismatch and either adjust the Preceptor Table's concept or the question.
+* **Covariates and treatment scope.** Later tutorials extend validity to the *covariates and (in causal models) the treatment*. Counter-examples include treatment-operationalization mismatches (one platform-confederate setup vs. another), covariate encoding (education as years vs. as highest degree), concept drift over time (*"Republican"* in 1990 vs. 2024). Derived columns (a partisanship index built from three survey items) raise the same concern with extra subtlety.
+* **Construct scope.** The most sophisticated reading is *construct validity*: whether the variable measures the underlying psychological, economic, or policy construct it is meant to. *"Wealth"* as self-reported assets minus debts is a construct, not a measurement; the validity question is whether the construct, as operationalized, captures what the question means by *wealth*. Advanced remedies (measurement invariance testing, item response theory, instrumental variables for biased proxies) are named here, not taught.
+
+The canonical wording is the same at every scope; what deepens is the kind of mismatch we look for.
+
+### Stability
+
+> *Stability means that the relationship between the columns in the Population Table is the same for three categories of rows: the data, the Preceptor Table, and the larger population from which both are drawn.*
+
+Stability is the assumption that the *parameters* of the model --- the intercept, the slopes, the residual variance --- are the same for the rows we have, the rows we want, and the broader universe both are drawn from. Stability is what lets us estimate parameters from one block (the Data) and use them to fill in missing cells in another (the Preceptor Table).
+
+A change in the *distribution* of any single variable does not, by itself, violate stability. The mean of a covariate may rise; the variance of the outcome may fall; the mix of categorical levels may shift --- none of those is a stability violation. What violates stability is a change in the *parameters* governing the relationship: the slope of outcome on covariate, the offset between groups, the residual scale.
+
+* **Trains.** Stability concern: the slope of immigration attitude on Spanish exposure may have shifted between 2012 and 2026, because the cultural and political context for immigration shifted dramatically over that period. A 2012 commuter's reaction to overhearing Spanish on a train platform is not necessarily the same as a 2026 commuter's reaction --- not because the rate of Spanish exposure changed (a distribution shift) but because the *meaning* of overhearing it has changed (a parameter shift).
+* **Recruits.** Stability concern: the relationship between sex, age, and height in young adults is unusually stable across decades --- the parameter has barely moved since the mid-20th century. This is one of the rare cases where stability is a soft concern.
+
+#### Where this comes from
+
+The canonical wording does not change as the curriculum proceeds. What changes is the *theme* of the discussion that surrounds it.
+
+* **Stability and time.** The early framing emphasizes the temporal nature of the assumption. The data is from one era; the Preceptor Table is from another. The longer the gap, the more suspect stability becomes. Counter-examples are time gaps: a 2007 financial-behavior dataset used to predict 2020, a 2013 IPEDS snapshot used to predict 2026.
+* **Stability is about parameters, not distributions.** The next layer is the load-bearing one. Students very often confuse a distribution shift in any covariate with a stability violation. The fix is to insist, repeatedly, that stability is about the slope of outcome on covariate (and the intercept, and the residual variance) --- not about the marginal mean or spread of any variable.
+* **Three DGMs and the parallel to representativeness.** The most sophisticated reading: there are three possible Data Generating Mechanisms behind the rows of the Population Table --- the DGM that produced the Data, the DGM that governs the Preceptor Table, and the DGM of the broader population. Stability is the assumption that all three are identical: same intercept, same slopes, same residual variance. Representativeness asks the same question of *rows*; stability asks it of *parameters*. Both are assumptions about underlying sameness across the data/Preceptor divide; one is row-level, the other is parameter-level.
+
+### Representativeness
+
+> *Representativeness, or the lack thereof, concerns two relationships among the rows in the Population Table. The first is between the data and the other rows. The second is between the other rows and the Preceptor Table.*
+
+Representativeness is about *rows*. Ideally, both the Data block and the Preceptor block would be random samples from the broader population that the Population Table covers. In practice, neither is. Surveys oversample certain demographic groups (NHANES does this deliberately, to get adequate sample sizes for older adults and racial minorities); convenience samples select the easy-to-reach; voluntary participation correlates with the trait being measured; the Preceptor Table reflects an analyst's decisions about what scope of question to ask. Each of those is a representativeness issue.
+
+When representativeness is violated, our parameter estimates *might* be biased. Not *will be* --- the bias might wash out by chance --- but we have no principled reason to expect chance to save us, so the honest stance is *"might be biased."*
+
+* **Trains.** Representativeness has two pieces. First: are Enos's 2012 Chicago commuters a random sample from the broader population? They are not --- they are commuters on certain morning trains during certain weeks, self-selected into Metra ridership. Second: are the rows in the Preceptor Table (2026 Boston MBTA riders) a random sample from the same broader population? Also not --- they are a different city, a different commuter-rail system, a different era. Both links are stretched.
+* **Recruits.** First link: the NHANES sample oversamples older adults and underrepresented minorities. The educational subset we use drops the survey weights, so our Data block is not nationally representative. Second link: USMC recruits are a self-selected, demographically distinct subset of the U.S. population (younger, more male, fitness-screened). Neither link is a random sample.
+
+#### Where this comes from
+
+Earlier tutorials use a simpler frame than the canonical two-link version above.
+
+* **Single-link frame.** *"Representativeness is the similarity between a subset of the units in a population and the overall population itself."* The discussion stays on the *data → population* link only: are the data representative of the broader population? The cleanest way to ensure this is a random sample, but that is rarely the case. Counter-examples (oversampling, voluntary participation, attrition) all concern this single link. The Preceptor Table's relationship to the population is not yet on the table.
+* **Two-link frame.** As stated above. The chain is *data → population → Preceptor Table*: the data tells us about the population, and the population tells us about the Preceptor Table. Even with a perfectly random-sample Data block, a Preceptor Table whose units are not representative of the broader population yields biased results --- so the second link matters as much as the first. Advanced remedies named (not taught): post-stratification, inverse-probability weighting, raking.
+
+### Unconfoundedness
+
+> *Unconfoundedness means that the treatment assignment is independent of the potential outcomes, when we condition on pre-treatment covariates.*
+
+Unconfoundedness applies only to causal models. It is the assumption that, once we have controlled for the pre-treatment covariates in the model, knowing a unit's treatment value tells us nothing extra about that unit's potential outcomes. In a randomized experiment this is true by construction (treatment was assigned by a coin flip, with no covariate adjustment needed). In observational data it is an assumption the analyst defends.
+
+The phrase *pre-treatment covariates* is load-bearing. Conditioning on a *post-treatment* covariate --- one that sits on the causal path from treatment to outcome --- introduces bias rather than removing it. (A classic example: estimating the effect of education on income while controlling for occupation. Occupation is a post-treatment variable; controlling for it absorbs much of the effect education was supposed to have.) The pre-vs.-post-treatment distinction is what separates a defensible adjustment from a counterproductive one.
+
+* **Trains.** Unconfoundedness holds by design: Enos randomly assigned the Spanish-speaker confederates to certain Metra platforms. Within the experimental sample, treatment is independent of any unit-level characteristic. We don't even need covariate adjustment to defend the comparison; randomization handled it.
+* **Recruits.** Predictive --- the assumption is not relevant.
+
+#### Where this comes from
+
+Unconfoundedness is causal-only, so it appears only in causal tutorials. The framing deepens substantially across the curriculum.
+
+* **Intuition: random assignment.** The early framing is informal. *"Could something other than the treatment explain why the treated and untreated groups have different outcomes? If not, the treatment is unconfounded."* Counter-examples stay at student-intuition level: voters who self-select into volunteering with a campaign differ from those who don't; smokers differ from non-smokers in ways besides smoking. The cleanest way to ensure unconfoundedness is to randomize.
+* **Conditioning on pre-treatment covariates.** The middle framing introduces the load-bearing apparatus: conditioning on covariates, the pre-treatment requirement, and the *selection on observables* assumption (all relevant confounders are measurable and present in the data). It also distinguishes randomized experiments (where the assumption is guaranteed by design) from observational data (where it must be defended).
+* **Selection on unobservables.** The most sophisticated reading addresses confounders that cannot be measured even in principle: ability bias that no test captures, voluntary-program selection where the people who sign up differ in unmeasurable ways, time-varying confounding when past outcomes affect future treatment decisions. Advanced research designs --- instrumental variables, regression discontinuity, difference-in-differences, propensity-score matching, sensitivity analysis --- are named here, not taught.
+
+
+## Mechanisms
+
+The Primer uses three closely related but distinct words --- *assignment mechanism*, *sampling mechanism*, *selection mechanism* --- which often get conflated in published work but mean different things in our usage.
+
+### Assignment mechanism
+
+> *The assignment mechanism is the probabilistic rule by which units come to receive one treatment value rather than another. In a randomized experiment the assignment mechanism is known and independent of the potential outcomes; in observational data it is unknown and must be modeled or assumed.*
+
+The assignment mechanism is the *treatment-side* mechanism. It applies to causal models only. *"Coin flip"* is the cleanest assignment mechanism; *"whichever county the federal program rolled out to first"* is messier; *"voters self-selected into voting"* is messiest. Unconfoundedness is the assumption that the assignment mechanism is independent of the potential outcomes once we condition on covariates.
+
+### Sampling mechanism
+
+> *The sampling mechanism is the probabilistic rule by which units come to appear in the data. It covers survey-sampling design, non-response, attrition, and any other process that determines who the data includes. When the sampling mechanism is correlated with the outcome or with treatment, inference about the broader population is biased.*
+
+The sampling mechanism is the *data-side* mechanism. It is what determines who ends up in the Data block of the Population Table. NHANES uses a stratified probability sample; surveys with self-recruited respondents do not; convenience samples and clinical-trial volunteers are sampled by mechanisms that often correlate with the trait being measured. When the sampling mechanism is correlated with the outcome, the data block of the Population Table is not representative of the broader population --- a representativeness violation on the first link.
+
+### Selection mechanism
+
+> *The selection mechanism is the analyst's decision about which units the Preceptor Table includes --- the scope of the question. Unlike the sampling mechanism, this is not a physical process but a scoping choice made by the analyst. When the selection mechanism excludes units whose outcomes would differ systematically, inference about the target population is biased.*
+
+The selection mechanism is the *Preceptor-side* mechanism. It is what determines who ends up in the Preceptor block of the Population Table. *"U.S. adults aged 20--80 in 2026"* is one selection mechanism; *"Texas voters reachable by mail in 2026"* is a different one. Unlike the sampling mechanism, the selection mechanism is a choice made by the analyst when scoping the question, not a physical process operating in the world. Different selection mechanisms produce different Preceptor Tables, often with different parameters; the Preceptor block is biased relative to the *target* population whenever the selection mechanism excludes units whose outcomes would differ systematically.
+
+A note on terminology. In published statistics and econometrics --- notably Heckman 1979, *Sample Selection Bias* --- *"selection mechanism"* usually refers to what the Primer calls the *sampling mechanism*. The Primer reverses the emphasis deliberately: *sampling* is something that happens in the world, often before the analyst arrives; *selection* is something the analyst does when scoping the question. Students reading Heckman or related work later should expect the terms to be used in the opposite direction.
+
+
+## Modeling
+
+### Data Generating Mechanism (DGM)
+
+> *The Data Generating Mechanism is the final model, the one we use to answer the question. It is a model of the process by which the world generates the data we observe.*
+
+The DGM is the fitted model: the formula plus the estimated parameter values. We can express the DGM in four ways, and the Primer uses all four.
+
+* **In words.** *"We model height as a normally distributed variable which is a linear function of sex and age."*
+* **In R code.** `linear_reg(engine = "lm") |> fit(height ~ sex + age, data = recruits)`.
+* **In a parameter table.** The output of `tidy(fit, conf.int = TRUE)`: each row is one parameter, with its estimate and 95% confidence interval.
+* **As a mathematical formula.** $\widehat{\text{Height}} = 162.9 + 12.6 \cdot \text{sexMale} + 0.05 \cdot \text{Age} + \epsilon$, with $\epsilon \sim N(0, 8.9^2)$.
+
+The DGM is *a* model of the world's data-generating process, not *the* model. Different choices of probability family, link function, covariates, and interactions all produce different DGMs. The DGM the analyst commits to is the one used to answer the question; the others are candidates considered and discarded.
+
+* **Trains.** DGM: `att_end` modeled as Normal, linear function of `treatment` (and possibly `age`). Three to five parameters depending on adjustment.
+* **Recruits.** DGM: `height` modeled as Normal, linear function of `sex` and `age`. Three parameters plus residual variance.
+
+### Preceptor's Posterior
+
+> *Preceptor's Posterior is the posterior distribution we would calculate if every assumption we made in Wisdom and Justice were correct. It is the best posterior achievable with our data; it is not the truth.*
+
+Preceptor's Posterior is the distinction the Primer draws between *the posterior we are reporting* and *the truth*. Even if every assumption we made about validity, stability, representativeness, and (for causal models) unconfoundedness were exactly correct, our posterior --- our beliefs about the QoI given the data --- would still not be the truth. It would be the *best posterior achievable with the data we have*, which is a very different claim from *the truth*. The truth is reserved for God; Preceptor's Posterior is the best we can do.
+
+In practice, even Preceptor's Posterior is something we do not actually compute. Our reported posterior is a further approximation: it depends on assumptions that are *not* exactly correct (validity is imperfect, stability is approximate, representativeness is stretched). The reported posterior is therefore worse than Preceptor's Posterior, and Preceptor's Posterior is in turn worse than the truth.
+
+The practical consequence: *the world is always more uncertain than our models would have us believe.* The reported confidence interval is too narrow because it captures only the sampling variation under our assumptions; it does not capture the uncertainty about whether our assumptions are correct. Honest analysts widen their reported intervals in prose to acknowledge the gap.
+
+This is the closing thought of every chapter and every tutorial. We make decisions with imperfect posteriors because the alternative --- making decisions with no posteriors --- is worse. But we make those decisions humbly.

@@ -18,7 +18,7 @@ The goal is that this file is the only reference either of us needs when startin
 8. **Spaced repetition** — the curriculum-level pattern
 9. **AI-mediated code exercises** — how students use AI to write code
 10. **Preceptor and Population Tables** — `gt` code, conventions
-11. **Canonical definitions** — verbatim text for §11-referenced concepts
+11. **Canonical definitions** — convenience snapshot of the Key Concepts chapter wordings (the chapter is the source of truth)
 12. **Knowledge drop library** — pedagogical beats, organized by virtue
 13. **Master exercise list** — per-virtue exercise template
 14. **Guidance for tutorial authors** — cross-cutting rules
@@ -54,9 +54,11 @@ Chapters are longer than tutorials. Every example chapter covers the same primar
 
 In addition, every example chapter includes a **paired question**: a second question that uses the same outcome variable and the same covariates as the primary question, but with the opposite framing. If the primary question is causal, the paired question is predictive; if the primary is predictive, the paired is causal. The paired question gets its own Preceptor Table and its own Population Table. The key insight is that the **same fitted model** serves both questions — the outcome and covariates are identical. What differs is the assumptions the analyst is willing to make and the language used to interpret results.
 
+**The paired question is required even when the implied causal manipulation is absurd.** Some predictive tutorials use covariates that are not realistically manipulable (sex, age in Recruits; tuition and selectivity in Colleges, where the "manipulation" is at the institutional level rather than the unit level). The paired causal question for those chapters has to *pretend* one covariate is a treatment and ask "what is the causal effect of X on Y?" anyway --- and the chapter then explicitly names the absurdity. The pedagogical point is that the predictive/causal distinction is *an analyst's commitment*, not a property of the data, and the absurd-counterfactual case makes the commitment visible. Don't skip the paired question to avoid awkwardness; lean into the awkwardness.
+
 The chapter therefore has two Preceptor Tables, two Population Tables, one fitted model, and two sets of answers in Temperance.
 
-The "Imagine that you are…" opener is the same in the chapter and the tutorial. Reuse, don't rewrite.
+The "Imagine that you are…" opener is the same in the chapter and the tutorial --- reuse the body verbatim. The closing line is the *one exception*: tutorials say *"This tutorial builds just one of them: \[QoI\]"*; chapters say *"This chapter builds two of them: \[primary\], framed both predictively and causally"* (or whatever wording fits the specific framings). Everything else in the Imagine paragraph stays identical across the artifact pair.
 
 ### 1.3 Progressive sophistication
 
@@ -68,51 +70,60 @@ Transitions are gradual, not sharp. The last Easy tutorial should be just slight
 
 This principle works hand-in-hand with spaced repetition (§8): a recurring concept doesn't merely reappear, it reappears at the next level of sophistication, so each visit teaches something new.
 
-**Definitions stay stable; what scales is the discussion around them.** A student who learns the canonical §11 wording in an early chapter should see the same wording in later chapters — that is how spaced repetition cements it. What changes across Easy, Medium, and Difficult treatments is the depth of the *surrounding* material: the counter-examples chosen, the knowledge drops attached, the techniques mentioned, the edge cases probed. Mark Easy/Medium/Difficult variants on knowledge drops (§12), counter-examples, and exercise prompts (§13) — not on the canonical definitions themselves.
+**Most definitions stay stable across tiers; what scales is the discussion around them.** A student who learns the canonical Key Concepts wording in an early chapter should see the same wording in later chapters — that is how spaced repetition cements it. What changes across Easy, Medium, and Difficult treatments is the depth of the *surrounding* material: the counter-examples chosen, the knowledge drops attached, the techniques mentioned, the edge cases probed. Mark Easy/Medium/Difficult variants on knowledge drops (§12), counter-examples, and exercise prompts (§13) — not on the canonical definitions themselves.
 
-The exception is when a concept is being introduced for the first time. The Easy version may use a deliberately simpler framing to give students a foothold; the canonical §11 wording then takes over from the Medium chapter onward and stays fixed thereafter. Use the simpler framing sparingly, and note the convergence point so authors know when to switch.
+**Some definitions, however, are themselves tier-staged.** When a concept's full canonical wording is too sophisticated for early tutorials, the Key Concepts wording is the *Hard* version, and Easy and (sometimes) Medium tutorials use simpler framings that grow toward it. Three patterns exist:
 
-**Worked example: representativeness across three levels.**
+- **No staging** (most concepts). Canonical wording from Easy onward. Examples: Wisdom, Courage, Temperance, Preceptor Table, causal effect, fundamental problem of causal inference, Population Table, **Stability**. For these, the canonical wording is the same at every tier; what scales across E/M/H is the *knowledge drop* that follows the definition exercise — a "post-definition theme" that grows in sophistication tier by tier.
+- **Two tiers** (Easy → canonical at Medium). The simpler form covers Easy plus the first half of Medium; canonical takes over at the back half of Medium and stays. Examples: Representativeness, Unconfoundedness.
+- **Three tiers** (E / M / H). Each tier has its own wording, mapping one-for-one to the EMH split. Example: Justice.
 
-- **Easy.** Representativeness is the similarity between a subset of the units in a population and the overall population itself. The discussion stays on the *data → population* link: are the data representative of the population? The cleanest way to ensure this is a random sample, but that is rarely the case. All counter-examples concern this single link.
+When a definition has tier-staged variants, the End of the corresponding §13 Ex 1 is **always devoted to placing the definition in the context of increasing sophistication** — naming the technical terms or distinctions that the next tier will introduce, even if there is not time to go into the details. The aim is for students to see what's coming. (When a definition has no staging, the End can do something else.)
 
-- **Medium.** Switch to the canonical §11 wording: representativeness concerns two relationships among the rows in the Population Table — *data ↔ other rows*, and *other rows ↔ Preceptor Table*. Counter-examples and discussion span both directions. Even with a random-sample dataset and an unbiased DGM, a Preceptor Table whose units are not representative of the broader population yields biased results.
+**Where the variants themselves are written down.** The actual wordings, scope expansions, theme-by-tier drops, and counter-examples for every tier-staged definition live in the `Key Concepts` book chapter (`book/key-concepts.qmd`), under each definition's *Where this comes from* subsection. Key Concepts uses content-based labels (e.g. "Single-link frame", "Outcome-only scope", "Stability and time", "The simpler frame") rather than EMH-tier labels — the chapter does not name the EMH split because that is curriculum machinery, not pedagogical content. CLAUDE.md retains the *tier-routing rules* below (which version goes in which tutorial position) but no longer carries the wordings or the discussion. When you need to write or rewrite a §13 Ex 1 message, look up the relevant Key Concepts entry.
 
-- **Difficult.** Same canonical definition as Medium. What changes: more sophisticated counter-examples and knowledge drops, plus mention of advanced remedies (post-stratification, inverse-probability weighting, raking). We do not teach these techniques in depth — there is no room — but we name them so students know what to reach for when they encounter the problem in practice.
+**Tier-routing: representativeness.** Two-tier staging.
 
-Note that the definition shifts only between Easy and Medium, then stays fixed. That is the typical pattern: a temporary intro framing in Easy, the canonical §11 form from Medium onward, and the discussion deepening continuously across all three.
+- **Easy.** Use the *Single-link frame*. Discussion stays on the data → population link only.
+- **Medium and Hard.** Switch to the canonical *Two-link frame* (data → population → Preceptor Table) and stay there. Counter-examples deepen across Medium → Hard but the wording does not change.
 
-**Terminology introduction points (sampling mechanism, selection mechanism).** The phrase *sampling mechanism* is first introduced in the middle of the Easy tier and is used from then on in knowledge drops and example answers — every subsequent tutorial can assume the reader has seen it. The phrase *selection mechanism* is first introduced in the middle of the Medium tier and likewise propagates forward. Before writing any given tutorial, check where it sits in the sequence: if it is before the introduction point of one of these phrases, use only the plainer vocabulary; if it is after, use the technical term freely. This staggered introduction is why the two phrases are defined as canonical concepts in §11 but not introduced together.
+The wordings, the counter-examples, and the advanced-remedy discussion (post-stratification, IPW, raking) live in `Key Concepts` → *Representativeness* → *Where this comes from*.
 
-**Worked example: validity across three levels.**
+**Terminology introduction points (sampling mechanism, selection mechanism).** The phrase *sampling mechanism* is first introduced in the middle of the Easy tier and is used from then on in knowledge drops and example answers — every subsequent tutorial can assume the reader has seen it. The phrase *selection mechanism* is first introduced in the middle of the Medium tier and likewise propagates forward. Before writing any given tutorial, check where it sits in the sequence: if it is before the introduction point of one of these phrases, use only the plainer vocabulary; if it is after, use the technical term freely. This staggered introduction is why the two phrases are defined as canonical concepts in Key Concepts but not introduced together at the same point in the curriculum.
 
-- **Easy.** Canonical §11 wording from the start. Scope is restricted to the **outcome column** and obvious measurement mismatches. Counter-examples: unit mismatches (cm vs. inches, years vs. months), scale mismatches (1–7 Likert vs. 0–10), timing mismatches (income last year vs. income at treatment time), naming collisions (household income vs. personal income). Remedies: identify, document, and adjust either the Preceptor Table's concept or the question to match what the data actually measures.
+**Tier-routing: validity.** No staging of the wording — the canonical Key Concepts definition is plain enough for the first tutorial. What scales across tiers is the *scope* of mismatch the discussion considers.
 
-- **Medium.** Same canonical definition. Scope expands to **covariates and (in causal models) the treatment**, and introduces **derived variables** — columns constructed from raw data. Counter-examples: treatment operationalization mismatch (e.g., Enos's platform-confederate experiment as one operationalization of "Spanish exposure" vs. a different instantiation in the Preceptor Table), covariate encoding (education as years completed vs. as highest degree), concept drift over time ("Republican" in 1990 vs. 2024), derived columns (a "partisanship" index built from three survey items). Remedies expand: rescaling or redefining outcome and covariates, adjusting the question to match what is truly measurable, folding measurement error into how the DGM is specified.
+- **Easy.** *Outcome-only scope.* Restrict the discussion to the outcome column.
+- **Medium.** *Covariates and treatment scope.* Expand to non-outcome columns, including treatment operationalization and derived columns.
+- **Hard.** *Construct scope.* Construct validity --- subtle conceptual mismatches. Name (do not teach) advanced remedies: measurement invariance testing, item response theory, cross-walking between instruments, IV when the proxy is biased.
 
-- **Difficult.** Same canonical definition. Discussion moves to **construct validity** — subtle conceptual mismatches rather than obvious ones. Counter-examples: psychological constructs (is a three-item "attitude toward immigration" scale really measuring what the question means by "attitude"?), economic constructs (BLS-defined unemployment vs. colloquial usage; "wealth" as self-reported assets minus debts), policy constructs that drift across jurisdictions ("arrested" across different states' definitions). Advanced remedies to name, not teach: measurement invariance testing, item response theory, cross-walking between instruments, cognitive interviewing, instrumental variables when the proxy is known to be biased.
+The scope-by-scope counter-examples and remedies live in `Key Concepts` → *Validity* → *Where this comes from*. Use validity as the guide for other concepts: only introduce an Easy-specific *wording* when the canonical version would genuinely obstruct a new student. Most of the time, scope-based staging is sufficient.
 
-Unlike representativeness, validity's definition does not shift between Easy and Medium. The canonical §11 wording — "consistency, or lack thereof, in the columns of the data set and the corresponding columns in the Preceptor Table" — is plain-English enough for a first-chapter student, so no intro framing is needed. What deepens across the three levels is entirely the scope (outcome → covariates/treatment → constructs), the sophistication of the counter-examples, and the remedies named. Use this as the guide for other concepts: only introduce an Easy-specific framing when the §11 wording would genuinely obstruct a new student.
+**Tier-routing: stability.** No staging of the wording — the canonical definition holds at every tier. What scales is the *theme of the post-definition drop* attached to §13.3 Ex 6's End.
 
-**Worked example: stability across three levels.**
+- **Easy.** Theme: *Stability and time*. Frame stability as primarily a temporal concern; the longer the gap between data and Preceptor Table, the more stability is at risk. Easy-tier authors may also seed a forward-pointer to the parameters-vs-distributions point coming at Medium.
+- **Medium.** Theme: *Stability is about parameters, not distributions*. The load-bearing Medium-level insight. Plan to revisit "distribution change ≠ stability violation" across several Medium-tier drops; the point resists landing in one pass.
+- **Hard.** Theme: *Three DGMs and the parallel to representativeness*. Make the row-level (representativeness) vs parameter-level (stability) parallel explicit at least once per Hard tutorial. Name (do not teach) advanced remedies: time-varying coefficients, state-space models, changepoint analysis, DiD with time fixed effects, structural-break tests, the Lucas critique.
 
-- **Easy.** Simplified intro framing. Scope is a single temporal link — the data's era vs. the Preceptor Table's era. Frame: *"Stability means the relationship between the outcome and the covariates doesn't change over time. If the world in the data's era behaves differently from the world in the Preceptor Table's era, stability fails."* Counter-examples stay close to student intuition: survey data from 2015 used to answer a 2025 question, pre- vs. post-pandemic consumer behavior, interest-rate behavior in 2007 vs. 2020, data collected before a new competitor entered a market. Remedies: narrow the time gap, use the most recent subset of the data, adjust the Preceptor Table's time scope.
+The theme-by-theme content lives in `Key Concepts` → *Stability* → *Where this comes from*. The Ends across tiers are *thematic* — different wording each time, but the same theme at any given tier (see §12 on knowledge drops as templates).
 
-- **Medium.** Switch to canonical §11 wording and keep it. Scope broadens to the **three row categories** — data, Preceptor Table, and the intermediate population from which both are drawn. Introduces the load-bearing Medium-level insight: **stability is about parameters, not distributions.** A change in the distribution of any single variable over time does not, by itself, constitute a stability violation; what matters is whether β₀, β₁, and so on are the same across the three row categories. Counter-examples: Enos Metra 2012 → MBTA 2026, where the effect *parameter* of Spanish exposure on attitude may have shifted over 14 years even if the rider distribution hasn't; education's coefficient in an income model across decades; intercepts drifting while slopes hold, or the reverse. Remedies expand: include year as a covariate, estimate coefficients year-by-year, compare parameter estimates across time-split subsets.
+**Tier-routing: unconfoundedness.** Causal-only — predictive tutorials skip the assumption entirely. Two-tier definitional shift, plus a third frame at Hard for advanced designs.
 
-- **Difficult.** Same canonical definition. Discussion moves to **structural breaks, regime shifts, and the Lucas critique** — cases where the pattern doesn't merely drift but changes in kind. Counter-examples: a new law that redefines "arrested" and thus pivots its relationship with covariates; agents optimizing against a published model so its coefficients decay once the model is known (Lucas critique); interaction terms whose sign flips across regimes (education's effect on income for men vs. women in 1950 vs. 2020); heteroscedasticity that is itself non-stationary. Advanced remedies to name, not teach: time-varying coefficients, state-space models, changepoint or regime-switching analysis, difference-in-differences with time fixed effects, Chow tests for structural breaks.
+- **Easy.** Use the *Intuition: random assignment* frame. Stay at student-intuition level. Scope: binary treatment, surface-level confounding.
+- **Medium.** Switch to the canonical wording and stay there. Introduce the *Conditioning on pre-treatment covariates* apparatus: pre-vs-post-treatment distinction, *selection on observables*, randomized vs. observational. Heavy upgrade — plan to revisit across several Medium-tier tutorials rather than dropping it all at once.
+- **Hard.** *Selection on unobservables.* Name (do not teach) the advanced designs: IV, RDD, DiD with parallel-trends, propensity-score methods, sensitivity analysis.
 
-Like representativeness, stability has an Easy → Medium definitional shift and then fixes the canonical form from Medium onward. Unlike representativeness, the real Medium-level upgrade is not "more relationships to consider" but a different *kind* of insight — parameters, not distributions. Expect this insight to take more than one tutorial to stick; plan to revisit "distribution change ≠ stability violation" in several Medium-tier knowledge drops before moving on.
+The wordings, counter-examples, and design discussion live in `Key Concepts` → *Unconfoundedness* → *Where this comes from*. A predictive tutorial sandwiched between two causal ones means the next causal tutorial may need a half-exercise to re-ground why the assumption applies here and did not last time.
 
-**Worked example: unconfoundedness across three levels.** Unlike the other three assumptions, unconfoundedness is causal-only — tutorials with predictive models skip it entirely, so every reappearance is in a causal context. A predictive tutorial between two causal tutorials means the next causal one may need to spend a half-exercise re-grounding why the assumption applies here and did not last time.
+**Tier-routing: Justice's definition.** Three-tier ladder — each tier's wording adds something the previous did not name.
 
-- **Easy.** Intuition-level framing. Scope: binary treatment, surface-level confounding. Frame: *"Unconfoundedness asks: could something other than the treatment explain why the treated and untreated groups have different outcomes? If not — if nothing else is driving the difference — the treatment is unconfounded. The easiest way to guarantee this is to assign treatment randomly."* Counter-examples stay at student-intuition level: voters who self-select into volunteering with a campaign differ from those who don't; smokers differ from non-smokers in many ways besides smoking; people who choose college differ from those who don't in ability, family income, and geography. Remedies: randomize when you can; if you cannot, name the confounders you are worried about and check whether they are in your data.
+- **Easy.** *The simpler frame.* No four-assumption enumeration; uses *"formula for the data generating mechanism"* as the catch-all for what canonical Justice calls *"probability family and link function."*
+- **Medium.** *The four-assumption frame.* Adds the validity / stability / representativeness / unconfoundedness enumeration; still uses *"formula"* in place of the technical terms.
+- **Hard.** *The canonical frame.* Replaces *"formula"* with *probability family* and *link function*.
 
-- **Medium.** Switch to canonical §11 wording and keep it. Introduces two pieces of apparatus: **conditioning on pre-treatment covariates**, with the critical distinction between *pre-treatment* and *post-treatment* covariates (only the former belong in the model; controlling for post-treatment variables that sit on the causal path induces bias); and **selection on observables**, the formal name for the assumption that all relevant confounders are measurable and present in your data. Also distinguishes randomized experiments (unconfoundedness guaranteed by design) from observational data (unconfoundedness is an assumption you defend). Counter-examples: Enos's Metra platform experiment and the Shaming experiment as "good" randomized cases that make the observational contrast vivid; education's effect on income as the classic ability-bias story; the post-treatment trap of controlling for "occupation" when estimating education → income. Remedies expand: identify and include measurable confounders, be strict about the pre-treatment cutoff, reason explicitly about which variables sit on the causal path between treatment and outcome.
+The actual wordings live in `Key Concepts` → *Justice* → *Where this comes from*.
 
-- **Difficult.** Same canonical definition. Discussion moves to **selection on unobservables** — confounders that cannot be measured even in principle — and the **research designs built to work around them**. Counter-examples: ability bias that no test captures; voluntary-program selection (job training, welfare-to-work) where the people who sign up differ in ways that are not in the data; time-varying confounding when past outcomes affect future treatment decisions. Advanced designs and remedies to name, not teach: instrumental variables, regression discontinuity, difference-in-differences with its own parallel-trends assumption, natural experiments, propensity-score matching and weighting, sensitivity analysis (how much unmeasured confounding would overturn the result?).
-
-Like stability, unconfoundedness has an Easy → Medium definitional shift and then fixes the canonical form from Medium onward. The Medium upgrade is heavy — the conditioning apparatus plus pre-vs-post-treatment plus the observables/unobservables framing — so plan to revisit these pieces across several Medium-tier tutorials rather than dropping them all at once. The Difficult upgrade is mostly about named designs (IV, RDD, DiD, propensity methods), which the Primer does not teach but names so students know the menu exists when they face unmeasured confounders in practice.
+The End of Justice Ex 1 always previews the next tier of sophistication. At Easy, the End names the four-assumption enumeration as something coming and notes that the formula choice gets technical names later. At Medium, the End names "probability family" and "link function" as the Hard-tier upgrade. At Hard, no forward-pointer is needed.
 
 **Worked example: model checking across three levels.** Model checking — comparing the fitted values our DGM produces with the actual outcomes in the data — is different from the four assumption worked examples above. It is not a property we hope for; it is a diagnostic we perform. The same Easy / Medium / Difficult staging applies, but what scales is how much the check steers model choice and how much vocabulary we attach to it.
 
@@ -126,9 +137,9 @@ Like stability, unconfoundedness has an Easy → Medium definitional shift and t
 
 The Easy → Medium transition hands the tool to the student. The Medium → Difficult transition adds the technical name and — more importantly — the practice of *acting on* what the check reveals. The vocabulary "posterior predictive check" is withheld until Difficult so that the practice (look at the picture, reason about it, eventually iterate on the model) accumulates before the jargon arrives.
 
-**Worked example: using the fitted model to answer questions (`marginaleffects`) across three levels.** Temperance's job is to get from the fitted DGM to the question we actually asked. Raw parameters rarely *are* the answer — log-odds, multinomial coefficients, and interaction terms are not on the outcome scale a student or stakeholder can read. The `marginaleffects` package — [**Model to Meaning: How to Interpret Statistical Models in R and Python**](https://marginaleffects.com/) by Vincent Arel-Bundock — is the tool for that transformation. Every Temperance section links the relevant chapter of the book at least once (see §13.5).
+**Worked example: using the fitted model to answer questions (`marginaleffects`) across three levels.** Temperance's job is to get from the fitted DGM to the question we actually asked. Raw parameters rarely *are* the answer — log-odds, multinomial coefficients, and interaction terms are not on the outcome scale a student or stakeholder can read. (Parameter *interpretation* on whatever scale R returns happens earlier, in Courage's three-fit interpretation block; Temperance picks up where that leaves off, with the model already fit and the parameters already read.) The `marginaleffects` package — [**Model to Meaning: How to Interpret Statistical Models in R and Python**](https://marginaleffects.com/) by Vincent Arel-Bundock — is the tool for getting from those parameters to outcome-scale answers. Each Temperance section names the package and book once (see §13.5 Ex 1's End); chapter-specific links are rarely worth adding.
 
-- **Easy.** Predictions only. `predictions()`, `avg_predictions()`, `plot_predictions()`. The frame: *"The model's coefficients are on an awkward scale. `predictions()` gives us back numbers on the outcome scale — probabilities, counts, years, whatever the question actually needs."* Skip `comparisons()`; skip the five-decision framework; skip grid types. Knowledge drops emphasize that predictions answer *"what does the model say Y is when X = …?"* Link each tutorial's Temperance section to the [Predictions chapter](https://marginaleffects.com/chapters/predictions.html). The current §13.5 Exercises 7–9 already operate at this level.
+- **Easy.** Predictions only. `predictions()`, `avg_predictions()`, `plot_predictions()`. The frame: *"The model's coefficients are on an awkward scale. `predictions()` gives us back numbers on the outcome scale — probabilities, counts, years, whatever the question actually needs."* Skip `comparisons()`; skip the five-decision framework; skip grid types. Knowledge drops emphasize that predictions answer *"what does the model say Y is when X = …?"* Mention the marginaleffects package and the *Model to Meaning* book in Temperance Exercise 1's End (no chapter-specific link). The current §13.5 Exercises 4–6 (predictions, plot_predictions, plot_predictions(draw = FALSE)) already operate at this level.
 
 - **Medium.** Add comparisons. `comparisons()`, `avg_comparisons()`, `plot_comparisons()`. The frame: *"Predictions tell us the level of Y. Comparisons tell us how Y changes when X changes. Most of the questions we actually ask — causal effects, group differences — are comparisons, not predictions."* Canonical pitfall to drill: deducing a comparison by subtracting two predictions (point estimate is often right; the confidence interval is wrong). Introduce the `avg_*()` family for aggregation — unit-level estimates vs. aggregated summaries. Link to the [Comparisons chapter](https://marginaleffects.com/chapters/comparisons.html).
 
@@ -153,9 +164,9 @@ The question `marginaleffects` answers — "what is the model saying, on the out
 
 The Primer is designed so that most example tutorials (and the chapters that match them) can be generated from this file plus the seed specifications in §17. The reason the system works this way, rather than as a set of hand-written artifacts edited individually forever:
 
-**Cross-cutting changes are expensive to propagate manually.** If we change the canonical definition of stability, or adjust how the Easy → Medium transition for representativeness works, the hand-edit path requires walking through all the tutorials (and their matching chapters) — and we will miss things. The regeneration path updates §11 (or §1.3, or wherever the change lives) and rebuilds the affected tutorials from the updated spec. Consistency is enforced by construction.
+**Cross-cutting changes are expensive to propagate manually.** If we change the canonical definition of stability, or adjust how the Easy → Medium transition for representativeness works, the hand-edit path requires walking through all the tutorials (and their matching chapters) — and we will miss things. The regeneration path updates Key Concepts (the canonical wording) or §1.3 (the tier-routing rules) or §13 (the exercise specifications), then rebuilds the affected tutorials from the updated spec. Consistency is enforced by construction.
 
-**Definition-only edits do not need a rebuild.** Changing just the wording of a §11 canonical definition works as find-and-replace in every tutorial. Regeneration earns its keep for *structural* changes: progression pacing (is Medium too steep between Tutorial 7 and Tutorial 8?), coverage (has this tutorial asked the canonical exercises from §13 that are due this tutorial?), cross-tutorial consistency (do the Difficult tutorials consistently drive model revision from the PPC per §1.3?). These are hard to see when each tutorial is considered in isolation and hard to fix without walking the whole sequence.
+**Definition-only edits do not need a rebuild.** Changing just the wording of a canonical definition in Key Concepts works as find-and-replace in every tutorial. Regeneration earns its keep for *structural* changes: progression pacing (is Medium too steep between Tutorial 7 and Tutorial 8?), coverage (has this tutorial asked the canonical exercises from §13 that are due this tutorial?), cross-tutorial consistency (do the Difficult tutorials consistently drive model revision from the PPC per §1.3?). These are hard to see when each tutorial is considered in isolation and hard to fix without walking the whole sequence.
 
 **The seed lives in §17.** Each example tutorial's entry in §17 specifies the "Imagine that you are…" scenario, the dataset, the outcome variable, the treatment / key covariate, the question (QoI), the model, and the Preceptor and Population Table column structure. That — plus the rules in §4–§14 — is enough to regenerate a tutorial from scratch. The §17 entries are the stable core; everything around them (exercise wording, knowledge drops, specific transitions) is derivative.
 
@@ -206,6 +217,37 @@ The 12 example tutorials are arranged under three rules that operate together:
 
 **Corollary.** Because P/C alternation is a hard rule, any change to the roster of tutorials is a paired change: adding or dropping a tutorial means adding or dropping its alternation partner too (or recasting an existing tutorial from P to C or vice versa). See §17 for the current roster and gap flags.
 
+### 1.6 Pedagogical commitments to hammer
+
+A short list of cross-curriculum commitments that should appear, in fresh wording each time, across many tutorials. These are not concepts to define once and move on from; they are *how we talk*, and we say them often. Per §12, knowledge drops are thematic templates, not verbatim text — each appearance of one of these commitments should be rephrased.
+
+Each commitment below names: the rule, why it matters, and concrete phrasings/anti-phrasings to use as guides. Authors should reach for these explicitly when an exercise involves the relevant concept. M and H tutorials should *contrast* the right phrasing with the wrong one at least once — that is what makes the commitment land.
+
+**Relationship to §12.6 *Progressive knowledge-drop themes*.** §1.6 and §12.6 overlap in scope but answer different questions. §1.6 is *what we believe and say uniformly* — commitments that hold across all tutorials and all tiers, restated in fresh language each time. §12.6 is *what we teach in stages* — themes (QMD/R world, package ecosystems, language discipline, etc.) that climb a sophistication ladder L1 → L2 → … as the curriculum progresses. A topic that appears in both lists has both faces: §1.6 captures the *commitment*, §12.6 the *staged delivery*. Theme 4 in §12.6 (Language discipline) is exactly Commitment 1 in §1.6, viewed through the staged-delivery lens; that overlap is intentional.
+
+1. **Comparison language, not causal language, with predictive models.** When interpreting a coefficient in a *predictive* model, describe a comparison between two groups, never a "change" or "rise" or "raise" that one variable produces in another. The latter implies causation; predictive models do not warrant that claim.
+   - **Right:** *"When we compare two groups of colleges that differ by $10,000 in tuition, the higher-tuition group has a graduation rate about 9 percentage points higher."*
+   - **Wrong:** *"Raising tuition by $10,000 raises graduation rate by 9 percentage points."* (Implies causal effect of price on graduation.)
+   - **Wrong:** *"When tuition rises by $10,000, graduation rate rises by 9 percentage points."* (Same problem in different syntax.)
+   - In M/H predictive tutorials, write at least one End that contrasts the right phrasing with the wrong, so students see the difference.
+   - For *causal* models (07-trains, the causal positions in M/H), causal language is required, not forbidden — but only after the unconfoundedness assumption is named and defended. The rule is *"match your language to your identification strategy"* (§12.6 Theme 4 L3).
+
+2. **"Might be biased," not "will be biased" — uncertainty, not certainty.** Bias under representativeness violations, validity slippage, or stability violations is a *reason to suspect*, not a guarantee. A non-representative sample can produce the right answer by pure luck; we have no principled reason to expect that, but we also can't claim it never happens. Always use *might*, *may*, or *probably* — never *will*.
+   - **Right:** *"When representativeness is violated, our parameter estimates might be biased."*
+   - **Wrong:** *"When representativeness is violated, our parameter estimates will be biased."*
+
+3. **Distribution change ≠ stability violation.** A change in the distribution of any variable — its level, its spread, its mix — does not, by itself, violate stability. Stability is about the *parameters* (β₀, β₁, slopes, residual variance). Hammer this point: students very often confuse "the world has changed" (which is always true) with "stability has failed" (which is more specific). See §1.3 *Worked example: Stability* and §13.3 Ex 7 spec for the rule that the End drop should hit this point three times within the same paragraph (level / spread / mix → distribution; slope → parameter).
+
+4. **Expected values describe groups, not individuals.** β > 0 says males are *on average* taller than females; it does *not* say every male is taller than every female. Distributions overlap. When a coefficient's confidence interval excludes zero, that establishes a difference in *expected outcome* between groups, not a guarantee about every individual unit. See §12.5 *On expected values vs. individual units* for the canonical knowledge drop.
+
+5. **Percentage points vs. percent: be precise.** When the outcome is a proportion (graduation rate, probability, share), distinguish *percentage points* (absolute) from *percent* (relative). A coefficient of 0.090 on `grad_rate` is **9 percentage points**, not 9 percent — going from a 60% baseline to 69% is a 9 pp increase, but a relative increase of 15%. Saying "9 percent" when you mean "9 percentage points" misleads readers about the magnitude. Always name the unit.
+
+6. **Parameters are tools, not answers.** We don't really care what β₁ is; we care what the model predicts on the outcome scale. `marginaleffects` is the bridge from parameters to predictions/comparisons. Especially for models on a link scale (logistic, multinomial, ordinal), parameter interpretation is a teaching device — the actual answer always comes from `predictions()` or `comparisons()`. See §13.5 *Interpretability ceiling by model family*.
+
+7. **The world is always more uncertain than our models suggest.** Closing line of every tutorial's Summary, and the spirit of every Justice section. Confidence intervals reflect *sampling* uncertainty around a model whose assumptions are themselves uncertain. The reported CI is always too narrow.
+
+This list is meant to grow. When a recurring pedagogical commitment surfaces in two or three tutorials, consider adding it here; when an existing item reaches the point where it is so well-internalized in the curriculum that it no longer needs hammering, consider retiring it.
+
 ---
 
 ## 2. Working with David
@@ -229,7 +271,7 @@ When you pause to ask, make it easy for David to answer: short list of options, 
 
 Chapters are Quarto files with the top-level `#` already set by the book structure; use `##` for virtue-level sections. Filename convention: `NN-name.qmd` where `NN` is the two-digit chapter number and `name` is the dataset (for example chapters) or a descriptive slug (for miscellaneous chapters) — e.g. `04-cardinal-virtues.qmd`, `08-trains.qmd`, `13-colleges.qmd`.
 
-Tutorials are R Markdown files with `learnr::tutorial` output. They live in the `primer.tutorials` package under `inst/tutorials/NN-name/tutorial.Rmd`, where `NN` is the two-digit chapter number (e.g. `07-nhanes`, `14-stops`). The tutorial's `id` in the YAML is `NN-name`, lowercase, dashes for spaces, identical to the directory name. For example tutorials, `name` is the dataset's tibble name (`nhanes`, `trains`, `nes`, `governors`, `shaming`, `ces`, `colleges`, `stops`) — chosen even when the dataset name is an acronym unfamiliar to students. Student repo names in operational exercises match the tutorial directory name, so everything (directory, id, repo) shares one string per tutorial.
+Tutorials are R Markdown files with `learnr::tutorial` output. They live in the `primer.tutorials` package under `inst/tutorials/NN-name/tutorial.Rmd`, where `NN` is the two-digit chapter number (e.g. `06-recruits`, `14-ces`). The tutorial's `id` in the YAML is `NN-name`, lowercase, dashes for spaces, identical to the directory name. For example tutorials, `name` is the tibble the tutorial fits on — usually the upstream dataset's name (`trains`, `nes`, `governors`, `shaming`, `ces`, `colleges`, `stops`), but a *role-based* name when the tutorial ships its own packaged cut (`recruits` for the NHANES cut in `06-recruits`; see §3.1). Student repo names in operational exercises match the tutorial directory name, so everything (directory, id, repo, packaged tibble where applicable) shares one string per tutorial.
 
 For new chapters, produce a single `.qmd` file. For new tutorials, produce a single `.Rmd` file with the structure described in §5. Do not emit partial diffs; produce complete files David can drop in place.
 
@@ -251,6 +293,38 @@ Tutorials **without** an `**Expensive fit:**` flag should not create the `data/`
 
 **Directory-creation is explicit, not implicit.** When an authoring session generates a new tutorial, it should issue the `mkdir` calls (or the equivalent file-creation moves) as part of the generation workflow. Do not assume a tutorial directory exists just because §17 lists it — if the filesystem check fails, create the directory, then write the `tutorial.Rmd`.
 
+### 3.1 Tutorial-specific datasets shipped with `primer.tutorials`
+
+Some tutorials need a curated cut of an upstream dataset rather than the full upstream tibble — to make uncertainty visible at the picture, to balance group sizes, to limit columns, or to lock a sample so every student gets the same rows. We ship those cuts as datasets in the `primer.tutorials` package itself, using the standard CRAN `data/` + `data-raw/` + `R/` pattern. The first such dataset is `recruits` (a 50-row, 40-male / 10-female cut of NHANES used by `06-recruits`); the same pattern applies to any future tutorial-specific cut.
+
+**Layout.** Three pieces, all in the `primer.tutorials` package root:
+
+1. **`data-raw/<name>.R`** — runnable script that pulls upstream data, applies the transformation, calls `set.seed()`, and ends with `usethis::use_data(<name>, overwrite = TRUE)`. Keep a header comment that explains the source, the transformation, and any deliberate features (e.g. *"the 40/10 split is intentional to give differential SEs"*). Re-run with `Rscript data-raw/<name>.R` from the package root.
+2. **`data/<name>.rda`** — the binary serialized object, written by `usethis::use_data()`. With `LazyData: true` in DESCRIPTION (set), the dataset lazy-loads when `library(primer.tutorials)` runs.
+3. **`R/<name>.R`** — roxygen documentation, ending with the dataset name as a string (`"recruits"`). Required: `R CMD check` fails on a `data/` object without a doc page. Include a `@format` block describing each column and a `@source` referencing both the upstream dataset (e.g. `primer.data::nhanes`) and the construction script (`data-raw/<name>.R`). After editing, run `devtools::document(".")` and `devtools::install(".")` to regenerate `man/` and reload.
+
+**Wiring (one-time, already done):**
+
+- `DESCRIPTION` includes `LazyData: true`.
+- `.Rbuildignore` includes `^data-raw$` so the source script does not ship in the built tarball.
+
+**Tutorial-side conventions.** When a tutorial uses a packaged dataset:
+
+- Setup chunk loads `library(primer.tutorials)` (not `library(primer.data)`), and references the dataset directly. No `slice_sample()`, no filtering, no `x` intermediate.
+- Student-facing exercises that load libraries put `library(primer.tutorials)` in the QMD (in place of, or alongside, `library(primer.data)`).
+- The `?<dataset>` exercise asks the student to look at the *packaged* dataset's help page (e.g. `?recruits`), not the upstream `?nhanes`.
+- The Justice / Wisdom prose names the upstream source ("a 50-row teaching sample drawn from NHANES…"), but the analysis code references the packaged tibble.
+
+**When to ship vs. when to slice in-tutorial.** Ship a dataset when one of the following is true:
+
+- The transformation is non-trivial (composite covariates, stratified sampling, joins).
+- The tutorial benefits from every student seeing exactly the same rows (uniform canonical answers, reproducible plots).
+- A `slice_sample()` in the setup chunk would force `set.seed()` ceremony or produce different fits on different runs.
+
+A blanket rule that *every* tutorial use a packaged dataset is overkill — datasets like `trains` are already small, balanced, and don't need re-cutting. Use the pattern when there is a real reason; ad-hoc filtering that a single `filter() |> select()` line can do in setup does not need its own `.rda`.
+
+**Naming convention.** The packaged tibble's name should describe the *role* it plays in the tutorial (`recruits`, `voters`, `households`), not the upstream dataset name + size suffix (`nhanes_50`). The role-based name survives later N changes; the size-suffix name doesn't. Use the same name for the tutorial directory (`06-recruits`), the YAML `id` (`06-recruits`), and the student repo. One string per tutorial.
+
 ---
 
 ## 4. Chapter structure
@@ -266,7 +340,7 @@ Every example chapter has six top-level sections under `#`:
 
 Chapters include full image references (`knitr::include_graphics("other/images/Wisdom.jpg")` etc.) at the top of each virtue section. Chapters quote extensively — from Tukey, from Rumsfeld, from the Bible, from whomever fits. Quotes are good; use them.
 
-**Every example chapter includes a discussion of quantity-of-interest variety.** Each tutorial picks one narrow QoI — usually an expected value (*"the average height of male and female USMC recruits"*). The chapter should spend a paragraph or two inside Temperance naming the *other* QoIs a real practitioner would care about and showing which ones the fitted DGM already answers versus which ones need more work. For the NHANES chapter the riff is: *average height is convenient but tells you nothing about the tallest recruit you need to fit (a max), or about how many small-vs-large uniforms to order (quantiles — the 10th and 90th, say), or about how tall the tallest recruit out of a specific batch of three will be (a distribution over sample statistics, which needs simulation).* The chapter names these candidate QoIs, sketches how to get at each from the same fitted DGM, and describes the simulation step — take the DGM, draw `n` synthetic units, record the statistic of interest, repeat many times, build a PDF — without necessarily teaching the full mechanics. The point is that **"average" is one question in a family of questions**, and the DGM answers the whole family once you know how to ask.
+**Every example chapter includes a discussion of quantity-of-interest variety.** Each tutorial picks one narrow QoI — usually an expected value (*"the average height of male and female USMC recruits"*). The chapter should spend a paragraph or two inside Temperance naming the *other* QoIs a real practitioner would care about and showing which ones the fitted DGM already answers versus which ones need more work. For the Recruits chapter the riff is: *average height is convenient but tells you nothing about the tallest recruit you need to fit (a max), or about how many small-vs-large uniforms to order (quantiles — the 10th and 90th, say), or about how tall the tallest recruit out of a specific batch of three will be (a distribution over sample statistics, which needs simulation).* The chapter names these candidate QoIs, sketches how to get at each from the same fitted DGM, and describes the simulation step — take the DGM, draw `n` synthetic units, record the statistic of interest, repeat many times, build a PDF — without necessarily teaching the full mechanics. The point is that **"average" is one question in a family of questions**, and the DGM answers the whole family once you know how to ask.
 
 This topic is chapter-only at Easy and Medium tiers. Hard tutorials may surface it as a knowledge drop; see §12.6 Theme 5 for the progressive schedule.
 
@@ -366,6 +440,33 @@ The `download_answers.Rmd` child document generates an HTML file the student dow
 
 Each of the six sections opens with `##`. Each exercise opens with `### Exercise N` where `N` restarts at 1 within each section. Each exercise has a chunk label of the form `<section>-<N>` — `introduction-1`, `wisdom-3`, `justice-11`, etc.
 
+**Section-header formatting.** Every `## SectionHeader` is immediately followed by a `###` (Continue button) on the next line — *every* section, including Summary. The `###` opener gives the section header its own paused screen, separate from the preamble that follows. Conversely, **do not insert a trailing `###` between the section preamble and `### Exercise 1`**: the preamble runs directly into the first exercise. The shape is:
+
+```
+## Wisdom
+###
+
+[preamble: opening sentence, Imagine paragraph, specific question, dataset name]
+
+### Exercise 1
+
+[exercise prose]
+```
+
+Not:
+
+```
+## Wisdom
+
+[preamble]
+
+###
+
+### Exercise 1
+```
+
+The `###` between exercises (the End-of-exercise Continue button before the End drop) is unchanged — that's a different role and stays as is. Only the section-opener `###` (immediately after `##`) and the absence of a trailing `###` (immediately before `### Exercise 1`) are governed by this rule.
+
 ### 5.5 Section preambles
 
 The **preamble** of a virtue section is the content between the section header (`## Wisdom`, `## Justice`, `## Temperance`, etc.) and the first `### Exercise N` block. Preambles are prose, knowledge drops, and/or author-rendered output — never student-facing exercises. They orient the student, review work done earlier in the tutorial, or set up what this section will do.
@@ -456,6 +557,28 @@ After the last `### Exercise N` of a virtue section, add a standalone `###` foll
 
 Example: if the last exercise in Wisdom polishes a scatter plot, the topic-final knowledge drop says something about scatter plots in general, or about the role of EDA, not about the particular plot the student just made.
 
+### 6.5 Continue buttons without a real question
+
+When you need a pause point in the flow — to display an author-shown table, formula, or plot, then let the student read it before moving on — use a **standalone `###`** (triple hash, no heading, no question). That alone produces a Continue button that advances the student. Do **not** create a fake `### Exercise N` with a placeholder `question_text()` containing *"(No command to run — this exercise is a pause to make sure you have read the table above.)"*. Those placeholders are noise: they pretend to be exercises, they bump the exercise count, and they ask the student to type/click for no reason.
+
+The pattern, when an author-shown chunk needs a pause:
+
+```
+###  Exercise N
+
+[prompt prose for the actual question]
+
+[author-shown chunk]
+
+###
+
+[End knowledge drop, if any]
+```
+
+The `###` after the author-shown chunk is the continue button. The next `### Exercise N+1` heading starts the following exercise. No fake `question_text()` in between.
+
+If the *only* thing the student needs to do is read an author-shown table or plot, fold the content into the *next* exercise's preamble — make the table or plot part of the setup for an interpretation question, rather than a standalone "view-and-Continue" exercise. The view+question pairing is much stronger pedagogy than view-then-acknowledge-with-a-button.
+
 ---
 
 ## 7. Exercise types
@@ -497,7 +620,7 @@ question_text(NULL,
 ```
 ```
 
-The text in `message` is read closely by students, who compare their answer to ours. Our answer must be excellent. Use the wording in §11 verbatim for definitional questions.
+The text in `message` is read closely by students, who compare their answer to ours. Our answer must be excellent. Use the wording from Key Concepts verbatim for definitional questions (the §11 snapshot is a convenience copy).
 
 ### 7.3 Written exercise without model answer
 
@@ -568,7 +691,7 @@ These apply to both tables, and the same `gt` pipeline + chunk-output wrapping i
 
 - **All cell values are in double quotes, including numbers.** `"42"`, not `42`.
 - **Labels are display phrases, not variable names.** `"Lifespan if Win"`, not `lifespan_win`. Capitalized, space-separated, human-readable. Use the simplest label the question allows: `Year` beats `Session Year` unless sessions actually matter; `Senator` beats `US Senator` when context is clear.
-- **Example rows use real names and plausible figures** when the question targets identifiable units (senators, governors, firms, teams, countries). Track the same identities across a question's Preceptor and Population Tables so the reader sees the same people in both.
+- **Example rows use real names and plausible figures.** This applies to *every* example tutorial, not just the ones whose units are obviously identifiable like senators or governors. Generic placeholders ("College 1", "Recruit 50", "Voter A") are wrong; use real institution / person names. Track the same identities across a question's Preceptor and Population Tables so the reader sees the same units in both. **At least one of the three example units in the Preceptor Table must also appear as a Data row in the Population Table** — same name in both blocks, with different values reflecting the time gap (or, if the data and Preceptor share a time, identical values for that one row plus different values for nearby covariates the table doesn't show). Showing the same institution at two different times is the cleanest visualization of why the Population Table needs a `Year` column when the Preceptor Table does not. The Colleges tutorial does this with all three Preceptor rows (Amherst College, University of Iowa, Wagner College) appearing in the Data block at 2013 and the Preceptor block at 2026.
 - **`"..."` marks placeholder rows or cells** — the blank row in the middle of a block, or any cell where we're gesturing at "more of the same" rather than giving a specific value.
 - **Unobservable potential outcomes are marked differently in the two tables.** In the Preceptor Table, every cell has its true value filled in, and the cells whose values could never be observed in reality are rendered with a diagonal cross-hatch (see §10.3). In the Data rows of the Population Table, the unobserved counterfactual potential outcome is written as `"..."` because no one measured it. In the Preceptor rows of the Population Table, both potential outcomes are filled in with the hatch convention from §10.3. `"?"` is not used anywhere in our table system.
 - **Column alignment is type-based.** Left-align the unit column and all character/categorical columns (including `Source` in Population Tables). Right-align numeric columns (even when the `gt` cells are quoted strings to accommodate `"..."` placeholders). Do not center columns by default; centering is reserved for short symmetric content where neither left nor right feels natural. Column labels inherit their column's alignment.
@@ -660,6 +783,8 @@ The Preceptor Table clarifies *the question*. Its footnotes discuss what each co
 **Structure.** Four rows (three example rows plus a blank middle row at position 3). Columns grouped under spanners:
 
 - **Unit** — one column identifying what a row represents. No separate Time column: time is implicit, either specified in the question ("…in 2010") or "now" if unstated. When a unit only makes sense with a year (a candidate in a specific election), fold the year into the unit string: `"Ann Richards (1990)"` rather than adding a column.
+
+  **The Preceptor Table's time is the *question's* time, not the *data's* time.** When the data was collected years before the question is asked, the Preceptor Table reflects the moment of the question. Concrete: a non-profit in 2026 helping students choose colleges has a 2026 Preceptor Table even when the data is from a 2013 IPEDS snapshot. The Population Table will then have Data rows in 2013 and Preceptor rows in 2026 — same institutions, different times, different rows. This time gap is the *stability* concern, not a defect in the framing. The wrong move is to set the Preceptor Table's time to match the data's time ("the 2013 Preceptor Table"); that erases the gap by fiat and makes the stability discussion incoherent. Always set the Preceptor Table's time from the question; let the data's time be whatever the data's time is; let Justice surface the difference.
 - **Potential Outcomes** (causal, two or more columns) or **Outcome** (predictive, one column). Causal columns are named after the counterfactual: `Lifespan if Win`, `Lifespan if Lose`. Every cell in these columns has a value — the Preceptor Table shows the unobservable truth, so there are no `"?"` cells; the cells that could never be observed in reality are instead rendered with a diagonal cross-hatch (see *Hatch convention* below).
 - **Treatment** (causal only) — exactly one column, always present in causal Preceptor Tables. The treatment gets its own spanner (rather than being folded under `Covariate(s)`), even though it is conceptually a covariate. It is distinct enough from other covariates — it is *the* variable whose causal effect the question is about — that it warrants its own section of the table. Predictive tables never have a `Treatment` spanner or treatment column.
 - **Covariate** / **Covariates** — only present when the question forces conditioning on a non-treatment variable.
@@ -1105,7 +1230,13 @@ cat(
 
 ## 11. Canonical definitions
 
-These are the ground truth for the project's key definitions. Use the wording below verbatim as the `message` text in written-answer exercises that ask for a definition. Use the same wording (or a close paraphrase) in chapter prose.
+**Ground truth has moved.** Canonical definitions used to live here. They now live in the `Key Concepts` book chapter (`book/key-concepts.qmd`), which is the single source of truth for every definition the project uses. CLAUDE.md is no longer authoritative for the wording; when you author a tutorial or chapter, the Key Concepts entry is what gets the final word, and any older wording cached anywhere else (older drafts, prior tutorials, this file's own §1.3 worked examples, anywhere) is superseded.
+
+The wordings below are mirrored from Key Concepts as a *convenience copy* for authoring sessions that don't want to open the book chapter. **Treat them as a snapshot, not as the truth** — if they ever drift from `key-concepts.qmd`, the chapter wins. When you change a definition, change it in `key-concepts.qmd` first, then update the snapshot here.
+
+The §1.3 worked examples elsewhere in this file no longer carry the *definitional* content of staged definitions (representativeness, validity, stability, unconfoundedness, justice). That content has moved to Key Concepts under each definition's *Where this comes from* subsection, with content-named labels (e.g. "Single-link frame", "Outcome-only scope", "Stability and time") rather than the EMH-tier labels the worked examples use here. What remains in §1.3 is the *tier-routing rule*: which version a given tutorial-tier should use when. CLAUDE.md owns *which version to use when*; Key Concepts owns *what each version says*.
+
+Use the wording below verbatim as the `message` text in written-answer exercises that ask for a definition. Use the same wording (or a close paraphrase) in chapter prose.
 
 ### Four Cardinal Virtues
 
@@ -1117,7 +1248,7 @@ These are the ground truth for the project's key definitions. Use the wording be
 
 ### Justice
 
-> *Justice concerns the Population Table and the four key assumptions which underlie it: validity, stability, representativeness, and unconfoundedness.*
+> *Justice concerns the Population Table, the four key assumptions which underlie it (validity, stability, representativeness, and unconfoundedness), and the choice of probability family and link function for the data generating mechanism.*
 
 ### Courage
 
@@ -1223,7 +1354,9 @@ These are the ground truth for the project's key definitions. Use the wording be
 
 ## 12. Knowledge drop library
 
-Short prose fragments — typically one or two sentences — that go in the End of an exercise. Use verbatim where applicable; edit lightly where the exercise context calls for specifics. Organized by virtue. Cross-references to §11 indicate that the knowledge drop is a canonical definition already covered there.
+Short prose fragments — typically one or two sentences — that go in the End of an exercise. Organized by virtue. Cross-references to Key Concepts indicate that the knowledge drop corresponds to a canonical definition covered there (the §11 snapshot is a convenience copy).
+
+**Knowledge drops are *thematic templates*, not verbatim text.** Each drop below names a theme — *"stability is about time"*, *"parameters are imaginary"*, *"covariates are used in three different ways"* — and gives a sample wording. **Tutorials should rephrase the drop in fresh language**, even when reusing the same theme across tutorials at the same tier. Students who read tutorial 6, then 7, then 8 and find the same paragraph pasted three times stop reading; if the wording is fresh each time, the theme registers more strongly because the student has to re-parse it. The canonical answer text inside `question_text(message = ...)` *is* fixed verbatim — that's the answer key — but the End drops that follow are author-rephrased. Aim for the same theme, different sentences.
 
 Knowledge drops are deliberately short. Students won't read more than two sentences.
 
@@ -1266,7 +1399,7 @@ Knowledge drops are deliberately short. Students won't read more than two senten
 
 ### 12.2 Wisdom
 
-Canonical definitions from §11 appropriate here: Wisdom, Preceptor Table, Preceptor Table (detailed), Units, Variables, Outcome, Covariates, Treatment, Quantity of Interest.
+Canonical definitions appropriate here (see Key Concepts): Wisdom, Preceptor Table, Preceptor Table (detailed), Units, Variables, Outcome, Covariates, Treatment, Quantity of Interest.
 
 **The Tukey walk-away.**
 > *The combination of some data and an aching desire for an answer does not ensure that a reasonable answer can be extracted from a given body of data.* — John W. Tukey
@@ -1297,7 +1430,7 @@ Canonical definitions from §11 appropriate here: Wisdom, Preceptor Table, Prece
 
 ### 12.3 Justice
 
-Canonical definitions from §11 appropriate here: Justice, Population Table, Validity, Stability, Representativeness, Unconfoundedness.
+Canonical definitions appropriate here (see Key Concepts): Justice, Population Table, Validity, Stability, Representativeness, Unconfoundedness.
 
 **On Justice being about concerns.**
 > *Justice is about concerns that you (or your critics) might have, reasons why the model you create might not work as well as you hope.*
@@ -1324,7 +1457,7 @@ Canonical definitions from §11 appropriate here: Justice, Population Table, Val
 > *Ideally, we would like both the Preceptor Table and our data to be random samples from the population. Sadly, this is almost never the case.*
 
 **On representativeness' cost.**
-> *When representativeness is violated, the estimates for the model parameters will be biased.*
+> *When representativeness is violated, the estimates for the model parameters might be biased. By pure luck they may coincide with the truth, but we have no reason to expect that — and certainly nothing to defend if a critic asks how we know.*
 
 **On stability vs. representativeness.**
 > *Stability looks across time periods. Representativeness looks within time periods.*
@@ -1352,10 +1485,12 @@ Canonical definitions from §11 appropriate here: Justice, Population Table, Val
 
 ### 12.4 Courage
 
-Canonical definitions from §11 appropriate here: Courage, Data Generating Mechanism.
+Canonical definitions appropriate here (see Key Concepts): Courage, Data Generating Mechanism.
 
 **On tidymodels.**
-> *The [tidymodels](https://www.tidymodels.org/) framework is the most popular one in the R world for estimating models. [Tidy Modeling with R](https://www.tmwr.org/) by Max Kuhn and Julia Silge is a great introduction.*
+> *The [tidymodels](https://www.tidymodels.org/) framework is the most popular one for estimating models among R users. [Tidy Modeling with R](https://www.tmwr.org/) by Max Kuhn and Julia Silge is a great introduction.*
+
+> *Note on "R world": this phrase is a thematic template like the rest of §12. **Do not write "the R world" in tutorial knowledge drops** — that phrase clashes with the deliberate "R World" metaphor (capitalized) we use to refer to the R session and the objects living there (§12.1, §12.4). Rephrase to something like "among R users," "for R-based modeling," "in the R modeling community," etc., per the no-verbatim-copies rule (§12 intro).*
 
 **On dummy variables from a 2-level variable.**
 > *A categorical variable (whether character or factor) like `sex` is turned into a 0/1 "dummy" variable which is then renamed something like `sexMale`. We can't have words in a mathematical formula, hence the need for dummy variables.*
@@ -1398,7 +1533,7 @@ Canonical definitions from §11 appropriate here: Courage, Data Generating Mecha
 
 ### 12.5 Temperance
 
-Canonical definitions from §11 appropriate here: Temperance, Preceptor's Posterior.
+Canonical definitions appropriate here (see Key Concepts): Temperance, Preceptor's Posterior.
 
 **On Courage handing off to Temperance.**
 > *Courage gave us the data generating mechanism. Temperance guides us in the use of the DGM — or the "model" — we have created to answer the question(s) with which we began. We create posteriors for the quantities of interest.*
@@ -1432,6 +1567,8 @@ Canonical definitions from §11 appropriate here: Temperance, Preceptor's Poster
 
 **On confidence intervals excluding zero.**
 > *We care if the confidence interval for a given variable excludes zero. If not, we can't be sure whether the relationship between the variable and the outcome is positive or negative. In that case, why would we include the variable in the model at all?*
+
+**On expected values vs. individual units.** A model coefficient describes a shift in the **expected** outcome between groups, not a guarantee about every unit in one group versus every unit in the other. β > 0 for `sexMale` says the *expected* height of male recruits is greater than the *expected* height of female recruits — it does *not* say every male is taller than every female. The two height distributions overlap; there are plenty of females taller than some males. Be careful in canonical answers and knowledge drops not to slide from the expected-value claim ("males are on average taller") to the per-unit claim ("males are taller than females") — the second is a much stronger and almost always false statement, and it is exactly the kind of reading we are trying to teach students *not* to give. The same trap applies to every parameter in every linear, logistic, multinomial, and ordinal model in the curriculum.
 
 **On "adjust" vs. "control."**
 > *We recommend the verb "adjust" in place of "control" when discussing the effect of including other variables in the model. "The causal effect is 1.5, adjusting for age and party." "Adjusting" demonstrates humility; "controlling" does not.*
@@ -1543,7 +1680,7 @@ Within a section, keep exercises in the order given. Not every tutorial includes
 
 **Pre-flight before drafting a tutorial.** The tier is fixed by the tutorial number per §1.5: **06–09 Easy, 10–13 Medium, 14–17 Hard**. Do not guess — read the number and use it. Then look up the tutorial's content spec in §17. Some exercises are **tier-dependent** — they are written here in their Medium form but must be dropped, replaced, or extended depending on tier. Tier-dependent exercises are flagged inline with a `**Tier:**` line; read it before including them. Current tier-dependent items:
 
-- **Model checking** (§13.4 Exercises 9–10): skipped in the first two example tutorials (positions 1–2, target tutorials 06–07: NHANES and Trains); replaced by an author-rendered side-by-side outcome/fitted-value plot in the remaining Easy tutorials (positions 3–4, target tutorials 08–09); Medium form (`check_predictions()`) in positions 5–8 (target tutorials 10–13); Hard form (posterior-predictive-check terminology + model revision driven by the check) in positions 9–10 (target tutorials 14–15); omitted entirely for positions 11–12 per §14.8 (random forests skip parameter and fit-diagnostic blocks in favor of `marginaleffects`-native outputs). Full progression in §1.3 *Worked example: model checking across three levels*.
+- **Model checking** (§13.4 Exercises 11–12 in the three-fit pattern): skipped in the first two example tutorials (positions 1–2, target tutorials 06 Recruits and 07 Trains); replaced by an author-rendered side-by-side outcome/fitted-value plot in the remaining Easy tutorials (positions 3–4, target tutorials 08 Colleges and 09 SPS); Medium form (`check_predictions()`) in positions 5–8 (target tutorials 10–13); Hard form (posterior-predictive-check terminology + model revision driven by the check) in positions 9–10 (target tutorials 14–15); omitted entirely for positions 11–12 per §14.8 (random forests skip parameter and fit-diagnostic blocks in favor of `marginaleffects`-native outputs). Full progression in §1.3 *Worked example: model checking across three levels*.
 - **Concrete DGM math** (§13.4 Exercise 11): author-shipped in Easy and Medium; possibly a student exercise (via AI) in Difficult tutorials with simple models; author-shipped when the model is complex. Details in §13.4.
 - **Parameter-table formatting** (§13.5 Temperance preamble): Easy = raw `tidy()`, Medium = nicer (`kable`/`gt`), Difficult = near-publication quality. Always author-shipped.
 - **`marginaleffects` coverage** (§13.5 Temperance): Easy = `predictions()` family only; Medium adds `comparisons()`; Difficult adds the five-decisions framework and grid types. Slopes are never introduced.
@@ -1558,7 +1695,7 @@ Within a section, keep exercises in the order given. Not every tutorial includes
 
 | Position | Tutorial | Tier | Ex 1 asks |
 |---|---|---|---|
-| 5 | 10 Biden | Medium-P | Wisdom, Justice |
+| 5 | 10 Smokes | Medium-P | Wisdom, Justice |
 | 6 | 11 Shaming | Medium-C | Courage, Temperance |
 | 7 | 12 NES | Medium-P | Wisdom, Courage |
 | 8 | 13 TODO | Medium-C | Justice, Temperance |
@@ -1569,7 +1706,7 @@ Within a section, keep exercises in the order given. Not every tutorial includes
 
 Each canonical definition is asked exactly twice across the four Medium tutorials and exactly once across Hard positions 9–11, then again at position 12. The schedule is a suggestion; adjacent tutorials should not repeat the same pair, and the author can rotate differently if it reads better. In every virtue-section preamble, include a *"Remember that …"* reminder for any canonical definition that is not asked at Ex 1 in that tutorial.
 
-If a tutorial is being drafted without a pre-flight tier check, the default is Medium — and Medium wording *will be wrong* for every Easy tutorial (target tutorials 06–09, positions 1–4) and every Hard tutorial (target tutorials 14–17, positions 9–12). The pre-flight is cheap; skipping it is how model-checking exercises ended up in the NHANES tutorial (position 1, Easy).
+If a tutorial is being drafted without a pre-flight tier check, the default is Medium — and Medium wording *will be wrong* for every Easy tutorial (target tutorials 06–09, positions 1–4) and every Hard tutorial (target tutorials 14–17, positions 9–12). The pre-flight is cheap; skipping it is how model-checking exercises ended up in the Recruits tutorial (position 1, Easy) before we caught the mistake.
 
 ### 13.1 Introduction
 
@@ -1579,7 +1716,14 @@ If a tutorial is being drafted without a pre-flight tier check, the default is M
 2. **Bookend sentence.** *"The world confronts us. Make decisions we must."* Verbatim. This sentence appears at both ends of every tutorial — it also closes the Temperance section (§13.5 Exercise 17 End).
 3. **"Imagine that you are …" paragraph.** One paragraph motivating the problem with a real person facing real decisions. Always starts with *"Imagine that you are …"* and always ends with *"There are many decisions to make."* The exact wording is per-tutorial and comes from the `**"Imagine":**` field of the §17 seed entry. The same paragraph is reused verbatim in the Wisdom preamble (§13.2) and in the matching chapter.
 
-Follow with a `###` Continue button before `### Exercise 1`. The three paragraphs sit on one screen; the student hits Continue to move to the first exercise.
+**The closing line ("There are many decisions to make") has to be earned.** It is in every Imagine paragraph; for it to land, the body of the paragraph must actually establish the multiplicity it claims. The recipe:
+
+- **The protagonist has a boss with big-picture goals, not specific data-science requests.** A campaign manager's boss is the candidate, who wants to *win the election*. A public-health analyst's boss is the Minister, who wants to *improve health outcomes*. The boss does not ask for "a causal estimate of treatment X on outcome Y" --- they don't think in those terms, and most of them would not recognize the phrase. They have a goal and a budget; they trust the analyst to find evidence that helps.
+- **The analyst chooses what to model.** Many causal and predictive models would help with the boss's goal. The analyst is the one picking which model to build. Name two or three plausible alternatives in the paragraph so the reader sees the choice is real.
+- **This tutorial is one of many models.** The Imagine paragraph makes explicit that the model the tutorial builds is one piece, not the whole picture. *"This tutorial builds just one of them: \[specific QoI\]."*
+- **The estimate is an input to the decision, not the decision.** Say so directly. *"The estimate alone won't decide anything, but it is one good input."* This earns the closing line without overclaiming.
+
+A good Imagine paragraph reads like a sketch of a real person doing a real job, with a boss who has goals and a budget that doesn't stretch to all of them. A bad Imagine paragraph reads like a homework prompt that names a topic and a question. See §5.4 for the section-header formatting convention that determines where `###` Continue buttons sit around the preamble; the three paragraphs above run directly into `### Exercise 1` with no trailing `###` between them.
 
 **Pacing across the EMH tiers.** The Introduction is mostly operational — repo setup, adding libraries to the QMD, turning off code echo, sending commands to the R prompt, etc. The exercise list below is pitched at **Medium** pace: concise, one operational step per exercise, assuming the student has been through this workflow once before. The pace changes with tier:
 
@@ -1686,8 +1830,24 @@ The `[per-tutorial, written-with-answer]` tag below applies across all three tie
 **Exercise 15.** [per-tutorial, written-with-answer] State the question.
 - **Appears in every tutorial at every tier** — this is the one exercise in the causal/predictive block that every tutorial keeps.
 - Prompt: *Write a [causal or predictive] question connecting the outcome `XX` to `XX`, the [treatment / covariate of interest].*
-- Message pattern: the specific question. Causal: *"What is the average causal effect of [treatment] on [outcome]?"* Predictive: *"What is the difference in [outcome] between [group A] and [group B]?"*
-- **End (per-tutorial).** Two-to-three sentences of commentary on the chosen question. The End should: (a) note briefly why the question we chose is reasonable — usually that it exercises every step of the Cardinal Virtues cleanly — and (b) name one or two *other* questions a practitioner in the scenario might reasonably ask instead (a different QoI, a different unit, a different time window). Keep it tutorial-specific: for NHANES, point at the tallest-recruit/percentile variants; for Trains, point at heterogeneous treatment effects; for Shaming, point at cost-effectiveness per postcard. Do **not** use the generic "This is the first version of the question..." drop from §12.1; that drop is a fallback, not the default. The Preceptor-Table transition ("we will use a Preceptor Table to answer this question") does not need to appear here — Wisdom §13.2 Exercise 1's canonical definition of Wisdom already carries it.
+- **The specific question must specify one or more numbers to compute.** Predictive and causal questions ask for specific numerical quantities — not a vague "relationship," "connection," or "association." A question like *"What is the relationship between a college's tuition and its graduation rate?"* is **wrong**: "relationship" doesn't tell you what to compute, and the canonical Temperance answer can't pin down a value. Replace with a specific comparison or one or more specific expected values.
+- **Templates by outcome type:**
+  - **Numeric outcome (continuous).** Predictive: *"What is the difference in expected [outcome] between [group A] and [group B]?"* (e.g., *"What is the difference in expected graduation rates between colleges with tuition of $20,000 and colleges with tuition of $30,000?"*) Causal: *"What is the average causal effect of [treatment] on [outcome]?"* — fine because "the average causal effect" *is* a specific number, β in the linear model with binary treatment. The expected-value form *"What is the expected [outcome] for a [unit description]?"* is also acceptable.
+  - **Binary outcome.** Predictive: *"What is the difference in the probability of [event] between [group A] and [group B]?"* Causal: *"What is the average causal effect of [treatment] on the probability of [event]?"*
+  - **Multinomial / ordinal outcome.** Predictive: *"What is the difference in the probability of [specific outcome category] between [group A] and [group B]?"* — pick *one* category to ask about; do not ask about "the distribution" of multinomial outcomes since that is a vector, not a number.
+- **What "specific" rules out:**
+  - Vague nouns: *"the relationship,"* *"the connection,"* *"the association,"* *"the link."*
+  - Trend questions: *"How does Y vary with X?"* — vary how much? at what point on X? Replace with a specific X1-vs-X2 comparison.
+  - Distribution questions: *"What is the distribution of Y by X?"* — distributions are not single numbers.
+- **What "specific" allows:** asking for two or more specific numbers in one question is fine, as long as each piece is itself a clear, computable quantity. *"What is the average height of male and female USMC recruits?"* asks for two expected values; both are unique and computable, so the question is specific. The comparison form (the *difference* between two numbers) is also acceptable and is sometimes cleaner because it produces a single answer; authors can pick either. The rule is about specifying *what numbers to compute*, not about being limited to one number per question.
+- **End (per-tutorial).** Two-to-three sentences of commentary on the chosen question. The default content is **a concrete subtlety about one of the variables in the question** — a measurement quirk, a definitional ambiguity, a coding choice — that is worth flagging at this point in the tutorial. The goal is to make the student notice that the variables they are about to model are not transparent labels but constructed measurements with histories. Examples:
+  - **Colleges (tuition).** *"School tuition in this data is the stated tuition --- the sticker price. At many colleges, most students receive significant financial aid, so the average tuition actually paid is far lower than the recorded number. Our question therefore compares colleges by sticker price, not by net price."*
+  - **Trains (treatment).** *"The 'treatment' here is being on a Metra platform during the two-week window when Spanish-speaking confederates rode the same morning trains. Whether that exposure is comparable to a present-day MBTA platform conversation is a question we will revisit in Justice."*
+  - **Shaming (voted).** *"The outcome is whether the registered voter showed up to the 2006 primary. Voting records misclassify in both directions --- some non-voters appear in the rolls because of paperwork lag, and a small number of votes are uncounted --- so the column slightly understates true turnout."*
+  
+  An alternative content pattern is **the QoI-variety drop** — naming one or two *other* questions a practitioner in the scenario might reasonably ask instead (max, percentile, simulation, heterogeneous treatment effect). This pattern is acceptable when the variables are well understood and the more interesting pedagogical move is to expand the family of questions. Use the variable-subtlety pattern by default; the QoI-variety pattern as a deliberate choice when the variables don't have a flag worth surfacing.
+  
+  Do **not** use the generic "This is the first version of the question..." drop from §12.1; that drop is a fallback, not the default. The Preceptor-Table transition ("we will use a Preceptor Table to answer this question") does not need to appear here — Wisdom §13.2 Exercise 1's canonical definition of Wisdom already carries it.
 
 ### 13.2 Wisdom
 
@@ -1701,7 +1861,7 @@ By the end of Wisdom, the student has a specific question, a Preceptor Table tha
 4. **One or two sentences naming the dataset.** The Introduction identifies the dataset; Wisdom is where we will explore it. Write as a plain statement — *"We will work from the NHANES survey (conducted by the CDC), available in the `nhanes` tibble of the `primer.data` package."* Do not make claims about what the data will show, and do not mention measurement or validity concerns — those come later.
 5. A Continue button (`###` with no heading) before `### Exercise 1`.
 
-Per §14.6, the preamble does **not** describe what Wisdom does; Exercise 1 below asks the student to describe Wisdom using the canonical §11 wording. *Exception:* when Exercise 1 is skipped (Medium tutorials not on the Wisdom rotation, Hard tutorials not on the Wisdom rotation; see §13 pre-flight list), add the canonical definition to this preamble as a reminder — *"Remember that Wisdom begins with a question and then moves on to the creation of a Preceptor Table and an examination of our data."* The reminder replaces the exercise; preamble absorbs what Ex 1 would have asked.
+Per §14.6, the preamble does **not** describe what Wisdom does; Exercise 1 below asks the student to describe Wisdom using the canonical Key Concepts wording. *Exception:* when Exercise 1 is skipped (Medium tutorials not on the Wisdom rotation, Hard tutorials not on the Wisdom rotation; see §13 pre-flight list), add the canonical definition to this preamble as a reminder — *"Remember that Wisdom begins with a question and then moves on to the creation of a Preceptor Table and an examination of our data."* The reminder replaces the exercise; preamble absorbs what Ex 1 would have asked.
 
 **Exercise 1.** [canonical, tier-dependent presence] Components of Wisdom.
 - **Tier:** Easy = always ask; Medium = ask in 2 of the 4 Medium tutorials per the rotation in §13's pre-flight list; Hard = ask only in position 12 (last tutorial, all four definitions) and in one other Hard position per the rotation. When *not* asked, the Wisdom preamble (§13.2) includes a *"Remember that …"* reminder with the canonical definition verbatim.
@@ -1714,7 +1874,16 @@ Per §14.6, the preamble does **not** describe what Wisdom does; Exercise 1 belo
 - Message: `"A Preceptor Table is the smallest possible table of data with rows and columns such that, if there is no missing data, we can easily calculate the quantity of interest."`
 - End: *The Preceptor Table does not include all the covariates which you will eventually include in your model. It only includes, along with the outcome(s), covariates which are mentioned in your question.*
 
-Between Exercises 2 and 3, insert at least two problem-specific EDA exercises (AI-prompted code, §9). One typically explores the outcome variable; the other explores the treatment (causal) or key covariate (predictive). Provide knowledge drops that highlight what the plot reveals.
+Between Exercises 2 and 3, insert at least one problem-specific EDA exercise (AI-prompted code, §9) that **shows the outcome variable in relation to a key covariate** (the treatment for causal tutorials, the covariate of interest for predictive tutorials). Provide a knowledge drop that highlights what the plot reveals.
+
+**Do not duplicate the Introduction's outcome plot here.** §13.1 Exercise 9 already ships an author-rendered plot of the outcome variable — usually a univariate density of the outcome alone, sometimes the outcome already split by the key covariate. Wisdom must move past that view, not repeat it. Concretely:
+
+- If the Intro plot is the outcome alone (06-recruits, 08-colleges), Wisdom's first EDA exercise asks for outcome × covariate.
+- If the Intro plot is already outcome × covariate (07-trains shows `att_end` density colored by `treatment`), Wisdom's first EDA exercise asks for the *same data from a different angle* — a jitter of individual values with overlaid means, a boxplot, a scatter against a continuous covariate, a faceted view, etc.
+
+The exercise opener should explicitly acknowledge the Intro plot — *"We saw the distribution of [outcome] on its own in the Introduction. Now look at how [outcome] varies with [covariate]…"* — so the student understands why the new view is different from what they have already seen.
+
+Two EDA exercises (one outcome-only, one outcome × covariate) is fine when neither duplicates the Intro plot, but with the Intro plot in place this is rare. Default to one Wisdom EDA exercise; add a second (e.g. a faceted or ridge view) only when the problem genuinely needs it.
 
 **Exercise 3.** [canonical] Components of a Preceptor Table.
 - Prompt: *Describe the key components of Preceptor Tables in general, without worrying about this specific problem. Use words like "units," "outcomes," and "covariates."*
@@ -1821,7 +1990,7 @@ If the modeling requires a cleaned tibble `x` (e.g., filtering to one year, drop
   ```
   Required because `tidymodels`' `logistic_reg(engine = "glm")` refuses a raw 0/1 integer outcome — see §13.4 *Factor-outcome gotcha*.
 
-- **Outcome-range filtering** (Colleges: `filter(tuition > 2)`). When the data includes sentinel or implausible values in the outcome or key covariate, filter them out explicitly before modeling. Document the filter in a comment so the Justice section can name it as a selection mechanism (§11).
+- **Outcome-range filtering** (Colleges: `filter(tuition > 2)`). When the data includes sentinel or implausible values in the outcome or key covariate, filter them out explicitly before modeling. Document the filter in a comment so the Justice section can name it as a selection mechanism (see Key Concepts).
 
 These patterns appear in roughly this order across the tutorials — slice-sample is ubiquitous; factor-level control and composite-score construction show up from Medium onward as the models need richer covariate structure.
 
@@ -1832,7 +2001,7 @@ These patterns appear in roughly this order across the tutorials — slice-sampl
 
 ### 13.3 Justice
 
-**Preamble (between `## Justice` header and Exercise 1).** Per the self-containment principle in §5.5, the Justice preamble revisits the two outputs from Wisdom that Justice needs. Per §14.6, it does not describe what Justice does — Exercise 1 does that. *Exception:* when Exercise 1 is skipped in this tutorial (per the rotation in the §13 pre-flight list), add the canonical definition to this preamble as a reminder — *"Remember that Justice concerns the Population Table and the four key assumptions which underlie it: validity, stability, representativeness, and unconfoundedness."* The reminder replaces the exercise. Contents, in order:
+**Preamble (between `## Justice` header and Exercise 1).** Per the self-containment principle in §5.5, the Justice preamble revisits the two outputs from Wisdom that Justice needs. Per §14.6, it does not describe what Justice does — Exercise 1 does that. *Exception:* when Exercise 1 is skipped in this tutorial (per the rotation in the §13 pre-flight list), add the canonical definition to this preamble as a reminder — *"Remember that Justice concerns the Population Table, the four key assumptions which underlie it (validity, stability, representativeness, and unconfoundedness), and the choice of probability family and link function for the data generating mechanism."* The reminder replaces the exercise. Contents, in order:
 
 **Opening sentence, verbatim:** *"Wisdom gives us the Preceptor Table and the data."* This single sentence is the entire lead-in — no additional transitional prose. The two objects that follow stand on their own.
 
@@ -1849,11 +2018,18 @@ These patterns appear in roughly this order across the tutorials — slice-sampl
 
 Parts 1 and 2 are deliberately repetitive with Wisdom — same Preceptor Table, same data a reader has already seen in an EDA plot. That is the point: a reader who skipped Wisdom can still start Justice, and a reader who didn't gets a useful refresher. See §5.5.
 
-**Exercise 1.** [canonical, tier-dependent presence] Components of Justice.
-- **Tier:** See §13 pre-flight list for the rotation. When *not* asked, the Justice preamble (§13.3) includes a *"Remember that …"* reminder with the canonical definition verbatim.
-- Prompt: *In your own words, name the five key components of Justice when working on a data science problem.*
-- Message: `"Justice concerns the Population Table and the four key assumptions which underlie it: validity, stability, representativeness, and unconfoundedness."`
-- End: *Justice is about concerns that you (or your critics) might have, reasons why the model you create might not work as well as you hope.*
+**Exercise 1.** [canonical, tier-dependent presence and tier-staged wording] Components of Justice.
+- **Tier presence:** See §13 pre-flight list for the rotation. When *not* asked, the Justice preamble (§13.3) includes a *"Remember that …"* reminder with the wording for that tutorial's tier.
+- **Prompt** (tier-agnostic): *In your own words, describe the components of Justice when working on a data science problem.*
+- **Message** (tier-staged per §1.3 *Worked example: Justice's definition across three levels*):
+  - **Easy:** `"Justice reviews the Population Table and selects the formula for the data generating mechanism."`
+  - **Medium:** `"Justice concerns the Population Table, the four key assumptions which underlie it (validity, stability, representativeness, and unconfoundedness), and selects the formula for the data generating mechanism."`
+  - **Hard:** `"Justice concerns the Population Table, the four key assumptions which underlie it (validity, stability, representativeness, and unconfoundedness), and the choice of probability family and link function for the data generating mechanism."`
+- **End** (tier-staged; always previews the next tier per §1.3):
+  - **Easy:** *"Justice is about concerns that you (or your critics) might have, reasons why the model you create might not work as well as you hope. The exercises that follow walk through several such concerns by name. Justice also picks the formula for the data generating mechanism --- different outcome variables call for different formulas, a piece that gets more technical names in later tutorials."*
+  - **Medium:** *"Justice is about concerns that you (or your critics) might have, reasons why the model you create might not work as well as you hope. The 'formula for the data generating mechanism' has two pieces with formal names: a probability family (the distribution of the outcome --- Normal, Bernoulli, multinomial, ordinal) and a link function (how the outcome's expected value depends on the covariates). We will use those terms freely in Hard tutorials."*
+  - **Hard:** *"Justice is about concerns that you (or your critics) might have, reasons why the model you create might not work as well as you hope."*
+- **Reminder text** (used in the Justice preamble when this exercise is skipped): *"Remember that <tier-appropriate message wording>."* Use the same tier-staged wording as the message above.
 
 **Exercise 2.** [canonical] Define validity.
 - Prompt: *In your own words, define "validity" as we use the term.*
@@ -1875,15 +2051,23 @@ Parts 1 and 2 are deliberately repetitive with Wisdom — same Preceptor Table, 
 - Message: per-tutorial.
 - End: the arbitrary-time-unit knowledge drop (§12.3). Follow with a rendered `gt` Population Table (§10).
 
-**Exercise 6.** [canonical] Define stability.
+**Exercise 6.** [canonical, tier-stable wording; tier-staged End] Define stability.
 - Prompt: *In your own words, define the assumption of "stability" when employed in the context of data science.*
-- Message: `"Stability means that the relationship between the columns in the Population Table is the same for three categories of rows: the data, the Preceptor Table, and the larger population from which both are drawn."`
-- End: the stability-as-time knowledge drop (§12.3).
+- Message (same at every tier): `"Stability means that the relationship between the columns in the Population Table is the same for three categories of rows: the data, the Preceptor Table, and the larger population from which both are drawn."`
+- **End** — tier-staged by *theme* (per §1.3 *Worked example: Stability across three levels*); each tutorial rephrases the theme in fresh wording rather than pasting verbatim from §12.3:
+  - **Easy:** theme is *stability and time*. Frame stability as a question about whether the relationship between covariates and outcome holds across the time gap between data collection and the Preceptor Table's reference moment. The longer the gap, the more suspect stability becomes. May seed a forward-pointer that "the relationship in question is really about model parameters" — picked up in Medium tutorials.
+  - **Medium:** theme is *stability is about parameters, not distributions*. Frame stability as a question about β₀, β₁, etc., not about whether covariate distributions shift. A change in the distribution of any single variable does not, by itself, violate stability; a change in the slope does. Build on Easy's forward-pointer.
+  - **Hard:** theme is *three DGMs and the parallel to representativeness*. Frame stability as the assumption that three DGMs (data, Preceptor Table, broader population) are identical — same parameters, same residual variance. Make the parallel to representativeness explicit: representativeness asks whether *rows* match across the three blocks; stability asks whether *parameters* match. Both are assumptions about sameness across the data/Preceptor divide.
 
-**Exercise 7.** [per-tutorial, written-with-answer] A stability concern for this problem.
+**Exercise 7.** [per-tutorial, written-with-answer; tier-staged End] A stability concern for this problem.
 - Prompt: *Provide one reason why the assumption of stability might not be true in this case.*
-- Message: per-tutorial. Students read these "official" answers carefully — make the example precise.
-- End: the stability-about-parameters knowledge drop (§12.3).
+- **Message** (per-tutorial canonical answer). Two hard rules that authors must follow:
+  1. **The canonical answer must be a parameter-change story, not a distribution-change story.** Students will recall the canonical answer; if our answer says "tuition has risen since 2013" or "the demographic mix of riders has shifted" — both *distribution* changes — we have ourselves fallen into exactly the trap the End paragraph is supposed to teach against. The right canonical answer names a *parameter* (a slope, an intercept, the residual variance) and gives a story about why that parameter might have shifted between the data's era and the Preceptor Table's era.
+  2. **Be precise about which parameter and which direction.** *"The slope of `grad_rate` on `tuition` may have flattened between 2013 and 2026 because federal aid policy now decouples sticker price from per-student spending"* is the kind of answer to write. *"Things have changed"* is not.
+- **End** — tier-staged in parallel with Ex 6 but one rung deeper in sophistication, since the per-tutorial answer (the message) has already given a concrete parameter-change story for the theme:
+  - **Easy:** theme is *parameters, not distributions* — the insight that closes the gap between "the world is changing" (which is always true) and "stability is violated" (which is more specific). Each Easy tutorial should hit this theme in fresh wording, and **revisit the point more than once within the same drop**: students very often confuse a distribution shift in the outcome (or in a covariate) with a stability violation, and one mention is not enough. A typical drop hits the point three times — at the level (mean), at the spread (variance), and at the mix (composition) — to make sure students notice that *none* of these are stability violations on their own.
+  - **Medium:** push toward the *three-DGM* framing. Continue to repeat the distribution-vs-parameter point if the tutorial's specific concern invites it.
+  - **Hard:** structural breaks, regime shifts, or named remedies (time-varying coefficients, changepoint analysis, DiD); whichever fits the problem's specific stability concern. The distribution-vs-parameter point should be assumed by Hard but is worth re-stating once if the specific example invites a slip back into the trap.
 
 **Exercise 8.** [canonical] Define representativeness.
 - Prompt: *We use our data to make inferences about the overall population. We use information about the population to make inferences about the Preceptor Table: Data → Population → Preceptor Table. In your own words, define the assumption of "representativeness."*
@@ -1893,12 +2077,13 @@ Parts 1 and 2 are deliberately repetitive with Wisdom — same Preceptor Table, 
 **Exercise 9.** [per-tutorial, written-with-answer] Representativeness: data vs. population.
 - Prompt: *We do not use the data directly to estimate missing values in the Preceptor Table. Instead, we use the data to learn about the overall population. Provide one reason, involving the relationship between the data and the population, why the assumption of representativeness might not be true in this case.*
 - Message: per-tutorial. Do not invoke time — save time-based examples for stability.
-- End: the representativeness-cost knowledge drop (§12.3).
+- **End:** rephrase the *On representativeness' cost* knowledge drop (§12.3) per the new §12 intro rule (no verbatim copies across tutorials). The drop must include the "might be biased, not will" nuance — bias is a reason to suspect, not a guarantee. **At Easy tier**, also append a one-sentence forward-pointer that there is a *second* representativeness relationship — between the population and the Preceptor Table — that we will pick up in later tutorials. Saying it explicitly avoids ambushing the student when Ex 10 appears at Medium.
 
-**Exercise 10.** [per-tutorial, written-with-answer] Representativeness: population vs. Preceptor Table.
+**Exercise 10.** [per-tutorial, written-with-answer; **Medium-and-up only — skip in Easy**] Representativeness: population vs. Preceptor Table.
+- **Tier:** Easy tutorials skip this exercise entirely. The Easy-tier framing of representativeness is *one-sided* — only the data ↔ population relationship — per §1.3 *Worked example: representativeness across three levels*. The second relationship (population ↔ Preceptor Table) is the Medium-tier upgrade. Easy tutorials still flag this second link in Ex 9's End, but do not exercise it.
 - Prompt: *We use information about the population to make inferences about the Preceptor Table. Provide one reason, involving the relationship between the Population and the Preceptor Table, why the assumption of representativeness might not be true in this case.*
 - Message: per-tutorial. Again, avoid time.
-- End: the stability-vs-representativeness knowledge drop (§12.3).
+- End: the stability-vs-representativeness knowledge drop (§12.3), rephrased per §12 rules.
 
 **Exercise 11.** [canonical, causal only] Define unconfoundedness.
 - Prompt: *In your own words, define the assumption of "unconfoundedness" when employed in the context of data science.*
@@ -1949,7 +2134,7 @@ Parts 1 and 2 are deliberately repetitive with Justice — they show the same Po
 
 **Abstract-math block moves here.** The author-shown abstract mathematical structure that used to live at the end of Justice (§13.3 Exercise 15 in the original draft) now lives in the Courage preamble only — one place, not two.
 
-**Model-checking staging.** Exercises 9 and 10 below (load `easystats`, run `check_predictions()`) are **Medium-tier** as written. In **Easy-tier** tutorials, replace them with a single exercise that shows an author-produced side-by-side plot of outcome distribution vs. fitted-value distribution (no student code, view-and-Continue pattern) — or in the first two example tutorials, omit model checking entirely. In **Difficult-tier** tutorials, add a follow-up exercise that uses the check to drive a model revision and then re-runs the check on the improved model. The full progression is in §1.3 (Worked example: model checking across three levels).
+**Model-checking staging.** Exercises 11 and 12 below (load `easystats`, run `check_predictions()`) are **Medium-tier** as written. In **Easy-tier** tutorials, replace them with a single exercise that shows an author-produced side-by-side plot of outcome distribution vs. fitted-value distribution (no student code; bare `###` Continue button per §6.5) — or in the first two example tutorials, omit model checking entirely. In **Difficult-tier** tutorials, add a follow-up exercise that uses the check to drive a model revision and then re-runs the check on the improved model. The full progression is in §1.3 (Worked example: model checking across three levels).
 
 **Exercise 1.** [canonical, tier-dependent presence] Components of Courage.
 - **Tier:** See §13 pre-flight list for the rotation. When *not* asked, the Courage preamble (§13.4) includes a *"Remember that …"* reminder with the canonical definition verbatim.
@@ -1981,70 +2166,109 @@ Loading `MASS` *after* `tidyverse` silently breaks `dplyr::select()` across the 
 
 **Factor-outcome gotcha for `logistic_reg()`.** `tidymodels`' `logistic_reg(engine = "glm") |> fit(y ~ x, data = d)` requires `y` to be a **factor**, not a raw 0/1 integer. If `y` is integer, the call fails with an opaque error. Fix in data-prep with `mutate(y = as.factor(y))`. Flag this in the relevant tutorial's Wisdom data-prep exercise; it is easy to miss and hard for students to debug on their own.
 
-**Exercise 3.** [per-tutorial, code] Fit a single-variable model.
-- Prompt: *Continue the pipe to `fit(<outcome> ~ <single categorical covariate>, data = <tibble>)`.* Use a two-level categorical if possible.
+**The Courage parameter-interpretation block.** Courage is now where students do almost all of their parameter interpretation. The pattern is: fit a candidate model with one kind of covariate, look at the parameter table, interpret one coefficient; then fit a candidate model with a *different* kind of covariate, interpret again; then fit the final model. Each fit serves two purposes:
+
+1. **Practice interpretation across covariate types** — binary/two-level categorical, multi-level categorical (3+ levels), and continuous. Each type teaches a different reading of the parameter table (the dummy-variable-vs-reference-level reading for categoricals, the per-unit-comparison reading for continuous), and the only way to internalize them is to do each at least once.
+2. **Explore which variables belong in the model** — by fitting a candidate model and reading its CIs, students can see whether a covariate carries enough signal to keep. The final model is then justified, not just declared.
+
+Concretely, an Easy/Medium tutorial's Courage runs through three model fits:
+
+- **Fit A** — outcome on one covariate of one type (typically the binary or two-level categorical the question first reaches for).
+- **Fit B** — outcome on a *different* covariate, of a different type when the dataset has one available. If only one type is available (e.g. NHANES has only `sex` (binary) and `age` (continuous) for the height question), use the other type here.
+- **Fit C (final)** — the final model the rest of the tutorial uses, typically a combination of A's and B's covariates plus any others the question requires.
+
+When the dataset has only one usable covariate type (rare), do two fits — outcome alone (intercept-only) and outcome on the one covariate. The intercept-only fit still teaches *something* (the §13.5 simple-model interpretation pattern, now relocated to Courage).
+
+For *causal* tutorials, the structure is similar but more constrained: Fit A is `outcome ~ treatment`, Fit B is `outcome ~ treatment + covariate` (adjusting for one covariate to show how the treatment estimate moves under adjustment), Fit C is the final model. The interpretation question after each is about the treatment coefficient — *causal* language is required (and contrasted with predictive comparison language at H tier per §1.6 commitment 1).
+
+**Each fit gets two exercises (per §6.5: no fake placeholder questions; the parameter table folds into the interpretation exercise's preamble):**
+1. **Code exercise.** Pipe `linear_reg() |> set_engine("lm") |> fit(formula, data = ...)` (or the appropriate `_reg` variant). The first fit defines the chain; subsequent fits use a "Copy previous code" button and just change the formula. **Do not pipe into `tidy(conf.int = TRUE)` here** — the parameter-table display lives in the next exercise's preamble.
+2. **Interpretation exercise (with parameter table in the preamble).** Open with one or two sentences naming the model just fit; show an `echo: false` chunk that runs `tidy(conf.int = TRUE) |> select(term, estimate, conf.low, conf.high) |> mutate(across(where(is.numeric), \(x) round(x, n)))` for the just-fit model, with the §14.9 rounding rule applied; then ask a `question_text()` written-with-answer question about one coefficient. The canonical answer follows §1.6 commitment 1 (comparison language for predictive; causal language for causal) and commitment 5 (percentage-points vs. percent precision when the outcome is a proportion).
+
+The interpretation questions are concentrated in Courage so the parameter-table-reading skill is fully exercised before Temperance starts. Temperance (§13.5) then assumes that skill; it spends its time on `marginaleffects` instead.
+
+**Exercise 3.** [per-tutorial, code] Fit A: outcome on one covariate.
+- Prompt: *Continue the pipe to `fit(<outcome> ~ <covariate A>, data = <tibble>)`.* Use the simplest covariate of the chosen type.
 - Copy-previous-code button is included.
-- End: the dummy-variables-from-2-level knowledge drop (§12.4), customized with the actual variable name.
+- End: brief contextual note about what kind of covariate this is (binary, three-level, etc.).
 
-**Exercise 4.** [per-tutorial, code] Add `tidy(conf.int = TRUE)`.
-- Prompt: *Continue the pipe with `tidy(conf.int = TRUE)`.*
-- End: discuss the meaning of the intercept and β₁ using the actual numeric results.
+**Exercise 4.** [per-tutorial, written-with-answer] Interpret a coefficient from Fit A (parameter table in the preamble).
+- Preamble: a one-sentence opener naming the model, then an `echo: false` chunk that displays the rounded `tidy()` table for Fit A.
+- Prompt: *Looking at the parameter table above, write a sentence interpreting the [coefficient].*
+- Message: per-tutorial canonical answer using comparison language (predictive) or causal language (causal). Include the §1.6 commitment 5 percentage-points-vs-percent precision when the outcome is a proportion.
+- End: knowledge drop appropriate to the covariate type — dummy-variables-from-2-level for a binary covariate, dummy-variables-with-N-categories for a multi-level factor, or the per-unit-comparison drop for a continuous covariate. Optional forward-pointer to Fit B.
 
-**Exercise 5.** [per-tutorial, code] Fit with a 3+ level categorical variable.
-- Prompt: *Change the call to `fit(<outcome> ~ <3+ level categorical>, data = <tibble>)`.*
-- End: the dummy-variables-with-N-categories knowledge drop (§12.4), customized.
+**Exercise 5.** [per-tutorial, code] Fit B: outcome on a different covariate (or, when only two covariates exist, the same covariate plus a second; for causal tutorials, `outcome ~ treatment + covariate` showing adjustment).
+- Prompt: *Change the formula to `<outcome> ~ <covariate B>` (or the per-tutorial alternative). Refit.*
+- Copy-previous-code button.
+- End: short note about why we are looking at a second model.
 
-**Exercise 6.** [per-tutorial, code] Fit the final model.
-- Prompt: *Change the call to `fit(<final formula>, data = <tibble>)`.*
-- End: the more-variables-less-interpretability knowledge drop (§12.4). Add commentary about why this model was chosen.
+**Exercise 6.** [per-tutorial, written-with-answer] Interpret a coefficient from Fit B (parameter table in the preamble).
+- Preamble + parameter-table chunk identical in pattern to Exercise 4.
+- Prompt: *Write a sentence interpreting the [coefficient].*
+- Message: per-tutorial. The covariate type or role is typically different from Fit A's, so the reading is different (dummy reference for multi-level categorical, per-unit comparison for continuous, or the comparison/causal contrast for an adjusted causal estimate).
+- End: knowledge drop matching the new covariate type or the adjustment-vs-unadjusted comparison. **For two-fit tutorials (datasets with limited covariate types), this is the last interpretation exercise; the End closes the block by stating which fit is the final model.**
 
-**Exercise 7.** [per-tutorial, code] Display the fit object.
-- Prompt: *Behind the scenes, an object called `fit_<n>` has been created. Type `fit_<n>` and hit "Run Code."*
+**Exercise 7.** [per-tutorial, code; *omit in two-fit tutorials*] Fit C: the final model combining covariates.
+- Prompt: *Now fit the final model: `<final formula>`.*
+- Copy-previous-code button.
+- End: short note that this is the model the rest of the tutorial will use, and that it has more than one covariate so the next interpretation will need an *adjustment clause*.
+
+**Exercise 8.** [per-tutorial, written-with-answer; *omit in two-fit tutorials*] Interpret a coefficient from the final model with adjustment (parameter table in the preamble).
+- Preamble + parameter-table chunk identical in pattern to Exercises 4 and 6, but with the final-model fit.
+- Prompt: *Write a sentence interpreting [coefficient] in the final model.*
+- Message: per-tutorial. **Must include the adjustment clause** ("adjusting for ...") since the model now has more than one covariate; see §13.5 *Which parameters to interpret: the three axes* for the rule. Use the appropriate language commitment (predictive comparison or causal causal-effect).
+- End: the more-variables-less-interpretability knowledge drop (§12.4), customized; this is also a natural place to land the §1.6 commitment 4 "expected values describe groups, not individuals" point if the CI's exclusion of zero is the right hook.
+
+**Numbering for two-fit and three-fit blocks.** Three-fit Courage (most predictive tutorials with both categorical and continuous covariates) uses Exercises 3–8 as the parameter block; the operational exercises that follow start at Ex 9. Two-fit Courage (tutorials whose dataset has limited covariate variety) uses Exercises 3–6; the operational exercises start at Ex 7. The exercise numbers below assume the three-fit pattern (operational from Ex 9); subtract 2 throughout for two-fit tutorials.
+
+**Exercise 9.** [per-tutorial, code] Display the fit object.
+- Prompt: *Behind the scenes, an object called `fit_<n>` has been created (the final model from the previous exercise). Type `fit_<n>` and hit "Run Code."*
 - End: the code-being-primary knowledge drop (§12.4).
 
-**Exercise 8.** [operational] Bring `fit_<n>` into R World.
+**Exercise 10.** [operational] Bring `fit_<n>` into R World.
 - Prompt: *We need `fit_<n>` to exist in R World. Copy/paste this code to the R prompt and execute it:*
   ```
   fit_<n> <- <model spec> |>
-    fit(<formula>, data = <tibble>)
+    fit(<final formula>, data = <tibble>)
   ```
 - *CP/CR.*
 - End: the workspace-awareness knowledge drop (§12.4).
 
-**Exercise 9.** [operational] Load easystats at the R prompt.
-- **Tier:** Medium only. **Omit entirely** in positions 1–2 (target tutorials 06 NHANES, 07 Trains). In the remaining Easy positions 3–4 (target tutorials 08 Colleges, 09 TODO), replace both Exercises 9 and 10 with a single author-rendered side-by-side plot of outcome distribution vs. fitted-value distribution — the student views it and hits Continue; no package loaded, no terminology introduced. In Hard positions 9–10 (target tutorials 14 CES, 15 Governors), keep Exercises 9–10 and add a follow-up exercise that uses the check to drive a model revision. In Hard positions 11–12 (random forest tutorials), drop the model-checking block entirely per §14.8. Full progression in §1.3 *Worked example: model checking across three levels*.
+**Exercise 11.** [operational] Load easystats at the R prompt.
+- **Tier:** Medium only. **Omit entirely** in positions 1–2 (target tutorials 06 Recruits, 07 Trains). In the remaining Easy positions 3–4 (target tutorials 08 Colleges, 09 SPS), replace both Exercises 11 and 12 with a single author-rendered side-by-side plot of outcome distribution vs. fitted-value distribution — the student views it and hits Continue (a bare `###`, no question chunk per §6.5); no package loaded, no terminology introduced. In Hard positions 9–10 (target tutorials 14 CES, 15 Governors), keep Exercises 11–12 and add a follow-up exercise that uses the check to drive a model revision. In Hard positions 11–12 (random forest tutorials), drop the model-checking block entirely per §14.8. Full progression in §1.3 *Worked example: model checking across three levels*.
 - Prompt: *At the R prompt, load the [easystats](https://easystats.github.io/easystats/) package. CP/CR.*
 - End: the why-easystats-isn't-in-the-QMD knowledge drop (§12.4).
 
-**Exercise 10.** [operational] Run `check_predictions()`.
-- **Tier:** Medium only. See Exercise 9's tier note above — same rules.
+**Exercise 12.** [operational] Run `check_predictions()`.
+- **Tier:** Medium only. See Exercise 11's tier note above — same rules.
 - Prompt: *At the R prompt, run `check_predictions(extract_fit_engine(fit_<n>))`. CP/CR.*
 - End: the `check_predictions()` knowledge drop (§12.4). Add a sentence noting whether the simulated data looks like the actual data for this problem.
 
-**Exercise 11.** [author-shown block in Easy and Medium; optional student exercise in Difficult tutorials with simple models only] Concrete LaTeX DGM.
+**Exercise 13.** [author-shown block in Easy and Medium; optional student exercise in Difficult tutorials with simple models only] Concrete LaTeX DGM.
 - **Tier:** Easy and Medium → author-shipped (no student exercise). Difficult with simple models → may be a student exercise (AI-assisted). Difficult with complex models → author-shipped. Never purely abstract LaTeX at this position — that form lives in the Courage preamble only.
-- **Default (Easy, Medium, and Difficult tutorials with many parameters):** author-shipped. Render the fitted model in LaTeX with variable names and estimated coefficients substituted in — the concrete DGM. Include the hat-and-error-term knowledge drop (§12.4) followed by: *This is our data generating mechanism.* Then the DGM-being-a-formula knowledge drop (§12.4).
+- **Default (Easy, Medium, and Difficult tutorials with many parameters):** author-shipped. Render the fitted model in LaTeX with variable names and estimated coefficient values substituted in — the concrete DGM. Apply §14.13 conventions (`\widehat{\text{Outcome Name}}` rather than `\hat{\text{var\_name}}`; `\begin{aligned}` to wrap formulas with more than ~3 RHS terms). Include the hat-and-error-term knowledge drop (§12.4) followed by: *This is our data generating mechanism.* Then the DGM-being-a-formula knowledge drop (§12.4). Use a bare `###` Continue button after the formula (no fake `question_text()` per §6.5).
 - **Difficult tutorials with simple models** (few coefficients, no many-level categoricals) may optionally include a student-produced version: the student prompts AI for the LaTeX and pastes it into their QMD. Even here, the heavy lifting is AI; the student is checking and pasting, not deriving.
 - The concrete LaTeX DGM is also referenced in the §13.5 Temperance preamble as the fourth way to describe a model.
 
-**Exercise 12.** [operational] Cache the fit in the QMD.
+**Exercise 14.** [operational] Cache the fit in the QMD.
 - Prompt: *Create a new code chunk in your QMD. Add the chunk option `#| cache: true`. Copy/paste the R code for the final model into the chunk, assigning the result to `fit_<n>`. (This includes `fit()` but not `tidy()`.) Place your cursor on the `fit_<n>` line and use `Cmd/Ctrl + Enter`. (This is technically unnecessary since we already have `fit_<n>` in the workspace, but ensuring everything in the QMD is also at the R prompt is good habit.) `Cmd/Ctrl + Shift + K`. Rendering may be slow the first time but cached thereafter. At the R prompt, run `tutorial.helpers::show_file("XX.qmd", chunk = "Last")`. CP/CR.*
 - End: the caching knowledge drop (§12.4). *To confirm, `Cmd/Ctrl + Shift + K` again. It should be quick.*
 
-**Exercise 13.** [operational] Add `*_cache` to `.gitignore`.
+**Exercise 15.** [operational] Add `*_cache` to `.gitignore`.
 - Prompt: *Add `*_cache` to `.gitignore`. Cached objects are often large and don't belong on GitHub. At the R prompt, run `tutorial.helpers::show_file(".gitignore")`. CP/CR.*
 - End: *Because of the change in your `.gitignore` (assuming you saved it), the cache directory should not appear in the Source Control panel because Git is ignoring it. Commit and push.*
 
-**Exercise 14.** [per-tutorial, code] Run `tidy(fit_<n>, conf.int = TRUE)`.
-- Prompt: *At the R prompt, run `tidy()` on `fit_<n>` with `conf.int = TRUE`. This returns 95% intervals for all the parameters.*
+**Exercise 16.** [per-tutorial, code] Run `tidy(fit_<n>, conf.int = TRUE)`.
+- Prompt: *At the R prompt, run `tidy()` on `fit_<n>` with `conf.int = TRUE`. This returns 95% intervals for all the parameters of the final model.*
 - End: the `broom` knowledge drop (§12.4).
 
-**Exercise 15.** [per-tutorial, written-without-answer] Make a nice table from `tidy()`.
+**Exercise 17.** [per-tutorial, written-without-answer] Make a nice table from `tidy()`.
 - Prompt: *Create a new code chunk in your QMD. Ask AI to make a nice-looking table from the tibble returned by `tidy()`. You don't need all the columns — estimate and confidence intervals is typical. You may need to load [tinytable](https://vincentarelbundock.github.io/tinytable/), [knitr](https://yihui.org/knitr/), [gt](https://gt.rstudio.com/), [kableExtra](https://haozhu233.github.io/kableExtra/), [flextable](https://davidgohel.github.io/flextable/), or [modelsummary](https://modelsummary.com/) in the setup chunk. Insert your table code. `Cmd/Ctrl + Shift + K`. At the R prompt, `tutorial.helpers::show_file("XX.qmd", chunk = "Last")`. CP/CR.*
 - End: show our table and our code. Closing knowledge drop: *At the very least, your table should include a title and a caption with the data source. The more you use AI, the better you will get at doing so.*
 
-**Exercise 16.** [per-tutorial, written-with-answer] Model-structure sentence.
-- Prompt: *Add a sentence to your project summary explaining the structure of the model. Something like: "I/we model XX [concept of outcome, not variable name], [values of XX], as a [linear/logistic/multinomial/ordinal] function of XX [and maybe other covariates]." Recall the beginning of our summary: [paste what we suggested at the end of Justice].*
+**Exercise 18.** [per-tutorial, written-with-answer] Model-structure sentence.
+- Prompt: *Add a sentence to your project summary explaining the structure of the model. Something like: "I/we model XX [concept of outcome, not variable name] as a [normally distributed / Bernoulli / multinomial / ordinal] variable which is a [linear/logistic/multinomial/ordinal] function of XX [and maybe other covariates]." Name the outcome's distributional family before the functional-form clause — Justice's choice of probability family is part of the model, not just the link function. Recall the beginning of our summary: [paste what we suggested at the end of Justice].*
 - Message: per-tutorial.
 - End: *Read our answer. Do not copy/paste exactly. Add your two sentences to the summary paragraph. `Cmd/Ctrl + Shift + K`, then commit/push.*
 
@@ -2057,13 +2281,13 @@ Loading `MASS` *after* `tidyverse` silently breaks `dplyr::select()` across the 
 1. The four ways to describe the DGM (below), shown in sequence with their bold headers (**In words:**, **In R code:**, **In a parameter table:**, **As a mathematical formula:**).
 2. A Continue button (`###` with no heading) before `### Exercise 1`. Students must hit Continue to advance — they should not see Exercise 1 on the same screen as the preamble.
 
-**Do not include the marginaleffects book link in the preamble.** That link lives in Exercise 1's End (the canonical-definition knowledge drop), where it introduces the **[marginaleffects](https://marginaleffects.com/)** package as Temperance's tool and points at the relevant chapter of *[Model to Meaning](https://marginaleffects.com/)* for the tier. Easy tutorials cite the [Predictions chapter](https://marginaleffects.com/chapters/predictions.html); Medium adds Comparisons; Hard adds Challenge and Framework.
+**Do not include the marginaleffects book link in the preamble.** Mention of the package and its companion book belongs in Exercise 1's End (the canonical-definition knowledge drop), and even there it stays brief: name the **[marginaleffects](https://marginaleffects.com/)** package as Temperance's tool and the *[Model to Meaning](https://marginaleffects.com/)* book by Vincent Arel-Bundock as the reference. Do **not** link a specific chapter from Exercise 1's End — chapter-specific links (Predictions, Comparisons, Challenge, Framework) belong, if anywhere, near a later exercise that actually uses that chapter's tools. In practice we rarely link a specific chapter at all; the package and book mention is enough to point students who want the reference to it.
 
 **Do not include a dummy-variable explanatory paragraph after the concrete formula.** The preamble's math block is the formula and the error-distribution line — no trailing "`sexMale` is a dummy variable: 1 for male..." paragraph. If dummy-variable meaning matters for a specific tutorial, it belongs in an Exercise 3–5 End (where interpretation lives), not in the preamble.
 
 **Four ways to describe a model.** Most Temperance preambles combine some subset of these four:
 
-1. **Words.** *"We describe [outcome] as a [functional form] of [covariates]."* This is the same sentence added to the summary paragraph in §13.4 Exercise 16 and the canonical answer to the Courage model-structure question. Reuse verbatim — do not rewrite.
+1. **Words.** *"We model [outcome] as a [outcome distribution] variable which is a [functional form] of [covariates]."* The verb is **model**, not "describe" — we are not narrating the model, we are committing to one. The sentence names the outcome's distributional family (normally distributed, Bernoulli, multinomial, ordinal) before the functional-form clause; without it the sentence understates what was actually decided in Justice. Examples: *"We model height as a normally distributed variable which is a linear function of sex."* *"We model voter turnout as a Bernoulli variable which is a logistic function of treatment, age, sex, and prior voting."* *"We model presidential vote as a multinomial variable which is a multinomial logistic function of sex."* **Exception to the §12 "rephrase per tutorial" rule:** this sentence is one of the few items the curriculum reuses verbatim across multiple places within a single tutorial — the Temperance preamble's *In words:* line, the §13.4 Exercise 18 model-structure summary sentence, and the Courage model-structure question's canonical answer all say it the same way, so students see one consistent sentence about "what model are we using." The verbatim form is the answer key, not a knowledge drop. Across *different* tutorials each tutorial fills in its own outcome / family / covariates, so no two tutorials end up with literally identical sentences.
 2. **R code.** The fitting call itself — e.g. `linear_reg(engine = "lm") |> fit(att_end ~ treatment, data = trains)` → `fit_att`. Rendered as a code block; not re-run in the preamble.
 3. **Parameter table.** The estimated parameter values. *Easy:* rough `tidy(fit_<n>, conf.int = TRUE)` output. *Medium:* nicer table via `knitr::kable()`, `gt`, or equivalent. *Difficult:* close to publication quality. The Primer does not teach students to build these tables in Easy or Medium — the author ships them. In Difficult tutorials with few parameters, a student exercise using AI to produce the table is possible; in Difficult tutorials with many covariates or many-level categoricals, the table is too complex to hand to a student, and the author ships it.
 4. **Concrete mathematical formula.** The fitted model in LaTeX with variable names and estimated coefficient values substituted in — the "true" DGM. This is the form the Temperance preamble uses for math. Never asked of students in Easy or Medium. Possibly asked (via AI) in Difficult tutorials with simple models; author-shipped otherwise.
@@ -2081,7 +2305,7 @@ Loading `MASS` *after* `tidyverse` silently breaks `dplyr::select()` across the 
 
 **We do not ask students to write LaTeX themselves.** The previous curriculum had exercises (old §13.3 Exercise 15, old §13.4 Exercise 11) asking students to prompt AI for LaTeX and paste it in. Those student-facing exercises are removed; the LaTeX is now shown to students, not produced by them. A small number of Difficult tutorials with simple models may keep a student-produced LaTeX exercise, but the heavy lifting is AI — the student is checking and pasting, not deriving.
 
-**Parameter-interpretation approach (Exercises 2–4).** Start by showing the fitted DGM's parameter values and attempting to interpret them. This is relatively straightforward for simple linear models; harder for non-linear models and interaction terms; and essentially degenerate for models with no interpretable parameters (random forest, gradient boosting). Attempt the interpretation anyway when models are hard, if only to highlight how the linear-model intuition fails. When parameters genuinely aren't interpretable, keep one exercise whose purpose is to make sure the student understands *why* they aren't. Then move on: comparisons, predictions, and a final plot.
+**Most parameter interpretation now happens in Courage.** Per the §13.4 Courage parameter-interpretation block, students interpret coefficients from a sequence of candidate models there. By the time Temperance starts, the parameter-table-reading skill is already exercised. Temperance's job is therefore narrower: connect the (already-interpreted) parameters to predictions on the outcome scale via `marginaleffects`. Temperance has *no* parameter-interpretation block; it goes straight from the components-of-Temperance Ex 1 to loading `marginaleffects`.
 
 **Exercise 1.** [canonical, tier-dependent presence] Components of Temperance.
 - **Tier:** See §13 pre-flight list for the rotation. When *not* asked, the Temperance preamble (§13.5) includes a *"Remember that …"* reminder with the canonical definition verbatim.
@@ -2089,65 +2313,58 @@ Loading `MASS` *after* `tidyverse` silently breaks `dplyr::select()` across the 
 - Message: `"Temperance interprets the data generating mechanism and then uses it to answer, with the help of graphics, the question(s) with which we began. Humility reminds us that this answer is always false."`
 - End: the Courage-handoff knowledge drop (§12.5).
 
-**Exercises 2–4.** [per-tutorial, written-with-answer] Interpret the parameters.
-- Prompt pattern: show the `tidy(conf.int = TRUE)` table, ask an interpretation question about one parameter or one comparison. At least three such questions. See the *Temperance example knowledge drops* in §12.5 for options to use as the End of each. In tutorials using models with no interpretable parameters (random forests), cut these.
-- Message: per-tutorial; must be excellent. Numeric values quoted in the message (e.g. *"the intercept of 162"*) must match the rounded parameter table — same rule as the Temperance preamble.
-- **Rounding:** the shown `tidy()` output must use the **same rounding** as the Temperance preamble's parameter table (default: `signif(3)`). Append `|> mutate(across(where(is.numeric), \(x) signif(x, 3)))` to the display chunk. A tutorial that shows 162.178 in one place and 162 in another is confusing; pick a rounding level once and apply it everywhere an author-shown parameter table appears.
-- End: pick from the Temperance knowledge drops (non-treatment variables, dummy base values, confidence intervals excluding zero, same-data-different-assumptions, parameters-don't-mean-anything, "adjust" vs. "control," overlapping dummy intervals, numeric comparisons).
+**Optional final-DGM interpretation question (Easy only).** If, when authoring a tutorial, the §13.4 Courage interpretation block somehow misses an interpretation worth making — e.g. an intercept that the per-fit interpretation questions never asked about, or a CI's exclusion-of-zero point that the §1.6 commitment 4 wants to drive home — Temperance may include **at most one** parameter-interpretation question early in the section to fill that gap. This is the exception, not the default; in most tutorials Temperance jumps straight to `marginaleffects`. When this exception applies, the question goes between the components-of-Temperance Ex 1 and the load-marginaleffects exercise (which would then renumber from Ex 2 to Ex 3, and so on through the section).
 
-**Which model(s) to interpret.** Before picking *which parameters*, pick *which model's parameters*. Two kinds of interpretation happen in Temperance:
+**Interpretation language: stay at the model level, don't drift to the data.** This rule still applies to any parameter-interpretation exercise, in Courage or in Temperance. Use the **expected value** framing: *"The expected value of [outcome] for a [unit description] is [coefficient]."* Do **not** equate a coefficient with a sample summary statistic, even when (as for an intercept-only OLS) they happen to coincide. Saying *"the average height of a young adult in our sample is 169.7 centimeters"* trains students to confuse the parameter with the sample mean; in general (non-linear models, models with covariates, anything beyond a degenerate case) parameters do not equal any easily-calculated data summary, and we should not encourage that habit. The §13.4 Courage interpretation questions and (when present) the optional Temperance interpretation question all use this framing.
 
-1. **Interpretation of the final DGM.** This is the most important thing and always happens — the final DGM is what Temperance is for. Every tutorial, every tier, includes interpretation exercises for the final fitted model.
-2. **Interpretation of a simple, one-covariate model, used to fix ideas.** Before jumping to the final DGM, show a simple version of the model — typically a one-covariate linear (or logistic, etc.) fit — whose coefficients have the cleanest, most direct interpretation possible. The student interprets the simple model's coefficients in isolation, the canonical answer establishes the interpretation pattern, and *then* we move to the final DGM with that interpretation pattern already in hand. The adjustment clause, interaction language, and link-function scale complications are easier to reach for once the simple baseline is there.
+**End-of-warm-up knowledge drop** (when the simple-model warm-up appears in Courage as Fit A's interpretation End). Bridge from "the DGM has only one prediction" to "the next model adds a covariate and gets one prediction per group." Canonical wording:
 
-**EMH rule for this split:**
-- **Easy (positions 1–4, target tutorials 06–09).** Do both. Simple model first (one covariate, outcome scale), then the final DGM. Easy tutorials have room for this two-step flow because their `marginaleffects` coverage is limited to `predictions()`, which leaves Temperance with time to spend on parameters.
-- **Medium and Hard (positions 5–12, target tutorials 10–17).** Skip the simple-model step. Go straight to interpreting the final DGM. M/H tutorials pack in `comparisons()`, grid choices, and (for Hard) the explicit five-decisions framework (§1.3 *marginaleffects worked example*), which crowds out a second parameter-interpretation block. Students have seen the one-covariate interpretation pattern several times in Easy — by position 5 it does not need to be re-established.
+> *"Without a covariate, the model can only emit one prediction — the same one for every unit. Adding `[covariate]` lets the DGM produce different predictions for different units, which is the whole point of having a covariate."*
 
-In Courage, we have already fit *exactly the model we will interpret here*. For Easy tutorials, the simple-model-interpretation variant runs on a model that Courage has not shown — either a smaller fit Courage skipped past, or a one-covariate reduction of the final model. Either way, Temperance displays a `tidy()` table for that simple fit, asks for an interpretation of one of its coefficients, and then moves on.
+Replace `[covariate]` with the actual variable the next exercise's model adds (e.g. `sex` for NHANES). Do **not** say things like "the simplest model has one parameter: the overall mean" or "that mean is the best guess when we know nothing" — those phrasings reintroduce the parameter-equals-sample-mean confusion that the *Interpretation language* paragraph above forbids. Stay at the model level: parameters produce predictions; covariates let the model produce *different* predictions for *different* units.
 
-**Interpretability ceiling by model family.** Not every model's parameters are equally interpretable. The student-facing interpretation work scales accordingly:
+**Interpretability ceiling by model family** (governs Courage interpretation questions in §13.4 and any optional Temperance interpretation question). Not every model's parameters are equally interpretable. The student-facing interpretation work scales accordingly:
 
-- **Linear models (continuous outcome, identity link).** Fully interpretable. Coefficients sit on the outcome scale — a β of 15.9 literally means "15.9 more centimeters of height." Student interpretation exercises are direct: "what does this coefficient mean?" This is the default setting for Easy tutorials, and the reason the simple-model step (§ above) lives in Easy — because there is a scale on which parameters cleanly mean things.
+- **Linear models (continuous outcome, identity link).** Fully interpretable. Coefficients sit on the outcome scale — a β of 15.9 literally means "15.9 more centimeters of height" (with comparison framing). Courage's interpretation questions are direct.
 
-- **Non-linear link-function models (logistic, multinomial, cumulative, Poisson, etc.).** Partially interpretable. Coefficients sit on a link scale — log-odds, log-rate, cumulative logits — which is not the scale the question is asked on. A direct interpretation is possible ("a one-unit increase in X raises the log-odds of Y by β"), but it is not intuitive, and **we do not ask students to produce that interpretation as their answer**. Instead: the author **notes the link-scale interpretation once, in a knowledge drop**, so students see what it would look like; the interpretation *exercises* for these models focus elsewhere — on recognizing that the coefficients are not on the outcome scale, on identifying the reference category and the sign of β, on asking why the next step is `marginaleffects`. The real answer to "what does this model say?" happens in Exercises 5+ via `predictions()` and (from Medium onward) `comparisons()`, which bring results back to the outcome scale.
+- **Non-linear link-function models (logistic, multinomial, cumulative, Poisson, etc.).** Partially interpretable. Coefficients sit on a link scale — log-odds, log-rate, cumulative logits — which is not the scale the question is asked on. A direct interpretation is possible ("a one-unit increase in X raises the log-odds of Y by β"), but it is not intuitive, and **we do not ask students to produce that interpretation as their answer**. Instead: the author **notes the link-scale interpretation once, in a knowledge drop**, so students see what it would look like; the Courage interpretation *exercises* for these models focus elsewhere — on recognizing that the coefficients are not on the outcome scale, on identifying the reference category and the sign of β, on asking why the next step is `marginaleffects`. The real answer to "what does this model say?" happens in Temperance's `marginaleffects` block via `predictions()` and (from Medium onward) `comparisons()`, which bring results back to the outcome scale.
 
-- **Non-parametric models (random forest, gradient boosting, neural nets).** Not interpretable at the parameter level. Don't show a parameter table; the object `fit_<n>` does not have meaningful coefficients to `tidy()`. **Skip Exercises 2–4 entirely** per §14.8, and replace with a single exercise whose only purpose is to make the student articulate *why* the parameters are not directly interpretable — no attempt at parameter interpretation at all, and no simple-model warm-up either. All the answering happens downstream via `marginaleffects`.
+- **Non-parametric models (random forest, gradient boosting, neural nets).** Not interpretable at the parameter level. Don't show a parameter table; the object `fit_<n>` does not have meaningful coefficients to `tidy()`. **In Courage, replace the multi-fit interpretation block with a single exercise whose only purpose is to make the student articulate *why* the parameters are not directly interpretable** — see §14.8. All the answering happens downstream via `marginaleffects` in Temperance.
 
-This ordering determines how much Temperance real-estate the parameter block consumes. Easy linear-model tutorials get the full simple-then-final two-step flow. Easy logistic/multinomial tutorials (if any — 06 is logistic) still use the simple-model warm-up, but the final-DGM interpretation is a knowledge drop, not an exercise. Non-parametric tutorials skip the block almost entirely.
+This ordering determines how much real estate the Courage parameter block consumes (§13.4) and how much Temperance can devote to `marginaleffects`. Easy linear-model tutorials run the full Courage three-fit interpretation block. Easy logistic/multinomial tutorials run the same Courage block but with link-scale cautions in the Ends. Non-parametric tutorials run a single "why parameters don't help here" exercise in Courage and skip directly to `marginaleffects` in Temperance.
 
-**Which parameters to interpret: the three axes.** Once the model(s) are chosen, pick which parameters (or comparisons) to interpret — three exercises total across both kinds of model in Easy, three on the final DGM in Medium/Hard. The choice depends on three axes. (Shorthand: **EMH** = Easy / Medium / Hard, what §1.3 previously called Easy / Medium / Difficult. Going forward, prefer *EMH* and *Hard*; the word *Difficult* elsewhere in this file is the same tier.)
+**Which parameters to interpret: the three axes** (governs Courage interpretation questions in §13.4 — Exercises 5, 8, 11 — and any optional Temperance interpretation question). Pick which parameters (or comparisons) to interpret. The choice depends on three axes. (Shorthand: **EMH** = Easy / Medium / Hard, what §1.3 previously called Easy / Medium / Difficult. Going forward, prefer *EMH* and *Hard*; the word *Difficult* elsewhere in this file is the same tier.)
 
-1. **Variable type.** Three cases come up:
-   - **Binary** (2-level categorical, typically dummy-coded by R as `variableLevelName`). Interpretation language: *"A [Level=1] recruit has X more [outcome] than a [Level=0] recruit."* Plus the adjustment clause if there are other covariates.
-   - **Multinomial** (3+ levels). Each non-reference level becomes its own dummy, interpreted *relative to the reference category* — which by default is the first level alphabetically (or the first factor level if set by hand). Interpretation language: *"Compared to [reference level], a [Other Level=1] unit has X more [outcome] than a [reference] unit."* Whenever a multinomial variable's coefficient is interpreted, state the reference level explicitly; students confuse it otherwise.
-   - **Continuous.** One-unit-change language: *"For every one-unit increase in [X], [outcome] increases by β."* When the variable's natural unit is not 1 (e.g. a year's worth of income change may make no practical sense), either rescale before fitting or name a meaningful comparison in the interpretation (*"an additional decade of education is associated with X more dollars of income"*).
+1. **Variable type.** Three cases come up — and Courage's three-fit structure is designed to hit each:
+   - **Binary** (2-level categorical, typically dummy-coded by R as `variableLevelName`). Interpretation language: *"When we compare two [units] differing in [covariate], the [Level=1] group has [X more] [outcome] than the [Level=0] group."* Plus the adjustment clause if there are other covariates.
+   - **Multinomial** (3+ levels). Each non-reference level becomes its own dummy, interpreted *relative to the reference category* — which by default is the first level alphabetically (or the first factor level if set by hand). Interpretation language: *"Compared to [reference level], [Other Level] [units] have [X more] [outcome]."* Whenever a multi-level coefficient is interpreted, state the reference level explicitly; students confuse it otherwise.
+   - **Continuous.** Per-unit comparison language: *"When we compare two [units] differing by one unit of [X], the higher-[X] group has [β more] [outcome]."* When the variable's natural unit is not 1 (e.g. a year's worth of income change may make no practical sense), either rescale before fitting or name a meaningful comparison (*"colleges differing by $10,000 of tuition..."*).
 2. **Variable role.** A variable is either a standard **covariate** or (in causal models only) a **treatment**.
-   - For **covariates**, use associational language: *"is associated with," "connected with," "differ by,"* comparisons *between groups* — no *cause*, *effect*, *impact*, *influence*. See the non-treatment-variables knowledge drop (§12.5).
-   - For **treatments**, use causal language: *"causal effect of X on Y," "the effect of [treatment]."* In any causal tutorial, try to make **at least one of the three interpretation exercises be about the treatment's coefficient** — the treatment is the variable the question is actually about, and interpreting its coefficient is what the model is for.
+   - For **covariates** in *predictive* models, use associational/comparison language per §1.6 commitment 1: *"when comparing two groups differing in X, group A has Y more outcome"* — no *cause*, *effect*, *impact*, *influence*, *raise*, *change*. See the non-treatment-variables knowledge drop (§12.5).
+   - For **treatments** in *causal* models, use causal language: *"causal effect of X on Y," "the effect of [treatment]."* In any causal tutorial, try to make **at least one of the three Courage interpretation questions be about the treatment's coefficient** — the treatment is the variable the question is actually about, and interpreting its coefficient is what the model is for.
 3. **Number of covariates.** Every interpretation must name the other covariates it is conditional on, if there are any.
-   - **One covariate** (simple tutorials, typically early in the sequence): no adjustment clause needed. *"For every additional year of education, income increases by β."*
-   - **Two or more covariates** (everything past the first few tutorials): every interpretation sentence ends with an adjustment clause — *"…adjusting for [list of other covariates]."* Use **adjust** in preference to **control**; see the adjust-vs-control knowledge drop (§12.5). Omitting the adjustment clause is the single most common student error on interpretation exercises, which is why our canonical `message` always includes it.
+   - **One covariate** (Fits A and B in Courage's three-fit block, when those fits each have a single covariate): no adjustment clause needed.
+   - **Two or more covariates** (Fit C, the final model): every interpretation sentence ends with an adjustment clause — *"…adjusting for [list of other covariates]."* Use **adjust** in preference to **control**; see the adjust-vs-control knowledge drop (§12.5). Omitting the adjustment clause is the single most common student error on interpretation exercises, which is why our canonical `message` always includes it. Fit C's interpretation question (§13.4 Exercise 11) is where the adjustment clause first appears in the curriculum.
 
-**EMH progression for this exercise block:**
-- **Easy** (positions 1–4, target tutorials 06–09). All linear models (per §17: NHANES, Trains, Colleges, and the gap-TODO Easy causal). One or two covariates, binary or 3-level categorical. Interpretation is direct on the outcome scale: a coefficient = expected-value difference. Easy includes the simple-model warm-up before the final DGM (see *Which model(s) to interpret*). The adjustment clause appears from the moment a second covariate is introduced.
-- **Medium** (positions 5–8, target tutorials 10–13). First link functions (logit in Biden at position 5, Shaming at position 6; multinomial in NES at position 7). Adjustment clauses are mandatory. Students are **not** asked to interpret link-scale coefficients; the author mentions the link-scale form in a knowledge drop, and the student exercises focus on recognizing the link scale, identifying reference categories, and handing off to `marginaleffects`. Interactions, when they appear on the outcome scale, force conditional interpretation — *"the effect of X depends on the value of Z."*
-- **Hard** (positions 9–12, target tutorials 14–17). Cumulative logit (CES at position 9), RDD causal identification (Governors at position 10), and non-parametric models (random forests at positions 11 and 12). Non-parametric models skip the parameter block entirely per §14.8. Where a parameter block remains, keep at least one exercise whose purpose is to make the student articulate *why* the parameters are opaque — the failure to interpret is the point, and it sets up the `marginaleffects` work that follows.
+**EMH progression for the Courage interpretation block (§13.4 Exercises 5, 8, 11):**
+- **Easy** (positions 1–4, target tutorials 06–09). All linear models. The three-fit progression — binary or multi-level categorical (Fit A), the other categorical type or continuous (Fit B), final combined (Fit C) — is the curriculum's first place to practice interpretation across covariate types. The adjustment clause appears for the first time at Fit C's interpretation question.
+- **Medium** (positions 5–8, target tutorials 10–13). First link functions (logit in Smokes at position 5, Shaming at position 6; multinomial in NES at position 7). Adjustment clauses are mandatory. Students are **not** asked to produce link-scale interpretations; the author notes the link-scale form once, and Courage's interpretation Ends focus on identifying reference categories, the sign of β, and why we need `marginaleffects`. Interactions, when they appear, force conditional interpretation — *"the effect of X depends on the value of Z."*
+- **Hard** (positions 9–12, target tutorials 14–17). Cumulative logit (CES at position 9), RDD causal identification (Governors at position 10), and non-parametric models (random forests at positions 11 and 12). Non-parametric models replace the three-fit Courage block with a single "why parameters don't help" exercise per §14.8. Where the multi-fit block remains, keep at least one fit whose interpretation question requires the student to articulate *why* the parameter is opaque — the failure to interpret is itself the lesson, and it sets up the Temperance `marginaleffects` work that follows.
 
-**Exercise 5.** [operational] Load `marginaleffects`.
+**Exercise 2.** [operational] Load `marginaleffects`.
 - Prompt: *In the end, we don't really care about parameters. Parameters are imaginary, like unicorns. We care about answers to our questions. In the modern world, all parameters are nuisance parameters. Add `library(marginaleffects)` to the QMD. Place your cursor on that line. Use `Cmd/Ctrl + Enter`. CP/CR.*
 - End: the humility knowledge drop (§12.5).
 
-**Exercise 6.** [per-tutorial, written-with-answer] The specific question.
+**Exercise 3.** [per-tutorial, written-with-answer] The specific question.
 - Prompt: *What is the specific question we are trying to answer?*
 - Message: per-tutorial. May match the Wisdom Exercise 10 question or differ.
 - End: the data-science-projects-begin-with-decisions knowledge drop (§12.5).
 
-**Exercise 7.** [per-tutorial, written-without-answer] Run `predictions()`.
+**Exercise 4.** [per-tutorial, written-without-answer] Run `predictions()`.
 - Prompt: *At the R prompt, run `predictions()` on `fit_<n>`. CP/CR.*
 - End: the `predictions()` knowledge drop (§12.5), noting actual row count. Add a second sentence specific to what's interesting about this output.
 
-**Exercise 8.** [per-tutorial, written-without-answer] Run `plot_predictions()` (first version).
+**Exercise 5.** [per-tutorial, written-without-answer] Run `plot_predictions()` (first version).
 - Prompt: *At the R prompt, run `plot_predictions()` on `fit_<n>` with [specific arguments]. CP/CR.*
 - End: discuss the estimate and uncertainty the plot shows. Explain how to read the estimate and confidence interval from the plot.
 
@@ -2157,41 +2374,41 @@ Insert additional `plot_predictions()` exercises as needed — different argumen
 
 **Multinomial caveat.** `marginaleffects` does not fully support multinomial outcomes from `multinom_reg(engine = "nnet")`. `predictions()` works (returns one row per unit per outcome category), but `plot_predictions()` and `comparisons()` may need manual post-processing: extract the tibble with `draw = FALSE`, pivot to long form by outcome category, and build the final ggplot by hand. Note this in the NES tutorial's Temperance section; the same caveat applies to any future tutorial using a multinomial fit. The ordinal case (`MASS::polr`) does not have this problem — `marginaleffects` handles `polr` natively.
 
-**Exercise 9.** [per-tutorial, written-without-answer] Final `plot_predictions()` call.
+**Exercise 6.** [per-tutorial, written-without-answer] Final `plot_predictions()` call.
 - Prompt: the version whose output will be the basis for the final plot. CP/CR.
 - End: comments on the key takeaways relative to the question.
 
-**Exercise 10.** [per-tutorial, written-without-answer] `plot_predictions(..., draw = FALSE)`.
+**Exercise 7.** [per-tutorial, written-without-answer] `plot_predictions(..., draw = FALSE)`.
 - Prompt: run the same call as above with `draw = FALSE`. CP/CR.
 - End: *Because `plot_predictions()` returns a ggplot object, you can continue with ggplot commands like `labs()`. But it can be useful to see the underlying values in the tibble and build your own plot directly.*
 
-**Exercise 11.** [per-tutorial, written-without-answer] Build a beautiful plot.
+**Exercise 8.** [per-tutorial, written-without-answer] Build a beautiful plot.
 - Prompt: *Work with AI to create a beautiful plot starting from the output of `plot_predictions(..., draw = FALSE)`. Do this in your QMD (much easier than the R prompt). Title: key variables. Subtitle: important takeaway. Caption: data source. Axis labels: nice. This plot is not directly connected to your question — it answers lots of questions. Paste the plot code below.*
 - End: show our plot and our code. Closing knowledge drop: the back-and-forth knowledge drop (§12.5).
 
-**Exercise 12.** [operational] Finalize the plot chunk.
+**Exercise 9.** [operational] Finalize the plot chunk.
 - Prompt: *Finalize the new graphics chunk in your QMD. `Cmd/Ctrl + Shift + K` to ensure it all works. At the R prompt, `tutorial.helpers::show_file("XX.qmd", chunk = "Last")`. CP/CR.*
 - End: the map-is-not-the-territory knowledge drop (§12.5).
 
-**Exercise 13.** [per-tutorial, written-with-answer] Last sentence of the summary paragraph.
+**Exercise 10.** [per-tutorial, written-with-answer] Last sentence of the summary paragraph.
 - Prompt: *Write the last sentence of your summary paragraph. It describes at least one Quantity of Interest and a measure of uncertainty. It is OK if this QoI differs from the one you began with. It is OK to discuss more than one QoI.*
 - Message: per-tutorial.
 - End: *Add a final sentence to your summary paragraph, but don't copy/paste our answer exactly. `Cmd/Ctrl + Shift + K`.*
 
-**Exercise 14.** [per-tutorial, written-with-answer] Why the estimate might be wrong.
+**Exercise 11.** [per-tutorial, written-with-answer] Why the estimate might be wrong.
 - Prompt: *Write a few sentences explaining why the estimates for the quantities of interest, and the uncertainty, might be wrong. Suggest alternative estimates and confidence interval if warranted.*
 - Message: per-tutorial. *You might or might not suggest an alternate point estimate; I always adjust toward my subjective sense of a long-run average or zero. But you should always widen the confidence interval, since the assumptions of your model are always false.*
 - End: the go-back-to-the-Preceptor-Table knowledge drop (§12.5).
 
-**Exercise 15.** [operational] Reorder and render final QMD.
+**Exercise 12.** [operational] Reorder and render final QMD.
 - Prompt: *Rearrange the material in your QMD so the order is graphic, then paragraph. The chunk that creates the fitted model must occur before the chunk that creates the graphic. You can keep or discard the math at your discretion. `Cmd/Ctrl + Shift + K`. At the R prompt, `tutorial.helpers::show_file("XX.qmd")`. CP/CR.*
 - End: the published-version knowledge drop (§12.5).
 
-**Exercise 16.** [operational] Publish to GitHub Pages.
+**Exercise 13.** [operational] Publish to GitHub Pages.
 - Prompt: *Publish your rendered QMD to GitHub Pages. In the Terminal (not the R prompt!), run `quarto publish gh-pages XX.qmd`. Copy/paste the resulting URL below.*
 - End: *Commit/push everything.*
 
-**Exercise 17.** [operational] Paste the repo URL.
+**Exercise 14.** [operational] Paste the repo URL.
 - Prompt: *Copy/paste the URL to your GitHub repo.*
 - End: the Preceptor-Table-and-God knowledge drop (§12.5), followed by *The world confronts us. Make decisions we must.*
 
@@ -2296,7 +2513,7 @@ With AI-mediated authoring (§9), the line-by-line pipe pattern is less necessar
 
 ### 14.3 Show the plot, don't show the code
 
-For any tutorial-owned plot (EDA plots, a `gt` Preceptor Table, a quote-framed image), render the plot in a code chunk with no label, so the student sees the output but not the code. Plots should be competent — axis labels, a title, a subtitle that highlights the key takeaway, a caption naming the data source.
+*(Folded into §14.12 *Visualization house style*; preserved as a number-only stub so internal `§14.x` cross-references elsewhere in this file keep their indices.)*
 
 ### 14.4 Iterative summary paragraph
 
@@ -2315,7 +2532,7 @@ For `predictions()` and `plot_predictions()` exercises, include a `-test` chunk.
 
 ### 14.6 Virtue section openers
 
-**Preambles do not describe what the virtue does.** That job belongs to the first exercise of each virtue section, which asks the student to describe the virtue's components using the canonical §11 wording (Wisdom begins with a question…; Justice concerns the Population Table…; Courage creates the data generating mechanism; Temperance interprets the DGM…). The preamble must not pre-empt this — no "In Wisdom we will build a Preceptor Table," no "Justice is the virtue of asking hard questions about the data," no "Temperance uses the model to answer the question." Those sentences take the work out of the student's mouth.
+**Preambles do not describe what the virtue does.** That job belongs to the first exercise of each virtue section, which asks the student to describe the virtue's components using the canonical Key Concepts wording (Wisdom begins with a question…; Justice concerns the Population Table…; Courage creates the data generating mechanism; Temperance interprets the DGM…). The preamble must not pre-empt this — no "In Wisdom we will build a Preceptor Table," no "Justice is the virtue of asking hard questions about the data," no "Temperance uses the model to answer the question." Those sentences take the work out of the student's mouth.
 
 What the preamble is for is spelled out in §5.5: it reprints the upstream artifacts this virtue needs (the Preceptor Table, the data table, the Population Table, the fitted DGM, etc.) so the section is usable by a reader who skipped or forgot what came before. Preamble prose stays tight and specific to *this problem* — naming the dataset, restating the question, showing the Preceptor Table — and leaves the virtue-level generalities to the first exercise.
 
@@ -2335,17 +2552,34 @@ This is not a progression — it applies at every level (Easy / Medium / Difficu
 
 ### 14.8 When to skip exercises
 
-Predictive tutorials skip the unconfoundedness exercises (Justice 11 and 12). Models with no interpretable parameters (random forests, neural nets) skip the parameter-interpretation exercises (Temperance 2–4) — replace with a single exercise that ensures the student understands the parameters aren't directly interpretable. Non-linear link-function models (logistic, multinomial, cumulative, Poisson) *keep* Exercises 2–4 but redirect them away from asking students to interpret link-scale coefficients directly; see §13.5 *Interpretability ceiling by model family* for the rules.
+Predictive tutorials skip the unconfoundedness exercises (Justice 11 and 12). Models with no interpretable parameters (random forests, neural nets) replace Courage's three-fit interpretation block (§13.4 Exercises 3–8) with a single exercise that ensures the student understands the parameters aren't directly interpretable. Non-linear link-function models (logistic, multinomial, cumulative, Poisson) *keep* the Courage interpretation block but redirect each interpretation question away from asking students to produce link-scale coefficient interpretations directly; see §13.5 *Interpretability ceiling by model family* for the rules.
 
 Operational exercises can be abbreviated in later tutorials once students have done them a few times. The first time through, migrate as-is. By tutorial 10+, the `library(broom)` exercise (Justice 14) can be much shorter.
 
 ### 14.9 Rounding consistency for parameter tables
 
-Every **author-shown** parameter table in a tutorial — the Temperance preamble's `tidy()` display, each of Temperance Exercises 2–4, the Courage preamble's parameter summary when present, the concrete DGM math — uses the **same rounding**. Default: `signif(3)`, applied via `|> mutate(across(where(is.numeric), \(x) signif(x, 3)))` appended to the `tidy()` pipeline. Numeric values that appear in exercise `message` text (the canonical answer) must match the rounded display — no "the intercept is 162.18" in the prose while the table shows 162, and no "the intercept is 162" in the prose while the table shows 162.18.
+Every **author-shown** parameter table in a tutorial — each Courage interpretation exercise's preamble table (§13.4 Exercises 4, 6, 8 in the three-fit pattern), the Temperance preamble's `tidy()` display, the concrete DGM math, and any other place a parameter is quoted — uses the **same rounding**. Numeric values that appear in exercise `message` text (the canonical answer) must match the rounded display — no "the intercept is 162.18" in the prose while the table shows 163, and no "the intercept is 163" in the prose while the table shows 162.9.
 
 One rounding, one tutorial, everywhere the reader sees parameters. A student who compares their answer to ours should not get tripped up by mismatched digits.
 
-The one exception is a **student-written code exercise** whose point is to teach `tidy()` itself (e.g. the Courage exercise where the student pipes into `tidy(conf.int = TRUE)` for the first time). There, the raw unrounded output is what `tidy()` actually produces; adding `signif()` would muddy the learning goal. After that one teaching exercise, every subsequent display of parameters uses the chosen rounding.
+**Resolution must be finer than the standard error.** A blanket `signif(3)` is *wrong* whenever a coefficient's magnitude is much larger than its standard error — the intercept and the upper CI bound collapse to the same displayed value. Concrete failure: NHANES height regression has intercept 162.94 with CI [162.38, 163.49]; `signif(3)` displays 163 / 162 / 163, with the estimate matching its own upper bound. The student looks at the table and cannot tell what the model actually says.
+
+**Default: round to a fixed number of decimal places, chosen so estimate and CI bounds stay visibly distinct in every row.** Practically this means looking at the smallest standard error (or CI half-width) in the table and picking decimal places one finer than that:
+
+| Smallest SE in table | Decimal places | Helper |
+|---|---|---|
+| ≥ 0.5 (e.g. NHANES, Trains) | 1 | `mutate(across(where(is.numeric), \(x) round(x, 1)))` |
+| 0.05 – 0.5 (e.g. logistic log-odds) | 2 | `round(x, 2)` |
+| 0.005 – 0.05 (e.g. Colleges grad-rate proportions) | 3 | `round(x, 3)` |
+| smaller | 4+ | `round(x, 4)` etc. |
+
+Use `round(x, n)` with a fixed `n` rather than `signif(x, 3)`. Sig figs are misleading on regression output: each row's *natural precision* is set by its standard error, not by the magnitude of the estimate. Within a row, the same decimal-place precision is applied to estimate, conf.low, and conf.high; across rows in the same table, the decimal-place count stays the same so the visual alignment of the columns is preserved.
+
+**Per-row variation is allowed.** When a single table mixes coefficients with very different magnitudes (e.g. the residual variance σ² alongside log-odds coefficients), the global decimal-place rule will over-precise some rows and under-precise others. The fix is to render σ² (or any anomalous row) in its own block, formatted appropriately, rather than to force all rows to the same `round(n)` call. The principle is: **each row's rounding must keep its estimate and CI distinguishable** — when the global rule fails for one row, that row gets its own treatment.
+
+**Concrete numbers in LaTeX and prose match the table.** The concrete DGM in the Temperance preamble (`$\hat{Y} = 162.9 + 13.6 \cdot X + \epsilon$`) carries the same digits the parameter table shows. The Temperance exercise prompts that quote a number ("Write a sentence interpreting the 162.9 estimate") and their canonical answers ("The expected value is 162.9 centimeters") match too. Verbal rounding in the *summary paragraph* — "about 163 cm" — is OK because it is explicitly verbal, but the concrete formulas and the canonical exercise answers are not the place for that.
+
+The one exception is a **student-written code exercise** whose point is to teach `tidy()` itself (e.g. the Courage exercise where the student pipes into `tidy(conf.int = TRUE)` for the first time). There, the raw unrounded output is what `tidy()` actually produces; adding `round()` would muddy the learning goal. After that one teaching exercise, every subsequent display of parameters uses the chosen rounding.
 
 ### 14.10 Package-name formatting
 
@@ -2393,9 +2627,82 @@ Legend labels follow the axis rule (human-readable, units where relevant). When 
 
 `ggplot2::theme_minimal()` or `theme_classic()` is the default — tutorials should not ship custom themes. Color scales inherit from ggplot defaults unless a specific palette is pedagogically necessary (e.g. a red-blue political scale for voter-behavior plots).
 
+**Show the plot, not the code.** For any author-rendered plot (EDA in Wisdom, the model-checking plot in Courage, the final plot in the Summary), use `#| echo: false` so the student sees the output but not the code. Author-rendered plots are deliverables, not lessons in ggplot — the lesson lives in the student-facing exercise that *generates* the plot via AI prompting.
+
 **AI-assisted plotting.** Most tutorials ask students to prompt AI for the plot code (§9) rather than build up ggplot layer-by-layer. When the author shows "our version" of the plot after the student exercise, that reference plot should obey the four-slot rule above so students see what "good" looks like.
 
+**Density plots: drop the y-axis entirely.** A density plot's y-axis values (the kernel-density-estimate height) carry no information a student can use — the numbers are abstract, the absolute scale isn't interpretable, and the message lives entirely in the *shape* of the curve and the x-axis. Strip the y-axis label, ticks, and tick text:
+
+```r
+recruits |>
+  ggplot(aes(x = height)) +
+  geom_density(fill = "grey70", color = "grey30") +
+  labs(
+    title    = "Height in Our 50-Recruit Sample",
+    subtitle = "A heavy left shoulder hints that sex matters",
+    x        = "Height (cm)",
+    y        = NULL,
+    caption  = "Source: 50-row sample from NHANES via primer.tutorials::recruits"
+  ) +
+  theme_minimal() +
+  theme(axis.text.y  = element_blank(),
+        axis.ticks.y = element_blank())
+```
+
+This applies to every `geom_density()` plot the curriculum produces — EDA plots, by-group overlays, model-checking comparisons of actual-vs-fitted distributions, etc. Do **not** label the y-axis "Density" — the word means nothing to students at this stage of the curriculum, and having a numeric y-axis present invites readers to try to read values off of it that cannot be meaningfully interpreted. Histograms (`geom_histogram()` with raw counts) keep the y-axis because counts *are* meaningful; the rule above is density-specific.
+
+**Format proportions and rates as percentages on axes.** When a variable is a proportion (graduation rate, probability, share), display its axis labels as percentages, not decimals:
+
+```r
+scale_x_continuous(labels = scales::label_percent())
+```
+
+`50%` is more legible than `0.5` for a general reader, harmonizes with the subtitle when the subtitle says *"50% to 80%"*, and matches the way the variable is described in everyday speech. Apply on whichever axis (x or y) shows the proportion. The underlying data values stay as proportions (0–1); `label_percent()` only affects the displayed tick labels.
+
+**Format dollar amounts and other "human" units in the axis labels themselves.** When a variable is in raw units that aren't human-friendly — e.g. `tuition` in `colleges` is stored in units of $10,000, so a value of 3 means $30,000 — apply a `scales::label_*()` formatter so the tick labels read in the units a person uses to discuss the variable:
+
+```r
+# tuition stored in $10,000 units; show $20,000, $30,000, etc.
+scale_x_continuous(labels = scales::label_dollar(scale = 10000))
+```
+
+When the formatter handles the units, the axis title can drop the parenthetical unit annotation: prefer `x = "Tuition"` over `x = "Tuition ($10,000)"`. The dollar amounts appear in the tick labels themselves; restating the unit in the title is redundant. The general rule: **the axis labels should read the way a person would say the value out loud** — `$30,000`, `50%`, `175 cm`, `2014` — not the way the variable happens to be encoded in the tibble. Useful `scales::label_*()` helpers: `label_dollar()`, `label_percent()`, `label_comma()`, `label_number(suffix = " cm")`, `label_date()`.
+
+**Do not write a knowledge drop after a plot.** The plot's title and subtitle carry the takeaway; the EDA exercise ends when the student has seen the plot. Don't append a paragraph that re-narrates the plot ("the distribution is broad, with a peak around …", "the jitter plot shows N individual scores, the means confirm…"). If the plot's message isn't visible in the picture itself, fix the plot — usually by sharpening the subtitle. Save prose for places where it does pedagogical work that the picture cannot. This rule applies uniformly: EDA plots in the Introduction and in Wisdom, model-checking plots in Courage, and the final plot in Temperance / Summary all stand on their own.
+
+What this rule **does not** prohibit:
+- A short *lead-in* before the plot that orients the student ("One way to check the model is to compare actual and fitted distributions"). The rule is about post-plot prose, not pre-plot prose.
+- The next exercise's content, which begins immediately under the next `### Exercise N` header. The flow is: prose lead-in → plot → next exercise. No drop in between.
+
 **Do not ship cargo-culted helpers.** Examples flagged in past tutorials include `tidytext::scale_x_reordered()` with a comment like `# Needed (?)` — if an author is unsure whether a helper function is necessary, they should test both with and without it and commit the simpler one. A tutorial is not the place to debug dependency uncertainty.
+
+### 14.13 LaTeX formatting for concrete DGM formulas
+
+Concrete-DGM formulas (the §13.4 Exercise 16 author-shown formula in Courage, the §13.5 Temperance preamble *As a mathematical formula:* block) almost always need to wrap and need careful handling of variable names that contain underscores. Two rules:
+
+**Rule 1: avoid `\text{var\_name}` for variable names with underscores in math mode.** Even when escaped correctly as `\text{grad\_rate}`, the rendered output sometimes shows the literal backslash (`grad\_rate`) instead of the underscore. The cleanest fix is to use a human-readable form of the variable name with no underscores: `\text{Graduation Rate}` (with a space, capitalized) instead of `\text{grad\_rate}`. The math-mode label is for the *reader*, not the *computer*; the underscore-bearing tibble name is in the R code blocks above and below.
+
+For a *predicted* outcome, use `\widehat{\text{Graduation Rate}}` (the wide-hat version, which spans multi-character text properly), not `\hat{\text{grad\_rate}}`.
+
+**Rule 2: wrap long formulas with `\begin{aligned}`.** A concrete-DGM formula with five or six terms doesn't fit on a single rendered line; it overflows the column or wraps at unhelpful places. Use `aligned` to break it across lines at sensible places (after the intercept, after each term, etc.):
+
+```latex
+$$
+\begin{aligned}
+\widehat{\text{Graduation Rate}} =\ & 0.487 + 0.090 \cdot \text{Tuition} \\
+&{} - 0.078 \cdot \text{Highly Selective} \\
+&{} - 0.128 \cdot \text{Moderately Selective} \\
+&{} - 0.213 \cdot \text{Lowly Selective} \\
+&{} - 0.205 \cdot \text{Non-selective}
+\end{aligned}
+$$
+```
+
+The `&` aligns the continuation lines below the first `=`-sign or just after the right-hand-side begins. The `{}` after the `&` on continuation lines tells LaTeX to treat the leading `-` as a binary operator (proper spacing) rather than a unary minus. Each `\\` is a line break in display math.
+
+For the *un-hatted* version with `+ \epsilon` (Temperance preamble's "as a mathematical formula"), the same wrapping applies. Drop the `\widehat{...}` and append `+ \epsilon` on the last line, before `\end{aligned}`.
+
+A formula with three or fewer terms (e.g. NHANES `height ~ sex` has just two parameters) can stay on a single line without `aligned`. The threshold is rough: when the formula has more than ~3 RHS terms or any single term-label is verbose, switch to `aligned`.
 
 ---
 
@@ -2458,7 +2765,7 @@ Things flagged but not yet resolved. Revisit when relevant.
 
 - **Curriculum learning goals — explicit specification.** Write down, in CLAUDE.md, what students should understand after completing all 14 tutorials. We need these goals explicit because the Easy / Medium / Difficult progressions (§1.3) are supposed to *build toward* them, and we cannot calibrate the progressions without knowing the targets. Candidate home: a new §1.4 or its own top-level section. Aim for 10–20 concrete things a student should be able to do, explain, or notice by the end of Tutorial 14. Current worked examples in §1.3 (representativeness, validity, stability, unconfoundedness, model checking) implicitly define a handful of these goals — enumerate them all.
 
-- **Justice exercises for sampling and selection mechanism.** §11 now defines assignment, sampling, and selection mechanism as canonical concepts, and §12.3 has disambiguation knowledge drops. Still pending: adding explicit Justice exercises to the §13.3 master exercise list that ask students to name the sampling mechanism and the selection mechanism for the problem at hand, alongside the existing representativeness/stability/validity/unconfoundedness exercises.
+- **Justice exercises for sampling and selection mechanism.** Key Concepts now defines assignment, sampling, and selection mechanism as canonical concepts (with the Heckman-terminology-collision note), and §12.3 has disambiguation knowledge drops. Still pending: adding explicit Justice exercises to the §13.3 master exercise list that ask students to name the sampling mechanism and the selection mechanism for the problem at hand, alongside the existing representativeness/stability/validity/unconfoundedness exercises.
 - **The DGM randomness detail** — we defer discussion of the randomness in the DGM in Courage Exercise 11's knowledge drop. Decide in which tutorial this gets unwrapped.
 - **AI tool article absorption** — `https://ppbds.github.io/tutorial.helpers/articles/ai.html` may have more AI-workflow specifics than §9 currently captures. Worth re-reading and absorbing the next time we touch §9.
 
@@ -2467,6 +2774,8 @@ Things flagged but not yet resolved. Revisit when relevant.
 ## 17. Per-tutorial problem specifications
 
 Key parameters for each tutorial in the `primer.tutorials` package. Use these entries to orient new authoring sessions: the dataset, the primary question, the model to fit, and the Preceptor Table and Population Table column structure. Tutorials marked **miscellaneous** have no full data-science exercise (no Preceptor Table, no model fit). All others are **example** tutorials.
+
+**The §17 seed names a *final model* per tutorial; Courage's §13.4 three-fit interpretation block is generated from that.** Each entry below specifies the final model the tutorial fits, but the Courage section actually fits two or three candidate models (Fit A → Fit B → Fit C) so students can practice parameter interpretation across covariate types. The candidate fits are chosen by the author at draft time from the dataset's available covariates and need not be listed in the §17 entry. See §13.4 *The Courage parameter-interpretation block* for the design pattern, and the `06-recruits` / `07-trains` / `08-colleges` tutorials for worked examples.
 
 **Target roster: 12 example tutorials (positions 1–12) + 5 miscellaneous = 17 total.** Example tutorials are numbered 06–17 and arranged per §1.5:
 
@@ -2514,21 +2823,24 @@ Preceptor Table and Population Table columns are listed by spanner in order. Pop
 
 ---
 
-### 06 — NHANES  *(Position 1, Easy predictive)*
+### 06 — Recruits  *(Position 1, Easy predictive)*
 
 - **Type:** example
 - **"Imagine":** You are in charge of ordering uniforms for next year's Marine Corps bootcamp recruits.
-- **Dataset:** NHANES (`primer.data`)
+- **Dataset:** `recruits` (`primer.tutorials`) — a 50-row teaching cut of NHANES, 40 male and 10 female young adults aged 18–27, columns `height`, `sex`, `age`. Built by `data-raw/recruits.R`; documented in `R/recruits.R`. The 40/10 split is deliberate so the two group means have visibly different standard errors — a feature the Temperance section asks students to notice and explain.
 - **Outcome:** `height` (continuous, cm)
 - **Treatment / Key covariate:** `sex` (Male/Female)
 - **Question (QoI):** What is the average height of male and female USMC recruits?
 - **Model:** Linear regression, one categorical predictor
 - **Causal / Predictive:** Predictive
-- **Student project:** `nhanes`
-- **Data prep:** `nhanes |> filter(age >= 18 & age <= 27) |> select(height, sex) |> drop_na() |> slice_sample(n = 50)` → `x`
-- **Final model:** `linear_reg() |> set_engine("lm") |> fit(height ~ sex, data = x)` → `fit_height`
+- **Student project:** `recruits`
+- **Data prep:** none in the tutorial — the `recruits` tibble is already filtered and sliced. Setup chunk uses `recruits` directly (no intermediate `x`).
+- **Final model:** `linear_reg() |> set_engine("lm") |> fit(height ~ sex, data = recruits)` → `fit_recruits`
 - **Preceptor Table:** Unit (Young Adult) | Outcome (Height cm) | Covariate (Sex)
 - **Population Table:** Source | Unit/Time (Young Adult, Year) | Outcome (Height cm) | Covariate (Sex)
+- **Paired question (chapter only):** What is the average causal effect of sex on a recruit's height? The implied manipulation is biologically absurd --- you cannot toggle a recruit's sex --- so the chapter explicitly names the absurdity and uses it to make the predictive/causal distinction visible (per §1.2's *paired-question-required-even-when-absurd* rule).
+- **Paired Preceptor Table (chapter only):** Unit (Young Adult) | Potential Outcomes (Height if Female, Height if Male) | Treatment (Sex). The two potential-outcome columns are filled with truth, with the unobservable counterfactual rendered with diagonal hatching (same convention as any causal Preceptor Table).
+- **QoI-variety candidates (chapter Temperance):** the average is one question; a campaign-quality answer for the Quartermaster also wants (a) the *maximum* (the tallest recruit you need to fit), (b) the 10th and 90th *percentiles* (how many extra-small and extra-large uniforms to order), and (c) the *distribution of a sample statistic* (e.g. the height of the tallest recruit out of a specific batch of three) which requires simulation from the DGM. The chapter sketches how to get each from the same fitted DGM; the simulation step gets a paragraph but not full mechanics.
 
 ---
 
@@ -2590,21 +2902,37 @@ Preceptor Table and Population Table columns are listed by spanner in order. Pop
 
 ---
 
-### 10 — Biden  *(Position 5, Medium predictive)*
+### 10 — Smokes  *(Position 5, Medium predictive)*
 
 - **Type:** example
-- **"Imagine":** You are the chair of the Democratic National Committee in early 2024 deciding where to devote time and money.
-- **Dataset:** YouGov poll, 1,559 U.S. adult citizens, March 2024 (constructed inline as a tibble)
-- **Outcome:** `biden` — binary support for Biden (Yes/No)
-- **Treatment / Key covariate:** none (intercept-only model)
-- **Question (QoI):** What proportion of all votes will be cast for Joe Biden in the 2024 election?
-- **Model:** Logistic regression, intercept-only
-- **Causal / Predictive:** Predictive
-- **Student project:** `biden`
-- **Data prep:** `tibble(biden = as.factor(c(rep("Yes", 655), rep("No", 904)))) |> slice_sample(prop = 1)` → `poll_data`
-- **Final model:** `logistic_reg() |> fit(biden ~ 1, data = poll_data)` → `fit_biden`
-- **Preceptor Table:** Unit (Voter) | Outcome (Biden Support)
-- **Population Table:** Source | Unit/Time (Voter, Year) | Outcome (Biden Support)
+- **Status:** **Replaced.** Earlier drafts at this slot used a constructed Biden 2024 YouGov tibble (intercept-only logistic) and then a 2024 NES Democratic-vote design. Both have a political framing the curriculum has plenty of elsewhere (positions 6, 7, 8, 9, 11, 12). The current design swaps in a non-political binary outcome — whether an adult has ever smoked — using a curated NHANES cut packaged in `primer.tutorials::smokes`. Same dataset family students saw at position 1 (06 Recruits drew its `recruits` cut from NHANES too), so the data is familiar; the model and outcome are new.
+- **"Imagine":** You are a public-health analyst at a state health department designing the next anti-smoking campaign. To target outreach, you want to know which adults are most likely to be smokers, broken out by basic demographics like age and sex. There are many decisions to make.
+- **Dataset:** `smokes` (`primer.tutorials`) — a 1,000-row teaching cut of the NHANES 2009--2012 educational subset bundled in the **NHANES** CRAN package. Restricted to adults aged 20--80 with non-missing values on smoking status, age, and sex. Built by `data-raw/smokes.R`; documented in `R/smokes.R`.
+- **Outcome:** `smoke` — factor with levels `"No"` and `"Yes"`; "Yes" means the respondent has ever smoked at least 100 cigarettes (the standard public-health "ever-smoker" definition). Stored as a factor for `logistic_reg(engine = "glm")` (factor-outcome gotcha, §13.4).
+- **Treatment / Key covariate:** `sex` (binary: Female / Male) is the covariate with the clean signal. `age` (continuous, 20--80) has a borderline coefficient whose CI just barely crosses zero — pedagogically useful as the "this covariate doesn't help much" Fit B.
+- **Question (QoI):** What is the difference in the probability of having ever smoked between a 30-year-old woman and a 70-year-old man? *(One specific number per §13.1; uses both covariates.)*
+- **Model:** Logistic regression on the link scale; interpretation lives downstream in `marginaleffects` (probability scale). Per §13.5 *Interpretability ceiling*, link-scale coefficients are noted in a knowledge drop but not the focus of student interpretation.
+- **Causal / Predictive:** Predictive. Comparison language only — *"the probability that a [Male] is a smoker is X percentage points higher than the probability that a [Female] is a smoker, adjusting for age."* No causal framing — the model says nothing about *what causes* smoking.
+- **Student project:** `smokes`
+- **Data prep:** none in the tutorial — the `smokes` tibble is already filtered, sampled, and factor-coded. Setup chunk loads `library(primer.tutorials)` and uses `smokes` directly (no intermediate `x`).
+- **Final model:** `logistic_reg(engine = "glm") |> fit(smoke ~ age + sex, data = smokes)` → `fit_smokes`
+- **Courage three-fit block** (per §13.4):
+  - Fit A: `smoke ~ sex` (binary, clean signal)
+  - Fit B: `smoke ~ age` (continuous, borderline — the "covariate barely helps" lesson)
+  - Fit C (final): `smoke ~ age + sex` (combined, with link-scale interpretation cautions)
+- **Preceptor Table:** Unit (Adult) | Outcome (Ever Smoked) | Covariates (Age, Sex)
+- **Population Table:** Source | Unit/Time (Adult, Year) | Outcome (Ever Smoked) | Covariates (Age, Sex)
+- **Authoring notes:**
+  - **Approximate fit values** (from the 1,000-row analysis sample, set.seed(2026)):
+    - Fit A `smoke ~ sex`: intercept (Female) ≈ -0.54, sexMale ≈ +0.54 (CI [0.29, 0.80]).
+    - Fit B `smoke ~ age`: intercept ≈ -0.60, age ≈ +0.007 (CI [-0.001, +0.014] — borderline).
+    - Fit C `smoke ~ age + sex`: intercept ≈ -0.88, age ≈ +0.007 (CI [-0.001, +0.015]), sexMale ≈ +0.55 (CI [0.29, 0.80]).
+    - Predicted probability of being an ever-smoker: 30y Female ≈ 0.34, 70y Female ≈ 0.41, 30y Male ≈ 0.47, 70y Male ≈ 0.54. The QoI (70y Male − 30y Female) ≈ 0.54 − 0.34 ≈ 0.20, about 20 percentage points.
+  - **Link-scale cautions are mandatory at Medium.** Fit C's interpretation question must *not* ask the student to translate the log-odds coefficient on `sex` into outcome-scale terms. The author notes the link-scale form ("a coefficient of +0.55 on `sexMale` means the log-odds of being an ever-smoker are 0.55 higher for men than women") in a knowledge drop, then hands off to Temperance's `predictions()` for probability-scale answers. This is the curriculum's first link-function tutorial; build the handoff carefully.
+  - **Why age stays in the final model despite a borderline coefficient.** Pedagogically, Fit B teaches "this covariate barely moves the needle on its own"; Fit C *keeps* age anyway so that interpretation of `sexMale` in Fit C requires the adjustment clause ("adjusting for age") that Easy tutorials introduced and Medium tutorials must keep mandatory.
+  - **"Specific question" verification.** The QoI subtracts two probabilities (70y Male P=0.54, 30y Female P=0.34). The answer is one specific number (0.20, or 20 percentage points). The §13.1 specific-number rule is satisfied.
+  - **Real-names + overlap rule (§10.2).** The Preceptor Table and Population Table use real-sounding adult identifiers (e.g. NHANES participant IDs paired with last names plausible for the survey population). At least one identifier appears in both the Data block (with one observed `smoke` value) and the Preceptor block (with both potential outcomes — though for a *predictive* tutorial there is just one outcome column, no hatching).
+  - **Reframing student-progress note.** Position 5's directory was `10-biden` in earlier drafts and is being renamed to `10-smokes`. Existing student progress records keyed on the old `10-biden` ID will not carry forward. Document the rename in `NEWS.md` and bump the package version.
 
 ---
 
@@ -2620,9 +2948,14 @@ Preceptor Table and Population Table columns are listed by spanner in order. Pop
 - **Causal / Predictive:** Causal
 - **Student project:** `shaming`
 - **Data prep:** `shaming |> mutate(civ_engage = primary_00 + primary_02 + primary_04 + general_00 + general_02 + general_04) |> select(primary_06, treatment, sex, age, civ_engage) |> mutate(voter_class = factor(case_when(civ_engage %in% c(5, 6) ~ "Always Vote", civ_engage %in% c(3, 4) ~ "Sometimes Vote", civ_engage %in% c(1, 2) ~ "Rarely Vote"), levels = c("Rarely Vote", "Sometimes Vote", "Always Vote"))) |> mutate(voted = as.factor(primary_06))` → `x`
-- **Final model:** `logistic_reg(engine = "glm") |> fit(voted ~ age + sex + treatment*voter_class, data = x)` → `fit_vote`
-- **Preceptor Table:** Unit (Voter) | Potential Outcomes (Voted if Postcard, Voted if No Postcard) | Treatment (Mailing Type)
-- **Population Table:** Source | Unit/Time (Voter, Year) | Potential Outcomes (Voted if Postcard, Voted if No Postcard) | Treatment (Mailing Type)
+- **Final model:** `logistic_reg(engine = "glm") |> fit(voted ~ age + sex + treatment*voter_class, data = x)` → `fit_shaming`
+- **Preceptor Table:** Unit (Voter) | Potential Outcomes (Voted if No Postcard, Voted if Civic Duty, Voted if Hawthorne, Voted if Self, Voted if Neighbors) | Treatment (Mailing Type) | Covariate (Voter Class)
+- **Population Table:** Source | Unit/Time (Voter, Year) | Potential Outcomes (five columns, one per treatment arm) | Treatment (Mailing Type) | Covariates (Voter Class, Age, Sex)
+- **Authoring notes:**
+  - **Five potential-outcome columns.** Faithful to Gerber-Green-Larimer 2008's five-arm design (No Postcard / Civic Duty / Hawthorne / Self / Neighbors). The Preceptor Table is wide; the §10 inline-block-div pattern handles it. Each row has one observed potential outcome and four hatched (unobservable) ones.
+  - **Full-data fit (~344K rows) takes ~1 second.** Below the §5.6 prefit threshold; fit lives in setup chunk. CIs are tight — Neighbors gives +8.1 pp turnout (CI 7.6 to 8.6), Self +4.8 pp, Hawthorne +2.5 pp, Civic Duty +1.8 pp.
+  - **Interaction with `voter_class`.** Heterogeneous treatment effects are the substantive payoff: Neighbors gives +9.0 pp among Always Vote and +8.6 pp among Sometimes Vote, but only +4.4 pp among Rarely Vote. The Temperance section uses `plot_predictions(condition = c("treatment", "voter_class"))` to make this visible.
+  - **Pairs thematically with Mail (position 8)** as the two multi-arm GOTV experiments at Medium causal. Same dataset family (postcards before an election), different treatment compositions.
 
 ---
 
@@ -2734,7 +3067,7 @@ Preceptor Table and Population Table columns are listed by spanner in order. Pop
 - **Authoring notes:**
   - **Setup cost.** `grf::multi_arm_causal_forest` with `num.trees = 2000` takes longer than the "few seconds" setup budget in §5.2. Fit once in setup with `#| cache: true` in the tutorial body; if still too slow, reduce `num.trees` for the tutorial (e.g. 500) and note the tradeoff in a knowledge drop. Do not fit the forest at the R prompt interactively in an exercise — cache it.
   - **Fallback if `grf` is too heavy.** A lighter non-parametric path: fit a random-forest *predictive* model on `reg_byrv13 ~ treatment * (covariates)` with `ranger`, then use `marginaleffects` to extract arm-by-covariate conditional predictions and compute contrasts. Loses the formal causal-forest machinery but keeps the heterogeneous-effect story visible.
-  - **Parameter-block handling.** Per §13.5 Non-parametric models rule (§14.8): drop Temperance Exercises 2–4 entirely. Replace with a single exercise whose only job is to make the student articulate *why* the forest does not have directly interpretable parameters. All answering happens downstream via `marginaleffects` on the forest's predictions.
+  - **Parameter-block handling.** Per §13.4 + §14.8: random forests have no interpretable parameter table, so Courage's three-fit interpretation block (Exercises 3–8) collapses to a single exercise whose only job is to make the student articulate *why* the forest does not have directly interpretable parameters. All answering happens downstream via `marginaleffects` on the forest's predictions in Temperance.
   - **Canonical-definition retention check.** Per §13 pre-flight rotation, this is the very last tutorial in the 12-example sequence, so Exercise 1 in each virtue section asks **all four** canonical definitions (Wisdom, Justice, Courage, Temperance) as a retention test. No preamble reminders — the exercises return in force.
   - **Intro-section pacing.** Per §13.1 Hard-tier rule, the Introduction is maximally short: canonical definitions of the virtues (per the rotation above), the state-the-question exercise (Ex 15), and the minimum operational setup (repo confirmation, library loading). Drop the Rubin-Causal-Model warm-up block (Ex 10–14); students at position 12 have done this six times before.
   - **Six potential outcomes per row.** The Preceptor and Population Tables get visually wide. Consider column-width adjustments via `gt::cols_width()`; the §10 styling conventions are otherwise unchanged.

@@ -6,9 +6,19 @@
 .httr-oauth
 .DS_Store
 
-# Running devtools::test() causes each tutorial to be knitted and
-# run in its own directory. We don't want to check in any of the
-# resulting files which are created.
+# Render side-effects. Any rmarkdown or quarto render of a .Rmd or .qmd
+# produces a sibling <basename>_files/ directory of figure assets, and
+# optionally a <basename>_cache/. These are render scratch space; they
+# belong nowhere in git, regardless of where the render happened to run.
+# Generic patterns first so a stray render at the package root, in
+# data-raw/, or anywhere unexpected is also covered.
+
+*_files/
+*_cache/
+
+# Existing tutorial-tree rules below are redundant under the generic
+# patterns above; kept for clarity in case the generic ones are ever
+# tightened.
 
 inst/tutorials/*/*html
 inst/tutorials/*/*_files/

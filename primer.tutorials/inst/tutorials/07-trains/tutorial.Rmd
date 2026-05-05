@@ -44,7 +44,7 @@ This tutorial supports [*Preceptor's Primer for Bayesian Data Science: Using the
 
 The world confronts us. Make decisions we must.
 
-Imagine that you are a campaign manager for a Republican congressional candidate in Georgia who wants to increase anti-immigration sentiment among voters. There are many decisions to make.
+Imagine that you are the data scientist for a Republican congressional campaign in Georgia. The candidate has a big-picture goal --- win the November election --- and trusts you to figure out where the campaign's limited time, money, and attention should go. Many causal and predictive models would inform that allocation: which voters are persuadable, which messages move opinion, how voter turnout shifts with mailings or door-knocks, how exposure to immigrant neighbors changes attitudes about immigration. This tutorial builds just one of them: the causal effect of overhearing Spanish on a commuter platform on voters' immigration attitudes. The estimate alone won't decide what messaging the campaign uses, but it is one good input to thinking about how everyday exposure shapes opinion. There are many decisions to make.
 
 ### Exercise 1
 
@@ -241,11 +241,13 @@ trains |>
     title = "Immigration Attitudes After the Experiment",
     subtitle = "Treated commuters score slightly higher than controls",
     x = "Attitude (higher = more anti-immigration)",
-    y = "Density",
+    y = NULL,
     fill = "Treatment",
     caption = "Source: Enos (2014) via primer.data"
   ) +
-  theme_minimal()
+  theme_minimal() +
+  theme(axis.text.y  = element_blank(),
+        axis.ticks.y = element_blank())
 ```
 
 ### Exercise 10
@@ -318,16 +320,15 @@ The average causal effect is the conventional quantity of interest for a randomi
 
 
 ## Wisdom
+###
 
 Data science starts with some broad questions and a data set which might help us to answer them.
 
-Imagine that you are a campaign manager for a Republican congressional candidate in Georgia who wants to increase anti-immigration sentiment among voters. There are many decisions to make.
+Imagine that you are the data scientist for a Republican congressional campaign in Georgia. The candidate has a big-picture goal --- win the November election --- and trusts you to figure out where the campaign's limited time, money, and attention should go. Many causal and predictive models would inform that allocation: which voters are persuadable, which messages move opinion, how voter turnout shifts with mailings or door-knocks, how exposure to immigrant neighbors changes attitudes about immigration. This tutorial builds just one of them: the causal effect of overhearing Spanish on a commuter platform on voters' immigration attitudes. The estimate alone won't decide what messaging the campaign uses, but it is one good input to thinking about how everyday exposure shapes opinion. There are many decisions to make.
 
 The specific question: *What is the average causal effect of exposure to Spanish-speakers on attitudes toward immigration?*
 
 We will work from Enos's (2014) Boston-Metra platform experiment, available in the `trains` tibble of the **[primer.data](https://github.com/PPBDS/primer.data)** package.
-
-###
 
 ### Exercise 1
 
@@ -365,26 +366,9 @@ The Preceptor Table does not include all the covariates which you will eventuall
 
 ### Exercise 3
 
-Let's look at our data more carefully. Ask AI to write R code that plots the distribution of `att_end` in `trains`, using a density plot colored by `treatment`, with a descriptive title, subtitle, axis labels, and caption. Paste the code below and run it.
+We saw the overlapping density of `att_end` by `treatment` in the Introduction. To complement that view, look at the individual values. Ask AI to write R code that plots the individual `att_end` values in `trains` as a jitter plot, with `treatment` on the x-axis and `att_end` on the y-axis, along with a point showing the group mean. Include a descriptive title, subtitle, axis labels, and caption. Paste the code below and run it.
 
 ```{r wisdom-3}
-question_text(NULL,
-  message = "    trains |>\n      ggplot(aes(x = att_end, fill = treatment)) +\n      geom_density(alpha = 0.5) +\n      labs(\n        title = \"Immigration Attitudes After the Experiment\",\n        subtitle = \"Treated commuters score slightly higher than controls\",\n        x = \"Attitude (higher = more anti-immigration)\",\n        y = \"Density\", fill = \"Treatment\",\n        caption = \"Source: Enos (2014) via primer.data\"\n      ) +\n      theme_minimal()",
-  answer(NULL, correct = TRUE),
-  allow_retry = FALSE,
-  incorrect = NULL,
-  rows = 10)
-```
-
-###
-
-The two distributions overlap considerably, but the Treated group is shifted slightly to the right --- commuters exposed to Spanish-speakers report somewhat more anti-immigration views after the experiment than controls.
-
-### Exercise 4
-
-Ask AI to write R code that plots the individual `att_end` values in `trains` as a jitter plot, with `treatment` on the x-axis and `att_end` on the y-axis, along with a point showing the group mean. Include a descriptive title, subtitle, axis labels, and caption. Paste the code below and run it.
-
-```{r wisdom-4}
 question_text(NULL,
   message = "    trains |>\n      ggplot(aes(x = treatment, y = att_end)) +\n      geom_jitter(width = 0.15, alpha = 0.4) +\n      stat_summary(fun = mean, geom = \"point\", size = 4, color = \"steelblue\") +\n      labs(\n        title = \"Individual Immigration Attitudes by Treatment Group\",\n        subtitle = \"Blue dot = group mean; Treated mean is about 1.5 points higher\",\n        x = \"Treatment Assignment\",\n        y = \"Attitude Score (3-15 scale)\",\n        caption = \"Source: Enos (2014) via primer.data\"\n      ) +\n      theme_minimal()",
   answer(NULL, correct = TRUE),
@@ -393,15 +377,11 @@ question_text(NULL,
   rows = 12)
 ```
 
-###
-
-The jitter plot shows all 115 individual scores. There is substantial within-group variation — the groups overlap a lot — but the blue mean points confirm the small positive shift for the Treated group. With only 115 commuters, the effect is real but modest.
-
-### Exercise 5
+### Exercise 4
 
 Describe the key components of Preceptor Tables in general, without worrying about this specific problem. Use words like "units," "outcomes," and "covariates."
 
-```{r wisdom-5}
+```{r wisdom-4}
 question_text(NULL,
   message = "The rows of the Preceptor Table are the units. The outcome is at least one of the columns. If the problem is causal, there will be at least two (potential) outcome columns. The other columns are covariates. If the problem is causal, at least one of the covariates will be considered a treatment.",
   answer(NULL, correct = TRUE),
@@ -414,11 +394,11 @@ question_text(NULL,
 
 This problem is causal, so one of the covariates is a treatment. In our problem, the treatment is `treatment` --- exposure (or not) to Spanish-speakers. There is a potential outcome for each of the two possible values of the treatment: one for Treated and one for Control.
 
-### Exercise 6
+### Exercise 5
 
 What are the units for this problem?
 
-```{r wisdom-6}
+```{r wisdom-5}
 question_text(NULL,
   message = "Each row represents one Boston-area Metra commuter during the two weeks of Enos's experiment in 2012. There are 115 such commuters in the data.",
   answer(NULL, correct = TRUE),
@@ -431,11 +411,11 @@ question_text(NULL,
 
 Specifying the Preceptor Table forces us to think clearly about the units and outcomes implied by the question. No data science project follows a single direction. We always backtrack. There is always dialogue.
 
-### Exercise 7
+### Exercise 6
 
 What is the outcome variable for this problem?
 
-```{r wisdom-7}
+```{r wisdom-6}
 question_text(NULL,
   message = "Keep track of two 'outcome' variables: the one in our Preceptor Table and the one in our data. In this case, both are `att_end` --- each commuter's immigration attitude after the experimental window, measured on an integer scale from 3 to 15, where higher values indicate stronger opposition to immigration.",
   answer(NULL, correct = TRUE),
@@ -448,11 +428,11 @@ question_text(NULL,
 
 The outcome variable that we really care about is often not the outcome variable which our data includes. This compromise --- working with what we have rather than what we really want --- is a part of most data science work in the real world.
 
-### Exercise 8
+### Exercise 7
 
 What is a covariate which you think might be useful for this problem, regardless of whether or not it might be included in the data?
 
-```{r wisdom-8}
+```{r wisdom-7}
 question_text(NULL,
   message = "Prior political ideology is a candidate --- we might expect the Spanish-speaker exposure to affect conservatives and liberals differently. Age, education, and frequency of train use are other candidates.",
   answer(NULL, correct = TRUE),
@@ -465,11 +445,11 @@ question_text(NULL,
 
 The term "covariates" is used in at least three ways in data science. First, it is all the variables which might be useful, regardless of whether or not we have the data. Second, it is all the variables for which we have data. Third, it is the set of variables in the data which we end up using in the model.
 
-### Exercise 9
+### Exercise 8
 
 What are the treatments for this problem?
 
-```{r wisdom-9}
+```{r wisdom-8}
 question_text(NULL,
   message = "There is one treatment: `treatment`, which takes the values 'Treated' (the commuter was on a platform where Spanish-speaking confederates appeared) or 'Control' (no exposure). The treatment is binary, so each commuter has two potential outcomes --- the attitude they would report if Treated and the attitude they would report if Control.",
   answer(NULL, correct = TRUE),
@@ -482,11 +462,11 @@ question_text(NULL,
 
 Remember that a treatment is just another covariate which, for the purposes of this specific problem, we are assuming can be manipulated --- thereby creating two or more different potential outcomes for each unit.
 
-### Exercise 10
+### Exercise 9
 
 What moment in time does the Preceptor Table refer to?
 
-```{r wisdom-10}
+```{r wisdom-9}
 question_text(NULL,
   message = "The two-week window of Enos's experiment in January 2012. Each commuter is measured once, at the end of that window, after two weeks of potential exposure or non-exposure.",
   answer(NULL, correct = TRUE),
@@ -499,11 +479,11 @@ question_text(NULL,
 
 A Preceptor Table can never really refer to an exact instant in time since nothing is instantaneous in this fallen world.
 
-### Exercise 11
+### Exercise 10
 
 Describe in words the Preceptor Table for this problem.
 
-```{r wisdom-11}
+```{r wisdom-10}
 question_text(NULL,
   message = "The Preceptor Table has four columns: one identifying each commuter, two potential-outcome columns (`Attitude if Exposed` and `Attitude if Not Exposed`), and one treatment column (`Spanish Exposure`). Each row represents one Boston-area commuter during the January 2012 experiment window.",
   answer(NULL, correct = TRUE),
@@ -607,7 +587,7 @@ cat(
 )
 ```
 
-### Exercise 12
+### Exercise 11
 
 The `trains` tibble is small (115 rows) and clean enough that no data-prep pipeline is needed --- we can fit directly on the full tibble. In `analysis.qmd`, add a code chunk that just runs `glimpse(trains)`. Render the QMD with `Cmd/Ctrl + Shift + K`. At the R prompt, run:
 
@@ -617,7 +597,7 @@ show_file("analysis.qmd", chunk = "Last")
 
 CP/CR.
 
-```{r wisdom-12}
+```{r wisdom-11}
 question_text(NULL,
   message = "    > show_file(\"analysis.qmd\", chunk = \"Last\")\n    ```{r}\n    glimpse(trains)\n    ```",
   answer(NULL, correct = TRUE),
@@ -630,11 +610,11 @@ question_text(NULL,
 
 You can never look at the data too much. --- Mark Engerman
 
-### Exercise 13
+### Exercise 12
 
 Write the first two sentences of the summary paragraph. The first sentence is a general statement about the overall topic, mentioning the general class of outcome and at least one covariate. The second sentence introduces the data source and the specific question.
 
-```{r wisdom-13}
+```{r wisdom-12}
 question_text(NULL,
   message = "Attitudes toward immigration respond to brief encounters with speakers of another language, at least in the short run. Using data from Ryan Enos's January 2012 randomized experiment on Boston-area Metra platforms (115 commuters, randomly assigned to exposure or non-exposure to Spanish-speaking confederates for two weeks), we estimate the average causal effect of that exposure on anti-immigration attitudes.",
   answer(NULL, correct = TRUE),
@@ -649,6 +629,7 @@ Read our answer. It will not be the same as yours. Do not copy/paste exactly. Ad
 
 
 ## Justice
+###
 
 Wisdom gives us the Preceptor Table and the data.
 
@@ -818,15 +799,13 @@ cat(
 )
 ```
 
-###
-
 ### Exercise 1
 
-In your own words, name the five key components of Justice when working on a data science problem.
+In your own words, describe the components of Justice when working on a data science problem.
 
 ```{r justice-1}
 question_text(NULL,
-  message = "Justice concerns the Population Table and the four key assumptions which underlie it: validity, stability, representativeness, and unconfoundedness.",
+  message = "Justice reviews the Population Table and selects the formula for the data generating mechanism.",
   answer(NULL, correct = TRUE),
   allow_retry = FALSE,
   incorrect = NULL,
@@ -835,7 +814,7 @@ question_text(NULL,
 
 ###
 
-Justice is about concerns that you (or your critics) might have, reasons why the model you create might not work as well as you hope.
+Justice is about concerns that you (or your critics) might have, reasons why the model you create might not work as well as you hope. The exercises that follow walk through several such concerns by name. Justice also picks the formula for the data generating mechanism --- different outcome variables call for different formulas, a piece that gets more technical names in later tutorials.
 
 ### Exercise 2
 
@@ -1018,7 +997,7 @@ question_text(NULL,
 
 ###
 
-Stability is all about time. Is the relationship among the columns in the Population Table stable over time?
+Stability is, in the first instance, a question about time. Enos's experiment ran in 2012; the Preceptor Table refers to today's commuters. Fourteen years is enough time for the underlying relationship between exposure to Spanish-speakers and immigration attitudes to look different in 2026 than it did in 2012 --- a different political climate, different demographics, different conversational norms on a train platform. Stability asks: is the relationship between the columns of the Population Table the same across data and Preceptor Table? The next exercise sharpens "the relationship" into something more precise.
 
 ### Exercise 7
 
@@ -1035,7 +1014,7 @@ question_text(NULL,
 
 ###
 
-Stability is about parameters. A change in distribution is not a stability violation; a change in $\beta_1$ is.
+Notice the distinction between a *distribution* shift and a *parameter* shift. The mix of commuters on a Boston platform in 2026 is not the same as the mix on a Chicago platform in 2012; the average attitude on the 3-to-15 scale in 2026 is probably different from 2012; the spread of attitudes is probably different too. None of those changes, by themselves, violate stability. What violates stability is a change in $\beta_1$ --- the *causal-effect parameter* of Spanish exposure on attitude. That is the number we are estimating, and it is the number that has to stay constant for our model to do its job.
 
 ### Exercise 8
 
@@ -1069,30 +1048,13 @@ question_text(NULL,
 
 ###
 
-When representativeness is violated, the estimates for the model parameters will be biased.
+A non-representative sample can still happen to produce a parameter estimate close to the truth --- pure luck. We just have no reason to expect it to. When representativeness is violated, our estimates *might* be biased; we should treat them as suspect, not as wrong by definition. Note that representativeness has a *second* relationship to worry about --- between the population and the Preceptor Table --- which later tutorials will pull apart; for this tutorial the data-to-population link is what we focus on.
 
 ### Exercise 10
 
-Provide one reason, involving the relationship between the Population and the Preceptor Table, why representativeness might not hold.
-
-```{r justice-10}
-question_text(NULL,
-  message = "Our Preceptor Table shares its units with the data --- both refer to the same 115 Metra commuters during the same two-week window. That makes representativeness easier here than in most tutorials. But our Georgia candidate wants to predict effects on Georgia voters, not Boston commuters, and those two populations are very different. If we interpret the estimated effect as informative about Georgia, we are implicitly extending the Preceptor Table beyond the commuters to a population for which we have no justification.",
-  answer(NULL, correct = TRUE),
-  allow_retry = FALSE,
-  incorrect = NULL,
-  rows = 6)
-```
-
-###
-
-Stability looks across time periods. Representativeness looks within time periods.
-
-### Exercise 11
-
 In your own words, define the assumption of "unconfoundedness."
 
-```{r justice-11}
+```{r justice-10}
 question_text(NULL,
   message = "Unconfoundedness means that the treatment assignment is independent of the potential outcomes, when we condition on pre-treatment covariates.",
   answer(NULL, correct = TRUE),
@@ -1105,11 +1067,11 @@ question_text(NULL,
 
 This assumption is only relevant for causal models. We describe a model as "confounded" if this is not true. The easiest way to ensure unconfoundedness is to assign treatment randomly.
 
-### Exercise 12
+### Exercise 11
 
 Provide one reason why the assumption of unconfoundedness might not be true (or relevant) in this case.
 
-```{r justice-12}
+```{r justice-11}
 question_text(NULL,
   message = "Enos randomly assigned platforms (not individual commuters) to treatment. A commuter who happened to be on a treated platform was there because of their home station and schedule, not random selection. If commuters living near treated stations are systematically different from those living near control stations --- wealthier, more educated, more ideologically liberal --- then the platform-level randomization does not fully break the link between treatment and potential outcomes.",
   answer(NULL, correct = TRUE),
@@ -1122,13 +1084,13 @@ question_text(NULL,
 
 The great advantage of randomized assignment is that it guarantees unconfoundedness --- if the randomization is done correctly. In the real world, randomization can fail in subtle ways.
 
-### Exercise 13
+### Exercise 12
 
 Add `library(tidymodels)` to the QMD file. Place your cursor on that line. Use `Cmd/Ctrl + Enter`.
 
 CP/CR.
 
-```{r justice-13}
+```{r justice-12}
 question_text(NULL,
   message = "    > library(tidymodels)\n    ── Attaching packages ──────── tidymodels 1.x.x ──\n    ✔ broom        ✔ recipes\n    ✔ dials        ✔ rsample\n    ✔ infer        ✔ tune\n    ✔ modeldata    ✔ workflows\n    ✔ parsnip      ✔ workflowsets\n    ✔ purrr        ✔ yardstick\n    ── Conflicts ──── tidymodels_conflicts() ──\n    ✖ purrr::discard() masks scales::discard()\n    ✖ dplyr::filter()  masks stats::filter()",
   answer(NULL, correct = TRUE),
@@ -1141,13 +1103,13 @@ question_text(NULL,
 
 Our outcome variable `att_end` is a continuous integer. The probability family is Normal: $Y \sim N(\mu, \sigma^2)$.
 
-### Exercise 14
+### Exercise 13
 
 Add `library(broom)` to the QMD file. Place your cursor on that line. Use `Cmd/Ctrl + Enter`.
 
 CP/CR.
 
-```{r justice-14}
+```{r justice-13}
 question_text(NULL,
   message = "    > library(broom)\n    >",
   answer(NULL, correct = TRUE),
@@ -1160,13 +1122,13 @@ question_text(NULL,
 
 The link function for a continuous outcome is linear: $\mu = \beta_0 + \beta_1 X_1 + \ldots$ Our model will be a linear regression with one binary covariate (the treatment).
 
-### Exercise 15
+### Exercise 14
 
 Write one sentence highlighting a potential weakness in your model. So far our summary paragraph looks like this:
 
 > Attitudes toward immigration respond to brief encounters with speakers of another language, at least in the short run. Using data from Ryan Enos's January 2012 randomized experiment on Boston-area Metra platforms (115 commuters, randomly assigned to exposure or non-exposure to Spanish-speaking confederates for two weeks), we estimate the average causal effect of that exposure on anti-immigration attitudes.
 
-```{r justice-15}
+```{r justice-14}
 question_text(NULL,
   message = "The experiment was run on Boston-area Metra commuters, a population that is plausibly different from the Georgia voters our candidate actually cares about --- the estimated effect may not transfer.",
   answer(NULL, correct = TRUE),
@@ -1181,6 +1143,7 @@ Add a weakness sentence to the summary paragraph in your QMD. `Cmd/Ctrl + Shift 
 
 
 ## Courage
+###
 
 Justice gives us the Population Table and the abstract data generating mechanism.
 
@@ -1285,8 +1248,6 @@ $$Y = \beta_0 + \beta_1 X_1 + \beta_2 X_2 + \cdots + \beta_n X_n + \epsilon$$
 
 with $\epsilon \sim N(0, \sigma^2)$.
 
-###
-
 ### Exercise 1
 
 In your own words, describe the components of the virtue of Courage for analyzing data.
@@ -1322,11 +1283,11 @@ linear_reg(engine = "lm")
 
 ###
 
-The **[tidymodels](https://www.tidymodels.org/)** framework is the most popular one in the R world for estimating models.
+For R-based modeling, the **[tidymodels](https://www.tidymodels.org/)** framework is the dominant choice --- the way most R users fit models in 2026.
 
 ### Exercise 3
 
-Continue the pipe to `fit(att_end ~ treatment, data = trains)`.
+Continue the pipe to `fit(att_end ~ treatment, data = trains)`. This is the central causal model: outcome on the binary, randomized `treatment`.
 
 ```{r courage-3, exercise = TRUE}
 
@@ -1336,7 +1297,7 @@ Continue the pipe to `fit(att_end ~ treatment, data = trains)`.
 
 ```{r courage-3-hint-1, eval = FALSE}
 ... |>
-  fit(..., data = ...)
+  fit(att_end ~ treatment, data = trains)
 ```
 
 ```{r courage-3-test, include = FALSE}
@@ -1346,46 +1307,103 @@ linear_reg(engine = "lm") |>
 
 ###
 
-The character variable `treatment` is turned into a 0/1 "dummy" variable called `treatmentTreated`. The value is 1 if the commuter was Treated and 0 if Control. The intercept becomes the expected attitude for the reference level (Control).
+The character variable `treatment` is turned into a 0/1 "dummy" called `treatmentTreated`: 1 if the commuter was Treated, 0 if Control. The intercept becomes the expected attitude for the reference level (Control).
 
 ### Exercise 4
 
-Continue the pipe with `tidy(conf.int = TRUE)`.
+Here is the parameter table for this first model:
 
-```{r courage-4, exercise = TRUE}
-
-```
-
-<button onclick = "transfer_code(this)">Copy previous code</button>
-
-```{r courage-4-hint-1, eval = FALSE}
-...
-  tidy(... = TRUE)
-```
-
-```{r courage-4-test, include = FALSE}
-linear_reg(engine = "lm") |>
+```{r}
+#| echo: false
+linear_reg() |>
+  set_engine("lm") |>
   fit(att_end ~ treatment, data = trains) |>
-  tidy(conf.int = TRUE)
+  tidy(conf.int = TRUE) |>
+  select(term, estimate, conf.low, conf.high) |>
+  mutate(across(where(is.numeric), \(x) round(x, 2)))
+```
+
+Write a sentence interpreting the `treatmentTreated` estimate of 1.55.
+
+```{r courage-4}
+question_text(NULL,
+  message = "The average causal effect of exposure to Spanish-speaking confederates on a commuter's end-of-experiment attitude score is about 1.55 points on the 3-to-15 scale, with a 95% confidence interval of roughly 0.5 to 2.6 points. Treated commuters had end-of-experiment attitudes about 1.55 points higher (more anti-immigration) than they would have had under control --- the kind of comparison the Rubin Causal Model is designed for.",
+  answer(NULL, correct = TRUE),
+  allow_retry = FALSE,
+  incorrect = NULL,
+  rows = 6)
 ```
 
 ###
 
-The intercept represents the expected `att_end` for a control commuter. The `treatmentTreated` coefficient is the average causal effect of exposure --- how much higher, on the 3-15 scale, a Treated commuter's end-of-experiment attitude score is on average.
+This is a *causal* interpretation: because Enos randomized which platforms got the Spanish-speaking confederates, the difference in expected outcome between Treated and Control commuters is the causal effect of exposure. The vocabulary is *"the average causal effect"* and *"would have had under control"* --- not the predictive *"comparing two groups"* phrasing that Easy predictive tutorials use, because here the identification strategy (randomization) earns us causal language. The same mathematical machinery (linear regression with a 0/1 dummy) supports either reading; what makes it causal is randomization plus the analyst's commitment to call this a causal estimate.
 
 ### Exercise 5
 
-An object called `fit_att` has been created behind the scenes. Type `fit_att` and hit "Run Code."
+Now fit a second candidate that adjusts for `age`: `fit(att_end ~ treatment + age, data = trains)`. This adds a continuous covariate to the causal model.
 
 ```{r courage-5, exercise = TRUE}
 
 ```
 
+<button onclick = "transfer_code(this)">Copy previous code</button>
+
 ```{r courage-5-hint-1, eval = FALSE}
-fit_att
+... |>
+  fit(att_end ~ treatment + age, data = trains)
 ```
 
 ```{r courage-5-test, include = FALSE}
+linear_reg(engine = "lm") |>
+  fit(att_end ~ treatment + age, data = trains)
+```
+
+###
+
+In an observational study, adjusting for a covariate can move the treatment estimate substantially --- that's the whole point of adjustment when you suspect confounding. In a randomized experiment like Enos's, randomization is supposed to balance covariates between Treated and Control groups, so adjustment should *not* move the estimate much. Let's check.
+
+### Exercise 6
+
+Here is the parameter table for the adjusted model:
+
+```{r}
+#| echo: false
+linear_reg() |>
+  set_engine("lm") |>
+  fit(att_end ~ treatment + age, data = trains) |>
+  tidy(conf.int = TRUE) |>
+  select(term, estimate, conf.low, conf.high) |>
+  mutate(across(where(is.numeric), \(x) round(x, 2)))
+```
+
+Write a sentence interpreting the `age` slope (-0.02) and the new `treatmentTreated` estimate (1.47).
+
+```{r courage-6}
+question_text(NULL,
+  message = "The slope on `age` is about -0.02 points per year of age, with a 95% confidence interval that crosses zero in both directions: when we compare two groups of commuters in the same treatment condition but differing by one year of age, their expected attitude scores are essentially indistinguishable. The treatmentTreated estimate barely moves (1.55 to 1.47) when age is added --- which is what we expect from a randomized experiment, where treatment assignment is by design unrelated to age.",
+  answer(NULL, correct = TRUE),
+  allow_retry = FALSE,
+  incorrect = NULL,
+  rows = 6)
+```
+
+###
+
+Notice the language for `age`: *"when we compare two groups of commuters... in the same treatment condition but differing by one year of age."* `age` is *not* a treatment in this study; it's a covariate. So we describe a comparison, not a causal effect of aging. Causal language is reserved for the variable whose assignment was randomized. The fact that the `treatmentTreated` estimate barely moves under adjustment is itself evidence that randomization worked --- in an observational study, adjusting for a real confounder would visibly shift the treatment estimate. Our final model is the simpler `att_end ~ treatment` (Exercise 3), since age adds nothing.
+
+### Exercise 7
+
+An object called `fit_att` has been created behind the scenes. Type `fit_att` and hit "Run Code."
+
+```{r courage-7, exercise = TRUE}
+
+```
+
+```{r courage-7-hint-1, eval = FALSE}
+fit_att
+```
+
+```{r courage-7-test, include = FALSE}
 fit_att
 ```
 
@@ -1393,7 +1411,7 @@ fit_att
 
 In data science, **we deal with words, math, and code, but the most important of these is code.**
 
-### Exercise 6
+### Exercise 8
 
 We need `fit_att` to exist in R World. Copy/paste this code to the R prompt and execute it:
 
@@ -1404,7 +1422,7 @@ fit_att <- linear_reg(engine = "lm") |>
 
 CP/CR.
 
-```{r courage-6}
+```{r courage-8}
 question_text(NULL,
   message = "    > fit_att <- linear_reg(engine = \"lm\") |>\n    +   fit(att_end ~ treatment, data = trains)\n    >",
   answer(NULL, correct = TRUE),
@@ -1417,7 +1435,7 @@ question_text(NULL,
 
 Just because something exists in the tutorial does not mean that it is at the R prompt. You should be aware of what exists in R World, which is generally called your "workspace."
 
-### Exercise 7
+### Exercise 9
 
 With the parameters estimated, we can write the fitted model as a concrete formula:
 
@@ -1427,22 +1445,11 @@ $$\hat{\text{att\_end}} = 8.45 + 1.55 \cdot \text{treatmentTreated}$$
 
 **This is our data generating mechanism.**
 
-Read the formula above, then continue.
-
-```{r courage-7}
-question_text(NULL,
-  message = "(No command to run --- this exercise is a pause to make sure you have read the concrete formula above.)",
-  answer(NULL, correct = TRUE),
-  allow_retry = FALSE,
-  incorrect = NULL,
-  rows = 3)
-```
-
 ###
 
 A data generating mechanism is just a formula, something which we can write down and implement with computer code.
 
-### Exercise 8
+### Exercise 10
 
 Create a new code chunk in your QMD. Add the chunk option `#| cache: true`. Copy/paste the code for estimating the model into the chunk, assigning the result to `fit_att`:
 
@@ -1459,7 +1466,7 @@ show_file("analysis.qmd", chunk = "Last")
 
 CP/CR.
 
-```{r courage-8}
+```{r courage-10}
 question_text(NULL,
   message = "    > show_file(\"analysis.qmd\", chunk = \"Last\")\n    ```{r}\n    #| cache: true\n    fit_att <- linear_reg(engine = \"lm\") |>\n      fit(att_end ~ treatment, data = trains)\n    ```",
   answer(NULL, correct = TRUE),
@@ -1472,11 +1479,11 @@ question_text(NULL,
 
 Including `#| cache: true` caches the chunk's results; subsequent renders just load the saved object.
 
-### Exercise 9
+### Exercise 11
 
 Add `*_cache` to your `.gitignore` file. At the R prompt, run `show_file(".gitignore")`. CP/CR.
 
-```{r courage-9}
+```{r courage-11}
 question_text(NULL,
   message = "    > show_file(\".gitignore\")\n    analysis_files\n    *_cache",
   answer(NULL, correct = TRUE),
@@ -1489,19 +1496,19 @@ question_text(NULL,
 
 Cached objects are often large and don't belong on GitHub.
 
-### Exercise 10
+### Exercise 12
 
 At the R prompt, run `tidy()` on `fit_att` with `conf.int = TRUE`.
 
-```{r courage-10, exercise = TRUE}
+```{r courage-12, exercise = TRUE}
 
 ```
 
-```{r courage-10-hint-1, eval = FALSE}
+```{r courage-12-hint-1, eval = FALSE}
 tidy(..., conf.int = ...)
 ```
 
-```{r courage-10-test, include = FALSE}
+```{r courage-12-test, include = FALSE}
 tidy(fit_att, conf.int = TRUE)
 ```
 
@@ -1509,11 +1516,11 @@ tidy(fit_att, conf.int = TRUE)
 
 `tidy()` is part of the **[broom](https://broom.tidymodels.org/)** package.
 
-### Exercise 11
+### Exercise 13
 
 Create a new code chunk in your QMD. Ask AI to make a nice-looking table from the tibble returned by `tidy(fit_att, conf.int = TRUE)`. Include only the `term`, `estimate`, `conf.low`, and `conf.high` columns, rounded to three significant figures. You may use **[knitr](https://yihui.org/knitr/)**, **[gt](https://gt.rstudio.com/)**, or any other table package — add it to your setup chunk if needed. Include a title or caption naming the data source. Render with `Cmd/Ctrl + Shift + K`. At the R prompt, run `show_file("analysis.qmd", chunk = "Last")`. CP/CR.
 
-```{r courage-11}
+```{r courage-13}
 question_text(NULL,
   message = "    > show_file(\"analysis.qmd\", chunk = \"Last\")\n    ```{r}\n    library(knitr)\n    tidy(fit_att, conf.int = TRUE) |>\n      select(term, estimate, conf.low, conf.high) |>\n      mutate(across(where(is.numeric), \\(x) signif(x, 3))) |>\n      kable(\n        caption = \"Parameter Estimates and 95% CIs. Source: Enos (2014) via primer.data\"\n      )\n    ```",
   answer(NULL, correct = TRUE),
@@ -1527,11 +1534,11 @@ question_text(NULL,
 
 At the very least, your table should include a title and a caption with the data source. We care about using our model to estimate quantities of interest, not about the parameters themselves.
 
-### Exercise 12
+### Exercise 14
 
 Add a sentence to your project summary explaining the structure of the model. Something like: "We model X as a linear function of Y."
 
-```{r courage-12}
+```{r courage-14}
 question_text(NULL,
   message = "We model immigration attitudes as a linear function of exposure to Spanish-speakers.",
   answer(NULL, correct = TRUE),
@@ -1546,10 +1553,11 @@ Add your sentence to the summary paragraph. `Cmd/Ctrl + Shift + K`, then commit/
 
 
 ## Temperance
+###
 
 Courage provides the data generating mechanism. We can express the DGM in four ways:
 
-**In words:** We describe immigration attitudes (the `att_end` score) as a linear function of treatment status.
+**In words:** We model `att_end` as a normally distributed variable which is a linear function of treatment status.
 
 **In R code:**
 
@@ -1565,16 +1573,14 @@ fit_att <- linear_reg(engine = "lm") |>
 fit_att |>
   tidy(conf.int = TRUE) |>
   select(term, estimate, conf.low, conf.high) |>
-  mutate(across(where(is.numeric), \(x) signif(x, 3)))
+  mutate(across(where(is.numeric), \(x) round(x, 2)))
 ```
 
 **As a mathematical formula:**
 
-$$\text{att\_end} = 8.45 + 1.55 \cdot \text{treatmentTreated} + \epsilon$$
+$$\text{Attitude} = 8.45 + 1.55 \cdot \text{treatmentTreated} + \epsilon$$
 
 with $\epsilon \sim N(0, 7.72)$ (a residual SD of about 2.78 points on the 3–15 scale).
-
-###
 
 ### Exercise 1
 
@@ -1591,104 +1597,15 @@ question_text(NULL,
 
 ###
 
-Courage gave us the data generating mechanism. Temperance guides us in the use of the DGM --- or the "model" --- to answer the question(s) with which we began. Our tool for doing so is the **[marginaleffects](https://marginaleffects.com/)** package; its companion book *[Model to Meaning](https://marginaleffects.com/)* by Vincent Arel-Bundock is the reference we'll lean on throughout Temperance, starting with the [Predictions chapter](https://marginaleffects.com/chapters/predictions.html).
+Courage gave us the data generating mechanism, and we have already interpreted its parameters there. Temperance guides us in the use of the DGM to answer the question with which we began. Our tool is the **[marginaleffects](https://marginaleffects.com/)** package, with companion book *[Model to Meaning](https://marginaleffects.com/)* by Vincent Arel-Bundock.
 
 ### Exercise 2
-
-Before jumping to the full DGM, consider a simpler version of the model --- one that ignores `treatment` entirely. Here is the fitted intercept-only model, `att_end ~ 1`:
-
-```{r}
-#| echo: false
-linear_reg(engine = "lm") |>
-  fit(att_end ~ 1, data = trains) |>
-  tidy(conf.int = TRUE) |>
-  select(term, estimate, conf.low, conf.high) |>
-  mutate(across(where(is.numeric), \(x) signif(x, 3)))
-```
-
-Write a sentence interpreting the 9.14 estimate for `(Intercept)` in this simple model.
-
-```{r temperance-2}
-question_text(NULL,
-  message = "The average immigration attitude score across all commuters in our sample is 9.14 --- slightly on the pro-immigration side of the 3-to-15 scale's midpoint (9). This is the expected value we would predict if we ignored the treatment entirely.",
-  answer(NULL, correct = TRUE),
-  allow_retry = FALSE,
-  incorrect = NULL,
-  rows = 5)
-```
-
-###
-
-The simplest model has one parameter: the overall mean. That mean is the "best guess" when we know nothing about a commuter. The richer DGM breaks this mean down by treatment, and that split is where the causal effect lives.
-
-### Exercise 3
-
-Now consider the full DGM, `att_end ~ treatment`:
-
-```{r}
-#| echo: false
-fit_att |>
-  tidy(conf.int = TRUE) |>
-  select(term, estimate, conf.low, conf.high) |>
-  mutate(across(where(is.numeric), \(x) signif(x, 3)))
-```
-
-Write a sentence interpreting the 8.45 estimate for `(Intercept)`.
-
-```{r temperance-3}
-question_text(NULL,
-  message = "The expected immigration-attitude score for a control commuter --- one not exposed to Spanish-speakers --- is 8.45 on the 3-to-15 scale.",
-  answer(NULL, correct = TRUE),
-  allow_retry = FALSE,
-  incorrect = NULL,
-  rows = 5)
-```
-
-###
-
-Dummy variables must always be interpreted in the context of the base value for that variable, which is generally included in the intercept. The base value for the character variable `treatment` is `"Control"`, the first level alphabetically.
-
-### Exercise 4
-
-Write a sentence interpreting the 1.55 estimate for `treatmentTreated`.
-
-```{r temperance-4}
-question_text(NULL,
-  message = "The average causal effect of exposure to Spanish-speakers on end-of-experiment immigration attitudes is 1.55 points on the 3-to-15 scale. Treated commuters score, on average, 1.55 points higher (more anti-immigration) than they would have scored had they not been exposed.",
-  answer(NULL, correct = TRUE),
-  allow_retry = FALSE,
-  incorrect = NULL,
-  rows = 5)
-```
-
-###
-
-Because `treatment` is a randomly assigned treatment, we can use the word "causal effect" here. The difference between the two potential outcomes --- a commuter's score if Treated versus if Control --- is what 1.55 represents.
-
-### Exercise 5
-
-Write a sentence interpreting the confidence interval for `treatmentTreated`.
-
-```{r temperance-5}
-question_text(NULL,
-  message = "We do not know the true value for the causal effect, but we can be 95% confident that it lies somewhere between 0.51 and 2.58 points on the 3-to-15 scale. Zero is not inside this interval, so we can be reasonably confident that the effect is positive.",
-  answer(NULL, correct = TRUE),
-  allow_retry = FALSE,
-  incorrect = NULL,
-  rows = 5)
-```
-
-###
-
-We care if the confidence interval for a given variable excludes zero. If not, we can't be sure whether the relationship between the variable and the outcome is positive or negative. Here, zero is just barely outside the interval --- the effect is positive, but not by a lot.
-
-### Exercise 6
 
 Add `library(marginaleffects)` to the QMD file. Place your cursor on that line. Use `Cmd/Ctrl + Enter`.
 
 CP/CR.
 
-```{r temperance-6}
+```{r temperance-2}
 question_text(NULL,
   message = "    > library(marginaleffects)\n    >",
   answer(NULL, correct = TRUE),
@@ -1701,11 +1618,11 @@ question_text(NULL,
 
 We should be modest in the claims we make. The posteriors we create are never the "truth."
 
-### Exercise 7
+### Exercise 3
 
 What is the specific question we are trying to answer?
 
-```{r temperance-7}
+```{r temperance-3}
 question_text(NULL,
   message = "What is the average causal effect of exposure to Spanish-speakers during a two-week window on immigration attitudes, measured on the 3-to-15 scale?",
   answer(NULL, correct = TRUE),
@@ -1718,11 +1635,11 @@ question_text(NULL,
 
 In order to make progress, we need to drill down to one specific question.
 
-### Exercise 8
+### Exercise 4
 
 At the R prompt, run `predictions()` on `fit_att`. CP/CR.
 
-```{r temperance-8}
+```{r temperance-4}
 question_text(NULL,
   message = "    > predictions(fit_att)\n    \n     Estimate Std. Error    z Pr(>|z|)  2.5 % 97.5 %\n         10.0      0.368 27.2   <0.001   9.30   10.8\n          8.45     0.351 24.1   <0.001   7.77    9.14\n         10.0      0.368 27.2   <0.001   9.30   10.8\n          ... (115 rows total, one per commuter)\n    \n    Type: numeric",
   answer(NULL, correct = TRUE),
@@ -1735,13 +1652,13 @@ question_text(NULL,
 
 `predictions()` returns one row per observation --- 115 here --- with the model's predicted attitude score for each commuter.
 
-### Exercise 9
+### Exercise 5
 
 At the R prompt, run `plot_predictions(fit_att, condition = "treatment")`.
 
 CP/CR.
 
-```{r temperance-9}
+```{r temperance-5}
 question_text(NULL,
   message = "    > plot_predictions(fit_att, condition = \"treatment\")\n\n(A plot opens showing two point estimates --- one for `Control` near 8.4 and one for `Treated` near 10.0 on the 3--15 scale --- each with a 95% confidence interval a bit under 1 point wide.)",
   answer(NULL, correct = TRUE),
@@ -1750,7 +1667,7 @@ question_text(NULL,
   rows = 5)
 ```
 
-```{r temperance-9-test, include = FALSE}
+```{r temperance-5-test, include = FALSE}
 plot_predictions(fit_att, condition = "treatment")
 ```
 
@@ -1758,13 +1675,13 @@ plot_predictions(fit_att, condition = "treatment")
 
 You should see two point estimates (Control and Treated) with 95% confidence intervals. The gap is the causal effect.
 
-### Exercise 10
+### Exercise 6
 
 At the R prompt, run `plot_predictions(fit_att, condition = "treatment", draw = FALSE)`.
 
 CP/CR.
 
-```{r temperance-10}
+```{r temperance-6}
 question_text(NULL,
   message = "    > plot_predictions(fit_att, condition = \"treatment\", draw = FALSE)\n      rowid estimate std.error statistic p.value conf.low conf.high treatment\n    1     1     8.45     0.351      24.1       0     7.77      9.14   Control\n    2     2    10.00     0.368      27.2       0     9.30     10.80   Treated",
   answer(NULL, correct = TRUE),
@@ -1773,7 +1690,7 @@ question_text(NULL,
   rows = 5)
 ```
 
-```{r temperance-10-test, include = FALSE}
+```{r temperance-6-test, include = FALSE}
 plot_predictions(fit_att, condition = "treatment", draw = FALSE)
 ```
 
@@ -1781,13 +1698,13 @@ plot_predictions(fit_att, condition = "treatment", draw = FALSE)
 
 Because `plot_predictions()` returns a ggplot object, you can continue with ggplot commands. But it can be useful to see the underlying values in the tibble and build your own plot.
 
-### Exercise 11
+### Exercise 7
 
 Work with AI to create a beautiful plot starting from the output of `plot_predictions(fit_att, condition = "treatment", draw = FALSE)`. Do this in your QMD. Title: key variables. Subtitle: key takeaway. Caption: data source. Axis labels: human-readable.
 
 Paste the plot code below.
 
-```{r temperance-11}
+```{r temperance-7}
 question_text(NULL,
   message = "    plot_predictions(fit_att, condition = \"treatment\", draw = FALSE) |>\n      ggplot(aes(x = treatment, y = estimate)) +\n      geom_pointrange(aes(ymin = conf.low, ymax = conf.high),\n                      color = \"grey20\", size = 1.1) +\n      labs(\n        title = \"Causal Effect of Spanish-Speaker Exposure on Immigration Attitudes\",\n        subtitle = \"Treated commuters score about 1.5 points higher on the 3-15 scale\",\n        x = \"Treatment Assignment\",\n        y = \"Expected Attitude Score\",\n        caption = \"Source: Enos (2014) via primer.data\"\n      ) +\n      theme_minimal()",
   answer(NULL, correct = TRUE),
@@ -1818,11 +1735,11 @@ plot_predictions(fit_att, condition = "treatment", draw = FALSE) |>
   theme_minimal()
 ```
 
-### Exercise 12
+### Exercise 8
 
 Finalize the graphics chunk in your QMD. `Cmd/Ctrl + Shift + K`. At the R prompt, run `show_file("analysis.qmd", chunk = "Last")`. CP/CR.
 
-```{r temperance-12}
+```{r temperance-8}
 question_text(NULL,
   message = "    > show_file(\"analysis.qmd\", chunk = \"Last\")\n    ```{r}\n    plot_predictions(fit_att, condition = \"treatment\", draw = FALSE) |>\n      ggplot(aes(x = treatment, y = estimate)) +\n      geom_pointrange(aes(ymin = conf.low, ymax = conf.high)) +\n      labs(\n        title = \"Causal Effect of Spanish-Speaker Exposure on Immigration Attitudes\",\n        subtitle = \"Treated commuters score about 1.5 points higher on the 3-15 scale\",\n        x = \"Treatment Assignment\", y = \"Expected Attitude Score\",\n        caption = \"Source: Enos (2014) via primer.data\"\n      ) +\n      theme_minimal()\n    ```",
   answer(NULL, correct = TRUE),
@@ -1835,11 +1752,11 @@ question_text(NULL,
 
 The map is not the territory. A beautiful graphic tells a story, but that story is always an imperfect representation of reality.
 
-### Exercise 13
+### Exercise 9
 
 Write the last sentence of your summary paragraph. It describes at least one Quantity of Interest and a measure of uncertainty.
 
-```{r temperance-13}
+```{r temperance-9}
 question_text(NULL,
   message = "We estimate that the average causal effect of two weeks of Spanish-speaker exposure on the 3-to-15 immigration-attitude scale is about 1.55 points, with a 95% confidence interval from 0.51 to 2.58.",
   answer(NULL, correct = TRUE),
@@ -1852,11 +1769,11 @@ question_text(NULL,
 
 Add a final sentence to your summary paragraph. `Cmd/Ctrl + Shift + K`.
 
-### Exercise 14
+### Exercise 10
 
 Write a few sentences explaining why the estimates might be wrong.
 
-```{r temperance-14}
+```{r temperance-10}
 question_text(NULL,
   message = "The experiment was run on 115 Boston-area Metra commuters --- not a random sample and not the Georgia voters our candidate cares about. The causal effect estimated here may not transfer. The confidence interval should probably be wider than the model's nominal 0.51 to 2.58, because neither the representativeness of the sample nor the validity of a one-time survey as a measure of 'real' attitudes is accounted for in the model's standard error.",
   answer(NULL, correct = TRUE),
@@ -1869,11 +1786,11 @@ question_text(NULL,
 
 Always go back to your Preceptor Table. Even a perfectly estimated statistical model is rarely as useful as we might like.
 
-### Exercise 15
+### Exercise 11
 
 Rearrange the material in your QMD so the order is graphic, then summary paragraph. The chunk that creates `fit_att` must occur before the chunk that creates the graphic. `Cmd/Ctrl + Shift + K`. At the R prompt, run `show_file("analysis.qmd")`. CP/CR.
 
-```{r temperance-15}
+```{r temperance-11}
 question_text(NULL,
   message = "    > show_file(\"analysis.qmd\")\n    ---\n    title: \"Trains\"\n    author: \"<your name>\"\n    execute:\n      echo: false\n    ---\n    \n    ```{r}\n    #| message: false\n    library(tidyverse)\n    library(tidymodels)\n    library(primer.data)\n    library(broom)\n    library(marginaleffects)\n    ```\n    \n    ```{r}\n    #| cache: true\n    fit_att <- linear_reg(engine = \"lm\") |>\n      fit(att_end ~ treatment, data = trains)\n    ```\n    \n    ```{r}\n    plot_predictions(fit_att, condition = \"treatment\", draw = FALSE) |>\n      ggplot(aes(x = treatment, y = estimate)) +\n      geom_pointrange(aes(ymin = conf.low, ymax = conf.high)) +\n      labs(\n        title = \"Causal Effect of Spanish-Speaker Exposure on Immigration Attitudes\",\n        subtitle = \"Treated commuters score about 1.5 points higher on the 3-15 scale\",\n        x = \"Treatment Assignment\", y = \"Expected Attitude Score\",\n        caption = \"Source: Enos (2014) via primer.data\"\n      ) +\n      theme_minimal()\n    ```\n    \n    Attitudes toward immigration respond to brief encounters with speakers of another language, at least in the short run. Using data from Ryan Enos's January 2012 randomized experiment on Boston-area Metra platforms (115 commuters), we estimate the average causal effect of Spanish-speaker exposure on anti-immigration attitudes. The experiment was run on a Boston-area commuter population that may differ systematically from the Georgia voters our candidate cares about, so the effect may not transfer. We model immigration attitudes as a linear function of treatment. We estimate that two weeks of Spanish-speaker exposure raises the end-of-experiment attitude score by about 1.55 points on the 3-to-15 scale, with a 95% confidence interval from about 0.51 to 2.58.",
   answer(NULL, correct = TRUE),
@@ -1886,7 +1803,7 @@ question_text(NULL,
 
 This is the version of your QMD file at which your teacher is most likely to look closely.
 
-### Exercise 16
+### Exercise 12
 
 Publish your rendered QMD to GitHub Pages. In the Terminal (not the R prompt!), run:
 
@@ -1896,7 +1813,7 @@ quarto publish gh-pages analysis.qmd
 
 Copy/paste the resulting URL below.
 
-```{r temperance-16}
+```{r temperance-12}
 question_text(NULL,
   message = "https://<your-github-username>.github.io/trains/analysis.html",
   answer(NULL, correct = TRUE),
@@ -1909,11 +1826,11 @@ question_text(NULL,
 
 Commit/push everything.
 
-### Exercise 17
+### Exercise 13
 
 Copy/paste the URL to your GitHub repo.
 
-```{r temperance-17}
+```{r temperance-13}
 question_text(NULL,
   message = "https://github.com/<your-github-username>/trains",
   answer(NULL, correct = TRUE),
@@ -1930,6 +1847,7 @@ The world confronts us. Make decisions we must.
 
 
 ## Summary
+###
 
 ```{r}
 #| echo: false

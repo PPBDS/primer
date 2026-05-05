@@ -1,5 +1,8 @@
 # Getting Started {.unnumbered}
 
+<!-- Delete the Positron stuff in July. Delete the two computing approaches section. Delete the ## GitHub. Change other headers ti double hash rather than triple. -->
+
+
 *You can never look at the data too much.* -- Mark Engerman
 
 The world confronts us. Make decisions we must.
@@ -14,9 +17,7 @@ This section has two purposes: first, introduce you to GitHub Codespaces and VS 
 
 Sign up for a GitHub account by following the instructions on the [GitHub homepage](https://github.com/). **Follow [this advice](https://happygitwithr.com/github-acct.html#username-advice) when choosing your username.** 
 
-Use a permanent email address for this account — not one tied to your current school or job, which you'll lose access to when you move on. Your GitHub account is for life; your school email isn't.
-
-If you're a current student, you can still qualify for the [GitHub Student Developer Pack](https://education.github.com/pack) (free Copilot, extra Codespaces hours, and 100+ other perks). After signing up, add your school email as a secondary email in your GitHub settings and apply for Education benefits — you don't need to use the school email as your primary account email. If your school doesn't issue email addresses, you can also apply by uploading a student ID or enrollment letter.
+Use a permanent email address for this account — not one tied to your current school or job, which you'll lose access to when you move on. Your GitHub account is for life; your school email isn't. However, if you are a student or teacher, you will want to [assign your school email](https://github.com/settings/emails) as a second email to your account so that you can qualify for the [GitHub Student Developer Pack](https://education.github.com/pack) (free Copilot, extra Codespaces hours, and 100+ other perks). If your school doesn't issue email addresses, you can also apply by uploading a student ID or enrollment letter.
 
 On GitHub, your projects are organized into "repositories," usually called "repos."
 
@@ -183,6 +184,8 @@ An IDE like VS Code is designed to organize all the different work we do as data
 
 ### Tutorials {.unnumbered}
 
+<!-- DK: This section could use a few more screens, more slowly. But even better would be a video! -->
+
 If you hover your cursor over the Activity Bar on the far lefthand side, you can see the names of the different options. The second from the bottom is labeled "R Tutorials." Click on it. (You might need to click twice.) This brings up all the R packages with tutorials. Click on the package name `tutorial.helpers`.
 
 ```{r}
@@ -245,7 +248,7 @@ You should have done the following:
 
   - Created a Codespace using https://github.com/PPBDS/Codespace-starter as a template.
 
-  - Completed your first tutorial.
+  - Completed your first tutorial, "Getting Started," from the **tutorial.helpers** package.
 
   - Stopped and deleted the Codespace.
 
@@ -290,11 +293,7 @@ Download and install R and Positron on your computer.
 
   + Install [Git for Windows](https://gitforwindows.org/). 
 
-  <!-- FYI: There is no way to avoid installing Git Bash when you use Git for Windows. -->
-
   + Install RTools. See [here](https://cran.r-project.org/bin/windows/Rtools/) for the latest version. Currently, the Rtools45 installer is what you want, assuming that your installed R version is at least 4.5.0. The link is in the seventh paragraph of [this page](https://cran.r-project.org/bin/windows/Rtools/rtools45/rtools.html). Use your favorite AI to help determine whether to use the Rtools45 installer or 64-bit ARM Rtools45 installer. Again, this is not required, but if you have problems installing packages later in this chapter, you **must** install RTools. If not, you are all set.
-
-<!-- Advice about Workbench? -->
 
 ### The Console {.unnumbered}
 
