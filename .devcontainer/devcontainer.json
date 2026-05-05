@@ -1,12 +1,17 @@
 {
-  "name": "R Data Science",
-  "image": "ghcr.io/rocker-org/devcontainer/tidyverse:4",
-  "features": {
-    "ghcr.io/devcontainers/features/github-cli:1": {}
-  },
-  "remoteEnv": {
-    "BROWSER": "/usr/bin/true"
-  },
+  "name": "Primer (PPBDS dev)",
+
+  // PPBDS dev image. Bakes in: gh, quarto, arf (Rust R console),
+  // httpgd, pak, plus the package-development R packages
+  // (devtools, pkgdown, roxygen2, testthat, usethis). Also bakes in
+  // the xdg-open / BROWSER workaround for headless containers.
+  // See https://github.com/PPBDS/devcontainers.
+  //
+  // :latest is fine here — primer is my own repo and I want it to
+  // track devcontainers/main. For student-facing repos, pin to a
+  // semver tag instead.
+  "image": "ghcr.io/ppbds/devcontainers/dev:latest",
+
   "customizations": {
     "vscode": {
       "extensions": [
@@ -15,13 +20,15 @@
         "quarto.quarto"
       ],
       "settings": {
-        "r.rterm.linux": "/usr/local/bin/radian",
+        // arf is installed by base/Dockerfile and symlinked to
+        // /usr/local/bin/arf so consumer configs don't depend on the
+        // image's default-user home path.
+        "r.rterm.linux": "/usr/local/bin/arf",
         "r.bracketedPaste": true,
         "r.plot.useHttpgd": true,
         "terminal.integrated.environmentChangesRelaunch": false,
         "workbench.startupEditor": "none"
       }
     }
-  },
-  "postCreateCommand": "printf '#!/bin/sh\\nexit 0' | sudo tee /usr/local/bin/xdg-open > /dev/null && sudo chmod +x /usr/local/bin/xdg-open"
+  }
 }
