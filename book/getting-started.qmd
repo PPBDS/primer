@@ -23,7 +23,7 @@ On GitHub, your projects are organized into "repositories," usually called "repo
 
 ### Creating a Codespace  {.unnumbered}
 
-Instead of working on your computer, you will work in a [GitHub Codespace](https://github.com/features/Codespaces). This is a cloud-based [virtual machine](https://en.wikipedia.org/wiki/Virtual_machine), that we can much more easily set-up for doing data science, instead of manually setting up for this work on your computer.
+Instead of working on your computer, you will work in a [GitHub Codespace](https://github.com/features/Codespaces). This is a cloud-based [virtual machine](https://en.wikipedia.org/wiki/Virtual_machine) that we can set up for data science much more easily than configuring your own computer.
 
 Once you are logged in to your GitHub account, go to [this URL](https://github.com/PPBDS/Codespace-starter) in your browser:
 
@@ -81,9 +81,9 @@ There are three common ways to close Codespaces.
 
 First, just leave the Codespace alone, and it will close on its own. GitHub monitors Codespaces. By default, it will close your Codespace if it is not used for 30 minutes, although I recommend changing that default to 15 minutes.
 
-Second, type `Cmd + Shift + P` (on Mac) or `Ctrl + Shift + P` (on Windows/Linux) to bring up the Command Palette. (Throughout this book, shortcuts are written like `Cmd/Ctrl + Shift + P`, meaning the `command` key on Mac or the `control` key on Windows/Linux.) The Command Palette provides access to all VS Code commands. Type `stop` into the search bar.s
+Second, type `Cmd + Shift + P` (on Mac) or `Ctrl + Shift + P` (on Windows/Linux) to bring up the Command Palette. (Throughout this book, shortcuts are written like `Cmd/Ctrl + Shift + P`, meaning the `command` key on Mac or the `control` key on Windows/Linux.) The Command Palette provides access to all VS Code commands. Type `stop` into the search bar.
 
-On some browsers, the keyboard shortcut does not work. You can always access the Command Palette by clicking the search bar at the top of the window and type `>` followed by the command you would like to use.
+On some browsers, the keyboard shortcut does not work. You can always access the Command Palette by clicking the search bar at the top of the window and typing `>` followed by the command you would like to use.
 
 
 ```{r}
@@ -218,9 +218,9 @@ Read and follow the instructions. At the end of the tutorial, you should downloa
 
 ### Stopping and deleting a Codespace {.unnumbered}
 
-You can see all your Codespaces [here](https://github.com/Codespaces). Although GitHub provides you with lots of free hours, "lots" is not endless. It is your responsibility to keep track of your usage. GitHub helps by stopping any Codespace which has been inactive for 30 minutes. (You can change this default if you like by going [here](https://github.com/settings/Codespaces) and updating Default Idle Timeout for your Github account. I use 15 minutes.)
+You can see all your Codespaces [here](https://github.com/Codespaces). Although GitHub provides you with lots of free hours, "lots" is not endless. It is your responsibility to keep track of your usage. GitHub helps by stopping any Codespace which has been inactive for 30 minutes. (You can change this default if you like by going [here](https://github.com/settings/Codespaces) and updating Default Idle Timeout for your GitHub account. I use 15 minutes.)
 
-Use 'Cmd + Shift + P' to open the Command Palette and type "stop" in the search bar. Select "Codespaces: Stop Current Codespace" to stop running the Codespace 
+Use `Cmd + Shift + P` to open the Command Palette and type "stop" in the search bar. Select "Codespaces: Stop Current Codespace" to stop running the Codespace.
 
 You can restart the Codespace anytime by going to your [Codespaces page](https://github.com/Codespaces). You can also navigate to this page by clicking on the three horizontal bar icon in the upper left, then selecting "Codespaces" from the drop-down menu.
 
@@ -235,7 +235,7 @@ This will bring you here:
 knitr::include_graphics("getting-started/images/codespaces-1.png")
 ```
 
-I only have one Codespace. It was started from one of my repos, as we know. Selecting it, and also clicking on the three dots--`...`--in the upper left, we have some options:
+I only have one Codespace. It was started from one of my repos. Selecting it and clicking the three dots--`...`--in the upper left, we have some options:
 
 
 ```{r}
@@ -244,7 +244,7 @@ knitr::include_graphics("getting-started/images/codespaces-3.png")
 
 We can restart the Codespace by clicking on its title or by selecting "Open in Browser." 
 
-As you might expect, click on "Delete" deletes the Codespace permanently.
+As you might expect, clicking "Delete" deletes the Codespace permanently.
 
 
 Your data science journey begins now!
@@ -290,7 +290,7 @@ As long as you have a not-too-old computer--almost always a Mac or Windows lapto
 
 We use [**R**](https://www.r-project.org/about.html) via [**Positron**](https://positron.posit.co). R is to Positron as a car's engine is to its dashboard.
 
-More precisely, R is a programming languages that runs computations, while Positron is an *integrated development environment (IDE)* that provides an interface with many convenient features. Just as having access to a speedometer and navigation system makes driving much easier, using Positron's interface makes working with R and Python much easier.
+More precisely, R is a programming language that runs computations, while Positron is an *integrated development environment (IDE)* that provides an interface with many convenient features. Just as having access to a speedometer and navigation system makes driving much easier, using Positron's interface makes working with R and Python much easier.
 
 Download and install R and Positron on your computer.
 
@@ -392,7 +392,7 @@ knitr::include_graphics("getting-started/images/r-versus-r-packages.png")
 
 R is like a new phone. While it has a certain number of features when you use it for the first time, it doesn't have everything. R packages are like the apps you download onto your phone.
 
-Consider an analogy to Instagram. If you have a new phone and want to share a photo with friends. You need to:
+Consider an analogy to Instagram. If you have a new phone and want to share a photo with friends, you need to:
 
 1.  *Install the app*: Since your phone is new and does not include the Instagram app, you need to download the app. You do this only once. (You might need to do this again in the future when there is an update to the app.)
 2.  *Open the app*: After you've installed Instagram, you need to open it. You need to do this every time you use the app.
@@ -439,7 +439,7 @@ need compilation? (Yes/no/cancel)
 
 Unless you have a good reason not to, always answer "no" to this question.
 
-**If you are using Windows, there may be a permission problem.** In particular, R may not have permission to install packages in the common area. In that case, it will ask you if you want to create a "Personal" library. You do And then installation should work fine. **But Positron sometimes blocks this message.** In that case, you need quit Positron and start up the R application by itself. In R itself, run `install.packages("pak")`. The message box about creating a personal library should appear. You say "Yes," and all should be well. You can then quit R, restart Positron and continue with the next steps below. 
+**If you are using Windows, there may be a permission problem.** In particular, R may not have permission to install packages in the common area. In that case, it will ask you if you want to create a "Personal" library. You do. And then installation should work fine. **But Positron sometimes blocks this message.** In that case, you need quit Positron and start up the R application by itself. In R itself, run `install.packages("pak")`. The message box about creating a personal library should appear. You say "Yes," and all should be well. You can then quit R, restart Positron and continue with the next steps below. 
 
 R packages generally live in one of two places:
 
