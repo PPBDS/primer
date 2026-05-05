@@ -42,5 +42,10 @@ Useful links:
 \author{
 \strong{Maintainer}: David Kane \email{dave.kane@gmail.com} (\href{https://orcid.org/0000-0002-6660-3934}{ORCID})
 
+Authors:
+\itemize{
+  \item David Kane \email{dave.kane@gmail.com} (\href{https://orcid.org/0000-0002-6660-3934}{ORCID})
+}
+
 }
 \keyword{internal}

@@ -16,7 +16,6 @@ License: MIT + file LICENSE
 Encoding: UTF-8
 LazyData: true
 Roxygen: list(markdown = TRUE)
-RoxygenNote: 7.3.3
 Imports:
     primer.data,
     tutorial.helpers,
@@ -51,3 +50,4 @@ Remotes:
     PPBDS/primer.data
 BugReports: https://github.com/PPBDS/primer/issues
 URL: https://github.com/PPBDS/primer, https://ppbds.github.io/primer/tutorials/
+Config/roxygen2/version: 8.0.0
