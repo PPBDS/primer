@@ -91,13 +91,13 @@ knitr::include_graphics("getting-started/images/command-palette.png")
 ```
 
 
-Select "Codespaces: Stop Current Codespace." Note how search in the Command Palette works. As long as you remember at least one word in the command you are looking for, it will find that command. Searching for general topics, like "Codespace," also works well. 
+Select "Codespaces: Stop Current Codespace." Note how search in the Command Palette works. As long as you remember at least one word in the command you are looking for, it will find that command. Searching for general topics, like "Codespace," also works well.
 
-Third, you can go to your main Codespaces control panel at `https://github.com/Codespaces`. You can also navigate to this page on from your GitHub homepage by selecting the three horizontal bar icon in the top right and then selecting "Codespaces" from the sidebar menu.
+Once you run the command, you will see a progress bar in the lower right.
+
+Third, you can go to your main Codespaces control panel at `https://github.com/Codespaces`.
 
 ```{r}
-knitr::include_graphics("getting-started/images/gh-hamburger-icon.png")
-knitr::include_graphics("getting-started/images/gh-cs-sidebar.png")
 knitr::include_graphics("getting-started/images/Codespaces-1.png")
 ```
 
@@ -111,7 +111,7 @@ knitr::include_graphics("getting-started/images/codespaces-2.png")
 
 You can restart a Codespace from the same location. The set of commands brought up by clicking `...` is slightly different now. Selecting "Open in browser" restarts the Codespace.
 
-You can also restart a Codespace by clicking on the title of the Codespace you'd like to open. This will open a new tab with your Codespace.
+You can also restart a Codespace by clicking on the title of a Codespace. This will open a new tab with your Codespace.
 
 ```{r}
 knitr::include_graphics("getting-started/images/codespaces-3.png")
@@ -222,20 +222,29 @@ You can see all your Codespaces [here](https://github.com/Codespaces). Although 
 
 Use 'Cmd + Shift + P' to open the Command Palette and type "stop" in the search bar. Select "Codespaces: Stop Current Codespace" to stop running the Codespace 
 
-You can restart the Codespace anytime by going to your [Codespaces page](https://github.com/Codespaces):
+You can restart the Codespace anytime by going to your [Codespaces page](https://github.com/Codespaces). You can also navigate to this page by clicking on the three horizontal bar icon in the upper left, then selecting "Codespaces" from the drop-down menu.
 
 ```{r}
-knitr::include_graphics("getting-started/images/cs-12.png")
+knitr::include_graphics("getting-started/images/gh-hamburger-icon.png")
+knitr::include_graphics("getting-started/images/gh-cs-sidebar.png")
+```
+
+This will bring you here:
+
+```{r}
+knitr::include_graphics("getting-started/images/codespaces-1.png")
 ```
 
 I only have one Codespace. It was started from one of my repos, as we know. Selecting it, and also clicking on the three dots--`...`--in the upper left, we have some options:
 
 
 ```{r}
-knitr::include_graphics("getting-started/images/cs-13.png")
+knitr::include_graphics("getting-started/images/codespaces-3.png")
 ```
 
-We can restart the Codespace by selecting "Open in Browser." As you might expect, click on "Delete" deletes the Codespace permanently.
+We can restart the Codespace by clicking on its title or by selecting "Open in Browser." 
+
+As you might expect, click on "Delete" deletes the Codespace permanently.
 
 
 Your data science journey begins now!
