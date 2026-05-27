@@ -17,6 +17,24 @@ Next two months . . .
 
 4) Get way better at Claude Code. Consider incorporating Claude Code in the class.
 
+
+### Ordered outcomes
+
+We no longer need to use polr. Instead:
+
+parsnip has a new model type, ordinal_reg(), analogous to multinom_reg(), for fitting various generalized linear models with ordered class levels.
+
+The ordered package by Cory Brunson is now on CRAN. This contains the specific engine code for these models, including:
+
+ordinal_reg(): three engines: "polr", "ordinalNet", and "vglm".
+gen_additive_mod(): "vgam"
+decision_tree(): "rpartScore"
+rand_forest(): "ordinalForest"
+
+These models can be fitted, tuned, and evaluated with tidymodels. For the evaluation, we’ve added a specific performance metric for ordered categories: the ranked probability score (RPS). The function ranked_prob_score() is in the new yardstick release and requires an ordered factor for the outcome.
+
+### tab_pfn() looks cool
+
 ### Alec
 
 

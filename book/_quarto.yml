@@ -24,6 +24,7 @@ book:
     - 04-cardinal-virtues.qmd
     - 06-recruits.qmd
     - key-concepts.qmd
+  appendices:
     - set-up.qmd
 format:
   html:
