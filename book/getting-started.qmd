@@ -1,39 +1,40 @@
 # Getting Started {.unnumbered}
 
-<!-- Delete the Positron stuff in July. Delete the two computing approaches section. Delete the ## GitHub. Change other headers ti double hash rather than triple. -->
-
-
 *You can never look at the data too much.* -- Mark Engerman
 
 The world confronts us. Make decisions we must.
 
-We provide two different computing approaches for doing data science: first, working in the cloud using GitHub Codespaces with Visual Studio Code (VS Code) and, second, using your local machine with Positron.
+We do all of our data science in the cloud, using GitHub Codespaces with Visual Studio Code (VS Code). Working in the cloud means we can set up a complete data science environment for you, rather than asking you to configure your own computer. This chapter introduces GitHub, Codespaces, and VS Code, and walks you through your first tutorial.
 
-## GitHub Codespaces with Visual Studio Code  {.unnumbered}
+## GitHub  {.unnumbered}
 
-This section has two purposes: first, introduce you to GitHub Codespaces and VS Code and, second, help you complete the Getting Started tutorial.
-
-### GitHub  {.unnumbered}
-
-Sign up for a GitHub account by following the instructions on the [GitHub homepage](https://github.com/). **Follow [this advice](https://happygitwithr.com/github-acct.html#username-advice) when choosing your username.** 
+Sign up for a GitHub account by following the instructions on the [GitHub homepage](https://github.com/). **Follow [this advice](https://happygitwithr.com/github-acct.html#username-advice) when choosing your username.**
 
 Use a permanent email address for this account — not one tied to your current school or job, which you'll lose access to when you move on. Your GitHub account is for life; your school email isn't. However, if you are a student or teacher, you will want to [assign your school email](https://github.com/settings/emails) as a second email to your account so that you can qualify for the [GitHub Student Developer Pack](https://education.github.com/pack) (free Copilot, extra Codespaces hours, and 100+ other perks). If your school doesn't issue email addresses, you can also apply by uploading a student ID or enrollment letter.
 
 On GitHub, your projects are organized into "repositories," usually called "repos."
 
-### Starting a Codespace  {.unnumbered}
+## Starting a Codespace  {.unnumbered}
 
-Instead of working on your computer, you will work in a [GitHub Codespace](https://github.com/features/Codespaces). This is a cloud-based [virtual machine](https://en.wikipedia.org/wiki/Virtual_machine) that we can set up for data science much more easily than configuring your own computer.
+Instead of working on your computer, you will work in a [GitHub Codespace](https://github.com/features/codespaces). This is a cloud-based [virtual machine](https://en.wikipedia.org/wiki/Virtual_machine) that we can set up for data science much more easily than configuring your own computer.
 
-Once you are logged in to your GitHub account, go to [this URL](https://github.com/PPBDS/Codespace-starter) in your browser:
+Once you are logged in to your GitHub account, go to [this URL](https://github.com/PPBDS/codespace-starter) in your browser:
 
-`https://github.com/PPBDS/Codespace-starter`
+`https://github.com/PPBDS/codespace-starter`
 
 ```{r}
 knitr::include_graphics("getting-started/images/cs-1.png")
 ```
 
 You can also create your own Codespace from scratch. However, because this setup is new, we have created the basic setup files, mainly `devcontainer.json`, in a sensible fashion in this GitHub repository. In particular, we ensure that R is installed along with some important packages and useful extensions for VS Code.
+
+<!-- TODO: Distribution model / prebuild. "Use this template" creates a fresh
+copy repo, which does NOT inherit the Codespaces prebuild configured on
+PPBDS/codespace-starter — so the student's first launch is a slow cold
+build. Decide whether students should (a) launch a Codespace directly
+from codespace-starter (gets the prebuild) or (b) work in a template
+copy (no prebuild). See the TODO in codespace-starter's devcontainer.json.
+Update the instruction below once that's settled. -->
 
 Click the green "Use this template" button in the upper right. Select the "Open in a Codespace" option.
 
@@ -42,7 +43,7 @@ knitr::include_graphics("getting-started/images/open-cs-no-repo.png")
 ```
 
 
-This will take a few minutes to run. Read the rest of this chapter while you are waiting. Behind the scenes, GitHub is creating a virtual machine in the cloud with all the necessary tools for doing data science. That machine is called a "Codespace." 
+This will take a few minutes to run. Read the rest of this chapter while you are waiting. Behind the scenes, GitHub is creating a virtual machine in the cloud with all the necessary tools for doing data science. That machine is called a "Codespace."
 
 You can tell that the Codespace is not ready by noticing the "Setting up remote connection: Building Codespace..." message in the lower right. GitHub is creating a Codespace following the instructions in the `devcontainer.json` file located in the `.devcontainer` directory.
 
@@ -50,19 +51,19 @@ You can tell that the Codespace is not ready by noticing the "Setting up remote 
 knitr::include_graphics("getting-started/images/cs-2d.png")
 ```
 
-When that message disappears, it means that your Codespace is built. But you still need to connect to it, as indicated by the "Opening remote" message in the lower left. 
+When that message disappears, it means that your Codespace is built. But you still need to connect to it, as indicated by the "Opening remote" message in the lower left.
 
 ```{r}
 knitr::include_graphics("getting-started/images/cs-2e.png")
 ```
 
-Once that disappears, you are connected to your Codespace, but it usually still has a few things to install. You can tell that it is not finished by looking in the upper left. 
+Once that disappears, you are connected to your Codespace, but it usually still has a few things to install. You can tell that it is not finished by looking in the upper left.
 
 ```{r}
 knitr::include_graphics("getting-started/images/cs-2f.png")
 ```
 
-First, note the blue dash moving above the repo name. That indicates that the process is not complete. Second, only the five default "extensions" appear along the left edge. Our `devcontainer.json` file installs several more at the end. Third, the Codespace is not displaying its GitHub-assigned name. The process is complete when your Codespace looks like this:  
+First, note the blue dash moving above the repo name. That indicates that the process is not complete. Second, only the five default "extensions" appear along the left edge. Our `devcontainer.json` file installs several more at the end. Third, the Codespace is not displaying its GitHub-assigned name. The process is complete when your Codespace looks like this:
 
 ```{r}
 knitr::include_graphics("getting-started/images/cs-3.png")
@@ -71,7 +72,7 @@ knitr::include_graphics("getting-started/images/cs-3.png")
 The blue dash has disappeared. Several more extensions have been installed. The GitHub name, `fictional winner`, now appears next to the repo name as well as in the quick access window above the editor. Your name will be different, as GitHub assigns a unique name to each Codespace.
 
 
-### Stopping a Codespace  {.unnumbered}
+## Stopping a Codespace  {.unnumbered}
 
 GitHub allows 60 hours of free Codespaces usage each month, and probably more if you join [GitHub Education](https://github.com/education), an option that we highly recommend for students. It also provides lots of free storage. However, if you want to avoid paying, you need to be aware of your usage.
 
@@ -95,7 +96,7 @@ Select "Codespaces: Stop Current Codespace." Note how search in the Command Pale
 
 Once you run the command, you will see a progress bar in the lower right.
 
-Third, you can go to your main Codespaces control panel at `https://github.com/Codespaces`.
+Third, you can go to your main Codespaces control panel at `https://github.com/codespaces`.
 
 ```{r}
 knitr::include_graphics("getting-started/images/codespaces-1.png")
@@ -119,11 +120,11 @@ knitr::include_graphics("getting-started/images/codespaces-3.png")
 
 Simply closing the browser window *does not* stop your Codespace from running. Make sure to always stop running your Codespace to preserve your Codespace time.
 
-### Using a Codespace  {.unnumbered}
+## Using a Codespace  {.unnumbered}
 
 Visual Studio Code, also known as "VS Code," is an integrated development environment (IDE) for coding and data science. Highlights:
 
-* This Codespace is in the cloud. The URL will be a combination of the GitHub-determined human-readable but somewhat nonsensical name--`fictional winner` in this case--and a bunch of letters and numbers. There is no need to remember this URL. GitHub keeps track of things. You can see all your current Codespaces [here](https://github.com/Codespaces).
+* This Codespace is in the cloud. The URL will be a combination of the GitHub-determined human-readable but somewhat nonsensical name--`fictional winner` in this case--and a bunch of letters and numbers. There is no need to remember this URL. GitHub keeps track of things. You can see all your current Codespaces [here](https://github.com/codespaces).
 
 * In the upper right-hand corner are the "Customize Layout ..." buttons. These are part of the VS Code "Title Bar." Since we aren't using the AI tools right now, it often makes sense to close the "Chat" window, which appears on the right side of the screen. You can close this in two ways: Click the "X" mark or click the "Toggle Secondary Side Bar" button, the furthest right-hand button. You can then bring the Chat window back by clicking the "Toggle Secondary Side Bar" button again. Try it now.
 
@@ -146,9 +147,9 @@ knitr::include_graphics("getting-started/images/cs-4b.png")
 ```
 
 
-* The "Editor" is the large central area where you edit files. 
+* The "Editor" is the large central area where you edit files.
 
-* The "Panel" is the horizontal area below the Editor, containing the Terminal, Output, Problems, Debug Console, and Ports tabs. Our main focus is the Terminal tab. This is where we "talk" to both the (cloud) computer itself and to the R program that it provides. 
+* The "Panel" is the horizontal area below the Editor, containing the Terminal, Output, Problems, Debug Console, and Ports tabs. Our main focus is the Terminal tab. This is where we "talk" to both the (cloud) computer itself and to the R program that it provides.
 
 * The Terminal currently shows a "bash" shell. We will learn more about shells later. Click on the `+` sign to the right of the "Ports" tab. This will start a second bash shell. Your Panel should now look like this:
 
@@ -156,11 +157,11 @@ knitr::include_graphics("getting-started/images/cs-4b.png")
 knitr::include_graphics("getting-started/images/cs-5.png")
 ```
 
-<!-- DK: Maybe close the Codespace and open it again? 
+<!-- DK: Maybe close the Codespace and open it again?
 
 AR: Added to end of the Starting a Codespace section (where we initially tell students how to close a Codespace, but didn't tell them how to re-open. -->
 
-* Note the two bash shells on the right side of the Panel. We can click on each to move back and forth between them. 
+* Note the two bash shells on the right side of the Panel. We can click on each to move back and forth between them.
 
 * In addition to shells, we can also start an R session under the Terminal. Instead of clicking the `+` sign, click the small downward pointing arrow next to it. This will show a variety of options.
 
@@ -182,7 +183,7 @@ knitr::include_graphics("getting-started/images/cs-7.png")
 
 An IDE like VS Code is designed to organize all the different work we do as data scientists. We need to talk to the computer via the shell, talk to R, view plots, and so on.
 
-### Tutorials {.unnumbered}
+## Tutorials {.unnumbered}
 
 <!-- DK: This section could use a few more screens, more slowly. But even better would be a video! -->
 
@@ -198,7 +199,7 @@ Doing so shows all the R tutorials which are in the `tutorial.helpers` package. 
 knitr::include_graphics("getting-started/images/cs-9.png")
 ```
 
-Clicking the tutorial arrow starts a new R session, labeled "R Tutorial" on the right side of the panel. We now have 4 different terminals: two bash and two R. In this case, a "terminal" is any connection to the (cloud) computer itself or to a program running on it, like R. In fact, the [bash shell](https://opensource.com/resources/what-bash) is just another program which runs in the computer. 
+Clicking the tutorial arrow starts a new R session, labeled "R Tutorial" on the right side of the panel. We now have 4 different terminals: two bash and two R. In this case, a "terminal" is any connection to the (cloud) computer itself or to a program running on it, like R. In fact, the [bash shell](https://opensource.com/resources/what-bash) is just another program which runs in the computer.
 
 The R Tutorial session shows the tutorial being built and its current state, which is "listening," i.e., waiting for you to complete the tutorial.  While the tutorial is running, this R session is unavailable for other work.
 
@@ -214,15 +215,15 @@ The `http` address refers to a file located in your GitHub Codespace but which i
 knitr::include_graphics("getting-started/images/cs-11.png")
 ```
 
-Read and follow the instructions. At the end of the tutorial, you should download your answers. 
+Read and follow the instructions. At the end of the tutorial, you should download your answers.
 
-### Stopping and deleting a Codespace {.unnumbered}
+## Stopping and deleting a Codespace {.unnumbered}
 
-You can see all your Codespaces [here](https://github.com/Codespaces). Although GitHub provides you with lots of free hours, "lots" is not endless. It is your responsibility to keep track of your usage. GitHub helps by stopping any Codespace which has been inactive for 30 minutes. (You can change this default if you like by going [here](https://github.com/settings/Codespaces) and updating Default Idle Timeout for your GitHub account. I use 15 minutes.)
+You can see all your Codespaces [here](https://github.com/codespaces). Although GitHub provides you with lots of free hours, "lots" is not endless. It is your responsibility to keep track of your usage. GitHub helps by stopping any Codespace which has been inactive for 30 minutes. (You can change this default if you like by going [here](https://github.com/settings/codespaces) and updating Default Idle Timeout for your GitHub account. I use 15 minutes.)
 
 Use `Cmd + Shift + P` to open the Command Palette and type "stop" in the search bar. Select "Codespaces: Stop Current Codespace" to stop running the Codespace.
 
-You can restart the Codespace anytime by going to your [Codespaces page](https://github.com/Codespaces). You can also navigate to this page by clicking on the three horizontal bar icon in the upper left, then selecting "Codespaces" from the drop-down menu.
+You can restart the Codespace anytime by going to your [Codespaces page](https://github.com/codespaces). You can also navigate to this page by clicking on the three horizontal bar icon in the upper left, then selecting "Codespaces" from the drop-down menu.
 
 ```{r}
 knitr::include_graphics("getting-started/images/gh-hamburger-icon.png")
@@ -242,20 +243,20 @@ I only have one Codespace. It was started from one of my repos. Selecting it and
 knitr::include_graphics("getting-started/images/codespaces-3.png")
 ```
 
-We can restart the Codespace by clicking on its title or by selecting "Open in Browser." 
+We can restart the Codespace by clicking on its title or by selecting "Open in Browser."
 
 As you might expect, clicking "Delete" deletes the Codespace permanently.
 
 
 Your data science journey begins now!
 
-### Summary for cloud {.unnumbered}
+## Summary {.unnumbered}
 
 You should have done the following:
 
   - Signed up for a GitHub account.
 
-  - Created a Codespace using https://github.com/PPBDS/Codespace-starter as a template.
+  - Created a Codespace using https://github.com/PPBDS/codespace-starter as a template.
 
   - Completed your first tutorial, "Getting Started," from the **tutorial.helpers** package.
 
@@ -268,11 +269,7 @@ knitr::include_graphics("getting-started/images/ending.gif")
 ```
 
 
-<!-- 
-
-Should our devcontainer set some sensible defaults for Git, especially with regard to automatic staging and the like?
-
-Probably need to change the starting tutorial from Getting Started to Codespaces.
+<!--
 
 Note: if the Codespace stops, you lose the R session. And other stuff?
 
@@ -281,364 +278,3 @@ Talk about, and show, how the Toggle button changed to all empty once we closed 
 Consider simplifying the Terminal choices.
 
 -->
-
-## Local machine with Positron
-
-As long as you have a not-too-old computer--almost always a Mac or Windows laptop--you can do data science locally, without going to the cloud. 
-
-### Installing R and Positron {.unnumbered}
-
-We use [**R**](https://www.r-project.org/about.html) via [**Positron**](https://positron.posit.co). R is to Positron as a car's engine is to its dashboard.
-
-More precisely, R is a programming language that runs computations, while Positron is an *integrated development environment (IDE)* that provides an interface with many convenient features. Just as having access to a speedometer and navigation system makes driving much easier, using Positron's interface makes working with R and Python much easier.
-
-Download and install R and Positron on your computer.
-
-1. [Download and install R](https://cloud.r-project.org/). If you are using a Mac, make sure to use the correct installation, depending on whether you are using newer "Apple silicon (M1,2,..) Mac" (first option) or "older Intel Macs" (second option). You can look up the chip used in your Mac by checking "About This Mac" under the Apple menu.
-
-2. [Download and install Positron](https://positron.posit.co/download.html). If using a Mac, figure out if you should use the "arm64" (which is for the newer Macs) or "x64" version. If your Mac is not too old, you want "arm64." Avoid the universal installer.
-
-3. If you are using Windows, you **must** also do two things:
-
-  + Install [Git for Windows](https://gitforwindows.org/). 
-
-  + Install RTools. See [here](https://cran.r-project.org/bin/windows/Rtools/) for the latest version. Currently, the Rtools45 installer is what you want, assuming that your installed R version is at least 4.5.0. The link is in the seventh paragraph of [this page](https://cran.r-project.org/bin/windows/Rtools/rtools45/rtools.html). Use your favorite AI to help determine whether to use the Rtools45 installer or 64-bit ARM Rtools45 installer. Again, this is not required, but if you have problems installing packages later in this chapter, you **must** install RTools. If not, you are all set.
-
-### The Console {.unnumbered}
-
-Much as we don't drive a car by interacting directly with the engine but rather by interacting with elements of the car's dashboard, we won't be using R directly. Instead, we will work through Positron's interface. After you install R and Positron on your computer, you'll have two new *programs* (also called *applications*) you can open. Always work in Positron, not directly in the R application.
-
-Open up Positron. 
-
-```{r}
-knitr::include_graphics("getting-started/images/positron-window.png")
-```
-
-Look at the Console tab in the Panel at the lower left. At start up, the Console gives you some information about your version of R. The Console is where you can type and run R code. For example, if you type `1 + 1` and hit `enter` (on Windows) or `return` (on Mac), the Console returns 2. 
-
-We often use the phrase "run the following code." This means that you should type or copy-and-paste the code into the Console and then hit the `Enter` key. (Note that `return` is the name of a Mac key and `enter` the name of the corresponding Windows key. We use `Enter` throughout the *Primer* to refer to both.)
-
-The right side of the Positron window is the Secondary Side Bar.
-
-```{r}
-knitr::include_graphics("getting-started/images/positron-window-2.png")
-```
-
-In the Session tab, there is a Variables listing for the current R session. There are no variables yet. Let's change that. Go to your Console and type:
-
-```{r}
-#| code-fold: false
-x <- 5
-```
-
-This code assigns the value 5 to an object, `x`. `<-` is the operator used to assign values to objects in R. Now, hit `Enter` and you should see a variable `x` equal to 5 under Values. You must always hit `Enter` after typing a command, otherwise Positron will not realize that you want R to execute the command.
-
-```{r}
-knitr::include_graphics("getting-started/images/x-gets-5.png")
-```
-
-The Secondary Side Bar contains different tabs in the top half and a display area for plots in the bottom half. 
-
-```{r}
-knitr::include_graphics("getting-started/images/secondary-side-bar.png")
-```
-
-In the Console, type `plot(1:10)` and hit `Enter`.
-
-```{r}
-knitr::include_graphics("getting-started/images/positron-plot.png")
-```
-
-The far left of the Positron window is the Activity Bar. The area in which the Welcome screen is currently located is the Editor. Once you start writing code, the Editor is the location in which your files will appear.
-
-### The Terminal {.unnumbered}
-
-The Console is where we talk to R. The Terminal is where we talk to the computer. The Console behaves almost identically regardless of the kind of computer you use. The Terminal, sadly, is different for Windows versus Mac. Next to "Console" on the Panel menu is "Terminal." See the red oval below. Click on the word "Terminal" to access it.
-
-```{r}
-knitr::include_graphics("getting-started/images/terminal-1.png")
-```
-
-`dkane@macbook ~ % ` is the "prompt," the place where we type commands, just like `>` in the Console. Your prompt will be different from mine, especially if you are using Windows. 
-
-We often want a new Terminal with a different "shell," the program which serves as the interface between you and the computer. On a Mac, the default shell is referred to as "[Unix-like](https://en.wikipedia.org/wiki/Unix-like)" since it acts very much like the traditional Unix command line. In Windows, the default shell is [PowerShell](https://en.wikipedia.org/wiki/PowerShell), an older technology which is not worth learning. To start a new Terminal with a specific shell, press the downward arrow next to the `+` sign. This is the "Launch Profile ..." arrow. See the red arrow above.
-
-```{r}
-knitr::include_graphics("getting-started/images/terminal-2.png")
-```
-
-If you are using Windows, you should see an option for "Git Bash" (or maybe just "bash"), at least if your have installed Git for Windows as we told you to do above. If you did, and you don't see a bash option, try restarting Positron.
-
-With luck, bash will also be the default every time you open the Terminal on Windows. But, if not, you should select it by hand. One way to make it the default choice is to use the "Select Default Profile" tool:
-
-```{r}
-knitr::include_graphics("getting-started/images/terminal-3.png")
-```
-
-Again, this is only useful for Windows users. But they should click on that tool and select the option that says "Git Bash" or something like it. This should set it as the default going forward.
-
-Click the `+` button to start a second Terminal and see if it works! Restarting Positron may help.
-
-### R packages {.unnumbered}
-
-To install packages, we work in the Console, not the Terminal.
-
-R *packages*, also known as *libraries*, extend the power of R by providing additional functions and data.
-
-```{r}
-#| fig.cap: R is to R packages as a new phone is to apps for that phone.
-knitr::include_graphics("getting-started/images/r-versus-r-packages.png")
-```
-
-R is like a new phone. While it has a certain number of features when you use it for the first time, it doesn't have everything. R packages are like the apps you download onto your phone.
-
-Consider an analogy to Instagram. If you have a new phone and want to share a photo with friends, you need to:
-
-1.  *Install the app*: Since your phone is new and does not include the Instagram app, you need to download the app. You do this only once. (You might need to do this again in the future when there is an update to the app.)
-2.  *Open the app*: After you've installed Instagram, you need to open it. You need to do this every time you use the app.
-
-The process is very similar for an R package. You need to:
-
-```{r}
-#| fig.cap: Installing versus loading an R package
-knitr::include_graphics("getting-started/images/install-versus-load.jpg")
-```
-
-1.  *Install the package*: This is like installing an app on your phone. Most packages are not installed by default when you put R on your computer. Thus if you want to use a package for the first time, you need to install it. Once you've installed a package, you likely won't install it again unless you want to update it to a newer version.
-
-2.  *Load the package*: "Loading" a package is like opening an app on your phone. Packages are not loaded by default when you start Positron. You need to load each package you want to use every time you restart Positron.
-
-Just for this chapter, execute this command in your R Console. Do **not** do this if you are working in the cloud using, for example, Posit Workbench.
-
-```{r}
-#| eval: false
-#| code-fold: false
-options("pkgType" = "binary")
-```
-
-This helps to ensure that package installation will go more smoothly. 
-
-Let's *install* a useful package. At the Console within Positron, type:
-
-```{r}
-#| eval: false
-#| code-fold: false
-install.packages("pak")
-```
-
-And press `Enter`. You must include the quotation marks around the name of the package. A package can depend on other packages, which will be automatically installed if needed.
-
-One tricky aspect of this process is that R will occasionally ask you:
-
-```{bash}
-#| eval: false
-#| code-fold: false
-Do you want to install from sources the packages which 
-need compilation? (Yes/no/cancel)
-```
-
-Unless you have a good reason not to, always answer "no" to this question.
-
-**If you are using Windows, there may be a permission problem.** In particular, R may not have permission to install packages in the common area. In that case, it will ask you if you want to create a "Personal" library. You do. And then installation should work fine. **But Positron sometimes blocks this message.** In that case, you need quit Positron and start up the R application by itself. In R itself, run `install.packages("pak")`. The message box about creating a personal library should appear. You say "Yes," and all should be well. You can then quit R, restart Positron and continue with the next steps below. 
-
-R packages generally live in one of two places:
-
--   CRAN (rhymes with "clan") for more mature, popular packages. 
-
--   Github for more experimental, less stable packages. 
-
-After you install a package, you need to "load" it by using the `library()` command. To load the **pak** package, run the following code in the Console. 
-
-```{r}
-#| eval: false
-#| code-fold: false
-library(pak)
-```
-
-After running this code, a blinking cursor should appear next to the `>` symbol. (The `>` is the "prompt.") This means you were successful and the **pak** package is now loaded and ready to use. However, you might get a red "error message" which reads:
-
-<span style="color: red;">Error in library(pak) : there is no package called 'pak'</span>
-
-This error message means that you haven't successfully installed the package. If you get this error message, make sure to install the **pak** package before proceeding. See the above discussion if you are using Windows and you can't seem to install **pak**.
-
-For historical reasons, *packages* are also known as *libraries*, which is why the relevant command for loading them is `library()`.
-
-R will occasionally ask you if you want to install some packages. You almost always want to, otherwise R would not be asking you.
-
-Let's install another package:
-
-```{r}
-#| eval: false
-#| code-fold: false
-pak("tidyverse")
-```
-
-We could have used `install.packages()` instead of `pak()` to install the **tidyverse** package, but `pak()` is much faster. 
-
-Instead of loading the **pak** package explicitly with `library(pak)`, we could have just used the "double colon" notation to call the `pak()` function directly: `pak::pak("tidyverse")`. (It is somewhat confusing, although not that uncommon, that `pak()` is the name of the main function in the **pak** package.)
-
-Let's install another package:
-
-```{r}
-#| eval: false
-#| code-fold: false
-pak("PPBDS/tutorial.helpers")
-```
-
-This package provides infrastructure for doing tutorials, a common approach for learning R. After you install this package, run this command in the Console:
-
-```{r}
-#| eval: false
-#| code-fold: false
-tutorial.helpers::set_positron_settings()
-```
-
-`set_positron_settings()` makes some sensible changes to your Positron settings file and to your `.Rprofile`.
-
-*You have to load each package you want to use every time you start Positron.* If you don't load a package before attempting to use one of its features, you will see an error message like:
-
-<span style="color: red;">Error: could not find function</span>
-
-This is a different error message from the one about a package not having been installed yet. R is telling you that you are trying to use a function in a package that has not yet been loaded. R doesn't know where to "find" the function you want to use.
-
-So far, all the packages we have installed have come from CRAN. To install a package from GitHub, we need to provide both the owner name and the repository (or "repo") name. Copy and paste the following to the Console:
-
-```{r}
-#| eval: false
-#| code-fold: false
-pak("PPBDS/positron.tutorials")
-```
-
-The owner here is `PPBDS`, which is the GitHub organization for this *Primer* and its related tutorials. `PPBDS` stands for *Preceptor's Primer for Bayesian Data Science*.
-
-If the install fails, try
-
-```{r}
-#| eval: false
-#| code-fold: false
-options("timeout" = 600)
-```
-
-This gives the download more time to complete. Try it again. 
-
-If you do more work with this *Primer*, then you will probably want to install the **primer.tutorials** package, but you don't need to do that now. When you do, run:
-
-```{r}
-#| eval: false
-#| code-fold: false
-pak("PPBDS/primer/primer.tutorials")
-```
-
-Some other new packages will be installed as well, most importantly **primer.data**, which includes most of the data we use in the *Primer*. It may take a few minutes. If something gets messed up, it is often useful to read the error messages and see if a specific package is at fault. If so, use the `remove.packages()` function to remove the problematic package and then install it again.
-
-If **primer.tutorials** does not install correctly, don't worry about it for now. This package is much less important than **positron.tutorials**.
-
-### Tutorials {.unnumbered}
-
-There are many tutorials available in the **positron.tutorials** and **primer.tutorials** packages. 
-
-Because Positron is still evolving, there is no easy way to start a tutorial. Instead, we must issue a command like this from the Console:
-
-```{r}
-#| eval: false
-#| code-fold: false
-learnr::run_tutorial(name = "getting-started-with-positron", 
-                     package = "tutorial.helpers")
-```
-
-The first argument to `run_tutorial()` is the `name` of the tutorial and the second is the `package` in which the tutorial is installed. We often leave out the arguments and just provide their values. Example:
-
-```{r}
-#| eval: false
-#| code-fold: false
-learnr::run_tutorial("getting-started-with-positron", "tutorial.helpers")
-```
-
-The Console will show output as the tutorial is starting up because Positron is running the code which creates the tutorial.
-
-In most cases, the newly created tutorial will appear in the Viewer tab. Sometimes, especially on Windows machines, it won't, and your screen will look like this:
-
-```{r}
-knitr::include_graphics("getting-started/images/tutorial-failure.png")
-```
-
-Note the URL --- `http://127.0.0.1:7323` --- highlighted in the red oval. This is the location of the newly created tutorial on your machine. The `http://127.0.0.1` portion of the URL, which will be the same for you, indicates the "localhost" for your machine. The `:7323`, which will be different for you, indicates the `tutorial.html` document which has just been created.
-
-Just paste that URL into your browser and start the tutorial.
-
-But, for most people, the tutorial will appear in the Viewer tab: 
-
-```{r}
-knitr::include_graphics("getting-started/images/positron-tutorial-2.png")
-```
-
-You can "pop" the tutorial into a browser by clicking the "Open the current URL in the default browser" button. (See where the red arrow points in the image below.) 
-
-We think that working with the tutorial in the browser is more convenient than using the Viewer tab. If a tutorial becomes "greyed out," you can usually just "refresh" it with the "Reload the current URL" swirly arrow button, just to the left of the "Open the current URL in the default browser" button.
-
-Because the current Console is now being used to run the tutorial, we sometimes need to start up a new session by selecting `File -> New Window`. This creates a new Positron session with an unused R session running in the Console.
-
-You now have two R sessions running. The first is maintaining the tutorial itself, recording your answers. The second allows you to run R commands. You will spend almost all your time with the second session since many tutorials require you to issue some R commands directly to the Console.
-
-**Your work will automatically be saved between Positron sessions**. You can complete the tutorial in multiple sittings.
-
-Complete the "Getting Started" tutorial from the **tutorial.helpers** package. Recall that you start this tutorial by issuing this command in the Console:
-
-```{r}
-#| eval: false
-#| code-fold: false
-learnr::run_tutorial(name = "getting-started-with-positron", 
-                     package = "tutorial.helpers")
-```
-
-Once you have done so, you can start to learn about data science.
-
-### Summary for local {.unnumbered}
-
-You should have done the following:
-
-  - Installed the latest versions of [R](https://cloud.r-project.org/) and [Positron](https://github.com/posit-dev/positron/releases).
-
-  - If using Windows, installed [Git for Windows](https://gitforwindows.org/) and [RTools](https://cran.r-project.org/bin/windows/Rtools/).
-  
-  - Installed, from CRAN, these packages:
-
-```{r}
-#| eval: false
-#| code-fold: false
-# Only run this options() line if NOT on Cloud platform
-# options("pkgType" = "binary"). 
-install.packages("pak")
-pak::pak("tidyverse")
-```
-
-  - Installed, from Github, these packages:
-
-```{r}
-#| eval: false
-#| code-fold: false
-pak::pak(c("PPBDS/tutorial.helpers", "PPBDS/positron.tutorials"))
-```
-
-  - Run `tutorial.helpers::set_positron_settings()` at the Console in order to make some sensible changes to your Positron and Rprofile settings.
-
-```{r}
-#| eval: false
-#| code-fold: false
-tutorial.helpers::set_positron_settings()
-```
-
-  - Completed the "Getting Started with Positron" tutorial from the **tutorial.helpers** package:
-  
-```{r}
-#| eval: false
-#| code-fold: false
-learnr::run_tutorial("getting-started-with-positron", package = "tutorial.helpers")
-```
-
-Let's get started!
-
-```{r}
-knitr::include_graphics("getting-started/images/ending.gif")
-```
-
