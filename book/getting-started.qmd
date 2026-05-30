@@ -232,7 +232,7 @@ In the **Repository name** field, type `introduction-to-r`. That is the tutorial
 knitr::include_graphics("getting-started/images/new-3.png")
 ```
 
-You now own a repository at `https://github.com/<your-username>/introduction-to-r`. It is identical to `PPBDS/codespace-starter` but yours — anything you do here can be committed and pushed back, unlike the throwaway Codespace.
+You now own a repository at `https://github.com/<your-username>/introduction-to-r`. It is identical to `PPBDS/codespace-starter` but yours — anything you do here can be saved permanently, unlike in the throwaway Codespace.
 
 ### Launching a Codespace on your repo {.unnumbered}
 
@@ -242,7 +242,7 @@ From your new repository's page, click the green **Code** button, switch to the 
 knitr::include_graphics("getting-started/images/new-4.png")
 ```
 
-This Codespace will take several minutes longer to launch than the first one. Read the rest of this chapter while you are waiting. The throwaway Codespace started from `PPBDS/codespace-starter`, which has a pre-built container image waiting; your new repository does not, so the container has to build from scratch the first time. Subsequent launches of this *same* Codespace will be fast.
+This Codespace will take several minutes longer to launch than the first one. Read the rest of this chapter while you are waiting. The throwaway Codespace started from `PPBDS/codespace-starter`, which has a pre-built container image. Your new repository does not, so the container has to build from scratch the first time. Subsequent launches of this *same* Codespace will be fast.
 
 ### Running the Introduction to R tutorial {.unnumbered}
 
@@ -256,9 +256,19 @@ Read and follow the instructions. At the end of the tutorial, download your answ
 
 ### Stopping the Codespace {.unnumbered}
 
-When you are done with the tutorial, **stop** the Codespace — same way as before, via the Command Palette or your [Codespaces page](https://github.com/codespaces).
+When you are done with the tutorial, **stop** the Codespace — same way as before, via the Command Palette or your [Codespaces page](https://github.com/codespaces). You should then delete the Codespace. (Strictly speaking, you can delete the Codespace without stopping it first.)
 
-**Do not delete it.** Unlike the throwaway, this Codespace lives on a repository you own. You will come back to `introduction-to-r` whenever you want to revisit material from the Introduction to R tutorial.
+### Using your own machine
+
+You can do all of this work on your own laptop, if you prefer. But, in that case, you are responsible for setting everything up. That means installing VS Code, Git and R. You will also need to install, by hand, various R packages. From the R Terminal, you would run commands like:
+
+```
+install.packages("pak")  
+pak::pak("tidyverse")  
+pak::pak("PPBDS/vscode.tutorials")  
+```
+
+That should be enough to get you started, If you have trouble, ask AI, pointing it toward this chapter and to the `PPBDS/codespace-starter` repo.
 
 ## Summary {.unnumbered}
 
@@ -266,9 +276,9 @@ You should have done the following:
 
 - Signed up for a GitHub account.
 - Launched a Codespace directly on `PPBDS/codespace-starter`, completed the **Getting Started** tutorial from **[tutorial.helpers](https://ppbds.github.io/tutorial.helpers/)**, and **deleted** the Codespace.
-- Created your own repository named `introduction-to-r` from the `codespace-starter` template, launched a Codespace on it, completed the **Introduction to R** tutorial from **[tutorial.helpers](https://ppbds.github.io/tutorial.helpers/)**, and **stopped** (not deleted) the Codespace.
+- Created your own repository named `introduction-to-r` from the `codespace-starter` template, launched a Codespace on it, completed the **Introduction to R** tutorial from **[tutorial.helpers](https://ppbds.github.io/tutorial.helpers/)**, and **deleted** the Codespace.
 
-Going forward, every tutorial gets its own repository. The rule is always the same: the repository name is the tutorial id (the tutorial title in lowercase, with spaces replaced by dashes). You are set up for the rest of the course.
+Going forward, every tutorial gets its own repository. The rule is always the same: the repository name is the tutorial id (the tutorial title in lowercase, with spaces replaced by dashes). 
 
 Let's get started!
 
@@ -276,13 +286,3 @@ Let's get started!
 knitr::include_graphics("getting-started/images/ending.gif")
 ```
 
-
-<!--
-
-Note: if the Codespace stops, you lose the R session. And other stuff?
-
-Talk about, and show, how the Toggle button changed to all empty once we closed the chat window.
-
-Consider simplifying the Terminal choices.
-
--->
