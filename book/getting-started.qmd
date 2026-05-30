@@ -258,17 +258,40 @@ Read and follow the instructions. At the end of the tutorial, download your answ
 
 When you are done with the tutorial, **stop** the Codespace — same way as before, via the Command Palette or your [Codespaces page](https://github.com/codespaces). You should then delete the Codespace. (Strictly speaking, you can delete the Codespace without stopping it first.)
 
-### Using your own machine
+## Using your own machine
 
-You can do all of this work on your own laptop, if you prefer. But, in that case, you are responsible for setting everything up. That means installing VS Code, Git and R. You will also need to install, by hand, various R packages. From the R Terminal, you would run commands like:
+You can do all of this work on your own laptop, if you prefer. But, in that case, you are responsible for setting everything up. That means installing VS Code, Git and R. You will almost certainly want to install the same VS Code extensions which we use:
 
 ```
-install.packages("pak")  
+"extensions": [
+  "reditorsupport.r",
+  "quarto.quarto",
+  "PPBDS.vscode-r-tutorials",
+  "google.gemini-cli-vscode-ide-companion",
+  "ritwickdey.LiveServer",
+  "tomoki1207.pdf",
+  "mechatroner.rainbow-csv"
+],
+```
+
+This listing is from  the `.devcontainer/devcontainer.json` file from `PPBDS/codespace-starter`. You may also find it useful to use the same VS settings which are defined there. 
+
+You will also need to install, by hand, various R packages. From the R Terminal, you would run commands like:
+
+```
+install.packages("pak") 
+```
+
+You may be asked to select a CRAN mirror. It does not matter which you choose.
+
+```
 pak::pak("tidyverse")  
 pak::pak("PPBDS/vscode.tutorials")  
 ```
 
-That should be enough to get you started, If you have trouble, ask AI, pointing it toward this chapter and to the `PPBDS/codespace-starter` repo.
+These steps are not enough to perfectly replicate what we show in the Codespace. See `PPBDS/devcontainers` for more details.
+
+But this should be enough to get you started, should you decide to go this route. If you have trouble, ask AI, pointing it toward this chapter and to the `PPBDS/codespace-starter` and `PPBDS/devcontainers` repos.
 
 ## Summary {.unnumbered}
 
