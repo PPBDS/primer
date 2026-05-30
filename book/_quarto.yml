@@ -25,6 +25,7 @@ book:
     - 06-recruits.qmd
     - 07-trains.qmd
     - 08-colleges.qmd
+    - 09-sps.qmd
     - key-concepts.qmd
   appendices:
     - set-up.qmd
