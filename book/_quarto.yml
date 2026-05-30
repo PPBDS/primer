@@ -27,6 +27,7 @@ book:
     - 08-colleges.qmd
     - 09-sps.qmd
     - 10-smokes.qmd
+    - 11-shaming.qmd
     - key-concepts.qmd
   appendices:
     - set-up.qmd
