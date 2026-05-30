@@ -34,7 +34,9 @@ This is a public repository you do not own. You can still launch a Codespace fro
 
 Click the green **Code** button at the top right of the repository page, switch to the **Codespaces** tab, and click **"Create codespace on main."**
 
-<!-- TODO: NEW IMAGE — screenshot of `PPBDS/codespace-starter` with the green "Code" button popped open, the "Codespaces" tab selected, and "Create codespace on main" visible. Replaces the old `open-cs-no-repo.png` which showed the template flow. -->
+```{r}
+knitr::include_graphics("getting-started/images/new-1.png")
+```
 
 This will take a few minutes the first time. Read the rest of this chapter while you are waiting. Behind the scenes, GitHub is creating a virtual machine in the cloud with all the necessary tools for doing data science. That machine is called a "Codespace."
 
@@ -209,11 +211,16 @@ Now you will do the same, but in a repository you own — which is how every tut
 
 Go back to [`https://github.com/PPBDS/codespace-starter`](https://github.com/PPBDS/codespace-starter). Click the green **"Use this template"** button at the top right and select **"Create a new repository."**
 
-<!-- TODO: NEW IMAGE — `PPBDS/codespace-starter` with the "Use this template" dropdown open and "Create a new repository" highlighted. The existing `open-cs-no-repo.png` shows the wrong option ("Open in a Codespace") and is no longer used. -->
+```{r}
+knitr::include_graphics("getting-started/images/new-2.png")
+```
 
 In the **Repository name** field, type `introduction-to-r`. That is the tutorial id for the Introduction to R tutorial — the rule is *tutorial title, lowercase, spaces replaced by dashes*, and you will follow it for every tutorial in the book. Leave everything else at the defaults. Click **Create repository from template.**
 
-<!-- TODO: NEW IMAGE — the "Create a new repository from template" form, with `introduction-to-r` filled into the Repository name field. -->
+
+```{r}
+knitr::include_graphics("getting-started/images/new-3.png")
+```
 
 You now own a repository at `https://github.com/<your-username>/introduction-to-r`. It is identical to `PPBDS/codespace-starter` but yours — anything you do here can be committed and pushed back, unlike the throwaway Codespace.
 
@@ -221,7 +228,9 @@ You now own a repository at `https://github.com/<your-username>/introduction-to-
 
 From your new repository's page, click the green **Code** button, switch to the **Codespaces** tab, and click **"Create codespace on main."**
 
-<!-- TODO: NEW IMAGE — Code button → Codespaces tab → "Create codespace on main" on `<your-username>/introduction-to-r`. Visually similar to the first-half launch shot, but on the student's own repo. -->
+```{r}
+knitr::include_graphics("getting-started/images/new-4.png")
+```
 
 This Codespace will take longer to launch than the first one — usually a few minutes more. The throwaway Codespace started from `PPBDS/codespace-starter`, which has a pre-built container image waiting; your new repository does not, so the container has to build from scratch the first time. Subsequent launches of this *same* Codespace will be fast.
 
@@ -229,7 +238,9 @@ This Codespace will take longer to launch than the first one — usually a few m
 
 Once the Codespace is fully loaded, click the **R Tutorials** icon on the Activity Bar, click on **[tutorial.helpers](https://ppbds.github.io/tutorial.helpers/)**, and start the **Introduction to R** tutorial.
 
-<!-- TODO: NEW IMAGE (optional) — R Tutorials sidebar with tutorial.helpers expanded and "Introduction to R" highlighted. If reusing `cs-8.png`/`cs-9.png` from the first half reads naturally, drop this TODO. -->
+```{r}
+knitr::include_graphics("getting-started/images/new-5.png")
+```
 
 Read and follow the instructions. At the end of the tutorial, download your answers.
 
