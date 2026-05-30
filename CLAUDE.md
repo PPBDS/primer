@@ -2600,7 +2600,7 @@ The one exception is a **student-written code exercise** whose point is to teach
 
 ### 14.10 Package-name formatting
 
-**This rule applies to both tutorials and chapters.** In prose (not in code), R package names use **bold + link to the package's home page**: **[primer.data](https://github.com/PPBDS/primer.data)**, **[tidymodels](https://www.tidymodels.org/)**, **[broom](https://broom.tidymodels.org/)**, **[marginaleffects](https://marginaleffects.com/)**. Do not surround package names with backticks unless they appear inside actual code — backticks are for code identifiers (object names like `nhanes`, function names like `tidy()`), not for package names in running text.
+**This rule applies everywhere in book content and tutorial prose** — chapters, miscellaneous chapters, appendices, and tutorial Rmd files alike. In prose (not in code), R package names use **bold + link to the package's home page**: **[primer.data](https://github.com/PPBDS/primer.data)**, **[tidymodels](https://www.tidymodels.org/)**, **[broom](https://broom.tidymodels.org/)**, **[marginaleffects](https://marginaleffects.com/)**. Do not surround package names with backticks unless they appear inside actual code — backticks are for code identifiers (object names like `nhanes`, function names like `tidy()`), not for package names in running text.
 
 Prefer the package's own documentation site or GitHub page over CRAN. CRAN URLs are fallbacks when no dedicated homepage exists.
 
@@ -2611,6 +2611,7 @@ Canonical homepages the tutorials and chapters reference most often:
 | primer.data | `https://github.com/PPBDS/primer.data` |
 | primer.tutorials | `https://ppbds.github.io/primer/tutorials/` |
 | tutorial.helpers | `https://ppbds.github.io/tutorial.helpers/` |
+| vscode.tutorials | `https://ppbds.github.io/vscode.tutorials/` |
 | tidyverse | `https://www.tidyverse.org/` |
 | tidymodels | `https://www.tidymodels.org/` |
 | broom | `https://broom.tidymodels.org/` |

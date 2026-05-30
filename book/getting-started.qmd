@@ -122,13 +122,13 @@ An IDE like VS Code is designed to organize all the different work we do as data
 
 ### Running the Getting Started tutorial {.unnumbered}
 
-If you hover your cursor over the Activity Bar on the far lefthand side, you can see the names of the different options. The second from the bottom is labeled "R Tutorials." Click on it. (You might need to click twice.) This brings up all the R packages with tutorials. Click on the package name `tutorial.helpers`.
+If you hover your cursor over the Activity Bar on the far lefthand side, you can see the names of the different options. The second from the bottom is labeled "R Tutorials." Click on it. (You might need to click twice.) This brings up all the R packages with tutorials. Click on the package name **[tutorial.helpers](https://ppbds.github.io/tutorial.helpers/)**.
 
 ```{r}
 knitr::include_graphics("getting-started/images/cs-8.png")
 ```
 
-Doing so shows all the R tutorials which are in the `tutorial.helpers` package. If you hover your cursor over a tutorial, a rightward pointing arrow appears. Clicking that arrow starts the tutorial. Start the `getting-started` tutorial from the **tutorial.helpers** package. Do so now.
+Doing so shows all the R tutorials which are in the **[tutorial.helpers](https://ppbds.github.io/tutorial.helpers/)** package. If you hover your cursor over a tutorial, a rightward pointing arrow appears. Clicking that arrow starts the tutorial. Start the `getting-started` tutorial from the **[tutorial.helpers](https://ppbds.github.io/tutorial.helpers/)** package. Do so now.
 
 ```{r}
 knitr::include_graphics("getting-started/images/cs-9.png")
@@ -227,7 +227,7 @@ This Codespace will take longer to launch than the first one — usually a few m
 
 ### Running the Introduction to R tutorial {.unnumbered}
 
-Once the Codespace is fully loaded, click the **R Tutorials** icon on the Activity Bar, click on **tutorial.helpers**, and start the **Introduction to R** tutorial.
+Once the Codespace is fully loaded, click the **R Tutorials** icon on the Activity Bar, click on **[tutorial.helpers](https://ppbds.github.io/tutorial.helpers/)**, and start the **Introduction to R** tutorial.
 
 <!-- TODO: NEW IMAGE (optional) — R Tutorials sidebar with tutorial.helpers expanded and "Introduction to R" highlighted. If reusing `cs-8.png`/`cs-9.png` from the first half reads naturally, drop this TODO. -->
 
@@ -244,8 +244,8 @@ When you are done with the tutorial, **stop** the Codespace — same way as befo
 You should have done the following:
 
 - Signed up for a GitHub account.
-- Launched a Codespace directly on `PPBDS/codespace-starter`, completed the **Getting Started** tutorial from `tutorial.helpers`, and **deleted** the Codespace.
-- Created your own repository named `introduction-to-r` from the `codespace-starter` template, launched a Codespace on it, completed the **Introduction to R** tutorial from `tutorial.helpers`, and **stopped** (not deleted) the Codespace.
+- Launched a Codespace directly on `PPBDS/codespace-starter`, completed the **Getting Started** tutorial from **[tutorial.helpers](https://ppbds.github.io/tutorial.helpers/)**, and **deleted** the Codespace.
+- Created your own repository named `introduction-to-r` from the `codespace-starter` template, launched a Codespace on it, completed the **Introduction to R** tutorial from **[tutorial.helpers](https://ppbds.github.io/tutorial.helpers/)**, and **stopped** (not deleted) the Codespace.
 
 Going forward, every tutorial gets its own repository. The rule is always the same: the repository name is the tutorial id (the tutorial title in lowercase, with spaces replaced by dashes). You are set up for the rest of the course.
 

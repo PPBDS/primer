@@ -1,8 +1,8 @@
 # Set Up for Working on PPBDS Projects {-}
 
-This document is for **collaborators** editing the book or the `primer.tutorials` R package. Students consuming the curriculum should follow the [Getting Started](getting-started.html) chapter instead. You can work either on your local machine or in a [GitHub Codespace](https://github.com/features/codespaces); the steps below describe the local path, and the Codespace equivalent is noted where it differs.
+This document is for **collaborators** editing the book or the **[primer.tutorials](https://ppbds.github.io/primer/tutorials/)** R package. Students consuming the curriculum should follow the [Getting Started](getting-started.html) chapter instead. You can work either on your local machine or in a [GitHub Codespace](https://github.com/features/codespaces); the steps below describe the local path, and the Codespace equivalent is noted where it differs.
 
-This document provides a guide to setting up R/VS Code/Git/GitHub to work on *[The Primer](https://ppbds.github.io/primer/)*. The book and its accompanying tutorials R package live together in a single monorepo, [PPBDS/primer](https://github.com/PPBDS/primer): book sources are under `book/`, the R package is under `primer.tutorials/`, and both are edited in the same VS Code window. You do not clone `primer.tutorials` separately — cloning `primer` gives you everything. The data package [PPBDS/primer.data](https://github.com/PPBDS/primer.data) is its own repo. These procedures also apply to other PPBDS packages like [tutorial.helpers](https://github.com/PPBDS/tutorial.helpers) and [vscode.tutorials](https://github.com/PPBDS/vscode.tutorials). There are three steps:
+This document provides a guide to setting up R/VS Code/Git/GitHub to work on *[The Primer](https://ppbds.github.io/primer/)*. The book and its accompanying tutorials R package live together in a single monorepo, [PPBDS/primer](https://github.com/PPBDS/primer): book sources are under `book/`, the R package is under `primer.tutorials/`, and both are edited in the same VS Code window. You do not clone **[primer.tutorials](https://ppbds.github.io/primer/tutorials/)** separately — cloning `primer` gives you everything. The data package [PPBDS/primer.data](https://github.com/PPBDS/primer.data) is its own repo. These procedures also apply to other PPBDS packages like **[tutorial.helpers](https://ppbds.github.io/tutorial.helpers/)** and **[vscode.tutorials](https://ppbds.github.io/vscode.tutorials/)**. There are three steps:
 
 * The first part ensures that you have the knowledge and computer settings to be successful. With luck, you will only need to do this once. At the very least, you should upgrade your R version to the latest available and re-do the set up commands as specified in the [Getting Started](https://ppbds.github.io/primer/getting-started.html) chapter.
 
@@ -16,7 +16,7 @@ The *test* which ensures that you have successfully completed this set up is to 
 
 ## Computer Set Up
 
-1) Read the [Getting Started](https://ppbds.github.io/primer/getting-started.html) chapter from [The Primer](https://ppbds.github.io/primer/). Complete at least the first four tutorials in the **vscode.tutorials** package. The best reference for R/Git/Github issues is always [*Happy Git and GitHub for the useR*](https://happygitwithr.com/).
+1) Read the [Getting Started](https://ppbds.github.io/primer/getting-started.html) chapter from [The Primer](https://ppbds.github.io/primer/). Complete at least the first four tutorials in the **[vscode.tutorials](https://ppbds.github.io/vscode.tutorials/)** package. The best reference for R/Git/Github issues is always [*Happy Git and GitHub for the useR*](https://happygitwithr.com/).
 
 2) Make sure that your Git/Github connections are good. If you have gone through the key chapters in [Happy Git with R](https://happygitwithr.com/) --- as you should have --- then these may already be OK. If not (or, even if you have), then you need to run `usethis::git_sitrep()`.
 
@@ -81,7 +81,7 @@ create_from_github(repo_spec = "PPBDS/INSERT-NAME-OF-PROJECT",
                    protocol = "https")
 ```
 
-Obviously, you need to modify the string "INSERT-NAME-OF-PROJECT" to correspond to one of our projects. Most common options are **primer** (the monorepo that contains the book and the `primer.tutorials` package), **primer.data**, **vscode.tutorials**, and **tutorial.helpers**. Do not try to clone `primer.tutorials` on its own — it lives inside `primer`. If, for some reason, you are working on a project which does not reside in the PPBDS organization, you should modify the first part of the `repo_spec` as well.
+Obviously, you need to modify the string "INSERT-NAME-OF-PROJECT" to correspond to one of our projects. Most common options are **primer** (the monorepo that contains the book and the **[primer.tutorials](https://ppbds.github.io/primer/tutorials/)** package), **[primer.data](https://github.com/PPBDS/primer.data)**, **[vscode.tutorials](https://ppbds.github.io/vscode.tutorials/)**, and **[tutorial.helpers](https://ppbds.github.io/tutorial.helpers/)**. Do not try to clone **[primer.tutorials](https://ppbds.github.io/primer/tutorials/)** on its own — it lives inside `primer`. If, for some reason, you are working on a project which does not reside in the PPBDS organization, you should modify the first part of the `repo_spec` as well.
 
 You must change `destdir` to be a location on your computer. Indeed, professionals will generally have several different VS Code windows open, each working on a different project, each of which is connected to its own Github repo.
 
@@ -91,7 +91,7 @@ This may seem like overkill, but, as [*Pro Git*](https://git-scm.com/book/en/v2)
 
 If you would rather work in a [Codespace](https://github.com/features/codespaces) than locally, skip the `create_from_github()` call: fork the repo on Github by hand, then click *"Code → Create codespace on main"* on your fork. Because `primer` ships its own `dev` [devcontainer](https://github.com/PPBDS/devcontainers) (`.devcontainer/devcontainer.json`), the Codespace comes fully equipped with the package-development toolchain --- R, Quarto, `arf`, devtools, pkgdown, roxygen2, usethis --- so there is no local R or Quarto install to do. From here on, every step is identical.
 
-Locally, the `create_from_github()` command should automatically open a new VS Code window in the `primer` (or `primer.data`, etc.) project which now resides on your computer.
+Locally, the `create_from_github()` command should automatically open a new VS Code window in the `primer` (or **[primer.data](https://github.com/PPBDS/primer.data)**, etc.) project which now resides on your computer.
 
 2) Create a branch to work from:
 
