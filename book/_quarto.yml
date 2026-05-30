@@ -23,6 +23,7 @@ book:
     - 03-rubin-causal-model.qmd
     - 04-cardinal-virtues.qmd
     - 06-recruits.qmd
+    - 07-trains.qmd
     - key-concepts.qmd
   appendices:
     - set-up.qmd
