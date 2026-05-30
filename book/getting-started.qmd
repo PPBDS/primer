@@ -162,7 +162,7 @@ knitr::include_graphics("getting-started/images/cs-11.png")
 
 Read and follow the instructions. At the end of the tutorial, download your answers.
 
-### Stopping and deleting the Codespace {.unnumbered}
+### Stopping, restarting and deleting the Codespace {.unnumbered}
 
 A Codespace is your responsibility in the same way that your laptop is your responsibility. While a Codespace is running it counts against your free hours, and an unused Codespace will be deleted by GitHub after 30 days.
 
@@ -203,11 +203,13 @@ Simply closing the browser window *does not* stop your Codespace from running. A
 
 Now stop this Codespace using whichever method you prefer.
 
-Once it is stopped, **delete it.** From your [Codespaces page](https://github.com/codespaces), click the `...` menu next to this Codespace and select **Delete**.
+Once it is stopped, you can restart it from your [Codespaces page](https://github.com/codespaces) by clicking the `...` menu next to this Codespace and then selecting **Open in Browser**.
 
 ```{r}
 knitr::include_graphics("getting-started/images/codespaces-3.png")
 ```
+
+Once you are done with a Codespace, you should **delete it.** To do so, go to your [Codespaces page](https://github.com/codespaces), click the `...` menu next to this Codespace and select **Delete**.
 
 This Codespace was a sandbox. You do not own `PPBDS/codespace-starter`, so there is nowhere for your work to go once you stop using the Codespace. That is fine — you have already downloaded your tutorial answers, which is the only thing here worth keeping.
 
