@@ -6,7 +6,7 @@ The world confronts us. Make decisions we must.
 
 We do all of our data science in the cloud, using GitHub Codespaces with Visual Studio Code (VS Code). This chapter walks you through your first two tutorials and the workflow you'll use throughout the book.
 
-Every tutorial after this chapter gets its own GitHub repository. You will create those repositories from a template, `PPBDS/codespace-starter`, which gives every tutorial the same VS Code setup, the same installed R packages, and the same extensions. The rule for naming the repository is simple: take the tutorial id (the tutorial title in lowercase, with spaces replaced by dashes) and use that as the repository name. For "Introduction to R," that is `introduction-to-r`. For "Probability," `probability`. And so on.
+Every tutorial after this chapter gets its own GitHub repository. You will create those repositories from a template like `PPBDS/codespace-starter`, a template which gives every tutorial the same VS Code setup, the same installed R packages, and the same extensions. The rule for naming the repository is simple: take the tutorial id (the tutorial title in lowercase, with spaces replaced by dashes) and use that as the repository name. For "Introduction to R," that is `introduction-to-r`. For "Probability," `probability`. And so on.
 
 Before you set up your first real working repository, though, you will launch a Codespace directly on `PPBDS/codespace-starter` --- without making a copy first --- as a throwaway sandbox to learn the platform. You will complete the **Getting Started** tutorial there, then delete the Codespace. After that you will create your first owned repository, `introduction-to-r`, and launch a Codespace on it to do the **Introduction to R** tutorial.
 
@@ -18,7 +18,7 @@ Use a permanent email address for this account — not one tied to your current 
 
 On GitHub, your projects are organized into "repositories," usually called "repos."
 
-GitHub gives every account 60 free Codespaces hours per month, and more if you join [GitHub Education](https://github.com/education), an option that we highly recommend for students. It also provides lots of free storage. Free hours are not infinite, however, so it is your responsibility to track and stop Codespaces you are not using.
+GitHub gives every account 60 free Codespaces hours per month, and more if you join [GitHub Education](https://github.com/education), an option that we highly recommend for students. It also provides lots of free storage. Free hours are not infinite, however, so it is your responsibility to stop (and delete) Codespaces you are not using.
 
 ## A throwaway Codespace {.unnumbered}
 
@@ -28,7 +28,7 @@ Go to [`https://github.com/PPBDS/codespace-starter`](https://github.com/PPBDS/co
 knitr::include_graphics("getting-started/images/cs-1.png")
 ```
 
-This is a public repository you do not own. You can still launch a Codespace from it — GitHub charges the Codespace minutes against your account, not against PPBDS — but nothing you do persists once the Codespace is deleted. That is intentional: this Codespace is for learning the platform, not for your work.
+This is a public repository you do not own. You can still launch a Codespace from it — GitHub charges the Codespace minutes against your account, not against PPBDS — but nothing you do persists once the Codespace is deleted. That is intentional. This Codespace is for learning the platform, not for your work.
 
 ### Launching the Codespace {.unnumbered}
 
@@ -38,7 +38,7 @@ Click the green **Code** button at the top right of the repository page, switch 
 knitr::include_graphics("getting-started/images/new-1.png")
 ```
 
-This will take a few minutes the first time. Read the rest of this chapter while you are waiting. Behind the scenes, GitHub is creating a virtual machine in the cloud with all the necessary tools for doing data science. That machine is called a "Codespace."
+This will take a minute or so. Behind the scenes, GitHub is creating a virtual machine in the cloud with all the necessary tools for doing data science. That machine is called a "Codespace."
 
 You can tell that the Codespace is not ready by noticing the "Setting up remote connection: Building Codespace..." message in the lower right. GitHub is creating the Codespace following the instructions in the `devcontainer.json` file located in the `.devcontainer` directory.
 
@@ -58,7 +58,15 @@ Once that disappears, you are connected, but the Codespace usually still has a f
 knitr::include_graphics("getting-started/images/cs-2f.png")
 ```
 
-First, note the blue dash moving above the repo name. That indicates the process is not complete. Second, only the five default "extensions" appear along the left edge. Our `devcontainer.json` file installs several more at the end. Third, the Codespace is not displaying its GitHub-assigned name. The process is complete when your Codespace looks like this:
+Note the blue dash moving above the repo name. That indicates the process is not complete. Only the five default "extensions" appear along the left edge. Our `devcontainer.json` file installs several more at the end. The last step in the process is the installation of the R packages we use for tutorials. You can see that occurring here:
+
+
+```{r}
+knitr::include_graphics("getting-started/images/post-command.png")
+```
+
+
+The Codespace should now be displaying its GitHub-assigned name. The process is complete when your Codespace looks like this:
 
 ```{r}
 knitr::include_graphics("getting-started/images/cs-3.png")
@@ -232,7 +240,7 @@ From your new repository's page, click the green **Code** button, switch to the 
 knitr::include_graphics("getting-started/images/new-4.png")
 ```
 
-This Codespace will take longer to launch than the first one — usually a few minutes more. The throwaway Codespace started from `PPBDS/codespace-starter`, which has a pre-built container image waiting; your new repository does not, so the container has to build from scratch the first time. Subsequent launches of this *same* Codespace will be fast.
+This Codespace will take several minutes longer to launch than the first one. Read the rest of this chapter while you are waiting. The throwaway Codespace started from `PPBDS/codespace-starter`, which has a pre-built container image waiting; your new repository does not, so the container has to build from scratch the first time. Subsequent launches of this *same* Codespace will be fast.
 
 ### Running the Introduction to R tutorial {.unnumbered}
 
