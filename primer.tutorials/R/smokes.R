@@ -3,7 +3,7 @@
 #' A 1,000-row sample drawn from the educational NHANES dataset bundled in
 #' the **NHANES** CRAN package (a 10,000-row subset of the 2009--2012 NHANES
 #' waves). Restricted to adults aged 20--80 with non-missing values on
-#' smoking status, age, and sex. Used by the `10-smokes` tutorial as a
+#' smoking status, age, and sex. Used by the `09-smokes` tutorial as a
 #' Medium-tier predictive logistic regression problem: who has ever smoked
 #' at least 100 cigarettes, as a function of age and sex.
 #'

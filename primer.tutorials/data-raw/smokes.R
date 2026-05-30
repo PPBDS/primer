@@ -1,6 +1,6 @@
 # Build the `smokes` dataset shipped with the primer.tutorials package.
 #
-# The 10-smokes tutorial uses this 1000-row sample as a teaching cut of
+# The 09-smokes tutorial uses this 1000-row sample as a teaching cut of
 # NHANES (the national health survey). The outcome is whether a respondent
 # has ever smoked at least 100 cigarettes (the standard public-health
 # definition of "ever-smoker"). Covariates are age and sex --- both

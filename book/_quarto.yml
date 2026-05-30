@@ -22,12 +22,12 @@ book:
     - 02-sampling.qmd
     - 03-rubin-causal-model.qmd
     - 04-cardinal-virtues.qmd
-    - 06-recruits.qmd
-    - 07-trains.qmd
-    - 08-colleges.qmd
-    - 09-sps.qmd
-    - 10-smokes.qmd
-    - 11-shaming.qmd
+    - 05-recruits.qmd
+    - 06-trains.qmd
+    - 07-colleges.qmd
+    - 08-sps.qmd
+    - 09-smokes.qmd
+    - 10-shaming.qmd
     - key-concepts.qmd
   appendices:
     - set-up.qmd

@@ -1,7 +1,7 @@
 #' Teaching cut of NHANES young-adult heights
 #'
 #' A 50-row sample drawn from the National Health and Nutrition Examination
-#' Survey (NHANES, via [primer.data::nhanes]) for the `06-recruits`
+#' Survey (NHANES, via [primer.data::nhanes]) for the `05-recruits`
 #' tutorial. Restricted to ages 18--27 and to the columns relevant for the
 #' tutorial's question. The split between sexes (40 male, 10 female) is
 #' deliberately uneven so the two group means have visibly different

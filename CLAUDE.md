@@ -44,9 +44,9 @@ A data science project has three potential artifacts:
 
 **Example** chapters/tutorials work through a well-defined data science problem using the Cardinal Virtues. The example sequence gets progressively more sophisticated as students become more practiced. Every example chapter covers every important concept — causal effect, Preceptor Table, Population Table, hypothesis testing, posterior predictive checks, and so on. Earlier example chapters may skip the most advanced concepts, but once a concept is introduced it appears in every subsequent chapter.
 
-**Miscellaneous** chapters/tutorials cover topics that do not involve a major data science exercise. The current five are Probability, Sampling, Rubin Causal Model, Cardinal Virtues, and Mechanics.
+**Miscellaneous** chapters/tutorials cover topics that do not involve a major data science exercise. The current four are Probability, Sampling, Rubin Causal Model, and Cardinal Virtues.
 
-The target curriculum is **17 chapter/tutorial pairs total**: the 5 miscellaneous above and **12 example chapters**. Twelve is a working target, chosen because it divides cleanly into 4 Easy / 4 Medium / 4 Hard and pairs with the predictive/causal alternation rule (§1.5). The sequence can grow to 14 or 16 later without changing the design principles — the EMH 4/4/4 split is an artifact of the current size, not a constraint on the final shape.
+The target curriculum is **16 chapter/tutorial pairs total**: the 4 miscellaneous above and **12 example chapters**. Twelve is a working target, chosen because it divides cleanly into 4 Easy / 4 Medium / 4 Hard and pairs with the predictive/causal alternation rule (§1.5). The sequence can grow to 14 or 16 later without changing the design principles — the EMH 4/4/4 split is an artifact of the current size, not a constraint on the final shape.
 
 ### 1.2 Chapter ≠ tutorial
 
@@ -179,7 +179,7 @@ The Primer is designed so that most example tutorials (and the chapters that mat
 
 - §17 seed entries must be kept current. If a tutorial's dataset or model changes, update §17 before regenerating.
 - Tutorial directory names and YAML `id:` fields do not change during regeneration. Student progress records are keyed on those, so directory stability protects continuity — though answers to exercises that got reworded will not map cleanly. Treat each major regeneration like a breaking release: bump the package version, describe the change in `NEWS.md`, tell students they may want to redo the affected tutorials.
-- The miscellaneous tutorials (01 Probability, 02 Sampling, 03 Rubin Causal Model, 04 Mechanics, 05 Cardinal Virtues) have only one-line §17 entries today (`Type: miscellaneous`). For those to be regeneratable the same way, §17 would need richer seed content per misc tutorial. Until then, treat misc tutorials as hand-edited rather than regenerated.
+- The miscellaneous tutorials (01 Probability, 02 Sampling, 03 Rubin Causal Model, 04 Cardinal Virtues) have only one-line §17 entries today (`Type: miscellaneous`). For those to be regeneratable the same way, §17 would need richer seed content per misc tutorial. Until then, treat misc tutorials as hand-edited rather than regenerated.
 - The LLM doing the regeneration must have this file as context. That is by design — `CLAUDE.md` is the only reference either author needs.
 
 **Operational notes.**
@@ -203,7 +203,7 @@ The 12 example tutorials are arranged under three rules that operate together:
    ```
    Six of each. A reader moving through the curriculum sees the causal / predictive distinction reinforced every time a new dataset arrives: we just did a predictive version; now here is a causal one. The rule is a hard constraint — do not drop two predictive tutorials in a row to "simplify," and do not push all the causal tutorials to the end.
 
-2. **EMH 4/4/4, fixed by tutorial number.** Positions 1–4 are Easy, 5–8 Medium, 9–12 Hard. Because the directory numbering runs 06–17 for example tutorials, **the tutorial number alone determines the tier**:
+2. **EMH 4/4/4, fixed by tutorial number.** Positions 1–4 are Easy, 5–8 Medium, 9–12 Hard. Because the directory numbering runs 05–16 for example tutorials, **the tutorial number alone determines the tier**:
 
    | Tutorial number | Position | Tier |
    |---|---|---|
@@ -230,7 +230,7 @@ Each commitment below names: the rule, why it matters, and concrete phrasings/an
    - **Wrong:** *"Raising tuition by $10,000 raises graduation rate by 9 percentage points."* (Implies causal effect of price on graduation.)
    - **Wrong:** *"When tuition rises by $10,000, graduation rate rises by 9 percentage points."* (Same problem in different syntax.)
    - In M/H predictive tutorials, write at least one End that contrasts the right phrasing with the wrong, so students see the difference.
-   - For *causal* models (07-trains, the causal positions in M/H), causal language is required, not forbidden — but only after the unconfoundedness assumption is named and defended. The rule is *"match your language to your identification strategy"* (§12.6 Theme 4 L3).
+   - For *causal* models (06-trains, the causal positions in M/H), causal language is required, not forbidden — but only after the unconfoundedness assumption is named and defended. The rule is *"match your language to your identification strategy"* (§12.6 Theme 4 L3).
 
 2. **"Might be biased," not "will be biased" — uncertainty, not certainty.** Bias under representativeness violations, validity slippage, or stability violations is a *reason to suspect*, not a guarantee. A non-representative sample can produce the right answer by pure luck; we have no principled reason to expect that, but we also can't claim it never happens. Always use *might*, *may*, or *probably* — never *will*.
    - **Right:** *"When representativeness is violated, our parameter estimates might be biased."*
@@ -271,11 +271,11 @@ When you pause to ask, make it easy for David to answer: short list of options, 
 
 Chapters are Quarto files with the top-level `#` already set by the book structure; use `##` for virtue-level sections. Filename convention: `NN-name.qmd` where `NN` is the two-digit chapter number and `name` is the dataset (for example chapters) or a descriptive slug (for miscellaneous chapters) — e.g. `04-cardinal-virtues.qmd`, `08-trains.qmd`, `13-colleges.qmd`.
 
-Tutorials are R Markdown files with `learnr::tutorial` output. They live in the `primer.tutorials` package under `inst/tutorials/NN-name/tutorial.Rmd`, where `NN` is the two-digit chapter number (e.g. `06-recruits`, `14-ces`). The tutorial's `id` in the YAML is `NN-name`, lowercase, dashes for spaces, identical to the directory name. For example tutorials, `name` is the tibble the tutorial fits on — usually the upstream dataset's name (`trains`, `nes`, `governors`, `shaming`, `ces`, `colleges`, `stops`), but a *role-based* name when the tutorial ships its own packaged cut (`recruits` for the NHANES cut in `06-recruits`; see §3.1). Student repo names in operational exercises match the tutorial directory name, so everything (directory, id, repo, packaged tibble where applicable) shares one string per tutorial.
+Tutorials are R Markdown files with `learnr::tutorial` output. They live in the `primer.tutorials` package under `inst/tutorials/NN-name/tutorial.Rmd`, where `NN` is the two-digit chapter number (e.g. `05-recruits`, `13-ces`). The tutorial's `id` in the YAML is `NN-name`, lowercase, dashes for spaces, identical to the directory name. For example tutorials, `name` is the tibble the tutorial fits on — usually the upstream dataset's name (`trains`, `nes`, `governors`, `shaming`, `ces`, `colleges`, `stops`), but a *role-based* name when the tutorial ships its own packaged cut (`recruits` for the NHANES cut in `05-recruits`; see §3.1). Student repo names in operational exercises match the tutorial directory name, so everything (directory, id, repo, packaged tibble where applicable) shares one string per tutorial.
 
 For new chapters, produce a single `.qmd` file. For new tutorials, produce a single `.Rmd` file with the structure described in §5. Do not emit partial diffs; produce complete files David can drop in place.
 
-**Creating a new tutorial directory.** When authoring a new example tutorial from scratch, create the directory and its contents explicitly — do not assume they exist. The surviving tutorials in `inst/tutorials/` are the five misc ones (01–05) plus `99-project`; every example tutorial (06–17) starts from an empty directory.
+**Creating a new tutorial directory.** When authoring a new example tutorial from scratch, create the directory and its contents explicitly — do not assume they exist. The surviving tutorials in `inst/tutorials/` are the four misc ones (01–04) plus `99-project`; every example tutorial (05–16) starts from an empty directory.
 
 Minimum layout for a new tutorial — run these creations in order when starting fresh:
 
@@ -295,7 +295,7 @@ Tutorials **without** an `**Expensive fit:**` flag should not create the `data/`
 
 ### 3.1 Tutorial-specific datasets shipped with `primer.tutorials`
 
-Some tutorials need a curated cut of an upstream dataset rather than the full upstream tibble — to make uncertainty visible at the picture, to balance group sizes, to limit columns, or to lock a sample so every student gets the same rows. We ship those cuts as datasets in the `primer.tutorials` package itself, using the standard CRAN `data/` + `data-raw/` + `R/` pattern. The first such dataset is `recruits` (a 50-row, 40-male / 10-female cut of NHANES used by `06-recruits`); the same pattern applies to any future tutorial-specific cut.
+Some tutorials need a curated cut of an upstream dataset rather than the full upstream tibble — to make uncertainty visible at the picture, to balance group sizes, to limit columns, or to lock a sample so every student gets the same rows. We ship those cuts as datasets in the `primer.tutorials` package itself, using the standard CRAN `data/` + `data-raw/` + `R/` pattern. The first such dataset is `recruits` (a 50-row, 40-male / 10-female cut of NHANES used by `05-recruits`); the same pattern applies to any future tutorial-specific cut.
 
 **Layout.** Three pieces, all in the `primer.tutorials` package root:
 
@@ -323,7 +323,7 @@ Some tutorials need a curated cut of an upstream dataset rather than the full up
 
 A blanket rule that *every* tutorial use a packaged dataset is overkill — datasets like `trains` are already small, balanced, and don't need re-cutting. Use the pattern when there is a real reason; ad-hoc filtering that a single `filter() |> select()` line can do in setup does not need its own `.rda`.
 
-**Naming convention.** The packaged tibble's name should describe the *role* it plays in the tutorial (`recruits`, `voters`, `households`), not the upstream dataset name + size suffix (`nhanes_50`). The role-based name survives later N changes; the size-suffix name doesn't. Use the same name for the tutorial directory (`06-recruits`), the YAML `id` (`06-recruits`), and the student repo. One string per tutorial.
+**Naming convention.** The packaged tibble's name should describe the *role* it plays in the tutorial (`recruits`, `voters`, `households`), not the upstream dataset name + size suffix (`nhanes_50`). The role-based name survives later N changes; the size-suffix name doesn't. Use the same name for the tutorial directory (`05-recruits`), the YAML `id` (`05-recruits`), and the student repo. One string per tutorial.
 
 ---
 
@@ -1372,7 +1372,7 @@ Use the wording below verbatim as the `message` text in written-answer exercises
 
 Short prose fragments — typically one or two sentences — that go in the End of an exercise. Organized by virtue. Cross-references to Key Concepts indicate that the knowledge drop corresponds to a canonical definition covered there (the §11 snapshot is a convenience copy).
 
-**Knowledge drops are *thematic templates*, not verbatim text.** Each drop below names a theme — *"stability is about time"*, *"parameters are imaginary"*, *"covariates are used in three different ways"* — and gives a sample wording. **Tutorials should rephrase the drop in fresh language**, even when reusing the same theme across tutorials at the same tier. Students who read tutorial 6, then 7, then 8 and find the same paragraph pasted three times stop reading; if the wording is fresh each time, the theme registers more strongly because the student has to re-parse it. The canonical answer text inside `question_text(message = ...)` *is* fixed verbatim — that's the answer key — but the End drops that follow are author-rephrased. Aim for the same theme, different sentences.
+**Knowledge drops are *thematic templates*, not verbatim text.** Each drop below names a theme — *"stability is about time"*, *"parameters are imaginary"*, *"covariates are used in three different ways"* — and gives a sample wording. **Tutorials should rephrase the drop in fresh language**, even when reusing the same theme across tutorials at the same tier. Students who read tutorial 5, then 6, then 7 and find the same paragraph pasted three times stop reading; if the wording is fresh each time, the theme registers more strongly because the student has to re-parse it. The canonical answer text inside `question_text(message = ...)` *is* fixed verbatim — that's the answer key — but the End drops that follow are author-rephrased. Aim for the same theme, different sentences.
 
 Knowledge drops are deliberately short. Students won't read more than two sentences.
 
@@ -1652,21 +1652,21 @@ Do not reuse the same level across tutorials — each appearance advances the la
 
 Authors can compress or expand — the goal is "each appearance teaches something the previous didn't." Reaching L4 (namespaces) across the full curriculum is aspirational, not required.
 
-**Theme 3: "Predictive models have no treatments."** Attached to §13.1 Exercise 13's End (the predictive-only "which variable has an important connection to the outcome" question). Appears only in predictive tutorials (positions 1, 3, 5, 7, 9, 11 — tutorials 06, 08, 10, 12, 14, 16); causal tutorials skip this exercise entirely. At E and M the drop is reused verbatim — students see the framing often enough to cement it, and it's the canonical answer to "why didn't we use the word treatment here." At H the drop deepens: the causal/predictive distinction is a commitment by the analyst, not a property of the data or model, and the sophistication level grows to match.
+**Theme 3: "Predictive models have no treatments."** Attached to §13.1 Exercise 13's End (the predictive-only "which variable has an important connection to the outcome" question). Appears only in predictive tutorials (positions 1, 3, 5, 7, 9, 11 — tutorials 05, 07, 09, 11, 13, 15); causal tutorials skip this exercise entirely. At E and M the drop is reused verbatim — students see the framing often enough to cement it, and it's the canonical answer to "why didn't we use the word treatment here." At H the drop deepens: the causal/predictive distinction is a commitment by the analyst, not a property of the data or model, and the sophistication level grows to match.
 
 | Level | Where it appears | Focus |
 |---|---|---|
 | L1 | Easy/Medium predictive tutorials (06, 08, 10, 12), verbatim | *With a predictive model, each individual unit has only one observed outcome. Predictive models have no "treatments" — only covariates.* |
-| L2 | Hard predictive, first appearance (14 CES) | A predictive model doesn't deny causation; it takes no position on it. The same linear-regression code fits a predictive model or a causal one — what differs is the question you ask and the assumptions you're willing to defend. When the analyst refuses to call any covariate a "treatment," the result is a predictive model. |
-| L3 | Hard predictive, last appearance (16 Stops recast) | The predictive/causal distinction is a commitment by the analyst, not a property of the data or the model. Rubin's potential-outcomes framework formalized this distinction roughly fifty years ago; earlier statisticians treated "association" and "causation" as fuzzier ideas. Modern practice demands that you declare your framing upfront, because the same coefficient can be interpreted very differently depending on which framing you adopt. |
+| L2 | Hard predictive, first appearance (13 CES) | A predictive model doesn't deny causation; it takes no position on it. The same linear-regression code fits a predictive model or a causal one — what differs is the question you ask and the assumptions you're willing to defend. When the analyst refuses to call any covariate a "treatment," the result is a predictive model. |
+| L3 | Hard predictive, last appearance (15 Stops recast) | The predictive/causal distinction is a commitment by the analyst, not a property of the data or the model. Rubin's potential-outcomes framework formalized this distinction roughly fifty years ago; earlier statisticians treated "association" and "causation" as fuzzier ideas. Modern practice demands that you declare your framing upfront, because the same coefficient can be interpreted very differently depending on which framing you adopt. |
 
 **Theme 4: Language discipline in predictive models.** Attached to §13.1 Exercise 14's End (the predictive-only "two groups that might differ" question). Appears only in predictive tutorials. Paired pedagogically with Theme 3 (which frames *what* a predictive model is); this theme drills *how to talk about it*. At E and M the drop is verbatim — language habits form through repetition. At H the drop deepens toward *when* causal language is actually appropriate (truly causal models) and the broader cultural problem of correlation-being-reported-as-causation.
 
 | Level | Where it appears | Focus |
 |---|---|---|
 | L1 | Easy/Medium predictive tutorials (06, 08, 10, 12), verbatim | *In predictive models, do not use "cause," "influence," "impact," or anything else which suggests causation. The best phrasing is in terms of "differences" between groups of units with different values for a covariate of interest.* |
-| L2 | Hard predictive, first appearance (14 CES) | The language rule is not pedantry. Phrases like "X causes Y" or "raising X will raise Y" smuggle causal assumptions into a predictive model, and those assumptions are almost always unjustified. Resist the pull of the active voice ("exercise reduces weight") toward the comparative frame ("groups that exercise more tend to weigh less"). When news stories use causal language to describe what a study actually measured predictively, that is a reporting bug, not a translation choice. |
-| L3 | Hard predictive, last appearance (16 Stops recast) | Language constrains inference. Almost every data-science claim you will meet in the wild — policy memos, news summaries, executive dashboards — uses causal language to describe relationships that were only measured predictively. Refusing to participate in that conflation is a discipline. It is also, occasionally, *over-correction*: in a truly causal model — randomized experiment, cleanly identified quasi-experiment — causal language is not just permitted, it is required. The rule is not "always hedge" but "match your language to your identification strategy." |
+| L2 | Hard predictive, first appearance (13 CES) | The language rule is not pedantry. Phrases like "X causes Y" or "raising X will raise Y" smuggle causal assumptions into a predictive model, and those assumptions are almost always unjustified. Resist the pull of the active voice ("exercise reduces weight") toward the comparative frame ("groups that exercise more tend to weigh less"). When news stories use causal language to describe what a study actually measured predictively, that is a reporting bug, not a translation choice. |
+| L3 | Hard predictive, last appearance (15 Stops recast) | Language constrains inference. Almost every data-science claim you will meet in the wild — policy memos, news summaries, executive dashboards — uses causal language to describe relationships that were only measured predictively. Refusing to participate in that conflation is a discipline. It is also, occasionally, *over-correction*: in a truly causal model — randomized experiment, cleanly identified quasi-experiment — causal language is not just permitted, it is required. The rule is not "always hedge" but "match your language to your identification strategy." |
 
 **Theme 5: Expected values vs. other quantities of interest.** Attached to a late-Temperance exercise or knowledge drop, typically around the "alternative-estimates / why-might-we-be-wrong" step. This topic is **chapter-primary** (every example chapter includes a paragraph or two on it, per §4) and only optionally surfaces in tutorials — never at E or M, and only at H as a compressed knowledge drop pointing at what the chapter expands on.
 
@@ -1674,9 +1674,9 @@ The core observation: a tutorial's QoI is almost always an expected value (*"the
 
 | Level | Where it appears | Focus |
 |---|---|---|
-| L1 | Hard tutorials, first appearance (14 CES or 15 Governors) | Average is one question in a family. The fitted DGM also answers max, min, and quantiles — a logistics officer ordering uniforms needs the 90th percentile more than the mean. See the matching chapter for how to ask these questions from the same fit. |
+| L1 | Hard tutorials, first appearance (13 CES or 14 Governors) | Average is one question in a family. The fitted DGM also answers max, min, and quantiles — a logistics officer ordering uniforms needs the 90th percentile more than the mean. See the matching chapter for how to ask these questions from the same fit. |
 | L2 | Hard tutorials, later appearance | Some QoIs — the expected height of the tallest recruit in the next batch of three, for instance — aren't functions of a single parameter. They require simulation from the DGM: draw three synthetic units, take the max, record it, repeat 1,000 times. The resulting distribution is your posterior on the question you actually cared about. |
-| L3 | Hard tutorials, capstone (17 Kenya) | The DGM is a simulator. Once you have one, any question that can be posed as "draw units, compute statistic, summarize" has an answer — even questions with no closed form. This is what makes the Rubin framing powerful: expected values are a convenient special case, but the whole family of questions reduces to *draw from the DGM and count*. |
+| L3 | Hard tutorials, capstone (16 Kenya) | The DGM is a simulator. Once you have one, any question that can be posed as "draw units, compute statistic, summarize" has an answer — even questions with no closed form. This is what makes the Rubin framing powerful: expected values are a convenient special case, but the whole family of questions reduces to *draw from the DGM and count*. |
 
 Chapters get more room for this topic than tutorials can afford, and should include concrete simulation code (not just prose) where feasible.
 
@@ -1694,9 +1694,9 @@ This is the ordered list of exercises that make up an example tutorial. Each exe
 
 Within a section, keep exercises in the order given. Not every tutorial includes every exercise — the schedule depends on spaced repetition (§8) and on whether the problem is causal or predictive. Some exercises (e.g., unconfoundedness questions) are skipped entirely for predictive tutorials.
 
-**Pre-flight before drafting a tutorial.** The tier is fixed by the tutorial number per §1.5: **06–09 Easy, 10–13 Medium, 14–17 Hard**. Do not guess — read the number and use it. Then look up the tutorial's content spec in §17. Some exercises are **tier-dependent** — they are written here in their Medium form but must be dropped, replaced, or extended depending on tier. Tier-dependent exercises are flagged inline with a `**Tier:**` line; read it before including them. Current tier-dependent items:
+**Pre-flight before drafting a tutorial.** The tier is fixed by the tutorial number per §1.5: **05–08 Easy, 09–12 Medium, 13–16 Hard**. Do not guess — read the number and use it. Then look up the tutorial's content spec in §17. Some exercises are **tier-dependent** — they are written here in their Medium form but must be dropped, replaced, or extended depending on tier. Tier-dependent exercises are flagged inline with a `**Tier:**` line; read it before including them. Current tier-dependent items:
 
-- **Model checking** (§13.4 Exercises 11–12 in the three-fit pattern): skipped in the first two example tutorials (positions 1–2, target tutorials 06 Recruits and 07 Trains); replaced by an author-rendered side-by-side outcome/fitted-value plot in the remaining Easy tutorials (positions 3–4, target tutorials 08 Colleges and 09 SPS); Medium form (`check_predictions()`) in positions 5–8 (target tutorials 10–13); Hard form (posterior-predictive-check terminology + model revision driven by the check) in positions 9–10 (target tutorials 14–15); omitted entirely for positions 11–12 per §14.8 (random forests skip parameter and fit-diagnostic blocks in favor of `marginaleffects`-native outputs). Full progression in §1.3 *Worked example: model checking across three levels*.
+- **Model checking** (§13.4 Exercises 11–12 in the three-fit pattern): skipped in the first two example tutorials (positions 1–2, target tutorials 05 Recruits and 06 Trains); replaced by an author-rendered side-by-side outcome/fitted-value plot in the remaining Easy tutorials (positions 3–4, target tutorials 07 Colleges and 08 SPS); Medium form (`check_predictions()`) in positions 5–8 (target tutorials 09–12); Hard form (posterior-predictive-check terminology + model revision driven by the check) in positions 9–10 (target tutorials 13–14); omitted entirely for positions 11–12 per §14.8 (random forests skip parameter and fit-diagnostic blocks in favor of `marginaleffects`-native outputs). Full progression in §1.3 *Worked example: model checking across three levels*.
 - **Concrete DGM math** (§13.4 Exercise 11): author-shipped in Easy and Medium; possibly a student exercise (via AI) in Difficult tutorials with simple models; author-shipped when the model is complex. Details in §13.4.
 - **Parameter-table formatting** (§13.5 Temperance preamble): Easy = raw `tidy()`, Medium = nicer (`kable`/`gt`), Difficult = near-publication quality. Always author-shipped.
 - **`marginaleffects` coverage** (§13.5 Temperance): Easy = `predictions()` family only; Medium adds `comparisons()`; Difficult adds the five-decisions framework and grid types. Slopes are never introduced.
@@ -1711,18 +1711,18 @@ Within a section, keep exercises in the order given. Not every tutorial includes
 
 | Position | Tutorial | Tier | Ex 1 asks |
 |---|---|---|---|
-| 5 | 10 Smokes | Medium-P | Wisdom, Justice |
-| 6 | 11 Shaming | Medium-C | Courage, Temperance |
-| 7 | 12 NES | Medium-P | Wisdom, Courage |
-| 8 | 13 TODO | Medium-C | Justice, Temperance |
-| 9 | 14 CES | Hard-P | Temperance |
-| 10 | 15 Governors | Hard-C | Wisdom |
-| 11 | 16 Stops/RF | Hard-P | Justice |
-| 12 | 17 TODO | Hard-C (last) | **all four** |
+| 5 | 09 Smokes | Medium-P | Wisdom, Justice |
+| 6 | 10 Shaming | Medium-C | Courage, Temperance |
+| 7 | 11 NES | Medium-P | Wisdom, Courage |
+| 8 | 12 Mail | Medium-C | Justice, Temperance |
+| 9 | 13 CES | Hard-P | Temperance |
+| 10 | 14 Governors | Hard-C | Wisdom |
+| 11 | 15 Stops/RF | Hard-P | Justice |
+| 12 | 16 Kenya | Hard-C (last) | **all four** |
 
 Each canonical definition is asked exactly twice across the four Medium tutorials and exactly once across Hard positions 9–11, then again at position 12. The schedule is a suggestion; adjacent tutorials should not repeat the same pair, and the author can rotate differently if it reads better. In every virtue-section preamble, include a *"Remember that …"* reminder for any canonical definition that is not asked at Ex 1 in that tutorial.
 
-If a tutorial is being drafted without a pre-flight tier check, the default is Medium — and Medium wording *will be wrong* for every Easy tutorial (target tutorials 06–09, positions 1–4) and every Hard tutorial (target tutorials 14–17, positions 9–12). The pre-flight is cheap; skipping it is how model-checking exercises ended up in the Recruits tutorial (position 1, Easy) before we caught the mistake.
+If a tutorial is being drafted without a pre-flight tier check, the default is Medium — and Medium wording *will be wrong* for every Easy tutorial (target tutorials 05–08, positions 1–4) and every Hard tutorial (target tutorials 13–16, positions 9–12). The pre-flight is cheap; skipping it is how model-checking exercises ended up in the Recruits tutorial (position 1, Easy) before we caught the mistake.
 
 ### 13.1 Introduction
 
@@ -1744,9 +1744,9 @@ A good Imagine paragraph reads like a sketch of a real person doing a real job, 
 
 **Pacing across the EMH tiers.** The Introduction is mostly operational — repo setup, adding libraries to the QMD, turning off code echo, sending commands to the R prompt, etc. The exercise list below is pitched at **Medium** pace: concise, one operational step per exercise, assuming the student has been through this workflow once before. The pace changes with tier:
 
-- **Easy** (positions 1–4, tutorials 06–09). Slower. Expand each operational exercise with more explanatory prose *before* the step — what a `.gitignore` does and why we need one; what `echo: false` does to the rendered document and why we care; what `Cmd/Ctrl + Enter` does and why we want code in the QMD rather than at the R prompt. Split a long exercise into two or three short ones if the student would otherwise have to track multiple unfamiliar steps at once. Add knowledge drops that teach the *concept* behind each mechanic (why QMD World and R World must stay in sync, what "rendering" actually does). Students at this stage have never done this before — silence is not a feature.
-- **Medium** (positions 5–8, tutorials 10–13). Current pace. The exercise list below is calibrated here: one step per exercise, minimal lead-in prose, concepts assumed.
-- **Hard** (positions 9–12, tutorials 14–17). Faster. Collapse sequences of related operational exercises into a single exercise (e.g. "add libraries, turn off echo, and commit the QMD — paste the result"). Drop explanatory knowledge drops that at Easy and Medium we kept for their own sake. Students at this stage have been through the setup six or more times and do not need it re-explained; keep the operational scaffold, but shrink it.
+- **Easy** (positions 1–4, tutorials 05–08). Slower. Expand each operational exercise with more explanatory prose *before* the step — what a `.gitignore` does and why we need one; what `echo: false` does to the rendered document and why we care; what `Cmd/Ctrl + Enter` does and why we want code in the QMD rather than at the R prompt. Split a long exercise into two or three short ones if the student would otherwise have to track multiple unfamiliar steps at once. Add knowledge drops that teach the *concept* behind each mechanic (why QMD World and R World must stay in sync, what "rendering" actually does). Students at this stage have never done this before — silence is not a feature.
+- **Medium** (positions 5–8, tutorials 09–12). Current pace. The exercise list below is calibrated here: one step per exercise, minimal lead-in prose, concepts assumed.
+- **Hard** (positions 9–12, tutorials 13–16). Faster. Collapse sequences of related operational exercises into a single exercise (e.g. "add libraries, turn off echo, and commit the QMD — paste the result"). Drop explanatory knowledge drops that at Easy and Medium we kept for their own sake. Students at this stage have been through the setup six or more times and do not need it re-explained; keep the operational scaffold, but shrink it.
 
 This progression applies to every Introduction exercise below unless the exercise is explicitly flagged otherwise.
 
@@ -1813,9 +1813,9 @@ Predictive tutorials (positions 1, 3, 5, 7, 9, 11) skip both Exercise 7 and Exer
 **Causal tutorials use Exercises 10–12; predictive tutorials use Exercises 13–14.** For causal tutorials, use the **actual treatment variable** the tutorial plans to use later in Wisdom and Courage. Drop the older "imaginary variable" framing entirely — no `phone_call` or `nutrition_program` placeholders; the treatment is the real one from §17.
 
 **EMH progression across these exercises:**
-- **Easy** (positions 1–4, tutorials 06–09). Use the full block. Causal tutorials do Ex 10, 11, 12, 15. Predictive tutorials do Ex 13, 14, 15. These questions do overlap somewhat with Wisdom — that is fine at Easy; the repetition reinforces the framing at the point in the tutorial where students most need it.
-- **Medium** (positions 5–8, tutorials 10–13). One setup question plus the question-statement. Causal tutorials do only Ex 12 (compute a unit-level causal effect) and Ex 15. Predictive tutorials do only Ex 14 (two groups that might differ) and Ex 15. The Rubin Causal Model and associational-language knowledge drops are compressed into the End of the single retained setup question; Wisdom does the heavier framing at this tier.
-- **Hard** (positions 9–12, tutorials 14–17). Drop Ex 10–14 entirely. Only Ex 15 (state the question) remains. The Introduction is considerably shorter at Hard — which is right, because students at this stage have rehearsed the framing many times and need to get to Wisdom.
+- **Easy** (positions 1–4, tutorials 05–08). Use the full block. Causal tutorials do Ex 10, 11, 12, 15. Predictive tutorials do Ex 13, 14, 15. These questions do overlap somewhat with Wisdom — that is fine at Easy; the repetition reinforces the framing at the point in the tutorial where students most need it.
+- **Medium** (positions 5–8, tutorials 09–12). One setup question plus the question-statement. Causal tutorials do only Ex 12 (compute a unit-level causal effect) and Ex 15. Predictive tutorials do only Ex 14 (two groups that might differ) and Ex 15. The Rubin Causal Model and associational-language knowledge drops are compressed into the End of the single retained setup question; Wisdom does the heavier framing at this tier.
+- **Hard** (positions 9–12, tutorials 13–16). Drop Ex 10–14 entirely. Only Ex 15 (state the question) remains. The Introduction is considerably shorter at Hard — which is right, because students at this stage have rehearsed the framing many times and need to get to Wisdom.
 
 The `[per-tutorial, written-with-answer]` tag below applies across all three tiers; the axis that changes is *whether the exercise appears at all*, not the question format.
 
@@ -1895,8 +1895,8 @@ Between Exercises 2 and 3, insert at least one problem-specific EDA exercise (AI
 
 **Do not duplicate the Introduction's outcome plot here.** §13.1 Exercise 9 already ships an author-rendered plot of the outcome variable — usually a univariate density of the outcome alone, sometimes the outcome already split by the key covariate. Wisdom must move past that view, not repeat it. Concretely:
 
-- If the Intro plot is the outcome alone (06-recruits, 08-colleges), Wisdom's first EDA exercise asks for outcome × covariate.
-- If the Intro plot is already outcome × covariate (07-trains shows `att_end` density colored by `treatment`), Wisdom's first EDA exercise asks for the *same data from a different angle* — a jitter of individual values with overlaid means, a boxplot, a scatter against a continuous covariate, a faceted view, etc.
+- If the Intro plot is the outcome alone (05-recruits, 07-colleges), Wisdom's first EDA exercise asks for outcome × covariate.
+- If the Intro plot is already outcome × covariate (06-trains shows `att_end` density colored by `treatment`), Wisdom's first EDA exercise asks for the *same data from a different angle* — a jitter of individual values with overlaid means, a boxplot, a scatter against a continuous covariate, a faceted view, etc.
 
 The exercise opener should explicitly acknowledge the Intro plot — *"We saw the distribution of [outcome] on its own in the Introduction. Now look at how [outcome] varies with [covariate]…"* — so the student understands why the new view is different from what they have already seen.
 
@@ -2253,7 +2253,7 @@ The interpretation questions are concentrated in Courage so the parameter-table-
 - End: the workspace-awareness knowledge drop (§12.4).
 
 **Exercise 11.** [operational] Load easystats at the R prompt.
-- **Tier:** Medium only. **Omit entirely** in positions 1–2 (target tutorials 06 Recruits, 07 Trains). In the remaining Easy positions 3–4 (target tutorials 08 Colleges, 09 SPS), replace both Exercises 11 and 12 with a single author-rendered side-by-side plot of outcome distribution vs. fitted-value distribution — the student views it and hits Continue (a bare `###`, no question chunk per §6.5); no package loaded, no terminology introduced. In Hard positions 9–10 (target tutorials 14 CES, 15 Governors), keep Exercises 11–12 and add a follow-up exercise that uses the check to drive a model revision. In Hard positions 11–12 (random forest tutorials), drop the model-checking block entirely per §14.8. Full progression in §1.3 *Worked example: model checking across three levels*.
+- **Tier:** Medium only. **Omit entirely** in positions 1–2 (target tutorials 05 Recruits, 06 Trains). In the remaining Easy positions 3–4 (target tutorials 07 Colleges, 08 SPS), replace both Exercises 11 and 12 with a single author-rendered side-by-side plot of outcome distribution vs. fitted-value distribution — the student views it and hits Continue (a bare `###`, no question chunk per §6.5); no package loaded, no terminology introduced. In Hard positions 9–10 (target tutorials 13 CES, 14 Governors), keep Exercises 11–12 and add a follow-up exercise that uses the check to drive a model revision. In Hard positions 11–12 (random forest tutorials), drop the model-checking block entirely per §14.8. Full progression in §1.3 *Worked example: model checking across three levels*.
 - Prompt: *At the R prompt, load the [easystats](https://easystats.github.io/easystats/) package. CP/CR.*
 - End: the why-easystats-isn't-in-the-QMD knowledge drop (§12.4).
 
@@ -2364,9 +2364,9 @@ This ordering determines how much real estate the Courage parameter block consum
    - **Two or more covariates** (Fit C, the final model): every interpretation sentence ends with an adjustment clause — *"…adjusting for [list of other covariates]."* Use **adjust** in preference to **control**; see the adjust-vs-control knowledge drop (§12.5). Omitting the adjustment clause is the single most common student error on interpretation exercises, which is why our canonical `message` always includes it. Fit C's interpretation question (§13.4 Exercise 11) is where the adjustment clause first appears in the curriculum.
 
 **EMH progression for the Courage interpretation block (§13.4 Exercises 5, 8, 11):**
-- **Easy** (positions 1–4, target tutorials 06–09). All linear models. The three-fit progression — binary or multi-level categorical (Fit A), the other categorical type or continuous (Fit B), final combined (Fit C) — is the curriculum's first place to practice interpretation across covariate types. The adjustment clause appears for the first time at Fit C's interpretation question.
-- **Medium** (positions 5–8, target tutorials 10–13). First link functions (logit in Smokes at position 5, Shaming at position 6; multinomial in NES at position 7). Adjustment clauses are mandatory. Students are **not** asked to produce link-scale interpretations; the author notes the link-scale form once, and Courage's interpretation Ends focus on identifying reference categories, the sign of β, and why we need `marginaleffects`. Interactions, when they appear, force conditional interpretation — *"the effect of X depends on the value of Z."*
-- **Hard** (positions 9–12, target tutorials 14–17). Cumulative logit (CES at position 9), RDD causal identification (Governors at position 10), and non-parametric models (random forests at positions 11 and 12). Non-parametric models replace the three-fit Courage block with a single "why parameters don't help" exercise per §14.8. Where the multi-fit block remains, keep at least one fit whose interpretation question requires the student to articulate *why* the parameter is opaque — the failure to interpret is itself the lesson, and it sets up the Temperance `marginaleffects` work that follows.
+- **Easy** (positions 1–4, target tutorials 05–08). All linear models. The three-fit progression — binary or multi-level categorical (Fit A), the other categorical type or continuous (Fit B), final combined (Fit C) — is the curriculum's first place to practice interpretation across covariate types. The adjustment clause appears for the first time at Fit C's interpretation question.
+- **Medium** (positions 5–8, target tutorials 09–12). First link functions (logit in Smokes at position 5, Shaming at position 6; multinomial in NES at position 7). Adjustment clauses are mandatory. Students are **not** asked to produce link-scale interpretations; the author notes the link-scale form once, and Courage's interpretation Ends focus on identifying reference categories, the sign of β, and why we need `marginaleffects`. Interactions, when they appear, force conditional interpretation — *"the effect of X depends on the value of Z."*
+- **Hard** (positions 9–12, target tutorials 13–16). Cumulative logit (CES at position 9), RDD causal identification (Governors at position 10), and non-parametric models (random forests at positions 11 and 12). Non-parametric models replace the three-fit Courage block with a single "why parameters don't help" exercise per §14.8. Where the multi-fit block remains, keep at least one fit whose interpretation question requires the student to articulate *why* the parameter is opaque — the failure to interpret is itself the lesson, and it sets up the Temperance `marginaleffects` work that follows.
 
 **Exercise 2.** [operational] Load `marginaleffects`.
 - Prompt: *In the end, we don't really care about parameters. Parameters are imaginary, like unicorns. We care about answers to our questions. In the modern world, all parameters are nuisance parameters. Add `library(marginaleffects)` to the QMD. Place your cursor on that line. Use `Cmd/Ctrl + Enter`. CP/CR.*
@@ -2571,7 +2571,7 @@ This is not a progression — it applies at every level (Easy / Medium / Difficu
 
 Predictive tutorials skip the unconfoundedness exercises (Justice 11 and 12). Models with no interpretable parameters (random forests, neural nets) replace Courage's three-fit interpretation block (§13.4 Exercises 3–8) with a single exercise that ensures the student understands the parameters aren't directly interpretable. Non-linear link-function models (logistic, multinomial, cumulative, Poisson) *keep* the Courage interpretation block but redirect each interpretation question away from asking students to produce link-scale coefficient interpretations directly; see §13.5 *Interpretability ceiling by model family* for the rules.
 
-Operational exercises can be abbreviated in later tutorials once students have done them a few times. The first time through, migrate as-is. By tutorial 10+, the `library(broom)` exercise (Justice 14) can be much shorter.
+Operational exercises can be abbreviated in later tutorials once students have done them a few times. The first time through, migrate as-is. By tutorial 09+, the `library(broom)` exercise (Justice 14) can be much shorter.
 
 ### 14.9 Rounding consistency for parameter tables
 
@@ -2797,9 +2797,9 @@ Things flagged but not yet resolved. Revisit when relevant.
 
 Key parameters for each tutorial in the `primer.tutorials` package. Use these entries to orient new authoring sessions: the dataset, the primary question, the model to fit, and the Preceptor Table and Population Table column structure. Tutorials marked **miscellaneous** have no full data-science exercise (no Preceptor Table, no model fit). All others are **example** tutorials.
 
-**The §17 seed names a *final model* per tutorial; Courage's §13.4 three-fit interpretation block is generated from that.** Each entry below specifies the final model the tutorial fits, but the Courage section actually fits two or three candidate models (Fit A → Fit B → Fit C) so students can practice parameter interpretation across covariate types. The candidate fits are chosen by the author at draft time from the dataset's available covariates and need not be listed in the §17 entry. See §13.4 *The Courage parameter-interpretation block* for the design pattern, and the `06-recruits` / `07-trains` / `08-colleges` tutorials for worked examples.
+**The §17 seed names a *final model* per tutorial; Courage's §13.4 three-fit interpretation block is generated from that.** Each entry below specifies the final model the tutorial fits, but the Courage section actually fits two or three candidate models (Fit A → Fit B → Fit C) so students can practice parameter interpretation across covariate types. The candidate fits are chosen by the author at draft time from the dataset's available covariates and need not be listed in the §17 entry. See §13.4 *The Courage parameter-interpretation block* for the design pattern, and the `05-recruits` / `06-trains` / `07-colleges` tutorials for worked examples.
 
-**Target roster: 12 example tutorials (positions 1–12) + 5 miscellaneous = 17 total.** Example tutorials are numbered 06–17 and arranged per §1.5:
+**Target roster: 12 example tutorials (positions 1–12) + 4 miscellaneous = 16 total.** Example tutorials are numbered 05–16 and arranged per §1.5:
 
 - P/C alternating (P, C, P, C, …) starting at position 1.
 - Positions 1–4 Easy, 5–8 Medium, 9–12 Hard.
@@ -2809,11 +2809,11 @@ Preceptor Table and Population Table columns are listed by spanner in order. Pop
 
 **Expensive-fit flag.** Tutorials whose final model is too slow to fit in the setup chunk (more than ~3 seconds even on a slice-sampled subset) include an `**Expensive fit:** Yes — <reason>` field. Those tutorials load the fit from a pre-generated `.rds` in `data/`, regenerated by `data-raw/prefit.R`. See §5.6 for the pattern and load-snippet. Tutorials without this flag must not include an `.rds` cache of the fit — the fit happens live in setup.
 
-**Directory numbering.** Physical directory names on disk match the target numbering. Nine example tutorials currently exist (06, 07, 08, 10, 11, 12, 14, 15, 16) with **three gap slots (09, 13, 17) where the dataset and framing are chosen but the exercise content has yet to be authored**. Target tutorial 09 is **SPS** (Seguro Popular, binary treatment), 13 is **Mail** (Philadelphia mail-in voting, 3-arm), 17 is **Kenya** (voter registration, 6-arm multi-arm causal forest — curriculum capstone). Per §1.5, positions 11 and 12 (target tutorials 16 and 17) are the non-parametric tutorials; target tutorial 16 at `16-stops` is slated for a random-forest **recast** of the old predictive-linear stops tutorial.
+**Directory numbering.** Physical directory names on disk match the target numbering. Six example tutorials currently exist (05 Recruits, 06 Trains, 07 Colleges, 08 SPS, 09 Smokes, 10 Shaming), with **six gap slots (11 NES, 12 Mail, 13 CES, 14 Governors, 15 Stops/RF, 16 Kenya) where the dataset and framing are chosen but the exercise content has yet to be authored or recast**. Per §1.5, positions 11 and 12 (target tutorials 15 and 16) are the non-parametric tutorials; target tutorial 15 at `15-stops` is slated for a random-forest **recast** of the old predictive-linear stops tutorial.
 
 ---
 
-**Miscellaneous tutorials (01–05) are frozen inheritance.** They predate this CLAUDE.md rewrite and are not specified here beyond the `Type: miscellaneous` tag. Do not rewrite them to match the §13 master exercise list; their existing content stands. They do not follow the example-tutorial structure (Wisdom / Justice / Courage / Temperance with per-virtue preambles), the EMH progression rules, or the §17 seed-entry pattern. When the rest of the curriculum changes (terminology shifts, renumbering, etc.), touch them only as needed for consistency — not to restructure.
+**Miscellaneous tutorials (01–04) are frozen inheritance.** They predate this CLAUDE.md rewrite and are not specified here beyond the `Type: miscellaneous` tag. Do not rewrite them to match the §13 master exercise list; their existing content stands. They do not follow the example-tutorial structure (Wisdom / Justice / Courage / Temperance with per-virtue preambles), the EMH progression rules, or the §17 seed-entry pattern. When the rest of the curriculum changes (terminology shifts, renumbering, etc.), touch them only as needed for consistency — not to restructure.
 
 ### 01 — Probability
 
@@ -2833,19 +2833,13 @@ Preceptor Table and Population Table columns are listed by spanner in order. Pop
 
 ---
 
-### 04 — Mechanics
+### 04 — Cardinal Virtues
 
 - **Type:** miscellaneous
 
 ---
 
-### 05 — Cardinal Virtues
-
-- **Type:** miscellaneous
-
----
-
-### 06 — Recruits  *(Position 1, Easy predictive)*
+### 05 — Recruits  *(Position 1, Easy predictive)*
 
 - **Type:** example
 - **"Imagine":** You are in charge of ordering uniforms for next year's Marine Corps bootcamp recruits.
@@ -2866,7 +2860,7 @@ Preceptor Table and Population Table columns are listed by spanner in order. Pop
 
 ---
 
-### 07 — Trains  *(Position 2, Easy causal)*
+### 06 — Trains  *(Position 2, Easy causal)*
 
 - **Type:** example
 - **"Imagine":** You are a campaign manager for a Republican congressional candidate in Georgia who wants to increase anti-immigration sentiment among voters.
@@ -2884,7 +2878,7 @@ Preceptor Table and Population Table columns are listed by spanner in order. Pop
 
 ---
 
-### 08 — Colleges  *(Position 3, Easy predictive)*
+### 07 — Colleges  *(Position 3, Easy predictive)*
 
 - **Type:** example
 - **"Imagine":** You are a data scientist at a non-profit helping students find the best college.
@@ -2902,7 +2896,7 @@ Preceptor Table and Population Table columns are listed by spanner in order. Pop
 
 ---
 
-### 09 — SPS  *(Position 4, Easy causal)*
+### 08 — SPS  *(Position 4, Easy causal)*
 
 - **Type:** example *(to be authored — dataset and framing chosen; exercise content still to write)*
 - **"Imagine":** You are a health-policy analyst at Mexico's Ministry of Health deciding whether to continue funding Seguro Popular, the universal health-insurance program. Households care about whether enrollment actually lowers out-of-pocket medical spending.
@@ -2920,14 +2914,14 @@ Preceptor Table and Population Table columns are listed by spanner in order. Pop
 - **Authoring notes:**
   - Outcome scale is heavy-tailed (raw pesos). Plot the distribution in Wisdom EDA and note the skew. If misbehavior is severe, switch outcome to `t2_health_exp_1m`, log-transform, or trim outliers — record the decision in the Wisdom preamble's dataset note.
   - Assignment was cluster-randomized, not individual-randomized. Justice should name this under unconfoundedness (treatment assignment is independent of potential outcomes *at the cluster level*) without teaching clustered standard errors (too advanced for Easy).
-  - Pairs thematically with **07-trains** (position 2) as the two simple RCTs in the Easy tier: different domain (health vs. immigration attitudes), same model class (linear with binary treatment), same Easy-tier apparatus.
+  - Pairs thematically with **06-trains** (position 2) as the two simple RCTs in the Easy tier: different domain (health vs. immigration attitudes), same model class (linear with binary treatment), same Easy-tier apparatus.
 
 ---
 
-### 10 — Smokes  *(Position 5, Medium predictive)*
+### 09 — Smokes  *(Position 5, Medium predictive)*
 
 - **Type:** example
-- **Status:** **Replaced.** Earlier drafts at this slot used a constructed Biden 2024 YouGov tibble (intercept-only logistic) and then a 2024 NES Democratic-vote design. Both have a political framing the curriculum has plenty of elsewhere (positions 6, 7, 8, 9, 11, 12). The current design swaps in a non-political binary outcome — whether an adult has ever smoked — using a curated NHANES cut packaged in `primer.tutorials::smokes`. Same dataset family students saw at position 1 (06 Recruits drew its `recruits` cut from NHANES too), so the data is familiar; the model and outcome are new.
+- **Status:** **Replaced.** Earlier drafts at this slot used a constructed Biden 2024 YouGov tibble (intercept-only logistic) and then a 2024 NES Democratic-vote design. Both have a political framing the curriculum has plenty of elsewhere (positions 6, 7, 8, 9, 11, 12). The current design swaps in a non-political binary outcome — whether an adult has ever smoked — using a curated NHANES cut packaged in `primer.tutorials::smokes`. Same dataset family students saw at position 1 (05 Recruits drew its `recruits` cut from NHANES too), so the data is familiar; the model and outcome are new.
 - **"Imagine":** You are a public-health analyst at a state health department designing the next anti-smoking campaign. To target outreach, you want to know which adults are most likely to be smokers, broken out by basic demographics like age and sex. There are many decisions to make.
 - **Dataset:** `smokes` (`primer.tutorials`) — a 1,000-row teaching cut of the NHANES 2009--2012 educational subset bundled in the **NHANES** CRAN package. Restricted to adults aged 20--80 with non-missing values on smoking status, age, and sex. Built by `data-raw/smokes.R`; documented in `R/smokes.R`.
 - **Outcome:** `smoke` — factor with levels `"No"` and `"Yes"`; "Yes" means the respondent has ever smoked at least 100 cigarettes (the standard public-health "ever-smoker" definition). Stored as a factor for `logistic_reg(engine = "glm")` (factor-outcome gotcha, §13.4).
@@ -2954,11 +2948,11 @@ Preceptor Table and Population Table columns are listed by spanner in order. Pop
   - **Why age stays in the final model despite a borderline coefficient.** Pedagogically, Fit B teaches "this covariate barely moves the needle on its own"; Fit C *keeps* age anyway so that interpretation of `sexMale` in Fit C requires the adjustment clause ("adjusting for age") that Easy tutorials introduced and Medium tutorials must keep mandatory.
   - **"Specific question" verification.** The QoI subtracts two probabilities (70y Male P=0.54, 30y Female P=0.34). The answer is one specific number (0.20, or 20 percentage points). The §13.1 specific-number rule is satisfied.
   - **Real-names + overlap rule (§10.2).** The Preceptor Table and Population Table use real-sounding adult identifiers (e.g. NHANES participant IDs paired with last names plausible for the survey population). At least one identifier appears in both the Data block (with one observed `smoke` value) and the Preceptor block (with both potential outcomes — though for a *predictive* tutorial there is just one outcome column, no hatching).
-  - **Reframing student-progress note.** Position 5's directory was `10-biden` in earlier drafts and is being renamed to `10-smokes`. Existing student progress records keyed on the old `10-biden` ID will not carry forward. Document the rename in `NEWS.md` and bump the package version.
+  - **Reframing student-progress note.** Position 5's directory was `10-biden` in earlier drafts and is being renamed to `09-smokes`. Existing student progress records keyed on the old `10-biden` ID will not carry forward. Document the rename in `NEWS.md` and bump the package version.
 
 ---
 
-### 11 — Shaming  *(Position 6, Medium causal)*
+### 10 — Shaming  *(Position 6, Medium causal)*
 
 - **Type:** example
 - **"Imagine":** You are running for Governor of Texas and must decide how to allocate campaign resources.
@@ -2981,7 +2975,7 @@ Preceptor Table and Population Table columns are listed by spanner in order. Pop
 
 ---
 
-### 12 — NES  *(Position 7, Medium predictive)*
+### 11 — NES  *(Position 7, Medium predictive)*
 
 - **Type:** example
 - **"Imagine":** You are a political scientist studying the 1992 presidential election, curious whether men and women differed in their support for Clinton, Bush, and Perot. There are many decisions to make.
@@ -2999,7 +2993,7 @@ Preceptor Table and Population Table columns are listed by spanner in order. Pop
 
 ---
 
-### 13 — Mail  *(Position 8, Medium causal)*
+### 12 — Mail  *(Position 8, Medium causal)*
 
 - **Type:** example *(to be authored — dataset and framing chosen; exercise content still to write)*
 - **"Imagine":** You are on the Philadelphia City Commissioners' office ahead of the next general election. You have a fixed postcard-printing budget and want to know which nudge message — "safer for you" or "safer for your neighborhood" — actually moves people to apply for a mail ballot.
@@ -3022,7 +3016,7 @@ Preceptor Table and Population Table columns are listed by spanner in order. Pop
 
 ---
 
-### 14 — CES  *(Position 9, Hard predictive)*
+### 13 — CES  *(Position 9, Hard predictive)*
 
 - **Type:** example
 - **"Imagine":** You are a pollster preparing for an upcoming election, exploring 2020 Trump approval patterns across ideology and education levels.
@@ -3040,7 +3034,7 @@ Preceptor Table and Population Table columns are listed by spanner in order. Pop
 
 ---
 
-### 15 — Governors  *(Position 10, Hard causal — recast from predictive)*
+### 14 — Governors  *(Position 10, Hard causal — recast from predictive)*
 
 - **Type:** example
 - **Status:** **Recast required.** The existing tutorial frames this as a predictive question — *"how long do gubernatorial candidates live after their election?"*. Under the new §1.5 alternation, position 10 is causal, and the Barfort et al. 2020 paper is a close-election RDD study whose natural framing *is* causal. Rewrite the tutorial around the causal question.
@@ -3060,7 +3054,7 @@ Preceptor Table and Population Table columns are listed by spanner in order. Pop
 
 ---
 
-### 16 — TODO  *(Position 11, Hard predictive — non-parametric / random forest — GAP)*
+### 15 — TODO  *(Position 11, Hard predictive — non-parametric / random forest — GAP)*
 
 - **Type:** example *(to be authored)*
 - **Status:** **Gap.** Non-parametric predictive tutorial does not exist.
@@ -3070,7 +3064,7 @@ Preceptor Table and Population Table columns are listed by spanner in order. Pop
 
 ---
 
-### 17 — Kenya  *(Position 12, Hard causal — causal forest — curriculum capstone)*
+### 16 — Kenya  *(Position 12, Hard causal — causal forest — curriculum capstone)*
 
 - **Type:** example *(to be authored — dataset and framing chosen; exercise content still to write)*
 - **"Imagine":** You are an advisor to Kenya's electoral commission ahead of the 2027 election. Your budget can fund one — maybe two — of six possible interventions to boost voter registration: SMS, local administrators, canvassing, or combinations. The right choice almost certainly varies by community: SMS probably works best where phone density is high; a local admin may matter more in isolated, low-poverty areas. You want a *policy rule*, not a single causal effect.
@@ -3083,7 +3077,7 @@ Preceptor Table and Population Table columns are listed by spanner in order. Pop
 - **Student project:** `kenya`
 - **Data prep:** `kenya |> select(treatment, reg_byrv13, poverty, distance, pop_density, mean_age) |> drop_na()` → `x` *(polling-station-level, ~1,600 rows — no downsampling needed)*
 - **Final model (sketch):** `fit_kenya <- grf::multi_arm_causal_forest(X = as.matrix(x |> select(poverty, distance, pop_density, mean_age)), Y = x$reg_byrv13, W = x$treatment, num.trees = 2000)`  *(confirm exact `grf` API when authoring; the package has moved around)*
-- **Expensive fit:** Yes — causal forest with 2000 trees exceeds the setup-chunk time budget. Pre-fit via `inst/tutorials/17-kenya/data-raw/prefit.R`; setup loads from `inst/tutorials/17-kenya/data/fit_kenya.rds` per §5.6. Reducing `num.trees` to 500 is a fallback if the stored object is too large for the package.
+- **Expensive fit:** Yes — causal forest with 2000 trees exceeds the setup-chunk time budget. Pre-fit via `inst/tutorials/16-kenya/data-raw/prefit.R`; setup loads from `inst/tutorials/16-kenya/data/fit_kenya.rds` per §5.6. Reducing `num.trees` to 500 is a fallback if the stored object is too large for the package.
 - **Preceptor Table:** Unit (Polling Station) | Potential Outcomes (six columns: Reg Rate if Control, if SMS, if Local, if Canvass, if Local+SMS, if Local+Canvass) | Treatment (Intervention) | Covariates (Poverty, Distance, Density, Mean Age)
 - **Population Table:** Source | Unit/Time (Polling Station, Year) | Potential Outcomes (six columns) | Treatment | Covariates
 - **Authoring notes:**
@@ -3096,8 +3090,8 @@ Preceptor Table and Population Table columns are listed by spanner in order. Pop
 
 ---
 
-### Note: `16-stops` pending RF recast
+### Note: `15-stops` pending RF recast
 
-The tutorial at `inst/tutorials/16-stops/` currently fits a linear regression of `arrested ~ sex + race*zone` on the Open Policing data and frames the question as predictive — content that predates the move to position 11 / target tutorial 16. Under §1.5, position 11 is the non-parametric predictive slot, so this tutorial's content must be recast to random forest (or equivalent). The directory has been renamed already; the content rewrite is the outstanding work.
+The tutorial at `inst/tutorials/15-stops/` currently fits a linear regression of `arrested ~ sex + race*zone` on the Open Policing data and frames the question as predictive — content that predates the move to position 11 / target tutorial 15. Under §1.5, position 11 is the non-parametric predictive slot, so this tutorial's content must be recast to random forest (or equivalent). The directory has been renamed already; the content rewrite is the outstanding work.
 
-The Open Policing data is well-suited to RF — non-linearities between race, zone, and arrest probability are exactly the kind of interaction a linear model mishandles — so the recast is the default unless a cleaner RF-candidate dataset appears during authoring. The alternative is to drop `16-stops` entirely and start fresh on a different dataset.
+The Open Policing data is well-suited to RF — non-linearities between race, zone, and arrest probability are exactly the kind of interaction a linear model mishandles — so the recast is the default unless a cleaner RF-candidate dataset appears during authoring. The alternative is to drop `15-stops` entirely and start fresh on a different dataset.
