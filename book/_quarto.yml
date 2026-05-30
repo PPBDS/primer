@@ -26,6 +26,7 @@ book:
     - 07-trains.qmd
     - 08-colleges.qmd
     - 09-sps.qmd
+    - 10-smokes.qmd
     - key-concepts.qmd
   appendices:
     - set-up.qmd
