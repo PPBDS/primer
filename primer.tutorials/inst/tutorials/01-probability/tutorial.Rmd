@@ -33,6 +33,27 @@ throw_dice <- function(n = 1, weights = rep(1/6, 6)) {
 # Unfair weights used in the second half of the body section: face 6 has a
 # 25% chance, the other five faces share the remaining 75% equally (15% each).
 unfair_weights <- c(rep(0.15, 5), 0.25)
+
+# roll_die() simulates rolling a single die n times. Used in the
+# Measuring Surprise section. The default is the fair die; the loaded
+# casino die uses loaded_weights below.
+roll_die <- function(n = 1, weights = rep(1/6, 6)) {
+  sample(1:6, n, replace = TRUE, prob = weights)
+}
+
+# Loaded casino die: P(6) = 0.30, other faces 0.14 each. Real-world
+# casino cheating is much subtler than this (typically 1--3% bias) but
+# at 0.30 the discrimination is fast enough to be pedagogically tidy.
+loaded_weights <- c(0.14, 0.14, 0.14, 0.14, 0.14, 0.30)
+
+# Helper used in the Measuring Surprise section to compute per-roll
+# log-likelihood ratios (loaded vs. fair) and convert cumulative log-
+# odds into posterior probability of "loaded".
+log_lr <- function(rolls) {
+  ifelse(rolls == 6,
+         log(loaded_weights[6] / (1/6)),
+         log(loaded_weights[1] / (1/6)))
+}
 ```
 
 ```{r info-section, child = system.file("child_documents/info_section.Rmd", package = "tutorial.helpers")}
@@ -294,10 +315,341 @@ tibble(n = c(10, 20, 50, 100, 1000)) |>
 At `n = 10` and `n = 20` the histograms look chaotic --- the unfair-dice pattern is indistinguishable from fair-dice noise. By `n = 100` the picture starts to lean right --- there are visibly more high sums than the fair triangle predicts. At `n = 1000` the bias is obvious: the peak is no longer at 7 but is shifted toward 8, the 12 is much taller than 1/36 of the rolls, and the whole shape is asymmetric. **The same data that could not reject "fair dice" at twenty rolls can reject it cleanly at a thousand.** Data does not directly tell us the DGM --- it tells us which DGMs are no longer plausible. That is what "learning from data" really means.
 
 
+## Measuring Surprise
+###
+
+The last section ended on a slogan: *data tells us which DGMs are no longer plausible.* This section makes that idea precise. We will start from histograms --- the picture-level intuition --- and end with a number: the probability that one DGM is true rather than another, updated roll by roll.
+
+Imagine you are at a casino's craps table. The pit boss has just brought out a single die. You have two suspicions:
+
+- The die is **fair**: each face shows up with probability 1/6.
+- The die is **loaded**: the 6 face shows up with probability 0.30, and each of the other five faces with probability 0.14. (This is more extreme than any real casino would risk --- they would get caught --- but the math is identical.)
+
+At this moment, before you have seen any rolls, you think these two possibilities are equally likely: a *prior* of 50/50. Your job is to update that belief as the rolls come in.
+
+### Exercise 1
+
+Before looking at any actual rolls, we need to know what each DGM *looks like* in the limit. Ask your AI agent to add a chunk to `analysis.qmd` that plots two bar charts side by side: the theoretical PDF of the fair die (six bars at 1/6 each) and the theoretical PDF of the loaded die (five bars at 0.14 and a sixth bar at 0.30). Render. Describe in one sentence the visible difference between the two charts.
+
+```{r measuring-surprise-1}
+question_text(NULL,
+  answer(NULL, correct = TRUE),
+  allow_retry = TRUE,
+  try_again_button = "Edit Answer",
+  incorrect = NULL,
+  rows = 3)
+```
+
+###
+
+```{r measuring-surprise-1-test}
+tibble(
+  face = rep(1:6, 2),
+  prob = c(rep(1/6, 6), loaded_weights),
+  die  = rep(c("Fair", "Loaded"), each = 6)
+) |>
+  ggplot(aes(x = factor(face), y = prob)) +
+  geom_col(fill = "grey50") +
+  facet_wrap(~ die) +
+  scale_y_continuous(labels = scales::label_percent(accuracy = 1)) +
+  labs(title = "Theoretical PDFs: fair die vs. loaded die",
+       subtitle = "The loaded die's only difference is a taller 6 bar",
+       x = "Face", y = "Probability") +
+  theme_minimal()
+```
+
+###
+
+The fair die's PDF is flat: every face at exactly 1/6. The loaded die's PDF is *almost* flat --- the five non-6 bars sit at 0.14, just a touch under 1/6 --- but the 6 bar is taller, at 0.30, about 80% taller than a fair 6. The cheat is concentrated entirely in one face. **A bar chart of the *theoretical* PDF is the reference shape. A histogram of actual rolls is a noisy approximation to that shape, and the smaller the sample, the noisier the approximation.**
+
+### Exercise 2
+
+Now look at twenty rolls of the loaded die. Ask your AI agent to add a chunk to `analysis.qmd` that uses `set.seed(10)` followed by `sample(1:6, 20, replace = TRUE, prob = c(0.14, 0.14, 0.14, 0.14, 0.14, 0.30))`, stores the result as `rolls_20`, and plots its histogram. Render. Look at the histogram and answer in one sentence: *given just this picture, are you 95% sure the die is loaded?*
+
+```{r measuring-surprise-2}
+question_text(NULL,
+  answer(NULL, correct = TRUE),
+  allow_retry = TRUE,
+  try_again_button = "Edit Answer",
+  incorrect = NULL,
+  rows = 3)
+```
+
+###
+
+```{r measuring-surprise-2-test}
+set.seed(10)
+rolls_20 <- roll_die(20, weights = loaded_weights)
+
+tibble(face = rolls_20) |>
+  ggplot(aes(x = factor(face, levels = 1:6))) +
+  geom_bar(fill = "grey50") +
+  labs(title = "Twenty rolls of the loaded die",
+       subtitle = "The 6 bar looks tall --- but the sample is small enough that this could be luck",
+       x = "Face", y = "Count") +
+  theme_minimal()
+```
+
+###
+
+The 6 bar is the tallest, which is what the loaded DGM would predict --- but with only 20 rolls, "tallest" is not strong evidence. A fair die over 20 rolls produces tall bars in random places all the time. You might be at 70% or 80% on "loaded" looking at this picture, but you would not bet at 95%. **Twenty rolls is the "suggestive but not determinative" region the chapter warns about: many DGMs are still consistent with the data.**
+
+### Exercise 3
+
+Now look at two hundred rolls of the same loaded die. Ask your AI agent to add a chunk that does the same thing as Exercise 2 but with `n = 200`. Use `set.seed(10)` again. Render. Describe in one sentence what you see now that you could not see at twenty rolls.
+
+```{r measuring-surprise-3}
+question_text(NULL,
+  answer(NULL, correct = TRUE),
+  allow_retry = TRUE,
+  try_again_button = "Edit Answer",
+  incorrect = NULL,
+  rows = 3)
+```
+
+###
+
+```{r measuring-surprise-3-test}
+set.seed(10)
+rolls_200 <- roll_die(200, weights = loaded_weights)
+
+tibble(face = rolls_200) |>
+  ggplot(aes(x = factor(face, levels = 1:6))) +
+  geom_bar(fill = "grey50") +
+  labs(title = "Two hundred rolls of the loaded die",
+       subtitle = "The 6 bar is now clearly taller than the other five",
+       x = "Face", y = "Count") +
+  theme_minimal()
+```
+
+###
+
+The 6 bar is plainly taller than the others, and the five non-6 bars are roughly the same height as each other. This is exactly the loaded-die PDF showing through. **But "plainly" is not a probability.** If a friend asked you *"how sure are you?"* the histogram cannot give a number --- it can only say "very." To produce a real percentage we need to leave the picture and start scoring individual rolls.
+
+### Exercise 4
+
+Each individual roll either supports the loaded-die hypothesis or undermines it. Ask your AI agent to add a chunk that computes the **likelihood ratio** of each face under loaded versus fair: $P(\text{face} \mid \text{loaded}) / P(\text{face} \mid \text{fair})$. Print a small tibble with one row per face. Render. Copy the printed tibble below.
+
+```{r measuring-surprise-4}
+question_text(NULL,
+  answer(NULL, correct = TRUE),
+  allow_retry = TRUE,
+  try_again_button = "Edit Answer",
+  incorrect = NULL,
+  rows = 8)
+```
+
+###
+
+```{r measuring-surprise-4-test}
+tibble(face = 1:6,
+       p_loaded = loaded_weights,
+       p_fair   = 1/6,
+       likelihood_ratio = round(p_loaded / p_fair, 3))
+```
+
+###
+
+Rolling a 6 is **1.8 times more likely** under loaded than under fair; rolling any other face is **0.84 times as likely** under loaded. Every individual roll is a vote: a 6 votes for "loaded" (multiply our belief by 1.8); any non-6 votes for "fair" (multiply by 0.84). **This is the per-roll surprise the chapter introduces.** Histograms hide it inside a picture; the likelihood ratio puts the surprise on a number line.
+
+### Exercise 5
+
+Now combine the 20-roll evidence into a single posterior probability. With a 50/50 prior and independent rolls, the math is simple: multiply our prior odds (1, since 50/50) by the likelihood ratio for each roll. The resulting odds, divided by *one plus those odds*, give the posterior probability of "loaded."
+
+Ask your AI agent to add a chunk to `analysis.qmd` that takes `rolls_20` from Exercise 2, multiplies the per-roll likelihood ratios together (or, equivalently, sums their logs and exponentiates), and prints the posterior probability of "loaded." Render. Copy the printed number.
+
+```{r measuring-surprise-5}
+question_text(NULL,
+  answer(NULL, correct = TRUE),
+  allow_retry = TRUE,
+  try_again_button = "Edit Answer",
+  incorrect = NULL,
+  rows = 3)
+```
+
+###
+
+```{r measuring-surprise-5-test}
+set.seed(10)
+rolls_20 <- roll_die(20, weights = loaded_weights)
+posterior_loaded_20 <- 1 / (1 + exp(-sum(log_lr(rolls_20))))
+round(posterior_loaded_20, 4)
+```
+
+###
+
+Twenty rolls put our posterior at about 0.86 --- meaningfully past 50/50, but well short of the 95% threshold we set for ourselves. Our intuition from the histogram in Exercise 2 ("looks loaded, but I would not bet") corresponds, on the number line, to "0.86." The histogram and the number now agree, but the number is the thing you can act on.
+
+### Exercise 6
+
+Now do the same calculation for the 200-roll sample. Ask your AI agent to repeat Exercise 5 with `rolls_200` from Exercise 3. Render. Copy the printed number.
+
+```{r measuring-surprise-6}
+question_text(NULL,
+  answer(NULL, correct = TRUE),
+  allow_retry = TRUE,
+  try_again_button = "Edit Answer",
+  incorrect = NULL,
+  rows = 3)
+```
+
+###
+
+```{r measuring-surprise-6-test}
+set.seed(10)
+rolls_200 <- roll_die(200, weights = loaded_weights)
+posterior_loaded_200 <- 1 / (1 + exp(-sum(log_lr(rolls_200))))
+round(posterior_loaded_200, 6)
+```
+
+###
+
+Two hundred rolls leave essentially zero doubt --- the posterior is indistinguishable from 1. The data has rejected the fair-die DGM as effectively as the data ever could. **Notice what the calculation produces: not "the die is loaded" but "the probability that the die is loaded, given what we have seen, is 0.9999."** Belief is on a continuum; certainty is a useful limit, not a starting point.
+
+### Exercise 7
+
+The most interesting question is not what the posterior is at the *end* of 200 rolls but how it *evolves*, roll by roll, from 0.50. Ask your AI agent to add a chunk that, starting from `rolls_200`, computes the cumulative sum of log likelihood ratios, converts each cumulative log-odds value to a posterior probability of "loaded," and plots that posterior against the roll number from 1 to 200. Add a horizontal reference line at 0.95. Render. Describe in one sentence what the plot shows.
+
+```{r measuring-surprise-7}
+question_text(NULL,
+  answer(NULL, correct = TRUE),
+  allow_retry = TRUE,
+  try_again_button = "Edit Answer",
+  incorrect = NULL,
+  rows = 3)
+```
+
+###
+
+```{r measuring-surprise-7-test}
+set.seed(10)
+rolls_200 <- roll_die(200, weights = loaded_weights)
+
+tibble(
+  roll      = 1:200,
+  log_odds  = cumsum(log_lr(rolls_200)),
+  posterior = 1 / (1 + exp(-log_odds))
+) |>
+  ggplot(aes(x = roll, y = posterior)) +
+  geom_line() +
+  geom_hline(yintercept = 0.95, color = "red", linetype = "dashed") +
+  scale_y_continuous(limits = c(0, 1),
+                     labels = scales::label_percent(accuracy = 1)) +
+  labs(title = "Posterior probability that the die is loaded, roll by roll",
+       subtitle = "Starts at 50%; each roll nudges the line up (a 6) or down (anything else)",
+       x = "Roll number",
+       y = "Posterior probability of \"loaded\"") +
+  theme_minimal()
+```
+
+###
+
+The line starts at 50%, wobbles a bit while every individual roll matters, then climbs --- with steps up at every 6 and small steps down at every non-6 --- past the 95% line somewhere in the first few dozen rolls and stays there. **This plot *is* the third PDF the chapter talked about**: our belief about which DGM is true, updated in real time. The fair-die line would be the mirror image, climbing down to zero on the same data.
+
+### Exercise 8
+
+One run is one run. To see how *typical* that run was, ask your AI agent to add a chunk that repeats the whole experiment 1,000 times: for each repetition, roll the loaded die until the posterior probability of "loaded" first crosses 95%, and record how many rolls that took. Then plot a histogram of those 1,000 stopping times. Render. Describe in one sentence what the histogram shows about how reliable our "rolls to 95%" answer is.
+
+```{r measuring-surprise-8}
+question_text(NULL,
+  answer(NULL, correct = TRUE),
+  allow_retry = TRUE,
+  try_again_button = "Edit Answer",
+  incorrect = NULL,
+  rows = 3)
+```
+
+###
+
+```{r measuring-surprise-8-test}
+set.seed(42)
+stop_times <- replicate(1000, {
+  rolls    <- roll_die(500, weights = loaded_weights)
+  log_odds <- cumsum(log_lr(rolls))
+  post     <- 1 / (1 + exp(-log_odds))
+  which(post >= 0.95)[1]
+})
+
+tibble(stop_time = stop_times[!is.na(stop_times)]) |>
+  ggplot(aes(x = stop_time)) +
+  geom_histogram(binwidth = 10, fill = "grey50", color = "white") +
+  geom_vline(xintercept = median(stop_times, na.rm = TRUE),
+             color = "red", linetype = "dashed") +
+  labs(title = "Rolls needed to reach 95% posterior on \"loaded\"",
+       subtitle = "1,000 simulated runs; red dashed line is the median",
+       x = "Rolls until posterior >= 0.95",
+       y = "Count") +
+  theme_minimal()
+```
+
+###
+
+The median is about 42 rolls, but the distribution stretches from the teens out past 100. Some runs hit 95% in 20 rolls because the early sixes piled up; others took 80 or more because the early rolls happened to be non-sixes. **The DGM is the same in every run --- but how long it takes the data to *prove* it varies enormously.** This is the third PDF in motion one more time: the same truth, refracted through different finite samples, gives different histories of belief.
+
+The whole arc you just walked --- two competing DGMs, a histogram-level intuition, a per-roll likelihood ratio, an updating posterior, a time series of belief, and a distribution over how long belief takes to settle --- is the engine that the rest of the Primer rides on. Every later chapter is a more elaborate version of this same story: write down candidate DGMs, see what the data implies for each, and let the posterior do the choosing.
+
+
 ## Summary
 ###
 
-(More to come. This is a placeholder so the tutorial renders end-to-end.)
+This tutorial walked through the engine that every later chapter of the Primer rides on. You wrote a function that turns randomness into data and watched many small samples scramble the underlying *data generating mechanism* while a single large sample reveals it cleanly (Topic 1). Then you put two competing DGMs side by side, scored each individual roll for how surprising it would be under each, and watched the posterior probability of "loaded" walk from 50% to near-certainty as the rolls accumulated (Topic 2). The three PDFs the chapter named --- *of the data*, *of the DGM*, *over the DGMs* --- are no longer just labels; you saw all three appear in actual plots.
+
+### Exercise 1
+
+Render `analysis.qmd` one last time to confirm everything works end to end. In the R Terminal, run `show_file("analysis.qmd")`. CP/CR.
+
+```{r summary-1}
+question_text(NULL,
+  answer(NULL, correct = TRUE),
+  allow_retry = TRUE,
+  try_again_button = "Edit Answer",
+  incorrect = NULL,
+  rows = 10)
+```
+
+###
+
+The published version of your QMD is the one your instructor --- and your future self --- will look at most closely. Make sure it tells a clean story end to end: the histograms in Topic 1, the loaded-die plots in Topic 2, the time-series of belief, the stopping-time distribution.
+
+### Exercise 2
+
+Publish your rendered QMD to GitHub Pages. In the bash Terminal, run:
+
+```
+quarto publish gh-pages analysis.qmd
+```
+
+Paste the resulting URL below.
+
+```{r summary-2}
+question_text(NULL,
+  answer(NULL, correct = TRUE),
+  allow_retry = TRUE,
+  try_again_button = "Edit Answer",
+  incorrect = NULL,
+  rows = 3)
+```
+
+###
+
+This URL is now a permanent, shareable record of your probability work --- live data science in the open.
+
+### Exercise 3
+
+Commit and push any remaining changes. Paste the URL of your GitHub repo below.
+
+```{r summary-3}
+question_text(NULL,
+  answer(NULL, correct = TRUE),
+  allow_retry = TRUE,
+  try_again_button = "Edit Answer",
+  incorrect = NULL,
+  rows = 3)
+```
+
+###
+
+The world confronts us. Make decisions we must.
 
 ```{r download-answers, child = system.file("child_documents/download_answers.Rmd", package = "tutorial.helpers")}
 ```
