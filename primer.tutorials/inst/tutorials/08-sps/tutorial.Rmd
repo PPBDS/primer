@@ -101,7 +101,7 @@ question_text(NULL,
 
 ###
 
-Professionals keep their data science work in the cloud because laptops fail.
+The `sps` tibble holds about 12,000 Mexican households from King et al.'s 2005--06 Seguro Popular randomized rollout. Treatment was assigned at the cluster (community) level, not the individual household --- a design detail that matters when we come to unconfoundedness in Justice.
 
 ### Exercise 3
 

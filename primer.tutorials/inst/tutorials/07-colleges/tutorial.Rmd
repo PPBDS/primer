@@ -98,7 +98,7 @@ question_text(NULL,
 
 ###
 
-Professionals keep their data science work in the cloud because laptops fail.
+The `colleges` tibble holds nearly 900 U.S. four-year institutions from the 2013 IPEDS snapshot; the `tuition` column is sticker price (in $10,000s) and `grad_rate` is the six-year graduation rate, the standard federal accountability measure.
 
 ### Exercise 3
 

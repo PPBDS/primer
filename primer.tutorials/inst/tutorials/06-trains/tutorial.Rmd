@@ -59,7 +59,7 @@ question_text(NULL,
 
 ###
 
-The best way to (try to) ensure that students remember these concepts more than a few months after the course ends is [spaced repetition](https://en.wikipedia.org/wiki/Spaced_repetition), although we focus more on the repetition than on the spacing.
+The four virtues structure every Primer chapter; Trains is our first *causal* example, so Justice gets harder: we will name the assumption that lets a randomized two-week platform experiment in Boston, 2012, say anything about what would happen in a different setting today.
 
 ### Exercise 2
 
@@ -88,7 +88,7 @@ question_text(NULL,
 
 ###
 
-Professionals keep their data science work in the cloud because laptops fail.
+The `trains` tibble holds the 115 Boston commuters who participated in Enos's 2012 Metra-platform field experiment, with attitude scores measured before and after a two-week exposure to Spanish-speaking confederates riding the same morning train.
 
 ### Exercise 3
 

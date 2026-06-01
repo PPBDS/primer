@@ -72,7 +72,7 @@ question_text(NULL,
 
 ###
 
-The best way to ensure that students remember these concepts more than a few months after the course ends is spaced repetition. By tutorial 11, repetition is doing the heavy lifting; the spacing has stretched out.
+The four virtues structure every Primer chapter; Shaming is our first *multi-arm* causal example. Five different postcards (No Postcard, Civic Duty, Hawthorne, Self, Neighbors) were randomly assigned, and Courage's logistic model has to encode all five treatment arms at once.
 
 ### Exercise 2
 
@@ -101,7 +101,7 @@ question_text(NULL,
 
 ###
 
-Professionals keep their data science work in the cloud because laptops fail.
+The `shaming` tibble holds about 344,000 registered Michigan voters from the 2006 primary --- one of the largest political-science field experiments on record. Treatment was randomly assigned at the household level, and `primary_06` is the binary outcome (voted / did not vote).
 
 ### Exercise 3
 

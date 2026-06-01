@@ -59,7 +59,7 @@ question_text(NULL,
 
 ###
 
-The best way to ensure that students remember these concepts more than a few months after the course ends is spaced repetition --- although by tutorial 10 we focus more on the repetition than the spacing.
+The four virtues structure every Primer chapter; Smokes is our first *logistic* example. The model's coefficients sit on the log-odds scale --- not a scale anyone reads directly --- so most of Temperance will be about turning the fit into probability-scale answers with `marginaleffects`.
 
 ### Exercise 2
 
@@ -88,7 +88,7 @@ question_text(NULL,
 
 ###
 
-Professionals keep their data science work in the cloud because laptops fail.
+The `smokes` tibble is a 1,000-row teaching cut of NHANES 2009--2012 restricted to adults 20--80, with `smoke` as a Yes/No factor following the canonical NHANES "ever-smoker" definition (≥ 100 cigarettes in a lifetime).
 
 ### Exercise 3
 

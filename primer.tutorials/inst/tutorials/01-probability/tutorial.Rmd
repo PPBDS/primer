@@ -1,6 +1,6 @@
 ---
 title: Probability
-author: David Kane and Ivy Spratt
+author: David Kane
 tutorial:
   id: probability
 output:
@@ -14,17 +14,25 @@ description: "Tutorial #01 for Preceptor's Primer"
 ```{r setup, include = FALSE}
 library(learnr)
 library(tutorial.helpers)
-library(gt)
-
 library(tidyverse)
-library(primer.data)
 
 knitr::opts_chunk$set(echo = FALSE)
-options(tutorial.exercise.timelimit = 60,
+knitr::opts_chunk$set(out.width = "90%")
+options(tutorial.exercise.timelimit = 600,
         tutorial.storage = "local")
-```
 
-```{r copy-code-chunk, child = system.file("child_documents/copy_button.Rmd", package = "tutorial.helpers")}
+# throw_dice() simulates rolling two dice n times and returning the sum of
+# each pair. The weights argument lets us model a biased die; the default
+# is the fair die with each face equally likely (1/6).
+throw_dice <- function(n = 1, weights = rep(1/6, 6)) {
+  d1 <- sample(1:6, n, replace = TRUE, prob = weights)
+  d2 <- sample(1:6, n, replace = TRUE, prob = weights)
+  d1 + d2
+}
+
+# Unfair weights used in the second half of the body section: face 6 has a
+# 25% chance, the other five faces share the remaining 75% equally (15% each).
+unfair_weights <- c(rep(0.15, 5), 0.25)
 ```
 
 ```{r info-section, child = system.file("child_documents/info_section.Rmd", package = "tutorial.helpers")}
@@ -32,12 +40,264 @@ options(tutorial.exercise.timelimit = 60,
 
 
 ## Introduction
+###
 
-<!-- Tutorial content to be authored. The Cardinal Virtues "intellectual exercise" content that used to live here has been moved to 04-cardinal-virtues; this tutorial will be rebuilt around the actual probability content (distributions, simulation, joint/conditional) from book/01-probability.qmd. -->
+This tutorial supports the [Probability](https://ppbds.github.io/primer/01-probability.html) chapter of [*Preceptor's Primer for Bayesian Data Science: Using the Cardinal Virtues for Inference*](https://ppbds.github.io/primer/) by [David Kane](https://davidkane.info/).
+
+The world confronts us. Make decisions we must.
+
+The Probability chapter starts from the most basic question: where does the data we see come from? In any data analysis, three different probability distributions are in play. The first is the *PDF of the data* --- the distribution of the values we have actually observed, often shown as a histogram. The second is the *PDF of the data generating mechanism* --- the unobservable process the data came from, the "true" distribution we wish we knew. The third is the *PDF over data generating mechanisms* --- the set of mechanisms that are still consistent with what we have seen, narrower when we have more data and wider when we have less. Data analysis is the act of using the first to learn about the second, with the third tracking how confident we should be. This tutorial walks through the idea by hand with a simple example: rolling two dice.
+
+### Exercise 1
+
+You should be working inside a GitHub repo named `probability`. Once you're inside the `probability` repo, create a new Quarto document titled `"Probability"` with yourself as the author, render it, save it as `analysis.qmd`, and open `analysis.html` with Live Server so the rendered HTML auto-refreshes on every later render. Create a `.gitignore` file with `analysis_files` on the first line followed by a blank line. Commit and push. Use AI however you like. In the R Terminal, run `show_file(".gitignore")`.
+
+CP/CR.
+
+```{r introduction-1}
+question_text(NULL,
+  answer(NULL, correct = TRUE),
+  allow_retry = TRUE,
+  try_again_button = "Edit Answer",
+  incorrect = NULL,
+  rows = 3)
+```
+
+###
+
+A *probability* is a number between 0 and 1 expressing how confident we are about something. The first kind of probability we will meet is the chance of a single die landing on a particular face --- a clean 1/6 if the die is fair. By the end of this section we will be asking probabilities of more complicated things, like *"is the die fair at all?"*
+
+### Exercise 2
+
+In your QMD, put `library(tidyverse)` in a new code chunk. Render the file. Notice that the document does not look good because the code is visible and there are package-attach messages. Add `#| message: false` to suppress messages in this setup chunk. Also add the following to the YAML header to suppress all code echos:
+
+````
+execute:
+  echo: false
+````
+
+Render again. In the R Terminal, run `show_file("analysis.qmd", chunk = "Last")`. CP/CR.
+
+```{r introduction-2}
+question_text(NULL,
+  answer(NULL, correct = TRUE),
+  allow_retry = TRUE,
+  try_again_button = "Edit Answer",
+  incorrect = NULL,
+  rows = 5)
+```
+
+###
+
+"Random" in a computer is not really random --- it is a long deterministic sequence designed to *look* random. The `set.seed()` calls you will see throughout this tutorial pin the simulator to a known starting point, so the histograms in your rendered HTML will line up exactly with the ones we show as our version. Without `set.seed()`, every render would give different results --- still valid, just not reproducible.
+
+
+## The Data Generating Mechanism
+###
+
+When we look at a histogram of an experiment's results, what we are really asking is *what process produced these numbers?* In this section we will build the simplest possible example of that question by hand. We have a pair of dice. We can roll them as many times as we like. Each roll gives us the sum of the two faces. From a finite stack of those sums, what can we say about the dice?
+
+### Exercise 1
+
+Ask your AI agent to add a function called `throw_dice()` to `analysis.qmd` that simulates rolling two fair dice `n` times and returns the sum of each pair as a numeric vector. A good implementation calls `sample(1:6, n, replace = TRUE)` once for each die and adds the two results. Then, in the same chunk, set the seed with `set.seed(10)` and call `throw_dice(5)`. Render. Copy the printed five-number vector from the rendered HTML below.
+
+```{r dgm-1}
+question_text(NULL,
+  answer(NULL, correct = TRUE),
+  allow_retry = TRUE,
+  try_again_button = "Edit Answer",
+  incorrect = NULL,
+  rows = 2)
+```
+
+###
+
+```{r dgm-1-test}
+set.seed(10)
+throw_dice(5)
+```
+
+###
+
+The five sums you see are not the "true" probabilities of anything --- they are just five draws from the *data generating mechanism* (DGM) that produced them. The DGM here is *roll two fair dice and add the faces*; the data is the five-number vector. With only five rolls, almost any DGM could have produced the same vector. Knowing the truth (fair dice, sum from 2 to 12 with a peak at 7) does not by itself tell us anything about how clearly that truth will show up in a small sample --- and in a real problem we would not know the truth at all.
+
+### Exercise 2
+
+Ask your AI agent to add a `ggplot` to `analysis.qmd` that calls `throw_dice(20)` (with `set.seed(10)` on the line above) and draws a histogram of the 20 sums, with the x-axis ticked at each integer from 2 to 12. Render. Describe in one sentence what shape you see.
+
+```{r dgm-2}
+question_text(NULL,
+  answer(NULL, correct = TRUE),
+  allow_retry = TRUE,
+  try_again_button = "Edit Answer",
+  incorrect = NULL,
+  rows = 3)
+```
+
+###
+
+```{r dgm-2-test}
+set.seed(10)
+tibble(sum = throw_dice(20)) |>
+  ggplot(aes(x = sum)) +
+  geom_bar(fill = "grey50") +
+  scale_x_continuous(breaks = 2:12) +
+  labs(title = "Twenty throws of two fair dice",
+       subtitle = "The shape is choppy --- 20 rolls is not enough to see the true distribution",
+       x = "Sum of two dice", y = "Count") +
+  theme_minimal()
+```
+
+###
+
+A reader who saw only this histogram, without the title telling them the dice were fair, would have a hard time guessing the underlying DGM. The bumps and gaps look like they might mean *something* --- maybe the dice favor a particular sum, maybe they avoid another --- but with twenty rolls each of those features could just be noise. The histogram is the *PDF of the data*; we still know almost nothing about the *PDF of the DGM*.
+
+### Exercise 3
+
+Now run the same 20-throw experiment ten different times --- ten separate "shifts" of an inspector rolling the same pair of fair dice --- and plot all ten histograms in one panel so we can compare them. Ask your AI agent to add a chunk to `analysis.qmd` that builds a tibble of 10 trials × 20 throws (using `tibble(trial = 1:10) |> mutate(throws = map(trial, ~ throw_dice(20))) |> unnest(throws)`), then plots a histogram of the sums faceted by `trial`. Render. Describe in one sentence what you notice about the ten panels.
+
+```{r dgm-3}
+question_text(NULL,
+  answer(NULL, correct = TRUE),
+  allow_retry = TRUE,
+  try_again_button = "Edit Answer",
+  incorrect = NULL,
+  rows = 3)
+```
+
+###
+
+```{r dgm-3-test}
+set.seed(10)
+tibble(trial = 1:10) |>
+  mutate(throws = map(trial, ~ throw_dice(20))) |>
+  unnest(throws) |>
+  ggplot(aes(x = throws)) +
+  geom_bar(fill = "grey50") +
+  facet_wrap(~ trial, nrow = 2) +
+  scale_x_continuous(breaks = 2:12) +
+  labs(title = "Ten samples of 20 throws each --- fair dice",
+       subtitle = "Each panel is one possible \"experiment\" we might have run",
+       x = "Sum", y = "Count") +
+  theme_minimal()
+```
+
+###
+
+The ten panels are *strikingly different from each other*, even though they were all generated by the exact same DGM. Some panels are peaked, others are flat. Some have a missing sum (no 7s!) that the true DGM says should be the most common outcome. **At twenty rolls, many wildly different DGMs are consistent with the data.** This is the *PDF over data generating mechanisms* the chapter mentions: with little data, that PDF is wide --- lots of dice configurations could have produced any one of those panels.
+
+### Exercise 4
+
+Now do the opposite experiment: keep the dice fair and watch what happens as the number of rolls grows. Ask your AI agent to add a chunk to `analysis.qmd` that builds histograms for `n = 10, 20, 50, 100, 1000` throws of two fair dice, each in its own panel side by side. The recipe: `tibble(n = c(10, 20, 50, 100, 1000)) |> mutate(throws = map(n, throw_dice)) |> unnest(throws) |> mutate(n = factor(n, levels = c(10, 20, 50, 100, 1000)))`, then a faceted histogram. Use `scales = "free_y"` so the smaller panels are not crushed. Render. Describe in one sentence how the shape changes as `n` grows.
+
+```{r dgm-4}
+question_text(NULL,
+  answer(NULL, correct = TRUE),
+  allow_retry = TRUE,
+  try_again_button = "Edit Answer",
+  incorrect = NULL,
+  rows = 3)
+```
+
+###
+
+```{r dgm-4-test}
+set.seed(10)
+tibble(n = c(10, 20, 50, 100, 1000)) |>
+  mutate(throws = map(n, throw_dice)) |>
+  unnest(throws) |>
+  mutate(n = factor(n, levels = c(10, 20, 50, 100, 1000))) |>
+  ggplot(aes(x = throws)) +
+  geom_bar(fill = "grey50") +
+  facet_wrap(~ n, nrow = 1, scales = "free_y",
+             labeller = labeller(n = \(x) paste0("n = ", x))) +
+  scale_x_continuous(breaks = 2:12) +
+  labs(title = "Sum of two fair dice as the sample grows",
+       subtitle = "The empirical PDF converges to the true triangular shape",
+       x = "Sum", y = "Count") +
+  theme_minimal()
+```
+
+###
+
+At `n = 10` the histogram looks almost random. At `n = 1000` it is a clean triangle, peaking at 7 with the familiar 2-and-12 corners. The DGM has not changed --- the dice were fair throughout. What changed is how clearly the *PDF of the data* (the histograms) reflects the *PDF of the DGM* (the triangle). **As `n` grows, the PDF over data generating mechanisms narrows: only DGMs that produce something close to a triangle remain consistent with what we saw.** The data has rejected a lot of candidates.
+
+### Exercise 5
+
+Now flip the setup. Suppose the dice are *not* fair --- the 6 face has a 25% chance instead of the usual 1/6, and the other five faces share the remaining 75% equally (15% each). Ask your AI agent to add a chunk to `analysis.qmd` that re-runs Exercise 3's ten-panel experiment, but this time passes `weights = c(0.15, 0.15, 0.15, 0.15, 0.15, 0.25)` to `throw_dice()`. Use the same `set.seed(10)`. Render. Describe in one sentence how this set of ten panels compares to the fair-dice ten panels from Exercise 3.
+
+```{r dgm-5}
+question_text(NULL,
+  answer(NULL, correct = TRUE),
+  allow_retry = TRUE,
+  try_again_button = "Edit Answer",
+  incorrect = NULL,
+  rows = 3)
+```
+
+###
+
+```{r dgm-5-test}
+set.seed(10)
+tibble(trial = 1:10) |>
+  mutate(throws = map(trial,
+                      ~ throw_dice(20, weights = unfair_weights))) |>
+  unnest(throws) |>
+  ggplot(aes(x = throws)) +
+  geom_bar(fill = "grey50") +
+  facet_wrap(~ trial, nrow = 2) +
+  scale_x_continuous(breaks = 2:12) +
+  labs(title = "Ten samples of 20 throws each --- unfair dice (P(6) = 0.25)",
+       subtitle = "Can you tell at a glance that these came from unfair dice?",
+       x = "Sum", y = "Count") +
+  theme_minimal()
+```
+
+###
+
+These panels look *just as messy as the fair-dice panels in Exercise 3 did*. A reader handed only these ten histograms, with no caption telling them the dice were rigged, would not be able to tell the dice apart from a fair pair. The slight bias (P(6) = 0.25 instead of 1/6) shifts the average sum by only half a point --- but the noise from drawing twenty rolls per panel is larger than that. **Many DGMs are consistent with the same sparse data**: the true unfair-dice DGM is one of them, but so is the fair-dice DGM. Twenty rolls per inspector is not enough to tell them apart.
+
+### Exercise 6
+
+Finally, repeat Exercise 4's `n` progression with the same unfair dice. Ask your AI agent to add a chunk that does the same `n = 10, 20, 50, 100, 1000` faceted histogram, but with `weights = c(0.15, 0.15, 0.15, 0.15, 0.15, 0.25)` passed to each `throw_dice()` call. Render. Describe in one sentence at what value of `n` the dice start to look obviously rigged.
+
+```{r dgm-6}
+question_text(NULL,
+  answer(NULL, correct = TRUE),
+  allow_retry = TRUE,
+  try_again_button = "Edit Answer",
+  incorrect = NULL,
+  rows = 3)
+```
+
+###
+
+```{r dgm-6-test}
+set.seed(10)
+tibble(n = c(10, 20, 50, 100, 1000)) |>
+  mutate(throws = map(n, ~ throw_dice(.x, weights = unfair_weights))) |>
+  unnest(throws) |>
+  mutate(n = factor(n, levels = c(10, 20, 50, 100, 1000))) |>
+  ggplot(aes(x = throws)) +
+  geom_bar(fill = "grey50") +
+  facet_wrap(~ n, nrow = 1, scales = "free_y",
+             labeller = labeller(n = \(x) paste0("n = ", x))) +
+  scale_x_continuous(breaks = 2:12) +
+  labs(title = "Sum of two unfair dice (P(6) = 0.25) as the sample grows",
+       subtitle = "The bias shows up clearly only at large n",
+       x = "Sum", y = "Count") +
+  theme_minimal()
+```
+
+###
+
+At `n = 10` and `n = 20` the histograms look chaotic --- the unfair-dice pattern is indistinguishable from fair-dice noise. By `n = 100` the picture starts to lean right --- there are visibly more high sums than the fair triangle predicts. At `n = 1000` the bias is obvious: the peak is no longer at 7 but is shifted toward 8, the 12 is much taller than 1/36 of the rolls, and the whole shape is asymmetric. **The same data that could not reject "fair dice" at twenty rolls can reject it cleanly at a thousand.** Data does not directly tell us the DGM --- it tells us which DGMs are no longer plausible. That is what "learning from data" really means.
 
 
 ## Summary
+###
 
+(More to come. This is a placeholder so the tutorial renders end-to-end.)
 
 ```{r download-answers, child = system.file("child_documents/download_answers.Rmd", package = "tutorial.helpers")}
 ```

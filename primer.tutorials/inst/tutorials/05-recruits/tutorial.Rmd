@@ -60,7 +60,7 @@ question_text(NULL,
 
 ###
 
-The best way to (try to) ensure that students remember these concepts more than a few months after the course ends is [spaced repetition](https://en.wikipedia.org/wiki/Spaced_repetition), although we focus more on the repetition than on the spacing. You will see the same questions more than once, across tutorials and within tutorials.
+The four virtues are the four sections of every Primer chapter and tutorial: a question and a Preceptor Table (Wisdom), an audit of assumptions (Justice), the model (Courage), and the answer with its uncertainty (Temperance). Recruits is the first time we run that arc end to end, on a 50-row sample of height by sex.
 
 ### Exercise 2
 
@@ -93,7 +93,7 @@ question_text(NULL,
 
 ###
 
-Professionals keep their data science work in the cloud because laptops fail. Using GitHub for every project --- and rendering to GitHub Pages --- is the habit we want to build.
+The `recruits` tibble is a 50-row teaching cut of NHANES with 40 male and 10 female young adults aged 18--27; the deliberately uneven split will matter when we get to the precision of group means in Temperance.
 
 ### Exercise 3
 
