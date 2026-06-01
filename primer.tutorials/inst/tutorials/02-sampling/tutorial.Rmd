@@ -51,11 +51,11 @@ This tutorial supports the [Sampling](https://ppbds.github.io/primer/02-sampling
 
 The world confronts us. Make decisions we must.
 
-Imagine you are a voter-file analyst at a Michigan civic-engagement nonprofit preparing the next door-knock campaign. The state's registered-voter file lists more than seven million people, and you need to know the average age of those voters so the campaign can plan its outreach --- older voters get printed materials, younger voters get app-based messaging. Walking the whole file every cycle is impossible. Your boss, the campaign director, will use the number you report to decide how to split the printing budget against the app development budget. The estimate alone won't decide anything, but it is one good input. This tutorial focuses on one specific estimate: the average age of registered voters, with its associated uncertainty. There are many decisions to make.
+The Sampling chapter starts from a simple fact: we almost never measure a whole population, so we take a *sample* and use it to estimate what we cannot see. A different sample would give a different answer, so every estimate carries uncertainty --- and the *standard error* measures it, shrinking only with the square root of the sample size (four times the data buys just half the error). A rough 95% confidence interval is the estimate give or take two standard errors. The chapter's sharpest point: all of this assumes the sample was drawn *fairly* --- when the sampling mechanism is biased, more data does not help, it only sharpens a wrong answer. This tutorial rebuilds these ideas by hand, first with fair sampling and then with biased sampling.
 
 ### Exercise 1
 
-You should be working inside a GitHub repo named `sampling`. Once you're inside the `sampling` repo, create a new Quarto document titled `"Sampling"` with yourself as the author, render it, save it as `analysis.qmd`, and open `analysis.html` with Live Server so the rendered HTML auto-refreshes on every later render. Create a `.gitignore` file with `analysis_files` on the first line followed by a blank line. Commit and push. In the R Terminal, run `show_file(".gitignore")`.
+You should be working inside a GitHub repo named `sampling`. Once you're inside the `sampling` repo, create a new Quarto document titled `"Sampling"` with yourself as the author, render it, save it as `analysis.qmd`, and open `analysis.html` with Live Server so the rendered HTML auto-refreshes on every later render. Create a `.gitignore` file with `analysis_files` on the first line followed by a blank line. Commit and push. Use AI however you like. In the R Terminal, run `show_file(".gitignore")`.
 
 CP/CR.
 
@@ -74,7 +74,7 @@ A *census* measures every unit in a population --- and it is usually too expensi
 
 ### Exercise 2
 
-In your QMD, put `library(tidyverse)` and `library(primer.data)` in a new code chunk. Have your AI agent render the file. Notice that the document does not look good because the code is visible and there are package-attach messages. Add `#| message: false` to suppress messages in this setup chunk. Also add the following to the YAML header to suppress all code echos:
+In your QMD, put `library(tidyverse)` and `library(primer.data)` in a new code chunk. Render the file. Notice that the document does not look good because the code is visible and there are package-attach messages. Add `#| message: false` to suppress messages in this setup chunk. Also add the following to the YAML header to suppress all code echos:
 
 ````
 execute:
@@ -98,7 +98,7 @@ The one number we wish we knew about the whole population --- here, the average 
 
 ### Exercise 3
 
-Ask your AI agent to add a code chunk to `analysis.qmd` that prints the `shaming` tibble (just `shaming` on its own line). Render, and copy the first few rows from the rendered HTML below.
+Add a code chunk to `analysis.qmd` that prints the `shaming` tibble (just `shaming` on its own line). Render, and copy the first few rows from the rendered HTML below.
 
 ```{r introduction-3}
 question_text(NULL,
@@ -127,7 +127,7 @@ In real life we never see the whole universe. We see only a sample. From that sa
 
 ### Exercise 1
 
-Ask your AI agent to add a new code chunk to `analysis.qmd` that computes the mean of `age` in the `shaming` tibble, removing missing values, and then render. Copy the printed value from the rendered HTML below.
+Add a new code chunk to `analysis.qmd` that computes the mean of `age` in the `shaming` tibble, removing missing values, and then render. Copy the printed value from the rendered HTML below.
 
 ```{r sampling-and-the-standard-error-1}
 question_text(NULL,
@@ -150,7 +150,7 @@ For the rest of the tutorial, treat this number --- about 49.79 years --- as the
 
 ### Exercise 2
 
-Now ask your AI agent to add lines to the same chunk that draw a reproducible sample of 50 voters and compute the sample mean: `set.seed(10)` at the top of the chunk, then `my_sample <- shaming |> slice_sample(n = 50)`, then `mean(my_sample$age, na.rm = TRUE)`. Render. Copy the printed sample mean from the rendered HTML.
+Now add lines to the same chunk that draw a reproducible sample of 50 voters and compute the sample mean: `set.seed(10)` at the top of the chunk, then `my_sample <- shaming |> slice_sample(n = 50)`, then `mean(my_sample$age, na.rm = TRUE)`. Render. Copy the printed sample mean from the rendered HTML.
 
 ```{r sampling-and-the-standard-error-2}
 question_text(NULL,
@@ -175,7 +175,7 @@ Our sample mean is about 50.02 years; the truth is 49.79. Close but not identica
 
 ### Exercise 3
 
-The **standard error** of a sample mean is the sample's standard deviation divided by the square root of the sample size. Ask your AI agent to add a line to the same chunk that prints `sd(my_sample$age, na.rm = TRUE) / sqrt(50)`. Render. Copy the printed value.
+The **standard error** of a sample mean is the sample's standard deviation divided by the square root of the sample size. Add a line to the same chunk that prints `sd(my_sample$age, na.rm = TRUE) / sqrt(50)`. Render. Copy the printed value.
 
 ```{r sampling-and-the-standard-error-3}
 question_text(NULL,
@@ -200,7 +200,7 @@ The square root in the denominator is doing important work. Suppose we had drawn
 
 ### Exercise 4
 
-Time to draw the picture. Ask your AI agent to add a `ggplot` to the same chunk showing the single sample mean as a point with a horizontal error bar covering mean ± 1.96·SE, and a red dashed vertical line at the truth. Render and look at the plot in `analysis.html`. Describe in one sentence what you see.
+Time to draw the picture. Add a `ggplot` to the same chunk showing the single sample mean as a point with a horizontal error bar covering mean ± 1.96·SE, and a red dashed vertical line at the truth. Render and look at the plot in `analysis.html`. Describe in one sentence what you see.
 
 ```{r sampling-and-the-standard-error-4}
 question_text(NULL,
@@ -237,7 +237,7 @@ That horizontal bar is the **95% confidence interval**. It is a statement about 
 
 ### Exercise 5
 
-To see the "about 95%" claim land, we need not one sample but many. Ask your AI agent to add lines that draw 1,000 samples of 50 voters each from `shaming`, and for each sample compute the mean, standard error, and lower and upper 95% confidence bounds, storing the result in a tibble called `samples`. The canonical pattern uses `tibble(trial = 1:1000)` followed by `mutate()` with `map()` and `map_dbl()`. Render. Copy the first few rows of `samples` from the rendered HTML.
+To see the "about 95%" claim land, we need not one sample but many. Add lines that draw 1,000 samples of 50 voters each from `shaming`, and for each sample compute the mean, standard error, and lower and upper 95% confidence bounds, storing the result in a tibble called `samples`. The canonical pattern uses `tibble(trial = 1:1000)` followed by `mutate()` with `map()` and `map_dbl()`. Render. Copy the first few rows of `samples` from the rendered HTML.
 
 ```{r sampling-and-the-standard-error-5}
 question_text(NULL,
@@ -260,7 +260,7 @@ Each row is one of the thousand hypothetical "what if we had drawn a different 5
 
 ### Exercise 6
 
-Now ask your AI agent to plot the first 100 of those intervals as horizontal error bars stacked vertically, with the truth marked as a vertical red line. (We use 100 rather than 1,000 so the picture stays readable.) Render. Describe in one sentence what you see.
+Now plot the first 100 of those intervals as horizontal error bars stacked vertically, with the truth marked as a vertical red line. (We use 100 rather than 1,000 so the picture stays readable.) Render. Describe in one sentence what you see.
 
 ```{r sampling-and-the-standard-error-6}
 question_text(NULL,
@@ -293,7 +293,7 @@ Most intervals cross the red line --- those contain the truth. A handful do not.
 
 ### Exercise 7
 
-Let's count. Ask your AI agent to compute the fraction of the 1,000 intervals in `samples` whose `lower` is less than the truth and whose `upper` is greater. Render. Copy the printed value.
+Let's count. Compute the fraction of the 1,000 intervals in `samples` whose `lower` is less than the truth and whose `upper` is greater. Render. Copy the printed value.
 
 ```{r sampling-and-the-standard-error-7}
 question_text(NULL,
@@ -317,7 +317,7 @@ About 94.5% of the intervals contained the truth --- close to the 95% the method
 
 ### Exercise 8
 
-Ask your AI agent to polish the 100-sample plot for the final document: clear title, a one-line subtitle naming the takeaway, a caption pointing to `primer.data`, axis labels with units, and `theme_minimal()`. Then ask AI to stage `analysis.qmd`, commit with the message `"Add sampling and standard error analysis"`, and push to GitHub. In the R Terminal, run `show_file("analysis.qmd", chunk = "Last")` and paste the output below.
+Polish the 100-sample plot for the final document: clear title, a one-line subtitle naming the takeaway, a caption pointing to `primer.data`, axis labels with units, and `theme_minimal()`. Then stage `analysis.qmd`, commit with the message `"Add sampling and standard error analysis"`, and push to GitHub. In the R Terminal, run `show_file("analysis.qmd", chunk = "Last")` and paste the output below.
 
 ```{r sampling-and-the-standard-error-8}
 question_text(NULL,
@@ -340,9 +340,9 @@ In the previous section the sampling was *random* --- every voter in the univers
 
 ### Exercise 1
 
-Suppose the campaign's door-knock app, by quirk of its routing, makes voters over the age of 40 *three times as likely* to appear in a sample as voters 40 or younger. The voters themselves haven't changed; the universe is the same `shaming` tibble. Only the *mechanism* that pulls voters into the sample has changed.
+Suppose a get-out-the-vote campaign's door-knock app, by quirk of its routing, makes voters over the age of 40 *three times as likely* to appear in a sample as voters 40 or younger. The voters themselves haven't changed; the universe is the same `shaming` tibble. Only the *mechanism* that pulls voters into the sample has changed.
 
-Ask your AI agent to add a new code chunk to `analysis.qmd` that creates a biased sample of 50 voters: first add a column `wt` to `shaming` that is `3` when `age > 40` and `1` otherwise, then draw 50 rows using `slice_sample(n = 50, weight_by = wt)`. Use `set.seed(10)`. Call the result `biased_sample`. Render and copy the first few rows of `biased_sample` from the rendered HTML.
+Add a new code chunk to `analysis.qmd` that creates a biased sample of 50 voters: first add a column `wt` to `shaming` that is `3` when `age > 40` and `1` otherwise, then draw 50 rows using `slice_sample(n = 50, weight_by = wt)`. Use `set.seed(10)`. Call the result `biased_sample`. Render and copy the first few rows of `biased_sample` from the rendered HTML.
 
 ```{r biased-sampling-1}
 question_text(NULL,
@@ -365,7 +365,7 @@ head(biased_sample |> select(age, primary_06, sex))
 
 ### Exercise 2
 
-Before trusting any downstream results, we want to *see* that the bias is doing what we wrote it to do. Ask your AI agent to add a side-by-side histogram comparing the age distribution of `biased_sample` against an unbiased sample of the same size. The unbiased reference can be `unbiased_sample <- shaming |> slice_sample(n = 50)` with `set.seed(11)`. Bind the two with an `origin` column and `facet_wrap(~ origin)`. Render. Describe in one sentence what you see.
+Before trusting any downstream results, we want to *see* that the bias is doing what we wrote it to do. Add a side-by-side histogram comparing the age distribution of `biased_sample` against an unbiased sample of the same size. The unbiased reference can be `unbiased_sample <- shaming |> slice_sample(n = 50)` with `set.seed(11)`. Bind the two with an `origin` column and `facet_wrap(~ origin)`. Render. Describe in one sentence what you see.
 
 ```{r biased-sampling-2}
 question_text(NULL,
@@ -403,7 +403,7 @@ In the universe (`shaming`), about 76% of voters are over 40. In the unbiased sa
 
 ### Exercise 3
 
-Now ask your AI agent to compute and print the mean and standard error of `age` in `biased_sample` the same way we did in the previous section. Render. Copy both printed values.
+Now compute and print the mean and standard error of `age` in `biased_sample` the same way we did in the previous section. Render. Copy both printed values.
 
 ```{r biased-sampling-3}
 question_text(NULL,
@@ -427,7 +427,7 @@ Two things to notice. First, the biased sample's mean is 55.26 --- about 5.5 yea
 
 ### Exercise 4
 
-Repeat the 1,000-sample exercise from the previous section, but with the biased mechanism. Ask your AI agent to draw 1,000 biased samples of 50 voters each (using `weight_by = wt` and `set.seed(10)`) and store the means, standard errors, and 95% confidence bounds in a tibble called `biased_samples`. Render. Copy the first few rows.
+Repeat the 1,000-sample exercise from the previous section, but with the biased mechanism. Draw 1,000 biased samples of 50 voters each (using `weight_by = wt` and `set.seed(10)`) and store the means, standard errors, and 95% confidence bounds in a tibble called `biased_samples`. Render. Copy the first few rows.
 
 ```{r biased-sampling-4}
 question_text(NULL,
@@ -450,7 +450,7 @@ This is exactly the same code as before, with one change: `slice_sample(..., wei
 
 ### Exercise 5
 
-Ask your AI agent to plot the first 100 rows of `biased_samples` as horizontal error bars with a red dashed vertical line at the truth --- same picture as the unbiased version, but on `biased_samples`. Render. Describe in one sentence what you see.
+Plot the first 100 rows of `biased_samples` as horizontal error bars with a red dashed vertical line at the truth --- same picture as the unbiased version, but on `biased_samples`. Render. Describe in one sentence what you see.
 
 ```{r biased-sampling-5}
 question_text(NULL,
@@ -483,7 +483,7 @@ Compare this to the unbiased picture from the previous section. There the error 
 
 ### Exercise 6
 
-Ask your AI agent to compute the fraction of the 1,000 intervals in `biased_samples` that contain the truth. Render. Copy the printed value.
+Compute the fraction of the 1,000 intervals in `biased_samples` that contain the truth. Render. Copy the printed value.
 
 ```{r biased-sampling-6}
 question_text(NULL,
@@ -509,7 +509,7 @@ This is the single most important lesson of the whole tutorial: **a bigger sampl
 
 ### Exercise 7
 
-To see *where* the biased sample means are clustering, ask your AI agent to plot a density curve of `biased_samples$sample_mean` with a red dashed vertical line at the truth and a black solid vertical line at the average of `sample_mean`. Drop the y-axis since density-plot y-values are not meaningful. Render. Describe in one sentence what you see.
+To see *where* the biased sample means are clustering, plot a density curve of `biased_samples$sample_mean` with a red dashed vertical line at the truth and a black solid vertical line at the average of `sample_mean`. Drop the y-axis since density-plot y-values are not meaningful. Render. Describe in one sentence what you see.
 
 ```{r biased-sampling-7}
 question_text(NULL,
@@ -543,7 +543,7 @@ The bell sits to the right of the truth. The average of the biased sample means 
 
 ### Exercise 8
 
-Ask your AI agent to stage `analysis.qmd`, commit with the message `"Add biased sampling demonstration"`, and push to GitHub. In the R Terminal, run `show_file("analysis.qmd", chunk = "Last")` and paste the output below.
+Stage `analysis.qmd`, commit with the message `"Add biased sampling demonstration"`, and push to GitHub. In the R Terminal, run `show_file("analysis.qmd", chunk = "Last")` and paste the output below.
 
 ```{r biased-sampling-8}
 question_text(NULL,
