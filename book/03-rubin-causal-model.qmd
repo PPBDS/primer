@@ -7,6 +7,18 @@
 library(tidyverse)
 library(knitr)
 library(gt)
+
+# Hatch helper for marking unobservable counterfactual cells in causal tables.
+# Wraps the cell value in a span with a diagonal repeating-linear-gradient
+# background. Used in conjunction with gt::text_transform() and gt::fmt_markdown().
+hatch <- function(x) {
+  paste0(
+    '<span style="background-image: repeating-linear-gradient(',
+    '45deg, rgba(0,0,0,0.12) 0 1px, transparent 1px 6px);',
+    ' padding: 6px 10px; margin: -6px -10px; display: block;">',
+    x, '</span>'
+  )
+}
 ```
 
 <!-- Do the assumptions twice! That is, have two separate sections: predictive models and causal models. Do predictive first, but do all the steps: Preceptor Table (with a covariate like sex), Population Table and so on. All the assumptions. Then, do it all again but with causal model. -->
@@ -81,23 +93,58 @@ A *predictive model* involves exactly one outcome which, in this case, is height
 A **Preceptor Table**^[The term Preceptor Table is, perhaps unsurprisingly, unique to this textbook. We hope you find it useful.] is the smallest possible table with rows and columns such that, if none of the data is missing, then the things we want to know are easy to calculate. Consider:
 
 ```{r}
-tibble(ID = c("Student 1", "Student 2", "...", "Student 47", "Student 48",
-              "...", "Student 325", "Student 326", "...", "Student 670"),
-       Heights = c("190", "160", "...", "172", "176", "...", "180", "162", "...", "185")) |>
-  
-  # Then, we use the gt function to make it pretty
-  
-  gt() |>
-  tab_header(title = "Preceptor Table") |> 
-  cols_label(ID = md("ID"),
-                Heights = "Height (cm)") |>
-  tab_style(style = cell_text(align = "left", v_align = "middle"), 
-            locations = cells_column_labels(columns = c(ID))) |>
-  cols_align(align = "center", columns = everything()) |>
-  cols_align(align = "left", columns = c(ID)) |>
-  tab_spanner(label = "Outcome", columns = c(Heights)) |> 
-  tab_style(style = cell_text(v_align = "bottom"),
-            locations = cells_column_labels())
+#| echo: false
+#| results: asis
+pt_height_tibble <- tibble::tribble(
+  ~`Student`,            ~`Height (cm)`,
+  "Maria Alvarez",       "190",
+  "James Thompson",      "160",
+  "...",                 "...",
+  "Sarah Williams",      "172",
+  "David Chen",          "176",
+  "...",                 "...",
+  "Linda Whitfield",     "180",
+  "Anthony Brooks",      "162",
+  "...",                 "...",
+  "Rebecca Johnson",     "185"
+)
+
+pt_height_html <- gt::gt(pt_height_tibble, id = "pt_height_simple") |>
+  gt::tab_header(title = "Preceptor Table") |>
+  gt::tab_spanner(label = "Unit",    id = "unit_span",    columns = c(`Student`)) |>
+  gt::tab_spanner(label = "Outcome", id = "outcome_span", columns = c(`Height (cm)`)) |>
+  gt::cols_align(align = "left",  columns = c(`Student`)) |>
+  gt::cols_align(align = "right", columns = c(`Height (cm)`)) |>
+  gt::fmt_markdown(columns = gt::everything()) |>
+  gt::tab_options(
+    heading.title.font.size   = "1.5em",
+    heading.title.font.weight = "bolder",
+    column_labels.font.weight = "normal"
+  ) |>
+  gt::tab_style(style = gt::cell_text(weight = "bold"),
+                locations = gt::cells_column_spanners()) |>
+  gt::tab_style(style = gt::cell_text(align = "left"),
+                locations = gt::cells_column_spanners(spanners = "unit_span")) |>
+  gt::tab_style(style = gt::cell_text(align = "right"),
+                locations = gt::cells_column_spanners(spanners = "outcome_span")) |>
+  gt::tab_footnote(
+    footnote = "If all the information in this table were available, we could answer the question: What is the average height of a student at New College of Florida?",
+    locations = gt::cells_title()
+  ) |>
+  gt::tab_footnote(
+    footnote = "Each row is one student currently enrolled at New College of Florida. The college's total enrollment is around 700 students.",
+    locations = gt::cells_column_spanners(spanners = "unit_span")
+  ) |>
+  gt::tab_footnote(
+    footnote = "Standing height in centimeters, measured at enrollment.",
+    locations = gt::cells_column_spanners(spanners = "outcome_span")
+  ) |>
+  gt::opt_css(css = "#pt_height_simple .gt_footnote { max-width: 1px; word-break: break-word; }") |>
+  gt::as_raw_html()
+
+cat("```{=html}\n",
+    '<div style="display: inline-block; width: auto; max-width: 100%;">',
+    pt_height_html, "</div>\n```\n", sep = "")
 ```
 
 If we had a table with the height of every New College student, then statistics like the average would be easy to calculate. It would also be straightforward, using simulation, to estimate the chances of various scenarios, as in our second question.
@@ -115,26 +162,55 @@ However, if we had different questions, then we would need a different Preceptor
 The Preceptor Table for the first set of questions did not require a column for sex because we did not need that information to answer those questions. For these new questions, we do:
 
 ```{r}
-tibble(ID = c("Student 1", "Student 2", "...", "Student 47", "Student 48",
-              "...", "Student 325", "Student 326", "...", "Student 670"),
-       Heights = c("190", "160", "...", "172", "176", "...", "180", "162", "...", "185"),
-       Sex     = c("Male", "Female", "...", "Female", "Female", "...", "Male", "Female", "...", "Male")) |>
-  
-  # Then, we use the gt function to make it pretty
-  
-  gt() |>
-  tab_header(title = "Preceptor Table") |> 
-  cols_label(ID = md("ID"),
-             Heights = "Height (cm)",
-             Sex = md("Sex")) |>
-  tab_style(style = cell_text(align = "left", v_align = "middle"), 
-            locations = cells_column_labels(columns = c(ID))) |>
-  cols_align(align = "center", columns = everything()) |>
-  cols_align(align = "left", columns = c(ID)) |>
-  tab_spanner(label = "Outcome", columns = c(Heights)) |> 
-  tab_spanner(label = "Covariate", columns = c(Sex)) |> 
-  tab_style(style = cell_text(v_align = "bottom"),
-            locations = cells_column_labels())
+#| echo: false
+#| results: asis
+pt_height_sex_tibble <- tibble::tribble(
+  ~`Student`,            ~`Height (cm)`, ~`Sex`,
+  "Maria Alvarez",       "190",          "Male",
+  "James Thompson",      "160",          "Female",
+  "...",                 "...",          "...",
+  "Sarah Williams",      "172",          "Female",
+  "David Chen",          "176",          "Female",
+  "...",                 "...",          "...",
+  "Linda Whitfield",     "180",          "Male",
+  "Anthony Brooks",      "162",          "Female",
+  "...",                 "...",          "...",
+  "Rebecca Johnson",     "185",          "Male"
+)
+
+pt_height_sex_html <- gt::gt(pt_height_sex_tibble, id = "pt_height_sex") |>
+  gt::tab_header(title = "Preceptor Table") |>
+  gt::tab_spanner(label = "Unit",      id = "unit_span",       columns = c(`Student`)) |>
+  gt::tab_spanner(label = "Outcome",   id = "outcome_span",    columns = c(`Height (cm)`)) |>
+  gt::tab_spanner(label = "Covariate", id = "covariates_span", columns = c(`Sex`)) |>
+  gt::cols_align(align = "left",  columns = c(`Student`, `Sex`)) |>
+  gt::cols_align(align = "right", columns = c(`Height (cm)`)) |>
+  gt::fmt_markdown(columns = gt::everything()) |>
+  gt::tab_options(
+    heading.title.font.size   = "1.5em",
+    heading.title.font.weight = "bolder",
+    column_labels.font.weight = "normal"
+  ) |>
+  gt::tab_style(style = gt::cell_text(weight = "bold"),
+                locations = gt::cells_column_spanners()) |>
+  gt::tab_style(style = gt::cell_text(align = "left"),
+                locations = gt::cells_column_spanners(spanners = c("unit_span", "covariates_span"))) |>
+  gt::tab_style(style = gt::cell_text(align = "right"),
+                locations = gt::cells_column_spanners(spanners = "outcome_span")) |>
+  gt::tab_footnote(
+    footnote = "If all the information in this table were available, we could answer the question: What is the average height of a female (or male) student at New College of Florida?",
+    locations = gt::cells_title()
+  ) |>
+  gt::tab_footnote(
+    footnote = "Sex is recorded as Male or Female, as reported at enrollment.",
+    locations = gt::cells_column_spanners(spanners = "covariates_span")
+  ) |>
+  gt::opt_css(css = "#pt_height_sex .gt_footnote { max-width: 1px; word-break: break-word; }") |>
+  gt::as_raw_html()
+
+cat("```{=html}\n",
+    '<div style="display: inline-block; width: auto; max-width: 100%;">',
+    pt_height_sex_html, "</div>\n```\n", sep = "")
 ```
 
 *Covariates* are the variables, other than the outcome, which we need to answer our question(s). 
@@ -182,25 +258,52 @@ We drop the ID column since we do not need it to answer our questions.
 The "Source" column refers to the source of the rows in the Population Table. The rows with no "Source" are from the larger population from which, by assumption, both the Preceptor Table and the data are drawn. As such, all values, other than year, are missing.
 
 ```{r}
-tibble(source = c("...", "...",  "Data", "Data", 
-                  "...", "...", "...", 
-                  "Preceptor Table", "Preceptor Table", "...", "...", "..."),
-       year = c("2010", "...", "2015", "2015", 
-                "...","2018", "...", "2025", "2025", "...", "2030", "2030"),
-       height = c("...", "...", "180", "163", "...", "...", "...","?", "?", "...", "...", "...")) |> 
-  
-  # Then, we use the gt function to make it pretty
-  
-  gt() |>
-  tab_header(title = "Population Table") |> 
-  cols_label(source = md("Source"),
-             year = md("Year"),
-             height = md("Height")) |>
-  tab_style(style = cell_text(align = "left", v_align = "middle", size = "large"), 
-            locations = cells_column_labels(columns = c(source))) |>
-  cols_align(align = "center", columns = everything()) |>
-  cols_align(align = "left", columns = c(source)) |>
-  fmt_markdown(columns = everything())  
+#| echo: false
+#| results: asis
+pop_height_tibble <- tibble::tribble(
+  ~Source,     ~`Student`,            ~`Year`, ~`Height (cm)`,
+  "...",       "...",                 "2010",  "...",
+  "...",       "...",                 "...",   "...",
+  "Data",      "Karen Walsh",         "2015",  "180",
+  "Data",      "Marcus Lee",          "2015",  "163",
+  "Data",      "...",                 "...",   "...",
+  "Data",      "Jennifer Park",       "2018",  "...",
+  "...",       "...",                 "...",   "...",
+  "Preceptor", "Maria Alvarez",       "2025",  "?",
+  "Preceptor", "James Thompson",      "2025",  "?",
+  "Preceptor", "...",                 "...",   "...",
+  "...",       "...",                 "2030",  "...",
+  "...",       "...",                 "2030",  "..."
+)
+
+pop_height_html <- gt::gt(pop_height_tibble, id = "pop_height") |>
+  gt::tab_header(title = "Population Table") |>
+  gt::tab_spanner(label = "Unit/Time", id = "unit_span",    columns = c(`Student`, `Year`)) |>
+  gt::tab_spanner(label = "Outcome",   id = "outcome_span", columns = c(`Height (cm)`)) |>
+  gt::cols_align(align = "left",  columns = c(`Source`, `Student`)) |>
+  gt::cols_align(align = "right", columns = c(`Year`, `Height (cm)`)) |>
+  gt::fmt_markdown(columns = gt::everything()) |>
+  gt::tab_options(
+    heading.title.font.size   = "1.5em",
+    heading.title.font.weight = "bolder",
+    column_labels.font.weight = "normal"
+  ) |>
+  gt::tab_style(style = gt::cell_text(weight = "bold"),
+                locations = gt::cells_column_spanners()) |>
+  gt::tab_style(style = gt::cell_text(align = "left"),
+                locations = gt::cells_column_spanners(spanners = "unit_span")) |>
+  gt::tab_style(style = gt::cell_text(align = "right"),
+                locations = gt::cells_column_spanners(spanners = "outcome_span")) |>
+  gt::tab_footnote(
+    footnote = "Data rows are heights actually recorded at New College in 2015; Preceptor rows are heights we would like to know for our 2025 question but do not (marked '?'). The leading '...' rows mark the broader population, which we have no data on and do not need to predict for.",
+    locations = gt::cells_title()
+  ) |>
+  gt::opt_css(css = "#pop_height .gt_footnote { max-width: 1px; word-break: break-word; }") |>
+  gt::as_raw_html()
+
+cat("```{=html}\n",
+    '<div style="display: inline-block; width: auto; max-width: 100%;">',
+    pop_height_html, "</div>\n```\n", sep = "")
 ```
 
 The question marks indicate the data which we do not know but which we need in order to answer the questions. The ellipses are data we don't know and don't need to know. 
@@ -251,26 +354,55 @@ Consider two questions:
 To answer these questions, we can use a Preceptor Table with the same format as the height/sex example from New College:
 
 ```{r}
-tibble(ID = c("Commuter 1", "Commuter 2", "...", "Commuter 47", "Commuter 48",
-              "...", "Commuter 325", "Commuter 326", "...", "Commuter N"),
-       Attitude = c("10", "15", "...", "7", "5", "...", "10", "9", "...", "6"),
-       Treatment     = c("Treated", "Control", "...", "Control", "Control", "...", "Treated", "Control", "...", "Treated")) |>
-  
-  # Then, we use the gt function to make it pretty
-  
-  gt() |>
-  tab_header(title = "Preceptor Table") |> 
-  cols_label(ID = md("ID"),
-             Attitude = "Attitude toward Immigration",
-             Treatment = md("Treatment")) |>
-  tab_style(style = cell_text(align = "left", v_align = "middle"), 
-            locations = cells_column_labels(columns = c(ID))) |>
-  cols_align(align = "center", columns = everything()) |>
-  cols_align(align = "left", columns = c(ID)) |>
-  tab_spanner(label = "Outcome", columns = c(Attitude)) |> 
-  tab_spanner(label = "Covariate", columns = c(Treatment)) |> 
-  tab_style(style = cell_text(v_align = "bottom"),
-            locations = cells_column_labels())
+#| echo: false
+#| results: asis
+pt_commuter_tibble <- tibble::tribble(
+  ~`Commuter`,         ~`Attitude`, ~`Treatment`,
+  "Patrick Sullivan",  "10",        "Treated",
+  "Karen Walsh",       "15",        "Control",
+  "...",               "...",       "...",
+  "Marcus Lee",        "7",         "Control",
+  "Diana Foster",      "5",         "Control",
+  "...",               "...",       "...",
+  "Robert Davis",      "10",        "Treated",
+  "Linda Whitfield",   "9",         "Control",
+  "...",               "...",       "...",
+  "Anthony Brooks",    "6",         "Treated"
+)
+
+pt_commuter_html <- gt::gt(pt_commuter_tibble, id = "pt_commuter") |>
+  gt::tab_header(title = "Preceptor Table") |>
+  gt::tab_spanner(label = "Unit",      id = "unit_span",       columns = c(`Commuter`)) |>
+  gt::tab_spanner(label = "Outcome",   id = "outcome_span",    columns = c(`Attitude`)) |>
+  gt::tab_spanner(label = "Covariate", id = "covariates_span", columns = c(`Treatment`)) |>
+  gt::cols_align(align = "left",  columns = c(`Commuter`, `Treatment`)) |>
+  gt::cols_align(align = "right", columns = c(`Attitude`)) |>
+  gt::fmt_markdown(columns = gt::everything()) |>
+  gt::tab_options(
+    heading.title.font.size   = "1.5em",
+    heading.title.font.weight = "bolder",
+    column_labels.font.weight = "normal"
+  ) |>
+  gt::tab_style(style = gt::cell_text(weight = "bold"),
+                locations = gt::cells_column_spanners()) |>
+  gt::tab_style(style = gt::cell_text(align = "left"),
+                locations = gt::cells_column_spanners(spanners = c("unit_span", "covariates_span"))) |>
+  gt::tab_style(style = gt::cell_text(align = "right"),
+                locations = gt::cells_column_spanners(spanners = "outcome_span")) |>
+  gt::tab_footnote(
+    footnote = "If all the information in this table were available, we could answer the question: What is the average attitude toward immigration of Boston commuters exposed to Spanish speakers on the train platform? In this predictive framing, `Treatment` sits under the Covariate spanner because we are not asking about a causal effect.",
+    locations = gt::cells_title()
+  ) |>
+  gt::tab_footnote(
+    footnote = "Each row is one Boston commuter in Enos's 2012 Metra platform experiment. Attitude is the post-experiment score on a 3-to-15 immigration-attitude scale.",
+    locations = gt::cells_column_spanners(spanners = "unit_span")
+  ) |>
+  gt::opt_css(css = "#pt_commuter .gt_footnote { max-width: 1px; word-break: break-word; }") |>
+  gt::as_raw_html()
+
+cat("```{=html}\n",
+    '<div style="display: inline-block; width: auto; max-width: 100%;">',
+    pt_commuter_html, "</div>\n```\n", sep = "")
 ```
 
 The two Preceptor Tables have the same structure because the structure of the two problems is the same. In this case, the units are individual Boston commuters, the outcome is their attitude toward immigration (measured on a 3 to 15 integer scale), and the covariate is whether or not they were exposed to Spanish speakers ("treated") on the train platform or not ("control"). If we had access to a Preceptor Table with no missing data, we could easily answer our questions. (Side note: the last commuter has an ID number `N` because we are not sure how many commuters there are.)
@@ -293,27 +425,41 @@ We will use the symbol $Y$ to represent potential outcomes, the variable we are 
 Suppose that Yao is one of the commuters surveyed in this experiment. If we were omniscient, we would know the outcomes for Yao under both treatment (with Spanish-speakers) and control (no Spanish-speakers), and we would be able to ignore the Fundamental Problem of Causal Inference. We can show this using a Preceptor Table. Calculating the number we are interested in is trivial because none of the data is missing.
 
 ```{r}
-#| fig.align: left
-# First, we create a tibble with the values we want for the table
+#| echo: false
+#| results: asis
+pt_yao_words_tibble <- tibble::tribble(
+  ~`Commuter`, ~`Attitude if Treated`, ~`Attitude if Control`,
+  "Yao",       "13",                   "9"
+)
 
-tibble(ID = "Yao",
-       ytreat = "13",
-       ycontrol = "9") |>
-  
-  # Then, we use the gt function to make it pretty
-  
-  gt() |>
-  tab_header(title = "Preceptor Table") |> 
-  cols_label(ID = md("ID"),
-                ytreat = "Attitude if Treated",
-                ycontrol = "Attitude if Control") |>
-  tab_style(style = cell_text(align = "left", v_align = "middle"), 
-            locations = cells_column_labels(columns = c(ID))) |>
-  cols_align(align = "center", columns = everything()) |>
-  cols_align(align = "left", columns = c(ID)) |>
-  tab_spanner(label = "Outcomes", columns = c(ytreat, ycontrol))|> 
-  tab_style(style = cell_text(v_align = "bottom"),
-            locations = cells_column_labels())
+pt_yao_words_html <- gt::gt(pt_yao_words_tibble, id = "pt_yao_words") |>
+  gt::tab_header(title = "Preceptor Table --- Yao only, omniscient view") |>
+  gt::tab_spanner(label = "Unit",                id = "unit_span",    columns = c(`Commuter`)) |>
+  gt::tab_spanner(label = "Potential Outcomes", id = "outcome_span", columns = c(`Attitude if Treated`, `Attitude if Control`)) |>
+  gt::cols_align(align = "left",  columns = c(`Commuter`)) |>
+  gt::cols_align(align = "right", columns = c(`Attitude if Treated`, `Attitude if Control`)) |>
+  gt::fmt_markdown(columns = gt::everything()) |>
+  gt::tab_options(
+    heading.title.font.size   = "1.5em",
+    heading.title.font.weight = "bolder",
+    column_labels.font.weight = "normal"
+  ) |>
+  gt::tab_style(style = gt::cell_text(weight = "bold"),
+                locations = gt::cells_column_spanners()) |>
+  gt::tab_style(style = gt::cell_text(align = "left"),
+                locations = gt::cells_column_spanners(spanners = "unit_span")) |>
+  gt::tab_style(style = gt::cell_text(align = "right"),
+                locations = gt::cells_column_spanners(spanners = "outcome_span")) |>
+  gt::tab_footnote(
+    footnote = "An omniscient view: both potential outcomes are filled in. In reality only one would be observable; the other is the counterfactual.",
+    locations = gt::cells_title()
+  ) |>
+  gt::opt_css(css = "#pt_yao_words .gt_footnote { max-width: 1px; word-break: break-word; }") |>
+  gt::as_raw_html()
+
+cat("```{=html}\n",
+    '<div style="display: inline-block; width: auto; max-width: 100%;">',
+    pt_yao_words_html, "</div>\n```\n", sep = "")
 ```
 
 Regardless of what the causal effect is for other subjects, the causal effect for Yao of being on the train platform with Spanish-speakers is a shift towards a more conservative attitude.
@@ -321,62 +467,82 @@ Regardless of what the causal effect is for other subjects, the causal effect fo
 Using the response variable --- the actual symbol rather than a written description --- makes for a more concise Preceptor Table.
 
 ```{r}
-# First, we create a tibble with the values we want for the table.
+#| echo: false
+#| results: asis
+pt_yao_symbols_tibble <- tibble::tribble(
+  ~`Commuter`, ~`$$Y_t$$`, ~`$$Y_c$$`,
+  "Yao",       "13",       "9"
+)
 
-# Note that math text can not be bolded, so we are stuck with terms like $$Y_t$$
-# unbolded.
+pt_yao_symbols_html <- gt::gt(pt_yao_symbols_tibble, id = "pt_yao_symbols") |>
+  gt::tab_header(title = "Preceptor Table --- with symbol notation") |>
+  gt::tab_spanner(label = "Unit",                id = "unit_span",    columns = c(`Commuter`)) |>
+  gt::tab_spanner(label = "Potential Outcomes", id = "outcome_span", columns = c(`$$Y_t$$`, `$$Y_c$$`)) |>
+  gt::cols_align(align = "left",  columns = c(`Commuter`)) |>
+  gt::cols_align(align = "right", columns = c(`$$Y_t$$`, `$$Y_c$$`)) |>
+  gt::fmt_markdown(columns = gt::everything()) |>
+  gt::tab_options(
+    heading.title.font.size   = "1.5em",
+    heading.title.font.weight = "bolder",
+    column_labels.font.weight = "normal"
+  ) |>
+  gt::tab_style(style = gt::cell_text(weight = "bold"),
+                locations = gt::cells_column_spanners()) |>
+  gt::tab_style(style = gt::cell_text(align = "left"),
+                locations = gt::cells_column_spanners(spanners = "unit_span")) |>
+  gt::tab_style(style = gt::cell_text(align = "right"),
+                locations = gt::cells_column_spanners(spanners = "outcome_span")) |>
+  gt::tab_footnote(
+    footnote = "Same table as above, with potential outcomes labeled by their formal symbols $Y_t$ (under treatment) and $Y_c$ (under control).",
+    locations = gt::cells_title()
+  ) |>
+  gt::opt_css(css = "#pt_yao_symbols .gt_footnote { max-width: 1px; word-break: break-word; }") |>
+  gt::as_raw_html()
 
-tibble(subject = "Yao",
-       ytreat = "13",
-       ycontrol = "9") |>
-  
-  # Then, we use the gt function to make it pretty
-  
-  gt() |>
-    tab_header(title = "Preceptor Table") |> 
-    cols_label(subject = md("ID"),
-                  ytreat = md("$$Y_t$$"),
-                  ycontrol = md("$$Y_c$$")) |>
-    tab_style(style = cell_text(align = "left", 
-                                v_align = "middle", size = "large"), 
-              locations = cells_column_labels(columns = 
-                                                c(subject))) |>
-    cols_align(align = "center", columns = everything()) |>
-    cols_align(align = "left", columns = c(subject)) |>
-    fmt_markdown(columns = everything()) |>
-    tab_spanner(label = "Outcomes", c(ytreat, ycontrol))|> 
-  tab_style(style = cell_text(v_align = "bottom"),
-            locations = cells_column_labels())
+cat("```{=html}\n",
+    '<div style="display: inline-block; width: auto; max-width: 100%;">',
+    pt_yao_symbols_html, "</div>\n```\n", sep = "")
 ```
 
 The "causal effect" is the difference between Yao's potential outcome under treatment and his potential outcome under control.
 
 ```{r}
-# First, we create a tibble with the values we want for the table
+#| echo: false
+#| results: asis
+pt_yao_ce_tibble <- tibble::tribble(
+  ~`Commuter`, ~`$$Y_t$$`, ~`$$Y_c$$`, ~`$$Y_t - Y_c$$`,
+  "Yao",       "13",       "9",        "+4"
+)
 
-tibble(subject = "Yao",
-       ytreat = "13",
-       ycontrol = "9",
-       ydiff = "+4") |>
-  
-  # Then, we use the gt function to make it pretty
-  
-  gt() |>
-    tab_header(title = "Preceptor Table") |> 
-    cols_label(subject = md("ID"),
-                  ytreat = md("$$Y_t$$"),
-                  ycontrol = md("$$Y_c$$"),
-                  ydiff = md("$$Y_t - Y_c$$")) |>
-    cols_move(columns = c(ytreat, ycontrol), after = c(subject)) |>
-    tab_style(style = cell_text(align = "left", v_align = "middle", size = "large"), 
-              locations = cells_column_labels(columns = c(subject))) |>
-    cols_align(align = "center", columns = everything()) |>
-    cols_align(align = "left", columns = c(subject)) |>
-    fmt_markdown(columns = everything()) |>
-    tab_spanner(label = "Outcomes", c(ytreat, ycontrol)) |>
-    tab_spanner(label = "Causal Effect", c(ydiff))|> 
-  tab_style(style = cell_text(v_align = "bottom"),
-            locations = cells_column_labels())
+pt_yao_ce_html <- gt::gt(pt_yao_ce_tibble, id = "pt_yao_ce") |>
+  gt::tab_header(title = "Preceptor Table --- with causal effect") |>
+  gt::tab_spanner(label = "Unit",                id = "unit_span",    columns = c(`Commuter`)) |>
+  gt::tab_spanner(label = "Potential Outcomes", id = "outcome_span", columns = c(`$$Y_t$$`, `$$Y_c$$`)) |>
+  gt::tab_spanner(label = "Causal Effect",      id = "ce_span",      columns = c(`$$Y_t - Y_c$$`)) |>
+  gt::cols_align(align = "left",  columns = c(`Commuter`)) |>
+  gt::cols_align(align = "right", columns = c(`$$Y_t$$`, `$$Y_c$$`, `$$Y_t - Y_c$$`)) |>
+  gt::fmt_markdown(columns = gt::everything()) |>
+  gt::tab_options(
+    heading.title.font.size   = "1.5em",
+    heading.title.font.weight = "bolder",
+    column_labels.font.weight = "normal"
+  ) |>
+  gt::tab_style(style = gt::cell_text(weight = "bold"),
+                locations = gt::cells_column_spanners()) |>
+  gt::tab_style(style = gt::cell_text(align = "left"),
+                locations = gt::cells_column_spanners(spanners = "unit_span")) |>
+  gt::tab_style(style = gt::cell_text(align = "right"),
+                locations = gt::cells_column_spanners(spanners = c("outcome_span", "ce_span"))) |>
+  gt::tab_footnote(
+    footnote = "The Causal Effect column is the difference between Yao's two potential outcomes --- a pedagogical column showing the quantity we ultimately want to estimate.",
+    locations = gt::cells_title()
+  ) |>
+  gt::opt_css(css = "#pt_yao_ce .gt_footnote { max-width: 1px; word-break: break-word; }") |>
+  gt::as_raw_html()
+
+cat("```{=html}\n",
+    '<div style="display: inline-block; width: auto; max-width: 100%;">',
+    pt_yao_ce_html, "</div>\n```\n", sep = "")
 ```
 
 Remember that, in the real world, we will have a bunch of missing data! We can not use simple arithmetic to calculate the causal effect on Yao's attitude toward immigration. Instead, we will be required to estimate it. An **estimand** is some unknown variable in the real world that we are trying to measure. In this case, it is $Y_{t}-Y_{c}$, not $+4$. An estimand is not the *value* you calculated, but is rather the *unknown variable* you want to estimate.
@@ -431,31 +597,46 @@ Let's look at a Preceptor Table with more subjects using our new notation:
 <!-- DK: Do the two table trick. A descriptive table only has one outcome table, labeled Y. -->
 
 ```{r}
-# First, we create a tibble with the values we want for the table
+#| echo: false
+#| results: asis
+pt_multi_tibble <- tibble::tribble(
+  ~`Commuter`, ~`$$Y_t(u)$$`, ~`$$Y_c(u)$$`, ~`$$Y_t(u) - Y_c(u)$$`,
+  "Yao",       "13",          "9",           "+4",
+  "Emma",      "14",          "11",          "+3",
+  "Cassidy",   "11",          "6",           "+5",
+  "Tahmid",    "9",           "12",          "-3",
+  "Diego",     "3",           "4",           "-1"
+)
 
-tibble(subject = c("Yao", "Emma", "Cassidy", "Tahmid", "Diego"),
-       ytreat = c("13", "14", "11", "9", "3"),
-       ycontrol = c("9", "11", "6", "12", "4"),
-       ydiff = c("+4", "+3", "+5", "-3", "-1")) |>
-  
-  # Then, we use the gt function to make it pretty
-  
-  gt() |>
-    tab_header(title = "Preceptor Table") |> 
-    cols_label(subject = md("ID"),
-                  ytreat = md("$$Y_t(u)$$"),
-                  ycontrol = md("$$Y_c(u)$$"),
-                  ydiff = md("$$Y_t(u) - Y_c(u)$$")) |>
-    cols_move(columns = c(ytreat, ycontrol), after = c(subject)) |>
-    tab_style(style = cell_text(align = "left", v_align = "middle", size = "large"), 
-              locations = cells_column_labels(columns = c(subject))) |>
-    cols_align(align = "center", columns = everything()) |>
-    cols_align(align = "left", columns = c(subject)) |>
-    fmt_markdown(columns = everything()) |>
-    tab_spanner(label = "Outcomes", c(ytreat, ycontrol))  |>
-    tab_spanner(label = "Causal Effect", c(ydiff)) |> 
-  tab_style(style = cell_text(v_align = "bottom"),
-            locations = cells_column_labels())
+pt_multi_html <- gt::gt(pt_multi_tibble, id = "pt_multi") |>
+  gt::tab_header(title = "Preceptor Table --- multiple commuters") |>
+  gt::tab_spanner(label = "Unit",                id = "unit_span",    columns = c(`Commuter`)) |>
+  gt::tab_spanner(label = "Potential Outcomes", id = "outcome_span", columns = c(`$$Y_t(u)$$`, `$$Y_c(u)$$`)) |>
+  gt::tab_spanner(label = "Causal Effect",      id = "ce_span",      columns = c(`$$Y_t(u) - Y_c(u)$$`)) |>
+  gt::cols_align(align = "left",  columns = c(`Commuter`)) |>
+  gt::cols_align(align = "right", columns = c(`$$Y_t(u)$$`, `$$Y_c(u)$$`, `$$Y_t(u) - Y_c(u)$$`)) |>
+  gt::fmt_markdown(columns = gt::everything()) |>
+  gt::tab_options(
+    heading.title.font.size   = "1.5em",
+    heading.title.font.weight = "bolder",
+    column_labels.font.weight = "normal"
+  ) |>
+  gt::tab_style(style = gt::cell_text(weight = "bold"),
+                locations = gt::cells_column_spanners()) |>
+  gt::tab_style(style = gt::cell_text(align = "left"),
+                locations = gt::cells_column_spanners(spanners = "unit_span")) |>
+  gt::tab_style(style = gt::cell_text(align = "right"),
+                locations = gt::cells_column_spanners(spanners = c("outcome_span", "ce_span"))) |>
+  gt::tab_footnote(
+    footnote = "An omniscient view of five commuters with both potential outcomes filled in for each. The unit-level causal effects vary, ranging from -3 (Tahmid) to +5 (Cassidy).",
+    locations = gt::cells_title()
+  ) |>
+  gt::opt_css(css = "#pt_multi .gt_footnote { max-width: 1px; word-break: break-word; }") |>
+  gt::as_raw_html()
+
+cat("```{=html}\n",
+    '<div style="display: inline-block; width: auto; max-width: 100%;">',
+    pt_multi_html, "</div>\n```\n", sep = "")
 ```
 
 From this Preceptor Table, there are many possible estimands we might be interested in. Consider some examples, along with their true values:
@@ -474,33 +655,55 @@ From this Preceptor Table, there are many possible estimands we might be interes
 Similar concepts can also be applied to the Population Table:
 
 ```{r}
-tibble(source = c("...", "...",  "Data", "Data", 
-                  "...", "...", "...", 
-                  "Preceptor Table", "...", "..."),
-       year = c("2010", "...", "2012", "2012", 
-                "...","2018", "...", "2025", "...", "2030"),
-       ID = c("?", "...", "Yao", "Cassidy","...", "?","...","Yao", "...","?"),
-       ytreated = c("?", "...", "5", "3", "...", "?", "...","13", "...", "?"),
-       ycontroled = c("?", "...", "3", "6", "...", "?", "...","9", "...", "?"),
-       causaleffect = c("?", "...", "+2", "-3", "...", "?", "...","+4", "...", "?")) |> 
-  
-  gt() |>
-  tab_header(title = "Population Table") |> 
-  cols_label(source = md("Source"),
-             year = md("Year"),
-             ID = md("ID"),
-             ytreated = md("$$Y_t(u)$$"), 
-             ycontroled = md("$$Y_c(u)$$"),
-             causaleffect = md("$$Y_t(u) - Y_c(u)$$")) |>
-  tab_style(style = cell_text(align = "left", v_align = "middle", size = "large"), 
-            locations = cells_column_labels(columns = c(source))) |>
-  cols_align(align = "center", columns = everything()) |>
-  cols_align(align = "left", columns = c(source)) |>
-  fmt_markdown(columns = everything()) |> 
-  tab_spanner(label = "Outcomes", c(ytreated, ycontroled))  |>
-  tab_spanner(label = "Causal Effect", c(causaleffect))|> 
-  tab_style(style = cell_text(v_align = "bottom"),
-            locations = cells_column_labels())
+#| results: asis
+rcm_pop_yao_tibble <- tibble::tribble(
+  ~Source           , ~ID       , ~Year , ~`$Y_t(u)$`, ~`$Y_c(u)$`, ~`$Y_t(u) - Y_c(u)$`,
+  "..."             , "?"       , "2010", "?"        , "?"        , "?"                 ,
+  "..."             , "..."     , "..." , "..."      , "..."      , "..."               ,
+  "Data"            , "Yao"     , "2012", "5"        , "3"        , "+2"                ,
+  "Data"            , "Cassidy" , "2012", "3"        , "6"        , "-3"                ,
+  "..."             , "..."     , "..." , "..."      , "..."      , "..."               ,
+  "..."             , "?"       , "2018", "?"        , "?"        , "?"                 ,
+  "..."             , "..."     , "..." , "..."      , "..."      , "..."               ,
+  "Preceptor Table" , "Yao"     , "2025", "13"       , "9"        , "+4"                ,
+  "..."             , "..."     , "..." , "..."      , "..."      , "..."               ,
+  "..."             , "?"       , "2030", "?"        , "?"        , "?"
+)
+
+rcm_pop_yao_html <- gt::gt(rcm_pop_yao_tibble, id = "rcm_pop_yao") |>
+  gt::tab_header(title = "Population Table") |>
+  gt::tab_spanner(label = "Unit/Time"    , id = "unit_span",
+                  columns = c(`ID`, `Year`)) |>
+  gt::tab_spanner(label = "Outcomes"     , id = "outcome_span",
+                  columns = c(`$Y_t(u)$`, `$Y_c(u)$`)) |>
+  gt::tab_spanner(label = "Causal Effect", id = "effect_span",
+                  columns = c(`$Y_t(u) - Y_c(u)$`)) |>
+  gt::cols_align(align = "left" , columns = c(`Source`, `ID`)) |>
+  gt::cols_align(align = "right", columns = c(`Year`, `$Y_t(u)$`, `$Y_c(u)$`, `$Y_t(u) - Y_c(u)$`)) |>
+  gt::fmt_markdown(columns = gt::everything()) |>
+  gt::tab_options(
+    heading.title.font.size   = "1.5em",
+    heading.title.font.weight = "bolder",
+    column_labels.font.weight = "normal"
+  ) |>
+  gt::tab_style(style = gt::cell_text(weight = "bold"),
+                locations = gt::cells_column_spanners()) |>
+  gt::tab_style(style = gt::cell_text(align = "left"),
+                locations = gt::cells_column_spanners(spanners = "unit_span")) |>
+  gt::tab_style(style = gt::cell_text(align = "right"),
+                locations = gt::cells_column_spanners(spanners = c("outcome_span", "effect_span"))) |>
+  gt::tab_footnote(
+    footnote = "Each row is one commuter at one point in time, drawn from the broader population from which both the data and the Preceptor Table sample. The `Causal Effect` column is pedagogical: it makes the within-row subtraction visible. In a row where any potential outcome is missing, the causal effect cannot be computed (`?`).",
+    locations = gt::cells_title()
+  ) |>
+  gt::opt_css(
+    css = "#rcm_pop_yao .gt_footnote { max-width: 1px; word-break: break-word; }"
+  ) |>
+  gt::as_raw_html()
+
+cat("```{=html}\n",
+    '<div style="display: inline-block; width: auto; max-width: 100%;">',
+    rcm_pop_yao_html, "</div>\n```\n", sep = "")
 ```
 
 Again, all the rows in the Preceptor Table are, by definition, included in the Population Table. The later includes two sorts of extra rows. The first corresponds to our data set. The second corresponds to other unit/time combinations in the population which are neither part of the Preceptor Table nor part of the data.
@@ -520,50 +723,97 @@ See: https://stackoverflow.com/questions/65835639/arrange-gt-tables-side-by-side
 
 
 ```{r}
-# First, we create a tibble with the values we want for the table
+#| results: asis
 
-causal_table <- tibble(subject = c("Yao", "Emma", "Cassidy", "Tahmid", "Diego"),
-       ytreat = c("13", "14", "?", "?", "3"),
-       ycontrol = c("?", "?", "6", "12", "?"),
-       ydiff = c("?", "?", "?", "?", "?")) |>
-  
-  # Then, we use the gt function to make it pretty
-  
-  gt() |>
-    tab_header(title = "Causal Preceptor Table") |> 
-    cols_label(subject = md("ID"),
-                  ytreat = md("$$Y_t(u)$$"),
-                  ycontrol = md("$$Y_c(u)$$"),
-                  ydiff = md("$$Y_t(u) - Y_c(u)$$")) |>
-    cols_move(columns = c(ytreat, ycontrol), after = c(subject)) |>
-    tab_style(style = cell_text(align = "left", v_align = "middle", size = "large"), 
-              locations = cells_column_labels(columns = c(subject))) |>
-    cols_align(align = "center", columns = everything()) |>
-    cols_align(align = "left", columns = c(subject)) |>
-    fmt_markdown(columns = everything())  |>
-    tab_spanner(label = "Outcomes", c(ytreat, ycontrol))  |>
-    tab_spanner(label = "Causal Effect", c(ydiff))|> 
-  tab_style(style = cell_text(v_align = "bottom"),
-            locations = cells_column_labels())
+rcm_pt_causal_yao_tibble <- tibble::tribble(
+  ~ID       , ~`$Y_t(u)$`, ~`$Y_c(u)$`, ~`$Y_t(u) - Y_c(u)$`,
+  "Yao"     , "13"       , "?"        , "?"                 ,
+  "Emma"    , "14"       , "?"        , "?"                 ,
+  "Cassidy" , "?"        , "6"        , "?"                 ,
+  "Tahmid"  , "?"        , "12"       , "?"                 ,
+  "Diego"   , "3"        , "?"        , "?"
+)
 
-predictive_table <- tibble(subject = c("Yao", "Emma", "Cassidy", "Tahmid", "Diego"),
-       yall = c("13", "14", "6", "12", "3")) |> 
-gt() |>
-    tab_header(title = "Predictive Preceptor Table") |> 
-    cols_label(subject = md("ID"),
-                  yall = md("$$Y_t(u)$$")) |>
-    cols_move(columns = c(yall), after = c(subject)) |>
-    tab_style(style = cell_text(align = "left", v_align = "middle", size = "large"), 
-              locations = cells_column_labels(columns = c(subject))) |>
-    cols_align(align = "center", columns = everything()) |>
-    cols_align(align = "left", columns = c(subject)) |>
-    fmt_markdown(columns = everything())|> 
-  tab_style(style = cell_text(v_align = "bottom"),
-            locations = cells_column_labels())
+rcm_pt_causal_yao_html <- gt::gt(rcm_pt_causal_yao_tibble, id = "rcm_pt_causal_yao") |>
+  gt::tab_header(title = "Causal Preceptor Table") |>
+  gt::tab_spanner(label = "Unit"         , id = "unit_span",
+                  columns = c(`ID`)) |>
+  gt::tab_spanner(label = "Outcomes"     , id = "outcome_span",
+                  columns = c(`$Y_t(u)$`, `$Y_c(u)$`)) |>
+  gt::tab_spanner(label = "Causal Effect", id = "effect_span",
+                  columns = c(`$Y_t(u) - Y_c(u)$`)) |>
+  gt::cols_align(align = "left" , columns = c(`ID`)) |>
+  gt::cols_align(align = "right", columns = c(`$Y_t(u)$`, `$Y_c(u)$`, `$Y_t(u) - Y_c(u)$`)) |>
+  gt::fmt_markdown(columns = gt::everything()) |>
+  gt::tab_options(
+    heading.title.font.size   = "1.5em",
+    heading.title.font.weight = "bolder",
+    column_labels.font.weight = "normal"
+  ) |>
+  gt::tab_style(style = gt::cell_text(weight = "bold"),
+                locations = gt::cells_column_spanners()) |>
+  gt::tab_style(style = gt::cell_text(align = "left"),
+                locations = gt::cells_column_spanners(spanners = "unit_span")) |>
+  gt::tab_style(style = gt::cell_text(align = "right"),
+                locations = gt::cells_column_spanners(spanners = c("outcome_span", "effect_span"))) |>
+  gt::tab_footnote(
+    footnote = "Causal framing: two potential-outcome columns per unit. For each unit, only one is observed; the other is unknown (`?`). The `Causal Effect` column would be filled in if both potential outcomes were available.",
+    locations = gt::cells_title()
+  ) |>
+  gt::opt_css(
+    css = "#rcm_pt_causal_yao .gt_footnote { max-width: 1px; word-break: break-word; }"
+  ) |>
+  gt::as_raw_html()
 
-# causal_table
-# predictive_table
-  
+cat("```{=html}\n",
+    '<div style="display: inline-block; width: auto; max-width: 100%;">',
+    rcm_pt_causal_yao_html, "</div>\n```\n", sep = "")
+```
+
+```{r}
+#| results: asis
+
+rcm_pt_pred_yao_tibble <- tibble::tribble(
+  ~ID       , ~`Outcome`,
+  "Yao"     , "13"      ,
+  "Emma"    , "14"      ,
+  "Cassidy" , "6"       ,
+  "Tahmid"  , "12"      ,
+  "Diego"   , "3"
+)
+
+rcm_pt_pred_yao_html <- gt::gt(rcm_pt_pred_yao_tibble, id = "rcm_pt_pred_yao") |>
+  gt::tab_header(title = "Predictive Preceptor Table") |>
+  gt::tab_spanner(label = "Unit"   , id = "unit_span",
+                  columns = c(`ID`)) |>
+  gt::tab_spanner(label = "Outcome", id = "outcome_span",
+                  columns = c(`Outcome`)) |>
+  gt::cols_align(align = "left" , columns = c(`ID`)) |>
+  gt::cols_align(align = "right", columns = c(`Outcome`)) |>
+  gt::fmt_markdown(columns = gt::everything()) |>
+  gt::tab_options(
+    heading.title.font.size   = "1.5em",
+    heading.title.font.weight = "bolder",
+    column_labels.font.weight = "normal"
+  ) |>
+  gt::tab_style(style = gt::cell_text(weight = "bold"),
+                locations = gt::cells_column_spanners()) |>
+  gt::tab_style(style = gt::cell_text(align = "left"),
+                locations = gt::cells_column_spanners(spanners = "unit_span")) |>
+  gt::tab_style(style = gt::cell_text(align = "right"),
+                locations = gt::cells_column_spanners(spanners = "outcome_span")) |>
+  gt::tab_footnote(
+    footnote = "Predictive framing of the same five units. Only one outcome column --- whatever was observed --- with no counterfactual columns and no `Causal Effect` column. The predictive question forgoes the within-row comparison the causal table makes possible.",
+    locations = gt::cells_title()
+  ) |>
+  gt::opt_css(
+    css = "#rcm_pt_pred_yao .gt_footnote { max-width: 1px; word-break: break-word; }"
+  ) |>
+  gt::as_raw_html()
+
+cat("```{=html}\n",
+    '<div style="display: inline-block; width: auto; max-width: 100%;">',
+    rcm_pt_pred_yao_html, "</div>\n```\n", sep = "")
 ```
 
 <!-- This section ends awkwardly! Add some words. This is important! -->
@@ -577,52 +827,59 @@ Recall that the Population Table is constructed from three sources: the Precepto
 <!-- Seems like we should add ID and time columns, place them toward the left and then put year there. Year is *not* just another covariate. -->
 
 ```{r}
-# First, we create a tibble with the values we want for the table
+#| results: asis
 
-tibble(source = c("...", "...", "...",
-                  "Data", "Data", "...", 
-                  "Preceptor Table", "Preceptor Table", "...",
-                  "...", "..."), 
-       year = c("2010", "2010", "...",
-                "2012", "2012", "...",
-                "2025", "2025", "...",
-                "2025", "2025"),
-       sex = c("?", "?", "...",
-               "Male", "Female", "...",
-               "Female", "Female", "...",
-               "?", "?"),
-       ytreat = c("?", "?", "...",
-                  "13", "?", "...",
-                  "?", "?", "...",
-                  "?", "?"),
-       ycontrol = c("?", "?", "...",
-                    "?", "9", "...",
-                    "?", "?", "...",
-                    "?", "?"),
-       ydiff = c("?", "?", "...",
-                 "?", "?", "...",
-                 "?", "?", "...", "?", "?")) |>
-  
-  # Then, we use the gt function to make it pretty
-  
-  gt() |>
-    tab_header(title = "Population Table") |> 
-    cols_label(source = md("Source"),
-               year = md("Year"),
-               sex = md("Sex"),
-               ytreat = md("$$Y_t(u)$$"),
-               ycontrol = md("$$Y_c(u)$$"),
-               ydiff = md("$$Y_t(u) - Y_c(u)$$")) |>
-    cols_move(columns = c(ytreat, ycontrol), after = c(source)) |>
-    tab_style(style = cell_text(align = "left", v_align = "middle", size = "large"), 
-              locations = cells_column_labels(columns = c(source))) |>
-    cols_align(align = "center", columns = everything()) |>
-    cols_align(align = "left", columns = c(source)) |>
-    tab_spanner(label = "Outcomes", c(ytreat, ycontrol)) |>
-    tab_spanner(label = "Causal Effect", c(ydiff)) |> 
-    tab_spanner(label = "Covariates", c(sex)) |> 
-  tab_style(style = cell_text(v_align = "bottom"),
-            locations = cells_column_labels())         
+rcm_pop_assumptions_tibble <- tibble::tribble(
+  ~Source           , ~Year , ~`$Y_t(u)$`, ~`$Y_c(u)$`, ~`$Y_t(u) - Y_c(u)$`, ~Sex     ,
+  "..."             , "2010", "?"        , "?"        , "?"                 , "?"      ,
+  "..."             , "2010", "?"        , "?"        , "?"                 , "?"      ,
+  "..."             , "..." , "..."      , "..."      , "..."               , "..."    ,
+  "Data"            , "2012", "13"       , "?"        , "?"                 , "Male"   ,
+  "Data"            , "2012", "?"        , "9"        , "?"                 , "Female" ,
+  "..."             , "..." , "..."      , "..."      , "..."               , "..."    ,
+  "Preceptor Table" , "2025", "?"        , "?"        , "?"                 , "Female" ,
+  "Preceptor Table" , "2025", "?"        , "?"        , "?"                 , "Female" ,
+  "..."             , "..." , "..."      , "..."      , "..."               , "..."    ,
+  "..."             , "2025", "?"        , "?"        , "?"                 , "?"      ,
+  "..."             , "2025", "?"        , "?"        , "?"                 , "?"
+)
+
+rcm_pop_assumptions_html <- gt::gt(rcm_pop_assumptions_tibble, id = "rcm_pop_assumptions") |>
+  gt::tab_header(title = "Population Table") |>
+  gt::tab_spanner(label = "Unit/Time"    , id = "unit_span",
+                  columns = c(`Year`)) |>
+  gt::tab_spanner(label = "Outcomes"     , id = "outcome_span",
+                  columns = c(`$Y_t(u)$`, `$Y_c(u)$`)) |>
+  gt::tab_spanner(label = "Causal Effect", id = "effect_span",
+                  columns = c(`$Y_t(u) - Y_c(u)$`)) |>
+  gt::tab_spanner(label = "Covariate"    , id = "covariates_span",
+                  columns = c(`Sex`)) |>
+  gt::cols_align(align = "left" , columns = c(`Source`, `Sex`)) |>
+  gt::cols_align(align = "right", columns = c(`Year`, `$Y_t(u)$`, `$Y_c(u)$`, `$Y_t(u) - Y_c(u)$`)) |>
+  gt::fmt_markdown(columns = gt::everything()) |>
+  gt::tab_options(
+    heading.title.font.size   = "1.5em",
+    heading.title.font.weight = "bolder",
+    column_labels.font.weight = "normal"
+  ) |>
+  gt::tab_style(style = gt::cell_text(weight = "bold"),
+                locations = gt::cells_column_spanners()) |>
+  gt::tab_style(style = gt::cell_text(align = "left"),
+                locations = gt::cells_column_spanners(spanners = c("unit_span", "covariates_span"))) |>
+  gt::tab_style(style = gt::cell_text(align = "right"),
+                locations = gt::cells_column_spanners(spanners = c("outcome_span", "effect_span"))) |>
+  gt::tab_footnote(
+    footnote = "Population Table for the train-platform problem, with `Sex` as a covariate. Data rows (2012) carry one observed potential outcome and the covariate. Preceptor Table rows (2025) carry the covariate but no outcomes. Other rows carry no observed values. The four assumptions --- validity, stability, representativeness, unconfoundedness --- are what license stacking these three kinds of rows into one table.",
+    locations = gt::cells_title()
+  ) |>
+  gt::opt_css(
+    css = "#rcm_pop_assumptions .gt_footnote { max-width: 1px; word-break: break-word; }"
+  ) |>
+  gt::as_raw_html()
+
+cat("```{=html}\n",
+    '<div style="display: inline-block; width: auto; max-width: 100%;">',
+    rcm_pop_assumptions_html, "</div>\n```\n", sep = "")
 ```
 
 The rows from our data have covariates and two potential outcomes. (By definition, we only know the value for one, at most, of the potential outcomes for each unit.) The rows from the Preceptor Table include covariates, but not outcomes. (We have no outcome data for 2025, but we will, in theory, be given the sex of any units about whom we need to make inferences.) The rows from our greater population include no data, as we know nothing about these units.
@@ -677,27 +934,52 @@ Consider the "Perfect Doctor" as an example of the problems caused by confounded
 <!-- DK: Blood pressue numbers be changes so that, in the range of these numbers, lower is better. Some of them are too low, I think. -->
 
 ```{r}
-tibble(subject = c("Yao", "Emma", "Cassidy", "Tahmid", "Diego", "MEAN"),
-       ytreat = c("130", "120", "100", "115", "135", "120"),
-       ycontrol = c("105", "140", "170", "125", "100", "128"),
-       ydiff = c("+25", "-20", "-70", "-10", "+35", "-8")) |>
-  
-  gt() |>
-    tab_header(title = "Holy Grail of Information") |> 
-    cols_label(subject = md("ID"),
-                  ytreat = md("$$Y_t(u)$$"),
-                  ycontrol = md("$$Y_c(u)$$"),
-                  ydiff = md("$$Y_t(u) - Y_c(u)$$")) |>
-    cols_move(columns = c(ytreat, ycontrol), after = c(subject)) |>
-    tab_style(style = cell_text(align = "left", v_align = "middle", size = "large"), 
-              locations = cells_column_labels(columns = c(subject))) |>
-    cols_align(align = "center", columns = everything()) |>
-    cols_align(align = "left", columns = c(subject)) |>
-    tab_spanner(label = "Blood Pressure Outcomes", c(ytreat, ycontrol)) |>
-    tab_spanner(label = "Causal Effect", c(ydiff)) |>
-    fmt_markdown(columns = everything()) |> 
-  tab_style(style = cell_text(v_align = "bottom"),
-            locations = cells_column_labels())
+#| results: asis
+
+rcm_holy_grail_tibble <- tibble::tribble(
+  ~ID       , ~`$Y_t(u)$`, ~`$Y_c(u)$`, ~`$Y_t(u) - Y_c(u)$`,
+  "Yao"     , "130"      , "105"      , "+25"               ,
+  "Emma"    , "120"      , "140"      , "-20"               ,
+  "Cassidy" , "100"      , "170"      , "-70"               ,
+  "Tahmid"  , "115"      , "125"      , "-10"               ,
+  "Diego"   , "135"      , "100"      , "+35"               ,
+  "MEAN"    , "120"      , "128"      , "-8"
+)
+
+rcm_holy_grail_html <- gt::gt(rcm_holy_grail_tibble, id = "rcm_holy_grail") |>
+  gt::tab_header(title = "Holy Grail of Information") |>
+  gt::tab_spanner(label = "Unit"                   , id = "unit_span",
+                  columns = c(`ID`)) |>
+  gt::tab_spanner(label = "Blood Pressure Outcomes", id = "outcome_span",
+                  columns = c(`$Y_t(u)$`, `$Y_c(u)$`)) |>
+  gt::tab_spanner(label = "Causal Effect"          , id = "effect_span",
+                  columns = c(`$Y_t(u) - Y_c(u)$`)) |>
+  gt::cols_align(align = "left" , columns = c(`ID`)) |>
+  gt::cols_align(align = "right", columns = c(`$Y_t(u)$`, `$Y_c(u)$`, `$Y_t(u) - Y_c(u)$`)) |>
+  gt::fmt_markdown(columns = gt::everything()) |>
+  gt::tab_options(
+    heading.title.font.size   = "1.5em",
+    heading.title.font.weight = "bolder",
+    column_labels.font.weight = "normal"
+  ) |>
+  gt::tab_style(style = gt::cell_text(weight = "bold"),
+                locations = gt::cells_column_spanners()) |>
+  gt::tab_style(style = gt::cell_text(align = "left"),
+                locations = gt::cells_column_spanners(spanners = "unit_span")) |>
+  gt::tab_style(style = gt::cell_text(align = "right"),
+                locations = gt::cells_column_spanners(spanners = c("outcome_span", "effect_span"))) |>
+  gt::tab_footnote(
+    footnote = "The omniscient view: every potential outcome filled in, every causal effect computable. The Perfect Doctor sees this table; we never do.",
+    locations = gt::cells_title()
+  ) |>
+  gt::opt_css(
+    css = "#rcm_holy_grail .gt_footnote { max-width: 1px; word-break: break-word; }"
+  ) |>
+  gt::as_raw_html()
+
+cat("```{=html}\n",
+    '<div style="display: inline-block; width: auto; max-width: 100%;">',
+    rcm_holy_grail_html, "</div>\n```\n", sep = "")
 ```
 
 The Perfect Doctor would assign the treatment to Emma, Cassidy and Tahmid. She would assign control to Yao and Diego. And that is good! This is what the doctor should do. This is the best treatment assignment for the patients. But **it is not a good assignment mechanism for estimating the average causal effect because treatment assignment is confounded by the values of the potential outcomes.**
@@ -705,29 +987,52 @@ The Perfect Doctor would assign the treatment to Emma, Cassidy and Tahmid. She w
 We, the non-Perfect Doctors, do not have access to the entire Preceptor Table. We can only see this:
 
 ```{r}
-tibble(subject = c("Yao", "Emma", "Cassidy", "Tahmid", "Diego", "MEAN"),
-       ytreat = c("?", "120", "100", "115", "?", "111.66"),
-       ycontrol = c("105", "?", "?", "?", "100", "102.5"),
-       ydiff = c("?", "?", "?", "?", "?", "9.16")) |>
-  
-  # Then, we use the gt function to make it pretty
-  
-  gt() |>
-    tab_header(title = "Skewed Holy Grail of Information") |> 
-    cols_label(subject = md("ID"),
-                  ytreat = md("$$Y_t(u)$$"),
-                  ycontrol = md("$$Y_c(u)$$"),
-                  ydiff = md("$$Y_t(u) - Y_c(u)$$")) |>
-    cols_move(columns = c(ytreat, ycontrol), after = c(subject)) |>
-    tab_style(style = cell_text(align = "left", v_align = "middle", size = "large"), 
-              locations = cells_column_labels(columns = c(subject))) |>
-    cols_align(align = "center", columns = everything()) |>
-    cols_align(align = "left", columns = c(subject)) |>
-    tab_spanner(label = "Blood Pressure Outcomes", c(ytreat, ycontrol)) |>
-    tab_spanner(label = "Causal Effect", c(ydiff)) |>
-    fmt_markdown(columns = everything()) |> 
-  tab_style(style = cell_text(v_align = "bottom"),
-            locations = cells_column_labels())
+#| results: asis
+
+rcm_skewed_grail_tibble <- tibble::tribble(
+  ~ID       , ~`$Y_t(u)$`, ~`$Y_c(u)$`, ~`$Y_t(u) - Y_c(u)$`,
+  "Yao"     , "?"        , "105"      , "?"                 ,
+  "Emma"    , "120"      , "?"        , "?"                 ,
+  "Cassidy" , "100"      , "?"        , "?"                 ,
+  "Tahmid"  , "115"      , "?"        , "?"                 ,
+  "Diego"   , "?"        , "100"      , "?"                 ,
+  "MEAN"    , "111.66"   , "102.5"    , "9.16"
+)
+
+rcm_skewed_grail_html <- gt::gt(rcm_skewed_grail_tibble, id = "rcm_skewed_grail") |>
+  gt::tab_header(title = "Skewed Holy Grail of Information") |>
+  gt::tab_spanner(label = "Unit"                   , id = "unit_span",
+                  columns = c(`ID`)) |>
+  gt::tab_spanner(label = "Blood Pressure Outcomes", id = "outcome_span",
+                  columns = c(`$Y_t(u)$`, `$Y_c(u)$`)) |>
+  gt::tab_spanner(label = "Causal Effect"          , id = "effect_span",
+                  columns = c(`$Y_t(u) - Y_c(u)$`)) |>
+  gt::cols_align(align = "left" , columns = c(`ID`)) |>
+  gt::cols_align(align = "right", columns = c(`$Y_t(u)$`, `$Y_c(u)$`, `$Y_t(u) - Y_c(u)$`)) |>
+  gt::fmt_markdown(columns = gt::everything()) |>
+  gt::tab_options(
+    heading.title.font.size   = "1.5em",
+    heading.title.font.weight = "bolder",
+    column_labels.font.weight = "normal"
+  ) |>
+  gt::tab_style(style = gt::cell_text(weight = "bold"),
+                locations = gt::cells_column_spanners()) |>
+  gt::tab_style(style = gt::cell_text(align = "left"),
+                locations = gt::cells_column_spanners(spanners = "unit_span")) |>
+  gt::tab_style(style = gt::cell_text(align = "right"),
+                locations = gt::cells_column_spanners(spanners = c("outcome_span", "effect_span"))) |>
+  gt::tab_footnote(
+    footnote = "What the non-omniscient analyst sees after the Perfect Doctor assigns treatment to the patients she expects to do best on it. The means at the bottom suggest the treatment raises blood pressure (the average treated outcome is higher than the average control outcome) --- the opposite of the truth shown in the table above. Confounded assignment, treated as if it were random, flips the sign of the estimated causal effect.",
+    locations = gt::cells_title()
+  ) |>
+  gt::opt_css(
+    css = "#rcm_skewed_grail .gt_footnote { max-width: 1px; word-break: break-word; }"
+  ) |>
+  gt::as_raw_html()
+
+cat("```{=html}\n",
+    '<div style="display: inline-block; width: auto; max-width: 100%;">',
+    rcm_skewed_grail_html, "</div>\n```\n", sep = "")
 ```
 
 The true causal effect of the treatment, as we can see in the first table, is -8. In other words, the treatment lowers blood pressure on average. But, using just the data we have access to if the Perfect Doctor performs the treatment assignment, we would estimate --- if we mistakenly assume unconfoundedness --- that the causal effect is positive, that treatment increases blood pressure.
@@ -1071,6 +1376,344 @@ tibble(subject = c("Yao", "Emma", "Cassidy", "Tahmid", "Diego"),
 ```
 
 In this example, there is indeed a constant treatment effect for everyone: $+3$. Note that the *observed* values are all the same, but the unobserved values were such that our estimated ATE, $+1$, is pretty far from the actual ATE, $+3$. If we think we have a reasonable estimate of ATE, using that value as a constant for $\tau$ might be our *best guess*.
+
+## A worked example: the financial-counseling program
+
+The previous four sections built the Rubin Causal Model from the ground up --- one new piece at a time. This section ties them together. We pick a single concrete scenario, draw both Preceptor Tables and both Population Tables for it, and walk through the four assumptions as they apply to a realistic problem. The matching tutorial in the **[primer.tutorials](https://ppbds.github.io/primer/tutorials/)** package (`rubin-causal-model`) asks the same conceptual questions in `learnr` exercise form; this section gives the underlying reasoning the tutorial does not have room for.
+
+Imagine that you are a data scientist at a mid-size technology company. The Head of HR has a big-picture goal --- improve employees' long-term financial wellbeing --- and many decisions to make in service of it: which benefits to offer, which to cut, how aggressively to nudge employees toward higher retirement-account contributions, and whether to fund a new one-on-one financial-counseling program where employees can meet with a certified financial planner. The HR Director trusts you to find the evidence that helps her decide. This section walks through the four Cardinal Virtues by applying them to two related questions about the same employees: a causal one (what is the effect of the financial-counseling program on 401(k) contribution rates?) and a paired predictive one (what will be the average 401(k) contribution rate among next year's new hires?). There are many decisions to make.
+
+A bit of real-world context before we begin. The U.S. private-sector 401(k) system covers a substantial fraction of working-age Americans, but participation rates --- the share of eligible employees who actually contribute --- vary enormously across employers, and the single biggest driver of that variation is whether the plan defaults employees in or requires them to opt in. The behavioral-economics literature, most famously Madrian and Shea's 2001 *Quarterly Journal of Economics* paper, showed that a single corporate switch from opt-in to opt-out default enrollment lifted participation from about 37% to about 86%. That finding was so robust it eventually drove federal policy: the SECURE Act 2.0, signed in December 2022, now requires most newly established 401(k) plans to automatically enroll eligible employees at a starting contribution rate of at least 3%. Beyond automatic enrollment, large employers have increasingly added *financial-wellness benefits* over the last decade: one-on-one sessions with certified financial planners, financial-literacy webinars, debt-management counseling, and so on. The HR Director's question --- whether the new counseling program would meaningfully shift contribution rates --- sits inside this broader landscape. Voluntary financial-counseling programs raise a chronic concern, which the chapter's earlier section on unconfoundedness already hinted at: the employees who sign up for such programs tend to be those already more financially attentive than average. Sorting out the causal effect of the program from the self-selection of its participants is the central methodological problem.
+
+### Wisdom
+
+> *Wisdom begins with a question and then moves on to the creation of a Preceptor Table and an examination of our data.*
+
+Wisdom commits us to a question that is precise enough to be answered. The Preceptor Table makes the commitment concrete: it is the smallest table that, if every cell were filled with the truth, would make the question's answer easy to read off.
+
+This is the same Tukey wisdom from earlier in the chapter. *The combination of some data and an aching desire for an answer does not ensure that a reasonable answer can be extracted from a given body of data.* If we cannot describe the table that would answer our question, no amount of cleverness in modeling will save us.
+
+#### The primary question (causal)
+
+The primary question is:
+
+> What is the average causal effect of the financial-counseling program on an employee's 401(k) contribution rate?
+
+This is a causal question. Each employee has two potential outcomes --- the 401(k) contribution rate they would have under the counseling program, and the rate they would have without it --- and the causal effect for that employee is the difference. The average causal effect across all employees is the number the HR Director wants to weigh against the program's cost. The Preceptor Table that would let us read this off has four columns: the employee identifier, two potential-outcome columns (one per treatment value), and one treatment column naming which arm the employee actually ended up in.
+
+The treatment values are *Counseled* (the employee attended at least one one-on-one session with a certified financial planner during the calendar year) and *Not Counseled* (the employee did not). The outcome is the employee's annual 401(k) contribution as a percent of salary --- a continuous variable, in practice clustered between 0% and 15% for active participants.
+
+```{r}
+#| echo: false
+#| results: asis
+rcm_pt_primary_tibble <- tibble::tribble(
+  ~`Employee`,         ~`Contribution if Counseled`, ~`Contribution if Not Counseled`, ~`Counseling Status`,
+  "Alice Becker",      "8.0",                        "5.0",                            "Counseled",
+  "Brendan Cohen",     "10.0",                       "10.0",                           "Not Counseled",
+  "...",               "...",                        "...",                            "...",
+  "Diego Ramirez",     "12.5",                       "9.5",                            "Counseled"
+)
+
+rcm_pt_primary_html <- gt::gt(rcm_pt_primary_tibble, id = "rcm_pt_primary") |>
+  gt::tab_header(title = "Preceptor Table --- Primary (causal) question") |>
+  gt::tab_spanner(label = "Unit",                id = "unit_span",      columns = c(`Employee`)) |>
+  gt::tab_spanner(label = "Potential Outcomes", id = "outcome_span",   columns = c(`Contribution if Counseled`, `Contribution if Not Counseled`)) |>
+  gt::tab_spanner(label = "Treatment",          id = "treatment_span", columns = c(`Counseling Status`)) |>
+  gt::cols_align(align = "left",  columns = c(`Employee`, `Counseling Status`)) |>
+  gt::cols_align(align = "right", columns = c(`Contribution if Counseled`, `Contribution if Not Counseled`)) |>
+  gt::fmt_markdown(columns = gt::everything()) |>
+  gt::tab_options(
+    heading.title.font.size   = "1.5em",
+    heading.title.font.weight = "bolder",
+    column_labels.font.weight = "normal"
+  ) |>
+  gt::tab_style(style = gt::cell_text(weight = "bold"),
+                locations = gt::cells_column_spanners()) |>
+  gt::tab_style(style = gt::cell_text(align = "left"),
+                locations = gt::cells_column_spanners(spanners = c("unit_span", "treatment_span"))) |>
+  gt::tab_style(style = gt::cell_text(align = "right"),
+                locations = gt::cells_column_spanners(spanners = "outcome_span")) |>
+  gt::text_transform(
+    locations = gt::cells_body(columns = `Contribution if Not Counseled`, rows = c(1, 4)),
+    fn = function(x) hatch(x)
+  ) |>
+  gt::text_transform(
+    locations = gt::cells_body(columns = `Contribution if Counseled`, rows = 2),
+    fn = function(x) hatch(x)
+  ) |>
+  gt::tab_footnote(
+    footnote = "If all the information in this table were available, we could answer the question: What is the average causal effect of the financial-counseling program on an employee's 401(k) contribution rate?",
+    locations = gt::cells_title()
+  ) |>
+  gt::tab_footnote(
+    footnote = "Each row is one of the company's roughly 2,400 benefits-eligible employees. The cross-hatched cell in each row marks the unobservable counterfactual --- the contribution rate the employee would have had under the treatment they did not receive.",
+    locations = gt::cells_column_spanners(spanners = "outcome_span")
+  ) |>
+  gt::tab_footnote(
+    footnote = "The treatment is whether the employee attended at least one one-on-one session with a certified financial planner during the calendar year.",
+    locations = gt::cells_column_spanners(spanners = "treatment_span")
+  ) |>
+  gt::opt_css(css = "#rcm_pt_primary .gt_footnote { max-width: 1px; word-break: break-word; }") |>
+  gt::as_raw_html()
+
+cat("```{=html}\n",
+    '<div style="display: inline-block; width: auto; max-width: 100%;">',
+    rcm_pt_primary_html, "</div>\n```\n", sep = "")
+```
+
+Look closely at how the table marks the unobservable cells. Alice was *Counseled* (her actual treatment), so her `Contribution if Counseled` value (8.0%) is observable in principle. Her `Contribution if Not Counseled` value (5.0%) is cross-hatched: it is the truth in some metaphysical sense --- there is a contribution rate she *would have set* under the counterfactual where the company did not offer counseling --- but no empirical process could ever recover it. The whole machinery of the Rubin Causal Model exists to estimate the cross-hatched cells without ever observing them. Cleverness in modeling, in the end, is cleverness about how to fill in cells that can never be measured.
+
+A subtle point worth dwelling on: Brendan Cohen's row shows the *same* contribution value under both treatments (10.0%). That's not a coding error; it is a genuine possibility in the Rubin framework. Some employees would contribute the same regardless of whether the company offered counseling --- their behavior is unaffected by the treatment. For those employees the unit-level causal effect is exactly zero. Other employees would respond differently. The average causal effect across the population is the average of all these unit-level effects, ranging from zero to whatever the largest individual effect is.
+
+#### The paired question (predictive)
+
+The paired question is:
+
+> What will be the average 401(k) contribution rate of new hires next year?
+
+This is a predictive question. We want one specific number: an estimate of the average contribution rate for the next cohort of new hires (the company adds about 300 net new hires annually), with its associated uncertainty. The Preceptor Table that would answer it has only two columns: an employee identifier and a single outcome column. No potential outcomes; no treatment.
+
+```{r}
+#| echo: false
+#| results: asis
+rcm_pt_paired_tibble <- tibble::tribble(
+  ~`New Hire`,           ~`Contribution Rate (%)`,
+  "Erica Foster",        "6.0",
+  "Frank Gutierrez",     "10.0",
+  "...",                 "...",
+  "Hannah Park",         "4.5"
+)
+
+rcm_pt_paired_html <- gt::gt(rcm_pt_paired_tibble, id = "rcm_pt_paired") |>
+  gt::tab_header(title = "Preceptor Table --- Paired (predictive) question") |>
+  gt::tab_spanner(label = "Unit",    id = "unit_span",    columns = c(`New Hire`)) |>
+  gt::tab_spanner(label = "Outcome", id = "outcome_span", columns = c(`Contribution Rate (%)`)) |>
+  gt::cols_align(align = "left",  columns = c(`New Hire`)) |>
+  gt::cols_align(align = "right", columns = c(`Contribution Rate (%)`)) |>
+  gt::fmt_markdown(columns = gt::everything()) |>
+  gt::tab_options(
+    heading.title.font.size   = "1.5em",
+    heading.title.font.weight = "bolder",
+    column_labels.font.weight = "normal"
+  ) |>
+  gt::tab_style(style = gt::cell_text(weight = "bold"),
+                locations = gt::cells_column_spanners()) |>
+  gt::tab_style(style = gt::cell_text(align = "left"),
+                locations = gt::cells_column_spanners(spanners = "unit_span")) |>
+  gt::tab_style(style = gt::cell_text(align = "right"),
+                locations = gt::cells_column_spanners(spanners = "outcome_span")) |>
+  gt::tab_footnote(
+    footnote = "If all the information in this table were available, we could answer the question: What will be the average 401(k) contribution rate of new hires next year?",
+    locations = gt::cells_title()
+  ) |>
+  gt::tab_footnote(
+    footnote = "Each row is one new hire expected next year. The company adds about 300 net new hires annually.",
+    locations = gt::cells_column_spanners(spanners = "unit_span")
+  ) |>
+  gt::tab_footnote(
+    footnote = "Annual 401(k) contribution as a percent of salary.",
+    locations = gt::cells_column_spanners(spanners = "outcome_span")
+  ) |>
+  gt::opt_css(css = "#rcm_pt_paired .gt_footnote { max-width: 1px; word-break: break-word; }") |>
+  gt::as_raw_html()
+
+cat("```{=html}\n",
+    '<div style="display: inline-block; width: auto; max-width: 100%;">',
+    rcm_pt_paired_html, "</div>\n```\n", sep = "")
+```
+
+#### How the two tables differ
+
+The two tables are nearly identical in structure. Same kind of unit. Same kind of outcome. The structural differences are exactly two: the causal table has *two* potential-outcome columns (with the unobservable counterfactual hatched) instead of one, and it has a Treatment column under its own spanner. Everything else is the same. That single difference in outcome-and-treatment bookkeeping is the entire mechanical difference between predictive and causal models. The same dataset --- and, in later chapters, the same R code --- can fit either question. What makes one *causal* and the other *predictive* is the analyst's commitment about whether a covariate counts as a treatment.
+
+### Justice
+
+> *Justice reviews the Population Table and selects the formula for the data generating mechanism.*
+
+Justice is the section of the analysis where you (or your critics) raise concerns about whether your model will work. The Population Table is where those concerns become concrete: it bridges between the data we actually have and the Preceptor Table we wish we had.
+
+The four Justice concerns are *validity*, *stability*, *representativeness*, and *unconfoundedness*. The first three apply to both predictive and causal models. The fourth applies only to causal models --- which means it is central to the primary question in this section but irrelevant to the paired predictive question.
+
+#### The Population Table for the primary causal question
+
+For our setting, the data we have is from a comparable tech company that ran a similar financial-counseling program in 2022. The Preceptor Table is our own 2026 employees. The Population Table covers both, plus the much larger universe of technology-company employees in any year between 2022 and 2026. Two notations mark unobservable potential outcomes: in Data rows, the unobserved counterfactual is `...` (we did not measure it); in Preceptor rows, the unobservable counterfactual is hatched (it is the truth, but no empirical process could ever reveal it).
+
+```{r}
+#| echo: false
+#| results: asis
+rcm_pop_primary_tibble <- tibble::tribble(
+  ~Source,     ~`Employee`,         ~`Year`, ~`Contribution if Counseled`, ~`Contribution if Not Counseled`, ~`Counseling Status`,
+  "...",       "...",               "...",   "...",                        "...",                            "...",
+  "Data",      "Sarah Kim",         "2022",  "9.0",                        "...",                            "Counseled",
+  "Data",      "Michael Lee",       "2022",  "...",                        "4.5",                            "Not Counseled",
+  "Data",      "...",               "...",   "...",                        "...",                            "...",
+  "Data",      "Priya Patel",       "2022",  "11.0",                       "...",                            "Counseled",
+  "...",       "...",               "...",   "...",                        "...",                            "...",
+  "Preceptor", "Alice Becker",      "2026",  "8.0",                        "5.0",                            "Counseled",
+  "Preceptor", "Brendan Cohen",     "2026",  "10.0",                       "10.0",                           "Not Counseled",
+  "Preceptor", "...",               "...",   "...",                        "...",                            "...",
+  "Preceptor", "Diego Ramirez",     "2026",  "12.5",                       "9.5",                            "Counseled",
+  "...",       "...",               "...",   "...",                        "...",                            "..."
+)
+
+rcm_pop_primary_html <- gt::gt(rcm_pop_primary_tibble, id = "rcm_pop_primary") |>
+  gt::tab_header(title = "Population Table --- Primary causal question") |>
+  gt::tab_spanner(label = "Unit/Time",          id = "unit_span",      columns = c(`Employee`, `Year`)) |>
+  gt::tab_spanner(label = "Potential Outcomes", id = "outcome_span",   columns = c(`Contribution if Counseled`, `Contribution if Not Counseled`)) |>
+  gt::tab_spanner(label = "Treatment",          id = "treatment_span", columns = c(`Counseling Status`)) |>
+  gt::cols_align(align = "left",  columns = c(`Source`, `Employee`, `Counseling Status`)) |>
+  gt::cols_align(align = "right", columns = c(`Year`, `Contribution if Counseled`, `Contribution if Not Counseled`)) |>
+  gt::fmt_markdown(columns = gt::everything()) |>
+  gt::tab_options(
+    heading.title.font.size   = "1.5em",
+    heading.title.font.weight = "bolder",
+    column_labels.font.weight = "normal"
+  ) |>
+  gt::tab_style(style = gt::cell_text(weight = "bold"),
+                locations = gt::cells_column_spanners()) |>
+  gt::tab_style(style = gt::cell_text(align = "left"),
+                locations = gt::cells_column_spanners(spanners = c("unit_span", "treatment_span"))) |>
+  gt::tab_style(style = gt::cell_text(align = "right"),
+                locations = gt::cells_column_spanners(spanners = "outcome_span")) |>
+  gt::text_transform(
+    locations = gt::cells_body(columns = `Contribution if Not Counseled`, rows = c(8, 11)),
+    fn = function(x) hatch(x)
+  ) |>
+  gt::text_transform(
+    locations = gt::cells_body(columns = `Contribution if Counseled`, rows = 9),
+    fn = function(x) hatch(x)
+  ) |>
+  gt::tab_footnote(
+    footnote = "Data rows are 2022 employees at the comparable tech company; Preceptor rows are our company's 2026 employees. Both blocks are samples from the same broader population of technology-sector employees in the 2022--2026 window.",
+    locations = gt::cells_title()
+  ) |>
+  gt::opt_css(css = "#rcm_pop_primary .gt_footnote { max-width: 1px; word-break: break-word; }") |>
+  gt::as_raw_html()
+
+cat("```{=html}\n",
+    '<div style="display: inline-block; width: auto; max-width: 100%;">',
+    rcm_pop_primary_html, "</div>\n```\n", sep = "")
+```
+
+The structural shift from Preceptor Table to Population Table is the addition of the `Source` and `Year` columns and the use of `...` to mark separator rows (in the population at large, for which we have nothing). All four assumptions act on this table.
+
+#### Validity
+
+> *Validity is the consistency, or lack thereof, in the columns of the data set and the corresponding columns in the Preceptor Table.*
+
+Validity is about the *columns*. Two columns can have the same name and still measure different things. For our setting, the most consequential validity worry is the `Counseling Status` column. We have called it the same thing in both the data and the Preceptor Table, but the underlying behavior at the comparison company may differ from the underlying behavior at our company. Maybe their "Counseling" condition consisted of a single 30-minute introductory session, while our planned program will be three sessions over six months. Same name, different treatment.
+
+A second worry is the `Contribution Rate` column. The two companies' 401(k) plans may default new employees in at different starting rates. If the comparison company defaults at 5% and our company at 3%, then the same employee --- identical financial preferences, identical reactions to counseling --- would show different `Contribution Rate` values across the two settings, even with no behavioral difference. The column called `Contribution Rate` therefore does not measure the same underlying construct in both blocks.
+
+#### Stability
+
+> *Stability means that the relationship between the columns in the Population Table is the same for three categories of rows: the data, the Preceptor Table, and the larger population from which both are drawn.*
+
+Stability is best understood as a statement about the *parameters* of the model, not about distributions. A change in the *level* of contribution rates between 2022 and 2026 (because of, say, broader wage growth or shifts in the share of mid-career employees) is a distribution shift; that on its own does not violate stability. A change in the *slope* connecting counseling status to contribution rate is a parameter shift; that is what violates stability.
+
+For our setting, the broader macroeconomic environment differs significantly between 2022 and 2026. Inflation, interest rates, equity-market returns, and federal tax policy on retirement accounts have all shifted. The slope connecting financial counseling to contribution behavior likely depends on the broader environment: an employee in 2022 with low inflation and high market returns may respond very differently to a counseling session from an employee in 2026 facing different conditions. The parameter governing the counseling effect may therefore have shifted between the two eras, even if the marginal contribution rate has not changed much.
+
+#### Representativeness
+
+> *Representativeness, or the lack thereof, concerns two relationships among the rows in the Population Table. The first is between the data and the other rows. The second is between the other rows and the Preceptor Table.*
+
+Representativeness is about the *rows*. Two links to defend. First, are the 2022 employees at the comparison company a random sample from the broader population of technology-company employees? Probably not. The comparison company may skew younger, more highly educated, more concentrated in a particular geography, or differently compensated than the technology-sector average. Second, are our 2026 employees a random sample from that same broader population? Again, probably not, and probably for different reasons. The first link fails if the comparison-company employees are systematically different from the broader population; the second link fails if our company's employees are systematically different. Both links have to hold for the model fit on 2022 data to transport cleanly to our 2026 setting.
+
+When representativeness is violated, our parameter estimates *might* be biased --- not *will be*, because by chance the bias might wash out, but we have no principled reason to expect that to happen.
+
+#### Unconfoundedness
+
+> *Unconfoundedness means that the treatment assignment is independent of the potential outcomes, when we condition on pre-treatment covariates.*
+
+Unconfoundedness applies only to causal models. The phrase *pre-treatment covariates* is load-bearing: conditioning on a covariate that sits on the causal path from treatment to outcome (controlling for occupation when estimating education's effect on income, say) introduces bias rather than removing it.
+
+The cleanest defense of unconfoundedness is random assignment of treatment. If the comparison company had randomly assigned individual employees to either attend financial counseling or sit in a study-hall control, unconfoundedness would hold by construction within their data: treatment assignment would be independent of any unit-level characteristic, including the potential outcomes.
+
+In practice, voluntary financial-counseling programs are voluntary --- there is no randomization. Employees who sign up differ from those who don't. They may be more financially literate, more risk-averse, more conscientious, more concerned about retirement, or going through a life event (marriage, birth, parent illness) that prompts the financial-planning conversation in the first place. All of these characteristics also affect 401(k) contribution rates through paths that have nothing to do with the counseling itself. So treatment assignment (signing up for counseling) is correlated with potential outcomes (the contribution rates the employee would set in either arm), and unconfoundedness fails. This is the classic *self-selection* problem in observational causal inference, and it is the chronic methodological challenge in voluntary financial-wellness programs.
+
+> *There are known knowns. There are things we know we know. We also know there are known unknowns. That is to say, we know there are some things we do not know. But there are also unknown unknowns, the ones we do not know we do not know.* --- Donald Rumsfeld
+
+The known unknowns in our setting are the covariates we wish we had: prior contribution rate, salary, tenure, marital status, dependents, financial-literacy score. If we observed all of them and conditioned on them, *selection on observables* might rescue unconfoundedness. The unknown unknowns are the covariates we cannot even name: the employee's underlying degree of risk aversion, their internal time preference, the specific life event that prompted them to sign up. *Selection on unobservables* is the harder case --- the case that requires research designs (instrumental variables, regression discontinuity, difference-in-differences) the example tutorials in later chapters will introduce.
+
+#### The Population Table for the paired predictive question
+
+The paired predictive question's Population Table has the same row structure but a single outcome column and no treatment column. The Data block is still the 2022 employees at the comparable tech company; the Preceptor block is our new hires expected in 2027 (the year after the counseling program would have launched).
+
+```{r}
+#| echo: false
+#| results: asis
+rcm_pop_paired_tibble <- tibble::tribble(
+  ~Source,     ~`Employee`,         ~`Year`, ~`Contribution Rate (%)`,
+  "...",       "...",               "...",   "...",
+  "Data",      "Sarah Kim",         "2022",  "9.0",
+  "Data",      "Michael Lee",       "2022",  "4.5",
+  "Data",      "...",               "...",   "...",
+  "Data",      "Priya Patel",       "2022",  "11.0",
+  "...",       "...",               "...",   "...",
+  "Preceptor", "Erica Foster",      "2027",  "6.0",
+  "Preceptor", "Frank Gutierrez",   "2027",  "10.0",
+  "Preceptor", "...",               "...",   "...",
+  "Preceptor", "Hannah Park",       "2027",  "4.5",
+  "...",       "...",               "...",   "..."
+)
+
+rcm_pop_paired_html <- gt::gt(rcm_pop_paired_tibble, id = "rcm_pop_paired") |>
+  gt::tab_header(title = "Population Table --- Paired predictive question") |>
+  gt::tab_spanner(label = "Unit/Time", id = "unit_span",    columns = c(`Employee`, `Year`)) |>
+  gt::tab_spanner(label = "Outcome",   id = "outcome_span", columns = c(`Contribution Rate (%)`)) |>
+  gt::cols_align(align = "left",  columns = c(`Source`, `Employee`)) |>
+  gt::cols_align(align = "right", columns = c(`Year`, `Contribution Rate (%)`)) |>
+  gt::fmt_markdown(columns = gt::everything()) |>
+  gt::tab_options(
+    heading.title.font.size   = "1.5em",
+    heading.title.font.weight = "bolder",
+    column_labels.font.weight = "normal"
+  ) |>
+  gt::tab_style(style = gt::cell_text(weight = "bold"),
+                locations = gt::cells_column_spanners()) |>
+  gt::tab_style(style = gt::cell_text(align = "left"),
+                locations = gt::cells_column_spanners(spanners = "unit_span")) |>
+  gt::tab_style(style = gt::cell_text(align = "right"),
+                locations = gt::cells_column_spanners(spanners = "outcome_span")) |>
+  gt::tab_footnote(
+    footnote = "Data rows are 2022 employees at the comparable tech company; Preceptor rows are our company's expected 2027 new hires. No hatching --- predictive models have no potential outcomes.",
+    locations = gt::cells_title()
+  ) |>
+  gt::opt_css(css = "#rcm_pop_paired .gt_footnote { max-width: 1px; word-break: break-word; }") |>
+  gt::as_raw_html()
+
+cat("```{=html}\n",
+    '<div style="display: inline-block; width: auto; max-width: 100%;">',
+    rcm_pop_paired_html, "</div>\n```\n", sep = "")
+```
+
+Validity, stability, and representativeness apply to this Population Table in the same ways they apply to the causal one above. Unconfoundedness does not; the paired question has no treatment to be confounded with anything.
+
+#### Probability family and link function
+
+Justice also commits us to the form of the model. The outcome `contribution_rate` is continuous (bounded below by 0 and above by 100, but in practice rarely near either extreme), so we will model it as Normal with the identity link:
+
+$$Y \sim \mathcal{N}(\mu, \sigma^2)$$
+
+with $\mu = \beta_0 + \beta_1 X_1 + \cdots + \beta_n X_n$. The example tutorials in later chapters will work through what to do when the outcome is *not* Normal --- binary, count, ordered --- but for our setting Normal is fine.
+
+### Courage
+
+> *Courage creates the data generating mechanism.*
+
+Courage is brief. Justice gave us the form of the model and the assumptions we are willing to defend. Courage picks the specific covariates and *fits* the model.
+
+What is a model? A model is a mathematical claim about how the data was generated. We write it as a formula that takes covariates as input and produces an expected outcome. The formula contains unknown numbers --- the *parameters* --- which we don't know in advance and have to estimate from the data. The act of fitting is the process of taking the data we have and finding the parameter values that best line up with it. After fitting, we have a concrete formula we can use to estimate outcomes for units we haven't seen, including the units in the Preceptor Table.
+
+For our setting, the model would be a linear regression of contribution rate on treatment (and zero or more pre-treatment covariates). For the causal question, the fitted coefficient on the treatment variable is our estimate of the average causal effect. For the paired predictive question, the same coefficient is our estimate of the average difference in contribution rate between counseled and non-counseled employees. The math is the same; the interpretation depends on what assumptions we made in Justice.
+
+### Temperance
+
+> *Temperance interprets the data generating mechanism and then uses it to answer, with the help of graphics, the question(s) with which we began. Humility reminds us that this answer is always false.*
+
+Temperance is where the fitted model becomes the answer. For the causal question, the answer is the average causal effect: a point estimate plus an interval. For the paired predictive question, the answer is the expected average contribution rate of next year's new hires, again with an interval. The interval is the model's measure of its own uncertainty --- a single number is half an answer.
+
+Humility reminds us that the answer is never the truth. The posterior we report is, at best, the *Preceptor's Posterior* --- the best posterior achievable under our assumptions. The reported confidence interval captures only sampling variation under those assumptions; it does not capture our uncertainty about whether the assumptions themselves are correct. Validity is imperfect; stability is approximate; representativeness is stretched; unconfoundedness may fail. The reported interval is always too narrow.
 
 ## Summary
 

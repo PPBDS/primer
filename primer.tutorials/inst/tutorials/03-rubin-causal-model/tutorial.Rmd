@@ -6,7 +6,7 @@ tutorial:
 output:
   learnr::tutorial:
     progressive: yes
-    allow_skip:: yes
+    allow_skip: yes
 runtime: shiny_prerendered
 description: "Tutorial #03 for Preceptor's Primer"
 ---
@@ -14,57 +14,21 @@ description: "Tutorial #03 for Preceptor's Primer"
 ```{r setup, include = FALSE}
 library(learnr)
 library(tutorial.helpers)
-library(tidyverse)
 library(gt)
-library(dplyr)
-library(knitr)
-
-# I think that we need the katex package because we use latex notation in
-# gt tables. But katex sure causes lots of problems. So maybe I should just
-# remove that usage. Also, it sure seems to help various R CMD check and/or
-# renv issues if I explicitly load up the quarto library somewhere. So, I do
-# that here.
-
-library(katex)
-library(quarto)
+library(tidyverse)
 
 knitr::opts_chunk$set(echo = FALSE)
-options(tutorial.exercise.timelimit = 60, 
-        tutorial.storage = "local") 
+options(tutorial.exercise.timelimit = 60,
+        tutorial.storage = "local")
 
-# Key Data
-
-gt_obj <- tibble(subject = c("Yao", "Emma", "Cassidy", "Tahmid", "Diego"),
-       treatment = c("Treated", "Treated", "Control", "Control", "Treated"), 
-       ytreat = c("13", "14", "11", "9", "3"),
-       ycontrol = c("9", "11", "6", "12", "4"),
-       ydiff = c("? ", "? ", "? ", "? ", "? ")) |>
-   gt() |>
-  cols_label(subject = md("ID"),
-                treatment = md("Treatment"),
-                ytreat = md("$$Y_t(u)$$"),
-                ycontrol = md("$$Y_c(u)$$"),
-                ydiff = md("$$Y_t(u) - Y_c(u)$$")) |>
-  cols_move(columns = c(treatment, ytreat, ycontrol), after = c(subject)) |>
-  tab_style(style = cell_text(align = "left", v_align = "middle", size = "large"), 
-            locations = cells_column_labels(columns = c(subject, treatment))) |>
-  cols_align(align = "center", columns = everything()) |>
-  cols_align(align = "left", columns = c(subject)) |>
-  fmt_markdown(columns = everything()) |>
-  tab_spanner(label = "Outcomes", c(ytreat, ycontrol))  |>
-  tab_spanner(label = "Estimand", c(ydiff))
-
-x_1 <- tibble(
-  ID = c("Student 1", "Student 2", "Student 47", "Student 48",
-         "Student 325", "Student 326", "Student 670"),
-  Heights = c(190, 160, 172, 176, 180, 162, 185)
-)
-
-x_2 <- tibble(
-  ID = c("Student 11", "Student 32", "Student 47", "Student 68",
-         "Student 425", "Student 436", "Student 570"),
-  Heights = c(160, 189, 172, 170, 175, 162, 188)
-)
+hatch <- function(x) {
+  paste0(
+    '<span style="background-image: repeating-linear-gradient(',
+    '45deg, rgba(0,0,0,0.12) 0 1px, transparent 1px 6px);',
+    ' padding: 6px 10px; margin: -6px -10px; display: block;">',
+    x, '</span>'
+  )
+}
 ```
 
 ```{r copy-code-chunk, child = system.file("child_documents/copy_button.Rmd", package = "tutorial.helpers")}
@@ -74,126 +38,37 @@ x_2 <- tibble(
 ```
 
 
-<!-- Leftover comments/concerns -->
-
-<!-- Does the Simple Models section work? -->
-
-<!-- Should there by a section about EDA after the Preceptor section. -->
-
-<!-- Make one of the examples a coin example. I think . . . -->
-
-<!--  And fix the 2 taus table in the 2nd tutorial so that tau is easier to calculate mentally. --> 
-
-<!-- More about confounding. Of course, it needs to be in the book. -->
-
-<!-- Perhaps some of these questions could be re-framed by showing the student an image and then asking them to answer questions about it. For example, add an image of a Preceptor table and ask them to define it in their own words. --> 
-
-
 ## Introduction
-### 
+###
 
-This tutorial supports [*Preceptor’s Primer for Bayesian Data Science: Using the Cardinal Virtues for Inference*](https://ppbds.github.io/primer/) by [David Kane](https://davidkane.info/). 
+This tutorial supports [*Preceptor's Primer for Bayesian Data Science: Using the Cardinal Virtues for Inference*](https://ppbds.github.io/primer/) by [David Kane](https://davidkane.info/). It focuses on the [Rubin Causal Model](https://ppbds.github.io/primer/rubin-causal-model.html) --- the framework most modern statistics uses to think about cause and effect through the lens of *potential outcomes*.
 
 The world confronts us. Make decisions we must.
 
-This tutorial will review key concepts including the Preceptor Table, the Population Table, potential outcomes, causal effects, validity, stability, representativeness, and unconfoundedness. 
-
-## Preceptor Table 1
-### 
-
-We would not need data science if we (and our bosses, colleagues, and clients) did not have questions. Every data science project starts with a question.
-
-What is the average height of a student at New College of Florida? We have this data from 2015:
-
-```{r}
-tibble(ID = c("Student 1", "Student 2", "...", "Student 47", "Student 48",
-              "...", "Student 325", "Student 326", "...", "Student 670"),
-       Heights = c("190", "160", "...", "172", "176", "...", "180", "162", "...", "185")) |>
-  gt() |>
-  tab_header(title = "Preceptor Table") |> 
-  cols_label(ID = md("ID"),
-                Heights = "Height (cm)") |>
-  tab_style(style = cell_text(align = "left", v_align = "middle"), 
-            locations = cells_column_labels(columns = c(ID))) |>
-  cols_align(align = "center", columns = everything()) |>
-  cols_align(align = "left", columns = c(ID)) |>
-  tab_spanner(label = "Outcome", columns = c(Heights)) |> 
-  tab_style(style = cell_text(v_align = "bottom"),
-            locations = cells_column_labels())
-```
-
-The description of a Preceptor Table is the first step in answering this question.
+Imagine that you are a data scientist at a mid-size technology company. The Head of HR has a big-picture goal --- improve employees' long-term financial wellbeing --- and many decisions to make in service of it: which benefits to offer, which to cut, how aggressively to nudge employees toward higher retirement-account contributions, and whether to fund a new one-on-one financial-counseling program where employees can meet with a certified financial planner. The HR Director trusts you to find the evidence that helps her decide. This tutorial walks through the four Cardinal Virtues by applying them to two related questions about the same employees: a causal one (what is the effect of the financial-counseling program on 401(k) contribution rates?) and a paired predictive one (what will be the average 401(k) contribution rate among next year's new hires?). The exercises are conceptual --- no R coding here; the goal is to practice the Rubin framework before the example tutorials that follow. There are many decisions to make.
 
 ### Exercise 1
 
-Define a Preceptor Table in your own words.
+What are the four [Cardinal Virtues](https://en.wikipedia.org/wiki/Cardinal_virtues), in order, which we use to guide our data science work?
 
-```{r preceptor-table-1-1}
+```{r introduction-1}
 question_text(NULL,
-    message = "A table such that, if none of the data is missing, you can easily calculate your quantity of interest.",
-    answer(NULL, correct = TRUE),
-    allow_retry = FALSE,
-    incorrect = NULL,
-    rows = 3)
-```
-
-### 
-
-Preceptor Tables vary in the number of their rows and columns. We use question marks to indicate missing data in a Preceptor Table. 
-
-
-### Exercise 2
-
-Describe the *units* in the Preceptor Table which would allow us to answer our question.
-
-```{r preceptor-table-1-2}
-question_text(NULL,
-  message = "The 'units' refer to the rows, which are the individual students at New College.",
+  message = "Wisdom, Justice, Courage, and Temperance.",
   answer(NULL, correct = TRUE),
   allow_retry = FALSE,
   incorrect = NULL,
-  rows = 6)
-```
-
-### Exercise 3
-
-Describe the *outcomes* in the Preceptor Table which would allow us to answer our question.
-
-```{r preceptor-table-1-3}
-question_text(NULL,
-  message = "Outcomes refers to height, which is a column.",
-  answer(NULL, correct = TRUE),
-  allow_retry = FALSE,
-  incorrect = NULL,
-  rows = 6)
+  rows = 2)
 ```
 
 ###
 
-The best way to construct a Preceptor Table is to begin by answering questions about *units*, *outcomes* and *treatments*. In this case, there are no treatments, so we only need to specify the units and the outcome.
+### Exercise 2
 
-### Exercise 4
+In your own words, describe the Rubin Causal Model.
 
-Describe what the Preceptor Table should look like for this example.
-
-```{r preceptor-table-1-4}
+```{r introduction-2}
 question_text(NULL,
-  message = "The Preceptor Table will have a row for each individual student at New College. In addition to an ID column, it will have one other column: height, which is the outcome.",
-  answer(NULL, correct = TRUE),
-  allow_retry = FALSE,
-  incorrect = NULL,
-  rows = 6)
-```
-
-### Exercise 5
-
-If we had different questions, however, then we would need a different Preceptor Table. What if we wanted to calculate the average height for male and female students at New College of Florida? We would need a different variable.
-
-Describe what a covariate is in your own words. Then, describe the covariate needed for the new question.
-
-```{r preceptor-table-1-5}
-question_text(NULL,
-  message = "Covariates are the variables, other than the outcome, which we need to answer our question(s). For this question, we will need an additional column: Sex.",
+  message = "The Rubin Causal Model is an approach to the statistical analysis of cause and effect based on the framework of potential outcomes.",
   answer(NULL, correct = TRUE),
   allow_retry = FALSE,
   incorrect = NULL,
@@ -202,315 +77,542 @@ question_text(NULL,
 
 ###
 
-The Preceptor Table to answer the new questions should look like:
+Rubin's framework is the dominant one in modern statistics. Its vocabulary --- *potential outcomes*, *treatment*, *unconfoundedness*, *fundamental problem of causal inference* --- is what the rest of this tutorial (and the rest of the *Primer*) uses to talk about causation.
 
-```{r}
-tibble(ID = c("Student 1", "Student 2", "...", "Student 47", "Student 48",
-              "...", "Student 325", "Student 326", "...", "Student 670"),
-       Heights = c("190", "160", "...", "172", "176", "...", "180", "162", "...", "185"),
-       Sex     = c("Male", "Female", "...", "Female", "Female", "...", "Male", "Female", "...", "Male")) |>
-  gt() |>
-  tab_header(title = "Preceptor Table") |> 
-  cols_label(ID = md("ID"),
-             Heights = "Height (cm)",
-             Sex = md("Sex")) |>
-  tab_style(style = cell_text(align = "left", v_align = "middle"), 
-            locations = cells_column_labels(columns = c(ID))) |>
-  cols_align(align = "center", columns = everything()) |>
-  cols_align(align = "left", columns = c(ID)) |>
-  tab_spanner(label = "Outcome", columns = c(Heights)) |> 
-  tab_spanner(label = "Covariate", columns = c(Sex)) |> 
-  tab_style(style = cell_text(v_align = "bottom"),
-            locations = cells_column_labels())
+### Exercise 3
+
+Define a potential outcome.
+
+```{r introduction-3}
+question_text(NULL,
+  message = "A potential outcome is the outcome for an individual under a specified treatment. In a causal model there are at least two potential outcomes for each unit: the outcome under treatment and the outcome under control.",
+  answer(NULL, correct = TRUE),
+  allow_retry = FALSE,
+  incorrect = NULL,
+  rows = 4)
 ```
 
+###
+
+For our problem, each employee has two potential 401(k) contribution rates: the rate they *would* contribute if the company offered them the financial-counseling program, and the rate they *would* contribute if it did not. Both potential outcomes are well-defined attributes of the employee; what makes the situation hard is that we only ever see one.
+
+### Exercise 4
+
+Define a causal effect.
+
+```{r introduction-4}
+question_text(NULL,
+  message = "A causal effect is the difference between two potential outcomes.",
+  answer(NULL, correct = TRUE),
+  allow_retry = FALSE,
+  incorrect = NULL,
+  rows = 3)
+```
+
+###
+
+According to the Rubin Causal Model, there must be two (or more) potential outcomes for any discussion of causation to make sense. This is simplest when the treatment has two values, generating two potential outcomes per unit. With a continuous treatment (e.g., *how many hours of counseling?*), there is a potential outcome for every possible value of the treatment variable.
+
+### Exercise 5
+
+What is the fundamental problem of causal inference?
+
+```{r introduction-5}
+question_text(NULL,
+  message = "The fundamental problem of causal inference is that we can only observe one potential outcome.",
+  answer(NULL, correct = TRUE),
+  allow_retry = FALSE,
+  incorrect = NULL,
+  rows = 3)
+```
+
+###
+
+For each employee, we see the contribution rate they actually had under whichever treatment they actually got --- counseling or no counseling. The contribution rate they would have had under the other arm is the *counterfactual*, and we never see it. Causal inference is therefore a missing-data problem: we are estimating an average of unit-level effects we cannot observe for any single unit.
 
 ### Exercise 6
 
+In your own words, describe the difference between predictive and causal models.
+
+```{r introduction-6}
+question_text(NULL,
+  message = "Predictive models have only one outcome column. Causal models have more than one (potential) outcome column because we need more than one potential outcome in order to estimate a causal effect.",
+  answer(NULL, correct = TRUE),
+  allow_retry = FALSE,
+  incorrect = NULL,
+  rows = 5)
+```
+
+###
+
+The distinction is *not* a property of the data; it is a commitment made by the analyst. The same dataset --- and the same R code --- can fit a predictive model or a causal model. What differs is whether the analyst is willing to treat one of the covariates as a *treatment* (a variable that can in principle be manipulated). Yes: causal. No: predictive.
+
+
+## Wisdom
+###
+
+> *Wisdom begins with a question and then moves on to the creation of a Preceptor Table and an examination of our data.*
+
+Wisdom commits us to a question precise enough to be answered. The Preceptor Table makes the commitment concrete: it is the smallest table that, if every cell were filled with the truth, would make the question's answer easy to read off.
+
+> *The combination of some data and an aching desire for an answer does not ensure that a reasonable answer can be extracted from a given body of data.* --- John W. Tukey
+
+### Exercise 1
+
+In your own words, describe the key components of Wisdom when working on a data science problem.
+
+```{r wisdom-1}
+question_text(NULL,
+  message = "Wisdom begins with a question and then moves on to the creation of a Preceptor Table and an examination of our data.",
+  answer(NULL, correct = TRUE),
+  allow_retry = FALSE,
+  incorrect = NULL,
+  rows = 3)
+```
+
+###
+
+### Exercise 2
+
+Define a Preceptor Table.
+
+```{r wisdom-2}
+question_text(NULL,
+  message = "A Preceptor Table is the smallest possible table of data with rows and columns such that, if there is no missing data, we can easily calculate the quantity of interest.",
+  answer(NULL, correct = TRUE),
+  allow_retry = FALSE,
+  incorrect = NULL,
+  rows = 6)
+```
+
+###
+
+### Exercise 3
+
+Describe the key components of Preceptor Tables in general, without worrying about this specific problem. Use words like "units," "outcomes," and "covariates."
+
+```{r wisdom-3}
+question_text(NULL,
+  message = "The rows of the Preceptor Table are the units. The outcome is at least one of the columns. If the problem is causal, there will be at least two (potential) outcome columns. The other columns are covariates. If the problem is causal, at least one of the covariates will be considered a treatment.",
+  answer(NULL, correct = TRUE),
+  allow_retry = FALSE,
+  incorrect = NULL,
+  rows = 6)
+```
+
+###
+
+In this tutorial we work two questions in parallel. The primary is the causal one (it sits at the heart of the Rubin Causal Model); the paired is the predictive one.
+
+### The primary question (causal)
+
+The primary question is:
+
+> What is the average causal effect of the financial-counseling program on an employee's 401(k) contribution rate?
+
+This is a causal question. Each employee has two potential outcomes --- the contribution rate they would have under the counseling program, and the rate they would have without it --- and the causal effect for that employee is the difference. The average causal effect across all employees is the number the HR Director wants to weigh against the program's cost.
+
+### Exercise 4
+
+What are the units for the primary question?
+
+```{r wisdom-4}
+question_text(NULL,
+  message = "Each row is one current employee, observed during the calendar year in which the financial-counseling program would run. The company has about 2,400 benefits-eligible employees.",
+  answer(NULL, correct = TRUE),
+  allow_retry = FALSE,
+  incorrect = NULL,
+  rows = 4)
+```
+
+###
+
+### Exercise 5
+
+What is the outcome variable for the primary question?
+
+```{r wisdom-5}
+question_text(NULL,
+  message = "The outcome is the employee's annual 401(k) contribution as a percent of salary --- a continuous variable on a 0-to-100 scale, in practice clustered between 0 and 15.",
+  answer(NULL, correct = TRUE),
+  allow_retry = FALSE,
+  incorrect = NULL,
+  rows = 4)
+```
+
+###
+
+### Exercise 6
+
+What is the treatment in the primary causal question?
+
+```{r wisdom-6}
+question_text(NULL,
+  message = "The treatment is whether the employee was enrolled in the company's financial-counseling program. Two values: `Counseled` (the employee attended at least one one-on-one session with a certified financial planner during the calendar year) or `Not Counseled` (the employee did not). The HR Director can, at least in principle, manipulate this by funding the program for some employees and not others, or for some years and not others.",
+  answer(NULL, correct = TRUE),
+  allow_retry = FALSE,
+  incorrect = NULL,
+  rows = 6)
+```
+
+###
+
+### Exercise 7
+
+For a single employee, write down the *causal effect* in terms of potential outcomes.
+
+```{r wisdom-7}
+question_text(NULL,
+  message = "Take Alice, an employee at the company. Alice has two potential contribution rates: the rate she would have under counseling (say 8%) and the rate she would have without (say 5%). Her causal effect is 8 - 5 = 3 percentage points. We can never see both numbers for Alice; the experiment can only put her in one arm, so the other potential outcome is unobservable for her.",
+  answer(NULL, correct = TRUE),
+  allow_retry = FALSE,
+  incorrect = NULL,
+  rows = 6)
+```
+
+###
+
+### Exercise 8
+
+Describe in words what the Preceptor Table for the primary causal question would look like.
+
+```{r wisdom-8}
+question_text(NULL,
+  message = "The Preceptor Table has four columns: one identifying each employee, two potential-outcome columns (`Contribution if Counseled`, `Contribution if Not Counseled`), and one treatment column (`Counseling Status`). Each row represents one employee. For each employee, only one potential outcome is observable; the other --- the counterfactual --- is the contribution rate the employee would have had under the treatment they did not receive, marked with diagonal hatching.",
+  answer(NULL, correct = TRUE),
+  allow_retry = FALSE,
+  incorrect = NULL,
+  rows = 6)
+```
+
+###
+
+```{r}
+#| echo: false
+#| results: asis
+pt_primary_tibble <- tibble::tribble(
+  ~`Employee`,         ~`Contribution if Counseled`, ~`Contribution if Not Counseled`, ~`Counseling Status`,
+  "Alice Becker",      "8.0",                        "5.0",                            "Counseled",
+  "Brendan Cohen",     "10.0",                       "10.0",                           "Not Counseled",
+  "...",               "...",                        "...",                            "...",
+  "Diego Ramirez",     "12.5",                       "9.5",                            "Counseled"
+)
+
+pt_primary_html <- gt::gt(pt_primary_tibble, id = "pt_primary") |>
+  gt::tab_header(title = "Preceptor Table --- Primary (causal) question") |>
+  gt::tab_spanner(label = "Unit",                id = "unit_span",      columns = c(`Employee`)) |>
+  gt::tab_spanner(label = "Potential Outcomes", id = "outcome_span",   columns = c(`Contribution if Counseled`, `Contribution if Not Counseled`)) |>
+  gt::tab_spanner(label = "Treatment",          id = "treatment_span", columns = c(`Counseling Status`)) |>
+  gt::cols_align(align = "left",  columns = c(`Employee`, `Counseling Status`)) |>
+  gt::cols_align(align = "right", columns = c(`Contribution if Counseled`, `Contribution if Not Counseled`)) |>
+  gt::fmt_markdown(columns = gt::everything()) |>
+  gt::tab_options(
+    heading.title.font.size   = "1.5em",
+    heading.title.font.weight = "bolder",
+    column_labels.font.weight = "normal"
+  ) |>
+  gt::tab_style(style = gt::cell_text(weight = "bold"),
+                locations = gt::cells_column_spanners()) |>
+  gt::tab_style(style = gt::cell_text(align = "left"),
+                locations = gt::cells_column_spanners(spanners = c("unit_span", "treatment_span"))) |>
+  gt::tab_style(style = gt::cell_text(align = "right"),
+                locations = gt::cells_column_spanners(spanners = "outcome_span")) |>
+  # Hatch each row's unobservable counterfactual.
+  # Row 1 (Counseled): hatch `Contribution if Not Counseled`.
+  # Row 2 (Not Counseled): hatch `Contribution if Counseled`.
+  # Row 4 (Counseled): hatch `Contribution if Not Counseled`.
+  gt::text_transform(
+    locations = gt::cells_body(columns = `Contribution if Not Counseled`, rows = c(1, 4)),
+    fn = function(x) hatch(x)
+  ) |>
+  gt::text_transform(
+    locations = gt::cells_body(columns = `Contribution if Counseled`, rows = 2),
+    fn = function(x) hatch(x)
+  ) |>
+  gt::tab_footnote(
+    footnote = "If all the information in this table were available, we could answer the question: What is the average causal effect of the financial-counseling program on an employee's 401(k) contribution rate?",
+    locations = gt::cells_title()
+  ) |>
+  gt::tab_footnote(
+    footnote = "Each row is one of the company's roughly 2,400 benefits-eligible employees. The cross-hatched cell in each row marks the unobservable counterfactual --- the contribution rate the employee would have had under the treatment they did not receive.",
+    locations = gt::cells_column_spanners(spanners = "outcome_span")
+  ) |>
+  gt::tab_footnote(
+    footnote = "The treatment is whether the employee attended at least one one-on-one session with a certified financial planner during the calendar year.",
+    locations = gt::cells_column_spanners(spanners = "treatment_span")
+  ) |>
+  gt::opt_css(css = "#pt_primary .gt_footnote { max-width: 1px; word-break: break-word; }") |>
+  gt::as_raw_html()
+
+cat("```{=html}\n",
+    '<div style="display: inline-block; width: auto; max-width: 100%;">',
+    pt_primary_html, "</div>\n```\n", sep = "")
+```
+
+Notice the Preceptor Table shows the *unobservable truth* --- the actual potential outcomes for each employee under both treatment arms. In reality we will only ever see one cell per row (the un-hatched one). The Rubin framework's whole job is to estimate the missing cells.
+
+### The paired question (predictive)
+
+The paired question is:
+
+> What will be the average 401(k) contribution rate of new hires next year?
+
+This is a predictive question. We want one specific number: an estimate of the average contribution rate for the next cohort of new hires, with its associated uncertainty.
+
+### Exercise 9
+
+How many potential outcomes does each new hire have in the paired predictive question?
+
+```{r wisdom-9}
+question_text(NULL,
+  message = "One. The paired question is predictive: there is no treatment to manipulate, so each new hire has a single observable contribution rate (whatever rate they end up choosing). Predictive models have no potential outcomes --- just one outcome column.",
+  answer(NULL, correct = TRUE),
+  allow_retry = FALSE,
+  incorrect = NULL,
+  rows = 4)
+```
+
+###
+
+```{r}
+#| echo: false
+#| results: asis
+pt_paired_tibble <- tibble::tribble(
+  ~`New Hire`,           ~`Contribution Rate (%)`,
+  "Erica Foster",        "6.0",
+  "Frank Gutierrez",     "10.0",
+  "...",                 "...",
+  "Hannah Park",         "4.5"
+)
+
+pt_paired_html <- gt::gt(pt_paired_tibble, id = "pt_paired") |>
+  gt::tab_header(title = "Preceptor Table --- Paired (predictive) question") |>
+  gt::tab_spanner(label = "Unit",    id = "unit_span",    columns = c(`New Hire`)) |>
+  gt::tab_spanner(label = "Outcome", id = "outcome_span", columns = c(`Contribution Rate (%)`)) |>
+  gt::cols_align(align = "left",  columns = c(`New Hire`)) |>
+  gt::cols_align(align = "right", columns = c(`Contribution Rate (%)`)) |>
+  gt::fmt_markdown(columns = gt::everything()) |>
+  gt::tab_options(
+    heading.title.font.size   = "1.5em",
+    heading.title.font.weight = "bolder",
+    column_labels.font.weight = "normal"
+  ) |>
+  gt::tab_style(style = gt::cell_text(weight = "bold"),
+                locations = gt::cells_column_spanners()) |>
+  gt::tab_style(style = gt::cell_text(align = "left"),
+                locations = gt::cells_column_spanners(spanners = "unit_span")) |>
+  gt::tab_style(style = gt::cell_text(align = "right"),
+                locations = gt::cells_column_spanners(spanners = "outcome_span")) |>
+  gt::tab_footnote(
+    footnote = "If all the information in this table were available, we could answer the question: What will be the average 401(k) contribution rate of new hires next year?",
+    locations = gt::cells_title()
+  ) |>
+  gt::tab_footnote(
+    footnote = "Each row is one new hire expected next year. The company adds about 300 net new hires annually.",
+    locations = gt::cells_column_spanners(spanners = "unit_span")
+  ) |>
+  gt::tab_footnote(
+    footnote = "Annual 401(k) contribution as a percent of salary.",
+    locations = gt::cells_column_spanners(spanners = "outcome_span")
+  ) |>
+  gt::opt_css(css = "#pt_paired .gt_footnote { max-width: 1px; word-break: break-word; }") |>
+  gt::as_raw_html()
+
+cat("```{=html}\n",
+    '<div style="display: inline-block; width: auto; max-width: 100%;">',
+    pt_paired_html, "</div>\n```\n", sep = "")
+```
+
+### Exercise 10
+
+The two Preceptor Tables are nearly identical in structure. What differs?
+
+```{r wisdom-10}
+question_text(NULL,
+  message = "Two structural differences. First, the causal table has two potential-outcome columns (`Contribution if Counseled`, `Contribution if Not Counseled`) with the unobservable counterfactual hatched; the predictive table has one outcome column (`Contribution Rate (%)`) with nothing hatched. Second, the causal table has a `Treatment` column under its own spanner; the predictive table has no treatment column. Everything else --- the role of the unit identifier, the place of covariates if we had any --- is the same. That single difference in outcome-and-treatment bookkeeping is the entire mechanical difference between predictive and causal models.",
+  answer(NULL, correct = TRUE),
+  allow_retry = FALSE,
+  incorrect = NULL,
+  rows = 7)
+```
+
+###
+
+Same data could fit either model. What makes one *causal* and the other *predictive* is the analyst's commitment about what the covariates are, defended in Justice.
+
+
+## Justice
+###
+
+> *Justice reviews the Population Table and selects the formula for the data generating mechanism.*
+
+Justice is the section of the analysis where you (or your critics) raise concerns about whether your model will work. The Population Table is where those concerns become concrete: it bridges between the data we actually have and the Preceptor Table we wish we had.
+
+### Exercise 1
+
+In your own words, describe the components of Justice when working on a data science problem.
+
+```{r justice-1}
+question_text(NULL,
+  message = "Justice reviews the Population Table and selects the formula for the data generating mechanism.",
+  answer(NULL, correct = TRUE),
+  allow_retry = FALSE,
+  incorrect = NULL,
+  rows = 4)
+```
+
+###
+
+The four classic Justice concerns are *validity*, *stability*, *representativeness*, and *unconfoundedness*. The first three apply to both predictive and causal models; the fourth applies only to causal models --- which means it is central to the primary question in this tutorial.
+
+### Exercise 2
+
 In your own words, define "validity" as we use the term.
 
-```{r preceptor-table-1-6}
+```{r justice-2}
 question_text(NULL,
   message = "Validity is the consistency, or lack thereof, in the columns of the data set and the corresponding columns in the Preceptor Table.",
   answer(NULL, correct = TRUE),
   allow_retry = FALSE,
   incorrect = NULL,
-  rows = 6)
+  rows = 4)
 ```
 
 ###
 
-Validity is always about the *columns* in the Preceptor Table and the data. Just because columns from these two different tables have the same *name* does not mean that they are the same *thing*.
-
-We hope that all this new terminology is not overwhelming. The "[Rubin Causal Model](https://ppbds.github.io/primer/rubin-causal-model.html)" chapter in the [*Primer*](https://ppbds.github.io/primer/) provides an introduction to some of these terms.
-
-### Exercise 7
-
-Describe in your own words what the assumption of validity, if it is true, allows us to do. Use the verb "stack" and the phrase "Population Table" in your answer.
-
-```{r preceptor-table-1-7}
-question_text(NULL,
-  message = "If the assumption of validity holds, we can 'stack' the rows from the data and from the Preceptor Table into the same table. This structure forms the start of the Population Table, although it will generally have many more rows.",
-  answer(NULL, correct = TRUE),
-  allow_retry = FALSE,
-  incorrect = NULL,
-  rows = 6)
-```
-
-### 
-
-Much of what a good data scientist does is to try to think of reasons why questions can **not** be answered. Assumptions are rarely fully true. We need to test them. The best way to start testing is to come up with (plausible) objections. We will practice this skill over and over again.
-
-### 
-
-```{r}
-bind_rows(
-  x_2 |> mutate(Source = "Data"),
-  x_1 |> mutate(Source = "Preceptor Table")
-) |> 
-  select(Source, ID, Heights) |> 
-  rename(`Height (cm)` = Heights) |> 
-  gt() |>
-  cols_label(
-    Source = md("**Source**"),
-    ID = md("**ID**"),
-    `Height (cm)` = md("**Height (cm)**")
-  ) |>
-  tab_style(
-    style = cell_text(align = "left", v_align = "middle", size = "large"), 
-    locations = cells_column_labels(columns = c(ID))
-  ) |>
-  cols_align(align = "center", columns = everything()) |>
-  cols_align(align = "left", columns = c(ID)) |>
-  fmt_markdown(columns = everything())
-```
-
-### 
-
-This object is not (yet) a Population Table. It is the step between having two tables (the data and the Preceptor Table) and then, given the assumption of validity, creating the full Population Table. 
-
-### Exercise 8
-
-Come up with a scenario for this problem in which the assumption of validity might not hold.
-
-```{r preceptor-table-1-8}
-question_text(NULL,
-  message = "What if the data were collected while the students had their shoes on but the question about average height refers to height without shoes? In that case, the meaning of 'height' would be different between the data and the Preceptor Table.",
-  answer(NULL, correct = TRUE),
-  allow_retry = FALSE,
-  incorrect = NULL,
-  rows = 6)
-```
-
-###
-
-For this problem, we are going to assume the assumption of validity holds, allowing us to stack the data from the Preceptor Table and the data together.
-
-
-## Population Table 1
-### 
-
-The Population table serves to show the overall population we are interested in. It combines the data from the Preceptor Table and our data set. There are three sources of data for the Population Table: units we want (Preceptor Table), units we already have (the data), and the other units (the rest of the population which is neither in the data nor in the Preceptor Table).
-
-### Exercise 1
-
-In your own words, give a one-sentence definition of a Population Table.
-
-```{r population-table-1-1}
-question_text(NULL,
-    message = "The Population Table includes a row for each unit/time combination in the underlying population from which both the Preceptor Table and the data are drawn.",
-    answer(NULL, correct = TRUE),
-    allow_retry = FALSE,
-    incorrect = NULL,
-    rows = 3)
-```
-
-### 
-
-The Population Table can be constructed if the validity assumption is (mostly) true. It includes all the rows from the Preceptor Table. It also includes the rows from the data set. It usually has other rows as well, rows which represent unit/time combinations from other parts of the population.
-
-Rows in our Population Table often contain no data. These are subjects that fall within our population, but for which we have no data. As such, all values are missing.
-
-```{r}
-#| echo: false
-tibble(source = c("...", "...",  "Data", "Data", 
-                  "...", "...", "...", 
-                  "Preceptor Table", "Preceptor Table", "...", "...", "..."),
-       year = c("2010", "...", "2015", "2015", 
-                "...","2018", "...", "2025", "2025", "...", "2030", "2030"),
-       height = c("...", "...", "180", "163", "...", "...", "...","?", "?", "...", "...", "...")) |> 
-  
-  # Then, we use the gt function to make it pretty
-  
-  gt() |>
-  tab_header(title = "Population Table") |> 
-  cols_label(source = md("Source"),
-             year = md("Year"),
-             height = md("Height")) |>
-  tab_style(style = cell_text(align = "left", v_align = "middle", size = "large"), 
-            locations = cells_column_labels(columns = c(source))) |>
-  cols_align(align = "center", columns = everything()) |>
-  cols_align(align = "left", columns = c(source)) |>
-  fmt_markdown(columns = everything())  
-```
-
-### 
-
-The `Source` column indicates the source of the row. The `Time` column, which is often named with the relevant unit of time (like `year` or `date` or whatever), indicates the moment in time to which the data in the row refers.
-
-### Exercise 2
-
-How are these rows usually indicated in the 'Source' column?
-
-```{r population-table-1-2}
-question_text(NULL,
-  message = "There are typically three sources for the rows in the Population Table: the data, the Preceptor Table, and the other units in the population from which the data and the Preceptor Table were drawn. These rows are usually indicated with 'Data', 'Preceptor Table', and '...', respectively.",
-  answer(NULL, correct = TRUE),
-  allow_retry = FALSE,
-  incorrect = NULL,
-  rows = 6)
-```
-
-### 
-
-In causal usage, we will often leave out the `ID`, `Source` and `Time` columns from the Population Table, but they are always there, at least implicitly.
+Validity is about the *columns*. Two columns can have the same name and still measure different things.
 
 ### Exercise 3
 
-What combination of variables *uniquely* defines each row in the Population Table? 
+Suppose our data is from a similar tech company that ran a comparable counseling program three years ago. Give one reason why the assumption of validity might not hold for the `contribution_rate` column.
 
-```{r population-table-1-3}
+```{r justice-3}
 question_text(NULL,
-  message = "Each row in the Population Table is uniquely defined by an ID/Time combination.",
+  message = "Two companies' 401(k) plans may differ in their default contribution rate (the rate an employee is automatically enrolled at if they take no action). If the comparison company auto-enrolls at 5% and our company auto-enrolls at 3%, the same employee would show different `contribution_rate` values across the two companies even with no behavioral difference. The column called `contribution_rate` therefore does not measure the same underlying construct in the two firms.",
   answer(NULL, correct = TRUE),
   allow_retry = FALSE,
   incorrect = NULL,
   rows = 6)
 ```
 
-### 
-
-Some students will appear multiple times in the Population Table. The `Time` 2025 will appear multiple times, but there will only be one row for the student in 2025.
+###
 
 ### Exercise 4
 
-In your own words, explain why "time is always a lie" in a Population Table.
+In your own words, define a Population Table.
 
-
-```{r population-table-1-4}
+```{r justice-4}
 question_text(NULL,
-  message = "Time variables in data science, particularly in Population Tables, can be misleading due to inaccurate measurements, hidden variations, and lack of specificity. The value for the time variable in rows corresponding to the Preceptor Table is often ambiguous, as it may refer to the present, future, or whenever the analysis is completed.",
+  message = "The Population Table includes a row for each unit/time combination in the underlying population from which both the Preceptor Table and the data are drawn.",
   answer(NULL, correct = TRUE),
   allow_retry = FALSE,
   incorrect = NULL,
-  rows = 6)
+  rows = 4)
 ```
 
-### 
+###
 
-The purpose of the Population Table is to force us to think clearly about the questions we are trying to answer. The `time` variable, and the problems therein, are a major part of that task.
+The Population Table is the bridge from the data to the Preceptor Table. Each row is one unit at one moment in time. The table includes the rows we have (the Data block), the rows we want (the Preceptor block), and the much larger universe of unit/time combinations both blocks are samples from.
 
 ### Exercise 5
 
-For simplicity, let's drop the `ID` column. Describe in words what the Population Table for this problem should look like. 
+What unit/time combination defines each row in the Population Table for our primary causal question?
 
-```{r population-table-1-5}
+```{r justice-5}
 question_text(NULL,
-  message = "There will be 3 columns: `Source`, `Year`, and `Height`. There will be rows for every row from the data table and for every row in the Preceptor Table. In addition, there will be rows from the broader population, perhaps going back in time to 2010 and forward in time to 2040.",
+  message = "Each row is one employee at one calendar year. Data rows are employees at a similar tech company from a previous year. Preceptor rows are our company's roughly 2,400 employees in the year the counseling program would run.",
   answer(NULL, correct = TRUE),
   allow_retry = FALSE,
   incorrect = NULL,
-  rows = 6)
+  rows = 5)
 ```
 
-### 
+###
 
-It is OK if your description is somewhat different from ours. Bordering dates like 2010 and 2040 are certainly arbitrary. However, given that we are interested in the heights of students at the New College right now, it would be weird if the date range was too broad. Whatever words you use, in your mind you should be picturing something like this.
-
+The Population Table for the **primary (causal)** question shows two potential outcomes, with the unobserved counterfactual marked `...` in Data rows and hatched in Preceptor rows.
 
 ```{r}
-tibble(subject = c("...", "...", "Data", "Data","...", "...", "...",  "...", 
-"Preceptor Table", "Preceptor Table",  "...",  "..."),
-       year = c("2010", "...", "2015", "2015",  "...", "2020", "2020", "...", "2025", "2025",  "...", "2040"),
-       height = c("?", "...", "172", "180", "...", "?", "?", "...","?", "?", "...", "?")) |>
-  gt() |>
-  cols_label(subject = md("Source"),
-                year = md("Year"),
-                height = md("Height")) |>
-  cols_move(columns = year, after = c(subject)) |>
-  tab_style(style = cell_text(align = "left", v_align = "middle", size = "large"), 
-            locations = cells_column_labels(columns = c(subject))) |>
-  cols_align(align = "center", columns = everything()) |>
-  cols_align(align = "left", columns = c(subject)) |>
-  fmt_markdown(columns = everything())
+#| echo: false
+#| results: asis
+pop_primary_tibble <- tibble::tribble(
+  ~Source,     ~`Employee`,         ~`Year`, ~`Contribution if Counseled`, ~`Contribution if Not Counseled`, ~`Counseling Status`,
+  "...",       "...",               "...",   "...",                        "...",                            "...",
+  "Data",      "Sarah Kim",         "2022",  "9.0",                        "...",                            "Counseled",
+  "Data",      "Michael Lee",       "2022",  "...",                        "4.5",                            "Not Counseled",
+  "Data",      "...",               "...",   "...",                        "...",                            "...",
+  "Data",      "Priya Patel",       "2022",  "11.0",                       "...",                            "Counseled",
+  "...",       "...",               "...",   "...",                        "...",                            "...",
+  "Preceptor", "Alice Becker",      "2026",  "8.0",                        "5.0",                            "Counseled",
+  "Preceptor", "Brendan Cohen",     "2026",  "10.0",                       "10.0",                           "Not Counseled",
+  "Preceptor", "...",               "...",   "...",                        "...",                            "...",
+  "Preceptor", "Diego Ramirez",     "2026",  "12.5",                       "9.5",                            "Counseled",
+  "...",       "...",               "...",   "...",                        "...",                            "..."
+)
+
+pop_primary_html <- gt::gt(pop_primary_tibble, id = "pop_primary") |>
+  gt::tab_header(title = "Population Table --- Primary causal question") |>
+  gt::tab_spanner(label = "Unit/Time",          id = "unit_span",      columns = c(`Employee`, `Year`)) |>
+  gt::tab_spanner(label = "Potential Outcomes", id = "outcome_span",   columns = c(`Contribution if Counseled`, `Contribution if Not Counseled`)) |>
+  gt::tab_spanner(label = "Treatment",          id = "treatment_span", columns = c(`Counseling Status`)) |>
+  gt::cols_align(align = "left",  columns = c(`Source`, `Employee`, `Counseling Status`)) |>
+  gt::cols_align(align = "right", columns = c(`Year`, `Contribution if Counseled`, `Contribution if Not Counseled`)) |>
+  gt::fmt_markdown(columns = gt::everything()) |>
+  gt::tab_options(
+    heading.title.font.size   = "1.5em",
+    heading.title.font.weight = "bolder",
+    column_labels.font.weight = "normal"
+  ) |>
+  gt::tab_style(style = gt::cell_text(weight = "bold"),
+                locations = gt::cells_column_spanners()) |>
+  gt::tab_style(style = gt::cell_text(align = "left"),
+                locations = gt::cells_column_spanners(spanners = c("unit_span", "treatment_span"))) |>
+  gt::tab_style(style = gt::cell_text(align = "right"),
+                locations = gt::cells_column_spanners(spanners = "outcome_span")) |>
+  # Hatch the Preceptor rows' unobservable counterfactuals (rows 8, 9, 11).
+  gt::text_transform(
+    locations = gt::cells_body(columns = `Contribution if Not Counseled`, rows = c(8, 11)),
+    fn = function(x) hatch(x)
+  ) |>
+  gt::text_transform(
+    locations = gt::cells_body(columns = `Contribution if Counseled`, rows = 9),
+    fn = function(x) hatch(x)
+  ) |>
+  gt::tab_footnote(
+    footnote = "Data rows are 2022 employees at a comparable tech company; Preceptor rows are our company's 2026 employees. Two notations mark unobservable potential outcomes: in Data rows, '...' means we don't have the value; in Preceptor rows, the cross-hatched cell means the truth exists but no empirical process could ever reveal it.",
+    locations = gt::cells_title()
+  ) |>
+  gt::opt_css(css = "#pop_primary .gt_footnote { max-width: 1px; word-break: break-word; }") |>
+  gt::as_raw_html()
+
+cat("```{=html}\n",
+    '<div style="display: inline-block; width: auto; max-width: 100%;">',
+    pop_primary_html, "</div>\n```\n", sep = "")
 ```
 
-Most Population Tables won't have as many `...` rows as this one. They are always there. We just leave them out for convenience. The `...` rows indicate that there are many units with `Year` 2010 (and 2011 and 2012 and ...), just as there are many rows between 2015 and 2025. The population is usually much larger than either the data or the Preceptor Table.
+### Exercise 6
 
-## Predictive Model
-### 
+In your own words, define the assumption of "stability."
 
-### Exercise 1
-
-As discussed in the *Primer*, there are two types of models: Causal and Predictive.
-
-In one sentence, explain which type of model the New College example involves and why.
-
-```{r predictive-model-1}
-question_text(NULL,
-  message = "The New College problem involves the creation of a predictive model because there is only one outcome: height.",
-  answer(NULL, correct = TRUE),
-  allow_retry = FALSE,
-  incorrect = NULL,
-  rows = 6)
-```
-
-### 
-
-In a predictive model, there is only one outcome variable under consideration for each unit. There is only one outcome. 
-
-### Exercise 2
-
-Write two sentences about *validity*, as used as an assumption in the *Primer*.
-
-```{r predictive-model-2}
-question_text(NULL,
-  message = "Validity is the consistency, or lack thereof, in the columns of the data set and the corresponding columns in the Preceptor Table. If validity holds, we can 'stack' the rows from the data, the Preceptor Table, and the population into a single Population Table.",
-  answer(NULL, correct = TRUE),
-  allow_retry = FALSE,
-  incorrect = NULL,
-  rows = 6)
-```
-
-### 
-
-Each of our two sources for rows --- the Preceptor Table and the actual data --- is coherent in terms of what the columns mean on their own. The assumption of validity, if true, allows us to "stack" them together and to consider both of them to have been drawn from the same larger population.
-
-### Exercise 3
-
-In your own words, define the assumption of "stability" when employed in the context of data science.
-
-```{r predictive-model-3}
+```{r justice-6}
 question_text(NULL,
   message = "Stability means that the relationship between the columns in the Population Table is the same for three categories of rows: the data, the Preceptor Table, and the larger population from which both are drawn.",
   answer(NULL, correct = TRUE),
   allow_retry = FALSE,
   incorrect = NULL,
-  rows = 6)
+  rows = 4)
 ```
 
-### 
+###
 
-*Validity* is about the columns. For example, does "height" mean the same thing in our data from 2014 as it does in the data we want to have --- for our Preceptor Table --- in 2025? *Stability* is about the rows. Is the connection between the treatment and the potential outcomes the same in 2025 as it was in 2014? 
+Stability is best understood as a statement about *parameters*, not distributions. The relationship between treatment, covariates, and contribution rate in our model is captured by a handful of coefficients. Stability says those coefficients are the same in our 2022 data as they are for our 2026 Preceptor Table.
 
+### Exercise 7
 
-### Exercise 4
+Give one reason why the assumption of stability might not hold for our primary causal question.
 
-Provide one reason why the assumption of stability might not be true in this case.
-
-```{r predictive-model-4}
+```{r justice-7}
 question_text(NULL,
-  message = "In the case of height, we might worry that the population of students at New College is different today than it was in 2015. For example, maybe there are more students from Denmark and Slovenia, two countries where people are taller, on average, than in the US. We could then not use the data from 2015.",
+  message = "The macro-economic environment differs between 2022 and 2026. Inflation, interest rates, and tax policy on retirement accounts have changed; the slope connecting financial counseling to contribution behavior likely depends on the broader environment. An employee in 2022 facing low inflation and high market returns may respond to a counseling session very differently from an employee in 2026 facing different conditions. The parameter governing the counseling effect may therefore have shifted, even if the marginal contribution rate has not changed much.",
   answer(NULL, correct = TRUE),
   allow_retry = FALSE,
   incorrect = NULL,
@@ -519,844 +621,256 @@ question_text(NULL,
 
 ###
 
-The longer the time period covered by the Preceptor Table (and the data), the more suspect the assumption of stability becomes.
+A change in the *level* of contribution rates between 2022 and 2026 (because of, say, broader wage gains) is a distribution shift; that on its own does not violate stability. A change in the *slope* connecting counseling to contribution rate is a parameter shift; that is what violates stability.
 
-### Exercise 5
+### Exercise 8
 
-In your own words, define the assumption of "representativeness" when employed in the context of data science.
+In your own words, define the assumption of "representativeness."
 
-```{r predictive-model-5}
+```{r justice-8}
 question_text(NULL,
-  message = "Representativeness, or the lack thereof, concerns two relationships, among the rows in the Population Table: the first between the Preceptor Table and the other rows, and the second between our data and the other rows. Ideally, we would like both the Preceptor Table and our data to be random samples from the population.",
+  message = "Representativeness, or the lack thereof, concerns two relationships among the rows in the Population Table. The first is between the data and the other rows. The second is between the other rows and the Preceptor Table.",
+  answer(NULL, correct = TRUE),
+  allow_retry = FALSE,
+  incorrect = NULL,
+  rows = 4)
+```
+
+###
+
+### Exercise 9
+
+Give one reason why representativeness might not hold between the 2022 data and our 2026 Preceptor Table.
+
+```{r justice-9}
+question_text(NULL,
+  message = "Our data comes from a comparable but different tech company. Their employees may differ from ours in age, tenure, compensation level, gender mix, and remote-vs-in-office balance --- all of which plausibly affect 401(k) contribution behavior. Our 2026 employees are not a random sample from the same broader population that the 2022 data was drawn from, so estimates fit on the 2022 data may not transport to our 2026 employees without bias.",
   answer(NULL, correct = TRUE),
   allow_retry = FALSE,
   incorrect = NULL,
   rows = 6)
 ```
 
-### 
+###
 
-Ideally, we would like both the Preceptor Table *and* our data to be random samples from the population. Sadly, this is almost never the case.
+### Exercise 10
 
-### Exercise 6
+In your own words, define the assumption of "unconfoundedness."
 
-We do not use the data, directly, to estimate missing values in the Preceptor Table. Instead, we use the data to learn about the overall population. Provide one reason, involving the relationship between the data and the population, for why the assumption of representativeness might not be true in this case. 
-
-```{r predictive-model-6}
-question_text(NULL,
-  message = "With height among New College students, we might worry about the process by which our data was collected in 2015. If the students in the data were a random sample of all students, then representativeness would not be a concern. Random samples are representative, at least in expectation. But if, instead, the 2015 data was collected from students walking out of the gym, then that sample of students might not be representative of the population of New College students from 2010 to 2030 as a whole.",
-  answer(NULL, correct = TRUE),
-  allow_retry = FALSE,
-  incorrect = NULL,
-  rows = 6)
-```
-
-
-### Exercise 7
-
-In your own words, define the assumption of "unconfoundedness" when employed in the context of data science.
-
-```{r predictive-model-7}
+```{r justice-10}
 question_text(NULL,
   message = "Unconfoundedness means that the treatment assignment is independent of the potential outcomes, when we condition on pre-treatment covariates.",
   answer(NULL, correct = TRUE),
   allow_retry = FALSE,
   incorrect = NULL,
-  rows = 6)
-```
-
-### 
-
-This assumption is only relevant for causal models. We describe a model as "confounded" if this is not true. The easiest way to ensure unconfoundedness is to assign treatment randomly.
-
-Thus, it is not something we have to be concerned with in the New College problem.
-
-## Causal Model
-
-Consider this question:
-
-What is the average attitude toward immigration of Boston commuters, who were either waiting on a platform with or without Spanish-speakers?
-
-To answer this, we have made this Preceptor Table:
-
-```{r}
-
-tibble(ID = c("Commuter 1", "Commuter 2", "...", "Commuter 47", "Commuter 48",
-              "...", "Commuter 325", "Commuter 326", "...", "Commuter N"),
-       Attitude = c("10", "15", "...", "7", "5", "...", "10", "9", "...", "6"),
-       Treatment     = c("Treated", "Control", "...", "Control", "Control", "...", "Treated", "Control", "...", "Treated")) |>
-  
-  
-  gt() |>
-  tab_header(title = "Preceptor Table") |> 
-  cols_label(ID = md("ID"),
-             Attitude = "Attitude toward Immigration",
-             Treatment = md("Treatment")) |>
-  tab_style(style = cell_text(align = "left", v_align = "middle"), 
-            locations = cells_column_labels(columns = c(ID))) |>
-  cols_align(align = "center", columns = everything()) |>
-  cols_align(align = "left", columns = c(ID)) |>
-  tab_spanner(label = "Outcome", columns = c(Attitude)) |> 
-  tab_spanner(label = "Covariate", columns = c(Treatment)) |> 
-  tab_style(style = cell_text(v_align = "bottom"),
-            locations = cells_column_labels())
-```
-
-(Side note: the last commuter has an ID number N because we are not sure how many commuters there are.)
-
-### Exercise 1
-
-Describe the *units* in this Preceptor Table which would allow us to answer our question.
-
-```{r causal-model-1}
-question_text(NULL,
-  message = "The 'units' refer to the rows, which are individual Boston commuters.",
-  answer(NULL, correct = TRUE),
-  allow_retry = FALSE,
-  incorrect = NULL,
-  rows = 6)
-```
-
-### Exercise 2
-
-Describe the *outcomes* in the Preceptor Table which would allow us to answer our question.
-
-```{r causal-model-2}
-question_text(NULL,
-  message = "The outcomes are attitude towards immigration.",
-  answer(NULL, correct = TRUE),
-  allow_retry = FALSE,
-  incorrect = NULL,
-  rows = 6)
-```
-
-### Exercise 3
-
-Describe the *covariates* in the Preceptor Table which would allow us to answer our question.
-
-```{r causal-model-3}
-question_text(NULL,
-  message = "The 'covariate' is the treatment column.",
-  answer(NULL, correct = TRUE),
-  allow_retry = FALSE,
-  incorrect = NULL,
-  rows = 6)
+  rows = 4)
 ```
 
 ###
 
-This is a predictive model, like the height one, because we assume that attitude toward immigration is fixed, conditional on the covariate value for treatment. We want to know what Commuter 1’s attitude is (10) and, to estimate that, we can use the fact that they were treated, i.e., exposed to Spanish speakers on the train platform.
-
-### Exercise 4
-
-In your own words, give a one-sentence definition of a potential outcome.
-
-```{r causal-model-4}
-question_text(NULL,
-    message = "A potential outcome is the result that would happen for a person or unit under a specific condition or treatment, whether or not we actually observe it.",
-    answer(NULL, correct = TRUE),
-    allow_retry = FALSE,
-    incorrect = NULL,
-    rows = 3)
-```
-
-###
-
-To calculate the causal effect of having Spanish-speakers nearby, we need to compare the outcome for an individual in one possible state of the world (with Spanish-speakers) to the outcome for that same individual in another state of the world (without Spanish-speakers). However, it is impossible to observe both potential outcomes at once. One of the potential outcomes is always missing, since a unit cannot travel back in time, and experience both treatments.
-
-###
-
-We will use the symbol $Y$ to represent potential outcomes, the variable we are interested in understanding and modeling. $Y$ is called the *response* or *outcome* variable. It is the variable we want to "explain." In our case this would be the attitude score. If we are trying to understand a causal effect, we need two symbols so that the value with treatment and the value with control can be represented separately: $Y_t(u)$ and $Y_c(u)$.
-
-Let's look at a Preceptor Table with more subjects using our new notation:
-
-```{r}
-tibble(subject = c("Yao", "Emma", "Cassidy", "Tahmid", "Diego"),
-       ytreat = c("13", "14", "11", "9", "3"),
-       ycontrol = c("9", "11", "6", "12", "4"),
-       ydiff = c("+4", "+3", "+5", "-3", "-1")) |>
-  
-  gt() |>
-    tab_header(title = "Preceptor Table") |> 
-    cols_label(subject = md("ID"),
-                  ytreat = md("$$Y_t(u)$$"),
-                  ycontrol = md("$$Y_c(u)$$"),
-                  ydiff = md("$$Y_t(u) - Y_c(u)$$")) |>
-    cols_move(columns = c(ytreat, ycontrol), after = c(subject)) |>
-    tab_style(style = cell_text(align = "left", v_align = "middle", size = "large"), 
-              locations = cells_column_labels(columns = c(subject))) |>
-    cols_align(align = "center", columns = everything()) |>
-    cols_align(align = "left", columns = c(subject)) |>
-    fmt_markdown(columns = everything()) |>
-    tab_spanner(label = "Outcomes", c(ytreat, ycontrol))  |>
-    tab_spanner(label = "Causal Effect", c(ydiff)) |> 
-  tab_style(style = cell_text(v_align = "bottom"),
-            locations = cells_column_labels())
-```
-
-
-### Exercise 5
-
-Describe what the Preceptor Table should look like for this example. Include information about the *units* and *outcomes*, as previously discussed.
-
-```{r causal-model-5}
-question_text(NULL,
-  message = "The Preceptor Table will have a row for each individual Boston commuter. In addition to an ID column, it has 3 other columns: The potential outcomes and the causal effect.",
-  answer(NULL, correct = TRUE),
-  allow_retry = FALSE,
-  incorrect = NULL,
-  rows = 6)
-```
-
-
-### Exercise 6
-
-Come up with a scenario for this problem in which the assumption of validity might not hold.
-
-```{r causal-model-6}
-question_text(NULL,
-  message = "The `att_end` column in the data records how commuters responded to a survey question about immigration attitudes. But the `att_end` column in the Preceptor Table represents their true, underlying attitudes — not necessarily what they would report on a survey. People do not always answer surveys honestly, so the two columns may not be measuring the same thing.",
-  answer(NULL, correct = TRUE),
-  allow_retry = FALSE,
-  incorrect = NULL,
-  rows = 6)
-```
-
-
-###
-
-Assuming that validity holds, here's the population table:
-
-```{r}
-tibble(source = c("...", "...",  "Data", "Data", 
-                  "...", "...", "...", 
-                  "Preceptor Table", "...", "..."),
-       year = c("2010", "...", "2012", "2012", 
-                "...","2018", "...", "2025", "...", "2030"),
-       ID = c("?", "...", "Yao", "Cassidy","...", "?","...","Yao", "...","?"),
-       ytreated = c("?", "...", "5", "3", "...", "?", "...","13", "...", "?"),
-       ycontroled = c("?", "...", "3", "6", "...", "?", "...","9", "...", "?"),
-       causaleffect = c("?", "...", "+2", "-3", "...", "?", "...","+4", "...", "?")) |> 
-  
-  gt() |>
-  tab_header(title = "Population Table") |> 
-  cols_label(source = md("Source"),
-             year = md("Year"),
-             ID = md("ID"),
-             ytreated = md("$$Y_t(u)$$"), 
-             ycontroled = md("$$Y_c(u)$$"),
-             causaleffect = md("$$Y_t(u) - Y_c(u)$$")) |>
-  tab_style(style = cell_text(align = "left", v_align = "middle", size = "large"), 
-            locations = cells_column_labels(columns = c(source))) |>
-  cols_align(align = "center", columns = everything()) |>
-  cols_align(align = "left", columns = c(source)) |>
-  fmt_markdown(columns = everything()) |> 
-  tab_spanner(label = "Outcomes", c(ytreated, ycontroled))  |>
-  tab_spanner(label = "Causal Effect", c(causaleffect))|> 
-  tab_style(style = cell_text(v_align = "bottom"),
-            locations = cells_column_labels())
-```
-
-All of the variables calculated in the Preceptor and Population Tables are examples of estimands we might be interested in.
-
-### Exercise 7
-
-Come up with a scenario for this problem in which the assumption of stability might not hold.
-
-```{r causal-model-7}
-question_text(NULL,
-  message = "If the treatment started to have greater effects on women than men over time, it would hinder the stability.",
-  answer(NULL, correct = TRUE),
-  allow_retry = FALSE,
-  incorrect = NULL,
-  rows = 6)
-```
-
-###
-
-Through claiming this model has stability, we claim that the world has not changed that much, and that we can ignore the passage of time.
-
-### Exercise 8
-
-Come up with a scenario for this problem in which the assumption of representativeness might not hold.
-
-```{r causal-model-8}
-question_text(NULL,
-  message = "Since we are only taking observations on the train, we cannot calculate an accurate causal effect for those that commute by cars.",
-  answer(NULL, correct = TRUE),
-  allow_retry = FALSE,
-  incorrect = NULL,
-  rows = 6)
-```
-
-### Exercise 9
-
-Come up with a scenario for this problem in which the assumption of unconfoundedness might not hold.
-
-
-```{r causal-model-9}
-question_text(NULL,
-  message = "If the doctor prescribing the medication only did it being mindful of the potential outcome, it would confound the data.",
-  answer(NULL, correct = TRUE),
-  allow_retry = FALSE,
-  incorrect = NULL,
-  rows = 6)
-```
-
-###
-
-The great advantage of randomized assignment of treatment is that it guarantees unconfoundedness, *if the randomization is done correctly*. There is no way for treatment assignment to be correlated with anything, including potential outcomes, if treatment assignment is random, and *if the experimental set up worked as designed.* Sadly, in the real world, there are sometimes problems.
-
-## Causal Effects
-
-Use the following "imaginary" Preceptor Table to answer some questions about "estimands", and the quantities in which we might be interested.
-
-```{r}
-gt_obj
-```
-
-This Preceptor Table is "imaginary" because we can never know, for example, Yao's outcome under treatment and outcome under control. We only get to see one of these.
-
-### Exercise 1
-
-Write two sentences that explain the difference between a causal model and a predictive model. 
-
-```{r causal-effects-1}
-question_text(NULL,
-    message = "A predictive model assumes one outcome whereas a causal model allows for more than one outcome, i.e., 'potential' outcomes. In the Preceptor Table, a predictive model has only one outcome column while a causal model has at least two.",
-    answer(NULL, correct = TRUE),
-    allow_retry = FALSE,
-    incorrect = NULL,
-    rows = 2)
-```
-
-###
-
-With a predictive model, we cannot infer what would happen to the outcome $Y$ if we change $X$ *for a given unit*. We can only compare two units, one with one value of $X$ and another with a different value of $X$.
-
-
-### Exercise 2
-
-```{r causal-effects-2}
-quiz(question("What is the causal effect of the treatment on Yao?",
-    answer("1"),
-    answer("2"),
-    answer("3"),
-    answer("4", correct = TRUE),
-    answer("5"),
-    allow_retry = FALSE))
-```
-
-### 
-
-According to the RCM, the causal effect of being on the platform with treatment is the difference between what your attitude would have been under “treatment” (with treatment) and under “control” (no treatment).
-
-### Exercise 3
-
-```{r causal-effects-3}
-quiz(question("For how many of the five people is the causal effect of the treatment positive?",
-    answer("1"),
-    answer("2"),
-    answer("3", correct = TRUE),
-    answer("4"),
-    answer("5"),
-    allow_retry = FALSE))
-```
-
-### 
-
-To calculate the causal effect, we need to compare the outcome for an individual in one possible state of the world (with treatment) to the outcome for that same individual in another state of the world (without treatment).
-
-### 
-
-We will use the symbol $Y$ to represent potential outcomes, the variable we are interested in understanding and modeling. $Y$ is called the response or outcome variable. It is the variable we want to “explain.” In our case this would be the attitude score. If we are trying to understand a causal effect, we need two symbols so that control and treated values can be represented separately: $Y_t(u)$ and $Y_c(u)$.
-
-### Exercise 4
-
-In these examples, we did not have to deal with the Fundamental Problem of Causal Inference because we knew the outcomes for both treatment and control. Write a paragraph explaining the Fundamental Problem of Causal Inference. Include an example relating to your own life.
-
-```{r causal-effects-4}
-question_text(NULL,
-    message = "The Fundamental Problem of Causal Inference is that, because we can never observe more than one potential outcome, we can never be certain about the value of a causal effect. For example, to determine the causal effect of studying on my SAT score, I need to know two things: my score if I study and my score if I don't study. The causal effect is the difference between the two. However, I can only either study or not study. I can't do both! So, I can only observe one potential outcome.",
-    answer(NULL, correct = TRUE),
-    allow_retry = FALSE,
-    incorrect = NULL,
-    rows = 7)
-```
-
-### 
-
-The **Rubin Causal Model (RCM)** is based on the idea of **potential outcomes**. However, it is impossible to observe both potential outcomes at once. One of the potential outcomes is always missing, since a unit cannot travel back in time, and experience both treatments. This dilemma is the **Fundamental Problem of Causal Inference**.
-
-### Exercise 5
-
-In one sentence, explain which type of model the immigration-attitudes example is and why.
-
-```{r causal-effects-5}
-question_text(NULL,
-  message = "The immigration-attitude example involves a causal model because there are two potential outcomes: a person's attitude toward immigration if they hear Spanish on the train platform and the same person's attitude if they do not.",
-  answer(NULL, correct = TRUE),
-  allow_retry = FALSE,
-  incorrect = NULL,
-  rows = 6)
-```
-
-### 
-
-In a causal model, there are two (or more) potential outcomes. Determining whether or not a model is causal --- a determination that can only be made by considering the original question --- is one of the first steps in constructing the Preceptor Table.
-
-### Exercise 6
-
-In your own words, explain the meaning of the phrase "No causation without manipulation." 
-
-```{r causal-effects-6}
-question_text(NULL,
-  message = "The motto 'No causation without manipulation' suggests that for a causal effect to be well-defined, both potential outcomes must be possible, at least conceptually. However, this raises complex questions about whether characteristics like race, sex, and genetic conditions can be considered causal, as they may not be easily manipulated.",
-  answer(NULL, correct = TRUE),
-  allow_retry = FALSE,
-  incorrect = NULL,
-  rows = 6)
-```
-
-### 
-
-This motto is most likely to come up in initial discussions with your colleague/boss/client. Many people lack intuition for how to think about problems that appear causal but which, on closer inspection, are really predictive. The motto helps focus ideas.
-
-
-## Review
-
-### Exercise 1
-
-You want to predict the final college GPA of students at a specific University. You have data involving college GPA from another university. Describe what the Preceptor Table should look like for this example, describing the 'units' and 'outcomes'.
-
-```{r review-1}
-question_text(NULL,
-  message = "The Preceptor Table will have a row for each individual student, which are the units.  In addition to an ID column, it will have one other column: college GPA, which is the outcome.",
-  answer(NULL, correct = TRUE),
-  allow_retry = FALSE,
-  incorrect = NULL,
-  rows = 6)
-```
-
-### Exercise 2
-
-Come up with a scenario for the college GPA problem in which the assumption of stability might not hold.
-
-```{r review-2}
-question_text(NULL,
-  message = "What if the college we got our data from had a stricter grading policy, causing more students to have a lower GPA? In that case, the standards of GPA may not be stable across the data and the Preceptor Table.",
-  answer(NULL, correct = TRUE),
-  allow_retry = FALSE,
-  incorrect = NULL,
-  rows = 6)
-```
-
-### Exercise 3
-
-You want to know the distribution of wealth in NYC today. You have some data from income tax returns 5 years ago. Describe what the Preceptor Table should look like for this example.
-
-```{r review-3}
-question_text(NULL,
-  message = "The Preceptor Table will have a row for each individual resident, which are the units.  In addition to an ID column, it will have one other column: wealth, which is the outcome.",
-  answer(NULL, correct = TRUE),
-  allow_retry = FALSE,
-  incorrect = NULL,
-  rows = 6)
-```
-
-### Exercise 4
-
-Come up with a scenario for the wealth problem in which the assumption of validity might not hold. Use the words "column" or "columns" in your answer.
-
-```{r review-4}
-question_text(NULL,
-  message = "The outcome column in the Preceptor Table represents true wealth — the total value of a person's assets. But the outcome column in our data records income, which is a flow of earnings over time. Wealth and income are different concepts, so these two columns are not measuring the same thing, and validity may not hold.",
-  answer(NULL, correct = TRUE),
-  allow_retry = FALSE,
-  incorrect = NULL,
-  rows = 6)
-```
-
-### Exercise 5
-
-A school district wants to determine if a new teaching method improves student test scores compared to the traditional method. In one sentence, explain which type of model the teaching example involves and why.
-
-```{r review-5}
-question_text(NULL,
-  message = "The teaching problem involves the creation of a causal model because there are two outcomes: their test score if taught by the new method, and their test score if taught by the traditional method.",
-  answer(NULL, correct = TRUE),
-  allow_retry = FALSE,
-  incorrect = NULL,
-  rows = 6)
-```
-
-### Exercise 6
-
-Come up with a scenario for the school district problem in which the assumption of unconfoundedness might not hold.
-
-```{r review-6}
-question_text(NULL,
-  message = "If the teachers knew what type of teaching would work best on their students, and changed their teaching ways to fit the individual students to improve their test scores, it would make the data confounded.",
-  answer(NULL, correct = TRUE),
-  allow_retry = FALSE,
-  incorrect = NULL,
-  rows = 6)
-```
-
-### Exercise 7
-
-You want to predict how likely customers are to buy a new product after receiving a marketing email. You have some data from a marketing campaign conducted 3 years ago. Describe what the Preceptor Table should look like for this example.
-
-```{r review-7}
-question_text(NULL,
-  message = "The Preceptor Table will have a row for each individual customer, which are the units.  In addition to an ID column, it will have one other column: whether or not they made a purchase, which is the outcome.",
-  answer(NULL, correct = TRUE),
-  allow_retry = FALSE,
-  incorrect = NULL,
-  rows = 6)
-```
-
-### Exercise 8
-
-Come up with a scenario for the marketing problem in which the assumption of representativeness might not hold.
-
-```{r review-8}
-question_text(NULL,
-  message = "What if the marketing campaign from 3 years ago only involved mail fliers? In that case, the sample of people in this study would only be representative of those who open their mail, which may not be applicable to the entire clientbase.",
-  answer(NULL, correct = TRUE),
-  allow_retry = FALSE,
-  incorrect = NULL,
-  rows = 6)
-```
-
-### Exercise 9
-
- A company wants to find out whether offering a free trial causes more users to become paying customers. In one sentence, explain which type of model the free-trial example involves and why.
-
-```{r review-9}
-question_text(NULL,
-  message = "The free-trial problem involves the creation of a causal model because there are two outcomes: whether they become paying customers if offered a free trial, and whether they become paying customers if not offered the free trial.",
-  answer(NULL, correct = TRUE),
-  allow_retry = FALSE,
-  incorrect = NULL,
-  rows = 6)
-```
-
-### Exercise 10
-
-Come up with a scenario for the free trial problem in which the assumption of unconfoundedness might not hold.
-
-```{r review-10}
-question_text(NULL,
-  message = "If the company only offered the free trial to the users who had more engagement on the site, knowing that it would be more likely to have them become paying customers, it would make the data confounded.",
-  answer(NULL, correct = TRUE),
-  allow_retry = FALSE,
-  incorrect = NULL,
-  rows = 6)
-```
-
-
-## Simple models
-### 
-
-In these exercises, we will assume that the causal effect, $\tau$ (pronounced tau, rhymes with "cow"), is the same for everyone.
-
-Use the following Preceptor Table to answer questions about the single value for tau.
-
-```{r simple-models-0-setup}
-tibble(subject = c("Yao", "Emma", "Cassidy", "Tahmid", "Diego"),
-       treatment = c("Treated", "Treated", "Control", "Control", "Treated"),
-       ytreat = c("13", "14", "?", "?", "3"),
-       ycontrol = c("?", "?", "6", "12", "?"),
-       ydiff = c("?", "?", "?", "?", "?")) |>
-  gt() |>
-  cols_label(subject = md("ID"),
-                treatment = md("Treatment"),
-                ytreat = md("$$Y_t(u)$$"),
-                ycontrol = md("$$Y_c(u)$$"),
-                ydiff = md("$$Y_t(u) - Y_c(u)$$")) |>
-  cols_move(columns = c(treatment, ytreat, ycontrol), after = c(subject)) |>
-  tab_style(style = cell_text(align = "left", v_align = "middle", size = "large"), 
-            locations = cells_column_labels(columns = c(subject))) |>
-  cols_align(align = "center", columns = everything()) |>
-  cols_align(align = "left", columns = c(subject)) |>
-  tab_spanner(label = "Outcomes", c(ytreat, ycontrol)) |>
-  tab_spanner(label = "$$\\text{Estimand}$$", c(ydiff)) |>
-  fmt_markdown(columns = everything())
-```
-
-The question marks in the Outcomes are the missing values that we can never know because of the *Fundamental Problem of Causal Inference*. Since you cannot use simple arithmetic to calculate the causal effect, an Estimand is not the value you calculated, but is rather the unknown variable you want to estimate.
-
-### Exercise 1
-
-<!-- Are these next few questions useful? -->
-<!-- Perhaps it needs a reminder that (Sum of all values in 𝑌𝑡(𝑢) / Number of Values - Sum of all values in 𝑌𝑐(𝑢) / Number of Values) equals to "tau" -->
-
-Describe in one sentence/equation how you would estimate Yao's $Y_c(u)$. (Do not use actual numbers, use "tau" in your explanation).
-
-```{r simple-models-1}
-question_text(NULL,
-    message = "Yao's $Y_t(u)$ - (Sum of all values in $Y_t(u)$ / Number of Values - Sum of all values in $Y_c(u)$ / Number of Values)",
-    answer(NULL, correct = TRUE),
-    allow_retry = FALSE,
-    incorrect = NULL,
-    rows = 2)
-```
-
-### 
-
-By definition, $Y_t(u)$ - $Y_c(u)$ = $\tau$, using simple algebra, it is clear that $Y_c(u)$ = $Y_t(u)$ - $\tau$
-
-### Exercise 2
-
-Describe in one sentence/equation how you would estimate Tahmid's $Y_t(u)$. (Do not use actual numbers, use "tau" in your explanation).
-
-```{r simple-models-2}
-question_text(NULL,
-    message = "(Sum of values in $Y_t(u)$ / Number of Values - Sum of values in $Y_c(u)$ / Number of values) + Tahmid's $Y_c(u)$",
-    answer(NULL, correct = TRUE),
-    allow_retry = FALSE,
-    incorrect = NULL,
-    rows = 2)
-```
-
-### 
-
-Using the same logic as above, $Y_t(u)$ = $Y_c(u)$ + $\tau$
-
-### 
-
-One model might be that the causal effect is the same for everyone. There is a single parameter, `τ`, which we then estimate. Once we have an estimate, we can fill in the Preceptor Table because, knowing it, we can estimate what the unobserved potential outcome is for each person. We use our assumption about `τ` to estimate the counterfactual outcome for each unit.
-
-### Exercise 3
-
-Describe in one sentence/equation how you would estimate a single value for tau.
-
-```{r simple-models-3}
-question_text(NULL,
-    message = "(Sum of values in $Y_t(u)$ / Number of Values - Sum of values in $Y_c(u)$ / Number of values)",
-    answer(NULL, correct = TRUE),
-    allow_retry = FALSE,
-    incorrect = NULL,
-    rows = 2)
-```
-
-### Exercise 4
-
-```{r simple-models-4}
-quiz(
-
-  question("What is your estimate for a single value for tau?",
-    answer("-2"),
-    answer("2"),
-    answer("1", correct = TRUE),
-    answer("-1"),
-    answer("1.5"),
-    allow_retry = FALSE),
-
-  question("What is your estimate for $Y_c(u)$ for Emma?",
-    answer("10"),
-    answer("11"),
-    answer("12"),
-    answer("13", correct = TRUE),
-    answer("14"),
-    allow_retry = FALSE),
-
-  question("What is your estimate for $Y_t(u)$ for Cassidy?",
-    answer("6"),
-    answer("5"),
-    answer("7", correct = TRUE),
-    answer("9"),
-    answer("8"),
-    allow_retry = FALSE)
-)
-```
-
-Once we have an estimate for tau, we could add it to the observed value of every observation in the control group (or subtract it from the observed value of every observation in the treatment group) and thus fill in all the missing values.
-
-### Exercise 5
-
-Assume that the causal effect varies by sex. We will now estimate two values for $\tau$: $\tau_F$ and $\tau_M$. (Cassidy and Emma are female; Tahmid, Diego, and Yao are male).
-
-```{r}
-tibble(subject = c("Yao", "Emma", "Cassidy", "Tahmid", "Diego"),
-       treatment = c("Treated", "Treated", "Control", "Control", "Treated"),
-       ytreat = c("13", "14", "$$6 + \\tau_F$$", "$$12 + \\tau_M$$", "3"),
-       ycontrol = c("$$13 - \\tau_M$$", "$$14 - \\tau_F$$", "6", "12", "$$3 - \\tau_M$$"),
-       ydiff = c("$$\\tau_M$$", "$$\\tau_F$$", "$$\\tau_F$$", "$$\\tau_M$$", "$$\\tau_M$$")) |>
-  gt() |>
-  cols_label(subject = md("ID"),
-                treatment = md("Treatment"),
-                ytreat = md("$$Y_t(u)$$"),
-                ycontrol = md("$$Y_c(u)$$"),
-                ydiff = md("$$Y_t(u) - Y_c(u)$$")) |>
-  cols_move(columns = c(treatment, ytreat, ycontrol), after = c(subject)) |>
-  tab_style(style = cell_text(align = "left", v_align = "middle", size = "large"), 
-            locations = cells_column_labels(columns = c(subject))) |>
-  cols_align(align = "center", columns = everything()) |>
-  cols_align(align = "left", columns = c(subject)) |>
-  tab_spanner(label = "Outcomes", c(ytreat, ycontrol)) |>
-  tab_spanner(label = "$$\\text{Estimand}$$", c(ydiff)) |>
-  fmt_markdown(columns = everything())
-```
-
-How would you calculate $\tau_F$? Use only words and no numbers in your explanation.
-
-```{r simple-models-5}
-question_text(NULL,
-    message = "(Average $Y_t(u)$ for females - Average $Y_c(u)$ for females)",
-    # AJ: You would average $Y_c(u)$ for females and subtract that from the average $Y_t(u)$ for females
-    # AJ: which is better?
-    # TJ: I like the first one.
-    answer(NULL, correct = TRUE),
-    allow_retry = FALSE,
-    incorrect = NULL,
-    rows = 2)
-```
-
-### 
-
-A second model used by two taus might assume that the causal effect is different between levels of a category but the same within those levels. For example, perhaps there is a $\tau_F$ for females and $\tau_M$ for males.
-
-### Exercise 6
-
-What is the meaning of $\tau_M$? 
-
-```{r simple-models-6}
-question_text(NULL,
-    message = "$t_M$ is an estimate of the average difference between the treatment effect and the control effect for males",
-# AJ: This explanation could be made more clear and also needs to be added to the primer
-    answer(NULL, correct = TRUE),
-    allow_retry = FALSE,
-    incorrect = NULL,
-    rows = 2)
-```
-
-When we are looking at a “category” of units — for instance, sex — we call this a covariate. Possible covariates include, but are not limited to, sex, age, political party, and almost everything else that might be associated with an individual unit.
-
-### Exercise 7
-
-What is your new estimate for Diego's $Y_c(u)$? 
-
-```{r simple-models-7}
-question_text(NULL,
-    message = "Diego's $Y_c(u) = 7$.\n\n First, we calculate $\tau_M$ by subtracting the average observed male $Y_c(u)$ from the average observed $Y_c(u)$. Since Yao and Diego were treated and Tahmid was not, we get $\\tau_M = (13 + 3)/2 - 12 = 8 - 12 = -4$. Next, we calculate Diego's $Y_c(u) = Y_t(u) - \\tau_M = 3 - (-4) = 7$." ,
-    answer(NULL, correct = TRUE),
-    allow_retry = FALSE,
-    incorrect = NULL,
-    rows = 2)
-```
-
-### Exercise 8
-
-Discuss for a sentence or two why an assumption that the causal effect varies by sex leads to a different estimate for Diego's $Y_c(u)$ compared to Cassidy's $Y_c(u)$.
-
-```{r simple-models-8}
-question_text(NULL,
-    message = "Since Diego is male and Cassidy is female, the $\tau$ used to calculate the causal effect is different for each.",
-    # AJ: Add this into the primer
-    answer(NULL, correct = TRUE),
-    allow_retry = FALSE,
-    incorrect = NULL,
-    rows = 2)
-```
-
-This difference in estimates highlights the difficulties of inference. Models drive inference. Different models will produce different inferences.
-
-### Exercise 9
-
-We will no longer make any assumptions about $\tau$ for any individual or group. Instead, we are interested in estimating the average treatment effect ($ATE$). We have the same data as the previous sections.
-
-```{r}
-gt_obj
-```
-
-Using words only, explain how we estimate the $ATE$.
-
-```{r simple-models-9}
-question_text(NULL,
-    message = "Average of treated values minus the average of control values.",
-    answer(NULL, correct = TRUE),
-    allow_retry = FALSE,
-    incorrect = NULL,
-    rows = 2)
-```
-
-### 
-
-The average treatment effect ($ATE$) is the average difference in potential outcomes between the treated group and the control group. Because averaging is a linear operator, the average difference is the same as the difference between the averages. It is particularly useful because we don’t have to assume anything about each individual’s `τ`, like `τyao`, but can still understand something about the average causal effect across the whole population.
-
-### Exercise 10
-
-Calculate the $ATE$ based on the data given to you in the above Preceptor Table.
-
-```{r simple-models-10}
-question_text(NULL,
-    message = "The $ATE$ 1.6.\n\n\n This can be calculated by taking the average of the `Estimand` column. $",
-# AJ: think of a way to make this a non decimal answer without screwing up the other questions
-    answer(NULL, correct = TRUE),
-    allow_retry = FALSE,
-    incorrect = NULL,
-    rows = 2)
-```
+Unconfoundedness applies only to the causal question. The cleanest defense is random assignment: if the comparison company randomly assigned employees to attend financial counseling (treatment) versus no counseling (control), unconfoundedness would hold by construction.
 
 ### Exercise 11
 
-What is Cassidy's outcome under treatment if we assume $\tau$ to be the $ATE$ we calculated above? Note that the answer will just be a number, without any symbol.
+Suppose the comparison company offered the counseling program voluntarily --- any employee could sign up. Give one reason why unconfoundedness would be hard to defend.
 
-```{r simple-models-11}
+```{r justice-11}
 question_text(NULL,
-    message = "Cassidy's estimated outcome under treatment is 7.6.\n\n\n This is calculated by adding $\\tau$ to Cassidy's $Y_c(t)$.\n\n $Y_c(t) + \\tau = 6 + 1.6 = 7.6$.",
-    answer(NULL, correct = TRUE),
-    allow_retry = FALSE,
-    incorrect = NULL,
-    rows = 2)
+  message = "Employees who self-select into voluntary financial counseling differ from those who don't. They may be more financially literate, more risk-averse, more conscientious, more concerned about retirement, or going through a recent life event (marriage, birth, parent illness) that prompts financial planning. All of these characteristics also affect 401(k) contribution rates through paths that have nothing to do with the counseling itself. So treatment assignment (signing up for counseling) is correlated with potential outcomes (the contribution rates the employee would set in either arm), and unconfoundedness fails.",
+  answer(NULL, correct = TRUE),
+  allow_retry = FALSE,
+  incorrect = NULL,
+  rows = 7)
 ```
 
-### Exercise 12
+###
 
-Write a paragraph about the many, many reasons why $ATE$ may be a bad estimate of the true average treatment effect.
+This is the classic self-selection problem in observational causal inference. The Rubin framework makes the problem precise: voluntary takers and non-takers are not exchangeable, so the difference in their average contribution rates is not the average causal effect. Defending against this requires either randomization (best) or careful conditioning on the right pre-treatment covariates (second-best, with the analyst defending why those covariates suffice).
 
-<!-- AJ: add this to primer -->
+### Paired Population Table
 
-<!-- SD: Would be nice to add an answer to this one, to show some examples -->
+The paired predictive question's Population Table has the same row structure but a single outcome column and no treatment column.
 
-<!-- SD: I dislike the idea of writing a full paragraph, instead just make it a multiple choice (if that's possible) -->
+```{r}
+#| echo: false
+#| results: asis
+pop_paired_tibble <- tibble::tribble(
+  ~Source,     ~`Employee`,         ~`Year`, ~`Contribution Rate (%)`,
+  "...",       "...",               "...",   "...",
+  "Data",      "Sarah Kim",         "2022",  "9.0",
+  "Data",      "Michael Lee",       "2022",  "4.5",
+  "Data",      "...",               "...",   "...",
+  "Data",      "Priya Patel",       "2022",  "11.0",
+  "...",       "...",               "...",   "...",
+  "Preceptor", "Erica Foster",      "2027",  "6.0",
+  "Preceptor", "Frank Gutierrez",   "2027",  "10.0",
+  "Preceptor", "...",               "...",   "...",
+  "Preceptor", "Hannah Park",       "2027",  "4.5",
+  "...",       "...",               "...",   "..."
+)
 
-<!-- TJ: Instead of writing a paragraph, the students should be asked to just name a few reasons why the ATE may be bad and maybe put it in a bullet list. -->
+pop_paired_html <- gt::gt(pop_paired_tibble, id = "pop_paired") |>
+  gt::tab_header(title = "Population Table --- Paired predictive question") |>
+  gt::tab_spanner(label = "Unit/Time", id = "unit_span",    columns = c(`Employee`, `Year`)) |>
+  gt::tab_spanner(label = "Outcome",   id = "outcome_span", columns = c(`Contribution Rate (%)`)) |>
+  gt::cols_align(align = "left",  columns = c(`Source`, `Employee`)) |>
+  gt::cols_align(align = "right", columns = c(`Year`, `Contribution Rate (%)`)) |>
+  gt::fmt_markdown(columns = gt::everything()) |>
+  gt::tab_options(
+    heading.title.font.size   = "1.5em",
+    heading.title.font.weight = "bolder",
+    column_labels.font.weight = "normal"
+  ) |>
+  gt::tab_style(style = gt::cell_text(weight = "bold"),
+                locations = gt::cells_column_spanners()) |>
+  gt::tab_style(style = gt::cell_text(align = "left"),
+                locations = gt::cells_column_spanners(spanners = "unit_span")) |>
+  gt::tab_style(style = gt::cell_text(align = "right"),
+                locations = gt::cells_column_spanners(spanners = "outcome_span")) |>
+  gt::tab_footnote(
+    footnote = "Data rows are employees at the comparable tech company in 2022; Preceptor rows are our company's expected new hires in 2027 (one year out, after the counseling program would have launched). No hatching --- predictive models have no potential outcomes.",
+    locations = gt::cells_title()
+  ) |>
+  gt::opt_css(css = "#pop_paired .gt_footnote { max-width: 1px; word-break: break-word; }") |>
+  gt::as_raw_html()
 
-```{r simple-models-12}
-question_text(NULL,
-    answer(NULL, correct = TRUE),
-    allow_retry = TRUE,
-    try_again_button = "Edit Answer",
-    incorrect = NULL,
-    rows = 7)
+cat("```{=html}\n",
+    '<div style="display: inline-block; width: auto; max-width: 100%;">',
+    pop_paired_html, "</div>\n```\n", sep = "")
 ```
 
-Consider an example when the treatment effect does vary depending on sex. For males, there is a small negative effect (-4), but for females, there is a larger positive effect (+8). However, the average treatment effect for the whole sample, even if you estimate it correctly, will be a single positive number (+1) – since the positive effect for females is larger than the negative effect for males.
+### Probability family and link function
 
-### Exercise 13
+Justice also commits us to the *formula for the data generating mechanism* --- in later tutorials we will give this its technical name (*probability family* and *link function*). The outcome `contribution_rate` is continuous (though bounded below by 0 and above by 100); we will model it as Normal with the identity link:
 
-Write a paragraph about what a heterogeneous treatment effect is and the situations when it is more or less common.
+$$Y \sim \mathcal{N}(\mu, \sigma^2)$$
 
-<!-- TJ: The wording of the answer should be a little closer to the wording in the primer. -->
+with $\mu = \beta_0 + \beta_1 X_1 + \cdots + \beta_n X_n$.
 
-```{r simple-models-13}
+
+## Courage
+###
+
+> *Courage creates the data generating mechanism.*
+
+Justice settled the structural choices --- Normal family, identity link, four assumptions to defend. Courage now picks specific covariates and fits the model. The lightweight version: *if we had data and code*, here is what Courage would do.
+
+### Exercise 1
+
+In your own words, describe the components of the virtue of Courage for analyzing data.
+
+```{r courage-1}
 question_text(NULL,
-    message = "A heterogeneous treatment effect means that the effect of the treatment varies from individual to individual. A situation where this would be common is when testing drugs. Most people will have a different reaction to the drug, so we can't just assume that the causal effect of the drug is the same for everyone.",
-    answer(NULL, correct = TRUE),
-    allow_retry = FALSE,
-    incorrect = NULL,
-    rows = 7)
+  message = "Courage creates the data generating mechanism.",
+  answer(NULL, correct = TRUE),
+  allow_retry = FALSE,
+  incorrect = NULL,
+  rows = 4)
 ```
+
+###
+
+### Exercise 2
+
+For the primary (causal) question, what would the fitted model look like in plain language?
+
+```{r courage-2}
+question_text(NULL,
+  message = "We would model contribution rate as a normally distributed variable which is a linear function of the treatment (whether the employee was counseled) and zero or more pre-treatment covariates (age, tenure, salary, prior contribution rate). The fitted coefficient on the treatment variable, under unconfoundedness, would be our estimate of the average causal effect of the counseling program on contribution rate. The model would also produce uncertainty around that estimate --- a 95% confidence interval.",
+  answer(NULL, correct = TRUE),
+  allow_retry = FALSE,
+  incorrect = NULL,
+  rows = 6)
+```
+
+###
+
+### Exercise 3
+
+For the paired predictive question, how would the fitted model differ from the causal one?
+
+```{r courage-3}
+question_text(NULL,
+  message = "It wouldn't, mechanically. The same R code --- `linear_reg() |> fit(contribution_rate ~ treatment + covariates, data = x)` --- fits both. The difference is what the analyst is willing to claim. For the predictive question, we would not call the treatment-arm comparison a 'causal effect' and would not need to defend unconfoundedness; we would just call it a difference in expected contribution rate between the two groups, and report it with comparison language rather than causal language.",
+  answer(NULL, correct = TRUE),
+  allow_retry = FALSE,
+  incorrect = NULL,
+  rows = 6)
+```
+
+###
+
+The same fit, the same coefficient, two different readings. This is the deepest insight of the Rubin framework: the data does not tell you what kind of model you are running --- the analyst does.
+
+
+## Temperance
+###
+
+> *Temperance interprets the data generating mechanism and then uses it to answer, with the help of graphics, the question(s) with which we began. Humility reminds us that this answer is always false.*
+
+Temperance is where the fitted model becomes the answer. The lightweight version: *if we had a fit*, here is how Temperance would read it.
+
+### Exercise 1
+
+In your own words, describe the use of Temperance in data science.
+
+```{r temperance-1}
+question_text(NULL,
+  message = "Temperance interprets the data generating mechanism and then uses it to answer, with the help of graphics, the question(s) with which we began. Humility reminds us that this answer is always false.",
+  answer(NULL, correct = TRUE),
+  allow_retry = FALSE,
+  incorrect = NULL,
+  rows = 5)
+```
+
+###
+
+### Exercise 2
+
+For the primary (causal) question, what would Temperance produce? Be careful about the language you use.
+
+```{r temperance-2}
+question_text(NULL,
+  message = "An estimate of the average causal effect of the financial-counseling program on an employee's 401(k) contribution rate, with its associated uncertainty (a 95% confidence interval). Causal language --- 'causal effect,' 'effect of,' 'change caused by' --- is appropriate here only because we have committed (in Justice) to defending unconfoundedness. If unconfoundedness fails, the same number must be interpreted predictively as 'the difference in contribution rates between counseled and not-counseled employees,' not as an effect of counseling.",
+  answer(NULL, correct = TRUE),
+  allow_retry = FALSE,
+  incorrect = NULL,
+  rows = 6)
+```
+
+###
+
+### Exercise 3
+
+For the paired predictive question, what would Temperance produce?
+
+```{r temperance-3}
+question_text(NULL,
+  message = "An estimate of the expected average 401(k) contribution rate among next year's new hires, with its associated uncertainty. The point estimate alone is not an answer; the interval around it is essential. Comparison language --- 'expected contribution rate,' 'on average' --- is appropriate; causal language is not, because the predictive question makes no claim about manipulating anything.",
+  answer(NULL, correct = TRUE),
+  allow_retry = FALSE,
+  incorrect = NULL,
+  rows = 6)
+```
+
+###
+
+> *We can never know the truth.* The posterior we report is, at best, the *Preceptor's Posterior* --- the best posterior achievable under our assumptions. The reported confidence interval captures only sampling variation under those assumptions; it does not capture our uncertainty about whether the assumptions themselves are correct. The reported interval is always too narrow.
+
 
 ## Summary
-### 
+###
 
-This tutorial covered [Chapter 1: Rubin Causal Model](https://ppbds.github.io/primer/rubin-causal-model.html) of [*Preceptor’s Primer for Bayesian Data Science: Using the Cardinal Virtues for Inference*](https://ppbds.github.io/primer/) by [David Kane](https://davidkane.info/).
+This tutorial walked through the Rubin Causal Model framework by applying the four Cardinal Virtues to a paired pair of questions about an employee financial-counseling program: a causal one (the effect of the program on 401(k) contribution rates) and a predictive one (next year's average contribution rate among new hires). The exercises were conceptual, not coded. The key Rubin Causal Model takeaways:
 
-This tutorial reviewed key concepts including the Preceptor Table, the Population Table, potential outcomes, causal effect, validity, stability, representativeness, and unconfoundedness.
+* **Each unit has at least two potential outcomes** under a causal framing, one per treatment value.
+* **A causal effect is the difference between two potential outcomes** --- a property of the unit, not of the data.
+* **The fundamental problem of causal inference is that we only ever observe one potential outcome.** The other is the counterfactual, and we can never see it.
+* **The predictive/causal distinction is an analyst's commitment**, not a property of the data or the model. The same fit serves both questions; what changes is the language and the assumptions you are willing to defend.
+
+The example tutorials that follow (`05-recruits`, `06-trains`, `07-colleges`, ...) walk through the same arc using real data and `tidymodels` code. The conceptual moves rehearsed here --- writing down the Preceptor Table, distinguishing potential outcomes from observable outcomes, defending unconfoundedness or acknowledging where it fails --- are exactly the moves you will use there.
+
+The world is always more uncertain than our models would have us believe.
 
 ```{r download-answers, child = system.file("child_documents/download_answers.Rmd", package = "tutorial.helpers")}
 ```
