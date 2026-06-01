@@ -23,15 +23,13 @@ library(broom)
 library(marginaleffects)
 
 knitr::opts_chunk$set(echo = FALSE)
+knitr::opts_chunk$set(out.width = "90%")
 options(tutorial.exercise.timelimit = 600,
         tutorial.storage = "local")
 
 fit_recruits <- linear_reg() |>
   set_engine("lm") |>
   fit(height ~ sex, data = recruits)
-```
-
-```{r copy-code-chunk, child = system.file("child_documents/copy_button.Rmd", package = "tutorial.helpers")}
 ```
 
 ```{r info-section, child = system.file("child_documents/info_section.Rmd", package = "tutorial.helpers")}
@@ -41,7 +39,7 @@ fit_recruits <- linear_reg() |>
 ## Introduction
 ###
 
-This tutorial supports [*Preceptor's Primer for Bayesian Data Science: Using the Cardinal Virtues for Inference*](https://ppbds.github.io/primer/) by [David Kane](https://davidkane.info/).
+This tutorial supports the [Recruits](https://ppbds.github.io/primer/05-recruits.html) chapter of [*Preceptor's Primer for Bayesian Data Science: Using the Cardinal Virtues for Inference*](https://ppbds.github.io/primer/) by [David Kane](https://davidkane.info/).
 
 The world confronts us. Make decisions we must.
 
@@ -72,13 +70,13 @@ Once you're inside the `recruits` repo, create a new Quarto document titled `"Re
 
 Create a `.gitignore` file with `analysis_files` on the first line followed by a blank line. Save and push.
 
-At the R prompt, run:
+In the R Terminal, run:
 
 ```
 show_file(".gitignore")
 ```
 
-If that fails, it's probably because you haven't loaded `library(tutorial.helpers)` at the R prompt.
+If that fails, it's probably because you haven't loaded `library(tutorial.helpers)` in the R Terminal.
 
 "CP/CR" is short for *copy/paste the **c**ommand and the **r**esponse* --- both the command you sent to R and the response R gave back.
 
@@ -108,7 +106,7 @@ execute:
   echo: false
 ```
 
-Render again --- it should look cleaner. At the R prompt, run:
+Render again --- it should look cleaner. In the R Terminal, run:
 
 ```
 show_file("analysis.qmd", chunk = "Last")
@@ -131,45 +129,41 @@ Rendering a QMD converts the code and prose into an HTML document that shows onl
 
 ### Exercise 4
 
-Place your cursor in the QMD file on the `library(tidyverse)` line. Use `Cmd/Ctrl + Enter` to execute that line. Note that this sends the line to the R prompt and runs it.
-
-CP/CR.
+We will use the R Terminal for quick diagnostic commands as we work --- checking a file, reading a help page, glancing at a value. Open an R Terminal and run `library(tidyverse)` there. CP/CR.
 
 ```{r introduction-4}
 question_text(NULL,
-  message = "    > library(tidyverse)\n    ── Attaching core tidyverse packages ─ tidyverse 2.0.0 ─\n    ✔ dplyr     ✔ forcats   ✔ ggplot2  ✔ lubridate\n    ✔ purrr     ✔ readr     ✔ stringr  ✔ tibble     ✔ tidyr\n    ── Conflicts ─ tidyverse_conflicts() ─\n    ✖ dplyr::filter() masks stats::filter()\n    ✖ dplyr::lag()    masks stats::lag()",
   answer(NULL, correct = TRUE),
-  allow_retry = FALSE,
+  allow_retry = TRUE,
+  try_again_button = "Edit Answer",
   incorrect = NULL,
-  rows = 3)
+  rows = 6)
 ```
 
 ###
 
-Two worlds matter in data science: *QMD World* (the file where your code lives) and *R World* (the running R session at the R prompt, where objects and loaded packages live). `Cmd/Ctrl + Enter` moves a single line from QMD World into R World. You will do this hundreds of times.
+The **[tidyverse](https://www.tidyverse.org/)** is a family of packages that share a common design philosophy and grammar. `library(tidyverse)` loads the core set --- **[ggplot2](https://ggplot2.tidyverse.org/)** for plotting, **[dplyr](https://dplyr.tidyverse.org/)** for manipulation, **[readr](https://readr.tidyverse.org/)** for I/O --- at once. The "Conflicts" section at the end of the attach message names functions that exist in more than one package, like `filter()` in both **dplyr** and `stats`; the last-loaded package wins.
 
 ### Exercise 5
 
-Place your cursor in the QMD file on the `library(primer.tutorials)` line. Use `Cmd/Ctrl + Enter` to execute that line.
-
-CP/CR.
+In the R Terminal, run `library(primer.tutorials)`. CP/CR.
 
 ```{r introduction-5}
 question_text(NULL,
-  message = "    > library(primer.tutorials)\n    >",
   answer(NULL, correct = TRUE),
-  allow_retry = FALSE,
+  allow_retry = TRUE,
+  try_again_button = "Edit Answer",
   incorrect = NULL,
   rows = 3)
 ```
 
 ###
 
-The teaching dataset for this tutorial is `recruits`, available in the **[primer.tutorials](https://ppbds.github.io/primer/tutorials/)** package once that package is loaded. It is a 50-row sample drawn from the National Health and Nutrition Examination Survey (NHANES, an ongoing survey conducted by the Centers for Disease Control and Prevention), restricted to ages 18--27 and to the columns relevant for our question.
+QMD World and R World are not the same. The R Terminal you just loaded these libraries into is a *separate session* from the one that runs when you render `analysis.qmd`. A package loaded here is invisible to the render, which is why every library the document needs has to live in the QMD's setup chunk too. The teaching dataset for this tutorial is `recruits`, available in the **[primer.tutorials](https://ppbds.github.io/primer/tutorials/)** package. It is a 50-row sample drawn from the National Health and Nutrition Examination Survey (NHANES, an ongoing survey conducted by the Centers for Disease Control and Prevention), restricted to ages 18--27 and to the columns relevant for our question.
 
 ### Exercise 6
 
-At the R prompt, type `?recruits` and paste the Description below.
+In the R Terminal, type `?recruits` and paste the Description below.
 
 ```{r introduction-6}
 question_text(NULL,
@@ -543,7 +537,7 @@ cat(
 
 ### Exercise 11
 
-Because `recruits` is already prepared (filtered to ages 18--27, restricted to `height`, `sex`, and `age`, and missing rows dropped), there is no data-prep code to write. Take a moment to verify the breakdown that matters most for what comes next. At the R prompt, run:
+Because `recruits` is already prepared (filtered to ages 18--27, restricted to `height`, `sex`, and `age`, and missing rows dropped), there is no data-prep code to write. Take a moment to verify the breakdown that matters most for what comes next. In the R Terminal, run:
 
 ```
 recruits |> count(sex)
@@ -579,7 +573,7 @@ question_text(NULL,
 
 ###
 
-Read our answer. It will not be the same as yours. You can change your answer to incorporate some of our ideas, but do not copy/paste our answer exactly. Add your two sentences to the summary paragraph portion of your QMD. `Cmd/Ctrl + Shift + K`, then commit/push.
+Read our answer. It will not be the same as yours. You can change your answer to incorporate some of our ideas, but do not copy/paste our answer exactly. Add your two sentences to the summary paragraph portion of your QMD. Render the QMD, then commit/push.
 
 
 ## Justice
@@ -965,17 +959,15 @@ When representativeness is violated, our parameter estimates *might* be biased -
 
 ### Exercise 10
 
-A statistical model consists of two parts: the probability family and the link function. The probability family is the probability distribution which generates the randomness in our data. The link function is the mathematical formula which links our data to the unknown parameters. Add `library(tidymodels)` to the QMD file. Place your cursor on that line. Use `Cmd/Ctrl + Enter` to execute. Note that this sends the line to the R prompt.
-
-CP/CR.
+A statistical model consists of two parts: the probability family and the link function. The probability family is the probability distribution which generates the randomness in our data. The link function is the mathematical formula which links our data to the unknown parameters. Add `library(tidymodels)` to the setup chunk in `analysis.qmd` and render. Then load it in your R Terminal too --- `library(tidymodels)` --- so the interactive model commands later in Courage will work. CP/CR.
 
 ```{r justice-10}
 question_text(NULL,
-  message = "    > library(tidymodels)\n    ── Attaching packages ──────── tidymodels 1.x.x ──\n    ✔ broom        ✔ recipes\n    ✔ dials        ✔ rsample\n    ✔ infer        ✔ tune\n    ✔ modeldata    ✔ workflows\n    ✔ parsnip      ✔ workflowsets\n    ✔ purrr        ✔ yardstick\n    ── Conflicts ──── tidymodels_conflicts() ──\n    ✖ purrr::discard() masks scales::discard()\n    ✖ dplyr::filter()  masks stats::filter()",
   answer(NULL, correct = TRUE),
-  allow_retry = FALSE,
+  allow_retry = TRUE,
+  try_again_button = "Edit Answer",
   incorrect = NULL,
-  rows = 3)
+  rows = 6)
 ```
 
 ###
@@ -986,15 +978,13 @@ $$Y \sim N(\mu, \sigma^2)$$
 
 ### Exercise 11
 
-Add `library(broom)` to the QMD file. Place your cursor on that line. Use `Cmd/Ctrl + Enter`.
-
-CP/CR.
+Add `library(broom)` to the setup chunk in `analysis.qmd` and render. Load it in your R Terminal as well. CP/CR.
 
 ```{r justice-11}
 question_text(NULL,
-  message = "    > library(broom)\n    >",
   answer(NULL, correct = TRUE),
-  allow_retry = FALSE,
+  allow_retry = TRUE,
+  try_again_button = "Edit Answer",
   incorrect = NULL,
   rows = 3)
 ```
@@ -1026,7 +1016,7 @@ question_text(NULL,
 
 ###
 
-Add a weakness sentence to the summary paragraph in your QMD. You can modify your paragraph, but don't copy/paste our answer exactly. `Cmd/Ctrl + Shift + K`, then commit/push.
+Add a weakness sentence to the summary paragraph in your QMD. You can modify your paragraph, but don't copy/paste our answer exactly. Render the QMD, then commit/push.
 
 
 ## Courage
@@ -1136,17 +1126,20 @@ The abstract data generating mechanism shown in the preamble uses generic variab
 
 ### Exercise 2
 
-Because our outcome variable is continuous, start to create the model by entering `linear_reg(engine = "lm")`.
+Because our outcome variable is continuous, ask your AI agent to add a code chunk to `analysis.qmd` that begins building the model with `linear_reg(engine = "lm")`. Render. Copy the printed model object from the rendered HTML.
 
-```{r courage-2, exercise = TRUE}
-
+```{r courage-2}
+question_text(NULL,
+  answer(NULL, correct = TRUE),
+  allow_retry = TRUE,
+  try_again_button = "Edit Answer",
+  incorrect = NULL,
+  rows = 5)
 ```
 
-```{r courage-2-hint-1, eval = FALSE}
-linear_reg(engine = ...)
-```
+###
 
-```{r courage-2-test, include = FALSE}
+```{r courage-2-test}
 linear_reg(engine = "lm")
 ```
 
@@ -1156,20 +1149,20 @@ linear_reg(engine = "lm")
 
 ### Exercise 3
 
-Continue the pipe to `fit(height ~ sex, data = recruits)`. This is our first candidate model: outcome on the binary `sex`.
+Ask your AI agent to extend the chunk to `linear_reg(engine = "lm") |> fit(height ~ sex, data = recruits)`. This is our first candidate model: outcome on the binary `sex`. Render. Copy the printed fit object from the rendered HTML.
 
-```{r courage-3, exercise = TRUE}
-
+```{r courage-3}
+question_text(NULL,
+  answer(NULL, correct = TRUE),
+  allow_retry = TRUE,
+  try_again_button = "Edit Answer",
+  incorrect = NULL,
+  rows = 5)
 ```
 
-<button onclick = "transfer_code(this)">Copy previous code</button>
+###
 
-```{r courage-3-hint-1, eval = FALSE}
-... |>
-  fit(height ~ sex, data = recruits)
-```
-
-```{r courage-3-test, include = FALSE}
+```{r courage-3-test}
 linear_reg(engine = "lm") |>
   fit(height ~ sex, data = recruits)
 ```
@@ -1209,20 +1202,20 @@ Notice the language: *"when we compare two groups,"* not *"raising sex by one un
 
 ### Exercise 5
 
-Change the call to `fit(height ~ age, data = recruits)`. This refits with `age`, a continuous covariate, instead of `sex`.
+Ask your AI agent to change the formula to `fit(height ~ age, data = recruits)`. This refits with `age`, a continuous covariate, instead of `sex`. Render. Copy the printed fit object from the rendered HTML.
 
-```{r courage-5, exercise = TRUE}
-
+```{r courage-5}
+question_text(NULL,
+  answer(NULL, correct = TRUE),
+  allow_retry = TRUE,
+  try_again_button = "Edit Answer",
+  incorrect = NULL,
+  rows = 5)
 ```
 
-<button onclick = "transfer_code(this)">Copy previous code</button>
+###
 
-```{r courage-5-hint-1, eval = FALSE}
-... |>
-  fit(height ~ age, data = recruits)
-```
-
-```{r courage-5-test, include = FALSE}
+```{r courage-5-test}
 linear_reg(engine = "lm") |>
   fit(height ~ age, data = recruits)
 ```
@@ -1262,17 +1255,20 @@ The wide confidence interval that includes zero is exactly what *"this covariate
 
 ### Exercise 7
 
-Behind the scenes of this tutorial, an object called `fit_recruits` has been created which is the result of the code above. Type `fit_recruits` and hit "Run Code." This prints the object.
+Behind the scenes of this tutorial, an object called `fit_recruits` is the fitted model. Ask your AI agent to add a chunk to `analysis.qmd` that names `fit_recruits` on its own line. Render. Copy the printed model summary from the rendered HTML.
 
-```{r courage-7, exercise = TRUE}
-
+```{r courage-7}
+question_text(NULL,
+  answer(NULL, correct = TRUE),
+  allow_retry = TRUE,
+  try_again_button = "Edit Answer",
+  incorrect = NULL,
+  rows = 5)
 ```
 
-```{r courage-7-hint-1, eval = FALSE}
-fit_recruits
-```
+###
 
-```{r courage-7-test, include = FALSE}
+```{r courage-7-test}
 fit_recruits
 ```
 
@@ -1282,7 +1278,7 @@ In data science, **we deal with words, math, and code, but the most important of
 
 ### Exercise 8
 
-We need `fit_recruits` to exist in R World so that later `marginaleffects` calls can use it. Copy/paste this code to the R prompt and execute it:
+We need `fit_recruits` to exist in R World so that later `marginaleffects` calls can use it. Run this code in the R Terminal:
 
 ```
 fit_recruits <- linear_reg() |>
@@ -1303,7 +1299,7 @@ question_text(NULL,
 
 ###
 
-Just because something exists in the tutorial (or in the QMD) does not mean that it is at the R prompt. You should be aware of what exists in R World, which is generally called your "workspace."
+Just because something exists in the tutorial (or in the QMD) does not mean that it is in your R Terminal. You should be aware of what exists in R World, which is generally called your "workspace."
 
 ### Exercise 9
 
@@ -1329,7 +1325,7 @@ fit_recruits <- linear_reg() |>
   fit(height ~ sex, data = recruits)
 ```
 
-`Cmd/Ctrl + Shift + K`. Rendering might take a moment the first time as Quarto caches the fit. At the R prompt, run:
+Render the QMD. Rendering may take a moment the first time as Quarto caches the fit. In the R Terminal, run:
 
 ```
 show_file("analysis.qmd", chunk = "Last")
@@ -1348,13 +1344,13 @@ question_text(NULL,
 
 ###
 
-Including `#| cache: true` causes Quarto to cache the chunk's results. The next time you render your QMD, as long as you have not changed the code, Quarto will just load up the saved fitted object. To confirm, `Cmd/Ctrl + Shift + K` again --- it should be quick.
+Including `#| cache: true` causes Quarto to cache the chunk's results. The next time you render your QMD, as long as you have not changed the code, Quarto will just load up the saved fitted object. To confirm, Render again --- it should be quick.
 
 ### Exercise 11
 
 Add `*_cache` to your `.gitignore` file. Cached objects are often large and don't belong on GitHub.
 
-At the R prompt, run:
+In the R Terminal, run:
 
 ```
 show_file(".gitignore")
@@ -1377,17 +1373,20 @@ Because of the change in your `.gitignore` (assuming you saved it), the cache di
 
 ### Exercise 12
 
-At the R prompt, run `tidy()` on `fit_recruits` with the argument `conf.int` set to `TRUE`. This returns 95% intervals for all the parameters in our model.
+Ask your AI agent to add a chunk to `analysis.qmd` that runs `tidy(fit_recruits, conf.int = TRUE)`. This returns 95% intervals for all the parameters in our model. Render. Copy the printed tibble from the rendered HTML.
 
-```{r courage-12, exercise = TRUE}
-
+```{r courage-12}
+question_text(NULL,
+  answer(NULL, correct = TRUE),
+  allow_retry = TRUE,
+  try_again_button = "Edit Answer",
+  incorrect = NULL,
+  rows = 5)
 ```
 
-```{r courage-12-hint-1, eval = FALSE}
-tidy(..., conf.int = ...)
-```
+###
 
-```{r courage-12-test, include = FALSE}
+```{r courage-12-test}
 tidy(fit_recruits, conf.int = TRUE)
 ```
 
@@ -1436,7 +1435,7 @@ question_text(NULL,
 
 ###
 
-Read our answer. Do not copy/paste exactly. Add your two sentences to the summary paragraph. `Cmd/Ctrl + Shift + K`, then commit/push.
+Read our answer. Do not copy/paste exactly. Add your two sentences to the summary paragraph. Render the QMD, then commit/push.
 
 
 ## Temperance
@@ -1491,17 +1490,13 @@ Courage gave us the data generating mechanism, including the parameter values th
 
 In the end, we don't really care about parameters, much less how to interpret them. Parameters are *imaginary*, like unicorns. We care about answers to our questions. *In the modern world, all parameters are nuisance parameters.*
 
-Add `library(marginaleffects)` to the QMD file.
-
-Place your cursor in the QMD file on the `library(marginaleffects)` line. Use `Cmd/Ctrl + Enter` to execute that line.
-
-CP/CR.
+Add `library(marginaleffects)` to the setup chunk in `analysis.qmd` and render. Load it in your R Terminal too --- `library(marginaleffects)` --- so the interactive `predictions()` and `plot_predictions()` calls coming up will work. CP/CR.
 
 ```{r temperance-2}
 question_text(NULL,
-  message = "    > library(marginaleffects)\n    >",
   answer(NULL, correct = TRUE),
-  allow_retry = FALSE,
+  allow_retry = TRUE,
+  try_again_button = "Edit Answer",
   incorrect = NULL,
   rows = 3)
 ```
@@ -1529,7 +1524,7 @@ Data science projects begin with a decision which we face. To make that decision
 
 ### Exercise 4
 
-At the R prompt, run `predictions()` on `fit_recruits`.
+In the R Terminal, run `predictions()` on `fit_recruits`.
 
 CP/CR.
 
@@ -1548,7 +1543,7 @@ question_text(NULL,
 
 ### Exercise 5
 
-At the R prompt, run `plot_predictions()` on `fit_recruits` with `condition = "sex"`.
+In the R Terminal, run `plot_predictions()` on `fit_recruits` with `condition = "sex"`.
 
 CP/CR.
 
@@ -1571,7 +1566,7 @@ You should see two point estimates (one for Female, one for Male) with 95% confi
 
 ### Exercise 6
 
-At the R prompt, run `plot_predictions()` on `fit_recruits` with `condition = "sex"` and `draw = FALSE`.
+In the R Terminal, run `plot_predictions()` on `fit_recruits` with `condition = "sex"` and `draw = FALSE`.
 
 CP/CR.
 
@@ -1594,7 +1589,7 @@ Because `plot_predictions()` returns a ggplot object, you can continue with ggpl
 
 ### Exercise 7
 
-Work with AI to create a beautiful plot starting from the output of `plot_predictions(fit_recruits, condition = "sex", draw = FALSE)`. Do this in your QMD (much easier than at the R prompt). Title: the key variables. Subtitle: the key takeaway. Caption: data source. Axis labels: human-readable with units.
+Work with AI to create a beautiful plot starting from the output of `plot_predictions(fit_recruits, condition = "sex", draw = FALSE)`. Do this in your QMD (much easier than typing in the R Terminal directly). Title: the key variables. Subtitle: the key takeaway. Caption: data source. Axis labels: human-readable with units.
 
 Paste the plot code below.
 
@@ -1629,11 +1624,11 @@ plot_predictions(fit_recruits, condition = "sex", draw = FALSE) |>
   theme_minimal()
 ```
 
-Data science often involves this back-and-forth style of work. First, make a single chunk of code --- say, a new plot --- work well. This requires interactive work between the QMD and the R prompt. Second, ensure that the entire QMD runs correctly on its own.
+Data science often involves this back-and-forth style of work. First, make a single chunk of code --- say, a new plot --- work well. This requires interactive work between the QMD and the R Terminal. Second, ensure that the entire QMD runs correctly on its own.
 
 ### Exercise 8
 
-Finalize the new graphics chunk in your QMD. `Cmd/Ctrl + Shift + K` to ensure it all works. At the R prompt, run:
+Finalize the new graphics chunk in your QMD. Render to ensure it all works. In the R Terminal, run:
 
 ```
 show_file("analysis.qmd", chunk = "Last")
@@ -1669,7 +1664,7 @@ question_text(NULL,
 
 ###
 
-Add a final sentence to your summary paragraph, but don't copy/paste our answer exactly. `Cmd/Ctrl + Shift + K`.
+Add a final sentence to your summary paragraph, but don't copy/paste our answer exactly. Render the QMD.
 
 ### Exercise 10
 
@@ -1690,7 +1685,7 @@ Always go back to your Preceptor Table --- the information which, if you had it,
 
 ### Exercise 11
 
-Rearrange the material in your QMD so the order is graphic, then summary paragraph. The chunk that creates `fit_recruits` must occur before the chunk that creates the graphic. You can keep or discard the math at your discretion. `Cmd/Ctrl + Shift + K`. At the R prompt, run:
+Rearrange the material in your QMD so the order is graphic, then summary paragraph. The chunk that creates `fit_recruits` must occur before the chunk that creates the graphic. You can keep or discard the math at your discretion. Render the QMD. In the R Terminal, run:
 
 ```
 show_file("analysis.qmd")
@@ -1713,7 +1708,7 @@ This is the version of your QMD file at which your teacher is most likely to loo
 
 ### Exercise 12
 
-Publish your rendered QMD to GitHub Pages. In the Terminal (not the R prompt!), run:
+Publish your rendered QMD to GitHub Pages. In the bash Terminal (not the R Terminal!), run:
 
 ```
 quarto publish gh-pages analysis.qmd

@@ -23,6 +23,7 @@ library(broom)
 library(marginaleffects)
 
 knitr::opts_chunk$set(echo = FALSE)
+knitr::opts_chunk$set(out.width = "90%")
 options(tutorial.exercise.timelimit = 600,
         tutorial.storage = "local")
 
@@ -43,9 +44,6 @@ fit_shaming <- logistic_reg(engine = "glm") |>
   fit(voted ~ age + sex + treatment*voter_class, data = x)
 ```
 
-```{r copy-code-chunk, child = system.file("child_documents/copy_button.Rmd", package = "tutorial.helpers")}
-```
-
 ```{r info-section, child = system.file("child_documents/info_section.Rmd", package = "tutorial.helpers")}
 ```
 
@@ -53,7 +51,7 @@ fit_shaming <- logistic_reg(engine = "glm") |>
 ## Introduction
 ###
 
-This tutorial supports [*Preceptor's Primer for Bayesian Data Science: Using the Cardinal Virtues for Inference*](https://ppbds.github.io/primer/) by [David Kane](https://davidkane.info/).
+This tutorial supports the [Shaming](https://ppbds.github.io/primer/10-shaming.html) chapter of [*Preceptor's Primer for Bayesian Data Science: Using the Cardinal Virtues for Inference*](https://ppbds.github.io/primer/) by [David Kane](https://davidkane.info/).
 
 The world confronts us. Make decisions we must.
 
@@ -84,7 +82,7 @@ Once you're inside the `shaming` repo, create a new Quarto document titled `"Sha
 
 Create a `.gitignore` file with `analysis_files` on the first line followed by a blank line. Save and push.
 
-At the R prompt, run:
+In the R Terminal, run:
 
 ```
 show_file(".gitignore")
@@ -114,7 +112,7 @@ execute:
   echo: false
 ```
 
-Render again. At the R prompt, run:
+Render again. In the R Terminal, run:
 
 ```
 show_file("analysis.qmd", chunk = "Last")
@@ -137,15 +135,15 @@ The render runs in a fresh R session, so it doesn't see anything you have loaded
 
 ### Exercise 4
 
-Place your cursor on the `library(tidyverse)` line. Use `Cmd/Ctrl + Enter` to send the line to the R prompt.
+We will use the R Terminal for quick diagnostic commands as we work --- checking a file, reading a help page, glancing at a value. Open an R Terminal and run `library(tidyverse)` there.
 
 CP/CR.
 
 ```{r introduction-4}
 question_text(NULL,
-  message = "    > library(tidyverse)\n    ── Attaching core tidyverse packages ─ tidyverse 2.0.0 ─\n    ✔ dplyr     ✔ forcats   ✔ ggplot2  ✔ lubridate\n    ✔ purrr     ✔ readr     ✔ stringr  ✔ tibble     ✔ tidyr\n    ── Conflicts ─ tidyverse_conflicts() ─\n    ✖ dplyr::filter() masks stats::filter()\n    ✖ dplyr::lag()    masks stats::lag()",
   answer(NULL, correct = TRUE),
-  allow_retry = FALSE,
+  allow_retry = TRUE,
+  try_again_button = "Edit Answer",
   incorrect = NULL,
   rows = 3)
 ```
@@ -156,15 +154,15 @@ By tutorial 11, the masking message is old hat: `dplyr::filter()` shadows `stats
 
 ### Exercise 5
 
-Place your cursor on the `library(primer.data)` line. Use `Cmd/Ctrl + Enter`.
+In the R Terminal, run `library(primer.data)`.
 
 CP/CR.
 
 ```{r introduction-5}
 question_text(NULL,
-  message = "    > library(primer.data)\n    >",
   answer(NULL, correct = TRUE),
-  allow_retry = FALSE,
+  allow_retry = TRUE,
+  try_again_button = "Edit Answer",
   incorrect = NULL,
   rows = 3)
 ```
@@ -175,7 +173,7 @@ The data we will use is `shaming`, a 344,084-row tibble from a famous 2006 rando
 
 ### Exercise 6
 
-At the R prompt, type `?shaming` and paste the Description below.
+In the R Terminal, type `?shaming` and paste the Description below.
 
 ```{r introduction-6}
 question_text(NULL,
@@ -605,7 +603,7 @@ Two things worth flagging: setting the `levels` of `voter_class` explicitly forc
 
 ### Exercise 11
 
-Add the data-prep code chunk to your QMD. Place your cursor on the line that assigns to `x` and use `Cmd/Ctrl + Enter` to execute. `Cmd/Ctrl + Shift + K`. At the R prompt, run:
+Add the data-prep code chunk to your QMD and render. In the R Terminal, run:
 
 ```
 show_file("analysis.qmd", chunk = "Last")
@@ -641,7 +639,7 @@ question_text(NULL,
 
 ###
 
-Read our answer. It will not be the same as yours. Add your two sentences to the summary paragraph in your QMD. `Cmd/Ctrl + Shift + K`, then commit/push.
+Read our answer. It will not be the same as yours. Add your two sentences to the summary paragraph in your QMD. Render the QMD, then commit/push.
 
 
 ## Justice
@@ -1122,15 +1120,15 @@ The great advantage of randomization is that it guarantees unconfoundedness for 
 
 A statistical model consists of two parts: the probability family and the link function. The probability family is the distribution which generates the randomness in our data; the link function is the mathematical formula connecting the data to the unknown parameters.
 
-Add `library(tidymodels)` to the QMD file. Place your cursor on that line. Use `Cmd/Ctrl + Enter`.
+Add `library(tidymodels)` to the setup chunk in `analysis.qmd` and render. Then load it in your R Terminal too --- `library(tidymodels)` --- so the interactive model commands later in Courage will work.
 
 CP/CR.
 
 ```{r justice-12}
 question_text(NULL,
-  message = "    > library(tidymodels)\n    ── Attaching packages ──────── tidymodels 1.x.x ──\n    ✔ broom        ✔ recipes\n    ✔ dials        ✔ rsample\n    ✔ infer        ✔ tune\n    ✔ modeldata    ✔ workflows\n    ✔ parsnip      ✔ workflowsets\n    ✔ purrr        ✔ yardstick\n    ── Conflicts ──── tidymodels_conflicts() ──\n    ✖ purrr::discard() masks scales::discard()\n    ✖ dplyr::filter()  masks stats::filter()",
   answer(NULL, correct = TRUE),
-  allow_retry = FALSE,
+  allow_retry = TRUE,
+  try_again_button = "Edit Answer",
   incorrect = NULL,
   rows = 3)
 ```
@@ -1141,15 +1139,15 @@ Our outcome variable `voted` is binary. The probability family is therefore Bern
 
 ### Exercise 13
 
-Add `library(broom)` to the QMD file. Place your cursor on that line. Use `Cmd/Ctrl + Enter`.
+Add `library(broom)` to the setup chunk in `analysis.qmd` and render. Load it in your R Terminal as well.
 
 CP/CR.
 
 ```{r justice-13}
 question_text(NULL,
-  message = "    > library(broom)\n    >",
   answer(NULL, correct = TRUE),
-  allow_retry = FALSE,
+  allow_retry = TRUE,
+  try_again_button = "Edit Answer",
   incorrect = NULL,
   rows = 3)
 ```
@@ -1177,7 +1175,7 @@ question_text(NULL,
 
 ###
 
-Add a weakness sentence to your summary paragraph in your QMD. Don't copy/paste our answer exactly. `Cmd/Ctrl + Shift + K`, then commit/push.
+Add a weakness sentence to your summary paragraph in your QMD. Don't copy/paste our answer exactly. Render the QMD, then commit/push.
 
 
 ## Courage
@@ -1304,17 +1302,20 @@ Justice settled the structural choices --- binary outcome, Bernoulli family, log
 
 ### Exercise 2
 
-Because our outcome variable is binary, start to create the model by entering `logistic_reg(engine = "glm")`.
+Because our outcome variable is binary, ask your AI agent to add a code chunk to `analysis.qmd` that begins building the model with `logistic_reg(engine = "glm")`. Render. Copy the printed model object from the rendered HTML.
 
-```{r courage-2, exercise = TRUE}
-
+```{r courage-2}
+question_text(NULL,
+  answer(NULL, correct = TRUE),
+  allow_retry = TRUE,
+  try_again_button = "Edit Answer",
+  incorrect = NULL,
+  rows = 5)
 ```
 
-```{r courage-2-hint-1, eval = FALSE}
-logistic_reg(engine = ...)
-```
+###
 
-```{r courage-2-test, include = FALSE}
+```{r courage-2-test}
 logistic_reg(engine = "glm")
 ```
 
@@ -1324,20 +1325,20 @@ logistic_reg(engine = "glm")
 
 ### Exercise 3
 
-Continue the pipe to `fit(voted ~ treatment, data = x)`. This is the simplest causal model: outcome on the multi-arm treatment, no covariates.
+Ask your AI agent to extend the chunk to `linear_reg(engine = "lm") |> fit(voted ~ treatment, data = x)`. This is the simplest causal model: outcome on the multi-arm treatment, no covariates. Render. Copy the printed fit object from the rendered HTML.
 
-```{r courage-3, exercise = TRUE}
-
+```{r courage-3}
+question_text(NULL,
+  answer(NULL, correct = TRUE),
+  allow_retry = TRUE,
+  try_again_button = "Edit Answer",
+  incorrect = NULL,
+  rows = 5)
 ```
 
-<button onclick = "transfer_code(this)">Copy previous code</button>
+###
 
-```{r courage-3-hint-1, eval = FALSE}
-... |>
-  fit(voted ~ treatment, data = x)
-```
-
-```{r courage-3-test, include = FALSE}
+```{r courage-3-test}
 logistic_reg(engine = "glm") |>
   fit(voted ~ treatment, data = x)
 ```
@@ -1376,20 +1377,20 @@ Causal language --- *causal effect* --- is appropriate here because random assig
 
 ### Exercise 5
 
-Now add an adjustment covariate: `fit(voted ~ treatment + age, data = x)`. In an observational study, adjusting for a real covariate often moves the treatment estimate substantially, because adjustment is how we deal with confounding. In a randomized experiment, treatment assignment is by construction independent of any pre-treatment covariate, so adjustment should leave the treatment estimate essentially unchanged. Let's check.
+Ask your AI agent to refit with an adjustment covariate, using the formula `fit(voted ~ treatment + age, data = x)`. In an observational study, adjusting for a real covariate often moves the treatment estimate substantially, because adjustment is how we deal with confounding. In a randomized experiment, treatment assignment is by construction independent of any pre-treatment covariate, so adjustment should leave the treatment estimate essentially unchanged. Let's check. Render. Copy the printed fit object from the rendered HTML.
 
-```{r courage-5, exercise = TRUE}
-
+```{r courage-5}
+question_text(NULL,
+  answer(NULL, correct = TRUE),
+  allow_retry = TRUE,
+  try_again_button = "Edit Answer",
+  incorrect = NULL,
+  rows = 5)
 ```
 
-<button onclick = "transfer_code(this)">Copy previous code</button>
+###
 
-```{r courage-5-hint-1, eval = FALSE}
-... |>
-  fit(voted ~ treatment + age, data = x)
-```
-
-```{r courage-5-test, include = FALSE}
+```{r courage-5-test}
 logistic_reg(engine = "glm") |>
   fit(voted ~ treatment + age, data = x)
 ```
@@ -1428,20 +1429,20 @@ The fact that the treatment estimate is robust to adjustment is itself evidence 
 
 ### Exercise 7
 
-Now fit the final model: `fit(voted ~ age + sex + treatment*voter_class, data = x)`. The `treatment*voter_class` term means *treatment effects are allowed to vary by voter class* --- the kind of heterogeneity the EDA plot in Wisdom hinted at.
+Ask your AI agent to fit the final model with the formula `fit(voted ~ age + sex + treatment*voter_class, data = x)`. The `treatment*voter_class` term means *treatment effects are allowed to vary by voter class* --- the kind of heterogeneity the EDA plot in Wisdom hinted at. Render. Copy the printed fit object from the rendered HTML.
 
-```{r courage-7, exercise = TRUE}
-
+```{r courage-7}
+question_text(NULL,
+  answer(NULL, correct = TRUE),
+  allow_retry = TRUE,
+  try_again_button = "Edit Answer",
+  incorrect = NULL,
+  rows = 5)
 ```
 
-<button onclick = "transfer_code(this)">Copy previous code</button>
+###
 
-```{r courage-7-hint-1, eval = FALSE}
-... |>
-  fit(voted ~ age + sex + treatment*voter_class, data = x)
-```
-
-```{r courage-7-test, include = FALSE}
+```{r courage-7-test}
 logistic_reg(engine = "glm") |>
   fit(voted ~ age + sex + treatment*voter_class, data = x)
 ```
@@ -1479,17 +1480,20 @@ In an interaction model, the main effect of `treatment` is not *the* treatment e
 
 ### Exercise 9
 
-Behind the scenes, an object called `fit_shaming` has been created which is the result of the final model. Type `fit_shaming` and hit "Run Code."
+Behind the scenes, an object called `fit_shaming` is the final fitted model. Ask your AI agent to add a chunk to `analysis.qmd` that names `fit_shaming` on its own line. Render. Copy the printed model summary from the rendered HTML.
 
-```{r courage-9, exercise = TRUE}
-
+```{r courage-9}
+question_text(NULL,
+  answer(NULL, correct = TRUE),
+  allow_retry = TRUE,
+  try_again_button = "Edit Answer",
+  incorrect = NULL,
+  rows = 5)
 ```
 
-```{r courage-9-hint-1, eval = FALSE}
-fit_shaming
-```
+###
 
-```{r courage-9-test, include = FALSE}
+```{r courage-9-test}
 fit_shaming
 ```
 
@@ -1499,7 +1503,7 @@ In data science, **we deal with words, math, and code, but the most important of
 
 ### Exercise 10
 
-We need `fit_shaming` to exist in R World. Copy/paste this code to the R prompt and execute it:
+We need `fit_shaming` to exist in R World. Run this code in the R Terminal:
 
 ```
 fit_shaming <- logistic_reg(engine = "glm") |>
@@ -1523,15 +1527,15 @@ Just because the fit object exists in this tutorial does not mean it exists at y
 
 ### Exercise 11
 
-At the R prompt, load the **[easystats](https://easystats.github.io/easystats/)** package.
+In the R Terminal, load the **[easystats](https://easystats.github.io/easystats/)** package.
 
 CP/CR.
 
 ```{r courage-11}
 question_text(NULL,
-  message = "    > library(easystats)\n    # Attaching packages: easystats 0.x.x (red = needs update)\n    ✔ bayestestR     ✔ correlation     ✔ datawizard \n    ✔ effectsize    ✔ insight         ✔ modelbased \n    ✔ parameters    ✔ performance     ✔ report \n    ✔ see",
   answer(NULL, correct = TRUE),
-  allow_retry = FALSE,
+  allow_retry = TRUE,
+  try_again_button = "Edit Answer",
   incorrect = NULL,
   rows = 4)
 ```
@@ -1542,7 +1546,7 @@ We don't add `easystats` to the QMD because we are only using it for an interact
 
 ### Exercise 12
 
-At the R prompt, run:
+In the R Terminal, run:
 
 ```
 check_predictions(extract_fit_engine(fit_shaming))
@@ -1599,7 +1603,7 @@ fit_shaming <- logistic_reg(engine = "glm") |>
   fit(voted ~ age + sex + treatment*voter_class, data = x)
 ```
 
-`Cmd/Ctrl + Shift + K`. At the R prompt, run:
+Render the QMD. In the R Terminal, run:
 
 ```
 show_file("analysis.qmd", chunk = "Last")
@@ -1618,13 +1622,13 @@ question_text(NULL,
 
 ###
 
-`#| cache: true` tells Quarto to reuse the saved fit on subsequent renders. Re-render with `Cmd/Ctrl + Shift + K` --- it should be quick the second time. Even at 344K rows our fit takes only about a second, but caching is the right habit to build for the heavier models you'll meet later in the curriculum.
+`#| cache: true` tells Quarto to reuse the saved fit on subsequent renders. Re-render with render the QMD --- it should be quick the second time. Even at 344K rows our fit takes only about a second, but caching is the right habit to build for the heavier models you'll meet later in the curriculum.
 
 ### Exercise 15
 
 Add `*_cache` to your `.gitignore`. Cached objects don't belong on GitHub.
 
-At the R prompt, run:
+In the R Terminal, run:
 
 ```
 show_file(".gitignore")
@@ -1647,17 +1651,20 @@ Commit and push.
 
 ### Exercise 16
 
-At the R prompt, run `tidy()` on `fit_shaming` with `conf.int = TRUE`.
+Ask your AI agent to add a chunk to `analysis.qmd` that runs `tidy(fit_shaming, conf.int = TRUE)`. This returns 95% intervals for all the parameters in our model. Render. Copy the printed tibble from the rendered HTML.
 
-```{r courage-16, exercise = TRUE}
-
+```{r courage-16}
+question_text(NULL,
+  answer(NULL, correct = TRUE),
+  allow_retry = TRUE,
+  try_again_button = "Edit Answer",
+  incorrect = NULL,
+  rows = 5)
 ```
 
-```{r courage-16-hint-1, eval = FALSE}
-tidy(fit_shaming, conf.int = TRUE)
-```
+###
 
-```{r courage-16-test, include = FALSE}
+```{r courage-16-test}
 tidy(fit_shaming, conf.int = TRUE)
 ```
 
@@ -1667,7 +1674,7 @@ tidy(fit_shaming, conf.int = TRUE)
 
 ### Exercise 17
 
-Create a new code chunk in your QMD. Ask AI to make a nice-looking table from the tibble returned by `tidy()`. Insert your table code, `Cmd/Ctrl + Shift + K`, and at the R prompt run:
+Create a new code chunk in your QMD. Ask AI to make a nice-looking table from the tibble returned by `tidy()`. Insert your table code, Render the QMD, and in the R Terminal run:
 
 ```
 show_file("analysis.qmd", chunk = "Last")
@@ -1703,7 +1710,7 @@ question_text(NULL,
 
 ###
 
-Add your sentence to the summary paragraph. `Cmd/Ctrl + Shift + K`, then commit/push.
+Add your sentence to the summary paragraph. Render the QMD, then commit/push.
 
 
 ## Temperance
@@ -1766,15 +1773,15 @@ Courage gave us the DGM, including its 17 estimated parameters. Temperance puts 
 
 ### Exercise 2
 
-Add `library(marginaleffects)` to the QMD file. Place your cursor on that line. Use `Cmd/Ctrl + Enter`.
+Add `library(marginaleffects)` to the setup chunk in `analysis.qmd` and render. Load it in your R Terminal too so the interactive `predictions()` and `plot_predictions()` calls coming up will work.
 
 CP/CR.
 
 ```{r temperance-2}
 question_text(NULL,
-  message = "    > library(marginaleffects)\n    >",
   answer(NULL, correct = TRUE),
-  allow_retry = FALSE,
+  allow_retry = TRUE,
+  try_again_button = "Edit Answer",
   incorrect = NULL,
   rows = 3)
 ```
@@ -1802,7 +1809,7 @@ A specific question must specify a number to compute. *"How does the postcard tr
 
 ### Exercise 4
 
-`avg_comparisons()` computes average causal effects on the outcome scale. At the R prompt, run:
+`avg_comparisons()` computes average causal effects on the outcome scale. In the R Terminal, run:
 
 ```
 avg_comparisons(extract_fit_engine(fit_shaming), variables = "treatment")
@@ -1831,7 +1838,7 @@ Each row is the average difference in *predicted probability of voting* between 
 
 ### Exercise 5
 
-Now break the comparisons down by voter class. At the R prompt, run:
+Now break the comparisons down by voter class. In the R Terminal, run:
 
 ```
 avg_comparisons(extract_fit_engine(fit_shaming),
@@ -1862,7 +1869,7 @@ This is the heterogeneous-treatment-effect picture. The Neighbors postcard moves
 
 ### Exercise 6
 
-`plot_predictions(condition = c(...))` draws the model's predicted probabilities across two covariates simultaneously. At the R prompt, run:
+`plot_predictions(condition = c(...))` draws the model's predicted probabilities across two covariates simultaneously. In the R Terminal, run:
 
 ```
 plot_predictions(extract_fit_engine(fit_shaming),
@@ -1959,7 +1966,7 @@ plot_predictions(extract_fit_engine(fit_shaming),
 
 ### Exercise 9
 
-Finalize the new graphics chunk in your QMD. `Cmd/Ctrl + Shift + K`. At the R prompt, run:
+Finalize the new graphics chunk in your QMD. Render the QMD. In the R Terminal, run:
 
 ```
 show_file("analysis.qmd", chunk = "Last")
@@ -1995,7 +2002,7 @@ question_text(NULL,
 
 ###
 
-Add a final sentence to your summary paragraph, but don't copy/paste exactly. `Cmd/Ctrl + Shift + K`.
+Add a final sentence to your summary paragraph, but don't copy/paste exactly. Render the QMD.
 
 ### Exercise 11
 
@@ -2016,7 +2023,7 @@ Always go back to your Preceptor Table. Even a perfectly estimated statistical m
 
 ### Exercise 12
 
-Rearrange the material in your QMD so the order is graphic, then summary paragraph. The chunk that creates `fit_shaming` must occur before the chunk that creates the graphic. `Cmd/Ctrl + Shift + K`. At the R prompt, run:
+Rearrange the material in your QMD so the order is graphic, then summary paragraph. The chunk that creates `fit_shaming` must occur before the chunk that creates the graphic. Render the QMD. In the R Terminal, run:
 
 ```
 show_file("analysis.qmd")
@@ -2039,7 +2046,7 @@ This is the version of your QMD your teacher is most likely to look at closely.
 
 ### Exercise 13
 
-Publish your rendered QMD to GitHub Pages. In the Terminal (not the R prompt!), run:
+Publish your rendered QMD to GitHub Pages. In the bash Terminal (not the R Terminal!), run:
 
 ```
 quarto publish gh-pages analysis.qmd

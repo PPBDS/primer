@@ -23,6 +23,7 @@ library(broom)
 library(marginaleffects)
 
 knitr::opts_chunk$set(echo = FALSE)
+knitr::opts_chunk$set(out.width = "90%")
 options(tutorial.exercise.timelimit = 600,
         tutorial.storage = "local")
 
@@ -41,9 +42,6 @@ fit_sps <- linear_reg() |>
   fit(t2_health_exp_3m ~ treatment, data = x)
 ```
 
-```{r copy-code-chunk, child = system.file("child_documents/copy_button.Rmd", package = "tutorial.helpers")}
-```
-
 ```{r info-section, child = system.file("child_documents/info_section.Rmd", package = "tutorial.helpers")}
 ```
 
@@ -51,7 +49,7 @@ fit_sps <- linear_reg() |>
 ## Introduction
 ###
 
-This tutorial supports [*Preceptor's Primer for Bayesian Data Science: Using the Cardinal Virtues for Inference*](https://ppbds.github.io/primer/) by [David Kane](https://davidkane.info/).
+This tutorial supports the [SPS](https://ppbds.github.io/primer/08-sps.html) chapter of [*Preceptor's Primer for Bayesian Data Science: Using the Cardinal Virtues for Inference*](https://ppbds.github.io/primer/) by [David Kane](https://davidkane.info/).
 
 The world confronts us. Make decisions we must.
 
@@ -82,13 +80,13 @@ Once you're inside the `sps` repo, create a new Quarto document titled `"Seguro 
 
 Create a `.gitignore` file with `analysis_files` on the first line followed by a blank line. Save and push.
 
-At the R prompt, run:
+In the R Terminal, run:
 
 ```
 show_file(".gitignore")
 ```
 
-If that fails, it's probably because you haven't loaded `library(tutorial.helpers)` at the R prompt.
+If that fails, it's probably because you haven't loaded `library(tutorial.helpers)` in the R Terminal.
 
 CP/CR.
 
@@ -114,7 +112,7 @@ execute:
   echo: false
 ```
 
-Render again. At the R prompt, run:
+Render again. In the R Terminal, run:
 
 ```
 show_file("analysis.qmd", chunk = "Last")
@@ -137,15 +135,15 @@ Rendering a QMD converts code and prose into a self-contained HTML document. The
 
 ### Exercise 4
 
-Place your cursor on the `library(tidyverse)` line. Use `Cmd/Ctrl + Enter` to send the line to the R prompt.
+We will use the R Terminal for quick diagnostic commands as we work --- checking a file, reading a help page, glancing at a value. Open an R Terminal and run `library(tidyverse)` there.
 
 CP/CR.
 
 ```{r introduction-4}
 question_text(NULL,
-  message = "    > library(tidyverse)\n    ── Attaching core tidyverse packages ─ tidyverse 2.0.0 ─\n    ✔ dplyr     ✔ forcats   ✔ ggplot2  ✔ lubridate\n    ✔ purrr     ✔ readr     ✔ stringr  ✔ tibble     ✔ tidyr\n    ── Conflicts ─ tidyverse_conflicts() ─\n    ✖ dplyr::filter() masks stats::filter()\n    ✖ dplyr::lag()    masks stats::lag()",
   answer(NULL, correct = TRUE),
-  allow_retry = FALSE,
+  allow_retry = TRUE,
+  try_again_button = "Edit Answer",
   incorrect = NULL,
   rows = 3)
 ```
@@ -156,15 +154,15 @@ The "Conflicts" lines name functions that exist in more than one loaded package.
 
 ### Exercise 5
 
-Place your cursor on the `library(primer.data)` line. Use `Cmd/Ctrl + Enter`.
+In the R Terminal, run `library(primer.data)`.
 
 CP/CR.
 
 ```{r introduction-5}
 question_text(NULL,
-  message = "    > library(primer.data)\n    >",
   answer(NULL, correct = TRUE),
-  allow_retry = FALSE,
+  allow_retry = TRUE,
+  try_again_button = "Edit Answer",
   incorrect = NULL,
   rows = 3)
 ```
@@ -175,7 +173,7 @@ Data on Mexico's Seguro Popular randomized rollout is available in the `sps` tib
 
 ### Exercise 6
 
-At the R prompt, type `?sps` and paste the Description below.
+In the R Terminal, type `?sps` and paste the Description below.
 
 ```{r introduction-6}
 question_text(NULL,
@@ -622,7 +620,7 @@ cat(
 
 ### Exercise 11
 
-Take a moment to confirm the structure of our analysis sample. At the R prompt, run:
+Take a moment to confirm the structure of our analysis sample. In the R Terminal, run:
 
 ```
 x |> count(treatment)
@@ -658,7 +656,7 @@ question_text(NULL,
 
 ###
 
-Read our answer. It will not be the same as yours. You can change your answer to incorporate some of our ideas, but do not copy/paste exactly. Add your two sentences to the summary paragraph in your QMD. `Cmd/Ctrl + Shift + K`, then commit/push.
+Read our answer. It will not be the same as yours. You can change your answer to incorporate some of our ideas, but do not copy/paste exactly. Add your two sentences to the summary paragraph in your QMD. Render the QMD, then commit/push.
 
 
 ## Justice
@@ -1081,15 +1079,15 @@ The great advantage of randomization is that it guarantees unconfoundedness *for
 
 ### Exercise 12
 
-A statistical model consists of two parts: the probability family and the link function. Add `library(tidymodels)` to the QMD file. Place your cursor on that line. Use `Cmd/Ctrl + Enter`.
+A statistical model consists of two parts: the probability family and the link function. Add `library(tidymodels)` to the setup chunk in `analysis.qmd` and render. Then load it in your R Terminal too --- `library(tidymodels)` --- so the interactive model commands later in Courage will work.
 
 CP/CR.
 
 ```{r justice-12}
 question_text(NULL,
-  message = "    > library(tidymodels)\n    ── Attaching packages ──────── tidymodels 1.x.x ──\n    ✔ broom        ✔ recipes\n    ✔ dials        ✔ rsample\n    ✔ infer        ✔ tune\n    ✔ modeldata    ✔ workflows\n    ✔ parsnip      ✔ workflowsets\n    ✔ purrr        ✔ yardstick\n    ── Conflicts ──── tidymodels_conflicts() ──\n    ✖ purrr::discard() masks scales::discard()\n    ✖ dplyr::filter()  masks stats::filter()",
   answer(NULL, correct = TRUE),
-  allow_retry = FALSE,
+  allow_retry = TRUE,
+  try_again_button = "Edit Answer",
   incorrect = NULL,
   rows = 3)
 ```
@@ -1100,15 +1098,15 @@ Our outcome variable `t2_health_exp_3m` is a continuous quantity (pesos). The pr
 
 ### Exercise 13
 
-Add `library(broom)` to the QMD file. Place your cursor on that line. Use `Cmd/Ctrl + Enter`.
+Add `library(broom)` to the setup chunk in `analysis.qmd` and render. Load it in your R Terminal as well.
 
 CP/CR.
 
 ```{r justice-13}
 question_text(NULL,
-  message = "    > library(broom)\n    >",
   answer(NULL, correct = TRUE),
-  allow_retry = FALSE,
+  allow_retry = TRUE,
+  try_again_button = "Edit Answer",
   incorrect = NULL,
   rows = 3)
 ```
@@ -1136,7 +1134,7 @@ question_text(NULL,
 
 ###
 
-Add a weakness sentence to your summary paragraph in your QMD. Don't copy/paste our answer exactly. `Cmd/Ctrl + Shift + K`, then commit/push.
+Add a weakness sentence to your summary paragraph in your QMD. Don't copy/paste our answer exactly. Render the QMD, then commit/push.
 
 
 ## Courage
@@ -1235,17 +1233,20 @@ Justice fixed the structural choices --- continuous outcome, linear regression, 
 
 ### Exercise 2
 
-Because our outcome variable is continuous, start to create the model by entering `linear_reg(engine = "lm")`.
+Because our outcome variable is continuous, ask your AI agent to add a code chunk to `analysis.qmd` that begins building the model with `linear_reg(engine = "lm")`. Render. Copy the printed model object from the rendered HTML.
 
-```{r courage-2, exercise = TRUE}
-
+```{r courage-2}
+question_text(NULL,
+  answer(NULL, correct = TRUE),
+  allow_retry = TRUE,
+  try_again_button = "Edit Answer",
+  incorrect = NULL,
+  rows = 5)
 ```
 
-```{r courage-2-hint-1, eval = FALSE}
-linear_reg(engine = ...)
-```
+###
 
-```{r courage-2-test, include = FALSE}
+```{r courage-2-test}
 linear_reg(engine = "lm")
 ```
 
@@ -1255,20 +1256,20 @@ linear_reg(engine = "lm")
 
 ### Exercise 3
 
-Continue the pipe to `fit(t2_health_exp_3m ~ treatment, data = x)`. This is the central causal model: outcome on the binary, randomized `treatment`.
+Ask your AI agent to extend the chunk to `linear_reg(engine = "lm") |> fit(t2_health_exp_3m ~ treatment, data = x)`. This is the central causal model: outcome on the binary, randomized `treatment`. Render. Copy the printed fit object from the rendered HTML.
 
-```{r courage-3, exercise = TRUE}
-
+```{r courage-3}
+question_text(NULL,
+  answer(NULL, correct = TRUE),
+  allow_retry = TRUE,
+  try_again_button = "Edit Answer",
+  incorrect = NULL,
+  rows = 5)
 ```
 
-<button onclick = "transfer_code(this)">Copy previous code</button>
+###
 
-```{r courage-3-hint-1, eval = FALSE}
-... |>
-  fit(t2_health_exp_3m ~ treatment, data = x)
-```
-
-```{r courage-3-test, include = FALSE}
+```{r courage-3-test}
 linear_reg(engine = "lm") |>
   fit(t2_health_exp_3m ~ treatment, data = x)
 ```
@@ -1308,20 +1309,20 @@ Causal language is appropriate here because community-level treatment was random
 
 ### Exercise 5
 
-Now fit a second candidate that adjusts for `age`: `fit(t2_health_exp_3m ~ treatment + age, data = x)`. This adds a continuous covariate to the causal model.
+Ask your AI agent to refit with the formula `fit(t2_health_exp_3m ~ treatment + age, data = x)`, adjusting for `age`. This adds a continuous covariate to the causal model. Render. Copy the printed fit object from the rendered HTML.
 
-```{r courage-5, exercise = TRUE}
-
+```{r courage-5}
+question_text(NULL,
+  answer(NULL, correct = TRUE),
+  allow_retry = TRUE,
+  try_again_button = "Edit Answer",
+  incorrect = NULL,
+  rows = 5)
 ```
 
-<button onclick = "transfer_code(this)">Copy previous code</button>
+###
 
-```{r courage-5-hint-1, eval = FALSE}
-... |>
-  fit(t2_health_exp_3m ~ treatment + age, data = x)
-```
-
-```{r courage-5-test, include = FALSE}
+```{r courage-5-test}
 linear_reg(engine = "lm") |>
   fit(t2_health_exp_3m ~ treatment + age, data = x)
 ```
@@ -1361,17 +1362,20 @@ Notice the language for `age`: *"when we compare two groups of households... in 
 
 ### Exercise 7
 
-Behind the scenes of this tutorial, an object called `fit_sps` has been created which is the result of the final model. Type `fit_sps` and hit "Run Code."
+Behind the scenes of this tutorial, an object called `fit_sps` is the final fitted model. Ask your AI agent to add a chunk to `analysis.qmd` that names `fit_sps` on its own line. Render. Copy the printed model summary from the rendered HTML.
 
-```{r courage-7, exercise = TRUE}
-
+```{r courage-7}
+question_text(NULL,
+  answer(NULL, correct = TRUE),
+  allow_retry = TRUE,
+  try_again_button = "Edit Answer",
+  incorrect = NULL,
+  rows = 5)
 ```
 
-```{r courage-7-hint-1, eval = FALSE}
-fit_sps
-```
+###
 
-```{r courage-7-test, include = FALSE}
+```{r courage-7-test}
 fit_sps
 ```
 
@@ -1381,7 +1385,7 @@ In data science, **we deal with words, math, and code, but the most important of
 
 ### Exercise 8
 
-We need `fit_sps` to exist in R World. Copy/paste this code to the R prompt and execute it:
+We need `fit_sps` to exist in R World. Run this code in the R Terminal:
 
 ```
 fit_sps <- linear_reg(engine = "lm") |>
@@ -1456,7 +1460,7 @@ fit_sps <- linear_reg(engine = "lm") |>
   fit(t2_health_exp_3m ~ treatment, data = x)
 ```
 
-`Cmd/Ctrl + Shift + K`. At the R prompt, run:
+Render the QMD. In the R Terminal, run:
 
 ```
 show_file("analysis.qmd", chunk = "Last")
@@ -1475,13 +1479,13 @@ question_text(NULL,
 
 ###
 
-`#| cache: true` tells Quarto to reuse the saved fit on subsequent renders. Re-render with `Cmd/Ctrl + Shift + K` --- it should be quick the second time.
+`#| cache: true` tells Quarto to reuse the saved fit on subsequent renders. Re-render with render the QMD --- it should be quick the second time.
 
 ### Exercise 12
 
 Add `*_cache` to your `.gitignore`. Cached objects don't belong on GitHub.
 
-At the R prompt, run:
+In the R Terminal, run:
 
 ```
 show_file(".gitignore")
@@ -1504,17 +1508,55 @@ Commit and push.
 
 ### Exercise 13
 
-At the R prompt, run `tidy()` on `fit_sps` with `conf.int = TRUE`.
+One way to check whether our model is reasonable is to compare the distribution of our actual outcome (`t2_health_exp_3m`) with the distribution of fitted values from the model. If the model is well-specified, the two distributions should look similar.
 
-```{r courage-13, exercise = TRUE}
+```{r}
+#| echo: false
+#| message: false
+#| warning: false
+fitted_df_sps <- tibble(
+  value  = c(x$t2_health_exp_3m,
+             predict(extract_fit_engine(fit_sps))),
+  source = c(rep("Actual", nrow(x)),
+             rep("Fitted", nrow(x)))
+)
 
+ggplot(fitted_df_sps, aes(x = value, fill = source)) +
+  geom_density(alpha = 0.5) +
+  scale_x_continuous(labels = scales::label_dollar(suffix = " pesos")) +
+  labs(
+    title = "Actual vs. Fitted Three-Month Health Spending",
+    subtitle = "The actual distribution has a long right tail the model's fitted values miss entirely",
+    x = "Three-Month Health Expenditure",
+    y = NULL,
+    fill = "Source",
+    caption = "Source: Seguro Popular trial (King et al. 2009) via primer.data"
+  ) +
+  theme_minimal() +
+  theme(axis.text.y  = element_blank(),
+        axis.ticks.y = element_blank())
 ```
 
-```{r courage-13-hint-1, eval = FALSE}
-tidy(fit_sps, conf.int = TRUE)
+###
+
+In a good model, the distribution of fitted values looks like the distribution of the actual outcome. Big divergences mean our model is missing something --- here, the long right tail of household expenditures (the small number of households with very high three-month spending) is something a simple linear regression cannot reproduce. We'll keep using the model anyway because its job here is to estimate the *average* treatment effect, and averages are well-served by a linear model even when the right tail isn't.
+
+### Exercise 14
+
+Ask your AI agent to add a chunk to `analysis.qmd` that runs `tidy(fit_sps, conf.int = TRUE)`. This returns 95% intervals for all the parameters in our model. Render. Copy the printed tibble from the rendered HTML.
+
+```{r courage-14}
+question_text(NULL,
+  answer(NULL, correct = TRUE),
+  allow_retry = TRUE,
+  try_again_button = "Edit Answer",
+  incorrect = NULL,
+  rows = 5)
 ```
 
-```{r courage-13-test, include = FALSE}
+###
+
+```{r courage-14-test}
 tidy(fit_sps, conf.int = TRUE)
 ```
 
@@ -1522,9 +1564,9 @@ tidy(fit_sps, conf.int = TRUE)
 
 `tidy()` is part of **[broom](https://broom.tidymodels.org/)**, used to summarize information from a wide variety of models.
 
-### Exercise 14
+### Exercise 15
 
-Create a new code chunk in your QMD. Ask AI to make a nice-looking table from the tibble returned by `tidy()`. Insert your table code, `Cmd/Ctrl + Shift + K`, and at the R prompt run:
+Create a new code chunk in your QMD. Ask AI to make a nice-looking table from the tibble returned by `tidy()`. Insert your table code, Render the QMD, and in the R Terminal run:
 
 ```
 show_file("analysis.qmd", chunk = "Last")
@@ -1532,7 +1574,7 @@ show_file("analysis.qmd", chunk = "Last")
 
 CP/CR.
 
-```{r courage-14}
+```{r courage-15}
 question_text(NULL,
   message = "    > show_file(\"analysis.qmd\", chunk = \"Last\")\n    ```{r}\n    tidy(fit_sps, conf.int = TRUE) |>\n      select(term, estimate, conf.low, conf.high) |>\n      knitr::kable(\n        caption = \"Estimates and 95% CIs.  Source: King et al. (2009) SPS rollout via primer.data\",\n        digits = 0\n      )\n    ```",
   answer(NULL, correct = TRUE),
@@ -1545,11 +1587,11 @@ question_text(NULL,
 
 A nice table includes a title, a caption with the data source, and reasonable rounding. The more you use AI for these housekeeping tasks, the better you'll get at telling it what you want.
 
-### Exercise 15
+### Exercise 16
 
 Add a sentence to your project summary explaining the model structure.
 
-```{r courage-15}
+```{r courage-16}
 question_text(NULL,
   message = "We model three-month out-of-pocket spending as a normally distributed variable which is a linear function of treatment.",
   answer(NULL, correct = TRUE),
@@ -1560,7 +1602,7 @@ question_text(NULL,
 
 ###
 
-Add your sentence to the summary paragraph. `Cmd/Ctrl + Shift + K`, then commit/push.
+Add your sentence to the summary paragraph. Render the QMD, then commit/push.
 
 
 ## Temperance
@@ -1614,15 +1656,15 @@ Courage gave us the DGM, including its parameter values. Temperance puts those p
 
 In the end, we don't really care about parameters, much less how to interpret them. Parameters are *imaginary*, like unicorns.
 
-Add `library(marginaleffects)` to the QMD file. Place your cursor on that line. Use `Cmd/Ctrl + Enter`.
+Add `library(marginaleffects)` to the setup chunk in `analysis.qmd` and render. Load it in your R Terminal too so the interactive `predictions()` and `plot_predictions()` calls coming up will work.
 
 CP/CR.
 
 ```{r temperance-2}
 question_text(NULL,
-  message = "    > library(marginaleffects)\n    >",
   answer(NULL, correct = TRUE),
-  allow_retry = FALSE,
+  allow_retry = TRUE,
+  try_again_button = "Edit Answer",
   incorrect = NULL,
   rows = 3)
 ```
@@ -1650,7 +1692,7 @@ To make a decision wisely, we need good estimates of many unknown numbers. Drill
 
 ### Exercise 4
 
-At the R prompt, run `predictions()` on `fit_sps`. CP/CR.
+In the R Terminal, run `predictions()` on `fit_sps`. CP/CR.
 
 ```{r temperance-4}
 question_text(NULL,
@@ -1667,7 +1709,7 @@ question_text(NULL,
 
 ### Exercise 5
 
-At the R prompt, run `plot_predictions(fit_sps, condition = "treatment")`.
+In the R Terminal, run `plot_predictions(fit_sps, condition = "treatment")`.
 
 CP/CR.
 
@@ -1690,7 +1732,7 @@ The two intervals overlap considerably, which is the visible form of our paramet
 
 ### Exercise 6
 
-At the R prompt, run the same call with `draw = FALSE`.
+In the R Terminal, run the same call with `draw = FALSE`.
 
 CP/CR.
 
@@ -1749,7 +1791,7 @@ plot_predictions(fit_sps, condition = "treatment", draw = FALSE) |>
 
 ### Exercise 8
 
-Finalize the new graphics chunk in your QMD. `Cmd/Ctrl + Shift + K`. At the R prompt, run:
+Finalize the new graphics chunk in your QMD. Render the QMD. In the R Terminal, run:
 
 ```
 show_file("analysis.qmd", chunk = "Last")
@@ -1785,7 +1827,7 @@ question_text(NULL,
 
 ###
 
-Add a final sentence to your summary paragraph, but don't copy/paste exactly. `Cmd/Ctrl + Shift + K`.
+Add a final sentence to your summary paragraph, but don't copy/paste exactly. Render the QMD.
 
 ### Exercise 10
 
@@ -1806,7 +1848,7 @@ Always go back to your Preceptor Table. Even a perfectly estimated statistical m
 
 ### Exercise 11
 
-Rearrange the material in your QMD so the order is graphic, then summary paragraph. The chunk that creates `fit_sps` must occur before the chunk that creates the graphic. `Cmd/Ctrl + Shift + K`. At the R prompt, run:
+Rearrange the material in your QMD so the order is graphic, then summary paragraph. The chunk that creates `fit_sps` must occur before the chunk that creates the graphic. Render the QMD. In the R Terminal, run:
 
 ```
 show_file("analysis.qmd")
@@ -1829,7 +1871,7 @@ This is the version of your QMD your teacher is most likely to look at closely.
 
 ### Exercise 12
 
-Publish your rendered QMD to GitHub Pages. In the Terminal (not the R prompt!), run:
+Publish your rendered QMD to GitHub Pages. In the bash Terminal (not the R Terminal!), run:
 
 ```
 quarto publish gh-pages analysis.qmd
