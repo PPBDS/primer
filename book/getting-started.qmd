@@ -256,7 +256,7 @@ Read and follow the instructions. At the end of the tutorial, download your answ
 
 ### Stopping the Codespace {.unnumbered}
 
-When you are done with the tutorial, **stop** the Codespace — same way as before, via the Command Palette or your [Codespaces page](https://github.com/codespaces). You should then delete the Codespace. (Strictly speaking, you can delete the Codespace without stopping it first.)
+When you are done with the tutorial, **stop** the Codespace — same way as before, via the Command Palette or your [Codespaces page](https://github.com/codespaces). You should then delete the Codespace. (Strictly speaking, you can delete the Codespace without stopping it first.) **Warning**: If you delete a Codespace, all your work on a tutorial disappears. Your answers are saved if you stop/start a Codespace or if you start/stop your browser. But deleting a Codespace deletes all answers.
 
 ## Using your own machine
 
