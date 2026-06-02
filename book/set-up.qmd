@@ -1,6 +1,6 @@
 # Set Up for Working on PPBDS Projects {-}
 
-This document is for **collaborators** editing the book or the **[primer.tutorials](https://ppbds.github.io/primer/tutorials/)** R package. Students consuming the curriculum should follow the [Getting Started](getting-started.html) chapter instead. You can work either on your local machine or in a [GitHub Codespace](https://github.com/features/codespaces); the steps below describe the local path, and the Codespace equivalent is noted where it differs.
+This document is for **collaborators** editing the book, the **[primer.tutorials](https://ppbds.github.io/primer/tutorials/)** R packages or any of the other `PPBDS` packages. You can work either on your local machine or in a [GitHub Codespace](https://github.com/features/codespaces). The steps below describe the local path, and the Codespace equivalent is noted where it differs.
 
 This document provides a guide to setting up R/VS Code/Git/GitHub to work on *[The Primer](https://ppbds.github.io/primer/)*. The book and its accompanying tutorials R package live together in a single monorepo, [PPBDS/primer](https://github.com/PPBDS/primer): book sources are under `book/`, the R package is under `primer.tutorials/`, and both are edited in the same VS Code window. You do not clone **[primer.tutorials](https://ppbds.github.io/primer/tutorials/)** separately — cloning `primer` gives you everything. The data package [PPBDS/primer.data](https://github.com/PPBDS/primer.data) is its own repo. These procedures also apply to other PPBDS packages like **[tutorial.helpers](https://ppbds.github.io/tutorial.helpers/)** and **[vscode.tutorials](https://ppbds.github.io/vscode.tutorials/)**. There are three steps:
 
@@ -10,11 +10,18 @@ This document provides a guide to setting up R/VS Code/Git/GitHub to work on *[T
 
 * The third part involves the daily workflow of merges and pull requests. You will do these steps many times each day.
 
-* **Never forget**: Do not put any work in Windows OneDrive or any other cloud-hosted directory. This can cause endless problems. Moreover, you don't need this sort of back-up service since your work will be saved on GitHub.
+* **Never forget**: Do not put any work in Windows OneDrive or any other cloud-hosted directory. This can cause endless problems. 
 
-The *test* which ensures that you have successfully completed this set up is to submit a PR for the `TODO.txt` file in the PPBDS package (which you are working on) which adds your name at the very bottom of the file. The `TODO.txt` file is always located at the top of the directory structure. The PR should only change that file. If you are working on a tutorial package, you should also read about [how to write tutorials](https://ppbds.github.io/tutorial.helpers/articles/instructions.html), especially tutorials [based on books](https://ppbds.github.io/tutorial.helpers/articles/books.html).
+The *test* which ensures that you have successfully completed this set up is to submit a PR for the `TODO.txt` file in the `PPBDS` package (which you are working on) which adds your name at the very bottom of the file. The `TODO.txt` file is always located at the top of the directory structure. The PR should only change that file. 
 
 ## Computer Set Up
+
+0) You need to install some R packages which might already be part of your set up, whether that is on your local machine or in a Codespace. These include **devtools** and **usethis**. You can install these with `install.packages()` or with:
+
+```{r, eval = FALSE}
+#| code-fold: false
+pak::pak(c("devtools", "usethis")) 
+```
 
 1) Read the [Getting Started](https://ppbds.github.io/primer/getting-started.html) chapter from [The Primer](https://ppbds.github.io/primer/). Complete at least the first four tutorials in the **[vscode.tutorials](https://ppbds.github.io/vscode.tutorials/)** package. The best reference for R/Git/Github issues is always [*Happy Git and GitHub for the useR*](https://happygitwithr.com/).
 
@@ -85,7 +92,7 @@ Obviously, you need to modify the string "INSERT-NAME-OF-PROJECT" to correspond 
 
 You must change `destdir` to be a location on your computer. Indeed, professionals will generally have several different VS Code windows open, each working on a different project, each of which is connected to its own Github repo.
 
-For your education, it is worth reading the help page for `create_from_github()`. The `fork` and `protocol` arguments may not really be necessary and, obviously, you should place the project in the location on your computer in which your other projects live. The command first forks a copy of **PPBDS/primer** to your Github account and then clone/downloads that fork to your computer.
+For your education, it is worth reading the help page for `create_from_github()`. The `fork` and `protocol` arguments may not really be necessary and, obviously, you should place the project in the location on your computer in which your other projects live. The command first forks a copy of `PPBDS/primer` to your Github account and then clone/downloads that fork to your computer.
 
 This may seem like overkill, but, as [*Pro Git*](https://git-scm.com/book/en/v2) explains, it is how (essentially) all large projects are organized. With luck, you only have to issue this command once. After that, you are always connected, both to your fork and to the true repos, which live at github.com/PPBDS. Also, note that, if something ever gets totally messed up on your computer, you can just delete the project folder on your computer and the repo on your Github account and then start again. (If you have made changes that you don't want to lose, just save the files with those changes to one side and then move them back after you have recreated the project.)
 
@@ -103,6 +110,7 @@ pr_init(branch = "chapter-9")
 Make sure the branch name is sensible. Again, this is a command that you only need to issue once, at least for our current workflow. You should always be "on" this branch, never on the default (master) branch. You can check this in the bottom-left corner of the VS Code status bar, or in the Source Control panel.
 
 In more professional settings, you will often work on several different branches at once. So, if you are comfortable, you should feel free to create more than one branch, use it, delete it and so on. Never work on the default branch, however. And, if you use multiple branches, be careful where you are and what you are doing.
+
 
 ## Daily Work
 
@@ -132,7 +140,21 @@ This command bundles up a bunch of git commands (which you could do by hand) int
 
 5) You can now continue on. There is no need to wait for me to deal with your pull request. There is no need to fork/clone/download again. You don't need to create a new branch, although many people do, with a branch name which describes what they are working on now. You just keep editing your files, knitting, and committing then pushing to your forked repo. When you feel you have completed another chunk of work, just run `pr_push()` again.
 
-6) Read the **usethis** [setup help page](https://usethis.r-lib.org/articles/articles/usethis-setup) at least once, perhaps after a week or two of working within this framework. It has lots of good stuff!
+
+6) To test whether or not a tutorial is working, the simplest approach is to quit the tutorial -- if you have it open -- and then run:
+
+```{r, eval = FALSE}
+#| code-fold: false
+devtools::install()
+```
+
+This assumes that you are in the root directory of the project, which is the one that contains `DESCRIPTION`. This will install the package on your computer.
+
+You can then start the tutorial again in the usual way: By selecting it from the R Tutorials VS Code extension. 
+
+7) Read the **usethis** [setup help page](https://usethis.r-lib.org/articles/articles/usethis-setup) at least once, perhaps after a week or two of working within this framework. It has lots of good stuff!
+
+
 
 ## Common Problems
 
