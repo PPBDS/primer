@@ -127,40 +127,6 @@ question_text(NULL,
 
 Rendering a QMD converts the code and prose into an HTML document that shows only what you want readers to see --- in this case, the eventual plot and summary paragraph, with the code hidden. Professional data-science deliverables almost never show raw code; the code is the path, not the destination.
 
-### Exercise 4
-
-We will use the R Terminal for quick diagnostic commands as we work --- checking a file, reading a help page, glancing at a value. Open an R Terminal and run `library(tidyverse)` there. CP/CR.
-
-```{r introduction-4}
-question_text(NULL,
-  answer(NULL, correct = TRUE),
-  allow_retry = TRUE,
-  try_again_button = "Edit Answer",
-  incorrect = NULL,
-  rows = 6)
-```
-
-###
-
-NHANES is the largest continuously-running U.S. health survey: every two years the Centers for Disease Control and Prevention examines about 5,000 nationally-representative adults in person, recording height, weight, blood pressure, and dozens of demographic and lifestyle variables. The `recruits` tibble is a 50-row teaching cut drawn from NHANES respondents aged 18--27 --- not from actual USMC enlistment records, which is a validity question worth holding in mind.
-
-### Exercise 5
-
-In the R Terminal, run `library(primer.tutorials)`. CP/CR.
-
-```{r introduction-5}
-question_text(NULL,
-  answer(NULL, correct = TRUE),
-  allow_retry = TRUE,
-  try_again_button = "Edit Answer",
-  incorrect = NULL,
-  rows = 3)
-```
-
-###
-
-The `recruits` cut is deliberately uneven --- 40 male respondents and 10 female respondents, all aged 18--27 --- which will give the two group means visibly different standard errors when we estimate them. The asymmetry is by design; it makes a real statistical idea visible in a small dataset, where a 25/25 split would have washed it out.
-
 ### Exercise 6
 
 In the R Terminal, type `?recruits` and paste the Description below.
@@ -957,7 +923,7 @@ When representativeness is violated, our parameter estimates *might* be biased -
 
 ### Exercise 10
 
-A statistical model consists of two parts: the probability family and the link function. The probability family is the probability distribution which generates the randomness in our data. The link function is the mathematical formula which links our data to the unknown parameters. Add `library(tidymodels)` to the setup chunk in `analysis.qmd` and render. Then load it in your R Terminal too --- `library(tidymodels)` --- so the interactive model commands later in Courage will work. CP/CR.
+A statistical model consists of two parts: the probability family and the link function. The probability family is the probability distribution which generates the randomness in our data. The link function is the mathematical formula which links our data to the unknown parameters. Add `library(tidymodels)` to the setup chunk in `analysis.qmd` and render. CP/CR.
 
 ```{r justice-10}
 question_text(NULL,
@@ -976,7 +942,7 @@ $$Y \sim N(\mu, \sigma^2)$$
 
 ### Exercise 11
 
-Add `library(broom)` to the setup chunk in `analysis.qmd` and render. Load it in your R Terminal as well. CP/CR.
+Add `library(broom)` to the setup chunk in `analysis.qmd` and render. CP/CR.
 
 ```{r justice-11}
 question_text(NULL,
@@ -1488,7 +1454,7 @@ Courage gave us the data generating mechanism, including the parameter values th
 
 In the end, we don't really care about parameters, much less how to interpret them. Parameters are *imaginary*, like unicorns. We care about answers to our questions. *In the modern world, all parameters are nuisance parameters.*
 
-Add `library(marginaleffects)` to the setup chunk in `analysis.qmd` and render. Load it in your R Terminal too --- `library(marginaleffects)` --- so the interactive `predictions()` and `plot_predictions()` calls coming up will work. CP/CR.
+Add `library(marginaleffects)` to the setup chunk in `analysis.qmd` and render. CP/CR.
 
 ```{r temperance-2}
 question_text(NULL,

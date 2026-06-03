@@ -120,44 +120,6 @@ question_text(NULL,
 
 The `smokes` tibble in **[primer.tutorials](https://ppbds.github.io/primer/tutorials/)** is a 1,000-row teaching cut from NHANES 2009--2012, restricted to adults aged 20--80 with non-missing values on smoking status, age, and sex. The outcome `smoke` is coded `Yes` if the respondent reports having smoked at least 100 cigarettes in their lifetime --- the canonical NHANES "ever-smoker" definition, and the bar essentially every U.S. tobacco-policy researcher uses.
 
-### Exercise 4
-
-We will use the R Terminal for quick diagnostic commands as we work --- checking a file, reading a help page, glancing at a value. Open an R Terminal and run `library(tidyverse)` there.
-
-CP/CR.
-
-```{r introduction-4}
-question_text(NULL,
-  answer(NULL, correct = TRUE),
-  allow_retry = TRUE,
-  try_again_button = "Edit Answer",
-  incorrect = NULL,
-  rows = 3)
-```
-
-###
-
-Ever-smoker prevalence varies substantially by age and sex. About half of U.S. adults in their 60s have ever smoked --- a cohort that came of age when smoking was the social norm --- while only about a quarter of adults in their 20s have. Men were historically more likely to smoke than women, though the gap has narrowed substantially. Both patterns are visible in `smokes` and drive the coefficients we will estimate.
-
-### Exercise 5
-
-In the R Terminal, run `library(primer.tutorials)`.
-
-CP/CR.
-
-```{r introduction-5}
-question_text(NULL,
-  answer(NULL, correct = TRUE),
-  allow_retry = TRUE,
-  try_again_button = "Edit Answer",
-  incorrect = NULL,
-  rows = 3)
-```
-
-###
-
-The **[primer.tutorials](https://ppbds.github.io/primer/)** package ships several teaching datasets alongside the tutorials themselves. The one we will use is `smokes`: a 1,000-row sample drawn from the educational version of NHANES (the National Health and Nutrition Examination Survey, conducted by the U.S. Centers for Disease Control and Prevention).
-
 ### Exercise 6
 
 In the R Terminal, type `?smokes` and paste the Description below.
@@ -917,7 +879,7 @@ Stability looks across time periods; representativeness looks within time period
 
 A statistical model consists of two parts: the probability family and the link function. The probability family is the distribution which generates the randomness in our data; the link function is the mathematical formula connecting the data to the unknown parameters.
 
-Add `library(tidymodels)` to the setup chunk in `analysis.qmd` and render. Then load it in your R Terminal too --- `library(tidymodels)` --- so the interactive model commands later in Courage will work.
+Add `library(tidymodels)` to the setup chunk in `analysis.qmd` and render.
 
 CP/CR.
 
@@ -936,7 +898,7 @@ Our outcome variable `smoke` is binary. The probability family is therefore Bern
 
 ### Exercise 12
 
-Add `library(broom)` to the setup chunk in `analysis.qmd` and render. Load it in your R Terminal as well.
+Add `library(broom)` to the setup chunk in `analysis.qmd` and render.
 
 CP/CR.
 
@@ -1485,7 +1447,7 @@ Remember that Temperance interprets the data generating mechanism and then uses 
 
 In the end, we don't really care about parameters, much less how to interpret them. Parameters are *imaginary*, like unicorns. We care about answers to our questions, on the outcome scale.
 
-Add `library(marginaleffects)` to the setup chunk in `analysis.qmd` and render. Load it in your R Terminal too so the interactive `predictions()` and `plot_predictions()` calls coming up will work.
+Add `library(marginaleffects)` to the setup chunk in `analysis.qmd` and render.
 
 CP/CR.
 

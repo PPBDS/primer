@@ -134,58 +134,6 @@ library(primer.data)
 
 The outcome we will model is `t2_health_exp_3m`: three-month out-of-pocket health spending in Mexican pesos, measured at the 10-month follow-up survey. It is heavy-tailed --- the median household spends 150 pesos but the maximum is past 37,000 --- and the chapter spends much of its time wrestling with what that shape means for the answer.
 
-### Exercise 4
-
-We will use the R Terminal for quick diagnostic commands as we work --- checking a file, reading a help page, glancing at a value. Open an R Terminal and run `library(tidyverse)` there.
-
-CP/CR.
-
-```{r introduction-4}
-question_text(NULL,
-  answer(NULL, correct = TRUE),
-  allow_retry = TRUE,
-  try_again_button = "Edit Answer",
-  incorrect = NULL,
-  rows = 6)
-```
-
-###
-
-```
-── Attaching core tidyverse packages ───────────── tidyverse 2.0.0 ──
-✔ dplyr     1.1.4    ✔ readr     2.1.5
-✔ forcats   1.0.0    ✔ stringr   1.5.1
-✔ ggplot2   3.5.1    ✔ tibble    3.2.1
-✔ lubridate 1.9.3    ✔ tidyr     1.3.1
-✔ purrr     1.0.2
-── Conflicts ─────────────────────────────── tidyverse_conflicts() ──
-✖ dplyr::filter() masks stats::filter()
-✖ dplyr::lag()    masks stats::lag()
-```
-
-###
-
-The Ministry's evaluation was *cluster-randomized*: communities, not households, were randomly assigned. Households inside a single community share more than their treatment assignment --- the same nearby clinic, the same local economy, the same disease environment --- so the right standard error reflects the cluster structure rather than the household count. The naive linear-regression standard error we compute later in Temperance will understate uncertainty by ignoring this; King et al. used cluster-robust standard errors in the published paper.
-
-### Exercise 5
-
-In the R Terminal, run `library(primer.data)`.
-
-CP/CR.
-
-```{r introduction-5}
-question_text(NULL,
-  answer(NULL, correct = TRUE),
-  allow_retry = TRUE,
-  try_again_button = "Edit Answer",
-  incorrect = NULL,
-  rows = 3)
-```
-
-###
-
-Data from the Ministry of Health's 2005--06 randomized evaluation of Seguro Popular is available in the `sps` tibble of the **[primer.data](https://github.com/PPBDS/primer.data)** package. In the evaluation, the Ministry randomly assigned communities to receive Seguro Popular early or late and surveyed roughly 50,000 households at baseline and again at the 10-month follow-up. We have one row per surveyed household, with information about enrollment, demographics, and out-of-pocket health expenditures.
-
 ### Exercise 6
 
 In the R Terminal, type `?sps` and paste the Description below.
@@ -1092,7 +1040,7 @@ The great advantage of randomization is that it guarantees unconfoundedness *for
 
 ### Exercise 12
 
-A statistical model consists of two parts: the probability family and the link function. Add `library(tidymodels)` to the setup chunk in `analysis.qmd` and render. Then load it in your R Terminal too --- `library(tidymodels)` --- so the interactive model commands later in Courage will work.
+A statistical model consists of two parts: the probability family and the link function. Add `library(tidymodels)` to the setup chunk in `analysis.qmd` and render.
 
 CP/CR.
 
@@ -1111,7 +1059,7 @@ Our outcome variable `t2_health_exp_3m` is a continuous quantity (pesos). The pr
 
 ### Exercise 13
 
-Add `library(broom)` to the setup chunk in `analysis.qmd` and render. Load it in your R Terminal as well.
+Add `library(broom)` to the setup chunk in `analysis.qmd` and render.
 
 CP/CR.
 
@@ -1705,7 +1653,7 @@ Courage gave us the DGM, including its parameter values. Temperance puts those p
 
 In the end, we don't really care about parameters, much less how to interpret them. Parameters are *imaginary*, like unicorns.
 
-Add `library(marginaleffects)` to the setup chunk in `analysis.qmd` and render. Load it in your R Terminal too so the interactive `predictions()` and `plot_predictions()` calls coming up will work.
+Add `library(marginaleffects)` to the setup chunk in `analysis.qmd` and render.
 
 CP/CR.
 
