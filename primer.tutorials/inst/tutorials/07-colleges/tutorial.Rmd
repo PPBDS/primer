@@ -69,7 +69,7 @@ question_text(NULL,
 
 ###
 
-QMD World and R World are not the same. Rendering a QMD runs in a fresh R session that knows nothing about what's currently loaded at your R prompt --- which is a feature, because it means the rendered document is reproducible from its own code, independent of whatever state your interactive session happens to be in.
+The dataset we'll work from is `colleges` in **[primer.data](https://github.com/PPBDS/primer.data)** --- a snapshot of IPEDS (the Integrated Postsecondary Education Data System), the U.S. Department of Education's annual survey of every accredited college and university. The `tuition` column is *sticker price*, not what a typical student actually pays after financial aid; at many private four-year institutions, the average net price is a third or less of the sticker number we are about to model.
 
 ### Exercise 2
 
@@ -147,7 +147,7 @@ question_text(NULL,
 
 ###
 
-The "Conflicts" section of the attach message names functions that exist in multiple packages --- for instance, both base R and dplyr have a `filter()`. When tidyverse loads, `dplyr::filter()` masks `stats::filter()`, which means bare `filter(...)` in your code from now on refers to dplyr's version. The last-loaded package wins.
+The outcome we will model is `grad_rate`, the six-year graduation rate --- the share of full-time, first-time, bachelor's-degree-seeking students who graduated within six years. It is the standard federal accountability metric, also reported on the College Scorecard. Six years (not four) reflects that a non-trivial share of students need a fifth or sixth year, especially at less-selective schools.
 
 ### Exercise 5
 

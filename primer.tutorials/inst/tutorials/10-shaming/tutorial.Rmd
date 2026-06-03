@@ -131,7 +131,7 @@ question_text(NULL,
 
 ###
 
-The render runs in a fresh R session, so it doesn't see anything you have loaded at your interactive prompt. The isolation is a feature in modern data-science workflows: many R sessions run in parallel (your interactive prompt, the QMD render, this tutorial, sometimes an AI agent on the side), each with its own workspace. Parallelism is the norm; non-interaction between worlds is what makes it work.
+Gerber, Green, and Larimer (2008, *American Political Science Review*) randomly assigned about 80,000 Michigan households to one of five postcard-treatment arms --- *No Postcard*, *Civic Duty*, *Hawthorne*, *Self*, *Neighbors* --- and measured whether the household voted in the August 2006 primary. The *Neighbors* postcard, which threatened to send the household's actual past voting record to its neighbors, produced one of the largest behavioral effects on voter turnout ever reported. The `shaming` tibble in **[primer.data](https://github.com/PPBDS/primer.data)** holds the full ~344,000-row analysis sample from that experiment.
 
 ### Exercise 4
 

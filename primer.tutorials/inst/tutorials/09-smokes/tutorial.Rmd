@@ -118,7 +118,7 @@ question_text(NULL,
 
 ###
 
-The render runs in a fresh R session, so it doesn't see anything you have loaded at your interactive prompt --- the isolation is usually a feature, not a bug, because it means the rendered output doesn't depend on whatever is loaded in your Console at the moment you happen to render.
+The `smokes` tibble in **[primer.tutorials](https://ppbds.github.io/primer/tutorials/)** is a 1,000-row teaching cut from NHANES 2009--2012, restricted to adults aged 20--80 with non-missing values on smoking status, age, and sex. The outcome `smoke` is coded `Yes` if the respondent reports having smoked at least 100 cigarettes in their lifetime --- the canonical NHANES "ever-smoker" definition, and the bar essentially every U.S. tobacco-policy researcher uses.
 
 ### Exercise 4
 
@@ -137,7 +137,7 @@ question_text(NULL,
 
 ###
 
-When the same function name lives in two loaded packages, the last-loaded package wins. `dplyr::filter()` from tidyverse masks `stats::filter()` from base R, which is what we want. When you write reusable code, reach for the explicit `dplyr::filter` so the result no longer depends on load order.
+Ever-smoker prevalence varies substantially by age and sex. About half of U.S. adults in their 60s have ever smoked --- a cohort that came of age when smoking was the social norm --- while only about a quarter of adults in their 20s have. Men were historically more likely to smoke than women, though the gap has narrowed substantially. Both patterns are visible in `smokes` and drive the coefficients we will estimate.
 
 ### Exercise 5
 
@@ -1274,7 +1274,7 @@ question_text(NULL,
 
 ###
 
-QMD World and R World are not the same. The fit object exists in this tutorial's R session, in your interactive R session, and (after rendering) in the QMD render's separate R session --- three places, three workspaces. Keep them in sync.
+Logistic-regression coefficients live on the log-odds scale, which is not a scale anyone reads directly. A coefficient of +0.05 on `age` means that the *log* of the *odds* of being an ever-smoker goes up by 0.05 for each additional year of age --- a statement most people cannot intuit. The real interpretation happens in Temperance, where we use `marginaleffects::predictions()` to turn the log-odds back into probabilities.
 
 ### Exercise 10
 
