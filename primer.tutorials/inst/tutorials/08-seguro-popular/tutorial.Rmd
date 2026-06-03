@@ -2,7 +2,7 @@
 title: "Seguro Popular"
 author: David Kane
 tutorial:
-  id: 08-sps
+  id: 08-seguro-popular
 output:
   learnr::tutorial:
     progressive: yes
@@ -33,7 +33,7 @@ x <- sps |>
   mutate(treatment = factor(if_else(treatment == 1, "Enrolled", "Not enrolled"),
                             levels = c("Not enrolled", "Enrolled")))
 
-fit_sps <- linear_reg() |>
+fit_sp <- linear_reg() |>
   set_engine("lm") |>
   fit(t2_health_exp_3m ~ treatment, data = x)
 ```
@@ -45,7 +45,7 @@ fit_sps <- linear_reg() |>
 ## Introduction
 ###
 
-This tutorial supports the [SPS](https://ppbds.github.io/primer/08-sps.html) chapter of [*Preceptor's Primer for Bayesian Data Science: Using the Cardinal Virtues for Inference*](https://ppbds.github.io/primer/) by [David Kane](https://davidkane.info/).
+This tutorial supports the [Seguro Popular](https://ppbds.github.io/primer/08-seguro-popular.html) chapter of [*Preceptor's Primer for Bayesian Data Science: Using the Cardinal Virtues for Inference*](https://ppbds.github.io/primer/) by [David Kane](https://davidkane.info/).
 
 The world confronts us. Make decisions we must.
 
@@ -70,7 +70,7 @@ QMD World and R World are not the same. Several R sessions can run side by side 
 
 ### Exercise 2
 
-You should be working inside a GitHub repo named `sps`, opened in a Codespace from the [`PPBDS/codespace-starter`](https://github.com/PPBDS/codespace-starter) template. If you are not there yet, please create that repo and open it in a Codespace now --- see the [package README](https://github.com/PPBDS/primer/tree/main/primer.tutorials#working-environments-and-repo-setup) if you need setup instructions or are working locally instead.
+You should be working inside a GitHub repo named `seguro-popular`, opened in a Codespace from the [`PPBDS/codespace-starter`](https://github.com/PPBDS/codespace-starter) template. If you are not there yet, please create that repo and open it in a Codespace now --- see the [package README](https://github.com/PPBDS/primer/tree/main/primer.tutorials#working-environments-and-repo-setup) if you need setup instructions or are working locally instead.
 
 Once you're inside the `sps` repo, create a new Quarto document titled `"Seguro Popular"` with yourself as the author, render it, and save it as `analysis.qmd`.
 
@@ -216,7 +216,7 @@ question_text(NULL,
 
 ###
 
-For each household in the SPS data, we see what their out-of-pocket spending was *under the treatment they actually received* --- enrolled or not enrolled. We never see what the same household's spending would have been under the other arm. The causal effect for any single household is unobservable; we estimate the average causal effect across households.
+For each household in the Seguro Popular data, we see what their out-of-pocket spending was *under the treatment they actually received* --- enrolled or not enrolled. We never see what the same household's spending would have been under the other arm. The causal effect for any single household is unobservable; we estimate the average causal effect across households.
 
 ### Exercise 9
 
@@ -244,12 +244,12 @@ x |>
   geom_density(alpha = 0.5) +
   scale_x_continuous(labels = scales::label_dollar(prefix = "$"), limits = c(0, 5000)) +
   labs(
-    title = "Out-of-Pocket Health Spending in the SPS Sample",
+    title = "Out-of-Pocket Health Spending in the Seguro Popular Sample",
     subtitle = "Most households spend little; both arms have a long right tail",
     x = "3-month spending (pesos)",
     y = NULL,
     fill = "Treatment",
-    caption = "Source: King et al. (2009) SPS rollout via primer.data"
+    caption = "Source: King et al. (2009) Seguro Popular rollout via primer.data"
   ) +
   theme_minimal() +
   theme(axis.text.y  = element_blank(),
@@ -334,7 +334,7 @@ Imagine that you are a health-policy analyst at Mexico's Ministry of Health. The
 
 The specific question: *What is the average causal effect of Seguro Popular enrollment on a household's three-month out-of-pocket health spending?*
 
-We will work from the SPS rollout data, available in the `sps` tibble of the **[primer.data](https://github.com/PPBDS/primer.data)** package.
+We will work from the Seguro Popular rollout data, available in the `sps` tibble of the **[primer.data](https://github.com/PPBDS/primer.data)** package.
 
 ### Exercise 1
 
@@ -376,7 +376,7 @@ Look at how `t2_health_exp_3m` differs between the treatment and control groups.
 
 ```{r wisdom-3}
 question_text(NULL,
-  message = "    x |>\n      filter(t2_health_exp_3m <= 5000) |>\n      ggplot(aes(x = treatment, y = t2_health_exp_3m)) +\n      geom_jitter(width = 0.2, alpha = 0.4) +\n      stat_summary(fun = mean, geom = \"point\", size = 4, color = \"steelblue\") +\n      scale_y_continuous(labels = scales::label_dollar(prefix = \"$\")) +\n      labs(\n        title = \"Out-of-Pocket Spending by Enrollment Status\",\n        subtitle = \"Blue dot = group mean\",\n        x = \"Treatment\",\n        y = \"3-month spending (pesos)\",\n        caption = \"Source: King et al. (2009) SPS rollout via primer.data\"\n      ) +\n      theme_minimal()",
+  message = "    x |>\n      filter(t2_health_exp_3m <= 5000) |>\n      ggplot(aes(x = treatment, y = t2_health_exp_3m)) +\n      geom_jitter(width = 0.2, alpha = 0.4) +\n      stat_summary(fun = mean, geom = \"point\", size = 4, color = \"steelblue\") +\n      scale_y_continuous(labels = scales::label_dollar(prefix = \"$\")) +\n      labs(\n        title = \"Out-of-Pocket Spending by Enrollment Status\",\n        subtitle = \"Blue dot = group mean\",\n        x = \"Treatment\",\n        y = \"3-month spending (pesos)\",\n        caption = \"Source: King et al. (2009) Seguro Popular rollout via primer.data\"\n      ) +\n      theme_minimal()",
   answer(NULL, correct = TRUE),
   allow_retry = FALSE,
   incorrect = NULL,
@@ -400,7 +400,7 @@ x |>
     subtitle = "Blue dot = group mean",
     x = "Treatment",
     y = "3-month spending (pesos)",
-    caption = "Source: King et al. (2009) SPS rollout via primer.data"
+    caption = "Source: King et al. (2009) Seguro Popular rollout via primer.data"
   ) +
   theme_minimal()
 ```
@@ -513,7 +513,7 @@ Describe in words the Preceptor Table for this problem.
 
 ```{r wisdom-10}
 question_text(NULL,
-  message = "The Preceptor Table has four columns: one identifying each household, two potential-outcome columns (`Spending if Enrolled` and `Spending if Not Enrolled`), and one treatment column (`Treatment`). Each row represents one household at the time of the SPS follow-up survey. For each household, only one potential outcome is observable; the other --- the counterfactual --- is unknown, and the Preceptor Table marks it as such.",
+  message = "The Preceptor Table has four columns: one identifying each household, two potential-outcome columns (`Spending if Enrolled` and `Spending if Not Enrolled`), and one treatment column (`Treatment`). Each row represents one household at the time of the Seguro Popular follow-up survey. For each household, only one potential outcome is observable; the other --- the counterfactual --- is unknown, and the Preceptor Table marks it as such.",
   answer(NULL, correct = TRUE),
   allow_retry = FALSE,
   incorrect = NULL,
@@ -543,7 +543,7 @@ pre_tibble <- tibble::tribble(
 )
 
 pre_title_footnote     <- "If all the information in this table were available, we could answer the question: What is the average causal effect of Seguro Popular enrollment on a household's three-month out-of-pocket health spending?"
-pre_units_footnote     <- "Each row is one household at the time of the 2005--06 SPS follow-up survey. The original study surveyed tens of thousands of households across 74 randomized communities."
+pre_units_footnote     <- "Each row is one household at the time of the 2005--06 Seguro Popular follow-up survey. The original study surveyed tens of thousands of households across 74 randomized communities."
 pre_outcome_footnote   <- "Out-of-pocket health spending in pesos, summed over the three months before the follow-up survey. The two columns hold each household's potential outcomes under the two values of treatment. The cross-hatched cell in each row marks the unobservable potential outcome --- the spending the household would have had under the treatment it did not actually receive."
 pre_treatment_footnote <- "The treatment is `Enrolled` if the household's community had received Seguro Popular by the follow-up survey, `Not enrolled` otherwise. The randomization was at the community level, not the household level."
 pre_effect_footnote    <- "Ramirez's causal effect is $0 - $120 = -$120: enrollment reduced this household's three-month spending by 120 pesos. The Preceptor Table shows the unobservable truth, so this is the actual causal effect for this household, not an estimate."
@@ -745,7 +745,7 @@ data_treatment_footnote <- "Whether the household's community had received Segur
 data_covariate_footnote <- "Household head's age in years and self-reported sex."
 
 data_gt_html <- gt::gt(data_tibble, id = "data_tbl") |>
-  gt::tab_header(title = "Data: Mexican SPS Rollout, 2005--06") |>
+  gt::tab_header(title = "Data: Mexican Seguro Popular Rollout, 2005--06") |>
   gt::tab_spanner(label = "Unit/Time", id = "unit_span",
                   columns = c(`Household`, `Year`)) |>
   gt::tab_spanner(label = "Outcome", id = "outcome_span",
@@ -878,7 +878,7 @@ Specify the unit/time combinations which define each row in this Population Tabl
 
 ```{r justice-5}
 question_text(NULL,
-  message = "Each row is one household at one point in time. Data rows are the 27,569 households in our SPS analysis subset, surveyed in 2005--06. Preceptor rows are the same population of Mexican households in 2005--06 (the universe the original survey sampled from); because both blocks share era and target population, our example rows happen to be the same three households shown twice --- once with the observed potential outcome and once with both potential outcomes filled in.",
+  message = "Each row is one household at one point in time. Data rows are the 27,569 households in our Seguro Popular analysis subset, surveyed in 2005--06. Preceptor rows are the same population of Mexican households in 2005--06 (the universe the original survey sampled from); because both blocks share era and target population, our example rows happen to be the same three households shown twice --- once with the observed potential outcome and once with both potential outcomes filled in.",
   answer(NULL, correct = TRUE),
   allow_retry = FALSE,
   incorrect = NULL,
@@ -986,7 +986,7 @@ question_text(NULL,
 
 ###
 
-The most natural way for stability to fail is *time*: data from one era used to answer a question about another era. Here our Data and Preceptor rows share the 2005--06 SPS follow-up window, so the time gap is essentially zero. The next exercise sharpens what *"the relationship"* really means.
+The most natural way for stability to fail is *time*: data from one era used to answer a question about another era. Here our Data and Preceptor rows share the 2005--06 Seguro Popular follow-up window, so the time gap is essentially zero. The next exercise sharpens what *"the relationship"* really means.
 
 ### Exercise 7
 
@@ -1062,7 +1062,7 @@ Provide one reason why the assumption of unconfoundedness might not be true (or 
 
 ```{r justice-11}
 question_text(NULL,
-  message = "Randomization in the SPS rollout was at the *community* level, not the household level. Within a treated community, every household was offered enrollment, but actual sign-up was voluntary. Households that signed up may differ from households in the same community that did not --- in unobserved ways like trust in government, prior insurance experience, or chronic-illness burden. So while the *intent-to-treat* comparison (any household in a treated community vs. any in a control community) is unconfounded by design, the comparison many policy analysts actually want (enrolled households vs. eligible-but-not-enrolled) involves a self-selected step that randomization does not protect.",
+  message = "Randomization in the Seguro Popular rollout was at the *community* level, not the household level. Within a treated community, every household was offered enrollment, but actual sign-up was voluntary. Households that signed up may differ from households in the same community that did not --- in unobserved ways like trust in government, prior insurance experience, or chronic-illness burden. So while the *intent-to-treat* comparison (any household in a treated community vs. any in a control community) is unconfounded by design, the comparison many policy analysts actually want (enrolled households vs. eligible-but-not-enrolled) involves a self-selected step that randomization does not protect.",
   answer(NULL, correct = TRUE),
   allow_retry = FALSE,
   incorrect = NULL,
@@ -1358,7 +1358,7 @@ Notice the language for `age`: *"when we compare two groups of households... in 
 
 ### Exercise 7
 
-Behind the scenes of this tutorial, an object called `fit_sps` is the final fitted model. Ask your AI agent to add a chunk to `analysis.qmd` that names `fit_sps` on its own line. Render. Copy the printed model summary from the rendered HTML.
+Behind the scenes of this tutorial, an object called `fit_sp` is the final fitted model. Ask your AI agent to add a chunk to `analysis.qmd` that names `fit_sp` on its own line. Render. Copy the printed model summary from the rendered HTML.
 
 ```{r courage-7}
 question_text(NULL,
@@ -1372,7 +1372,7 @@ question_text(NULL,
 ###
 
 ```{r courage-7-test}
-fit_sps
+fit_sp
 ```
 
 ###
@@ -1381,10 +1381,10 @@ In data science, **we deal with words, math, and code, but the most important of
 
 ### Exercise 8
 
-We need `fit_sps` to exist in R World. Run this code in the R Terminal:
+We need `fit_sp` to exist in R World. Run this code in the R Terminal:
 
 ```
-fit_sps <- linear_reg(engine = "lm") |>
+fit_sp <- linear_reg(engine = "lm") |>
   fit(t2_health_exp_3m ~ treatment, data = x)
 ```
 
@@ -1392,7 +1392,7 @@ CP/CR.
 
 ```{r courage-8}
 question_text(NULL,
-  message = "    > fit_sps <- linear_reg(engine = \"lm\") |>\n    +   fit(t2_health_exp_3m ~ treatment, data = x)\n    >",
+  message = "    > fit_sp <- linear_reg(engine = \"lm\") |>\n    +   fit(t2_health_exp_3m ~ treatment, data = x)\n    >",
   answer(NULL, correct = TRUE),
   allow_retry = FALSE,
   incorrect = NULL,
@@ -1412,7 +1412,7 @@ One way to check whether our model is reasonable is to compare the distribution 
 #| message: false
 #| warning: false
 fitted_df <- tibble(
-  value  = c(x$t2_health_exp_3m, predict(extract_fit_engine(fit_sps))),
+  value  = c(x$t2_health_exp_3m, predict(extract_fit_engine(fit_sp))),
   source = c(rep("Actual", nrow(x)),
              rep("Fitted", nrow(x)))
 )
@@ -1426,7 +1426,7 @@ ggplot(fitted_df, aes(x = value, fill = source)) +
     x = "3-month spending (pesos)",
     y = NULL,
     fill = "Source",
-    caption = "Source: King et al. (2009) SPS rollout via primer.data"
+    caption = "Source: King et al. (2009) Seguro Popular rollout via primer.data"
   ) +
   theme_minimal() +
   theme(axis.text.y  = element_blank(),
@@ -1452,7 +1452,7 @@ A data generating mechanism is just a formula, something we can write down and i
 Create a new code chunk in your QMD with `#| cache: true`. Copy/paste the code for estimating the model:
 
 ```
-fit_sps <- linear_reg(engine = "lm") |>
+fit_sp <- linear_reg(engine = "lm") |>
   fit(t2_health_exp_3m ~ treatment, data = x)
 ```
 
@@ -1466,7 +1466,7 @@ CP/CR.
 
 ```{r courage-11}
 question_text(NULL,
-  message = "    > show_file(\"analysis.qmd\", chunk = \"Last\")\n    ```{r}\n    #| cache: true\n    fit_sps <- linear_reg(engine = \"lm\") |>\n      fit(t2_health_exp_3m ~ treatment, data = x)\n    ```",
+  message = "    > show_file(\"analysis.qmd\", chunk = \"Last\")\n    ```{r}\n    #| cache: true\n    fit_sp <- linear_reg(engine = \"lm\") |>\n      fit(t2_health_exp_3m ~ treatment, data = x)\n    ```",
   answer(NULL, correct = TRUE),
   allow_retry = FALSE,
   incorrect = NULL,
@@ -1512,7 +1512,7 @@ One way to check whether our model is reasonable is to compare the distribution 
 #| warning: false
 fitted_df_sps <- tibble(
   value  = c(x$t2_health_exp_3m,
-             predict(extract_fit_engine(fit_sps))),
+             predict(extract_fit_engine(fit_sp))),
   source = c(rep("Actual", nrow(x)),
              rep("Fitted", nrow(x)))
 )
@@ -1539,7 +1539,7 @@ In a good model, the distribution of fitted values looks like the distribution o
 
 ### Exercise 14
 
-Ask your AI agent to add a chunk to `analysis.qmd` that runs `tidy(fit_sps, conf.int = TRUE)`. This returns 95% intervals for all the parameters in our model. Render. Copy the printed tibble from the rendered HTML.
+Ask your AI agent to add a chunk to `analysis.qmd` that runs `tidy(fit_sp, conf.int = TRUE)`. This returns 95% intervals for all the parameters in our model. Render. Copy the printed tibble from the rendered HTML.
 
 ```{r courage-14}
 question_text(NULL,
@@ -1553,7 +1553,7 @@ question_text(NULL,
 ###
 
 ```{r courage-14-test}
-tidy(fit_sps, conf.int = TRUE)
+tidy(fit_sp, conf.int = TRUE)
 ```
 
 ###
@@ -1572,7 +1572,7 @@ CP/CR.
 
 ```{r courage-15}
 question_text(NULL,
-  message = "    > show_file(\"analysis.qmd\", chunk = \"Last\")\n    ```{r}\n    tidy(fit_sps, conf.int = TRUE) |>\n      select(term, estimate, conf.low, conf.high) |>\n      knitr::kable(\n        caption = \"Estimates and 95% CIs.  Source: King et al. (2009) SPS rollout via primer.data\",\n        digits = 0\n      )\n    ```",
+  message = "    > show_file(\"analysis.qmd\", chunk = \"Last\")\n    ```{r}\n    tidy(fit_sp, conf.int = TRUE) |>\n      select(term, estimate, conf.low, conf.high) |>\n      knitr::kable(\n        caption = \"Estimates and 95% CIs.  Source: King et al. (2009) Seguro Popular rollout via primer.data\",\n        digits = 0\n      )\n    ```",
   answer(NULL, correct = TRUE),
   allow_retry = FALSE,
   incorrect = NULL,
@@ -1611,7 +1611,7 @@ Courage provides the data generating mechanism. We can express the DGM in four w
 **In R code:**
 
 ```r
-fit_sps <- linear_reg(engine = "lm") |>
+fit_sp <- linear_reg(engine = "lm") |>
   fit(t2_health_exp_3m ~ treatment, data = x)
 ```
 
@@ -1619,7 +1619,7 @@ fit_sps <- linear_reg(engine = "lm") |>
 
 ```{r}
 #| echo: false
-fit_sps |>
+fit_sp |>
   tidy(conf.int = TRUE) |>
   select(term, estimate, conf.low, conf.high) |>
   mutate(across(where(is.numeric), \(x) round(x, 0)))
@@ -1688,11 +1688,11 @@ To make a decision wisely, we need good estimates of many unknown numbers. Drill
 
 ### Exercise 4
 
-In the R Terminal, run `predictions()` on `fit_sps`. CP/CR.
+In the R Terminal, run `predictions()` on `fit_sp`. CP/CR.
 
 ```{r temperance-4}
 question_text(NULL,
-  message = "    > predictions(fit_sps)\n    \n     Estimate Std. Error    z Pr(>|z|)  2.5 % 97.5 %\n          731       14.9 49.0   <0.001    702    760\n          794       15.0 52.9   <0.001    765    824\n          731       14.9 49.0   <0.001    702    760\n          ... (27569 rows total, one per household)\n    \n    Type: numeric",
+  message = "    > predictions(fit_sp)\n    \n     Estimate Std. Error    z Pr(>|z|)  2.5 % 97.5 %\n          731       14.9 49.0   <0.001    702    760\n          794       15.0 52.9   <0.001    765    824\n          731       14.9 49.0   <0.001    702    760\n          ... (27569 rows total, one per household)\n    \n    Type: numeric",
   answer(NULL, correct = TRUE),
   allow_retry = FALSE,
   incorrect = NULL,
@@ -1705,13 +1705,13 @@ question_text(NULL,
 
 ### Exercise 5
 
-In the R Terminal, run `plot_predictions(fit_sps, condition = "treatment")`.
+In the R Terminal, run `plot_predictions(fit_sp, condition = "treatment")`.
 
 CP/CR.
 
 ```{r temperance-5}
 question_text(NULL,
-  message = "    > plot_predictions(fit_sps, condition = \"treatment\")\n\n(A plot opens with two point estimates --- one for `Not enrolled` near 780 pesos and one for `Enrolled` near 720 pesos --- each with a 95% confidence interval. The intervals overlap heavily, reflecting that we cannot tell the two means apart with this much data.)",
+  message = "    > plot_predictions(fit_sp, condition = \"treatment\")\n\n(A plot opens with two point estimates --- one for `Not enrolled` near 780 pesos and one for `Enrolled` near 720 pesos --- each with a 95% confidence interval. The intervals overlap heavily, reflecting that we cannot tell the two means apart with this much data.)",
   answer(NULL, correct = TRUE),
   allow_retry = FALSE,
   incorrect = NULL,
@@ -1719,7 +1719,7 @@ question_text(NULL,
 ```
 
 ```{r temperance-5-test, include = FALSE}
-plot_predictions(fit_sps, condition = "treatment")
+plot_predictions(fit_sp, condition = "treatment")
 ```
 
 ###
@@ -1734,7 +1734,7 @@ CP/CR.
 
 ```{r temperance-6}
 question_text(NULL,
-  message = "    > plot_predictions(fit_sps, condition = \"treatment\", draw = FALSE)\n      rowid estimate std.error statistic p.value conf.low conf.high   treatment\n    1     1      783     113     6.91   <0.001    560      1005 Not enrolled\n    2     2      721     113     6.36   <0.001    499       944     Enrolled",
+  message = "    > plot_predictions(fit_sp, condition = \"treatment\", draw = FALSE)\n      rowid estimate std.error statistic p.value conf.low conf.high   treatment\n    1     1      783     113     6.91   <0.001    560      1005 Not enrolled\n    2     2      721     113     6.36   <0.001    499       944     Enrolled",
   answer(NULL, correct = TRUE),
   allow_retry = FALSE,
   incorrect = NULL,
@@ -1742,7 +1742,7 @@ question_text(NULL,
 ```
 
 ```{r temperance-6-test, include = FALSE}
-plot_predictions(fit_sps, condition = "treatment", draw = FALSE)
+plot_predictions(fit_sp, condition = "treatment", draw = FALSE)
 ```
 
 ###
@@ -1757,7 +1757,7 @@ Paste the plot code below.
 
 ```{r temperance-7}
 question_text(NULL,
-  message = "    plot_predictions(fit_sps, condition = \"treatment\", draw = FALSE) |>\n      ggplot(aes(x = treatment, y = estimate)) +\n      geom_pointrange(aes(ymin = conf.low, ymax = conf.high),\n                      color = \"grey20\", size = 1.1) +\n      scale_y_continuous(labels = scales::label_dollar(prefix = \"$\")) +\n      labs(\n        title = \"Predicted 3-Month Out-of-Pocket Spending by Enrollment Status\",\n        subtitle = \"Enrolled households spend ~60 pesos less, but the CI crosses zero\",\n        x = \"Treatment\",\n        y = \"Predicted 3-month spending\",\n        caption = \"Source: King et al. (2009) SPS rollout via primer.data\"\n      ) +\n      theme_minimal()",
+  message = "    plot_predictions(fit_sp, condition = \"treatment\", draw = FALSE) |>\n      ggplot(aes(x = treatment, y = estimate)) +\n      geom_pointrange(aes(ymin = conf.low, ymax = conf.high),\n                      color = \"grey20\", size = 1.1) +\n      scale_y_continuous(labels = scales::label_dollar(prefix = \"$\")) +\n      labs(\n        title = \"Predicted 3-Month Out-of-Pocket Spending by Enrollment Status\",\n        subtitle = \"Enrolled households spend ~60 pesos less, but the CI crosses zero\",\n        x = \"Treatment\",\n        y = \"Predicted 3-month spending\",\n        caption = \"Source: King et al. (2009) Seguro Popular rollout via primer.data\"\n      ) +\n      theme_minimal()",
   answer(NULL, correct = TRUE),
   allow_retry = FALSE,
   incorrect = NULL,
@@ -1770,7 +1770,7 @@ question_text(NULL,
 #| echo: false
 #| message: false
 #| warning: false
-plot_predictions(fit_sps, condition = "treatment", draw = FALSE) |>
+plot_predictions(fit_sp, condition = "treatment", draw = FALSE) |>
   ggplot(aes(x = treatment, y = estimate)) +
   geom_pointrange(aes(ymin = conf.low, ymax = conf.high),
                   color = "grey20", size = 1.1) +
@@ -1780,7 +1780,7 @@ plot_predictions(fit_sps, condition = "treatment", draw = FALSE) |>
     subtitle = "Enrolled households spend about 63 pesos less than not-enrolled",
     x = "Treatment",
     y = "Predicted 3-month spending",
-    caption = "Source: King et al. (2009) SPS rollout via primer.data"
+    caption = "Source: King et al. (2009) Seguro Popular rollout via primer.data"
   ) +
   theme_minimal()
 ```
@@ -1797,7 +1797,7 @@ CP/CR.
 
 ```{r temperance-8}
 question_text(NULL,
-  message = "    > show_file(\"analysis.qmd\", chunk = \"Last\")\n    ```{r}\n    plot_predictions(fit_sps, condition = \"treatment\", draw = FALSE) |>\n      ggplot(aes(x = treatment, y = estimate)) +\n      geom_pointrange(aes(ymin = conf.low, ymax = conf.high)) +\n      scale_y_continuous(labels = scales::label_dollar(prefix = \"$\")) +\n      labs(\n        title = \"Predicted 3-Month Out-of-Pocket Spending by Enrollment Status\",\n        subtitle = \"Enrolled households spend ~60 pesos less, but the CI crosses zero\",\n        x = \"Treatment\", y = \"Predicted 3-month spending\",\n        caption = \"Source: King et al. (2009) SPS rollout via primer.data\"\n      ) +\n      theme_minimal()\n    ```",
+  message = "    > show_file(\"analysis.qmd\", chunk = \"Last\")\n    ```{r}\n    plot_predictions(fit_sp, condition = \"treatment\", draw = FALSE) |>\n      ggplot(aes(x = treatment, y = estimate)) +\n      geom_pointrange(aes(ymin = conf.low, ymax = conf.high)) +\n      scale_y_continuous(labels = scales::label_dollar(prefix = \"$\")) +\n      labs(\n        title = \"Predicted 3-Month Out-of-Pocket Spending by Enrollment Status\",\n        subtitle = \"Enrolled households spend ~60 pesos less, but the CI crosses zero\",\n        x = \"Treatment\", y = \"Predicted 3-month spending\",\n        caption = \"Source: King et al. (2009) Seguro Popular rollout via primer.data\"\n      ) +\n      theme_minimal()\n    ```",
   answer(NULL, correct = TRUE),
   allow_retry = FALSE,
   incorrect = NULL,
@@ -1844,7 +1844,7 @@ Always go back to your Preceptor Table. Even a perfectly estimated statistical m
 
 ### Exercise 11
 
-Rearrange the material in your QMD so the order is graphic, then summary paragraph. The chunk that creates `fit_sps` must occur before the chunk that creates the graphic. Render the QMD. In the R Terminal, run:
+Rearrange the material in your QMD so the order is graphic, then summary paragraph. The chunk that creates `fit_sp` must occur before the chunk that creates the graphic. Render the QMD. In the R Terminal, run:
 
 ```
 show_file("analysis.qmd")
@@ -1854,7 +1854,7 @@ CP/CR.
 
 ```{r temperance-11}
 question_text(NULL,
-  message = "    > show_file(\"analysis.qmd\")\n    ---\n    title: \"Seguro Popular\"\n    author: \"<your name>\"\n    execute:\n      echo: false\n    ---\n    \n    ```{r}\n    #| message: false\n    library(tidyverse)\n    library(tidymodels)\n    library(primer.data)\n    library(broom)\n    library(marginaleffects)\n    ```\n    \n    ```{r}\n    x <- sps |>\n      select(treatment, t2_health_exp_3m, age, sex, education) |>\n      drop_na() |>\n      mutate(treatment = factor(if_else(treatment == 1, \"Enrolled\", \"Not enrolled\"),\n                                levels = c(\"Not enrolled\", \"Enrolled\")))\n    ```\n    \n    ```{r}\n    fit_sps <- linear_reg(engine = \"lm\") |>\n      fit(t2_health_exp_3m ~ treatment, data = x)\n    ```\n    \n    ```{r}\n    plot_predictions(fit_sps, condition = \"treatment\", draw = FALSE) |>\n      ggplot(aes(x = treatment, y = estimate)) +\n      geom_pointrange(aes(ymin = conf.low, ymax = conf.high)) +\n      scale_y_continuous(labels = scales::label_dollar(prefix = \"$\")) +\n      labs(\n        title = \"Predicted 3-Month Out-of-Pocket Spending by Enrollment Status\",\n        subtitle = \"Enrolled households spend about 63 pesos less than not-enrolled\",\n        x = \"Treatment\", y = \"Predicted 3-month spending\",\n        caption = \"Source: King et al. (2009) SPS rollout via primer.data\"\n      ) +\n      theme_minimal()\n    ```\n    \n    Households' out-of-pocket spending on health care is a key marker of financial vulnerability. Using the 27,569-household follow-up sample from Mexico's 2005--06 randomized rollout of Seguro Popular, we estimate the average causal effect of enrollment on three-month out-of-pocket spending. One concern is that randomization happened at the community level, not the household level. We model three-month spending as a normally distributed variable which is a linear function of treatment. We estimate that enrollment reduced spending by about 63 pesos on average, with a 95% confidence interval of roughly -105 to -22 pesos --- a small but statistically detectable reduction.",
+  message = "    > show_file(\"analysis.qmd\")\n    ---\n    title: \"Seguro Popular\"\n    author: \"<your name>\"\n    execute:\n      echo: false\n    ---\n    \n    ```{r}\n    #| message: false\n    library(tidyverse)\n    library(tidymodels)\n    library(primer.data)\n    library(broom)\n    library(marginaleffects)\n    ```\n    \n    ```{r}\n    x <- sps |>\n      select(treatment, t2_health_exp_3m, age, sex, education) |>\n      drop_na() |>\n      mutate(treatment = factor(if_else(treatment == 1, \"Enrolled\", \"Not enrolled\"),\n                                levels = c(\"Not enrolled\", \"Enrolled\")))\n    ```\n    \n    ```{r}\n    fit_sp <- linear_reg(engine = \"lm\") |>\n      fit(t2_health_exp_3m ~ treatment, data = x)\n    ```\n    \n    ```{r}\n    plot_predictions(fit_sp, condition = \"treatment\", draw = FALSE) |>\n      ggplot(aes(x = treatment, y = estimate)) +\n      geom_pointrange(aes(ymin = conf.low, ymax = conf.high)) +\n      scale_y_continuous(labels = scales::label_dollar(prefix = \"$\")) +\n      labs(\n        title = \"Predicted 3-Month Out-of-Pocket Spending by Enrollment Status\",\n        subtitle = \"Enrolled households spend about 63 pesos less than not-enrolled\",\n        x = \"Treatment\", y = \"Predicted 3-month spending\",\n        caption = \"Source: King et al. (2009) Seguro Popular rollout via primer.data\"\n      ) +\n      theme_minimal()\n    ```\n    \n    Households' out-of-pocket spending on health care is a key marker of financial vulnerability. Using the 27,569-household follow-up sample from Mexico's 2005--06 randomized rollout of Seguro Popular, we estimate the average causal effect of enrollment on three-month out-of-pocket spending. One concern is that randomization happened at the community level, not the household level. We model three-month spending as a normally distributed variable which is a linear function of treatment. We estimate that enrollment reduced spending by about 63 pesos on average, with a 95% confidence interval of roughly -105 to -22 pesos --- a small but statistically detectable reduction.",
   answer(NULL, correct = TRUE),
   allow_retry = FALSE,
   incorrect = NULL,
@@ -1915,7 +1915,7 @@ The world confronts us. Make decisions we must.
 #| echo: false
 #| message: false
 #| warning: false
-plot_predictions(fit_sps, condition = "treatment", draw = FALSE) |>
+plot_predictions(fit_sp, condition = "treatment", draw = FALSE) |>
   ggplot(aes(x = treatment, y = estimate)) +
   geom_pointrange(aes(ymin = conf.low, ymax = conf.high),
                   color = "grey20", size = 1.1) +
@@ -1925,7 +1925,7 @@ plot_predictions(fit_sps, condition = "treatment", draw = FALSE) |>
     subtitle = "Enrolled households spend about 63 pesos less than not-enrolled",
     x = "Treatment",
     y = "Predicted 3-month spending",
-    caption = "Source: King et al. (2009) SPS rollout via primer.data"
+    caption = "Source: King et al. (2009) Seguro Popular rollout via primer.data"
   ) +
   theme_minimal()
 ```

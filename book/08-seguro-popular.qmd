@@ -161,7 +161,7 @@ x |>
     x        = "3-month spending (pesos, x-axis capped at 4,000)",
     y        = NULL,
     fill     = "Treatment",
-    caption  = "Source: King et al. (2009) SPS rollout via primer.data"
+    caption  = "Source: King et al. (2009) Seguro Popular rollout via primer.data"
   ) +
   theme_minimal() +
   theme(axis.text.y  = element_blank(),
@@ -185,7 +185,7 @@ x |>
     subtitle = "Blue dot = sample mean; group means are close, sample-level signal is weak",
     x        = "Treatment",
     y        = "3-month spending (pesos, y-axis capped at 3,000)",
-    caption  = "Source: King et al. (2009) SPS rollout via primer.data"
+    caption  = "Source: King et al. (2009) Seguro Popular rollout via primer.data"
   ) +
   theme_minimal()
 ```
@@ -207,7 +207,7 @@ x |>
     x        = "3-month spending (pesos, log scale; 1 peso added before logging)",
     y        = "Households",
     fill     = "Treatment",
-    caption  = "Source: King et al. (2009) SPS rollout via primer.data"
+    caption  = "Source: King et al. (2009) Seguro Popular rollout via primer.data"
   ) +
   theme_minimal()
 ```
@@ -518,7 +518,7 @@ linear_reg() |>
   tidy(conf.int = TRUE) |>
   select(term, estimate, conf.low, conf.high) |>
   mutate(across(where(is.numeric), \(v) round(v, 1))) |>
-  kable(caption = "Candidate model: t2_health_exp_3m ~ treatment. Source: King et al. (2009) SPS rollout, full follow-up sample via primer.data.")
+  kable(caption = "Candidate model: t2_health_exp_3m ~ treatment. Source: King et al. (2009) Seguro Popular rollout, full follow-up sample via primer.data.")
 ```
 
 The intercept is the expected spending of a Not-enrolled household: about 794 pesos over three months. The coefficient on `treatmentEnrolled` is about -63 pesos: Enrolled households spent, on average, about 63 pesos less than Not-enrolled households over the three months before the follow-up. The 95% confidence interval is roughly [-105, -22] under a naive standard error, well below zero --- a small but statistically detectable reduction.
@@ -562,7 +562,7 @@ We commit to the simplest model that matches the question. Since the covariate a
 ```{r}
 #| label: fit
 #| cache: true
-fit_sps <- linear_reg() |>
+fit_sp <- linear_reg() |>
   set_engine("lm") |>
   fit(t2_health_exp_3m ~ treatment, data = x)
 ```
@@ -588,7 +588,7 @@ A sanity check: the distribution of fitted values should look broadly like the d
 #| message: false
 #| warning: false
 fitted_df <- tibble(
-  value  = c(x$t2_health_exp_3m, predict(extract_fit_engine(fit_sps))),
+  value  = c(x$t2_health_exp_3m, predict(extract_fit_engine(fit_sp))),
   source = c(rep("Actual", nrow(x)),
              rep("Fitted", nrow(x)))
 )
@@ -603,7 +603,7 @@ ggplot(fitted_df, aes(x = value, fill = source)) +
     x        = "3-month spending (pesos, x-axis capped at 3,000)",
     y        = NULL,
     fill     = "Source",
-    caption  = "Source: King et al. (2009) SPS rollout, full follow-up sample via primer.data"
+    caption  = "Source: King et al. (2009) Seguro Popular rollout, full follow-up sample via primer.data"
   ) +
   theme_minimal() +
   theme(axis.text.y  = element_blank(),
@@ -629,7 +629,7 @@ knitr::include_graphics("other/images/Temperance.jpg")
 
 ```{r}
 #| echo: false
-plot_predictions(fit_sps, condition = "treatment", draw = FALSE) |>
+plot_predictions(fit_sp, condition = "treatment", draw = FALSE) |>
   ggplot(aes(x = treatment, y = estimate)) +
   geom_pointrange(aes(ymin = conf.low, ymax = conf.high),
                   color = "grey20", size = 1.1) +
@@ -639,7 +639,7 @@ plot_predictions(fit_sps, condition = "treatment", draw = FALSE) |>
     subtitle = "Point estimates differ by about 60 pesos; the intervals overlap heavily",
     x        = "Treatment",
     y        = "Expected 3-Month Spending",
-    caption  = "Source: King et al. (2009) SPS rollout, full follow-up sample via primer.data"
+    caption  = "Source: King et al. (2009) Seguro Popular rollout, full follow-up sample via primer.data"
   ) +
   theme_minimal()
 ```
@@ -689,7 +689,7 @@ Third, *the world is always more uncertain than our models would have us believe
 #| echo: false
 #| message: false
 #| warning: false
-plot_predictions(fit_sps, condition = "treatment", draw = FALSE) |>
+plot_predictions(fit_sp, condition = "treatment", draw = FALSE) |>
   ggplot(aes(x = treatment, y = estimate)) +
   geom_pointrange(aes(ymin = conf.low, ymax = conf.high),
                   color = "grey20", size = 1.1) +
@@ -699,7 +699,7 @@ plot_predictions(fit_sps, condition = "treatment", draw = FALSE) |>
     subtitle = "Point estimates differ by about 60 pesos; the intervals overlap heavily",
     x        = "Treatment",
     y        = "Expected 3-Month Spending",
-    caption  = "Source: King et al. (2009) SPS rollout, full follow-up sample via primer.data"
+    caption  = "Source: King et al. (2009) Seguro Popular rollout, full follow-up sample via primer.data"
   ) +
   theme_minimal()
 ```
