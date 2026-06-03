@@ -271,8 +271,6 @@ The average height by sex is a convenient question --- a single number per sex, 
 
 Data science starts with some broad questions and a data set which might help us to answer them.
 
-Imagine that you are a logistics analyst at U.S. Marine Corps Supply, planning next year's bootcamp uniform order. The Quartermaster General has a big-picture goal --- every recruit kitted out at the right size on day one, within a fixed procurement budget --- and trusts you to figure out what to order and in what quantities. Many models would inform the order: distributions of height, weight, chest, foot length; the male-female mix in incoming recruits; the size-tail dynamics that drive how many extra-large uniforms to keep in inventory. This tutorial builds just one of them: the average height of male and female recruits. The number alone won't determine the order, but the height-by-sex split is one good input to the larger forecast. There are many decisions to make.
-
 The specific question: *What is the average height of male and female USMC recruits?*
 
 We will work from the National Health and Nutrition Examination Survey (NHANES), conducted by the Centers for Disease Control and Prevention, available in the `nhanes` tibble of the **[primer.data](https://github.com/PPBDS/primer.data)** package.

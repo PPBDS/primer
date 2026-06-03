@@ -281,8 +281,6 @@ School tuition in this data is the *stated* tuition --- the sticker price. At ma
 
 Data science starts with some broad questions and a data set which might help us to answer them.
 
-Imagine that you are a data scientist at a non-profit that helps high-school students choose a college. The Executive Director has a big-picture goal --- make sure students who use the service end up at colleges where they're more likely to graduate, earn back their tuition, and not leave with crushing debt --- and trusts you to figure out what evidence-based recommendations the service should give. Many causal and predictive models would help: predicted graduation rate, predicted post-graduation earnings, predicted debt at graduation, the relationship between major choice and labor-market outcomes. This tutorial builds just one of them: the predicted graduation rate as a function of tuition and selectivity. The estimate alone won't determine which colleges the service recommends, but the graduation-rate piece is one good input to the larger picture. There are many decisions to make.
-
 The specific question: *What is the difference in expected graduation rates between colleges with tuition of $20,000 and colleges with tuition of $30,000?*
 
 We will work from the Department of Education's 2013 IPEDS database, available in the `colleges` tibble of the **[primer.data](https://github.com/PPBDS/primer.data)** package.

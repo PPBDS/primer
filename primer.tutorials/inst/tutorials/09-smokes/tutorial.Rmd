@@ -261,8 +261,6 @@ The 100-cigarette threshold is what makes the outcome a clean lifetime measure: 
 
 Data science starts with some broad questions and a data set which might help us to answer them.
 
-Imagine that you are a public-health analyst at a state health department. The Public Health Commissioner has a big-picture goal --- reduce the smoking-attributable disease burden in the state --- and trusts you to figure out where the next anti-smoking campaign's outreach budget should go. Many causal and predictive models would help: who is most likely to be smoking now, which cessation messages move which subgroups, which geographic and demographic segments are the most cost-effective targets, how outreach effects fade once a campaign ends. This tutorial builds just one of them: the probability of being an ever-smoker as a function of age and sex --- the basic demographics on which outreach can actually be segmented when buying ads or staffing clinics. The estimate alone won't determine the campaign, but the demographic-targeting piece is one good input. There are many decisions to make.
-
 The specific question: *What is the difference in the probability of being an ever-smoker between a 30-year-old woman and a 70-year-old man?*
 
 We will work from a 1,000-adult sample of NHANES 2009--2012, available in the `smokes` tibble of the **[primer.tutorials](https://ppbds.github.io/primer/)** package.

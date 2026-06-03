@@ -349,8 +349,6 @@ The variable `t2_health_exp_3m` is total household health spending over the thre
 
 Data science starts with some broad questions and a data set which might help us to answer them.
 
-Imagine that you are a health-policy analyst at Mexico's Ministry of Health. The Minister has a big-picture goal --- improve Mexican health outcomes within a limited budget --- and trusts you to find the evidence that helps her decide where the money should go. The Ministry's current arrangements for covering uninsured households have gaps the Minister is considering closing, and several questions sit on her desk: *Does public health insurance for the uninsured lower household out-of-pocket spending on medical care? Does it reduce mortality? Does it shift households out of medical bankruptcy?* There are many decisions to make.
-
 The specific question: *What is the average causal effect of Seguro Popular enrollment on a household's three-month out-of-pocket health spending?*
 
 We will work from the Seguro Popular rollout data, available in the `sps` tibble of the **[primer.data](https://github.com/PPBDS/primer.data)** package.

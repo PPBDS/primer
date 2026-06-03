@@ -320,8 +320,6 @@ The average causal effect is the conventional quantity of interest for a randomi
 
 Data science starts with some broad questions and a data set which might help us to answer them.
 
-Imagine that you are the data scientist for a Republican congressional campaign in Georgia. The candidate has a big-picture goal --- win the November election --- and trusts you to figure out where the campaign's limited time, money, and attention should go. Many causal and predictive models would inform that allocation: which voters are persuadable, which messages move opinion, how voter turnout shifts with mailings or door-knocks, how exposure to immigrant neighbors changes attitudes about immigration. This tutorial builds just one of them: the causal effect of overhearing Spanish on a commuter platform on voters' immigration attitudes. The estimate alone won't decide what messaging the campaign uses, but it is one good input to thinking about how everyday exposure shapes opinion. There are many decisions to make.
-
 The specific question: *What is the average causal effect of exposure to Spanish-speakers on attitudes toward immigration?*
 
 We will work from Enos's (2014) Boston-Metra platform experiment, available in the `trains` tibble of the **[primer.data](https://github.com/PPBDS/primer.data)** package.
