@@ -85,6 +85,13 @@ question_text(NULL,
 
 ###
 
+```
+analysis_files
+
+```
+
+###
+
 The `sps` tibble in **[primer.data](https://github.com/PPBDS/primer.data)** is the household-level dataset from King et al.'s 2009 *Lancet* paper, restricted to follow-up survey records with complete data on treatment, three-month spending, age, sex, and education. After that restriction it holds 27,569 rows --- the full analysis sample we will use.
 
 ### Exercise 3
@@ -106,12 +113,22 @@ CP/CR.
 
 ```{r introduction-3}
 question_text(NULL,
-  message = "    > show_file(\"analysis.qmd\", chunk = \"Last\")\n    ```{r}\n    #| message: false\n    library(tidyverse)\n    library(primer.data)\n    ```",
   answer(NULL, correct = TRUE),
-  allow_retry = FALSE,
+  allow_retry = TRUE,
+  try_again_button = "Edit Answer",
   incorrect = NULL,
   rows = 5)
 ```
+
+###
+
+````
+```{r}
+#| message: false
+library(tidyverse)
+library(primer.data)
+```
+````
 
 ###
 
@@ -129,7 +146,21 @@ question_text(NULL,
   allow_retry = TRUE,
   try_again_button = "Edit Answer",
   incorrect = NULL,
-  rows = 3)
+  rows = 6)
+```
+
+###
+
+```
+── Attaching core tidyverse packages ───────────── tidyverse 2.0.0 ──
+✔ dplyr     1.1.4    ✔ readr     2.1.5
+✔ forcats   1.0.0    ✔ stringr   1.5.1
+✔ ggplot2   3.5.1    ✔ tibble    3.2.1
+✔ lubridate 1.9.3    ✔ tidyr     1.3.1
+✔ purrr     1.0.2
+── Conflicts ─────────────────────────────── tidyverse_conflicts() ──
+✖ dplyr::filter() masks stats::filter()
+✖ dplyr::lag()    masks stats::lag()
 ```
 
 ###
