@@ -49,7 +49,7 @@ This tutorial supports the [Seguro Popular](https://ppbds.github.io/primer/08-se
 
 The world confronts us. Make decisions we must.
 
-Imagine that you are a health-policy analyst at Mexico's Ministry of Health. The Minister has a big-picture goal --- improve Mexican health outcomes within a limited budget --- and trusts you to find the evidence that helps her decide where the money should go. Seguro Popular, the universal health-insurance program Mexico randomized into communities starting in 2005, is one of many programs competing for that budget. Several causal and predictive models would inform the choice --- how enrollment changes household spending, hospital usage, mortality, debt. This tutorial builds just one of them: the causal effect of enrollment on out-of-pocket health spending. The estimate alone won't decide anything, but it is one good input to the larger decision. There are many decisions to make.
+Imagine that you are a health-policy analyst at Mexico's Ministry of Health. The Minister has a big-picture goal --- improve Mexican health outcomes within a limited budget --- and trusts you to find the evidence that helps her decide where the money should go. The Ministry's current arrangements for covering uninsured households have gaps the Minister is considering closing, and several questions sit on her desk: *Does public health insurance for the uninsured lower household out-of-pocket spending on medical care? Does it reduce mortality? Does it shift households out of medical bankruptcy?* The strongest randomized evidence on any of those questions comes from a 2005--2006 evaluation in which the Ministry used randomized assignment to early or late rollout to measure the first-year effects of Seguro Popular --- the universal-coverage program the Ministry had launched in 2003. Seguro Popular itself was scaled up through the 2010s and then, in 2020, closed and replaced by a different arrangement. The estimate from that 2005--2006 trial is an *imperfect* input: the policy we would implement today is not exactly the policy that was tested then. But it is the best randomized evidence on offer. This tutorial focuses on one specific estimate: the causal effect of the 2005--2006 Seguro Popular rollout on a household's three-month out-of-pocket health spending. The estimate alone won't decide anything --- validity will matter as much as precision when the Minister translates a twenty-year-old number into a present-day decision --- but it is one good input. There are many decisions to make.
 
 ### Exercise 1
 
@@ -66,38 +66,26 @@ question_text(NULL,
 
 ###
 
-QMD World and R World are not the same. Several R sessions can run side by side --- one in your QMD render, one at your interactive prompt, one inside this tutorial --- each with its own workspace.
+Random assignment in the Ministry's evaluation was at the *community* level: the Ministry identified roughly 100 matched pairs of "health clusters" (small communities or municipalities sharing a health facility) across seven Mexican states, and within each pair randomly assigned one cluster to receive Seguro Popular early and the other to receive it later. About 50,000 households were surveyed at baseline and again at the 10-month follow-up. This is the core of the design we are about to dig into.
 
 ### Exercise 2
 
-You should be working inside a GitHub repo named `seguro-popular`, opened in a Codespace from the [`PPBDS/codespace-starter`](https://github.com/PPBDS/codespace-starter) template. If you are not there yet, please create that repo and open it in a Codespace now --- see the [package README](https://github.com/PPBDS/primer/tree/main/primer.tutorials#working-environments-and-repo-setup) if you need setup instructions or are working locally instead.
-
-Once you're inside the `sps` repo, create a new Quarto document titled `"Seguro Popular"` with yourself as the author, render it, and save it as `analysis.qmd`.
-
-Create a `.gitignore` file with `analysis_files` on the first line followed by a blank line. Save and push.
-
-In the R Terminal, run:
-
-```
-show_file(".gitignore")
-```
-
-If that fails, it's probably because you haven't loaded `library(tutorial.helpers)` in the R Terminal.
+You should be working inside a GitHub repo named `seguro-popular`. Once you're inside the `seguro-popular` repo, create a new Quarto document titled `"Seguro Popular"` with yourself as the author, render it, save it as `analysis.qmd`, and open `analysis.html` with Live Server so the rendered HTML auto-refreshes on every later render. Create a `.gitignore` file with `analysis_files` on the first line followed by a blank line. Commit and push. Use AI however you like. In the R Terminal, run `show_file(".gitignore")`.
 
 CP/CR.
 
 ```{r introduction-2}
 question_text(NULL,
-  message = "    > show_file(\".gitignore\")\n    analysis_files",
   answer(NULL, correct = TRUE),
-  allow_retry = FALSE,
+  allow_retry = TRUE,
+  try_again_button = "Edit Answer",
   incorrect = NULL,
   rows = 3)
 ```
 
 ###
 
-The `sps` tibble holds about 12,000 Mexican households from King et al.'s 2005--06 Seguro Popular randomized rollout. Treatment was assigned at the cluster (community) level, not the individual household --- a design detail that matters when we come to unconfoundedness in Justice.
+The `sps` tibble in **[primer.data](https://github.com/PPBDS/primer.data)** is the household-level dataset from King et al.'s 2009 *Lancet* paper, restricted to follow-up survey records with complete data on treatment, three-month spending, age, sex, and education. After that restriction it holds 27,569 rows --- the full analysis sample we will use.
 
 ### Exercise 3
 
@@ -127,7 +115,7 @@ question_text(NULL,
 
 ###
 
-Rendering a QMD converts code and prose into a self-contained HTML document. The render runs in a fresh R session, so it doesn't see anything you have loaded at your interactive prompt --- a feature, not a bug.
+The outcome we will model is `t2_health_exp_3m`: three-month out-of-pocket health spending in Mexican pesos, measured at the 10-month follow-up survey. It is heavy-tailed --- the median household spends 150 pesos but the maximum is past 37,000 --- and the chapter spends much of its time wrestling with what that shape means for the answer.
 
 ### Exercise 4
 
@@ -146,7 +134,7 @@ question_text(NULL,
 
 ###
 
-The "Conflicts" lines name functions that exist in more than one loaded package. `dplyr::filter()` masks `stats::filter()` because tidyverse loads later; the last-loaded package wins.
+The Ministry's evaluation was *cluster-randomized*: communities, not households, were randomly assigned. Households inside a single community share more than their treatment assignment --- the same nearby clinic, the same local economy, the same disease environment --- so the right standard error reflects the cluster structure rather than the household count. The naive linear-regression standard error we compute later in Temperance will understate uncertainty by ignoring this; King et al. used cluster-robust standard errors in the published paper.
 
 ### Exercise 5
 
@@ -165,7 +153,7 @@ question_text(NULL,
 
 ###
 
-Data on Mexico's Seguro Popular randomized rollout is available in the `sps` tibble from the **[primer.data](https://github.com/PPBDS/primer.data)** package. The data came from a large 2005--06 trial in which the Mexican Ministry of Health randomly assigned communities to receive Seguro Popular early. We have one row per surveyed household, with information about enrollment, demographics, and out-of-pocket health expenditures.
+Data from the Ministry of Health's 2005--06 randomized evaluation of Seguro Popular is available in the `sps` tibble of the **[primer.data](https://github.com/PPBDS/primer.data)** package. In the evaluation, the Ministry randomly assigned communities to receive Seguro Popular early or late and surveyed roughly 50,000 households at baseline and again at the 10-month follow-up. We have one row per surveyed household, with information about enrollment, demographics, and out-of-pocket health expenditures.
 
 ### Exercise 6
 
@@ -173,7 +161,7 @@ In the R Terminal, type `?sps` and paste the Description below.
 
 ```{r introduction-6}
 question_text(NULL,
-  message = "Data from a 2005--2006 health-insurance experiment in Mexico in which Seguro Popular was randomly rolled out across communities. Households were surveyed about their out-of-pocket spending on health care, with measurements taken at baseline and again roughly ten months later. The randomization makes this an unusually clean setting for estimating the causal effect of universal health insurance on household financial protection.",
+  message = "Data from the Mexican Ministry of Health's 2005--2006 randomized evaluation of Seguro Popular. The Ministry randomly assigned communities to receive Seguro Popular early or late and surveyed households about their out-of-pocket spending at baseline and again roughly ten months later. The cluster-level randomization makes this an unusually clean setting for estimating the causal effect of universal health insurance on household financial protection.",
   answer(NULL, correct = TRUE),
   allow_retry = FALSE,
   incorrect = NULL,
@@ -330,7 +318,7 @@ The variable `t2_health_exp_3m` is total household health spending over the thre
 
 Data science starts with some broad questions and a data set which might help us to answer them.
 
-Imagine that you are a health-policy analyst at Mexico's Ministry of Health. The Minister has a big-picture goal --- improve Mexican health outcomes within a limited budget --- and trusts you to find the evidence that helps her decide where the money should go. Seguro Popular, the universal health-insurance program Mexico randomized into communities starting in 2005, is one of many programs competing for that budget. Several causal and predictive models would inform the choice --- how enrollment changes household spending, hospital usage, mortality, debt. This tutorial builds just one of them: the causal effect of enrollment on out-of-pocket health spending. The estimate alone won't decide anything, but it is one good input to the larger decision. There are many decisions to make.
+Imagine that you are a health-policy analyst at Mexico's Ministry of Health. The Minister has a big-picture goal --- improve Mexican health outcomes within a limited budget --- and trusts you to find the evidence that helps her decide where the money should go. The Ministry's current arrangements for covering uninsured households have gaps the Minister is considering closing, and several questions sit on her desk: *Does public health insurance for the uninsured lower household out-of-pocket spending on medical care? Does it reduce mortality? Does it shift households out of medical bankruptcy?* The strongest randomized evidence on any of those questions comes from a 2005--2006 evaluation in which the Ministry used randomized assignment to early or late rollout to measure the first-year effects of Seguro Popular --- the universal-coverage program the Ministry had launched in 2003. Seguro Popular itself was scaled up through the 2010s and then, in 2020, closed and replaced by a different arrangement. The estimate from that 2005--2006 trial is an *imperfect* input: the policy we would implement today is not exactly the policy that was tested then. But it is the best randomized evidence on offer. This tutorial focuses on one specific estimate: the causal effect of the 2005--2006 Seguro Popular rollout on a household's three-month out-of-pocket health spending. The estimate alone won't decide anything --- validity will matter as much as precision when the Minister translates a twenty-year-old number into a present-day decision --- but it is one good input. There are many decisions to make.
 
 The specific question: *What is the average causal effect of Seguro Popular enrollment on a household's three-month out-of-pocket health spending?*
 
@@ -428,7 +416,7 @@ What are the units for this problem?
 
 ```{r wisdom-5}
 question_text(NULL,
-  message = "Each row is one household in the universe of households eligible for Seguro Popular at the time of the rollout (roughly 2005--06). The original survey covered about 50,000 households across 74 randomized communities; our analysis sample is the 27,569-row `sps` tibble of follow-up survey records, restricted to households with complete data on treatment, follow-up spending, age, sex, and education.",
+  message = "Each row is one household in the universe of households eligible for Seguro Popular at the time of the evaluation (2005--06). The original survey covered about 50,000 households across 74 randomized communities; our analysis sample is the 27,569-row `sps` tibble of follow-up survey records, restricted to households with complete data on treatment, follow-up spending, age, sex, and education.",
   answer(NULL, correct = TRUE),
   allow_retry = FALSE,
   incorrect = NULL,
@@ -643,7 +631,7 @@ Write the first two sentences of the summary paragraph. The first introduces the
 
 ```{r wisdom-12}
 question_text(NULL,
-  message = "Households' out-of-pocket spending on health care is a key marker of financial vulnerability. Using the 27,569-household follow-up sample from Mexico's 2005--06 randomized rollout of Seguro Popular, we estimate the average causal effect of enrollment on three-month out-of-pocket spending.",
+  message = "Households' out-of-pocket spending on health care is a key marker of financial vulnerability. Using the 27,569-household follow-up sample from Mexico's 2005--06 randomized evaluation of Seguro Popular, we estimate the average causal effect of enrollment on three-month out-of-pocket spending.",
   answer(NULL, correct = TRUE),
   allow_retry = FALSE,
   incorrect = NULL,
@@ -905,7 +893,7 @@ pop_tibble <- tibble::tribble(
   "..."      , "...",                   "..."  , "...",                  "...",           "...",  "..."
 )
 
-pop_title_footnote     <- "Population: Mexican households eligible for Seguro Popular at the time of the randomized rollout (2005--06). Data rows are the 27,569 households in our analysis subset; Preceptor rows are the same households described with both potential outcomes filled in (counterfactual hatched in the Preceptor Table itself). The example rows are real households shown to illustrate the structure --- the same three units appear in both blocks."
+pop_title_footnote     <- "Population: Mexican households eligible for Seguro Popular at the time of the randomized evaluation (2005--06). Data rows are the 27,569 households in our analysis subset; Preceptor rows are the same households described with both potential outcomes filled in (counterfactual hatched in the Preceptor Table itself). The example rows are real households shown to illustrate the structure --- the same three units appear in both blocks."
 pop_units_footnote     <- "Each row is one household at one point in time. The Data block records what we observed (one potential outcome per household, given the household's actual treatment); the Preceptor block records the unobservable truth (both potential outcomes filled in)."
 pop_outcome_footnote   <- "Three-month spending in pesos. In Data rows, only the value under the household's actual treatment is observed --- the counterfactual is unknown. In Preceptor rows, both potential outcomes are filled in (here written as `enrolled / not enrolled`); the counterfactual was hatched in the Preceptor Table proper."
 pop_treatment_footnote <- "Whether the household's community had received Seguro Popular by the follow-up survey. Same column meaning in both blocks; randomization at the community level is what makes the Data and Preceptor blocks compatible."
@@ -1115,7 +1103,7 @@ The link function for a continuous outcome is the identity (linear): $\mu = \bet
 
 Write one sentence highlighting a potential weakness in your model. So far our summary paragraph looks like this:
 
-> Households' out-of-pocket spending on health care is a key marker of financial vulnerability. Using the 27,569-household follow-up sample from Mexico's 2005--06 randomized rollout of Seguro Popular, we estimate the average causal effect of enrollment on three-month out-of-pocket spending.
+> Households' out-of-pocket spending on health care is a key marker of financial vulnerability. Using the 27,569-household follow-up sample from Mexico's 2005--06 randomized evaluation of Seguro Popular, we estimate the average causal effect of enrollment on three-month out-of-pocket spending.
 
 Your version will be somewhat different.
 
@@ -1854,7 +1842,7 @@ CP/CR.
 
 ```{r temperance-11}
 question_text(NULL,
-  message = "    > show_file(\"analysis.qmd\")\n    ---\n    title: \"Seguro Popular\"\n    author: \"<your name>\"\n    execute:\n      echo: false\n    ---\n    \n    ```{r}\n    #| message: false\n    library(tidyverse)\n    library(tidymodels)\n    library(primer.data)\n    library(broom)\n    library(marginaleffects)\n    ```\n    \n    ```{r}\n    x <- sps |>\n      select(treatment, t2_health_exp_3m, age, sex, education) |>\n      drop_na() |>\n      mutate(treatment = factor(if_else(treatment == 1, \"Enrolled\", \"Not enrolled\"),\n                                levels = c(\"Not enrolled\", \"Enrolled\")))\n    ```\n    \n    ```{r}\n    fit_sp <- linear_reg(engine = \"lm\") |>\n      fit(t2_health_exp_3m ~ treatment, data = x)\n    ```\n    \n    ```{r}\n    plot_predictions(fit_sp, condition = \"treatment\", draw = FALSE) |>\n      ggplot(aes(x = treatment, y = estimate)) +\n      geom_pointrange(aes(ymin = conf.low, ymax = conf.high)) +\n      scale_y_continuous(labels = scales::label_dollar(prefix = \"$\")) +\n      labs(\n        title = \"Predicted 3-Month Out-of-Pocket Spending by Enrollment Status\",\n        subtitle = \"Enrolled households spend about 63 pesos less than not-enrolled\",\n        x = \"Treatment\", y = \"Predicted 3-month spending\",\n        caption = \"Source: King et al. (2009) Seguro Popular rollout via primer.data\"\n      ) +\n      theme_minimal()\n    ```\n    \n    Households' out-of-pocket spending on health care is a key marker of financial vulnerability. Using the 27,569-household follow-up sample from Mexico's 2005--06 randomized rollout of Seguro Popular, we estimate the average causal effect of enrollment on three-month out-of-pocket spending. One concern is that randomization happened at the community level, not the household level. We model three-month spending as a normally distributed variable which is a linear function of treatment. We estimate that enrollment reduced spending by about 63 pesos on average, with a 95% confidence interval of roughly -105 to -22 pesos --- a small but statistically detectable reduction.",
+  message = "    > show_file(\"analysis.qmd\")\n    ---\n    title: \"Seguro Popular\"\n    author: \"<your name>\"\n    execute:\n      echo: false\n    ---\n    \n    ```{r}\n    #| message: false\n    library(tidyverse)\n    library(tidymodels)\n    library(primer.data)\n    library(broom)\n    library(marginaleffects)\n    ```\n    \n    ```{r}\n    x <- sps |>\n      select(treatment, t2_health_exp_3m, age, sex, education) |>\n      drop_na() |>\n      mutate(treatment = factor(if_else(treatment == 1, \"Enrolled\", \"Not enrolled\"),\n                                levels = c(\"Not enrolled\", \"Enrolled\")))\n    ```\n    \n    ```{r}\n    fit_sp <- linear_reg(engine = \"lm\") |>\n      fit(t2_health_exp_3m ~ treatment, data = x)\n    ```\n    \n    ```{r}\n    plot_predictions(fit_sp, condition = \"treatment\", draw = FALSE) |>\n      ggplot(aes(x = treatment, y = estimate)) +\n      geom_pointrange(aes(ymin = conf.low, ymax = conf.high)) +\n      scale_y_continuous(labels = scales::label_dollar(prefix = \"$\")) +\n      labs(\n        title = \"Predicted 3-Month Out-of-Pocket Spending by Enrollment Status\",\n        subtitle = \"Enrolled households spend about 63 pesos less than not-enrolled\",\n        x = \"Treatment\", y = \"Predicted 3-month spending\",\n        caption = \"Source: King et al. (2009) Seguro Popular rollout via primer.data\"\n      ) +\n      theme_minimal()\n    ```\n    \n    Households' out-of-pocket spending on health care is a key marker of financial vulnerability. Using the 27,569-household follow-up sample from Mexico's 2005--06 randomized evaluation of Seguro Popular, we estimate the average causal effect of enrollment on three-month out-of-pocket spending. One concern is that randomization happened at the community level, not the household level. We model three-month spending as a normally distributed variable which is a linear function of treatment. We estimate that enrollment reduced spending by about 63 pesos on average, with a 95% confidence interval of roughly -105 to -22 pesos --- a small but statistically detectable reduction.",
   answer(NULL, correct = TRUE),
   allow_retry = FALSE,
   incorrect = NULL,
@@ -1930,9 +1918,9 @@ plot_predictions(fit_sp, condition = "treatment", draw = FALSE) |>
   theme_minimal()
 ```
 
-Households' out-of-pocket spending on health care is a key marker of financial vulnerability. Using the 27,569-household follow-up sample from Mexico's 2005--06 randomized rollout of Seguro Popular, we estimate the average causal effect of enrollment on three-month out-of-pocket spending. One concern is that randomization happened at the community level rather than the household level: within a treated community, enrollment was voluntary, so the comparison of enrolled vs. not-enrolled households is partly a comparison of self-selected groups. We model three-month spending as a normally distributed variable which is a linear function of treatment. We estimate that enrollment reduced average three-month spending by about 63 pesos, with a 95% confidence interval of roughly -105 to -22 pesos --- a small but statistically detectable reduction. A cluster-aware standard error would widen that interval.
+Households' out-of-pocket spending on health care is a key marker of financial vulnerability. Using the 27,569-household follow-up sample from Mexico's 2005--06 randomized evaluation of Seguro Popular, we estimate the average causal effect of enrollment on three-month out-of-pocket spending. One concern is that randomization happened at the community level rather than the household level: within a treated community, enrollment was voluntary, so the comparison of enrolled vs. not-enrolled households is partly a comparison of self-selected groups. We model three-month spending as a normally distributed variable which is a linear function of treatment. We estimate that enrollment reduced average three-month spending by about 63 pesos, with a 95% confidence interval of roughly -105 to -22 pesos --- a small but statistically detectable reduction. A cluster-aware standard error would widen that interval.
 
-This finding would inform a policy decision about whether to renew or expand a Seguro Popular--like program, and about how to interpret similar randomized rollouts of social-insurance programs in other settings. It does not address every question a policy analyst would face --- it says nothing about catastrophic health spending in particular, about non-financial outcomes like health status, or about how the effect varies across regions or income tiers. But it gives a defensible starting point.
+This finding would inform a policy decision about whether to renew or expand a Seguro Popular--like program, and about how to interpret similar randomized evaluations of social-insurance programs in other settings. It does not address every question a policy analyst would face --- it says nothing about catastrophic health spending in particular, about non-financial outcomes like health status, or about how the effect varies across regions or income tiers. But it gives a defensible starting point.
 
 The world is always more uncertain than our models would have us believe.
 
