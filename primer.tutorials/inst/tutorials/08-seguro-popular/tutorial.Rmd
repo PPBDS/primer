@@ -1411,16 +1411,22 @@ CP/CR.
 
 ```{r courage-8}
 question_text(NULL,
-  message = "    > fit_sp <- linear_reg(engine = \"lm\") |>\n    +   fit(t2_health_exp_3m ~ treatment, data = x)\n    >",
   answer(NULL, correct = TRUE),
-  allow_retry = FALSE,
+  allow_retry = TRUE,
+  try_again_button = "Edit Answer",
   incorrect = NULL,
   rows = 5)
 ```
 
 ###
 
-Just because something exists in the tutorial does not mean it exists at your R prompt. Keep both worlds in sync.
+```
+>
+```
+
+###
+
+Assignment in R is silent: a successful `<-` returns nothing visible, just the next prompt. The model now exists in your R Terminal as `fit_sp`. Keep the R Terminal and the QMD in sync --- both need the fit code if both are going to use the fitted object.
 
 ### Exercise 9
 
@@ -1485,16 +1491,26 @@ CP/CR.
 
 ```{r courage-11}
 question_text(NULL,
-  message = "    > show_file(\"analysis.qmd\", chunk = \"Last\")\n    ```{r}\n    #| cache: true\n    fit_sp <- linear_reg(engine = \"lm\") |>\n      fit(t2_health_exp_3m ~ treatment, data = x)\n    ```",
   answer(NULL, correct = TRUE),
-  allow_retry = FALSE,
+  allow_retry = TRUE,
+  try_again_button = "Edit Answer",
   incorrect = NULL,
   rows = 8)
 ```
 
 ###
 
-`#| cache: true` tells Quarto to reuse the saved fit on subsequent renders. Re-render with render the QMD --- it should be quick the second time.
+````
+```{r}
+#| cache: true
+fit_sp <- linear_reg(engine = "lm") |>
+  fit(t2_health_exp_3m ~ treatment, data = x)
+```
+````
+
+###
+
+`#| cache: true` tells Quarto to reuse the saved fit on subsequent renders. Re-render --- it should be quick the second time.
 
 ### Exercise 12
 
@@ -1510,16 +1526,23 @@ CP/CR.
 
 ```{r courage-12}
 question_text(NULL,
-  message = "    > show_file(\".gitignore\")\n    analysis_files\n    *_cache",
   answer(NULL, correct = TRUE),
-  allow_retry = FALSE,
+  allow_retry = TRUE,
+  try_again_button = "Edit Answer",
   incorrect = NULL,
   rows = 5)
 ```
 
 ###
 
-Commit and push.
+```
+analysis_files
+*_cache
+```
+
+###
+
+Commit and push --- cached objects belong in `.gitignore` so each clone of the repo rebuilds the cache locally rather than dragging it through git history.
 
 ### Exercise 13
 
@@ -1591,12 +1614,25 @@ CP/CR.
 
 ```{r courage-15}
 question_text(NULL,
-  message = "    > show_file(\"analysis.qmd\", chunk = \"Last\")\n    ```{r}\n    tidy(fit_sp, conf.int = TRUE) |>\n      select(term, estimate, conf.low, conf.high) |>\n      knitr::kable(\n        caption = \"Estimates and 95% CIs.  Source: King et al. (2009) Seguro Popular rollout via primer.data\",\n        digits = 0\n      )\n    ```",
   answer(NULL, correct = TRUE),
-  allow_retry = FALSE,
+  allow_retry = TRUE,
+  try_again_button = "Edit Answer",
   incorrect = NULL,
   rows = 10)
 ```
+
+###
+
+````
+```{r}
+tidy(fit_sp, conf.int = TRUE) |>
+  select(term, estimate, conf.low, conf.high) |>
+  knitr::kable(
+    caption = "Estimates and 95% CIs. Source: King et al. (2009) Seguro Popular rollout via primer.data",
+    digits = 0
+  )
+```
+````
 
 ###
 
@@ -1711,11 +1747,23 @@ In the R Terminal, run `predictions()` on `fit_sp`. CP/CR.
 
 ```{r temperance-4}
 question_text(NULL,
-  message = "    > predictions(fit_sp)\n    \n     Estimate Std. Error    z Pr(>|z|)  2.5 % 97.5 %\n          731       14.9 49.0   <0.001    702    760\n          794       15.0 52.9   <0.001    765    824\n          731       14.9 49.0   <0.001    702    760\n          ... (27569 rows total, one per household)\n    \n    Type: numeric",
   answer(NULL, correct = TRUE),
-  allow_retry = FALSE,
+  allow_retry = TRUE,
+  try_again_button = "Edit Answer",
   incorrect = NULL,
   rows = 6)
+```
+
+###
+
+```
+ Estimate Std. Error    z Pr(>|z|)  2.5 % 97.5 %
+      731       14.9 49.0   <0.001    702    760
+      794       15.0 52.9   <0.001    765    824
+      731       14.9 49.0   <0.001    702    760
+      ... (27569 rows total, one per household)
+
+Type: numeric
 ```
 
 ###
@@ -1730,20 +1778,22 @@ CP/CR.
 
 ```{r temperance-5}
 question_text(NULL,
-  message = "    > plot_predictions(fit_sp, condition = \"treatment\")\n\n(A plot opens with two point estimates --- one for `Not enrolled` near 780 pesos and one for `Enrolled` near 720 pesos --- each with a 95% confidence interval. The intervals overlap heavily, reflecting that we cannot tell the two means apart with this much data.)",
   answer(NULL, correct = TRUE),
-  allow_retry = FALSE,
+  allow_retry = TRUE,
+  try_again_button = "Edit Answer",
   incorrect = NULL,
-  rows = 5)
+  rows = 3)
 ```
 
-```{r temperance-5-test, include = FALSE}
+###
+
+```{r temperance-5-test}
 plot_predictions(fit_sp, condition = "treatment")
 ```
 
 ###
 
-The two intervals overlap considerably, which is the visible form of our parameter-table conclusion: the difference in expected spending between the two arms is small relative to the noise.
+The plot shows two point estimates --- one for *Not enrolled* near 794 pesos, one for *Enrolled* near 731 pesos --- each with a 95% confidence interval. The intervals are narrow and clearly separated, which is the visible form of our parameter-table conclusion: there is a real, statistically detectable difference between the two arms even though the effect in dollar terms is small.
 
 ### Exercise 6
 
@@ -1753,14 +1803,16 @@ CP/CR.
 
 ```{r temperance-6}
 question_text(NULL,
-  message = "    > plot_predictions(fit_sp, condition = \"treatment\", draw = FALSE)\n      rowid estimate std.error statistic p.value conf.low conf.high   treatment\n    1     1      783     113     6.91   <0.001    560      1005 Not enrolled\n    2     2      721     113     6.36   <0.001    499       944     Enrolled",
   answer(NULL, correct = TRUE),
-  allow_retry = FALSE,
+  allow_retry = TRUE,
+  try_again_button = "Edit Answer",
   incorrect = NULL,
-  rows = 5)
+  rows = 3)
 ```
 
-```{r temperance-6-test, include = FALSE}
+###
+
+```{r temperance-6-test}
 plot_predictions(fit_sp, condition = "treatment", draw = FALSE)
 ```
 
@@ -1776,7 +1828,7 @@ Paste the plot code below.
 
 ```{r temperance-7}
 question_text(NULL,
-  message = "    plot_predictions(fit_sp, condition = \"treatment\", draw = FALSE) |>\n      ggplot(aes(x = treatment, y = estimate)) +\n      geom_pointrange(aes(ymin = conf.low, ymax = conf.high),\n                      color = \"grey20\", size = 1.1) +\n      scale_y_continuous(labels = scales::label_dollar(prefix = \"$\")) +\n      labs(\n        title = \"Predicted 3-Month Out-of-Pocket Spending by Enrollment Status\",\n        subtitle = \"Enrolled households spend ~60 pesos less, but the CI crosses zero\",\n        x = \"Treatment\",\n        y = \"Predicted 3-month spending\",\n        caption = \"Source: King et al. (2009) Seguro Popular rollout via primer.data\"\n      ) +\n      theme_minimal()",
+  message = "plot_predictions(fit_sp, condition = \"treatment\", draw = FALSE) |>\n  ggplot(aes(x = treatment, y = estimate)) +\n  geom_pointrange(aes(ymin = conf.low, ymax = conf.high),\n                  color = \"grey20\", size = 1.1) +\n  scale_y_continuous(labels = scales::label_dollar(prefix = \"$\")) +\n  labs(\n    title = \"Predicted 3-Month Out-of-Pocket Spending by Enrollment Status\",\n    subtitle = \"Enrolled households spend about 63 pesos less than not-enrolled\",\n    x = \"Treatment\",\n    y = \"Predicted 3-month spending\",\n    caption = \"Source: King et al. (2009) Seguro Popular rollout via primer.data\"\n  ) +\n  theme_minimal()",
   answer(NULL, correct = TRUE),
   allow_retry = FALSE,
   incorrect = NULL,
@@ -1816,12 +1868,30 @@ CP/CR.
 
 ```{r temperance-8}
 question_text(NULL,
-  message = "    > show_file(\"analysis.qmd\", chunk = \"Last\")\n    ```{r}\n    plot_predictions(fit_sp, condition = \"treatment\", draw = FALSE) |>\n      ggplot(aes(x = treatment, y = estimate)) +\n      geom_pointrange(aes(ymin = conf.low, ymax = conf.high)) +\n      scale_y_continuous(labels = scales::label_dollar(prefix = \"$\")) +\n      labs(\n        title = \"Predicted 3-Month Out-of-Pocket Spending by Enrollment Status\",\n        subtitle = \"Enrolled households spend ~60 pesos less, but the CI crosses zero\",\n        x = \"Treatment\", y = \"Predicted 3-month spending\",\n        caption = \"Source: King et al. (2009) Seguro Popular rollout via primer.data\"\n      ) +\n      theme_minimal()\n    ```",
   answer(NULL, correct = TRUE),
-  allow_retry = FALSE,
+  allow_retry = TRUE,
+  try_again_button = "Edit Answer",
   incorrect = NULL,
   rows = 12)
 ```
+
+###
+
+````
+```{r}
+plot_predictions(fit_sp, condition = "treatment", draw = FALSE) |>
+  ggplot(aes(x = treatment, y = estimate)) +
+  geom_pointrange(aes(ymin = conf.low, ymax = conf.high)) +
+  scale_y_continuous(labels = scales::label_dollar(prefix = "$")) +
+  labs(
+    title = "Predicted 3-Month Out-of-Pocket Spending by Enrollment Status",
+    subtitle = "Enrolled households spend about 63 pesos less than not-enrolled",
+    x = "Treatment", y = "Predicted 3-month spending",
+    caption = "Source: King et al. (2009) Seguro Popular rollout via primer.data"
+  ) +
+  theme_minimal()
+```
+````
 
 ###
 
@@ -1833,7 +1903,7 @@ Write the last sentence of your summary paragraph. It describes at least one Qua
 
 ```{r temperance-9}
 question_text(NULL,
-  message = "We estimate that enrollment in Seguro Popular reduced three-month out-of-pocket spending by about 60 pesos on average, with a 95% confidence interval that runs from a 380-peso reduction to a 250-peso increase --- a range wide enough that we cannot rule out no effect.",
+  message = "We estimate that enrollment in Seguro Popular reduced three-month out-of-pocket spending by about 63 pesos on average, with a 95% confidence interval of roughly -105 to -22 pesos --- a small but statistically detectable reduction.",
   answer(NULL, correct = TRUE),
   allow_retry = FALSE,
   incorrect = NULL,
@@ -1873,12 +1943,61 @@ CP/CR.
 
 ```{r temperance-11}
 question_text(NULL,
-  message = "    > show_file(\"analysis.qmd\")\n    ---\n    title: \"Seguro Popular\"\n    author: \"<your name>\"\n    execute:\n      echo: false\n    ---\n    \n    ```{r}\n    #| message: false\n    library(tidyverse)\n    library(tidymodels)\n    library(primer.data)\n    library(broom)\n    library(marginaleffects)\n    ```\n    \n    ```{r}\n    x <- sps |>\n      select(treatment, t2_health_exp_3m, age, sex, education) |>\n      drop_na() |>\n      mutate(treatment = factor(if_else(treatment == 1, \"Enrolled\", \"Not enrolled\"),\n                                levels = c(\"Not enrolled\", \"Enrolled\")))\n    ```\n    \n    ```{r}\n    fit_sp <- linear_reg(engine = \"lm\") |>\n      fit(t2_health_exp_3m ~ treatment, data = x)\n    ```\n    \n    ```{r}\n    plot_predictions(fit_sp, condition = \"treatment\", draw = FALSE) |>\n      ggplot(aes(x = treatment, y = estimate)) +\n      geom_pointrange(aes(ymin = conf.low, ymax = conf.high)) +\n      scale_y_continuous(labels = scales::label_dollar(prefix = \"$\")) +\n      labs(\n        title = \"Predicted 3-Month Out-of-Pocket Spending by Enrollment Status\",\n        subtitle = \"Enrolled households spend about 63 pesos less than not-enrolled\",\n        x = \"Treatment\", y = \"Predicted 3-month spending\",\n        caption = \"Source: King et al. (2009) Seguro Popular rollout via primer.data\"\n      ) +\n      theme_minimal()\n    ```\n    \n    Households' out-of-pocket spending on health care is a key marker of financial vulnerability. Using the 27,569-household follow-up sample from Mexico's 2005--06 randomized evaluation of Seguro Popular, we estimate the average causal effect of enrollment on three-month out-of-pocket spending. One concern is that randomization happened at the community level, not the household level. We model three-month spending as a normally distributed variable which is a linear function of treatment. We estimate that enrollment reduced spending by about 63 pesos on average, with a 95% confidence interval of roughly -105 to -22 pesos --- a small but statistically detectable reduction.",
   answer(NULL, correct = TRUE),
-  allow_retry = FALSE,
+  allow_retry = TRUE,
+  try_again_button = "Edit Answer",
   incorrect = NULL,
   rows = 10)
 ```
+
+###
+
+````
+---
+title: "Seguro Popular"
+author: "<your name>"
+execute:
+  echo: false
+---
+
+```{r}
+#| message: false
+library(tidyverse)
+library(tidymodels)
+library(primer.data)
+library(broom)
+library(marginaleffects)
+```
+
+```{r}
+x <- sps |>
+  select(treatment, t2_health_exp_3m, age, sex, education) |>
+  drop_na() |>
+  mutate(treatment = factor(if_else(treatment == 1, "Enrolled", "Not enrolled"),
+                            levels = c("Not enrolled", "Enrolled")))
+```
+
+```{r}
+fit_sp <- linear_reg(engine = "lm") |>
+  fit(t2_health_exp_3m ~ treatment, data = x)
+```
+
+```{r}
+plot_predictions(fit_sp, condition = "treatment", draw = FALSE) |>
+  ggplot(aes(x = treatment, y = estimate)) +
+  geom_pointrange(aes(ymin = conf.low, ymax = conf.high)) +
+  scale_y_continuous(labels = scales::label_dollar(prefix = "$")) +
+  labs(
+    title = "Predicted 3-Month Out-of-Pocket Spending by Enrollment Status",
+    subtitle = "Enrolled households spend about 63 pesos less than not-enrolled",
+    x = "Treatment", y = "Predicted 3-month spending",
+    caption = "Source: King et al. (2009) Seguro Popular rollout via primer.data"
+  ) +
+  theme_minimal()
+```
+
+Households' out-of-pocket spending on health care is a key marker of financial vulnerability. Using the 27,569-household follow-up sample from Mexico's 2005--06 randomized evaluation of Seguro Popular, we estimate the average causal effect of enrollment on three-month out-of-pocket spending. One concern is that randomization happened at the community level, not the household level. We model three-month spending as a normally distributed variable which is a linear function of treatment. We estimate that enrollment reduced spending by about 63 pesos on average, with a 95% confidence interval of roughly -105 to -22 pesos --- a small but statistically detectable reduction.
+````
 
 ###
 
@@ -1896,7 +2015,7 @@ Copy/paste the resulting URL below.
 
 ```{r temperance-12}
 question_text(NULL,
-  message = "https://<your-github-username>.github.io/sps/analysis.html",
+  message = "https://<your-github-username>.github.io/seguro-popular/analysis.html",
   answer(NULL, correct = TRUE),
   allow_retry = FALSE,
   incorrect = NULL,
