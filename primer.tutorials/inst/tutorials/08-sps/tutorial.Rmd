@@ -27,15 +27,11 @@ knitr::opts_chunk$set(out.width = "90%")
 options(tutorial.exercise.timelimit = 600,
         tutorial.storage = "local")
 
-set.seed(2026)
 x <- sps |>
   select(treatment, t2_health_exp_3m, age, sex, education) |>
   drop_na() |>
   mutate(treatment = factor(if_else(treatment == 1, "Enrolled", "Not enrolled"),
-                            levels = c("Not enrolled", "Enrolled"))) |>
-  group_by(treatment) |>
-  slice_sample(n = 250) |>
-  ungroup()
+                            levels = c("Not enrolled", "Enrolled")))
 
 fit_sps <- linear_reg() |>
   set_engine("lm") |>
@@ -237,7 +233,7 @@ question_text(NULL,
 
 ###
 
-We will use `t2_health_exp_3m` as our outcome variable. Below is the distribution of follow-up spending in our 500-household sample, by treatment status.
+We will use `t2_health_exp_3m` as our outcome variable. Below is the distribution of follow-up spending across all ~27,500 sampled households, by treatment status.
 
 ```{r}
 #| echo: false
@@ -432,7 +428,7 @@ What are the units for this problem?
 
 ```{r wisdom-5}
 question_text(NULL,
-  message = "Each row is one household in the universe of households eligible for Seguro Popular at the time of the rollout (roughly 2005--06). The original survey covered tens of thousands of households across 74 randomized communities; our analysis sample is a 500-household slice (250 enrolled, 250 not enrolled) drawn from that universe.",
+  message = "Each row is one household in the universe of households eligible for Seguro Popular at the time of the rollout (roughly 2005--06). The original survey covered about 50,000 households across 74 randomized communities; our analysis sample is the 27,569-row `sps` tibble of follow-up survey records, restricted to households with complete data on treatment, follow-up spending, age, sex, and education.",
   answer(NULL, correct = TRUE),
   allow_retry = FALSE,
   incorrect = NULL,
@@ -639,7 +635,7 @@ question_text(NULL,
 
 ###
 
-The sample is balanced 250 / 250 across the two arms because we drew it that way: stratifying on treatment keeps the two groups visible and gives both their own clean estimate. The original SPS data has many more households than 500 in either arm; we sampled down to keep this tutorial fast.
+The sample is well-balanced between the two arms because the randomization was at the community level and the 27,569-row analysis sample inherits that balance --- about 13,700 households in each arm. With this much data, the standard error on the treatment coefficient will be small enough to detect a real effect even though the underlying average effect is itself small in peso terms.
 
 ### Exercise 12
 
@@ -647,7 +643,7 @@ Write the first two sentences of the summary paragraph. The first introduces the
 
 ```{r wisdom-12}
 question_text(NULL,
-  message = "Households' out-of-pocket spending on health care is a key marker of financial vulnerability. Using a 500-household sample drawn from Mexico's 2005--06 randomized rollout of Seguro Popular, we estimate the average causal effect of enrollment on three-month out-of-pocket spending.",
+  message = "Households' out-of-pocket spending on health care is a key marker of financial vulnerability. Using the 27,569-household follow-up sample from Mexico's 2005--06 randomized rollout of Seguro Popular, we estimate the average causal effect of enrollment on three-month out-of-pocket spending.",
   answer(NULL, correct = TRUE),
   allow_retry = FALSE,
   incorrect = NULL,
@@ -742,8 +738,8 @@ data_tibble <- tibble::tribble(
   "Castaneda (#491)",     "2005",  "$1,800",            "Enrolled",   "32",   "Female"
 )
 
-data_title_footnote     <- "Mexican Ministry of Health Seguro Popular evaluation, 2005--06 (King et al. 2009). Roughly 30,000 surveyed households across 74 randomized communities. Our analysis filters to households with complete records on treatment, follow-up spending, and the demographic covariates, then samples 250 enrolled and 250 not-enrolled households for a balanced 500-row analysis."
-data_units_footnote     <- "Each row is one household at the time of the 2005--06 follow-up survey. The example rows above use real names and ID numbers chosen to span the spending range; missing rows represent the other 496 households not shown."
+data_title_footnote     <- "Mexican Ministry of Health Seguro Popular evaluation, 2005--06 (King et al. 2009). About 50,000 surveyed households across 74 randomized communities; the 27,569-row `sps` tibble holds the follow-up records with complete data on treatment, three-month spending, age, sex, and education."
+data_units_footnote     <- "Each row is one household at the time of the 2005--06 follow-up survey. The example rows above use real names and ID numbers chosen to span the spending range; missing rows represent the other 27,566 households not shown."
 data_outcome_footnote   <- "Three-month total out-of-pocket health spending, in Mexican pesos, recorded at follow-up. Self-reported and bounded below by zero, with a long right tail."
 data_treatment_footnote <- "Whether the household's community had received Seguro Popular by the follow-up survey, recorded as `Enrolled` or `Not enrolled`. Random assignment was at the community level."
 data_covariate_footnote <- "Household head's age in years and self-reported sex."
@@ -882,7 +878,7 @@ Specify the unit/time combinations which define each row in this Population Tabl
 
 ```{r justice-5}
 question_text(NULL,
-  message = "Each row is one household at one point in time. Data rows are the 500 households in our sampled SPS analysis subset, surveyed in 2005--06. Preceptor rows are the same population of Mexican households in 2005--06 (the universe the original survey sampled from); because both blocks share era and target population, our example rows happen to be the same three households shown twice --- once with the observed potential outcome and once with both potential outcomes filled in.",
+  message = "Each row is one household at one point in time. Data rows are the 27,569 households in our SPS analysis subset, surveyed in 2005--06. Preceptor rows are the same population of Mexican households in 2005--06 (the universe the original survey sampled from); because both blocks share era and target population, our example rows happen to be the same three households shown twice --- once with the observed potential outcome and once with both potential outcomes filled in.",
   answer(NULL, correct = TRUE),
   allow_retry = FALSE,
   incorrect = NULL,
@@ -909,7 +905,7 @@ pop_tibble <- tibble::tribble(
   "..."      , "...",                   "..."  , "...",                  "...",           "...",  "..."
 )
 
-pop_title_footnote     <- "Population: Mexican households eligible for Seguro Popular at the time of the randomized rollout (2005--06). Data rows are the 500 households in our sampled analysis subset; Preceptor rows are the same households described with both potential outcomes filled in (counterfactual hatched in the Preceptor Table itself). The example rows are real households shown to illustrate the structure --- the same three units appear in both blocks."
+pop_title_footnote     <- "Population: Mexican households eligible for Seguro Popular at the time of the randomized rollout (2005--06). Data rows are the 27,569 households in our analysis subset; Preceptor rows are the same households described with both potential outcomes filled in (counterfactual hatched in the Preceptor Table itself). The example rows are real households shown to illustrate the structure --- the same three units appear in both blocks."
 pop_units_footnote     <- "Each row is one household at one point in time. The Data block records what we observed (one potential outcome per household, given the household's actual treatment); the Preceptor block records the unobservable truth (both potential outcomes filled in)."
 pop_outcome_footnote   <- "Three-month spending in pesos. In Data rows, only the value under the household's actual treatment is observed --- the counterfactual is unknown. In Preceptor rows, both potential outcomes are filled in (here written as `enrolled / not enrolled`); the counterfactual was hatched in the Preceptor Table proper."
 pop_treatment_footnote <- "Whether the household's community had received Seguro Popular by the follow-up survey. Same column meaning in both blocks; randomization at the community level is what makes the Data and Preceptor blocks compatible."
@@ -998,7 +994,7 @@ Provide one reason why stability might not hold in this case.
 
 ```{r justice-7}
 question_text(NULL,
-  message = "The communities randomized into the rollout were drawn from the country's poorest and least-served regions. The causal effect of enrollment in those communities --- where uninsured spending was already a real burden --- may be different (probably larger) than the causal effect would be in wealthier urban communities. If the *parameter* of interest is the average causal effect for the whole population, our 500-household sample may estimate something other than that, because the slope of spending on treatment may differ across regions.",
+  message = "The communities randomized into the rollout were drawn from the country's poorest and least-served regions. The causal effect of enrollment in those communities --- where uninsured spending was already a real burden --- may be different (probably larger) than the causal effect would be in wealthier urban communities. If the *parameter* of interest is the average causal effect for the whole population, our analysis sample may estimate something other than that, because the slope of spending on treatment may differ across regions.",
   answer(NULL, correct = TRUE),
   allow_retry = FALSE,
   incorrect = NULL,
@@ -1032,7 +1028,7 @@ Provide one reason, involving the relationship between the data and the populati
 
 ```{r justice-9}
 question_text(NULL,
-  message = "Households that answered both the baseline and follow-up surveys are not a random sample of all eligible households. Households that moved, dissolved, or refused the follow-up are systematically absent --- and their absence is plausibly correlated with health-spending pressure (a household that fell into financial crisis between waves may be more likely to drop out). Our 500-row sample inherits whatever attrition pattern was in the original analysis dataset, and may underrepresent households for whom the program would have mattered most.",
+  message = "Households that answered both the baseline and follow-up surveys are not a random sample of all eligible households. Households that moved, dissolved, or refused the follow-up are systematically absent --- and their absence is plausibly correlated with health-spending pressure (a household that fell into financial crisis between waves may be more likely to drop out). Our 27,569-row sample inherits whatever attrition pattern was in the original survey dataset, and may underrepresent households for whom the program would have mattered most.",
   answer(NULL, correct = TRUE),
   allow_retry = FALSE,
   incorrect = NULL,
@@ -1119,7 +1115,7 @@ The link function for a continuous outcome is the identity (linear): $\mu = \bet
 
 Write one sentence highlighting a potential weakness in your model. So far our summary paragraph looks like this:
 
-> Households' out-of-pocket spending on health care is a key marker of financial vulnerability. Using a 500-household sample drawn from Mexico's 2005--06 randomized rollout of Seguro Popular, we estimate the average causal effect of enrollment on three-month out-of-pocket spending.
+> Households' out-of-pocket spending on health care is a key marker of financial vulnerability. Using the 27,569-household follow-up sample from Mexico's 2005--06 randomized rollout of Seguro Popular, we estimate the average causal effect of enrollment on three-month out-of-pocket spending.
 
 Your version will be somewhat different.
 
@@ -1696,7 +1692,7 @@ In the R Terminal, run `predictions()` on `fit_sps`. CP/CR.
 
 ```{r temperance-4}
 question_text(NULL,
-  message = "    > predictions(fit_sps)\n    \n     Estimate Std. Error    z Pr(>|z|)  2.5 % 97.5 %\n          721        113 6.36   <0.001    499    944\n          783        113 6.91   <0.001    560   1005\n          721        113 6.36   <0.001    499    944\n          ... (500 rows total, one per household)\n    \n    Type: numeric",
+  message = "    > predictions(fit_sps)\n    \n     Estimate Std. Error    z Pr(>|z|)  2.5 % 97.5 %\n          731       14.9 49.0   <0.001    702    760\n          794       15.0 52.9   <0.001    765    824\n          731       14.9 49.0   <0.001    702    760\n          ... (27569 rows total, one per household)\n    \n    Type: numeric",
   answer(NULL, correct = TRUE),
   allow_retry = FALSE,
   incorrect = NULL,
@@ -1705,7 +1701,7 @@ question_text(NULL,
 
 ###
 
-`predictions()` returns one row per observation (500 here) with the model's predicted spending for each household. Because our model has only one covariate, there are only two distinct fitted values: 721 pesos for the enrolled rows, 783 pesos for the not-enrolled rows.
+`predictions()` returns one row per observation (27,569 here) with the model's predicted spending for each household. Because our model has only one covariate, there are only two distinct fitted values: 731 pesos for the enrolled rows, 794 pesos for the not-enrolled rows.
 
 ### Exercise 5
 
@@ -1781,7 +1777,7 @@ plot_predictions(fit_sps, condition = "treatment", draw = FALSE) |>
   scale_y_continuous(labels = scales::label_dollar(prefix = "$")) +
   labs(
     title = "Predicted 3-Month Out-of-Pocket Spending by Enrollment Status",
-    subtitle = "Enrolled households spend ~60 pesos less, but the CI crosses zero",
+    subtitle = "Enrolled households spend about 63 pesos less than not-enrolled",
     x = "Treatment",
     y = "Predicted 3-month spending",
     caption = "Source: King et al. (2009) SPS rollout via primer.data"
@@ -1835,7 +1831,7 @@ Write a few sentences explaining why the estimates might be wrong. Suggest alter
 
 ```{r temperance-10}
 question_text(NULL,
-  message = "Our 500-household sample is balanced 250/250 across treatment arms by construction, but it is drawn from a survey with substantial follow-up attrition and from communities chosen by the Ministry from the country's poorer regions. Both pull our estimate away from a national average. The randomization happened at the community, not household, level --- so the comparison of *enrolled* vs. *not enrolled* households conflates the randomized intent-to-treat effect with self-selection into enrollment within treated communities. The point estimate could plausibly be anywhere from -200 to +50 pesos rather than the -62 we report; we should widen the confidence interval substantially to account for these issues that the model's standard error does not see.",
+  message = "Our 27,569-household sample is naturally balanced across treatment arms because randomization was at the community level. But the sample is drawn from a survey with substantial follow-up attrition and from communities chosen by the Ministry from the country's poorer regions; both pull our estimate away from a national average. The randomization also happened at the community, not household, level --- so the model's reported standard error of about 21 pesos understates the true uncertainty: nearby households share unobserved correlates of spending, and a cluster-robust standard error would be substantially wider. The point estimate of about -63 pesos is consistent with King et al.'s reported effect, but we should widen the confidence interval beyond the model's [-105, -22] to account for the cluster structure and the representativeness concerns the model's standard error does not see.",
   answer(NULL, correct = TRUE),
   allow_retry = FALSE,
   incorrect = NULL,
@@ -1858,7 +1854,7 @@ CP/CR.
 
 ```{r temperance-11}
 question_text(NULL,
-  message = "    > show_file(\"analysis.qmd\")\n    ---\n    title: \"Seguro Popular\"\n    author: \"<your name>\"\n    execute:\n      echo: false\n    ---\n    \n    ```{r}\n    #| message: false\n    library(tidyverse)\n    library(tidymodels)\n    library(primer.data)\n    library(broom)\n    library(marginaleffects)\n    ```\n    \n    ```{r}\n    set.seed(2026)\n    x <- sps |>\n      select(treatment, t2_health_exp_3m, age, sex, education) |>\n      drop_na() |>\n      mutate(treatment = factor(if_else(treatment == 1, \"Enrolled\", \"Not enrolled\"),\n                                levels = c(\"Not enrolled\", \"Enrolled\"))) |>\n      group_by(treatment) |>\n      slice_sample(n = 250) |>\n      ungroup()\n    ```\n    \n    ```{r}\n    #| cache: true\n    fit_sps <- linear_reg(engine = \"lm\") |>\n      fit(t2_health_exp_3m ~ treatment, data = x)\n    ```\n    \n    ```{r}\n    plot_predictions(fit_sps, condition = \"treatment\", draw = FALSE) |>\n      ggplot(aes(x = treatment, y = estimate)) +\n      geom_pointrange(aes(ymin = conf.low, ymax = conf.high)) +\n      scale_y_continuous(labels = scales::label_dollar(prefix = \"$\")) +\n      labs(\n        title = \"Predicted 3-Month Out-of-Pocket Spending by Enrollment Status\",\n        subtitle = \"Enrolled households spend ~60 pesos less, but the CI crosses zero\",\n        x = \"Treatment\", y = \"Predicted 3-month spending\",\n        caption = \"Source: King et al. (2009) SPS rollout via primer.data\"\n      ) +\n      theme_minimal()\n    ```\n    \n    Households' out-of-pocket spending on health care is a key marker of financial vulnerability. Using a 500-household sample drawn from Mexico's 2005--06 randomized rollout of Seguro Popular, we estimate the average causal effect of enrollment on three-month out-of-pocket spending. One concern is that randomization happened at the community level, not the household level. We model three-month spending as a normally distributed variable which is a linear function of treatment. We estimate that enrollment reduced spending by about 60 pesos on average, with a 95% confidence interval wide enough to include zero --- our data cannot rule out no effect.",
+  message = "    > show_file(\"analysis.qmd\")\n    ---\n    title: \"Seguro Popular\"\n    author: \"<your name>\"\n    execute:\n      echo: false\n    ---\n    \n    ```{r}\n    #| message: false\n    library(tidyverse)\n    library(tidymodels)\n    library(primer.data)\n    library(broom)\n    library(marginaleffects)\n    ```\n    \n    ```{r}\n    x <- sps |>\n      select(treatment, t2_health_exp_3m, age, sex, education) |>\n      drop_na() |>\n      mutate(treatment = factor(if_else(treatment == 1, \"Enrolled\", \"Not enrolled\"),\n                                levels = c(\"Not enrolled\", \"Enrolled\")))\n    ```\n    \n    ```{r}\n    fit_sps <- linear_reg(engine = \"lm\") |>\n      fit(t2_health_exp_3m ~ treatment, data = x)\n    ```\n    \n    ```{r}\n    plot_predictions(fit_sps, condition = \"treatment\", draw = FALSE) |>\n      ggplot(aes(x = treatment, y = estimate)) +\n      geom_pointrange(aes(ymin = conf.low, ymax = conf.high)) +\n      scale_y_continuous(labels = scales::label_dollar(prefix = \"$\")) +\n      labs(\n        title = \"Predicted 3-Month Out-of-Pocket Spending by Enrollment Status\",\n        subtitle = \"Enrolled households spend about 63 pesos less than not-enrolled\",\n        x = \"Treatment\", y = \"Predicted 3-month spending\",\n        caption = \"Source: King et al. (2009) SPS rollout via primer.data\"\n      ) +\n      theme_minimal()\n    ```\n    \n    Households' out-of-pocket spending on health care is a key marker of financial vulnerability. Using the 27,569-household follow-up sample from Mexico's 2005--06 randomized rollout of Seguro Popular, we estimate the average causal effect of enrollment on three-month out-of-pocket spending. One concern is that randomization happened at the community level, not the household level. We model three-month spending as a normally distributed variable which is a linear function of treatment. We estimate that enrollment reduced spending by about 63 pesos on average, with a 95% confidence interval of roughly -105 to -22 pesos --- a small but statistically detectable reduction.",
   answer(NULL, correct = TRUE),
   allow_retry = FALSE,
   incorrect = NULL,
@@ -1926,7 +1922,7 @@ plot_predictions(fit_sps, condition = "treatment", draw = FALSE) |>
   scale_y_continuous(labels = scales::label_dollar(prefix = "$")) +
   labs(
     title = "Predicted 3-Month Out-of-Pocket Spending by Enrollment Status",
-    subtitle = "Enrolled households spend ~60 pesos less, but the CI crosses zero",
+    subtitle = "Enrolled households spend about 63 pesos less than not-enrolled",
     x = "Treatment",
     y = "Predicted 3-month spending",
     caption = "Source: King et al. (2009) SPS rollout via primer.data"
@@ -1934,7 +1930,7 @@ plot_predictions(fit_sps, condition = "treatment", draw = FALSE) |>
   theme_minimal()
 ```
 
-Households' out-of-pocket spending on health care is a key marker of financial vulnerability. Using a 500-household sample drawn from Mexico's 2005--06 randomized rollout of Seguro Popular, we estimate the average causal effect of enrollment on three-month out-of-pocket spending. One concern is that randomization happened at the community level rather than the household level: within a treated community, enrollment was voluntary, so the comparison of enrolled vs. not-enrolled households is partly a comparison of self-selected groups. We model three-month spending as a normally distributed variable which is a linear function of treatment. We estimate that enrollment reduced average three-month spending by about 60 pesos, with a 95% confidence interval running from roughly -380 to +250 pesos --- a range wide enough that we cannot rule out no effect.
+Households' out-of-pocket spending on health care is a key marker of financial vulnerability. Using the 27,569-household follow-up sample from Mexico's 2005--06 randomized rollout of Seguro Popular, we estimate the average causal effect of enrollment on three-month out-of-pocket spending. One concern is that randomization happened at the community level rather than the household level: within a treated community, enrollment was voluntary, so the comparison of enrolled vs. not-enrolled households is partly a comparison of self-selected groups. We model three-month spending as a normally distributed variable which is a linear function of treatment. We estimate that enrollment reduced average three-month spending by about 63 pesos, with a 95% confidence interval of roughly -105 to -22 pesos --- a small but statistically detectable reduction. A cluster-aware standard error would widen that interval.
 
 This finding would inform a policy decision about whether to renew or expand a Seguro Popular--like program, and about how to interpret similar randomized rollouts of social-insurance programs in other settings. It does not address every question a policy analyst would face --- it says nothing about catastrophic health spending in particular, about non-financial outcomes like health status, or about how the effect varies across regions or income tiers. But it gives a defensible starting point.
 

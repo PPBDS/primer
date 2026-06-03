@@ -12,22 +12,18 @@ library(marginaleffects)
 library(gt)
 library(knitr)
 
-set.seed(2026)
 x <- sps |>
   select(treatment, t2_health_exp_3m, age, sex, education) |>
   drop_na() |>
   mutate(treatment = factor(if_else(treatment == 1, "Enrolled", "Not enrolled"),
-                            levels = c("Not enrolled", "Enrolled"))) |>
-  group_by(treatment) |>
-  slice_sample(n = 250) |>
-  ungroup()
+                            levels = c("Not enrolled", "Enrolled")))
 ```
 
-The four [Cardinal Virtues](https://en.wikipedia.org/wiki/Cardinal_virtues) for working through a data science problem are *Wisdom*, *Justice*, *Courage*, and *Temperance*. This chapter --- the fourth example chapter in the *Primer*, the second causal one, sitting between Colleges (predictive) and the first Medium-tier predictive chapter (Smokes) --- works through a randomized field experiment with a continuous, heavy-tailed outcome. The matching tutorial is `08-sps` in the **[primer.tutorials](https://ppbds.github.io/primer/tutorials/)** package; almost every line of code in that tutorial appears here, surrounded by more prose, more exploration, and a paired predictive version of the same question.
+The four [Cardinal Virtues](https://en.wikipedia.org/wiki/Cardinal_virtues) for working through a data science problem are *Wisdom*, *Justice*, *Courage*, and *Temperance*.
 
-Imagine that you are a health-policy analyst at Mexico's Ministry of Health. The Minister has a big-picture goal --- improve Mexican health outcomes within a limited budget --- and trusts you to find the evidence that helps her decide where the money should go. Seguro Popular, the universal health-insurance program Mexico randomized into communities starting in 2005, is one of many programs competing for that budget. Several models would help: how enrollment changes household spending, hospital usage, mortality, debt. This chapter builds just one of them: the causal effect of enrollment on a household's out-of-pocket health spending in the three months before a follow-up survey. The estimate alone won't decide anything --- a serious cost-benefit analysis of Seguro Popular would weigh many outcomes against premium costs --- but it is one good input. There are many decisions to make.
+Imagine that you are a health-policy analyst at Mexico's Ministry of Health. The Minister has a big-picture goal --- improve Mexican health outcomes within a limited budget --- and trusts you to find the evidence that helps her decide where the money should go. Seguro Popular, the universal health-insurance program Mexico randomized into communities starting in 2005, is one of many programs competing for that budget. You could investigate any of several questions for the Minister: *Does enrollment in Seguro Popular change household spending on health care, and if so by how much? Does it increase or decrease hospital usage? What is the causal effect of enrollment on mortality? How does enrollment change the burden of medical debt for the poorest households?* The Minister will eventually want answers to all of them; right now, in this office, the question on her desk is the first one. This chapter takes that one on: the causal effect of enrollment on a household's out-of-pocket health spending in the three months before a follow-up survey. The estimate alone won't decide anything --- a serious cost-benefit analysis of Seguro Popular would weigh spending against the other outcomes the Minister cares about, and against premium costs --- but it is one good input. There are many decisions to make.
 
-The data we will work from is `sps`, available in the **[primer.data](https://github.com/PPBDS/primer.data)** package. It is the household-level dataset from King et al.'s 2009 *Lancet* paper on a 50,000-household randomized assessment of Seguro Popular. Each row is one Mexican household surveyed at the 10-month follow-up; key columns are `treatment` (whether the household lived in a community assigned to receive Seguro Popular early), `t2_health_exp_3m` (the household's reported out-of-pocket health spending over the three months before the follow-up survey, in Mexican pesos), `age` (the surveyed household member's age), `sex`, and `education`. The full tibble has 27,569 rows. The chapter works from a stratified random sample of 500 households (250 per treatment arm), drawn with `set.seed(2026)` for reproducibility. The treatment column is recoded as a factor with "Not enrolled" as the reference level, matching the tutorial's convention.
+The data we will work from is `sps`, available in the **[primer.data](https://github.com/PPBDS/primer.data)** package. It is the household-level dataset from King et al.'s 2009 *Lancet* paper on a 50,000-household randomized assessment of Seguro Popular. Each row is one Mexican household surveyed at the 10-month follow-up; key columns are `treatment` (whether the household lived in a community assigned to receive Seguro Popular early), `t2_health_exp_3m` (the household's reported out-of-pocket health spending over the three months before the follow-up survey, in Mexican pesos), `age` (the surveyed household member's age), `sex`, and `education`. The analysis tibble has 27,569 rows after restricting to follow-up records with complete data on those columns. The treatment column is recoded as a factor with "Not enrolled" as the reference level.
 
 
 ## Wisdom
@@ -194,7 +190,7 @@ x |>
   theme_minimal()
 ```
 
-The jitter view --- with the y-axis capped at 3,000 pesos to hide the right tail without dropping it from the model --- shows individual households as points. The mass of both groups sits near zero. The blue dots, marking the sample means, sit so close together that the difference between them is invisible at this scale. With our 500-household stratified sample, the model's estimated causal effect will have wide error bars; the underlying program's average effect on average spending was always going to be small in dollar terms.
+The jitter view --- with the y-axis capped at 3,000 pesos to hide the right tail without dropping it from the model --- shows individual households as points. The mass of both groups sits near zero. The blue dots, marking the sample means, sit so close together that the difference between them is invisible at this scale. With 27,569 households the standard error on a between-group difference of 63 pesos is small enough to be statistically detectable, but the magnitude of the effect itself is genuinely small: a typical Enrolled household spends about 731 pesos over three months while a typical Not-enrolled household spends about 794 --- a real difference that disappears against the variation within each arm.
 
 ```{r}
 #| echo: false
@@ -221,8 +217,8 @@ Putting the outcome on a log scale (with one peso added to handle the zeros) mak
 A few specifics worth flagging from the EDA:
 
 - **The outcome distribution is heavy-tailed.** Almost half the households report zero spending; a small fraction account for most of the mean. The Normal-family model the chapter uses ignores this and pretends the outcome is symmetric around its mean. For the average treatment effect this is OK; for any question about extreme values it is wrong.
-- **The data prep stratified the sample.** Without `group_by(treatment) |> slice_sample(n = 250)`, a naive 500-row sample would have followed the full-sample mix (about 50/50) plus chance, but with potentially uneven treatment-control representation. The stratification guarantees balanced arms.
-- **The 500-row sample is small for this outcome.** The standard error of the treatment coefficient in the slice we work with is about 160 pesos, large compared to the population-scale effect that King et al. report (around -60 pesos in the full data). The chapter's headline estimate will be too noisy to distinguish a small negative effect from no effect.
+- **The arms are naturally balanced.** Randomization happened at the community level, and the 27,569-row analysis sample inherits that balance: about 13,700 Enrolled households and 13,900 Not enrolled. No stratified slicing is needed; the design itself does the work.
+- **The outcome is heavy-tailed.** Three-month spending has a mean of about 762 pesos but a maximum past 37,000 pesos, with a long thin right tail. The chapter does not log-transform or trim; we model the raw pesos and accept that the residual standard deviation will be on the order of 1,800. With ~27,500 observations the standard error on the treatment coefficient lands near 21 pesos, small enough for an effect of -63 pesos to be statistically detectable.
 
 ### The paired question
 
@@ -234,7 +230,7 @@ Every chapter pairs its primary question with one in the opposite framing. Since
 
 This is the predictive twin of the causal primary. The same fitted model serves both, but the readings differ:
 
-* The causal reading says: *Seguro Popular enrollment lowers the average household's three-month out-of-pocket health spending by about 60 pesos.* (We anticipate the answer; the slice's confidence interval will be wide enough that we cannot reject zero, but the headline is the population-scale effect King et al. reported.) That is a claim about what would happen under the randomized assignment, defended by the cluster-level randomization.
+* The causal reading says: *Seguro Popular enrollment lowers the average household's three-month out-of-pocket health spending by about 63 pesos.* (We anticipate the answer; the 95% confidence interval is roughly [-105, -22] under a naive standard error, and would widen somewhat under a cluster-robust standard error that accounts for the community-level randomization.) That is a claim about what would happen under the randomized assignment, defended by the cluster-level randomization.
 * The predictive reading says: *households assigned to the Enrolled arm of the trial spent, on average, about 60 pesos less over the three months before the follow-up survey than households assigned to the Not-enrolled arm.* That is a between-group comparison with no commitment to a counterfactual.
 
 Both readings are defensible. The causal reading is defensible because the cluster-level randomization defends unconfoundedness *at the cluster level* (with the caveat we develop in Justice). The predictive reading is defensible because it is just a comparison between two existing groups. Like Trains, but unlike Recruits or Colleges, both readings are honest: the same fit, the same number, two valid readings.
@@ -365,7 +361,7 @@ pop_primary_html <- gt::gt(pop_primary_tibble, id = "pop_primary") |>
     fn = function(x) hatch(x)
   ) |>
   gt::tab_footnote(
-    footnote = "Both blocks are drawn from the population of Mexican households eligible for Seguro Popular at the time of the King et al. trial. The Data rows are the 500 households in our stratified sample, surveyed at the 10-month follow-up in 2006. The Preceptor rows are the same households under the potential-outcomes lens: both potential outcomes filled in, with the unobservable one hatched. Because the data IS the trial, the Data and Preceptor blocks refer to the same year --- a temporal alignment that, as in Trains, makes stability much easier than in tutorials where the data is decades old.",
+    footnote = "Both blocks are drawn from the population of Mexican households eligible for Seguro Popular at the time of the King et al. trial. The Data rows are the 27,569 households with complete follow-up records, surveyed at the 10-month follow-up in 2006. The Preceptor rows are the same households under the potential-outcomes lens: both potential outcomes filled in, with the unobservable one hatched. Because the data IS the trial, the Data and Preceptor blocks refer to the same year --- a temporal alignment that, as in Trains, makes stability much easier than in tutorials where the data is decades old.",
     locations = gt::cells_title()
   ) |>
   gt::opt_css(css = "#pop_primary .gt_footnote { max-width: 1px; word-break: break-word; }") |>
@@ -404,7 +400,7 @@ Two links to defend.
 
 *Data → population.* The King et al. trial sampled 100 paired communities across seven of Mexico's 32 states. Those states (including Guerrero, Oaxaca, and Chiapas) were chosen for their high pre-trial uninsurance rates and substantial rural populations. They are not the median Mexican state; they are systematically poorer and more rural. If the average causal effect of Seguro Popular enrollment differs between the trial-state population and other Mexican states --- and there is no reason to expect it to be constant across the country --- then the trial's estimate generalizes uncertainly. Within trial states, the surveyed communities and households were drawn with a specific cluster-sampling scheme designed to maximize statistical power, not representativeness; the data is closer to a *purposive* sample of high-need communities than to a random sample of all Mexican households.
 
-Our chapter goes one further step in that direction by working from a 500-household stratified slice of the 27,569-row trial sample. The slice was drawn at random (with `set.seed(2026)`), so within the trial data the slice is representative; the chain that worries us is *trial → all Mexican households*, not *trial → slice*.
+We use the full 27,569-row trial sample, so the *trial → analysis sample* link is the identity; the chain that worries us is just *trial → all Mexican households*.
 
 *Population → Preceptor Table.* For the question as stated --- *the average causal effect on the trial population* --- the Population-to-Preceptor link is essentially the identity, and there is nothing to worry about. For the larger Ministry question --- *what would happen if we rolled out (or stopped) the program nationwide* --- the link is the same as the data-to-population link, with the same caveats.
 
@@ -420,13 +416,13 @@ For the primary question, the King et al. trial was designed to satisfy unconfou
 
 One important wrinkle, flagged briefly in the validity discussion above: the randomization was at the *cluster* (community) level, not the *household* level. Every household in an early-rollout community was assigned to "Enrolled"; every household in a late-rollout community to "Not enrolled." This is fine for the headline assignment-level effect --- unconfoundedness holds at the cluster level by design --- but it has two implications.
 
-First, the *effective* sample size for inference is smaller than the household count would suggest. Two households in the same community share their treatment assignment and probably share a lot of unobserved correlates of spending (same nearby clinic, same local economy, same disease environment). The right standard error reflects the cluster structure, not the household structure. The model we fit ignores this, and the confidence intervals it reports are *too narrow* relative to a cluster-aware estimator. King et al. used cluster-robust standard errors; our chapter does not, partly because the slice-sample n=500 noise is already large enough to dominate, but a more careful real-world analysis would.
+First, the *effective* sample size for inference is smaller than the 27,569 household count would suggest. Two households in the same community share their treatment assignment and probably share a lot of unobserved correlates of spending (same nearby clinic, same local economy, same disease environment). The right standard error reflects the cluster structure, not the household structure. The model we fit ignores this, and the confidence intervals it reports are *too narrow* relative to a cluster-aware estimator. King et al. used cluster-robust standard errors and reported a slightly wider interval than our naive linear-regression CI of [-105, -22] pesos; a careful real-world analysis here would do the same.
 
 Second, the cluster-level randomization does not, by itself, guarantee unconfoundedness at the household level. If households within an early-rollout community are systematically different from households within a late-rollout community on something *other* than the community assignment --- say, the early-rollout communities had a slightly different age distribution by chance --- then a household-level analysis could pick up a confound the cluster-level analysis is immune to. With 100 paired communities the chance of major imbalance is small but not zero.
 
 ### The Population Table for the paired question
 
-The paired Population Table has the same row structure as the primary --- the 500 trial households at follow-up, plus the "..." separators reminding us that the population is broader --- but a single outcome column instead of two, with no hatching.
+The paired Population Table has the same row structure as the primary --- the 27,569 trial households at follow-up, plus the "..." separators reminding us that the population is broader --- but a single outcome column instead of two, with no hatching.
 
 ```{r}
 #| echo: false
@@ -522,12 +518,12 @@ linear_reg() |>
   tidy(conf.int = TRUE) |>
   select(term, estimate, conf.low, conf.high) |>
   mutate(across(where(is.numeric), \(v) round(v, 1))) |>
-  kable(caption = "Candidate model: t2_health_exp_3m ~ treatment. Source: 500-household sample from King et al. (2009) SPS rollout via primer.data.")
+  kable(caption = "Candidate model: t2_health_exp_3m ~ treatment. Source: King et al. (2009) SPS rollout, full follow-up sample via primer.data.")
 ```
 
-The intercept is the expected spending of a Not-enrolled household: about 783 pesos over three months. The coefficient on `treatmentEnrolled` is about -62 pesos: Enrolled households spent, on average, about 62 pesos less than Not-enrolled households over the three months before the follow-up. The 95% confidence interval is roughly [-376, +253], a wide interval that comfortably includes zero. The slice-level data, taken on its own, *cannot reject the null hypothesis of no effect*.
+The intercept is the expected spending of a Not-enrolled household: about 794 pesos over three months. The coefficient on `treatmentEnrolled` is about -63 pesos: Enrolled households spent, on average, about 63 pesos less than Not-enrolled households over the three months before the follow-up. The 95% confidence interval is roughly [-105, -22] under a naive standard error, well below zero --- a small but statistically detectable reduction.
 
-This is honest. With 500 households, a heavy-tailed outcome, and a small underlying effect (about 60 pesos against a residual standard deviation of around 1,800), the slice does not have enough power to distinguish a 60-peso effect from no effect at all. King et al., working with the full 27,000+ household dataset, found a statistically significant negative effect of about the same magnitude (-63 pesos in the full sample, CI [-105, -22]). The true effect is small; our slice is too noisy to detect it.
+This estimate matches King et al.'s reported full-sample finding (-63 pesos with cluster-robust CI [-105, -22]). The underlying program effect is genuinely small: an average household in the not-enrolled arm spends about 794 pesos over three months, and enrolling lowers that by roughly 8%. The residual standard deviation in spending is around 1,800 pesos, so within-arm variation dwarfs the between-arm difference --- but with ~27,500 observations the standard error on the mean difference is small enough to lift the signal out of the noise. The naive standard error here, 21 pesos, is narrower than the cluster-robust standard error that King et al. used; a careful real-world analysis would widen the interval to account for cluster correlation.
 
 #### Candidate 2: `t2_health_exp_3m ~ treatment + age + sex`
 
@@ -539,10 +535,10 @@ linear_reg() |>
   tidy(conf.int = TRUE) |>
   select(term, estimate, conf.low, conf.high) |>
   mutate(across(where(is.numeric), \(v) round(v, 1))) |>
-  kable(caption = "Candidate model: t2_health_exp_3m ~ treatment + age + sex. Source: 500-household sample.")
+  kable(caption = "Candidate model: t2_health_exp_3m ~ treatment + age + sex. Source: full follow-up sample.")
 ```
 
-Adding `age` and `sex` to the model leaves the coefficient on `treatmentEnrolled` essentially unchanged. This is what we should expect from a properly randomized experiment: pre-treatment covariates like age and sex should be roughly orthogonal to the treatment assignment, so adjusting for them does not move the treatment coefficient by much. The `age` coefficient is small and noisy; the `sex` coefficient (male vs female) is also small. Neither of these covariates explains much of the residual variance in spending --- the heavy right tail is doing most of the within-group variation.
+Adding `age` and `sex` to the model leaves the coefficient on `treatmentEnrolled` essentially unchanged (it nudges from about -63 to about -76 pesos). This is what we should expect from a properly randomized experiment: pre-treatment covariates like age and sex should be roughly orthogonal to the treatment assignment, so adjusting for them does not move the treatment coefficient by much. The `age` coefficient is small (about 4 pesos per year) but, with this much data, statistically detectable; the `sex` coefficient (male vs female) is small and not distinguishable from zero. Neither covariate explains much of the residual variance in spending --- the heavy right tail is doing most of the within-group variation.
 
 #### Candidate 3: `t2_health_exp_3m ~ treatment + age + sex + education`
 
@@ -554,7 +550,7 @@ linear_reg() |>
   tidy(conf.int = TRUE) |>
   select(term, estimate, conf.low, conf.high) |>
   mutate(across(where(is.numeric), \(v) round(v, 1))) |>
-  kable(caption = "Candidate model: t2_health_exp_3m ~ treatment + age + sex + education. Source: 500-household sample.")
+  kable(caption = "Candidate model: t2_health_exp_3m ~ treatment + age + sex + education. Source: full follow-up sample.")
 ```
 
 Adding `education` (with several levels: preschool, primary, secondary, etc.) to the model continues to leave the treatment coefficient essentially unchanged. This confirms the randomization-orthogonality story from Candidate 2. The education coefficients themselves carry information --- higher-education households tend to spend somewhat more on health care, plausibly because they have higher incomes --- but they do not move our headline answer.
@@ -579,9 +575,9 @@ with residuals drawn from $N(0, 1{,}791)$ --- a residual standard deviation of a
 
 Three differences from the abstract form. First, the parameters are replaced by their best estimates. Second, the error term is gone from the right-hand side because this formula generates our *estimated* outcome, not its randomness. Third, the left-hand side has a hat ($\widehat{\text{Spending}}$).
 
-`treatmentEnrolled` is a 0/1 dummy: 1 for Enrolled households, 0 for Not-enrolled. The intercept (783 pesos) is the expected spending of a Not-enrolled household; adding the slope (-62) gives the expected spending of an Enrolled household (about 721 pesos).
+`treatmentEnrolled` is a 0/1 dummy: 1 for Enrolled households, 0 for Not-enrolled. The intercept (794 pesos) is the expected spending of a Not-enrolled household; adding the slope (-63) gives the expected spending of an Enrolled household (about 731 pesos).
 
-**This is our data generating mechanism.** It serves both the primary causal question and the paired predictive question. The residual standard deviation dwarfs the treatment coefficient, which is exactly the situation in which the slice-level data can detect the *sign* of the effect (negative) only with substantial uncertainty.
+**This is our data generating mechanism.** It serves both the primary causal question and the paired predictive question. The residual standard deviation (about 1,790 pesos) dwarfs the treatment coefficient, but with 27,569 observations the standard error on the difference is small enough that the effect is statistically detectable.
 
 ### Model checking
 
@@ -607,7 +603,7 @@ ggplot(fitted_df, aes(x = value, fill = source)) +
     x        = "3-month spending (pesos, x-axis capped at 3,000)",
     y        = NULL,
     fill     = "Source",
-    caption  = "Source: 500-household sample from King et al. (2009) via primer.data"
+    caption  = "Source: King et al. (2009) SPS rollout, full follow-up sample via primer.data"
   ) +
   theme_minimal() +
   theme(axis.text.y  = element_blank(),
@@ -643,7 +639,7 @@ plot_predictions(fit_sps, condition = "treatment", draw = FALSE) |>
     subtitle = "Point estimates differ by about 60 pesos; the intervals overlap heavily",
     x        = "Treatment",
     y        = "Expected 3-Month Spending",
-    caption  = "Source: 500-household sample from King et al. (2009) via primer.data"
+    caption  = "Source: King et al. (2009) SPS rollout, full follow-up sample via primer.data"
   ) +
   theme_minimal()
 ```
@@ -652,15 +648,15 @@ The primary question was *"What is the average causal effect of Seguro Popular e
 
 * Expected spending of a Not-enrolled household: about 783 pesos, 95% CI roughly [560, 1005].
 * Expected spending of an Enrolled household: about 721 pesos, 95% CI roughly [499, 943].
-* Average causal effect of treatment (Enrolled minus Not-enrolled): about -62 pesos, 95% CI roughly [-376, +253].
+* Average causal effect of treatment (Enrolled minus Not-enrolled): about -63 pesos, 95% CI roughly [-105, -22] under a naive standard error (wider under a cluster-robust standard error).
 
-The causal reading is *available* here because the assignment was randomized at the community level. *Random assignment to Seguro Popular early rollout reduces a household's average three-month out-of-pocket health spending by about 60 pesos, but our 500-household sample cannot statistically distinguish this from no effect.* The headline number is negative and small. The confidence interval is wide enough that an honest reader cannot rule out a zero effect from our data alone.
+The causal reading is *available* here because the assignment was randomized at the community level. *Random assignment to Seguro Popular early rollout reduces a household's average three-month out-of-pocket health spending by about 63 pesos, with a 95% confidence interval of roughly -105 to -22 pesos.* The headline number is negative and small but statistically detectable. The interval does not include zero, so under the model's assumptions we can rule out *no effect*.
 
-That said: we know the full-sample answer from King et al. The full 27,000+ household dataset gives an estimated treatment effect of about -63 pesos with a much tighter 95% confidence interval (roughly [-105, -22]). The slice-sample answer agrees with the full-sample answer in sign and magnitude; what differs is precision. The chapter's slice estimate is honest about its own uncertainty; we know from the larger dataset what the precision-corrected answer looks like.
+That interval is the naive linear-regression CI, computed as if our 27,569 households were 27,569 independent observations. They are not: households cluster into 100 paired communities and share their treatment assignment within community. The right standard error reflects that cluster structure. King et al. used cluster-robust standard errors and reported substantively the same point estimate; a careful real-world re-analysis would do the same. The naive interval understates uncertainty.
 
 ### The paired (predictive) reading
 
-The paired question was *"What is the difference in expected three-month out-of-pocket health spending between Seguro Popular-enrolled and non-enrolled households?"* The same fitted model gives the same number: about -62 pesos.
+The paired question was *"What is the difference in expected three-month out-of-pocket health spending between Seguro Popular-enrolled and non-enrolled households?"* The same fitted model gives the same number: about -63 pesos.
 
 The predictive reading would say: *households assigned to the Seguro Popular early-rollout arm spent, on average, about 60 pesos less over the three months before the follow-up survey than households assigned to the late-rollout arm.* This is a between-group comparison with no commitment to a counterfactual.
 
@@ -682,9 +678,7 @@ The point is that *"average effect on average spending"* is one question in a fa
 
 Three things are likely wrong with our answer.
 
-First, the slice-sample noise is large enough that the chapter's headline estimate is not, on its own, statistically distinguishable from zero. A serious policy memo would use the full 27,569-household dataset rather than the 500-household slice the tutorial sets up for pedagogical reasons. The full-sample answer is -63 pesos with CI [-105, -22], statistically significant; the slice answer is -62 pesos with CI [-376, +253], not significant. The slice answer is correct *as far as it goes* --- it is what the model says given the data it sees --- but a real analyst would not stop there.
-
-Second, the model ignores the cluster structure. King et al.'s randomization was at the community level; standard errors should reflect that. Cluster-robust standard errors would widen the confidence intervals further, even with the full sample. For the slice the effect is small (since slice-level noise dominates), but the principle matters: the model we fit pretends 500 households are 500 independent observations, when they are really a few dozen clusters of correlated households.
+First, the model ignores the cluster structure. King et al.'s randomization was at the community level; standard errors should reflect that. Our naive standard error treats the 27,569 households as independent observations when they are really 100 paired communities of correlated households. The cluster-robust 95% interval is somewhat wider than our reported [-105, -22]; the point estimate is essentially the same.
 
 Third, *the world is always more uncertain than our models would have us believe.* Even if every assumption about validity, stability, and representativeness were exactly right --- which they aren't --- the reported confidence interval would still capture only sampling uncertainty under the model, not uncertainty about whether the model itself is correct. Self-report measurement error in the outcome is unmodeled. Intent-to-treat versus actual enrollment is unmodeled. Cluster correlation is unmodeled. The right confidence interval for the average treatment effect of Seguro Popular on out-of-pocket spending, in the population the Ministry cares about today, is much wider than any of these numbers suggest.
 
@@ -705,12 +699,12 @@ plot_predictions(fit_sps, condition = "treatment", draw = FALSE) |>
     subtitle = "Point estimates differ by about 60 pesos; the intervals overlap heavily",
     x        = "Treatment",
     y        = "Expected 3-Month Spending",
-    caption  = "Source: 500-household sample from King et al. (2009) via primer.data"
+    caption  = "Source: King et al. (2009) SPS rollout, full follow-up sample via primer.data"
   ) +
   theme_minimal()
 ```
 
-Universal-coverage health insurance is supposed to protect households from medical bills they cannot afford. The 2005--06 Mexican Ministry of Health rollout of Seguro Popular was randomized at the community level, with King et al. (2009) publishing the *Lancet* analysis of about 50,000 surveyed households. Using a 500-household stratified slice of the 27,569 follow-up records available in `primer.data`, we estimated the average causal effect of community-level assignment to the early-rollout arm on a household's three-month out-of-pocket health spending. We modeled spending as a normally distributed variable which is a linear function of treatment, and read the fit two ways: a causal reading defended by the cluster-level randomization, and a paired predictive reading that interprets the same coefficient as a between-group comparison. Both readings are honest. The estimate: about -62 pesos, 95% confidence interval roughly [-376, +253] --- a sign and magnitude consistent with King et al.'s full-sample finding, but with too much sampling noise in our slice to statistically distinguish from zero. Validity (self-reported spending, intent-to-treat vs. actual enrollment), unconfoundedness (cluster randomization, not household), and the long-right-tail shape of the outcome all push toward a wider real-world confidence interval than the model reports.
+Universal-coverage health insurance is supposed to protect households from medical bills they cannot afford. The 2005--06 Mexican Ministry of Health rollout of Seguro Popular was randomized at the community level, with King et al. (2009) publishing the *Lancet* analysis of about 50,000 surveyed households. Using the 27,569 follow-up records available in `primer.data`, we estimated the average causal effect of community-level assignment to the early-rollout arm on a household's three-month out-of-pocket health spending. We modeled spending as a normally distributed variable which is a linear function of treatment, and read the fit two ways: a causal reading defended by the cluster-level randomization, and a paired predictive reading that interprets the same coefficient as a between-group comparison. Both readings are honest. The estimate: about -63 pesos, naive 95% confidence interval [-105, -22] --- the same point estimate King et al. report, statistically detectable under the model's standard error and (somewhat more conservatively) under their cluster-robust standard error. Validity (self-reported spending, intent-to-treat vs. actual enrollment), unconfoundedness (cluster randomization, not household), and the long-right-tail shape of the outcome all push toward a slightly wider real-world confidence interval than the naive linear-regression standard error reports.
 
 The Ministry's actual question is broader: how much does the program save households on catastrophic bills, how much does it shift hospital usage, how much does it change mortality? The 60-peso reduction in average three-month spending is one input to a serious cost-benefit analysis, not the whole story.
 
