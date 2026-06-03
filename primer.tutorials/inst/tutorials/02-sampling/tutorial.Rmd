@@ -55,7 +55,7 @@ The Sampling chapter starts from a simple fact: we almost never measure a whole 
 
 ### Exercise 1
 
-You should be working inside a GitHub repo named `sampling`. Once you're inside the `sampling` repo, create a new Quarto document titled `"Sampling"` with yourself as the author, render it, save it as `analysis.qmd`, and open `analysis.html` with Live Server so the rendered HTML auto-refreshes on every later render. Create a `.gitignore` file with `analysis_files` on the first line followed by a blank line. Commit and push. Use AI however you like. In the R Terminal, run `show_file(".gitignore")`.
+You should be working inside a GitHub repo named `sampling`. Once you're inside the `sampling` repo, create a new Quarto document titled `"Sampling"` with yourself as the author, save it as `analysis.qmd`, render it, and open `analysis.html` with Live Server so the rendered HTML auto-refreshes on every later render. Create a `.gitignore` file with `analysis_files` on the first line followed by a blank line. Commit and push. Use AI however you like. In the R Terminal, run `show_file(".gitignore")`.
 
 CP/CR.
 
