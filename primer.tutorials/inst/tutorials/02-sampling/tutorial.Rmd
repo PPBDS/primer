@@ -55,7 +55,7 @@ The Sampling chapter starts from a simple fact: we almost never measure a whole 
 
 ### Exercise 1
 
-You should be working inside a GitHub repo named `sampling`. Once you're inside the `sampling` repo, create a new Quarto document titled `"Sampling"` with yourself as the author, save it as `analysis.qmd`, render it, and open `analysis.html` with Live Server so the rendered HTML auto-refreshes on every later render. Create a `.gitignore` file with `analysis_files` on the first line followed by a blank line. Commit and push. Use AI however you like. In the R Terminal, run `show_file(".gitignore")`.
+You should be connected to a repo named `sampling`. If you are not, create one and connect to it. Create a new Quarto document titled `"Sampling"` with yourself as the author, render it, save it as `analysis.qmd`, and open `analysis.html` with Live Server so the rendered HTML auto-refreshes on every later render. Create a `.gitignore` file with `analysis_files` on the first line followed by a blank line. Commit and push. Use AI however you like. In the R Terminal, run `show_file(".gitignore")`. If that fails, it is probably because you have not yet loaded `library(tutorial.helpers)` in the R Terminal.
 
 CP/CR.
 
@@ -112,6 +112,7 @@ question_text(NULL,
 ###
 
 ```{r introduction-3-test}
+#| echo: true
 shaming
 ```
 
@@ -141,6 +142,7 @@ question_text(NULL,
 ###
 
 ```{r sampling-and-the-standard-error-1-test}
+#| echo: true
 mean(shaming$age, na.rm = TRUE)
 ```
 
@@ -164,6 +166,7 @@ question_text(NULL,
 ###
 
 ```{r sampling-and-the-standard-error-2-test}
+#| echo: true
 set.seed(10)
 my_sample <- shaming |> slice_sample(n = 50)
 mean(my_sample$age, na.rm = TRUE)
@@ -189,6 +192,7 @@ question_text(NULL,
 ###
 
 ```{r sampling-and-the-standard-error-3-test}
+#| echo: true
 sd(my_sample$age, na.rm = TRUE) / sqrt(50)
 ```
 
@@ -214,6 +218,7 @@ question_text(NULL,
 ###
 
 ```{r sampling-and-the-standard-error-4-test}
+#| echo: true
 ggplot() +
   geom_point(aes(x = sample_mean, y = 1), size = 3) +
   geom_errorbarh(aes(xmin = sample_mean - 1.96 * sample_se,
@@ -251,6 +256,7 @@ question_text(NULL,
 ###
 
 ```{r sampling-and-the-standard-error-5-test}
+#| echo: true
 head(samples)
 ```
 
@@ -274,6 +280,7 @@ question_text(NULL,
 ###
 
 ```{r sampling-and-the-standard-error-6-test}
+#| echo: true
 ggplot(samples |> slice(1:100), aes(y = trial)) +
   geom_errorbarh(aes(xmin = lower, xmax = upper),
                  height = 0.3, alpha = 0.5) +
@@ -307,6 +314,7 @@ question_text(NULL,
 ###
 
 ```{r sampling-and-the-standard-error-7-test}
+#| echo: true
 samples |>
   summarise(coverage = mean(lower < truth & upper > truth))
 ```
@@ -356,6 +364,7 @@ question_text(NULL,
 ###
 
 ```{r biased-sampling-1-test}
+#| echo: true
 head(biased_sample |> select(age, primary_06, sex))
 ```
 
@@ -379,6 +388,7 @@ question_text(NULL,
 ###
 
 ```{r biased-sampling-2-test}
+#| echo: true
 set.seed(11)
 unbiased_sample <- shaming |> slice_sample(n = 50)
 
@@ -417,6 +427,7 @@ question_text(NULL,
 ###
 
 ```{r biased-sampling-3-test}
+#| echo: true
 mean(biased_sample$age, na.rm = TRUE)
 sd(biased_sample$age, na.rm = TRUE) / sqrt(50)
 ```
@@ -441,6 +452,7 @@ question_text(NULL,
 ###
 
 ```{r biased-sampling-4-test}
+#| echo: true
 head(biased_samples)
 ```
 
@@ -464,6 +476,7 @@ question_text(NULL,
 ###
 
 ```{r biased-sampling-5-test}
+#| echo: true
 ggplot(biased_samples |> slice(1:100), aes(y = trial)) +
   geom_errorbarh(aes(xmin = lower, xmax = upper),
                  height = 0.3, alpha = 0.5) +
@@ -497,6 +510,7 @@ question_text(NULL,
 ###
 
 ```{r biased-sampling-6-test}
+#| echo: true
 biased_samples |>
   summarise(coverage = mean(lower < truth & upper > truth))
 ```
@@ -523,6 +537,7 @@ question_text(NULL,
 ###
 
 ```{r biased-sampling-7-test}
+#| echo: true
 ggplot(biased_samples, aes(x = sample_mean)) +
   geom_density(fill = "grey70", color = "grey30") +
   geom_vline(xintercept = truth, color = "red",
