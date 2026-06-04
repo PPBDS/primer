@@ -122,11 +122,11 @@ question_text(NULL,
 
 Rendering a QMD converts the code and prose into an HTML document that shows only what you want readers to see --- in this case, the eventual plot and summary paragraph, with the code hidden.
 
-### Exercise 6
+### Exercise 4
 
 In the R Terminal, type `?trains` and paste the Description below.
 
-```{r introduction-6}
+```{r introduction-4}
 question_text(NULL,
   message = "Data for attitudes toward immigration-related policies, both before and after an experiment which randomly exposed a treated group to Spanish-speakers on a Boston commuter train platform. See Enos (2014) for background and details (pdf). Individuals with a treatment value of 'Treated' were exposed to two Spanish-speakers on their regular commute. 'Control' individuals were not.",
   answer(NULL, correct = TRUE),
@@ -139,11 +139,11 @@ question_text(NULL,
 
 Enos randomly assigned commuters on Boston-area Metra platforms to either a treatment group (who were exposed to a pair of Spanish-speaking confederates during their morning commute) or a control group (who were not). Both groups completed surveys about their attitudes toward immigration before and after the two-week experiment.
 
-### Exercise 7
+### Exercise 5
 
 Define a causal effect.
 
-```{r introduction-7}
+```{r introduction-5}
 question_text(NULL,
   message = "A causal effect is the difference between two potential outcomes.",
   answer(NULL, correct = TRUE),
@@ -156,11 +156,11 @@ question_text(NULL,
 
 According to the Rubin Causal Model, there must be two (or more) potential outcomes for any discussion of causation to make sense. This is simplest to discuss when the treatment has only two different values, generating only two potential outcomes.
 
-### Exercise 8
+### Exercise 6
 
 What is the fundamental problem of causal inference?
 
-```{r introduction-8}
+```{r introduction-6}
 question_text(NULL,
   message = "The fundamental problem of causal inference is that we can only observe one potential outcome.",
   answer(NULL, correct = TRUE),
@@ -173,11 +173,11 @@ question_text(NULL,
 
 If the treatment variable is continuous (like a lottery payment), then there are lots and lots of potential outcomes, one for each possible value of the treatment variable.
 
-### Exercise 9
+### Exercise 7
 
 Immigration attitudes are the broad topic of this tutorial. Given that topic, which variable in `trains` should we use as our outcome variable?
 
-```{r introduction-9}
+```{r introduction-7}
 question_text(NULL,
   message = "Our outcome variable is `att_end`. It records each commuter's attitude toward immigration after the two-week experiment, on an integer scale from 3 to 15, where higher values indicate stronger opposition to immigration.",
   answer(NULL, correct = TRUE),
@@ -210,11 +210,11 @@ trains |>
         axis.ticks.y = element_blank())
 ```
 
-### Exercise 10
+### Exercise 8
 
 Our treatment variable will be `treatment`, which takes the values `"Treated"` or `"Control"`. Describe briefly what each value means and who can manipulate it.
 
-```{r introduction-10}
+```{r introduction-8}
 question_text(NULL,
   message = "`treatment` takes two values: 'Treated' if the commuter was on a morning platform during the two-week window when a pair of Spanish-speaking confederates rode the same trains, or 'Control' otherwise. Enos, the experimenter, manipulated this variable by assigning which platforms the confederates appeared on.",
   answer(NULL, correct = TRUE),
@@ -227,11 +227,11 @@ question_text(NULL,
 
 Any data set can be used to construct a causal model as long as there is at least one covariate that we can, at least in theory, manipulate. It does not matter whether or not anyone did, in fact, manipulate it.
 
-### Exercise 11
+### Exercise 9
 
 Given our treatment variable `treatment`, how many potential outcomes are there for each unit? Explain why.
 
-```{r introduction-11}
+```{r introduction-9}
 question_text(NULL,
   message = "There are two potential outcomes because the treatment variable `treatment` takes on two possible values: 'Treated' (exposed to Spanish-speakers) and 'Control' (not exposed).",
   answer(NULL, correct = TRUE),
@@ -244,11 +244,11 @@ question_text(NULL,
 
 The same data set can be used to create, separately, lots and lots of different models, both causal and predictive. This is a conceptual framework we apply to the data. It is never inherent in the data itself.
 
-### Exercise 12
+### Exercise 10
 
 Pick a single person from the data. Specify the two values the treatment variable could take for that person, guess the potential outcome under each, and compute the causal effect for that person.
 
-```{r introduction-12}
+```{r introduction-10}
 question_text(NULL,
   message = "For Sarah Thompson in the data, `treatment` could be 'Treated' or 'Control'. If she is 'Treated' (exposed to Spanish-speakers), her attitude score after the experiment would be 12. If she is 'Control', her attitude score would be 10. The causal effect on her attitude of Treatment versus Control is 12 - 10 = 2, which is the causal effect for her.",
   answer(NULL, correct = TRUE),
@@ -261,11 +261,11 @@ question_text(NULL,
 
 A causal effect is the difference between two potential outcomes. "Difference" does not necessarily mean "subtraction" --- many potential outcomes are not numbers. Even for numeric outcomes, you can't simply say the effect is 2 without specifying the order of subtraction.
 
-### Exercise 13
+### Exercise 11
 
 Write a causal question connecting the outcome `att_end` to `treatment`.
 
-```{r introduction-13}
+```{r introduction-11}
 question_text(NULL,
   message = "What is the average causal effect of exposure to Spanish-speakers on attitudes toward immigration?",
   answer(NULL, correct = TRUE),
@@ -1354,9 +1354,36 @@ Notice the language for `age`: *"when we compare two groups of commuters... in t
 
 ### Exercise 7
 
-An object called `fit_att` is the fitted model. Ask your AI agent to add a chunk to `analysis.qmd` that names `fit_att` on its own line. Render. Copy the printed model summary from the rendered HTML.
+We've settled on the final fit. Ask your AI agent to add a cached code chunk to `analysis.qmd` that assigns the result of `linear_reg(engine = "lm") |> fit(att_end ~ treatment, data = trains)` to `fit_att`. Render. In the R Terminal, run `show_file("analysis.qmd", chunk = "Last")`. CP/CR.
 
 ```{r courage-7}
+question_text(NULL,
+  answer(NULL, correct = TRUE),
+  allow_retry = TRUE,
+  try_again_button = "Edit Answer",
+  incorrect = NULL,
+  rows = 8)
+```
+
+###
+
+````
+```{r}
+#| cache: true
+fit_att <- linear_reg(engine = "lm") |>
+  fit(att_end ~ treatment, data = trains)
+```
+````
+
+###
+
+`#| cache: true` tells Quarto to store the fitted object and reload it on subsequent renders rather than re-fitting every time. The next render --- without changing this chunk --- just loads the saved fit.
+
+### Exercise 8
+
+Now print the fitted model. Ask your AI agent to add a chunk to `analysis.qmd` that names `fit_att` on its own line. Render. Copy the printed model summary from the rendered HTML.
+
+```{r courage-8}
 question_text(NULL,
   answer(NULL, correct = TRUE),
   allow_retry = TRUE,
@@ -1367,37 +1394,13 @@ question_text(NULL,
 
 ###
 
-```{r courage-7-test}
+```{r courage-8-test}
 fit_att
 ```
 
 ###
 
 In data science, **we deal with words, math, and code, but the most important of these is code.**
-
-### Exercise 8
-
-We need `fit_att` to exist in R World. Run this code in the R Terminal:
-
-```
-fit_att <- linear_reg(engine = "lm") |>
-  fit(att_end ~ treatment, data = trains)
-```
-
-CP/CR.
-
-```{r courage-8}
-question_text(NULL,
-  message = "    > fit_att <- linear_reg(engine = \"lm\") |>\n    +   fit(att_end ~ treatment, data = trains)\n    >",
-  answer(NULL, correct = TRUE),
-  allow_retry = FALSE,
-  incorrect = NULL,
-  rows = 5)
-```
-
-###
-
-Just because something exists in the tutorial does not mean that it is in your R Terminal. You should be aware of what exists in R World, which is generally called your "workspace."
 
 ### Exercise 9
 
@@ -1415,39 +1418,9 @@ A data generating mechanism is just a formula, something which we can write down
 
 ### Exercise 10
 
-Create a new code chunk in your QMD. Add the chunk option `#| cache: true`. Copy/paste the code for estimating the model into the chunk, assigning the result to `fit_att`:
-
-```
-fit_att <- linear_reg(engine = "lm") |>
-  fit(att_end ~ treatment, data = trains)
-```
-
-Render the QMD. In the R Terminal, run:
-
-```
-show_file("analysis.qmd", chunk = "Last")
-```
-
-CP/CR.
-
-```{r courage-10}
-question_text(NULL,
-  message = "    > show_file(\"analysis.qmd\", chunk = \"Last\")\n    ```{r}\n    #| cache: true\n    fit_att <- linear_reg(engine = \"lm\") |>\n      fit(att_end ~ treatment, data = trains)\n    ```",
-  answer(NULL, correct = TRUE),
-  allow_retry = FALSE,
-  incorrect = NULL,
-  rows = 8)
-```
-
-###
-
-Including `#| cache: true` caches the chunk's results; subsequent renders just load the saved object.
-
-### Exercise 11
-
 Add `*_cache` to your `.gitignore` file. In the R Terminal, run `show_file(".gitignore")`. CP/CR.
 
-```{r courage-11}
+```{r courage-10}
 question_text(NULL,
   message = "    > show_file(\".gitignore\")\n    analysis_files\n    *_cache",
   answer(NULL, correct = TRUE),
@@ -1460,11 +1433,11 @@ question_text(NULL,
 
 Cached objects are often large and don't belong on GitHub.
 
-### Exercise 12
+### Exercise 11
 
 Ask your AI agent to add a chunk to `analysis.qmd` that runs `tidy(fit_att, conf.int = TRUE)`. This returns 95% intervals for all the parameters in our model. Render. Copy the printed tibble from the rendered HTML.
 
-```{r courage-12}
+```{r courage-11}
 question_text(NULL,
   answer(NULL, correct = TRUE),
   allow_retry = TRUE,
@@ -1475,7 +1448,7 @@ question_text(NULL,
 
 ###
 
-```{r courage-12-test}
+```{r courage-11-test}
 tidy(fit_att, conf.int = TRUE)
 ```
 
@@ -1483,11 +1456,11 @@ tidy(fit_att, conf.int = TRUE)
 
 `tidy()` is part of the **[broom](https://broom.tidymodels.org/)** package.
 
-### Exercise 13
+### Exercise 12
 
 Create a new code chunk in your QMD. Ask AI to make a nice-looking table from the tibble returned by `tidy(fit_att, conf.int = TRUE)`. Include only the `term`, `estimate`, `conf.low`, and `conf.high` columns, rounded to three significant figures. You may use **[knitr](https://yihui.org/knitr/)**, **[gt](https://gt.rstudio.com/)**, or any other table package — add it to your setup chunk if needed. Include a title or caption naming the data source. Render with Render the QMD. In the R Terminal, run `show_file("analysis.qmd", chunk = "Last")`. CP/CR.
 
-```{r courage-13}
+```{r courage-12}
 question_text(NULL,
   message = "    > show_file(\"analysis.qmd\", chunk = \"Last\")\n    ```{r}\n    library(knitr)\n    tidy(fit_att, conf.int = TRUE) |>\n      select(term, estimate, conf.low, conf.high) |>\n      mutate(across(where(is.numeric), \\(x) signif(x, 3))) |>\n      kable(\n        caption = \"Parameter Estimates and 95% CIs. Source: Enos (2014) via primer.data\"\n      )\n    ```",
   answer(NULL, correct = TRUE),
@@ -1501,11 +1474,11 @@ question_text(NULL,
 
 At the very least, your table should include a title and a caption with the data source. We care about using our model to estimate quantities of interest, not about the parameters themselves.
 
-### Exercise 14
+### Exercise 13
 
 Add a sentence to your project summary explaining the structure of the model. Something like: "We model X as a linear function of Y."
 
-```{r courage-14}
+```{r courage-13}
 question_text(NULL,
   message = "We model immigration attitudes as a linear function of exposure to Spanish-speakers.",
   answer(NULL, correct = TRUE),
@@ -1604,15 +1577,21 @@ In order to make progress, we need to drill down to one specific question.
 
 ### Exercise 4
 
-In the R Terminal, run `predictions()` on `fit_att`. CP/CR.
+Ask your AI agent to add a chunk to `analysis.qmd` that runs `predictions(fit_att)`. Render. Copy the first few rows of the printed output from the rendered HTML below.
 
 ```{r temperance-4}
 question_text(NULL,
-  message = "    > predictions(fit_att)\n    \n     Estimate Std. Error    z Pr(>|z|)  2.5 % 97.5 %\n         10.0      0.368 27.2   <0.001   9.30   10.8\n          8.45     0.351 24.1   <0.001   7.77    9.14\n         10.0      0.368 27.2   <0.001   9.30   10.8\n          ... (115 rows total, one per commuter)\n    \n    Type: numeric",
   answer(NULL, correct = TRUE),
-  allow_retry = FALSE,
+  allow_retry = TRUE,
+  try_again_button = "Edit Answer",
   incorrect = NULL,
-  rows = 5)
+  rows = 8)
+```
+
+###
+
+```{r temperance-4-test}
+predictions(fit_att)
 ```
 
 ###
@@ -1621,20 +1600,20 @@ question_text(NULL,
 
 ### Exercise 5
 
-In the R Terminal, run `plot_predictions(fit_att, condition = "treatment")`.
-
-CP/CR.
+Ask your AI agent to add a chunk to `analysis.qmd` that runs `plot_predictions(fit_att, condition = "treatment")`. Render. Describe in one sentence what the plot shows.
 
 ```{r temperance-5}
 question_text(NULL,
-  message = "    > plot_predictions(fit_att, condition = \"treatment\")\n\n(A plot opens showing two point estimates --- one for `Control` near 8.4 and one for `Treated` near 10.0 on the 3--15 scale --- each with a 95% confidence interval a bit under 1 point wide.)",
   answer(NULL, correct = TRUE),
-  allow_retry = FALSE,
+  allow_retry = TRUE,
+  try_again_button = "Edit Answer",
   incorrect = NULL,
-  rows = 5)
+  rows = 3)
 ```
 
-```{r temperance-5-test, include = FALSE}
+###
+
+```{r temperance-5-test}
 plot_predictions(fit_att, condition = "treatment")
 ```
 
@@ -1644,20 +1623,20 @@ You should see two point estimates (Control and Treated) with 95% confidence int
 
 ### Exercise 6
 
-In the R Terminal, run `plot_predictions(fit_att, condition = "treatment", draw = FALSE)`.
-
-CP/CR.
+Ask your AI agent to modify the previous chunk to add `draw = FALSE` to the `plot_predictions()` call. Render. Copy the printed tibble from the rendered HTML below.
 
 ```{r temperance-6}
 question_text(NULL,
-  message = "    > plot_predictions(fit_att, condition = \"treatment\", draw = FALSE)\n      rowid estimate std.error statistic p.value conf.low conf.high treatment\n    1     1     8.45     0.351      24.1       0     7.77      9.14   Control\n    2     2    10.00     0.368      27.2       0     9.30     10.80   Treated",
   answer(NULL, correct = TRUE),
-  allow_retry = FALSE,
+  allow_retry = TRUE,
+  try_again_button = "Edit Answer",
   incorrect = NULL,
   rows = 5)
 ```
 
-```{r temperance-6-test, include = FALSE}
+###
+
+```{r temperance-6-test}
 plot_predictions(fit_att, condition = "treatment", draw = FALSE)
 ```
 
