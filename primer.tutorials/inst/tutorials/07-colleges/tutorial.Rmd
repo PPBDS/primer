@@ -132,11 +132,11 @@ question_text(NULL,
 
 Rendering a QMD converts the code and prose into an HTML document that shows only what you want readers to see.
 
-### Exercise 6
+### Exercise 4
 
 In the R Terminal, type `?colleges` and paste the Description below.
 
-```{r introduction-6}
+```{r introduction-4}
 question_text(NULL,
   message = "A dataset from the Department of Education's 2013 IPEDS database containing information on U.S. four-year colleges and universities. Variables include tuition (in $10,000), graduation rate, SAT score, enrollment, and a five-level selectivity rating.",
   answer(NULL, correct = TRUE),
@@ -149,11 +149,11 @@ question_text(NULL,
 
 Note that `tuition` is recorded in units of $10,000 per year --- a tuition value of `3` means $30,000/year, not $3. Easy to miss; easy to misinterpret later.
 
-### Exercise 7
+### Exercise 5
 
 Graduation rate is the broad topic of this tutorial. Given that topic, which variable in `colleges` should we use as our outcome variable?
 
-```{r introduction-7}
+```{r introduction-5}
 question_text(NULL,
   message = "Our outcome variable is `grad_rate`. It records each college's six-year graduation rate as a proportion between 0 and 1.",
   answer(NULL, correct = TRUE),
@@ -188,11 +188,11 @@ colleges |>
         axis.ticks.y = element_blank())
 ```
 
-### Exercise 8
+### Exercise 6
 
 Which variable in `colleges` do you think might have an important connection to `grad_rate`?
 
-```{r introduction-8}
+```{r introduction-6}
 question_text(NULL,
   message = "One candidate is `tuition`. Colleges that charge more tend to have more resources per student, higher admission standards, and students from wealthier families --- all of which correlate with graduation rates. Another candidate is `selectivity`, which directly captures how choosy the college is about whom it admits.",
   answer(NULL, correct = TRUE),
@@ -205,11 +205,11 @@ question_text(NULL,
 
 With a predictive model, each individual unit has only one observed outcome. Predictive models have no "treatments" --- only covariates.
 
-### Exercise 9
+### Exercise 7
 
 Specify two different groups of colleges which have different values for `tuition` and which might have different average values for `grad_rate`.
 
-```{r introduction-9}
+```{r introduction-7}
 question_text(NULL,
   message = "Consider two groups: colleges with `tuition` below $15,000 per year, and colleges with `tuition` above $40,000 per year. These two groups might have different average graduation rates.",
   answer(NULL, correct = TRUE),
@@ -222,11 +222,11 @@ question_text(NULL,
 
 In predictive models, do not use "cause," "influence," "impact," or anything else which suggests causation. The best phrasing is in terms of "differences" between groups of units with different values for a covariate of interest.
 
-### Exercise 10
+### Exercise 8
 
 Write a predictive question connecting the outcome `grad_rate` to `tuition`, the covariate of interest.
 
-```{r introduction-10}
+```{r introduction-8}
 question_text(NULL,
   message = "What is the difference in expected graduation rates between colleges with tuition of $20,000 and colleges with tuition of $30,000?",
   answer(NULL, correct = TRUE),
@@ -511,49 +511,42 @@ cat(
 
 ### Exercise 11
 
-We need a cleaned tibble. Ask AI to write R code that creates a tibble called `x` by taking `colleges`, selecting only `tuition`, `grad_rate`, and `selectivity`, filtering to rows with tuition above $20,000 (so `tuition > 2`), and dropping rows with missing values. Paste the code below.
+We need a cleaned tibble. Ask your AI agent to add a cached code chunk to `analysis.qmd` that creates a tibble called `x` by taking `colleges`, selecting `tuition`, `grad_rate`, and `selectivity`, filtering to rows with tuition above $20,000 (so `tuition > 2`), dropping rows with missing values, and recoding `selectivity` as a factor with the levels in the order `Elite`, `Highly Selective`, `Moderately Selective`, `Lowly Selective`, `Non-selective`. Render. In the R Terminal, run `show_file("analysis.qmd", chunk = "Last")`. CP/CR.
 
 ```{r wisdom-11}
 question_text(NULL,
-  message = "    x <- colleges |>\n      select(tuition, grad_rate, selectivity) |>\n      filter(tuition > 2) |>\n      drop_na()",
   answer(NULL, correct = TRUE),
-  allow_retry = FALSE,
+  allow_retry = TRUE,
+  try_again_button = "Edit Answer",
   incorrect = NULL,
-  rows = 10)
+  rows = 12)
 ```
 
 ###
 
-`filter(tuition > 2)` restricts to schools charging at least $20,000/year, which removes a handful of community-college-priced entries in the IPEDS snapshot that don't fit the four-year residential model we care about. `drop_na()` silently removes rows missing any of the three variables --- a simplification Justice will revisit.
+````
+```{r}
+#| cache: true
+x <- colleges |>
+  select(tuition, grad_rate, selectivity) |>
+  filter(tuition > 2) |>
+  drop_na() |>
+  mutate(selectivity = factor(as.character(selectivity),
+                              levels = c("Elite", "Highly Selective",
+                                         "Moderately Selective",
+                                         "Lowly Selective", "Non-selective")))
+```
+````
+
+###
+
+`filter(tuition > 2)` restricts to schools charging at least $20,000/year, which removes a handful of community-college-priced entries in the IPEDS snapshot that don't fit the four-year residential model we care about. `drop_na()` silently removes rows missing any of the three variables --- a simplification Justice will revisit. The factor recoding pins the selectivity levels in the order we want them to appear in later tables and plots --- otherwise they would sort alphabetically. The `#| cache: true` option makes Quarto store the result and reload it on subsequent renders rather than re-running the pipeline every time.
 
 ### Exercise 12
 
-In `analysis.qmd`, add a new code chunk and copy/paste the pipeline above. Render the QMD. In the R Terminal, run:
-
-```
-show_file("analysis.qmd", chunk = "Last")
-```
-
-CP/CR.
-
-```{r wisdom-12}
-question_text(NULL,
-  message = "    > show_file(\"analysis.qmd\", chunk = \"Last\")\n    ```{r}\n    x <- colleges |>\n      select(tuition, grad_rate, selectivity) |>\n      filter(tuition > 2) |>\n      drop_na()\n    ```",
-  answer(NULL, correct = TRUE),
-  allow_retry = FALSE,
-  incorrect = NULL,
-  rows = 8)
-```
-
-###
-
-You can never look at the data too much. --- Mark Engerman
-
-### Exercise 13
-
 Write the first two sentences of the summary paragraph. The first sentence is a general statement about the overall topic, mentioning the general class of outcome and at least one covariate. The second sentence introduces the data source and the specific question.
 
-```{r wisdom-13}
+```{r wisdom-12}
 question_text(NULL,
   message = "Where students go to college and what they pay for it varies enormously, and so does the likelihood that they will finish. We help today's students choose by examining how graduation rate varies with tuition and selectivity, using 2013 IPEDS data on roughly 900 US four-year colleges and universities --- the most recent reliable national snapshot we have.",
   answer(NULL, correct = TRUE),
@@ -1291,9 +1284,37 @@ The shrinkage from 16.4 to 9.0 percentage points is the effect of adjustment. Se
 
 ### Exercise 9
 
-Behind the scenes, an object called `fit_colleges` is the fitted model. Ask your AI agent to add a chunk to `analysis.qmd` that names `fit_colleges` on its own line. Render. Copy the printed model summary from the rendered HTML.
+We've settled on the final fit. Ask your AI agent to add a cached code chunk to `analysis.qmd` that assigns the result of `linear_reg() |> set_engine("lm") |> fit(grad_rate ~ tuition + selectivity, data = x)` to `fit_colleges`. Render. In the R Terminal, run `show_file("analysis.qmd", chunk = "Last")`. CP/CR.
 
 ```{r courage-9}
+question_text(NULL,
+  answer(NULL, correct = TRUE),
+  allow_retry = TRUE,
+  try_again_button = "Edit Answer",
+  incorrect = NULL,
+  rows = 8)
+```
+
+###
+
+````
+```{r}
+#| cache: true
+fit_colleges <- linear_reg() |>
+  set_engine("lm") |>
+  fit(grad_rate ~ tuition + selectivity, data = x)
+```
+````
+
+###
+
+`#| cache: true` tells Quarto to store the fitted object and reload it on subsequent renders rather than re-fitting every time. The next render --- without changing this chunk --- just loads the saved fit.
+
+### Exercise 10
+
+Now print the fitted model. Ask your AI agent to add a chunk to `analysis.qmd` that names `fit_colleges` on its own line. Render. Copy the printed model summary from the rendered HTML.
+
+```{r courage-10}
 question_text(NULL,
   answer(NULL, correct = TRUE),
   allow_retry = TRUE,
@@ -1304,38 +1325,13 @@ question_text(NULL,
 
 ###
 
-```{r courage-9-test}
+```{r courage-10-test}
 fit_colleges
 ```
 
 ###
 
 In data science, **we deal with words, math, and code, but the most important of these is code.**
-
-### Exercise 10
-
-We need `fit_colleges` to exist in R World. Copy/paste this code in the R Terminal:
-
-```
-fit_colleges <- linear_reg() |>
-  set_engine("lm") |>
-  fit(grad_rate ~ tuition + selectivity, data = x)
-```
-
-CP/CR.
-
-```{r courage-10}
-question_text(NULL,
-  message = "    > fit_colleges <- linear_reg() |>\n    +   set_engine(\"lm\") |>\n    +   fit(grad_rate ~ tuition + selectivity, data = x)\n    >",
-  answer(NULL, correct = TRUE),
-  allow_retry = FALSE,
-  incorrect = NULL,
-  rows = 5)
-```
-
-###
-
-Just because something exists in the tutorial (or in the QMD) does not mean that it is in your R Terminal. You should be aware of what exists in R World --- your "workspace."
 
 ### Exercise 11
 
@@ -1395,40 +1391,9 @@ A data generating mechanism is just a formula, something which we can write down
 
 ### Exercise 13
 
-Create a new code chunk in your QMD with `#| cache: true`. Copy/paste the code for estimating the model:
-
-```
-fit_colleges <- linear_reg() |>
-  set_engine("lm") |>
-  fit(grad_rate ~ tuition + selectivity, data = x)
-```
-
-Render the QMD. In the R Terminal, run:
-
-```
-show_file("analysis.qmd", chunk = "Last")
-```
-
-CP/CR.
-
-```{r courage-13}
-question_text(NULL,
-  message = "    > show_file(\"analysis.qmd\", chunk = \"Last\")\n    ```{r}\n    #| cache: true\n    fit_colleges <- linear_reg() |>\n      set_engine(\"lm\") |>\n      fit(grad_rate ~ tuition + selectivity, data = x)\n    ```",
-  answer(NULL, correct = TRUE),
-  allow_retry = FALSE,
-  incorrect = NULL,
-  rows = 8)
-```
-
-###
-
-`#| cache: true` causes Quarto to save the chunk's results. Subsequent renders just load the saved object.
-
-### Exercise 14
-
 Add `*_cache` to `.gitignore`. In the R Terminal, run `show_file(".gitignore")`. CP/CR.
 
-```{r courage-14}
+```{r courage-13}
 question_text(NULL,
   message = "    > show_file(\".gitignore\")\n    analysis_files\n    *_cache",
   answer(NULL, correct = TRUE),
@@ -1441,11 +1406,11 @@ question_text(NULL,
 
 Cached objects are often large and don't belong on GitHub.
 
-### Exercise 15
+### Exercise 14
 
 Ask your AI agent to add a chunk to `analysis.qmd` that runs `tidy(fit_colleges, conf.int = TRUE)`. This returns 95% intervals for all the parameters in our model. Render. Copy the printed tibble from the rendered HTML.
 
-```{r courage-15}
+```{r courage-14}
 question_text(NULL,
   answer(NULL, correct = TRUE),
   allow_retry = TRUE,
@@ -1456,7 +1421,7 @@ question_text(NULL,
 
 ###
 
-```{r courage-15-test}
+```{r courage-14-test}
 tidy(fit_colleges, conf.int = TRUE)
 ```
 
@@ -1464,7 +1429,7 @@ tidy(fit_colleges, conf.int = TRUE)
 
 `tidy()` returns a tibble with one row per parameter --- intercept plus one per covariate (with 4 dummy rows for the 5-level `selectivity`).
 
-### Exercise 16
+### Exercise 15
 
 Here is a nicer-looking version of that parameter table, rendered with **[knitr](https://yihui.org/knitr/)**:
 
@@ -1484,11 +1449,11 @@ tidy(fit_colleges, conf.int = TRUE) |>
 
 We care about using our model to estimate quantities of interest, not about the parameters themselves.
 
-### Exercise 17
+### Exercise 16
 
 Add a sentence to your project summary explaining the structure of the model.
 
-```{r courage-17}
+```{r courage-16}
 question_text(NULL,
   message = "We model graduation rate as a normally distributed variable which is a linear function of tuition and selectivity.",
   answer(NULL, correct = TRUE),
@@ -1598,17 +1563,21 @@ Data science projects begin with a decision which we face. To make that decision
 
 ### Exercise 4
 
-In the R Terminal, run `predictions()` on `fit_colleges`.
-
-CP/CR.
+Ask your AI agent to add a chunk to `analysis.qmd` that runs `predictions(fit_colleges)`. Render. Copy the first few rows of the printed output from the rendered HTML below.
 
 ```{r temperance-4}
 question_text(NULL,
-  message = "    > predictions(fit_colleges)\n    \n     Estimate Std. Error    z Pr(>|z|)  2.5 % 97.5 %\n        0.623     0.0082 75.9   <0.001  0.607  0.639\n        0.563     0.0060 93.6   <0.001  0.552  0.575\n        0.566     0.0062 91.9   <0.001  0.554  0.578\n        ... (542 rows total, one per college)\n    \n    Type: numeric",
   answer(NULL, correct = TRUE),
-  allow_retry = FALSE,
+  allow_retry = TRUE,
+  try_again_button = "Edit Answer",
   incorrect = NULL,
-  rows = 5)
+  rows = 8)
+```
+
+###
+
+```{r temperance-4-test}
+predictions(fit_colleges)
 ```
 
 ###
@@ -1617,20 +1586,20 @@ question_text(NULL,
 
 ### Exercise 5
 
-In the R Terminal, run `plot_predictions(fit_colleges, condition = c("tuition", "selectivity"))`.
-
-CP/CR.
+Ask your AI agent to add a chunk to `analysis.qmd` that runs `plot_predictions(fit_colleges, condition = c("tuition", "selectivity"))`. Render. Describe in one sentence what the plot shows.
 
 ```{r temperance-5}
 question_text(NULL,
-  message = "    > plot_predictions(fit_colleges, condition = c(\"tuition\", \"selectivity\"))\n\n(A plot opens showing five parallel lines --- one per selectivity level --- with graduation rate on the y-axis and tuition on the x-axis. The lines are parallel because the model has no interaction between tuition and selectivity; selectivity shifts the intercept, and the tuition slope is shared.)",
   answer(NULL, correct = TRUE),
-  allow_retry = FALSE,
+  allow_retry = TRUE,
+  try_again_button = "Edit Answer",
   incorrect = NULL,
-  rows = 5)
+  rows = 3)
 ```
 
-```{r temperance-5-test, include = FALSE}
+###
+
+```{r temperance-5-test}
 plot_predictions(fit_colleges, condition = c("tuition", "selectivity"))
 ```
 
@@ -1640,20 +1609,20 @@ Conditioning on two variables gives us a two-dimensional predicted surface --- h
 
 ### Exercise 6
 
-In the R Terminal, run the same command with `draw = FALSE`.
-
-CP/CR.
+Ask your AI agent to modify the previous chunk to add `draw = FALSE` to the `plot_predictions()` call. Render. Copy the printed tibble from the rendered HTML below.
 
 ```{r temperance-6}
 question_text(NULL,
-  message = "    > plot_predictions(fit_colleges, condition = c(\"tuition\", \"selectivity\"), draw = FALSE)\n       rowid estimate std.error  conf.low conf.high tuition          selectivity\n    1      1    0.667    0.0240     0.620     0.713   2.01              Elite\n    2      2    0.588    0.0212     0.547     0.630   2.01   Highly Selective\n    3      3    0.539    0.0130     0.513     0.564   2.01 Moderately Selective\n    4      4    0.453    0.0084     0.437     0.470   2.01     Lowly Selective\n    5      5    0.461    0.0266     0.409     0.513   2.01      Non-selective\n    ... (50 rows total --- 10 tuition values × 5 selectivity levels)",
   answer(NULL, correct = TRUE),
-  allow_retry = FALSE,
+  allow_retry = TRUE,
+  try_again_button = "Edit Answer",
   incorrect = NULL,
   rows = 5)
 ```
 
-```{r temperance-6-test, include = FALSE}
+###
+
+```{r temperance-6-test}
 plot_predictions(fit_colleges, condition = c("tuition", "selectivity"), draw = FALSE)
 ```
 
