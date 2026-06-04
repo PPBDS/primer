@@ -133,11 +133,11 @@ question_text(NULL,
 
 Gerber, Green, and Larimer (2008, *American Political Science Review*) randomly assigned about 80,000 Michigan households to one of five postcard-treatment arms --- *No Postcard*, *Civic Duty*, *Hawthorne*, *Self*, *Neighbors* --- and measured whether the household voted in the August 2006 primary. The *Neighbors* postcard, which threatened to send the household's actual past voting record to its neighbors, produced one of the largest behavioral effects on voter turnout ever reported. The `shaming` tibble in **[primer.data](https://github.com/PPBDS/primer.data)** holds the full ~344,000-row analysis sample from that experiment.
 
-### Exercise 6
+### Exercise 4
 
 In the R Terminal, type `?shaming` and paste the Description below.
 
-```{r introduction-6}
+```{r introduction-4}
 question_text(NULL,
   message = "Voter records and randomized treatment assignments from the Michigan 2006 social-pressure mailing experiment by Gerber, Green, and Larimer (American Political Science Review, 2008). The treatment column records which of five conditions a voter was randomly assigned to: no postcard, or one of four postcards of escalating social pressure --- Civic Duty, Hawthorne (informing recipients they are being studied), Self (showing the recipient's own voting history), or Neighbors (showing the recipient's voting history alongside their neighbors').",
   answer(NULL, correct = TRUE),
@@ -150,11 +150,11 @@ question_text(NULL,
 
 The Gerber-Green-Larimer paper is among the most cited studies in modern political science. The headline finding: the Neighbors postcard --- which lists the voter's own past turnout *and* their neighbors' --- raised primary turnout by about 8 percentage points relative to no postcard, far more than any prior GOTV intervention had managed. The other postcards moved turnout less.
 
-### Exercise 7
+### Exercise 5
 
 Define a causal effect.
 
-```{r introduction-7}
+```{r introduction-5}
 question_text(NULL,
   message = "A causal effect is the difference between two potential outcomes.",
   answer(NULL, correct = TRUE),
@@ -167,11 +167,11 @@ question_text(NULL,
 
 Because the postcard treatment takes five values, each registered voter has *five* potential outcomes: whether they would have voted under No Postcard, under Civic Duty, under Hawthorne, under Self, and under Neighbors. We observe only the one that actually happened. A causal effect is the difference between any two of those potential outcomes for the same voter --- typically, in this setting, the difference between *Neighbors* and *No Postcard*.
 
-### Exercise 8
+### Exercise 6
 
 Voter turnout in primary elections is the broad topic of this tutorial. Given that topic, which variable in `shaming` should we use as our outcome variable?
 
-```{r introduction-8}
+```{r introduction-6}
 question_text(NULL,
   message = "Our outcome variable is `primary_06` --- a 0/1 indicator of whether the registered voter cast a ballot in the August 2006 Michigan primary, the election the postcard intervention targeted. We will recode it as a factor named `voted` so logistic regression in tidymodels accepts it.",
   answer(NULL, correct = TRUE),
@@ -213,11 +213,11 @@ x |>
         panel.grid      = element_blank())
 ```
 
-### Exercise 9
+### Exercise 7
 
 Pick a single voter from the data. Specify any two values the treatment variable could take for that voter, guess the potential outcome under each, and compute the causal effect for that voter.
 
-```{r introduction-9}
+```{r introduction-7}
 question_text(NULL,
   message = "Take one specific voter, say Lisa Anderson. The treatment variable could take any of five values for her; pick two: `Neighbors` and `No Postcard`. If she received the Neighbors postcard, she would have voted (potential outcome `Yes`). If she received no postcard, she would not have voted (potential outcome `No`). The causal effect on her turnout of Neighbors versus No Postcard is `Yes` minus `No`, or `1 - 0 = 1`: the postcard moves her from non-voter to voter. Both potential outcomes are guesses; we observe only the one corresponding to her actual treatment.",
   answer(NULL, correct = TRUE),
@@ -230,11 +230,11 @@ question_text(NULL,
 
 A causal effect is the difference between two potential outcomes. *"Difference"* doesn't have to mean *"subtraction"* --- many potential outcomes are not numbers --- but here both are 0/1, so subtraction works and gives one of three values: `-1`, `0`, or `+1`. With only five postcard arms, every voter has $\binom{5}{2} = 10$ possible pairwise causal effects; the one most political scientists care about is *Neighbors vs. No Postcard*.
 
-### Exercise 10
+### Exercise 8
 
 Write a causal question connecting the outcome `voted` to `treatment`. The question should specify a particular number to compute.
 
-```{r introduction-10}
+```{r introduction-8}
 question_text(NULL,
   message = "What is the average causal effect of the Neighbors postcard, relative to no postcard, on the probability that a registered voter casts a ballot in the August 2006 Michigan primary?",
   answer(NULL, correct = TRUE),
@@ -278,7 +278,7 @@ The Preceptor Table only includes the variables mentioned in the question. For a
 
 ### Exercise 2
 
-The Introduction plot showed average turnout by treatment, pooled across all voters. Now look at how that picture changes by *voter class* --- a label we will derive shortly from each voter's recent turnout history. Ask AI to write R code that computes mean turnout by treatment and by voter class, and plots it as a grouped bar chart faceted by voter class. Use `x |>` as the starting tibble (it is already in the tutorial's environment). Paste the code below.
+The Introduction plot showed average turnout by treatment, pooled across all voters. Now look at how that picture changes by *voter class* --- a label we will derive shortly from each voter's recent turnout history. Write R code that computes mean turnout by treatment and by voter class, and plots it as a grouped bar chart faceted by voter class. Use `x |>` as the starting tibble (it is already in the tutorial's environment). Paste the code below.
 
 ```{r wisdom-2}
 question_text(NULL,
@@ -546,24 +546,7 @@ cat(
 
 ### Exercise 10
 
-The model in this tutorial uses a derived covariate, `voter_class`, built by summing past primary and general turnout in 2000, 2002, and 2004 and binning the total into three categories. Ask AI to write R code that takes `shaming`, builds a `civ_engage` column from those six turnout columns, recodes it into a 3-level factor `voter_class`, recodes `primary_06` as a factor `voted`, drops missing values, and assigns the result to `x`. Paste the code below.
-
-```{r wisdom-10}
-question_text(NULL,
-  message = "    x <- shaming |>\n      mutate(civ_engage = primary_00 + primary_02 + primary_04 +\n                          general_00 + general_02 + general_04) |>\n      select(primary_06, treatment, sex, age, civ_engage) |>\n      drop_na() |>\n      mutate(voter_class = factor(case_when(\n        civ_engage %in% c(5, 6) ~ \"Always Vote\",\n        civ_engage %in% c(3, 4) ~ \"Sometimes Vote\",\n        civ_engage %in% c(1, 2) ~ \"Rarely Vote\"),\n        levels = c(\"Rarely Vote\", \"Sometimes Vote\", \"Always Vote\"))) |>\n      mutate(voted = as.factor(primary_06)) |>\n      drop_na()",
-  answer(NULL, correct = TRUE),
-  allow_retry = FALSE,
-  incorrect = NULL,
-  rows = 12)
-```
-
-###
-
-Two things worth flagging: setting the `levels` of `voter_class` explicitly forces `Rarely Vote` to be the reference category in the regression (rather than alphabetical, which would put `Always Vote` first). And the second `drop_na()` after `case_when()` catches any voter with `civ_engage = 0`, who would otherwise be coded `NA` --- a deliberate choice, since voters with zero past elections are mostly newly registered and respond to GOTV very differently from the rest.
-
-### Exercise 11
-
-Add the data-prep code chunk to your QMD and render. In the R Terminal, run:
+The model in this tutorial uses a derived covariate, `voter_class`, built by summing past primary and general turnout in 2000, 2002, and 2004 and binning the total into three categories. In `analysis.qmd`, add a cached code chunk that creates a tibble called `x` by taking `shaming`, building a `civ_engage` column from the six 2000/2002/2004 primary and general turnout columns, selecting `primary_06`, `treatment`, `sex`, `age`, and `civ_engage`, dropping missing values, recoding `civ_engage` into a 3-level factor `voter_class` with levels in the order `Rarely Vote`, `Sometimes Vote`, `Always Vote`, recoding `primary_06` as a factor `voted`, and dropping missing values once more. Render. In the R Terminal, run:
 
 ```
 show_file("analysis.qmd", chunk = "Last")
@@ -571,9 +554,9 @@ show_file("analysis.qmd", chunk = "Last")
 
 CP/CR.
 
-```{r wisdom-11}
+```{r wisdom-10}
 question_text(NULL,
-  message = "    > show_file(\"analysis.qmd\", chunk = \"Last\")\n    ```{r}\n    x <- shaming |>\n      mutate(civ_engage = primary_00 + primary_02 + primary_04 +\n                          general_00 + general_02 + general_04) |>\n      select(primary_06, treatment, sex, age, civ_engage) |>\n      drop_na() |>\n      mutate(voter_class = factor(case_when(\n        civ_engage %in% c(5, 6) ~ \"Always Vote\",\n        civ_engage %in% c(3, 4) ~ \"Sometimes Vote\",\n        civ_engage %in% c(1, 2) ~ \"Rarely Vote\"),\n        levels = c(\"Rarely Vote\", \"Sometimes Vote\", \"Always Vote\"))) |>\n      mutate(voted = as.factor(primary_06)) |>\n      drop_na()\n    ```",
+  message = "    > show_file(\"analysis.qmd\", chunk = \"Last\")\n    ```{r}\n    #| cache: true\n    x <- shaming |>\n      mutate(civ_engage = primary_00 + primary_02 + primary_04 +\n                          general_00 + general_02 + general_04) |>\n      select(primary_06, treatment, sex, age, civ_engage) |>\n      drop_na() |>\n      mutate(voter_class = factor(case_when(\n        civ_engage %in% c(5, 6) ~ \"Always Vote\",\n        civ_engage %in% c(3, 4) ~ \"Sometimes Vote\",\n        civ_engage %in% c(1, 2) ~ \"Rarely Vote\"),\n        levels = c(\"Rarely Vote\", \"Sometimes Vote\", \"Always Vote\"))) |>\n      mutate(voted = as.factor(primary_06)) |>\n      drop_na()\n    ```",
   answer(NULL, correct = TRUE),
   allow_retry = FALSE,
   incorrect = NULL,
@@ -582,13 +565,15 @@ question_text(NULL,
 
 ###
 
-Commit and push. From this point on, every modeling step uses the cleaned tibble `x`, not raw `shaming`.
+Two things worth flagging: setting the `levels` of `voter_class` explicitly forces `Rarely Vote` to be the reference category in the regression (rather than alphabetical, which would put `Always Vote` first). And the second `drop_na()` after `case_when()` catches any voter with `civ_engage = 0`, who would otherwise be coded `NA` --- a deliberate choice, since voters with zero past elections are mostly newly registered and respond to GOTV very differently from the rest.
 
-### Exercise 12
+From this point on, every modeling step uses the cleaned tibble `x`, not raw `shaming`. Commit and push.
+
+### Exercise 11
 
 Write the first two sentences of the summary paragraph. The first introduces the topic; the second introduces the data and the specific question.
 
-```{r wisdom-12}
+```{r wisdom-11}
 question_text(NULL,
   message = "Voter mobilization is a perennial campaign question: which messaging --- if any --- gets registered voters who would otherwise stay home to actually show up. Using the 344,084-voter Gerber-Green-Larimer 2006 randomized field experiment in Michigan, we estimate the average causal effect of the Neighbors postcard on the probability that a registered voter casts a ballot in the August 2006 primary.",
   answer(NULL, correct = TRUE),
@@ -1262,7 +1247,7 @@ Justice settled the structural choices --- binary outcome, Bernoulli family, log
 
 ### Exercise 2
 
-Because our outcome variable is binary, ask your AI agent to add a code chunk to `analysis.qmd` that begins building the model with `logistic_reg(engine = "glm")`. Render. Copy the printed model object from the rendered HTML.
+Because our outcome variable is binary, in `analysis.qmd`, add a code chunk that begins building the model with `logistic_reg(engine = "glm")`. Render. Copy the printed model object from the rendered HTML.
 
 ```{r courage-2}
 question_text(NULL,
@@ -1285,7 +1270,7 @@ logistic_reg(engine = "glm")
 
 ### Exercise 3
 
-Ask your AI agent to extend the chunk to `linear_reg(engine = "lm") |> fit(voted ~ treatment, data = x)`. This is the simplest causal model: outcome on the multi-arm treatment, no covariates. Render. Copy the printed fit object from the rendered HTML.
+In `analysis.qmd`, extend the chunk to `linear_reg(engine = "lm") |> fit(voted ~ treatment, data = x)`. This is the simplest causal model: outcome on the multi-arm treatment, no covariates. Render. Copy the printed fit object from the rendered HTML.
 
 ```{r courage-3}
 question_text(NULL,
@@ -1337,7 +1322,7 @@ Causal language --- *causal effect* --- is appropriate here because random assig
 
 ### Exercise 5
 
-Ask your AI agent to refit with an adjustment covariate, using the formula `fit(voted ~ treatment + age, data = x)`. In an observational study, adjusting for a real covariate often moves the treatment estimate substantially, because adjustment is how we deal with confounding. In a randomized experiment, treatment assignment is by construction independent of any pre-treatment covariate, so adjustment should leave the treatment estimate essentially unchanged. Let's check. Render. Copy the printed fit object from the rendered HTML.
+Refit with an adjustment covariate, using the formula `fit(voted ~ treatment + age, data = x)`. In an observational study, adjusting for a real covariate often moves the treatment estimate substantially, because adjustment is how we deal with confounding. In a randomized experiment, treatment assignment is by construction independent of any pre-treatment covariate, so adjustment should leave the treatment estimate essentially unchanged. Let's check. Render. Copy the printed fit object from the rendered HTML.
 
 ```{r courage-5}
 question_text(NULL,
@@ -1389,7 +1374,7 @@ The fact that the treatment estimate is robust to adjustment is itself evidence 
 
 ### Exercise 7
 
-Ask your AI agent to fit the final model with the formula `fit(voted ~ age + sex + treatment*voter_class, data = x)`. The `treatment*voter_class` term means *treatment effects are allowed to vary by voter class* --- the kind of heterogeneity the EDA plot in Wisdom hinted at. Render. Copy the printed fit object from the rendered HTML.
+Fit the final model in `analysis.qmd` with the formula `fit(voted ~ age + sex + treatment*voter_class, data = x)`. The `treatment*voter_class` term means *treatment effects are allowed to vary by voter class* --- the kind of heterogeneity the EDA plot in Wisdom hinted at. Render. Copy the printed fit object from the rendered HTML.
 
 ```{r courage-7}
 question_text(NULL,
@@ -1440,9 +1425,32 @@ In an interaction model, the main effect of `treatment` is not *the* treatment e
 
 ### Exercise 9
 
-Behind the scenes, an object called `fit_shaming` is the final fitted model. Ask your AI agent to add a chunk to `analysis.qmd` that names `fit_shaming` on its own line. Render. Copy the printed model summary from the rendered HTML.
+We've settled on the final fit. In `analysis.qmd`, add a cached code chunk that assigns the result of `logistic_reg(engine = "glm") |> fit(voted ~ age + sex + treatment*voter_class, data = x)` to `fit_shaming`. Render. In the R Terminal, run:
+
+```
+show_file("analysis.qmd", chunk = "Last")
+```
+
+CP/CR.
 
 ```{r courage-9}
+question_text(NULL,
+  message = "    > show_file(\"analysis.qmd\", chunk = \"Last\")\n    ```{r}\n    #| cache: true\n    fit_shaming <- logistic_reg(engine = \"glm\") |>\n      fit(voted ~ age + sex + treatment*voter_class, data = x)\n    ```",
+  answer(NULL, correct = TRUE),
+  allow_retry = FALSE,
+  incorrect = NULL,
+  rows = 8)
+```
+
+###
+
+`#| cache: true` tells Quarto to reuse the saved fit on subsequent renders. Even at 344K rows our fit takes only about a second, but caching is the right habit to build for the heavier models you'll meet later in the curriculum.
+
+### Exercise 10
+
+Now print the fitted model. In `analysis.qmd`, add a chunk that names `fit_shaming` on its own line. Render. Copy the printed model summary from the rendered HTML.
+
+```{r courage-10}
 question_text(NULL,
   answer(NULL, correct = TRUE),
   allow_retry = TRUE,
@@ -1453,7 +1461,7 @@ question_text(NULL,
 
 ###
 
-```{r courage-9-test}
+```{r courage-10-test}
 fit_shaming
 ```
 
@@ -1461,35 +1469,9 @@ fit_shaming
 
 In data science, **we deal with words, math, and code, but the most important of these is code.**
 
-### Exercise 10
-
-We need `fit_shaming` to exist in R World. Run this code in the R Terminal:
-
-```
-fit_shaming <- logistic_reg(engine = "glm") |>
-  fit(voted ~ age + sex + treatment*voter_class, data = x)
-```
-
-CP/CR.
-
-```{r courage-10}
-question_text(NULL,
-  message = "    > fit_shaming <- logistic_reg(engine = \"glm\") |>\n    +   fit(voted ~ age + sex + treatment*voter_class, data = x)\n    >",
-  answer(NULL, correct = TRUE),
-  allow_retry = FALSE,
-  incorrect = NULL,
-  rows = 5)
-```
-
-###
-
-Just because the fit object exists in this tutorial does not mean it exists at your R prompt. QMD World, R World, and the tutorial's R session are three separate workspaces; keep them in sync.
-
 ### Exercise 11
 
-In the R Terminal, load the **[easystats](https://easystats.github.io/easystats/)** package.
-
-CP/CR.
+To check whether our model is reasonable, we compare our actual outcome distribution to draws simulated from the fitted model. In `analysis.qmd`, add a chunk that loads **[easystats](https://easystats.github.io/easystats/)** (`library(easystats)`) and runs `check_predictions(extract_fit_engine(fit_shaming))`. The `extract_fit_engine()` step is necessary because `easystats::check_predictions()` expects a `glm` object, not the `parsnip` wrapper that `tidymodels` produces. Render. Describe in one sentence what the plot shows.
 
 ```{r courage-11}
 question_text(NULL,
@@ -1497,37 +1479,21 @@ question_text(NULL,
   allow_retry = TRUE,
   try_again_button = "Edit Answer",
   incorrect = NULL,
-  rows = 4)
+  rows = 3)
 ```
 
 ###
 
-We don't add `easystats` to the QMD because we are only using it for an interactive check of our fitted model. Its [check_predictions()](https://easystats.github.io/performance/reference/check_predictions.html) function expects a base-R `glm` object, not the `parsnip` wrapper that `tidymodels` produces, so we will pass it `extract_fit_engine(fit_shaming)`.
-
-### Exercise 12
-
-In the R Terminal, run:
-
-```
+```{r courage-11-test, message = FALSE}
+library(easystats)
 check_predictions(extract_fit_engine(fit_shaming))
-```
-
-CP/CR.
-
-```{r courage-12}
-question_text(NULL,
-  message = "    > check_predictions(extract_fit_engine(fit_shaming))\n\n(A plot opens. Green = the actual outcome distribution; blue = simulated draws from the fitted DGM. For a binary outcome, the comparison is between the share of `1` in the data --- about 32% turnout overall in the experiment --- and the share simulated by the model. With 344K rows and a fitted model that includes the main predictors of turnout, the two should match almost exactly.)",
-  answer(NULL, correct = TRUE),
-  allow_retry = FALSE,
-  incorrect = NULL,
-  rows = 6)
 ```
 
 ###
 
 `check_predictions()` compares your actual data with data simulated from your fitted model. For a binary outcome with this much data, the check is mostly a sanity check --- it confirms the model isn't catastrophically miscalibrated. It does *not* confirm the model is well-specified: a more thoughtful diagnostic would split the comparison by voter class or by treatment to see whether the model's calibration is uniform.
 
-### Exercise 13
+### Exercise 12
 
 With the parameters estimated, we can write the fitted model as a concrete formula:
 
@@ -1554,37 +1520,7 @@ Each `treatment*` term is a 0/1 dummy: 1 if the voter received that postcard, 0 
 
 A data generating mechanism is just a formula, something we can write down and implement with computer code. The non-linearity ($1/(1 + e^{-\eta})$) and the seventeen parameters together are why coefficient-by-coefficient interpretation is awkward; `marginaleffects` in Temperance gives us the cleaner reading on the outcome scale.
 
-### Exercise 14
-
-Create a new code chunk in your QMD with `#| cache: true`. Copy/paste the code for estimating the model:
-
-```
-fit_shaming <- logistic_reg(engine = "glm") |>
-  fit(voted ~ age + sex + treatment*voter_class, data = x)
-```
-
-Render the QMD. In the R Terminal, run:
-
-```
-show_file("analysis.qmd", chunk = "Last")
-```
-
-CP/CR.
-
-```{r courage-14}
-question_text(NULL,
-  message = "    > show_file(\"analysis.qmd\", chunk = \"Last\")\n    ```{r}\n    #| cache: true\n    fit_shaming <- logistic_reg(engine = \"glm\") |>\n      fit(voted ~ age + sex + treatment*voter_class, data = x)\n    ```",
-  answer(NULL, correct = TRUE),
-  allow_retry = FALSE,
-  incorrect = NULL,
-  rows = 8)
-```
-
-###
-
-`#| cache: true` tells Quarto to reuse the saved fit on subsequent renders. Re-render with render the QMD --- it should be quick the second time. Even at 344K rows our fit takes only about a second, but caching is the right habit to build for the heavier models you'll meet later in the curriculum.
-
-### Exercise 15
+### Exercise 13
 
 Add `*_cache` to your `.gitignore`. Cached objects don't belong on GitHub.
 
@@ -1596,7 +1532,7 @@ show_file(".gitignore")
 
 CP/CR.
 
-```{r courage-15}
+```{r courage-13}
 question_text(NULL,
   message = "    > show_file(\".gitignore\")\n    analysis_files\n    *_cache",
   answer(NULL, correct = TRUE),
@@ -1609,11 +1545,11 @@ question_text(NULL,
 
 Commit and push.
 
-### Exercise 16
+### Exercise 14
 
-Ask your AI agent to add a chunk to `analysis.qmd` that runs `tidy(fit_shaming, conf.int = TRUE)`. This returns 95% intervals for all the parameters in our model. Render. Copy the printed tibble from the rendered HTML.
+In `analysis.qmd`, add a chunk that runs `tidy(fit_shaming, conf.int = TRUE)`. This returns 95% intervals for all the parameters in our model. Render. Copy the printed tibble from the rendered HTML.
 
-```{r courage-16}
+```{r courage-14}
 question_text(NULL,
   answer(NULL, correct = TRUE),
   allow_retry = TRUE,
@@ -1624,7 +1560,7 @@ question_text(NULL,
 
 ###
 
-```{r courage-16-test}
+```{r courage-14-test}
 tidy(fit_shaming, conf.int = TRUE)
 ```
 
@@ -1632,9 +1568,9 @@ tidy(fit_shaming, conf.int = TRUE)
 
 `tidy()` is part of **[broom](https://broom.tidymodels.org/)**, used to summarize information from a wide variety of models. The `estimate`, `conf.low`, and `conf.high` columns are all on the log-odds scale --- the same scale as the model's link function.
 
-### Exercise 17
+### Exercise 15
 
-Create a new code chunk in your QMD. Ask AI to make a nice-looking table from the tibble returned by `tidy()`. Insert your table code, Render the QMD, and in the R Terminal run:
+Create a new code chunk in your QMD. Make a nice-looking table from the tibble returned by `tidy()`. Insert your table code, Render the QMD, and in the R Terminal run:
 
 ```
 show_file("analysis.qmd", chunk = "Last")
@@ -1642,7 +1578,7 @@ show_file("analysis.qmd", chunk = "Last")
 
 CP/CR.
 
-```{r courage-17}
+```{r courage-15}
 question_text(NULL,
   message = "    > show_file(\"analysis.qmd\", chunk = \"Last\")\n    ```{r}\n    tidy(fit_shaming, conf.int = TRUE) |>\n      select(term, estimate, conf.low, conf.high) |>\n      knitr::kable(\n        caption = \"Logistic-regression estimates (log-odds scale) and 95% CIs.  Source: Gerber, Green, Larimer 2008 via primer.data::shaming\",\n        digits = 3\n      )\n    ```",
   answer(NULL, correct = TRUE),
@@ -1655,11 +1591,11 @@ question_text(NULL,
 
 A nice table includes a title, a caption with the data source, and reasonable rounding. For a 17-parameter logistic regression, three decimal places keeps the small interaction coefficients visible without over-precising the larger main-effect ones.
 
-### Exercise 18
+### Exercise 16
 
 Add a sentence to your project summary explaining the model structure.
 
-```{r courage-18}
+```{r courage-16}
 question_text(NULL,
   message = "We model voter turnout as a Bernoulli variable which is a logistic function of treatment, voter class, the treatment-by-voter-class interaction, age, and sex.",
   answer(NULL, correct = TRUE),
@@ -1769,26 +1705,20 @@ A specific question must specify a number to compute. *"How does the postcard tr
 
 ### Exercise 4
 
-`avg_comparisons()` computes average causal effects on the outcome scale. In the R Terminal, run:
-
-```
-avg_comparisons(extract_fit_engine(fit_shaming), variables = "treatment")
-```
-
-The `extract_fit_engine()` step is required because `marginaleffects` needs the underlying `glm` object, not the `parsnip` wrapper.
-
-CP/CR.
+`avg_comparisons()` computes average causal effects on the outcome scale. In `analysis.qmd`, add a chunk that runs `avg_comparisons(extract_fit_engine(fit_shaming), variables = "treatment")`. The `extract_fit_engine()` step is required because `marginaleffects` needs the underlying `glm` object, not the `parsnip` wrapper. Render. Copy the printed output from the rendered HTML below.
 
 ```{r temperance-4}
 question_text(NULL,
-  message = "    > avg_comparisons(extract_fit_engine(fit_shaming), variables = \"treatment\")\n\n                     Contrast Estimate Std. Error     z Pr(>|z|)     S  2.5 % 97.5 %\n     Civic Duty - No Postcard   0.0183    0.00253  7.24   <0.001  41.0 0.0133 0.0232\n     Hawthorne - No Postcard    0.0254    0.00253 10.04   <0.001  76.4 0.0204 0.0303\n     Neighbors - No Postcard    0.0811    0.00261 31.08   <0.001 702.2 0.0760 0.0862\n     Self - No Postcard         0.0482    0.00257 18.76   <0.001 258.5 0.0432 0.0533\n\n    Term: treatment\n    Type: response",
   answer(NULL, correct = TRUE),
-  allow_retry = FALSE,
+  allow_retry = TRUE,
+  try_again_button = "Edit Answer",
   incorrect = NULL,
   rows = 12)
 ```
 
-```{r temperance-4-test, include = FALSE}
+###
+
+```{r temperance-4-test}
 avg_comparisons(extract_fit_engine(fit_shaming), variables = "treatment")
 ```
 
@@ -1798,26 +1728,20 @@ Each row is the average difference in *predicted probability of voting* between 
 
 ### Exercise 5
 
-Now break the comparisons down by voter class. In the R Terminal, run:
-
-```
-avg_comparisons(extract_fit_engine(fit_shaming),
-                variables = "treatment",
-                by = "voter_class")
-```
-
-CP/CR.
+Now break the comparisons down by voter class. In `analysis.qmd`, add a chunk that runs `avg_comparisons(extract_fit_engine(fit_shaming), variables = "treatment", by = "voter_class")`. Render. Copy the printed output from the rendered HTML below.
 
 ```{r temperance-5}
 question_text(NULL,
-  message = "    > avg_comparisons(extract_fit_engine(fit_shaming),\n    +                 variables = \"treatment\",\n    +                 by = \"voter_class\")\n\n                     Contrast    voter_class Estimate Std. Error\n     Civic Duty - No Postcard Rarely Vote     0.00948    0.00500\n     Hawthorne - No Postcard  Rarely Vote     0.00774    0.00504\n     Neighbors - No Postcard  Rarely Vote     0.04369    0.00549\n     Self - No Postcard       Rarely Vote     0.02327    0.00519\n     Civic Duty - No Postcard Sometimes Vote  0.02382    0.00323\n     Hawthorne - No Postcard  Sometimes Vote  0.02649    0.00322\n     Neighbors - No Postcard  Sometimes Vote  0.08590    0.00334\n     Self - No Postcard       Sometimes Vote  0.05355    0.00330\n     Civic Duty - No Postcard Always Vote     0.00859    0.00577\n     Hawthorne - No Postcard  Always Vote     0.03301    0.00578\n     Neighbors - No Postcard  Always Vote     0.09041    0.00579\n     Self - No Postcard       Always Vote     0.04872    0.00576\n\n    Term: treatment\n    Type: response",
   answer(NULL, correct = TRUE),
-  allow_retry = FALSE,
+  allow_retry = TRUE,
+  try_again_button = "Edit Answer",
   incorrect = NULL,
   rows = 18)
 ```
 
-```{r temperance-5-test, include = FALSE}
+###
+
+```{r temperance-5-test}
 avg_comparisons(extract_fit_engine(fit_shaming),
                 variables = "treatment",
                 by = "voter_class")
@@ -1829,25 +1753,20 @@ This is the heterogeneous-treatment-effect picture. The Neighbors postcard moves
 
 ### Exercise 6
 
-`plot_predictions(condition = c(...))` draws the model's predicted probabilities across two covariates simultaneously. In the R Terminal, run:
-
-```
-plot_predictions(extract_fit_engine(fit_shaming),
-                 condition = c("treatment", "voter_class"))
-```
-
-CP/CR.
+`plot_predictions(condition = c(...))` draws the model's predicted probabilities across two covariates simultaneously. In `analysis.qmd`, add a chunk that runs `plot_predictions(extract_fit_engine(fit_shaming), condition = c("treatment", "voter_class"))`. Render. Describe in one sentence what the plot shows.
 
 ```{r temperance-6}
 question_text(NULL,
-  message = "    > plot_predictions(extract_fit_engine(fit_shaming),\n    +                  condition = c(\"treatment\", \"voter_class\"))\n\n(A plot opens with three panels --- one per voter class --- each showing predicted turnout for the five treatment arms with confidence intervals. Always Vote sits highest (around 60-70%); Sometimes Vote in the middle (about 30-40%); Rarely Vote lowest (about 10-15%). Within each panel, the Neighbors postcard sits clearly above the others.)",
   answer(NULL, correct = TRUE),
-  allow_retry = FALSE,
+  allow_retry = TRUE,
+  try_again_button = "Edit Answer",
   incorrect = NULL,
-  rows = 7)
+  rows = 3)
 ```
 
-```{r temperance-6-test, include = FALSE}
+###
+
+```{r temperance-6-test}
 plot_predictions(extract_fit_engine(fit_shaming),
                  condition = c("treatment", "voter_class"))
 ```
@@ -1858,20 +1777,20 @@ Two-variable conditioning shows the effect surface of the model: predicted proba
 
 ### Exercise 7
 
-Run the same call with `draw = FALSE` to see the underlying tibble.
-
-CP/CR.
+Modify the previous `plot_predictions` chunk in `analysis.qmd` to add `draw = FALSE` to the call. Render. Copy the first few rows of the printed tibble from the rendered HTML below.
 
 ```{r temperance-7}
 question_text(NULL,
-  message = "    > plot_predictions(extract_fit_engine(fit_shaming),\n    +                  condition = c(\"treatment\", \"voter_class\"),\n    +                  draw = FALSE)\n\n  rowid  estimate ...   treatment    voter_class  conf.low  conf.high\n1     1     0.123 ...  No Postcard    Rarely Vote     0.118      0.128\n2     2     0.132 ...   Civic Duty    Rarely Vote     0.122      0.143\n...                                                              \n15   15     0.687 ...    Neighbors    Always Vote     0.682      0.692",
   answer(NULL, correct = TRUE),
-  allow_retry = FALSE,
+  allow_retry = TRUE,
+  try_again_button = "Edit Answer",
   incorrect = NULL,
-  rows = 7)
+  rows = 6)
 ```
 
-```{r temperance-7-test, include = FALSE}
+###
+
+```{r temperance-7-test}
 plot_predictions(extract_fit_engine(fit_shaming),
                  condition = c("treatment", "voter_class"),
                  draw = FALSE)
@@ -1883,7 +1802,7 @@ plot_predictions(extract_fit_engine(fit_shaming),
 
 ### Exercise 8
 
-Work with AI to create a beautiful plot starting from the output of `plot_predictions(..., draw = FALSE)`. Do this in your QMD. Title: key variables. Subtitle: takeaway. Caption: data source. Y-axis: percentages. Paste the plot code below.
+Create a beautiful plot starting from the output of `plot_predictions(..., draw = FALSE)`. Do this in your QMD. Title: key variables. Subtitle: takeaway. Caption: data source. Y-axis: percentages. Paste the plot code below.
 
 ```{r temperance-8}
 question_text(NULL,
