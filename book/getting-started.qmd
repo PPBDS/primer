@@ -8,13 +8,13 @@ We do all of our data science in the cloud, using GitHub Codespaces with Visual 
 
 Every tutorial after this chapter gets its own GitHub repository. You will create those repositories from a template like `PPBDS/codespace-starter`, a template which gives every tutorial the same VS Code setup, the same installed R packages, and the same extensions. The rule for naming the repository is simple: take the tutorial id (the tutorial title in lowercase, with spaces replaced by dashes) and use that as the repository name. For "Introduction to R," that is `introduction-to-r`. For "Probability," `probability`. And so on.
 
-Before you set up your first real working repository, though, you will launch a Codespace directly on `PPBDS/codespace-starter` --- without making a copy first --- as a throwaway sandbox to learn the platform. You will complete the **Getting Started** tutorial there, then delete the Codespace. After that you will create your first owned repository, `introduction-to-r`, and launch a Codespace on it to do the **Introduction to R** tutorial.
+Before you set up your first real working repository, though, you will launch a Codespace directly on `PPBDS/codespace-starter` --- without making a copy first --- as a throwaway sandbox to learn the platform. You will complete the "Getting Started" tutorial there, then delete the Codespace. After that you will create your first owned repository, `introduction-to-r`, and launch a Codespace on it to do the "Introduction to R" tutorial.
 
 ## GitHub {.unnumbered}
 
 Sign up for a GitHub account by following the instructions on the [GitHub homepage](https://github.com/). **Follow [this advice](https://happygitwithr.com/github-acct.html#username-advice) when choosing your username.**
 
-Use a permanent email address for this account — not one tied to your current school or job, which you'll lose access to when you move on. Your GitHub account is for life; your school email isn't. However, if you are a student or teacher, you will want to [assign your school email](https://github.com/settings/emails) as a second email to your account so that you can qualify for the [GitHub Student Developer Pack](https://education.github.com/pack) (free Copilot, extra Codespaces hours, and 100+ other perks). If your school doesn't issue email addresses, you can also apply by uploading a student ID or enrollment letter.
+Use a permanent email address for this account — not one tied to your current school or job, which you'll lose access to when you move on. Your GitHub account is for life. Your school email is not. However, if you are a student or teacher, you will want to [assign your school email](https://github.com/settings/emails) as a second email to your account so that you can qualify for the [GitHub Student Developer Pack](https://education.github.com/pack) (free Copilot, extra Codespaces hours, and 100+ other perks). If your school doesn't issue email addresses, you can also apply by uploading a student ID or enrollment letter.
 
 On GitHub, your projects are organized into "repositories," usually called "repos."
 
@@ -28,7 +28,7 @@ Go to [`https://github.com/PPBDS/codespace-starter`](https://github.com/PPBDS/co
 knitr::include_graphics("getting-started/images/cs-1.png")
 ```
 
-This is a public repository you do not own. You can still launch a Codespace from it — GitHub charges the Codespace minutes against your account, not against PPBDS — but nothing you do persists once the Codespace is deleted. That is intentional. This Codespace is for learning the platform, not for your work.
+This is a public repository you do not own. You can still launch a Codespace from it, but nothing you do persists once the Codespace is deleted. That is intentional. This Codespace is for learning the platform, not for your permanent work.
 
 ### Launching the Codespace {.unnumbered}
 
@@ -76,9 +76,9 @@ The blue dash has disappeared. Several more extensions have been installed. The 
 
 ### Touring the workspace {.unnumbered}
 
-Visual Studio Code, also known as "VS Code," is an integrated development environment (IDE) for coding and data science. Highlights:
+VS Code is an integrated development environment (IDE) for coding and data science. Highlights:
 
-* This Codespace is in the cloud. The URL will be a combination of the GitHub-determined human-readable but somewhat nonsensical name — `fictional winner` in this case — and a bunch of letters and numbers. There is no need to remember this URL. GitHub keeps track of things. You can see all your current Codespaces [here](https://github.com/codespaces).
+* This Codespace is in the cloud. The URL will be a combination of the GitHub-determined human-readable but somewhat nonsensical name — `fictional winner` in this case — and a bunch of letters and numbers. There is no need to remember this URL. GitHub keeps track of things. You can see all your current Codespaces at [`https://github.com/codespacesr`](https://github.com/codespaces).
 
 * In the upper right-hand corner are the "Customize Layout ..." buttons. These are part of the VS Code "Title Bar." Since we aren't using the AI tools right now, it often makes sense to close the "Chat" window, which appears on the right side of the screen. You can close this in two ways: Click the "X" mark or click the "Toggle Secondary Side Bar" button, the furthest right-hand button. You can then bring the Chat window back by clicking the "Toggle Secondary Side Bar" button again. Try it now.
 
@@ -100,7 +100,7 @@ knitr::include_graphics("getting-started/images/cs-4b.png")
 
 * The "Editor" is the large central area where you edit files.
 
-* The "Panel" is the horizontal area below the Editor, containing the Terminal, Output, Problems, Debug Console, and Ports tabs. Our main focus is the Terminal tab. This is where we "talk" to both the (cloud) computer itself and to the R program that it provides.
+* The "Panel" is the horizontal area below the Editor, containing the Problems, Output, Debug Console, Terminal, and Ports tabs. Our main focus is the Terminal tab. This is where we "talk" to both the (cloud) computer itself and to the R program that it provides.
 
 * The Terminal currently shows a "bash" shell. We will learn more about shells later. Click on the `+` sign to the right of the "Ports" tab. This will start a second bash shell. Your Panel should now look like this:
 
@@ -120,9 +120,9 @@ knitr::include_graphics("getting-started/images/cs-6.png")
 
 * Click on the "R Interactive" option which should appear beneath the two bash lines on the right side of the Panel.
 
-* Type in `2 + 2` at the R prompt and hit `enter` (Windows) or `return` (Mac). (Going forward we will just use `enter` to refer to this action. Mac users should hit `return`.)
+* Type in `2 + 2` at the R prompt and hit `enter` (Windows) or `return` (Mac). (Going forward we will just use `Enter` to refer to this action. Mac users should hit `return`.)
 
-* Type in `plot(1:10)` at the R prompt. Hit `enter`. Your screen should look like:
+* Type in `plot(1:10)` at the R prompt. Hit `Enter`. Your screen should look like:
 
 ```{r}
 knitr::include_graphics("getting-started/images/cs-7.png")

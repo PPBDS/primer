@@ -134,11 +134,11 @@ library(primer.data)
 
 The outcome we will model is `t2_health_exp_3m`: three-month out-of-pocket health spending in Mexican pesos, measured at the 10-month follow-up survey. It is heavy-tailed --- the median household spends 150 pesos but the maximum is past 37,000 --- and the chapter spends much of its time wrestling with what that shape means for the answer.
 
-### Exercise 6
+### Exercise 4
 
 In the R Terminal, type `?sps` and paste the Description below.
 
-```{r introduction-6}
+```{r introduction-4}
 question_text(NULL,
   message = "Data from the Mexican Ministry of Health's 2005--2006 randomized evaluation of Seguro Popular. The Ministry randomly assigned communities to receive Seguro Popular early or late and surveyed households about their out-of-pocket spending at baseline and again roughly ten months later. The cluster-level randomization makes this an unusually clean setting for estimating the causal effect of universal health insurance on household financial protection.",
   answer(NULL, correct = TRUE),
@@ -151,11 +151,11 @@ question_text(NULL,
 
 The original analysis is King et al., *"Public policy for the poor? A randomised assessment of the Mexican universal health insurance programme,"* The Lancet, 2009.
 
-### Exercise 7
+### Exercise 5
 
 Define a causal effect.
 
-```{r introduction-7}
+```{r introduction-5}
 question_text(NULL,
   message = "A causal effect is the difference between two potential outcomes.",
   answer(NULL, correct = TRUE),
@@ -168,11 +168,11 @@ question_text(NULL,
 
 According to the Rubin Causal Model, there must be two (or more) potential outcomes for any discussion of causation to make sense. This is simplest when the treatment has only two values, generating two potential outcomes per unit.
 
-### Exercise 8
+### Exercise 6
 
 What is the fundamental problem of causal inference?
 
-```{r introduction-8}
+```{r introduction-6}
 question_text(NULL,
   message = "The fundamental problem of causal inference is that we can only observe one potential outcome.",
   answer(NULL, correct = TRUE),
@@ -185,11 +185,11 @@ question_text(NULL,
 
 For each household in the Seguro Popular data, we see what their out-of-pocket spending was *under the treatment they actually received* --- enrolled or not enrolled. We never see what the same household's spending would have been under the other arm. The causal effect for any single household is unobservable; we estimate the average causal effect across households.
 
-### Exercise 9
+### Exercise 7
 
 Out-of-pocket health expenditure is the broad topic of this tutorial. Given that topic, which variable in `sps` should we use as our outcome variable?
 
-```{r introduction-9}
+```{r introduction-7}
 question_text(NULL,
   message = "Our outcome variable is `t2_health_exp_3m` --- the household's reported total out-of-pocket health spending over the three months before the follow-up survey, in Mexican pesos.",
   answer(NULL, correct = TRUE),
@@ -223,11 +223,11 @@ x |>
         axis.ticks.y = element_blank())
 ```
 
-### Exercise 10
+### Exercise 8
 
 Our treatment variable will be `treatment`, which takes two values. Describe briefly what each value means and how it was manipulated.
 
-```{r introduction-10}
+```{r introduction-8}
 question_text(NULL,
   message = "`treatment` is `Enrolled` if the household was in a community whose Seguro Popular rollout had begun by the time of the follow-up survey, and `Not enrolled` otherwise. The Mexican Ministry of Health manipulated this variable by randomly choosing which communities to roll out first, so households did not select into treatment based on their own characteristics.",
   answer(NULL, correct = TRUE),
@@ -240,11 +240,11 @@ question_text(NULL,
 
 Any data set can be used to construct a causal model as long as there is at least one covariate that we can, at least in theory, manipulate. It does not matter whether or not anyone did, in fact, manipulate it --- though in this case the Ministry of Health really did.
 
-### Exercise 11
+### Exercise 9
 
 Given our treatment variable, how many potential outcomes are there for each household? Explain why.
 
-```{r introduction-11}
+```{r introduction-9}
 question_text(NULL,
   message = "There are two potential outcomes for each household because the treatment takes two values: `Enrolled` and `Not enrolled`. Each household has the spending it would have under enrollment and the spending it would have without enrollment; we observe only one of those, depending on which arm the household ended up in.",
   answer(NULL, correct = TRUE),
@@ -257,11 +257,11 @@ question_text(NULL,
 
 The same data set can be used to create lots of different models, both causal and predictive. We just use different outcome variables and/or specify different treatments. This is a conceptual frame we apply to data; it is never inherent in the data itself.
 
-### Exercise 12
+### Exercise 10
 
 Pick a single household from the data. Specify the two values its treatment could take, guess the potential outcome under each, and compute the causal effect for that household.
 
-```{r introduction-12}
+```{r introduction-10}
 question_text(NULL,
   message = "Take household 102 in our sample. Its treatment value `Enrolled` would yield three-month spending of, say, 400 pesos, while `Not enrolled` would yield 600 pesos. The causal effect on out-of-pocket spending of enrollment versus no enrollment is 400 - 600 = -200 pesos: enrolling reduces this household's spending by 200 pesos. Both numbers are guesses; we observe only one of them in the data.",
   answer(NULL, correct = TRUE),
@@ -274,11 +274,11 @@ question_text(NULL,
 
 A causal effect is the difference between two potential outcomes. *"Difference"* doesn't have to mean *"subtraction"* --- many potential outcomes are not numbers --- but here both are pesos, so subtraction works.
 
-### Exercise 13
+### Exercise 11
 
 Write a causal question connecting the outcome `t2_health_exp_3m` to `treatment`.
 
-```{r introduction-13}
+```{r introduction-11}
 question_text(NULL,
   message = "What is the average causal effect of Seguro Popular enrollment on a household's three-month out-of-pocket health spending?",
   answer(NULL, correct = TRUE),
@@ -337,9 +337,39 @@ The Preceptor Table only includes the variables mentioned in the question; in ca
 
 ### Exercise 3
 
-Look at how `t2_health_exp_3m` differs between the treatment and control groups. Ask AI to write R code that plots `t2_health_exp_3m` by `treatment` as a jitter plot, with `treatment` on the x-axis and the outcome on the y-axis (capped at 5000 pesos so the long tail doesn't crush the plot), plus a point showing the group mean. Paste the code below.
+Before we explore the data, we need to prepare it. Ask your AI agent to add a cached code chunk to `analysis.qmd` that builds `x` --- the analysis tibble we will work from for the rest of this tutorial --- by selecting `treatment`, `t2_health_exp_3m`, `age`, `sex`, and `education` from `sps`, dropping any rows with missing values, and recoding `treatment` as a factor with `"Not enrolled"` as the reference level. Render. In the R Terminal, run `show_file("analysis.qmd", chunk = "Last")`. CP/CR.
 
 ```{r wisdom-3}
+question_text(NULL,
+  answer(NULL, correct = TRUE),
+  allow_retry = TRUE,
+  try_again_button = "Edit Answer",
+  incorrect = NULL,
+  rows = 10)
+```
+
+###
+
+````
+```{r}
+#| cache: true
+x <- sps |>
+  select(treatment, t2_health_exp_3m, age, sex, education) |>
+  drop_na() |>
+  mutate(treatment = factor(if_else(treatment == 1, "Enrolled", "Not enrolled"),
+                            levels = c("Not enrolled", "Enrolled")))
+```
+````
+
+###
+
+`#| cache: true` tells Quarto to store the result of the chunk on disk and reload it on subsequent renders, so the data prep only runs once. From here on, any later chunk in your QMD that uses `x` will use the cached copy --- which is what makes the rest of the tutorial fast to re-render.
+
+### Exercise 4
+
+Look at how `t2_health_exp_3m` differs between the treatment and control groups. Ask AI to write R code that plots `t2_health_exp_3m` by `treatment` as a jitter plot, with `treatment` on the x-axis and the outcome on the y-axis (capped at 5000 pesos so the long tail doesn't crush the plot), plus a point showing the group mean. Paste the code below.
+
+```{r wisdom-4}
 question_text(NULL,
   message = "    x |>\n      filter(t2_health_exp_3m <= 5000) |>\n      ggplot(aes(x = treatment, y = t2_health_exp_3m)) +\n      geom_jitter(width = 0.2, alpha = 0.4) +\n      stat_summary(fun = mean, geom = \"point\", size = 4, color = \"steelblue\") +\n      scale_y_continuous(labels = scales::label_dollar(prefix = \"$\")) +\n      labs(\n        title = \"Out-of-Pocket Spending by Enrollment Status\",\n        subtitle = \"Blue dot = group mean\",\n        x = \"Treatment\",\n        y = \"3-month spending (pesos)\",\n        caption = \"Source: King et al. (2009) Seguro Popular rollout via primer.data\"\n      ) +\n      theme_minimal()",
   answer(NULL, correct = TRUE),
@@ -370,11 +400,11 @@ x |>
   theme_minimal()
 ```
 
-### Exercise 4
+### Exercise 5
 
 Describe the key components of Preceptor Tables in general, without worrying about this specific problem. Use words like "units," "outcomes," and "covariates."
 
-```{r wisdom-4}
+```{r wisdom-5}
 question_text(NULL,
   message = "The rows of the Preceptor Table are the units. The outcome is at least one of the columns. If the problem is causal, there will be at least two (potential) outcome columns. The other columns are covariates. If the problem is causal, at least one of the covariates will be considered a treatment.",
   answer(NULL, correct = TRUE),
@@ -387,11 +417,11 @@ question_text(NULL,
 
 This problem is causal, so one of the covariates is a treatment. In our problem, the treatment is `treatment` --- whether a household had enrolled in Seguro Popular by the follow-up survey. There is a potential outcome for each of the two possible values of the treatment.
 
-### Exercise 5
+### Exercise 6
 
 What are the units for this problem?
 
-```{r wisdom-5}
+```{r wisdom-6}
 question_text(NULL,
   message = "Each row is one household in the universe of households eligible for Seguro Popular at the time of the evaluation (2005--06). The original survey covered about 50,000 households across 74 randomized communities; our analysis sample is the 27,569-row `sps` tibble of follow-up survey records, restricted to households with complete data on treatment, follow-up spending, age, sex, and education.",
   answer(NULL, correct = TRUE),
@@ -404,11 +434,11 @@ question_text(NULL,
 
 Specifying the unit forces a question precise enough to answer. We model households here, but a policy maker really cares about aggregate consequences across families.
 
-### Exercise 6
+### Exercise 7
 
 What is the outcome variable for this problem?
 
-```{r wisdom-6}
+```{r wisdom-7}
 question_text(NULL,
   message = "Keep track of two outcome variables: the one in our Preceptor Table and the one in our data. In this case, both are `t2_health_exp_3m` --- the household's total out-of-pocket health spending over the three months prior to the follow-up survey, in Mexican pesos. The variable is bounded below by zero and has a long right tail (most households spend little; a few spend a great deal).",
   answer(NULL, correct = TRUE),
@@ -421,11 +451,11 @@ question_text(NULL,
 
 The outcome we really care about --- *"did enrollment relieve financial strain on Mexican families?"* --- is fuzzier than what `t2_health_exp_3m` measures. The variable captures pesos out the door but not, say, foregone care or borrowing.
 
-### Exercise 7
+### Exercise 8
 
 What is a covariate which you think might be useful for this problem, regardless of whether or not it might be included in the data?
 
-```{r wisdom-7}
+```{r wisdom-8}
 question_text(NULL,
   message = "Household income is a strong candidate. Lower-income households presumably benefit more in absolute terms from enrollment because they were spending a larger share of disposable income on health. We don't have direct income in our data, but `education` is a plausible proxy.",
   answer(NULL, correct = TRUE),
@@ -438,11 +468,11 @@ question_text(NULL,
 
 The term *covariates* is used in three ways: variables that *might* matter, variables we have data for, and variables we end up putting in the model. Most of the candidates a researcher lists never make it into the final model.
 
-### Exercise 8
+### Exercise 9
 
 What is the treatment for this problem?
 
-```{r wisdom-8}
+```{r wisdom-9}
 question_text(NULL,
   message = "The treatment is `treatment`, which takes the values `Enrolled` and `Not enrolled`. The Ministry of Health manipulated treatment by random assignment of the rollout to communities; our `treatment` variable records, at follow-up, whether a household's community had been treated.",
   answer(NULL, correct = TRUE),
@@ -455,11 +485,11 @@ question_text(NULL,
 
 A treatment is just another covariate which, for the purposes of this specific problem, we are assuming can be manipulated. Because the assignment was randomized, the *can* in *"can be manipulated"* is real here, not hypothetical.
 
-### Exercise 9
+### Exercise 10
 
 What moment in time does the Preceptor Table refer to?
 
-```{r wisdom-9}
+```{r wisdom-10}
 question_text(NULL,
   message = "The follow-up survey window in 2005--06: roughly ten months after the rollout began. Our outcome (`t2_health_exp_3m`) refers to the three months before that follow-up moment.",
   answer(NULL, correct = TRUE),
@@ -472,11 +502,11 @@ question_text(NULL,
 
 A Preceptor Table can never really refer to an exact instant in time. The follow-up was a survey window, not a single moment.
 
-### Exercise 10
+### Exercise 11
 
 Describe in words the Preceptor Table for this problem.
 
-```{r wisdom-10}
+```{r wisdom-11}
 question_text(NULL,
   message = "The Preceptor Table has four columns: one identifying each household, two potential-outcome columns (`Spending if Enrolled` and `Spending if Not Enrolled`), and one treatment column (`Treatment`). Each row represents one household at the time of the Seguro Popular follow-up survey. For each household, only one potential outcome is observable; the other --- the counterfactual --- is unknown, and the Preceptor Table marks it as such.",
   answer(NULL, correct = TRUE),
@@ -579,34 +609,34 @@ cat(
 )
 ```
 
-### Exercise 11
+### Exercise 12
 
-Take a moment to confirm the structure of our analysis sample. In the R Terminal, run:
+Take a moment to confirm the structure of our analysis sample. Ask your AI agent to add a chunk to `analysis.qmd` that runs `x |> count(treatment)`. Render. Copy the printed tibble from the rendered HTML.
 
-```
-x |> count(treatment)
-```
-
-CP/CR.
-
-```{r wisdom-11}
+```{r wisdom-12}
 question_text(NULL,
-  message = "    > x |> count(treatment)\n    # A tibble: 2 × 2\n      treatment        n\n      <fct>        <int>\n    1 Not enrolled   250\n    2 Enrolled       250",
   answer(NULL, correct = TRUE),
-  allow_retry = FALSE,
+  allow_retry = TRUE,
+  try_again_button = "Edit Answer",
   incorrect = NULL,
   rows = 6)
 ```
 
 ###
 
-The sample is well-balanced between the two arms because the randomization was at the community level and the 27,569-row analysis sample inherits that balance --- about 13,700 households in each arm. With this much data, the standard error on the treatment coefficient will be small enough to detect a real effect even though the underlying average effect is itself small in peso terms.
+```{r wisdom-12-test}
+x |> count(treatment)
+```
 
-### Exercise 12
+###
+
+The sample is well-balanced between the two arms because randomization was at the community level and the 27,569-row analysis sample inherits that balance --- about 13,700 households in each arm. With this much data, the standard error on the treatment coefficient will be small enough to detect a real effect even though the underlying average effect is itself small in peso terms.
+
+### Exercise 13
 
 Write the first two sentences of the summary paragraph. The first introduces the topic; the second introduces the data and the specific question.
 
-```{r wisdom-12}
+```{r wisdom-13}
 question_text(NULL,
   message = "Households' out-of-pocket spending on health care is a key marker of financial vulnerability. Using the 27,569-household follow-up sample from Mexico's 2005--06 randomized evaluation of Seguro Popular, we estimate the average causal effect of enrollment on three-month out-of-pocket spending.",
   answer(NULL, correct = TRUE),
@@ -1323,7 +1353,7 @@ Notice the language for `age`: *"when we compare two groups of households... in 
 
 ### Exercise 7
 
-Behind the scenes of this tutorial, an object called `fit_sp` is the final fitted model. Ask your AI agent to add a chunk to `analysis.qmd` that names `fit_sp` on its own line. Render. Copy the printed model summary from the rendered HTML.
+We've settled on the final fit. Ask your AI agent to add a cached code chunk to `analysis.qmd` that assigns the result of `linear_reg(engine = "lm") |> fit(t2_health_exp_3m ~ treatment, data = x)` to `fit_sp`. Render. In the R Terminal, run `show_file("analysis.qmd", chunk = "Last")`. CP/CR.
 
 ```{r courage-7}
 question_text(NULL,
@@ -1331,29 +1361,26 @@ question_text(NULL,
   allow_retry = TRUE,
   try_again_button = "Edit Answer",
   incorrect = NULL,
-  rows = 5)
+  rows = 8)
 ```
 
 ###
 
-```{r courage-7-test}
-fit_sp
-```
-
-###
-
-In data science, **we deal with words, math, and code, but the most important of these is code.**
-
-### Exercise 8
-
-We need `fit_sp` to exist in R World. Run this code in the R Terminal:
-
-```
+````
+```{r}
+#| cache: true
 fit_sp <- linear_reg(engine = "lm") |>
   fit(t2_health_exp_3m ~ treatment, data = x)
 ```
+````
 
-CP/CR.
+###
+
+`#| cache: true` tells Quarto to store the fitted object and reload it on subsequent renders rather than re-fitting every time. For a single `lm` on 27,569 rows the saving is small; the same pattern will matter much more once we move to Bayesian fits later in the curriculum. From here on, any later chunk in your QMD that uses `fit_sp` will use the cached copy.
+
+### Exercise 8
+
+Now print the fitted model. Ask your AI agent to add a chunk to `analysis.qmd` that names `fit_sp` on its own line. Render. Copy the printed model summary from the rendered HTML.
 
 ```{r courage-8}
 question_text(NULL,
@@ -1366,13 +1393,13 @@ question_text(NULL,
 
 ###
 
-```
->
+```{r courage-8-test}
+fit_sp
 ```
 
 ###
 
-Assignment in R is silent: a successful `<-` returns nothing visible, just the next prompt. The model now exists in your R Terminal as `fit_sp`. Keep the R Terminal and the QMD in sync --- both need the fit code if both are going to use the fitted object.
+In data science, **we deal with words, math, and code, but the most important of these is code.**
 
 ### Exercise 9
 
@@ -1420,46 +1447,6 @@ A data generating mechanism is just a formula, something we can write down and i
 
 ### Exercise 11
 
-Create a new code chunk in your QMD with `#| cache: true`. Copy/paste the code for estimating the model:
-
-```
-fit_sp <- linear_reg(engine = "lm") |>
-  fit(t2_health_exp_3m ~ treatment, data = x)
-```
-
-Render the QMD. In the R Terminal, run:
-
-```
-show_file("analysis.qmd", chunk = "Last")
-```
-
-CP/CR.
-
-```{r courage-11}
-question_text(NULL,
-  answer(NULL, correct = TRUE),
-  allow_retry = TRUE,
-  try_again_button = "Edit Answer",
-  incorrect = NULL,
-  rows = 8)
-```
-
-###
-
-````
-```{r}
-#| cache: true
-fit_sp <- linear_reg(engine = "lm") |>
-  fit(t2_health_exp_3m ~ treatment, data = x)
-```
-````
-
-###
-
-`#| cache: true` tells Quarto to reuse the saved fit on subsequent renders. Re-render --- it should be quick the second time.
-
-### Exercise 12
-
 Add `*_cache` to your `.gitignore`. Cached objects don't belong on GitHub.
 
 In the R Terminal, run:
@@ -1470,7 +1457,7 @@ show_file(".gitignore")
 
 CP/CR.
 
-```{r courage-12}
+```{r courage-11}
 question_text(NULL,
   answer(NULL, correct = TRUE),
   allow_retry = TRUE,
@@ -1490,7 +1477,7 @@ analysis_files
 
 Commit and push --- cached objects belong in `.gitignore` so each clone of the repo rebuilds the cache locally rather than dragging it through git history.
 
-### Exercise 13
+### Exercise 12
 
 One way to check whether our model is reasonable is to compare the distribution of our actual outcome (`t2_health_exp_3m`) with the distribution of fitted values from the model. If the model is well-specified, the two distributions should look similar.
 
@@ -1525,11 +1512,11 @@ ggplot(fitted_df_sps, aes(x = value, fill = source)) +
 
 In a good model, the distribution of fitted values looks like the distribution of the actual outcome. Big divergences mean our model is missing something --- here, the long right tail of household expenditures (the small number of households with very high three-month spending) is something a simple linear regression cannot reproduce. We'll keep using the model anyway because its job here is to estimate the *average* treatment effect, and averages are well-served by a linear model even when the right tail isn't.
 
-### Exercise 14
+### Exercise 13
 
 Ask your AI agent to add a chunk to `analysis.qmd` that runs `tidy(fit_sp, conf.int = TRUE)`. This returns 95% intervals for all the parameters in our model. Render. Copy the printed tibble from the rendered HTML.
 
-```{r courage-14}
+```{r courage-13}
 question_text(NULL,
   answer(NULL, correct = TRUE),
   allow_retry = TRUE,
@@ -1540,7 +1527,7 @@ question_text(NULL,
 
 ###
 
-```{r courage-14-test}
+```{r courage-13-test}
 tidy(fit_sp, conf.int = TRUE)
 ```
 
@@ -1548,7 +1535,7 @@ tidy(fit_sp, conf.int = TRUE)
 
 `tidy()` is part of **[broom](https://broom.tidymodels.org/)**, used to summarize information from a wide variety of models.
 
-### Exercise 15
+### Exercise 14
 
 Create a new code chunk in your QMD. Ask AI to make a nice-looking table from the tibble returned by `tidy()`. Insert your table code, Render the QMD, and in the R Terminal run:
 
@@ -1558,7 +1545,7 @@ show_file("analysis.qmd", chunk = "Last")
 
 CP/CR.
 
-```{r courage-15}
+```{r courage-14}
 question_text(NULL,
   answer(NULL, correct = TRUE),
   allow_retry = TRUE,
@@ -1584,11 +1571,11 @@ tidy(fit_sp, conf.int = TRUE) |>
 
 A nice table includes a title, a caption with the data source, and reasonable rounding. The more you use AI for these housekeeping tasks, the better you'll get at telling it what you want.
 
-### Exercise 16
+### Exercise 15
 
 Add a sentence to your project summary explaining the model structure.
 
-```{r courage-16}
+```{r courage-15}
 question_text(NULL,
   message = "We model three-month out-of-pocket spending as a normally distributed variable which is a linear function of treatment.",
   answer(NULL, correct = TRUE),
@@ -1689,7 +1676,7 @@ To make a decision wisely, we need good estimates of many unknown numbers. Drill
 
 ### Exercise 4
 
-In the R Terminal, run `predictions()` on `fit_sp`. CP/CR.
+Ask your AI agent to add a chunk to `analysis.qmd` that runs `predictions(fit_sp)`. Render. Copy the first few rows of the printed output from the rendered HTML below.
 
 ```{r temperance-4}
 question_text(NULL,
@@ -1697,19 +1684,13 @@ question_text(NULL,
   allow_retry = TRUE,
   try_again_button = "Edit Answer",
   incorrect = NULL,
-  rows = 6)
+  rows = 8)
 ```
 
 ###
 
-```
- Estimate Std. Error    z Pr(>|z|)  2.5 % 97.5 %
-      731       14.9 49.0   <0.001    702    760
-      794       15.0 52.9   <0.001    765    824
-      731       14.9 49.0   <0.001    702    760
-      ... (27569 rows total, one per household)
-
-Type: numeric
+```{r temperance-4-test}
+predictions(fit_sp)
 ```
 
 ###
@@ -1718,9 +1699,7 @@ Type: numeric
 
 ### Exercise 5
 
-In the R Terminal, run `plot_predictions(fit_sp, condition = "treatment")`.
-
-CP/CR.
+Ask your AI agent to add a chunk to `analysis.qmd` that runs `plot_predictions(fit_sp, condition = "treatment")`. Render. Describe in one sentence what the plot shows.
 
 ```{r temperance-5}
 question_text(NULL,
@@ -1743,9 +1722,7 @@ The plot shows two point estimates --- one for *Not enrolled* near 794 pesos, on
 
 ### Exercise 6
 
-In the R Terminal, run the same call with `draw = FALSE`.
-
-CP/CR.
+Ask your AI agent to modify the previous chunk to add `draw = FALSE` to the `plot_predictions()` call. Render. Copy the printed tibble from the rendered HTML below.
 
 ```{r temperance-6}
 question_text(NULL,
@@ -1753,7 +1730,7 @@ question_text(NULL,
   allow_retry = TRUE,
   try_again_button = "Edit Answer",
   incorrect = NULL,
-  rows = 3)
+  rows = 5)
 ```
 
 ###
