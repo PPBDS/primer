@@ -324,7 +324,7 @@ The Preceptor Table does not include all the covariates which you will eventuall
 
 ### Exercise 3
 
-We saw the overlapping density of `att_end` by `treatment` in the Introduction. To complement that view, look at the individual values. Ask AI to write R code that plots the individual `att_end` values in `trains` as a jitter plot, with `treatment` on the x-axis and `att_end` on the y-axis, along with a point showing the group mean. Include a descriptive title, subtitle, axis labels, and caption. Paste the code below and run it.
+We saw the overlapping density of `att_end` by `treatment` in the Introduction. To complement that view, look at the individual values. Write R code that plots the individual `att_end` values in `trains` as a jitter plot, with `treatment` on the x-axis and `att_end` on the y-axis, along with a point showing the group mean. Include a descriptive title, subtitle, axis labels, and caption. Paste the code below and run it.
 
 ```{r wisdom-3}
 question_text(NULL,
@@ -547,7 +547,7 @@ cat(
 
 ### Exercise 11
 
-The `trains` tibble is small (115 rows) and clean enough that no data-prep pipeline is needed --- we can fit directly on the full tibble. In `analysis.qmd`, add a code chunk that just runs `glimpse(trains)`. Render the QMD with Render the QMD. In the R Terminal, run:
+The `trains` tibble is small (115 rows) and clean enough that no data-prep pipeline is needed --- we can fit directly on the full tibble. In `analysis.qmd`, add a code chunk that just runs `glimpse(trains)`. Render the QMD. In the R Terminal, run:
 
 ```
 show_file("analysis.qmd", chunk = "Last")
@@ -1225,7 +1225,7 @@ The abstract data generating mechanism shown in the preamble uses generic variab
 
 ### Exercise 2
 
-Because our outcome variable is continuous, ask your AI agent to add a code chunk to `analysis.qmd` that begins building the model with `linear_reg(engine = "lm")`. Render. Copy the printed model object from the rendered HTML.
+Because our outcome variable is continuous, add a code chunk to `analysis.qmd` that begins building the model with `linear_reg(engine = "lm")`. Render. Copy the printed model object from the rendered HTML.
 
 ```{r courage-2}
 question_text(NULL,
@@ -1248,7 +1248,7 @@ For R-based modeling, the **[tidymodels](https://www.tidymodels.org/)** framewor
 
 ### Exercise 3
 
-Ask your AI agent to extend the chunk to `linear_reg(engine = "lm") |> fit(att_end ~ treatment, data = trains)`. This is the central causal model: outcome on the binary, randomized `treatment`. Render. Copy the printed fit object from the rendered HTML.
+Extend the chunk in `analysis.qmd` to `linear_reg(engine = "lm") |> fit(att_end ~ treatment, data = trains)`. This is the central causal model: outcome on the binary, randomized `treatment`. Render. Copy the printed fit object from the rendered HTML.
 
 ```{r courage-3}
 question_text(NULL,
@@ -1301,7 +1301,7 @@ This is a *causal* interpretation: because Enos randomized which platforms got t
 
 ### Exercise 5
 
-Ask your AI agent to refit with the formula `fit(att_end ~ treatment + age, data = trains)`, adjusting for `age`. This adds a continuous covariate to the causal model. Render. Copy the printed fit object from the rendered HTML.
+Refit with the formula `fit(att_end ~ treatment + age, data = trains)`, adjusting for `age`. This adds a continuous covariate to the causal model. Render. Copy the printed fit object from the rendered HTML.
 
 ```{r courage-5}
 question_text(NULL,
@@ -1354,7 +1354,7 @@ Notice the language for `age`: *"when we compare two groups of commuters... in t
 
 ### Exercise 7
 
-We've settled on the final fit. Ask your AI agent to add a cached code chunk to `analysis.qmd` that assigns the result of `linear_reg(engine = "lm") |> fit(att_end ~ treatment, data = trains)` to `fit_att`. Render. In the R Terminal, run `show_file("analysis.qmd", chunk = "Last")`. CP/CR.
+We've settled on the final fit. In `analysis.qmd`, add a cached code chunk that assigns the result of `linear_reg(engine = "lm") |> fit(att_end ~ treatment, data = trains)` to `fit_att`. Render. In the R Terminal, run `show_file("analysis.qmd", chunk = "Last")`. CP/CR.
 
 ```{r courage-7}
 question_text(NULL,
@@ -1381,7 +1381,7 @@ fit_att <- linear_reg(engine = "lm") |>
 
 ### Exercise 8
 
-Now print the fitted model. Ask your AI agent to add a chunk to `analysis.qmd` that names `fit_att` on its own line. Render. Copy the printed model summary from the rendered HTML.
+Now print the fitted model. In `analysis.qmd`, add a chunk that names `fit_att` on its own line. Render. Copy the printed model summary from the rendered HTML.
 
 ```{r courage-8}
 question_text(NULL,
@@ -1435,7 +1435,7 @@ Cached objects are often large and don't belong on GitHub.
 
 ### Exercise 11
 
-Ask your AI agent to add a chunk to `analysis.qmd` that runs `tidy(fit_att, conf.int = TRUE)`. This returns 95% intervals for all the parameters in our model. Render. Copy the printed tibble from the rendered HTML.
+In `analysis.qmd`, add a chunk that runs `tidy(fit_att, conf.int = TRUE)`. This returns 95% intervals for all the parameters in our model. Render. Copy the printed tibble from the rendered HTML.
 
 ```{r courage-11}
 question_text(NULL,
@@ -1458,7 +1458,7 @@ tidy(fit_att, conf.int = TRUE)
 
 ### Exercise 12
 
-Create a new code chunk in your QMD. Ask AI to make a nice-looking table from the tibble returned by `tidy(fit_att, conf.int = TRUE)`. Include only the `term`, `estimate`, `conf.low`, and `conf.high` columns, rounded to three significant figures. You may use **[knitr](https://yihui.org/knitr/)**, **[gt](https://gt.rstudio.com/)**, or any other table package — add it to your setup chunk if needed. Include a title or caption naming the data source. Render with Render the QMD. In the R Terminal, run `show_file("analysis.qmd", chunk = "Last")`. CP/CR.
+Create a new code chunk in your QMD. Make a nice-looking table from the tibble returned by `tidy(fit_att, conf.int = TRUE)`. Include only the `term`, `estimate`, `conf.low`, and `conf.high` columns, rounded to three significant figures. You may use **[knitr](https://yihui.org/knitr/)**, **[gt](https://gt.rstudio.com/)**, or any other table package — add it to your setup chunk if needed. Include a title or caption naming the data source. Render the QMD. In the R Terminal, run `show_file("analysis.qmd", chunk = "Last")`. CP/CR.
 
 ```{r courage-12}
 question_text(NULL,
@@ -1577,7 +1577,7 @@ In order to make progress, we need to drill down to one specific question.
 
 ### Exercise 4
 
-Ask your AI agent to add a chunk to `analysis.qmd` that runs `predictions(fit_att)`. Render. Copy the first few rows of the printed output from the rendered HTML below.
+In `analysis.qmd`, add a chunk that runs `predictions(fit_att)`. Render. Copy the first few rows of the printed output from the rendered HTML below.
 
 ```{r temperance-4}
 question_text(NULL,
@@ -1600,7 +1600,7 @@ predictions(fit_att)
 
 ### Exercise 5
 
-Ask your AI agent to add a chunk to `analysis.qmd` that runs `plot_predictions(fit_att, condition = "treatment")`. Render. Describe in one sentence what the plot shows.
+In `analysis.qmd`, add a chunk that runs `plot_predictions(fit_att, condition = "treatment")`. Render. Describe in one sentence what the plot shows.
 
 ```{r temperance-5}
 question_text(NULL,
@@ -1623,7 +1623,7 @@ You should see two point estimates (Control and Treated) with 95% confidence int
 
 ### Exercise 6
 
-Ask your AI agent to modify the previous chunk to add `draw = FALSE` to the `plot_predictions()` call. Render. Copy the printed tibble from the rendered HTML below.
+Modify the previous chunk to add `draw = FALSE` to the `plot_predictions()` call. Render. Copy the printed tibble from the rendered HTML below.
 
 ```{r temperance-6}
 question_text(NULL,

@@ -277,7 +277,7 @@ The Preceptor Table does not include all the covariates which you will eventuall
 
 ### Exercise 3
 
-We saw the overall distribution of `height` in the Introduction. Now look at how `height` varies with `sex`. Ask AI to write R code that plots `height` by `sex` as overlapping density curves, with a descriptive title, subtitle, axis labels, and caption. Paste the code below and run it.
+We saw the overall distribution of `height` in the Introduction. Now look at how `height` varies with `sex`. Write R code that plots `height` by `sex` as overlapping density curves, with a descriptive title, subtitle, axis labels, and caption. Paste the code below and run it.
 
 ```{r wisdom-3}
 question_text(NULL,
@@ -501,7 +501,7 @@ cat(
 
 ### Exercise 11
 
-Because `recruits` is already prepared (filtered to ages 18--27, restricted to `height`, `sex`, and `age`, and missing rows dropped), there is no data-prep code to write. Take a moment to verify the breakdown that matters most for what comes next. Ask your AI agent to add a chunk to `analysis.qmd` that runs `recruits |> count(sex)`. Render. Copy the printed tibble from the rendered HTML below.
+Because `recruits` is already prepared (filtered to ages 18--27, restricted to `height`, `sex`, and `age`, and missing rows dropped), there is no data-prep code to write. Take a moment to verify the breakdown that matters most for what comes next. In `analysis.qmd`, add a chunk that runs `recruits |> count(sex)`. Render. Copy the printed tibble from the rendered HTML below.
 
 ```{r wisdom-11}
 question_text(NULL,
@@ -1090,7 +1090,7 @@ The abstract data generating mechanism shown in the preamble uses generic variab
 
 ### Exercise 2
 
-Because our outcome variable is continuous, ask your AI agent to add a code chunk to `analysis.qmd` that begins building the model with `linear_reg(engine = "lm")`. Render. Copy the printed model object from the rendered HTML.
+Because our outcome variable is continuous, add a code chunk to `analysis.qmd` that begins building the model with `linear_reg(engine = "lm")`. Render. Copy the printed model object from the rendered HTML.
 
 ```{r courage-2}
 question_text(NULL,
@@ -1113,7 +1113,7 @@ linear_reg(engine = "lm")
 
 ### Exercise 3
 
-Ask your AI agent to extend the chunk to `linear_reg(engine = "lm") |> fit(height ~ sex, data = recruits)`. This is our first candidate model: outcome on the binary `sex`. Render. Copy the printed fit object from the rendered HTML.
+Extend the chunk in `analysis.qmd` to `linear_reg(engine = "lm") |> fit(height ~ sex, data = recruits)`. This is our first candidate model: outcome on the binary `sex`. Render. Copy the printed fit object from the rendered HTML.
 
 ```{r courage-3}
 question_text(NULL,
@@ -1166,7 +1166,7 @@ Notice the language: *"when we compare two groups,"* not *"raising sex by one un
 
 ### Exercise 5
 
-Ask your AI agent to change the formula to `fit(height ~ age, data = recruits)`. This refits with `age`, a continuous covariate, instead of `sex`. Render. Copy the printed fit object from the rendered HTML.
+Change the formula to `fit(height ~ age, data = recruits)`. This refits with `age`, a continuous covariate, instead of `sex`. Render. Copy the printed fit object from the rendered HTML.
 
 ```{r courage-5}
 question_text(NULL,
@@ -1219,7 +1219,7 @@ The wide confidence interval that includes zero is exactly what *"this covariate
 
 ### Exercise 7
 
-We've settled on the final fit. Ask your AI agent to add a cached code chunk to `analysis.qmd` that assigns the result of `linear_reg() |> set_engine("lm") |> fit(height ~ sex, data = recruits)` to `fit_recruits`. Render. In the R Terminal, run `show_file("analysis.qmd", chunk = "Last")`. CP/CR.
+We've settled on the final fit. In `analysis.qmd`, add a cached code chunk that assigns the result of `linear_reg() |> set_engine("lm") |> fit(height ~ sex, data = recruits)` to `fit_recruits`. Render. In the R Terminal, run `show_file("analysis.qmd", chunk = "Last")`. CP/CR.
 
 ```{r courage-7}
 question_text(NULL,
@@ -1247,7 +1247,7 @@ fit_recruits <- linear_reg() |>
 
 ### Exercise 8
 
-Now print the fitted model. Ask your AI agent to add a chunk to `analysis.qmd` that names `fit_recruits` on its own line. Render. Copy the printed model summary from the rendered HTML.
+Now print the fitted model. In `analysis.qmd`, add a chunk that names `fit_recruits` on its own line. Render. Copy the printed model summary from the rendered HTML.
 
 ```{r courage-8}
 question_text(NULL,
@@ -1309,7 +1309,7 @@ Because of the change in your `.gitignore` (assuming you saved it), the cache di
 
 ### Exercise 11
 
-Ask your AI agent to add a chunk to `analysis.qmd` that runs `tidy(fit_recruits, conf.int = TRUE)`. This returns 95% intervals for all the parameters in our model. Render. Copy the printed tibble from the rendered HTML.
+In `analysis.qmd`, add a chunk that runs `tidy(fit_recruits, conf.int = TRUE)`. This returns 95% intervals for all the parameters in our model. Render. Copy the printed tibble from the rendered HTML.
 
 ```{r courage-11}
 question_text(NULL,
@@ -1460,7 +1460,7 @@ Data science projects begin with a decision which we face. To make that decision
 
 ### Exercise 4
 
-Ask your AI agent to add a chunk to `analysis.qmd` that runs `predictions(fit_recruits)`. Render. Copy the first few rows of the printed output from the rendered HTML below.
+In `analysis.qmd`, add a chunk that runs `predictions(fit_recruits)`. Render. Copy the first few rows of the printed output from the rendered HTML below.
 
 ```{r temperance-4}
 question_text(NULL,
@@ -1483,7 +1483,7 @@ predictions(fit_recruits)
 
 ### Exercise 5
 
-Ask your AI agent to add a chunk to `analysis.qmd` that runs `plot_predictions(fit_recruits, condition = "sex")`. Render. Describe in one sentence what the plot shows.
+In `analysis.qmd`, add a chunk that runs `plot_predictions(fit_recruits, condition = "sex")`. Render. Describe in one sentence what the plot shows.
 
 ```{r temperance-5}
 question_text(NULL,
@@ -1506,7 +1506,7 @@ You should see two point estimates (one for Female, one for Male) with 95% confi
 
 ### Exercise 6
 
-Ask your AI agent to modify the previous chunk to add `draw = FALSE` to the `plot_predictions()` call. Render. Copy the printed tibble from the rendered HTML below.
+Modify the previous chunk to add `draw = FALSE` to the `plot_predictions()` call. Render. Copy the printed tibble from the rendered HTML below.
 
 ```{r temperance-6}
 question_text(NULL,

@@ -337,7 +337,7 @@ The Preceptor Table only includes the variables mentioned in the question; in ca
 
 ### Exercise 3
 
-Before we explore the data, we need to prepare it. Ask your AI agent to add a cached code chunk to `analysis.qmd` that builds `x` --- the analysis tibble we will work from for the rest of this tutorial --- by selecting `treatment`, `t2_health_exp_3m`, `age`, `sex`, and `education` from `sps`, dropping any rows with missing values, and recoding `treatment` as a factor with `"Not enrolled"` as the reference level. Render. In the R Terminal, run `show_file("analysis.qmd", chunk = "Last")`. CP/CR.
+Before we explore the data, we need to prepare it. In `analysis.qmd`, add a cached code chunk that builds `x` --- the analysis tibble we will work from for the rest of this tutorial --- by selecting `treatment`, `t2_health_exp_3m`, `age`, `sex`, and `education` from `sps`, dropping any rows with missing values, and recoding `treatment` as a factor with `"Not enrolled"` as the reference level. Render. In the R Terminal, run `show_file("analysis.qmd", chunk = "Last")`. CP/CR.
 
 ```{r wisdom-3}
 question_text(NULL,
@@ -367,7 +367,7 @@ x <- sps |>
 
 ### Exercise 4
 
-Look at how `t2_health_exp_3m` differs between the treatment and control groups. Ask AI to write R code that plots `t2_health_exp_3m` by `treatment` as a jitter plot, with `treatment` on the x-axis and the outcome on the y-axis (capped at 5000 pesos so the long tail doesn't crush the plot), plus a point showing the group mean. Paste the code below.
+Look at how `t2_health_exp_3m` differs between the treatment and control groups. Write R code that plots `t2_health_exp_3m` by `treatment` as a jitter plot, with `treatment` on the x-axis and the outcome on the y-axis (capped at 5000 pesos so the long tail doesn't crush the plot), plus a point showing the group mean. Paste the code below.
 
 ```{r wisdom-4}
 question_text(NULL,
@@ -611,7 +611,7 @@ cat(
 
 ### Exercise 12
 
-Take a moment to confirm the structure of our analysis sample. Ask your AI agent to add a chunk to `analysis.qmd` that runs `x |> count(treatment)`. Render. Copy the printed tibble from the rendered HTML.
+Take a moment to confirm the structure of our analysis sample. In `analysis.qmd`, add a chunk that runs `x |> count(treatment)`. Render. Copy the printed tibble from the rendered HTML.
 
 ```{r wisdom-12}
 question_text(NULL,
@@ -1224,7 +1224,7 @@ Justice fixed the structural choices --- continuous outcome, linear regression, 
 
 ### Exercise 2
 
-Because our outcome variable is continuous, ask your AI agent to add a code chunk to `analysis.qmd` that begins building the model with `linear_reg(engine = "lm")`. Render. Copy the printed model object from the rendered HTML.
+Because our outcome variable is continuous, add a code chunk to `analysis.qmd` that begins building the model with `linear_reg(engine = "lm")`. Render. Copy the printed model object from the rendered HTML.
 
 ```{r courage-2}
 question_text(NULL,
@@ -1247,7 +1247,7 @@ linear_reg(engine = "lm")
 
 ### Exercise 3
 
-Ask your AI agent to extend the chunk to `linear_reg(engine = "lm") |> fit(t2_health_exp_3m ~ treatment, data = x)`. This is the central causal model: outcome on the binary, randomized `treatment`. Render. Copy the printed fit object from the rendered HTML.
+Extend the chunk in `analysis.qmd` to `linear_reg(engine = "lm") |> fit(t2_health_exp_3m ~ treatment, data = x)`. This is the central causal model: outcome on the binary, randomized `treatment`. Render. Copy the printed fit object from the rendered HTML.
 
 ```{r courage-3}
 question_text(NULL,
@@ -1300,7 +1300,7 @@ Causal language is appropriate here because community-level treatment was random
 
 ### Exercise 5
 
-Ask your AI agent to refit with the formula `fit(t2_health_exp_3m ~ treatment + age, data = x)`, adjusting for `age`. This adds a continuous covariate to the causal model. Render. Copy the printed fit object from the rendered HTML.
+Refit with the formula `fit(t2_health_exp_3m ~ treatment + age, data = x)`, adjusting for `age`. This adds a continuous covariate to the causal model. Render. Copy the printed fit object from the rendered HTML.
 
 ```{r courage-5}
 question_text(NULL,
@@ -1353,7 +1353,7 @@ Notice the language for `age`: *"when we compare two groups of households... in 
 
 ### Exercise 7
 
-We've settled on the final fit. Ask your AI agent to add a cached code chunk to `analysis.qmd` that assigns the result of `linear_reg(engine = "lm") |> fit(t2_health_exp_3m ~ treatment, data = x)` to `fit_sp`. Render. In the R Terminal, run `show_file("analysis.qmd", chunk = "Last")`. CP/CR.
+We've settled on the final fit. In `analysis.qmd`, add a cached code chunk that assigns the result of `linear_reg(engine = "lm") |> fit(t2_health_exp_3m ~ treatment, data = x)` to `fit_sp`. Render. In the R Terminal, run `show_file("analysis.qmd", chunk = "Last")`. CP/CR.
 
 ```{r courage-7}
 question_text(NULL,
@@ -1380,7 +1380,7 @@ fit_sp <- linear_reg(engine = "lm") |>
 
 ### Exercise 8
 
-Now print the fitted model. Ask your AI agent to add a chunk to `analysis.qmd` that names `fit_sp` on its own line. Render. Copy the printed model summary from the rendered HTML.
+Now print the fitted model. In `analysis.qmd`, add a chunk that names `fit_sp` on its own line. Render. Copy the printed model summary from the rendered HTML.
 
 ```{r courage-8}
 question_text(NULL,
@@ -1514,7 +1514,7 @@ In a good model, the distribution of fitted values looks like the distribution o
 
 ### Exercise 13
 
-Ask your AI agent to add a chunk to `analysis.qmd` that runs `tidy(fit_sp, conf.int = TRUE)`. This returns 95% intervals for all the parameters in our model. Render. Copy the printed tibble from the rendered HTML.
+In `analysis.qmd`, add a chunk that runs `tidy(fit_sp, conf.int = TRUE)`. This returns 95% intervals for all the parameters in our model. Render. Copy the printed tibble from the rendered HTML.
 
 ```{r courage-13}
 question_text(NULL,
@@ -1537,7 +1537,7 @@ tidy(fit_sp, conf.int = TRUE)
 
 ### Exercise 14
 
-Create a new code chunk in your QMD. Ask AI to make a nice-looking table from the tibble returned by `tidy()`. Insert your table code, Render the QMD, and in the R Terminal run:
+Create a new code chunk in your QMD. Make a nice-looking table from the tibble returned by `tidy()`. Insert your table code, Render the QMD, and in the R Terminal run:
 
 ```
 show_file("analysis.qmd", chunk = "Last")
@@ -1676,7 +1676,7 @@ To make a decision wisely, we need good estimates of many unknown numbers. Drill
 
 ### Exercise 4
 
-Ask your AI agent to add a chunk to `analysis.qmd` that runs `predictions(fit_sp)`. Render. Copy the first few rows of the printed output from the rendered HTML below.
+In `analysis.qmd`, add a chunk that runs `predictions(fit_sp)`. Render. Copy the first few rows of the printed output from the rendered HTML below.
 
 ```{r temperance-4}
 question_text(NULL,
@@ -1699,7 +1699,7 @@ predictions(fit_sp)
 
 ### Exercise 5
 
-Ask your AI agent to add a chunk to `analysis.qmd` that runs `plot_predictions(fit_sp, condition = "treatment")`. Render. Describe in one sentence what the plot shows.
+In `analysis.qmd`, add a chunk that runs `plot_predictions(fit_sp, condition = "treatment")`. Render. Describe in one sentence what the plot shows.
 
 ```{r temperance-5}
 question_text(NULL,
@@ -1722,7 +1722,7 @@ The plot shows two point estimates --- one for *Not enrolled* near 794 pesos, on
 
 ### Exercise 6
 
-Ask your AI agent to modify the previous chunk to add `draw = FALSE` to the `plot_predictions()` call. Render. Copy the printed tibble from the rendered HTML below.
+Modify the previous chunk to add `draw = FALSE` to the `plot_predictions()` call. Render. Copy the printed tibble from the rendered HTML below.
 
 ```{r temperance-6}
 question_text(NULL,

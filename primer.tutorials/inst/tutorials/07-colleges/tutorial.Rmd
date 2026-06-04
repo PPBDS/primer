@@ -285,7 +285,7 @@ The Preceptor Table does not include all the covariates which you will eventuall
 
 ### Exercise 3
 
-We saw the distribution of `grad_rate` on its own in the Introduction. Now look at how `grad_rate` varies with `tuition`. Ask AI to write R code that plots `grad_rate` on the y-axis against `tuition` on the x-axis using points with `alpha = 0.4`, a smooth trend line, and descriptive labels. Paste the code below.
+We saw the distribution of `grad_rate` on its own in the Introduction. Now look at how `grad_rate` varies with `tuition`. Write R code that plots `grad_rate` on the y-axis against `tuition` on the x-axis using points with `alpha = 0.4`, a smooth trend line, and descriptive labels. Paste the code below.
 
 ```{r wisdom-3}
 question_text(NULL,
@@ -511,7 +511,7 @@ cat(
 
 ### Exercise 11
 
-We need a cleaned tibble. Ask your AI agent to add a cached code chunk to `analysis.qmd` that creates a tibble called `x` by taking `colleges`, selecting `tuition`, `grad_rate`, and `selectivity`, filtering to rows with tuition above $20,000 (so `tuition > 2`), dropping rows with missing values, and recoding `selectivity` as a factor with the levels in the order `Elite`, `Highly Selective`, `Moderately Selective`, `Lowly Selective`, `Non-selective`. Render. In the R Terminal, run `show_file("analysis.qmd", chunk = "Last")`. CP/CR.
+We need a cleaned tibble. In `analysis.qmd`, add a cached code chunk that creates a tibble called `x` by taking `colleges`, selecting `tuition`, `grad_rate`, and `selectivity`, filtering to rows with tuition above $20,000 (so `tuition > 2`), dropping rows with missing values, and recoding `selectivity` as a factor with the levels in the order `Elite`, `Highly Selective`, `Moderately Selective`, `Lowly Selective`, `Non-selective`. Render. In the R Terminal, run `show_file("analysis.qmd", chunk = "Last")`. CP/CR.
 
 ```{r wisdom-11}
 question_text(NULL,
@@ -1104,7 +1104,7 @@ The abstract data generating mechanism shown in the preamble uses generic variab
 
 ### Exercise 2
 
-Because our outcome variable is continuous, ask your AI agent to add a code chunk to `analysis.qmd` that begins building the model with `linear_reg(engine = "lm")`. Render. Copy the printed model object from the rendered HTML.
+Because our outcome variable is continuous, add a code chunk to `analysis.qmd` that begins building the model with `linear_reg(engine = "lm")`. Render. Copy the printed model object from the rendered HTML.
 
 ```{r courage-2}
 question_text(NULL,
@@ -1127,7 +1127,7 @@ Within the R modeling community, **[tidymodels](https://www.tidymodels.org/)** i
 
 ### Exercise 3
 
-Ask your AI agent to extend the chunk to `linear_reg(engine = "lm") |> fit(grad_rate ~ selectivity, data = x)`. This fits a first candidate model using only the five-level `selectivity` factor. Render. Copy the printed fit object from the rendered HTML.
+Extend the chunk in `analysis.qmd` to `linear_reg(engine = "lm") |> fit(grad_rate ~ selectivity, data = x)`. This fits a first candidate model using only the five-level `selectivity` factor. Render. Copy the printed fit object from the rendered HTML.
 
 ```{r courage-3}
 question_text(NULL,
@@ -1180,7 +1180,7 @@ For a multi-level categorical, every dummy coefficient is read *relative to the 
 
 ### Exercise 5
 
-Ask your AI agent to change the formula to `fit(grad_rate ~ tuition, data = x)`. This refits with the continuous covariate `tuition` instead of the selectivity factor. Render. Copy the printed fit object from the rendered HTML.
+Change the formula to `fit(grad_rate ~ tuition, data = x)`. This refits with the continuous covariate `tuition` instead of the selectivity factor. Render. Copy the printed fit object from the rendered HTML.
 
 ```{r courage-5}
 question_text(NULL,
@@ -1233,7 +1233,7 @@ The slope is **a comparison, not a change**: we are comparing two groups of coll
 
 ### Exercise 7
 
-Ask your AI agent to fit the final model with the formula `fit(grad_rate ~ tuition + selectivity, data = x)`. This combines the two candidates. Render. Copy the printed fit object from the rendered HTML.
+Fit the final model in `analysis.qmd` with the formula `fit(grad_rate ~ tuition + selectivity, data = x)`. This combines the two candidates. Render. Copy the printed fit object from the rendered HTML.
 
 ```{r courage-7}
 question_text(NULL,
@@ -1284,7 +1284,7 @@ The shrinkage from 16.4 to 9.0 percentage points is the effect of adjustment. Se
 
 ### Exercise 9
 
-We've settled on the final fit. Ask your AI agent to add a cached code chunk to `analysis.qmd` that assigns the result of `linear_reg() |> set_engine("lm") |> fit(grad_rate ~ tuition + selectivity, data = x)` to `fit_colleges`. Render. In the R Terminal, run `show_file("analysis.qmd", chunk = "Last")`. CP/CR.
+We've settled on the final fit. In `analysis.qmd`, add a cached code chunk that assigns the result of `linear_reg() |> set_engine("lm") |> fit(grad_rate ~ tuition + selectivity, data = x)` to `fit_colleges`. Render. In the R Terminal, run `show_file("analysis.qmd", chunk = "Last")`. CP/CR.
 
 ```{r courage-9}
 question_text(NULL,
@@ -1312,7 +1312,7 @@ fit_colleges <- linear_reg() |>
 
 ### Exercise 10
 
-Now print the fitted model. Ask your AI agent to add a chunk to `analysis.qmd` that names `fit_colleges` on its own line. Render. Copy the printed model summary from the rendered HTML.
+Now print the fitted model. In `analysis.qmd`, add a chunk that names `fit_colleges` on its own line. Render. Copy the printed model summary from the rendered HTML.
 
 ```{r courage-10}
 question_text(NULL,
@@ -1408,7 +1408,7 @@ Cached objects are often large and don't belong on GitHub.
 
 ### Exercise 14
 
-Ask your AI agent to add a chunk to `analysis.qmd` that runs `tidy(fit_colleges, conf.int = TRUE)`. This returns 95% intervals for all the parameters in our model. Render. Copy the printed tibble from the rendered HTML.
+In `analysis.qmd`, add a chunk that runs `tidy(fit_colleges, conf.int = TRUE)`. This returns 95% intervals for all the parameters in our model. Render. Copy the printed tibble from the rendered HTML.
 
 ```{r courage-14}
 question_text(NULL,
@@ -1563,7 +1563,7 @@ Data science projects begin with a decision which we face. To make that decision
 
 ### Exercise 4
 
-Ask your AI agent to add a chunk to `analysis.qmd` that runs `predictions(fit_colleges)`. Render. Copy the first few rows of the printed output from the rendered HTML below.
+In `analysis.qmd`, add a chunk that runs `predictions(fit_colleges)`. Render. Copy the first few rows of the printed output from the rendered HTML below.
 
 ```{r temperance-4}
 question_text(NULL,
@@ -1586,7 +1586,7 @@ predictions(fit_colleges)
 
 ### Exercise 5
 
-Ask your AI agent to add a chunk to `analysis.qmd` that runs `plot_predictions(fit_colleges, condition = c("tuition", "selectivity"))`. Render. Describe in one sentence what the plot shows.
+In `analysis.qmd`, add a chunk that runs `plot_predictions(fit_colleges, condition = c("tuition", "selectivity"))`. Render. Describe in one sentence what the plot shows.
 
 ```{r temperance-5}
 question_text(NULL,
@@ -1609,7 +1609,7 @@ Conditioning on two variables gives us a two-dimensional predicted surface --- h
 
 ### Exercise 6
 
-Ask your AI agent to modify the previous chunk to add `draw = FALSE` to the `plot_predictions()` call. Render. Copy the printed tibble from the rendered HTML below.
+Modify the previous chunk to add `draw = FALSE` to the `plot_predictions()` call. Render. Copy the printed tibble from the rendered HTML below.
 
 ```{r temperance-6}
 question_text(NULL,
