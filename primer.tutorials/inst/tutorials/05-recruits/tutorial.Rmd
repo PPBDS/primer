@@ -514,7 +514,7 @@ question_text(NULL,
 
 ###
 
-```{r wisdom-11-test}
+```{r wisdom-11-test, echo = TRUE}
 recruits |> count(sex)
 ```
 
@@ -1103,7 +1103,7 @@ question_text(NULL,
 
 ###
 
-```{r courage-2-test}
+```{r courage-2-test, echo = TRUE}
 linear_reg(engine = "lm")
 ```
 
@@ -1126,7 +1126,7 @@ question_text(NULL,
 
 ###
 
-```{r courage-3-test}
+```{r courage-3-test, echo = TRUE}
 linear_reg(engine = "lm") |>
   fit(height ~ sex, data = recruits)
 ```
@@ -1179,7 +1179,7 @@ question_text(NULL,
 
 ###
 
-```{r courage-5-test}
+```{r courage-5-test, echo = TRUE}
 linear_reg(engine = "lm") |>
   fit(height ~ age, data = recruits)
 ```
@@ -1260,7 +1260,7 @@ question_text(NULL,
 
 ###
 
-```{r courage-8-test}
+```{r courage-8-test, echo = TRUE}
 fit_recruits
 ```
 
@@ -1322,7 +1322,7 @@ question_text(NULL,
 
 ###
 
-```{r courage-11-test}
+```{r courage-11-test, echo = TRUE}
 tidy(fit_recruits, conf.int = TRUE)
 ```
 
@@ -1473,7 +1473,7 @@ question_text(NULL,
 
 ###
 
-```{r temperance-4-test}
+```{r temperance-4-test, echo = TRUE}
 predictions(fit_recruits)
 ```
 
@@ -1483,7 +1483,7 @@ predictions(fit_recruits)
 
 ### Exercise 5
 
-In `analysis.qmd`, add a chunk that runs `plot_predictions(fit_recruits, condition = "sex")`. Render. Describe in one sentence what the plot shows.
+In `analysis.qmd`, add a chunk that runs `plot_predictions(fit_recruits, condition = "sex")`. Render. In the R Terminal, run `show_file("analysis.qmd", chunk = "Last")`. CP/CR.
 
 ```{r temperance-5}
 question_text(NULL,
@@ -1491,12 +1491,12 @@ question_text(NULL,
   allow_retry = TRUE,
   try_again_button = "Edit Answer",
   incorrect = NULL,
-  rows = 3)
+  rows = 5)
 ```
 
 ###
 
-```{r temperance-5-test}
+```{r temperance-5-test, echo = TRUE}
 plot_predictions(fit_recruits, condition = "sex")
 ```
 
@@ -1519,7 +1519,7 @@ question_text(NULL,
 
 ###
 
-```{r temperance-6-test}
+```{r temperance-6-test, echo = TRUE}
 plot_predictions(fit_recruits, condition = "sex", draw = FALSE)
 ```
 

@@ -1117,7 +1117,7 @@ question_text(NULL,
 
 ###
 
-```{r courage-2-test}
+```{r courage-2-test, echo = TRUE}
 linear_reg(engine = "lm")
 ```
 
@@ -1140,7 +1140,7 @@ question_text(NULL,
 
 ###
 
-```{r courage-3-test}
+```{r courage-3-test, echo = TRUE}
 linear_reg(engine = "lm") |>
   fit(grad_rate ~ selectivity, data = x)
 ```
@@ -1193,7 +1193,7 @@ question_text(NULL,
 
 ###
 
-```{r courage-5-test}
+```{r courage-5-test, echo = TRUE}
 linear_reg(engine = "lm") |>
   fit(grad_rate ~ tuition, data = x)
 ```
@@ -1246,7 +1246,7 @@ question_text(NULL,
 
 ###
 
-```{r courage-7-test}
+```{r courage-7-test, echo = TRUE}
 linear_reg(engine = "lm") |>
   fit(grad_rate ~ tuition + selectivity, data = x)
 ```
@@ -1325,7 +1325,7 @@ question_text(NULL,
 
 ###
 
-```{r courage-10-test}
+```{r courage-10-test, echo = TRUE}
 fit_colleges
 ```
 
@@ -1421,7 +1421,7 @@ question_text(NULL,
 
 ###
 
-```{r courage-14-test}
+```{r courage-14-test, echo = TRUE}
 tidy(fit_colleges, conf.int = TRUE)
 ```
 
@@ -1576,7 +1576,7 @@ question_text(NULL,
 
 ###
 
-```{r temperance-4-test}
+```{r temperance-4-test, echo = TRUE}
 predictions(fit_colleges)
 ```
 
@@ -1586,7 +1586,7 @@ predictions(fit_colleges)
 
 ### Exercise 5
 
-In `analysis.qmd`, add a chunk that runs `plot_predictions(fit_colleges, condition = c("tuition", "selectivity"))`. Render. Describe in one sentence what the plot shows.
+In `analysis.qmd`, add a chunk that runs `plot_predictions(fit_colleges, condition = c("tuition", "selectivity"))`. Render. In the R Terminal, run `show_file("analysis.qmd", chunk = "Last")`. CP/CR.
 
 ```{r temperance-5}
 question_text(NULL,
@@ -1594,12 +1594,12 @@ question_text(NULL,
   allow_retry = TRUE,
   try_again_button = "Edit Answer",
   incorrect = NULL,
-  rows = 3)
+  rows = 5)
 ```
 
 ###
 
-```{r temperance-5-test}
+```{r temperance-5-test, echo = TRUE}
 plot_predictions(fit_colleges, condition = c("tuition", "selectivity"))
 ```
 
@@ -1622,7 +1622,7 @@ question_text(NULL,
 
 ###
 
-```{r temperance-6-test}
+```{r temperance-6-test, echo = TRUE}
 plot_predictions(fit_colleges, condition = c("tuition", "selectivity"), draw = FALSE)
 ```
 

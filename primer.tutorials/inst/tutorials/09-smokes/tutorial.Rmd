@@ -1025,7 +1025,7 @@ question_text(NULL,
 
 ###
 
-```{r courage-1-test}
+```{r courage-1-test, echo = TRUE}
 logistic_reg(engine = "glm")
 ```
 
@@ -1048,7 +1048,7 @@ question_text(NULL,
 
 ###
 
-```{r courage-2-test}
+```{r courage-2-test, echo = TRUE}
 logistic_reg(engine = "glm") |>
   fit(smoke ~ sex, data = smokes)
 ```
@@ -1100,7 +1100,7 @@ question_text(NULL,
 
 ###
 
-```{r courage-4-test}
+```{r courage-4-test, echo = TRUE}
 logistic_reg(engine = "glm") |>
   fit(smoke ~ age, data = smokes)
 ```
@@ -1152,7 +1152,7 @@ question_text(NULL,
 
 ###
 
-```{r courage-6-test}
+```{r courage-6-test, echo = TRUE}
 logistic_reg(engine = "glm") |>
   fit(smoke ~ age + sex, data = smokes)
 ```
@@ -1231,7 +1231,7 @@ question_text(NULL,
 
 ###
 
-```{r courage-9-test}
+```{r courage-9-test, echo = TRUE}
 fit_smokes
 ```
 
@@ -1241,7 +1241,7 @@ Logistic-regression coefficients live on the log-odds scale, which is not a scal
 
 ### Exercise 10
 
-To check whether our model is reasonable, we compare our actual outcome distribution to draws simulated from the fitted model. In `analysis.qmd`, add a chunk that loads **[easystats](https://easystats.github.io/easystats/)** (`library(easystats)`) and runs `check_predictions(extract_fit_engine(fit_smokes))`. The `extract_fit_engine()` step is necessary because `easystats::check_predictions()` expects a `glm` object, not the `parsnip` wrapper that `tidymodels` produces. Render. Describe in one sentence what the plot shows.
+To check whether our model is reasonable, we compare our actual outcome distribution to draws simulated from the fitted model. In `analysis.qmd`, add a chunk that loads **[easystats](https://easystats.github.io/easystats/)** (`library(easystats)`) and runs `check_predictions(extract_fit_engine(fit_smokes))`. The `extract_fit_engine()` step is necessary because `easystats::check_predictions()` expects a `glm` object, not the `parsnip` wrapper that `tidymodels` produces. Render. In the R Terminal, run `show_file("analysis.qmd", chunk = "Last")`. CP/CR.
 
 ```{r courage-10}
 question_text(NULL,
@@ -1249,12 +1249,12 @@ question_text(NULL,
   allow_retry = TRUE,
   try_again_button = "Edit Answer",
   incorrect = NULL,
-  rows = 3)
+  rows = 5)
 ```
 
 ###
 
-```{r courage-10-test, message = FALSE}
+```{r courage-10-test, message = FALSE, echo = TRUE}
 library(easystats)
 check_predictions(extract_fit_engine(fit_smokes))
 ```
@@ -1317,7 +1317,7 @@ question_text(NULL,
 
 ###
 
-```{r courage-13-test}
+```{r courage-13-test, echo = TRUE}
 tidy(fit_smokes, conf.int = TRUE)
 ```
 
@@ -1457,7 +1457,7 @@ question_text(NULL,
 
 ###
 
-```{r temperance-3-test}
+```{r temperance-3-test, echo = TRUE}
 predictions(extract_fit_engine(fit_smokes),
             newdata = data.frame(age = c(30, 70, 30, 70),
                                  sex = c("Female", "Female", "Male", "Male")))
@@ -1469,7 +1469,7 @@ predictions(extract_fit_engine(fit_smokes),
 
 ### Exercise 4
 
-In `analysis.qmd`, add a chunk that runs `plot_predictions(extract_fit_engine(fit_smokes), condition = c("age", "sex"))`. Render. Describe in one sentence what the plot shows.
+In `analysis.qmd`, add a chunk that runs `plot_predictions(extract_fit_engine(fit_smokes), condition = c("age", "sex"))`. Render. In the R Terminal, run `show_file("analysis.qmd", chunk = "Last")`. CP/CR.
 
 ```{r temperance-4}
 question_text(NULL,
@@ -1477,12 +1477,12 @@ question_text(NULL,
   allow_retry = TRUE,
   try_again_button = "Edit Answer",
   incorrect = NULL,
-  rows = 3)
+  rows = 5)
 ```
 
 ###
 
-```{r temperance-4-test}
+```{r temperance-4-test, echo = TRUE}
 plot_predictions(extract_fit_engine(fit_smokes), condition = c("age", "sex"))
 ```
 
@@ -1507,7 +1507,7 @@ question_text(NULL,
 
 ###
 
-```{r temperance-5-test}
+```{r temperance-5-test, echo = TRUE}
 avg_comparisons(extract_fit_engine(fit_smokes), variables = "sex")
 ```
 
@@ -1530,7 +1530,7 @@ question_text(NULL,
 
 ###
 
-```{r temperance-6-test}
+```{r temperance-6-test, echo = TRUE}
 plot_predictions(extract_fit_engine(fit_smokes), condition = c("age", "sex"), draw = FALSE)
 ```
 

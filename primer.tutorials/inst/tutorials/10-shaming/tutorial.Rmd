@@ -1260,7 +1260,7 @@ question_text(NULL,
 
 ###
 
-```{r courage-2-test}
+```{r courage-2-test, echo = TRUE}
 logistic_reg(engine = "glm")
 ```
 
@@ -1283,7 +1283,7 @@ question_text(NULL,
 
 ###
 
-```{r courage-3-test}
+```{r courage-3-test, echo = TRUE}
 logistic_reg(engine = "glm") |>
   fit(voted ~ treatment, data = x)
 ```
@@ -1335,7 +1335,7 @@ question_text(NULL,
 
 ###
 
-```{r courage-5-test}
+```{r courage-5-test, echo = TRUE}
 logistic_reg(engine = "glm") |>
   fit(voted ~ treatment + age, data = x)
 ```
@@ -1387,7 +1387,7 @@ question_text(NULL,
 
 ###
 
-```{r courage-7-test}
+```{r courage-7-test, echo = TRUE}
 logistic_reg(engine = "glm") |>
   fit(voted ~ age + sex + treatment*voter_class, data = x)
 ```
@@ -1461,7 +1461,7 @@ question_text(NULL,
 
 ###
 
-```{r courage-10-test}
+```{r courage-10-test, echo = TRUE}
 fit_shaming
 ```
 
@@ -1471,7 +1471,7 @@ In data science, **we deal with words, math, and code, but the most important of
 
 ### Exercise 11
 
-To check whether our model is reasonable, we compare our actual outcome distribution to draws simulated from the fitted model. In `analysis.qmd`, add a chunk that loads **[easystats](https://easystats.github.io/easystats/)** (`library(easystats)`) and runs `check_predictions(extract_fit_engine(fit_shaming))`. The `extract_fit_engine()` step is necessary because `easystats::check_predictions()` expects a `glm` object, not the `parsnip` wrapper that `tidymodels` produces. Render. Describe in one sentence what the plot shows.
+To check whether our model is reasonable, we compare our actual outcome distribution to draws simulated from the fitted model. In `analysis.qmd`, add a chunk that loads **[easystats](https://easystats.github.io/easystats/)** (`library(easystats)`) and runs `check_predictions(extract_fit_engine(fit_shaming))`. The `extract_fit_engine()` step is necessary because `easystats::check_predictions()` expects a `glm` object, not the `parsnip` wrapper that `tidymodels` produces. Render. In the R Terminal, run `show_file("analysis.qmd", chunk = "Last")`. CP/CR.
 
 ```{r courage-11}
 question_text(NULL,
@@ -1479,12 +1479,12 @@ question_text(NULL,
   allow_retry = TRUE,
   try_again_button = "Edit Answer",
   incorrect = NULL,
-  rows = 3)
+  rows = 5)
 ```
 
 ###
 
-```{r courage-11-test, message = FALSE}
+```{r courage-11-test, message = FALSE, echo = TRUE}
 library(easystats)
 check_predictions(extract_fit_engine(fit_shaming))
 ```
@@ -1560,7 +1560,7 @@ question_text(NULL,
 
 ###
 
-```{r courage-14-test}
+```{r courage-14-test, echo = TRUE}
 tidy(fit_shaming, conf.int = TRUE)
 ```
 
@@ -1718,7 +1718,7 @@ question_text(NULL,
 
 ###
 
-```{r temperance-4-test}
+```{r temperance-4-test, echo = TRUE}
 avg_comparisons(extract_fit_engine(fit_shaming), variables = "treatment")
 ```
 
@@ -1741,7 +1741,7 @@ question_text(NULL,
 
 ###
 
-```{r temperance-5-test}
+```{r temperance-5-test, echo = TRUE}
 avg_comparisons(extract_fit_engine(fit_shaming),
                 variables = "treatment",
                 by = "voter_class")
@@ -1753,7 +1753,7 @@ This is the heterogeneous-treatment-effect picture. The Neighbors postcard moves
 
 ### Exercise 6
 
-`plot_predictions(condition = c(...))` draws the model's predicted probabilities across two covariates simultaneously. In `analysis.qmd`, add a chunk that runs `plot_predictions(extract_fit_engine(fit_shaming), condition = c("treatment", "voter_class"))`. Render. Describe in one sentence what the plot shows.
+`plot_predictions(condition = c(...))` draws the model's predicted probabilities across two covariates simultaneously. In `analysis.qmd`, add a chunk that runs `plot_predictions(extract_fit_engine(fit_shaming), condition = c("treatment", "voter_class"))`. Render. In the R Terminal, run `show_file("analysis.qmd", chunk = "Last")`. CP/CR.
 
 ```{r temperance-6}
 question_text(NULL,
@@ -1761,12 +1761,12 @@ question_text(NULL,
   allow_retry = TRUE,
   try_again_button = "Edit Answer",
   incorrect = NULL,
-  rows = 3)
+  rows = 5)
 ```
 
 ###
 
-```{r temperance-6-test}
+```{r temperance-6-test, echo = TRUE}
 plot_predictions(extract_fit_engine(fit_shaming),
                  condition = c("treatment", "voter_class"))
 ```
@@ -1790,7 +1790,7 @@ question_text(NULL,
 
 ###
 
-```{r temperance-7-test}
+```{r temperance-7-test, echo = TRUE}
 plot_predictions(extract_fit_engine(fit_shaming),
                  condition = c("treatment", "voter_class"),
                  draw = FALSE)
