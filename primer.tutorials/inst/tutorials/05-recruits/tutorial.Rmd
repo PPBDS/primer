@@ -127,11 +127,11 @@ question_text(NULL,
 
 Rendering a QMD converts the code and prose into an HTML document that shows only what you want readers to see --- in this case, the eventual plot and summary paragraph, with the code hidden. Professional data-science deliverables almost never show raw code; the code is the path, not the destination.
 
-### Exercise 6
+### Exercise 4
 
 In the R Terminal, type `?recruits` and paste the Description below.
 
-```{r introduction-6}
+```{r introduction-4}
 question_text(NULL,
   message = "A 50-row sample drawn from the National Health and Nutrition Examination Survey (NHANES, via primer.data::nhanes) for the 05-recruits tutorial. Restricted to ages 18--27 and to the columns relevant for the tutorial's question. The split between sexes (40 male, 10 female) is deliberately uneven so the two group means have visibly different standard errors --- a feature the tutorial's Temperance section asks students to notice and explain.",
   answer(NULL, correct = TRUE),
@@ -144,11 +144,11 @@ question_text(NULL,
 
 Note that NHANES intentionally oversamples some demographic groups --- older adults, racial and ethnic minorities --- so that each subgroup has enough observations to be studied on its own. The raw NHANES survey is not representative of the general population; the survey ships sampling weights to correct for this. Our `recruits` sample inherits these issues and amplifies them: we drew 40 men and 10 women rather than matching their representation in NHANES. We should flag both as concerns later in Justice.
 
-### Exercise 7
+### Exercise 5
 
 Height of young adults is the broad topic of this tutorial. Given that topic, which variable in `recruits` should we use as our outcome variable?
 
-```{r introduction-7}
+```{r introduction-5}
 question_text(NULL,
   message = "Our outcome variable is `height`. We care about the height of USMC recruits, who are young adults.",
   answer(NULL, correct = TRUE),
@@ -180,11 +180,11 @@ recruits |>
         axis.ticks.y = element_blank())
 ```
 
-### Exercise 8
+### Exercise 6
 
 Which variable in `recruits` do you think might have an important connection to `height`?
 
-```{r introduction-8}
+```{r introduction-6}
 question_text(NULL,
   message = "One candidate is `sex`. Men and women tend to have systematically different average heights, so a model that includes `sex` should do better than one that does not.",
   answer(NULL, correct = TRUE),
@@ -197,11 +197,11 @@ question_text(NULL,
 
 With a predictive model, each individual unit has only one observed outcome. Predictive models have no "treatments" --- only covariates.
 
-### Exercise 9
+### Exercise 7
 
 Specify two different groups of young adults which have different values for `sex` and which might have different average values for `height`.
 
-```{r introduction-9}
+```{r introduction-7}
 question_text(NULL,
   message = "Consider two groups: young adults with `sex` = Male, and young adults with `sex` = Female. These two groups might have different average heights.",
   answer(NULL, correct = TRUE),
@@ -214,11 +214,11 @@ question_text(NULL,
 
 In predictive models, do not use "cause," "influence," "impact," or anything else which suggests causation. The best phrasing is in terms of "differences" between groups of units with different values for a covariate of interest.
 
-### Exercise 10
+### Exercise 8
 
 Write a predictive question connecting the outcome `height` to `sex`, the covariate of interest.
 
-```{r introduction-10}
+```{r introduction-8}
 question_text(NULL,
   message = "What is the average height of male and female USMC recruits?",
   answer(NULL, correct = TRUE),
@@ -501,21 +501,21 @@ cat(
 
 ### Exercise 11
 
-Because `recruits` is already prepared (filtered to ages 18--27, restricted to `height`, `sex`, and `age`, and missing rows dropped), there is no data-prep code to write. Take a moment to verify the breakdown that matters most for what comes next. In the R Terminal, run:
-
-```
-recruits |> count(sex)
-```
-
-CP/CR.
+Because `recruits` is already prepared (filtered to ages 18--27, restricted to `height`, `sex`, and `age`, and missing rows dropped), there is no data-prep code to write. Take a moment to verify the breakdown that matters most for what comes next. Ask your AI agent to add a chunk to `analysis.qmd` that runs `recruits |> count(sex)`. Render. Copy the printed tibble from the rendered HTML below.
 
 ```{r wisdom-11}
 question_text(NULL,
-  message = "    > recruits |> count(sex)\n    # A tibble: 2 × 2\n      sex        n\n      <chr>  <int>\n    1 Female    10\n    2 Male      40",
   answer(NULL, correct = TRUE),
-  allow_retry = FALSE,
+  allow_retry = TRUE,
+  try_again_button = "Edit Answer",
   incorrect = NULL,
   rows = 6)
+```
+
+###
+
+```{r wisdom-11-test}
+recruits |> count(sex)
 ```
 
 ###
@@ -1219,9 +1219,37 @@ The wide confidence interval that includes zero is exactly what *"this covariate
 
 ### Exercise 7
 
-Behind the scenes of this tutorial, an object called `fit_recruits` is the fitted model. Ask your AI agent to add a chunk to `analysis.qmd` that names `fit_recruits` on its own line. Render. Copy the printed model summary from the rendered HTML.
+We've settled on the final fit. Ask your AI agent to add a cached code chunk to `analysis.qmd` that assigns the result of `linear_reg() |> set_engine("lm") |> fit(height ~ sex, data = recruits)` to `fit_recruits`. Render. In the R Terminal, run `show_file("analysis.qmd", chunk = "Last")`. CP/CR.
 
 ```{r courage-7}
+question_text(NULL,
+  answer(NULL, correct = TRUE),
+  allow_retry = TRUE,
+  try_again_button = "Edit Answer",
+  incorrect = NULL,
+  rows = 8)
+```
+
+###
+
+````
+```{r}
+#| cache: true
+fit_recruits <- linear_reg() |>
+  set_engine("lm") |>
+  fit(height ~ sex, data = recruits)
+```
+````
+
+###
+
+`#| cache: true` tells Quarto to store the fitted object and reload it on subsequent renders rather than re-fitting every time. The next time you render your QMD --- without changing this chunk --- Quarto will just load the saved fit.
+
+### Exercise 8
+
+Now print the fitted model. Ask your AI agent to add a chunk to `analysis.qmd` that names `fit_recruits` on its own line. Render. Copy the printed model summary from the rendered HTML.
+
+```{r courage-8}
 question_text(NULL,
   answer(NULL, correct = TRUE),
   allow_retry = TRUE,
@@ -1232,38 +1260,13 @@ question_text(NULL,
 
 ###
 
-```{r courage-7-test}
+```{r courage-8-test}
 fit_recruits
 ```
 
 ###
 
 In data science, **we deal with words, math, and code, but the most important of these is code.** We created the mathematical structure of the model and then wrote a model formula in order to estimate the unknown parameters.
-
-### Exercise 8
-
-We need `fit_recruits` to exist in R World so that later `marginaleffects` calls can use it. Run this code in the R Terminal:
-
-```
-fit_recruits <- linear_reg() |>
-  set_engine("lm") |>
-  fit(height ~ sex, data = recruits)
-```
-
-CP/CR.
-
-```{r courage-8}
-question_text(NULL,
-  message = "    > fit_recruits <- linear_reg() |>\n    +   set_engine(\"lm\") |>\n    +   fit(height ~ sex, data = recruits)\n    >",
-  answer(NULL, correct = TRUE),
-  allow_retry = FALSE,
-  incorrect = NULL,
-  rows = 5)
-```
-
-###
-
-Just because something exists in the tutorial (or in the QMD) does not mean that it is in your R Terminal. You should be aware of what exists in R World, which is generally called your "workspace."
 
 ### Exercise 9
 
@@ -1281,37 +1284,6 @@ A data generating mechanism is just a formula, something which we can write down
 
 ### Exercise 10
 
-Create a new code chunk in your QMD. Add the chunk option `#| cache: true`. Copy/paste the code for estimating the model into the chunk, assigning the result to `fit_recruits`:
-
-```
-fit_recruits <- linear_reg() |>
-  set_engine("lm") |>
-  fit(height ~ sex, data = recruits)
-```
-
-Render the QMD. Rendering may take a moment the first time as Quarto caches the fit. In the R Terminal, run:
-
-```
-show_file("analysis.qmd", chunk = "Last")
-```
-
-CP/CR.
-
-```{r courage-10}
-question_text(NULL,
-  message = "    > show_file(\"analysis.qmd\", chunk = \"Last\")\n    ```{r}\n    #| cache: true\n    fit_recruits <- linear_reg() |>\n      set_engine(\"lm\") |>\n      fit(height ~ sex, data = recruits)\n    ```",
-  answer(NULL, correct = TRUE),
-  allow_retry = FALSE,
-  incorrect = NULL,
-  rows = 8)
-```
-
-###
-
-Including `#| cache: true` causes Quarto to cache the chunk's results. The next time you render your QMD, as long as you have not changed the code, Quarto will just load up the saved fitted object. To confirm, Render again --- it should be quick.
-
-### Exercise 11
-
 Add `*_cache` to your `.gitignore` file. Cached objects are often large and don't belong on GitHub.
 
 In the R Terminal, run:
@@ -1322,7 +1294,7 @@ show_file(".gitignore")
 
 CP/CR.
 
-```{r courage-11}
+```{r courage-10}
 question_text(NULL,
   message = "    > show_file(\".gitignore\")\n    analysis_files\n    *_cache",
   answer(NULL, correct = TRUE),
@@ -1335,11 +1307,11 @@ question_text(NULL,
 
 Because of the change in your `.gitignore` (assuming you saved it), the cache directory should not appear in the Source Control panel --- Git is ignoring it. Commit and push.
 
-### Exercise 12
+### Exercise 11
 
 Ask your AI agent to add a chunk to `analysis.qmd` that runs `tidy(fit_recruits, conf.int = TRUE)`. This returns 95% intervals for all the parameters in our model. Render. Copy the printed tibble from the rendered HTML.
 
-```{r courage-12}
+```{r courage-11}
 question_text(NULL,
   answer(NULL, correct = TRUE),
   allow_retry = TRUE,
@@ -1350,7 +1322,7 @@ question_text(NULL,
 
 ###
 
-```{r courage-12-test}
+```{r courage-11-test}
 tidy(fit_recruits, conf.int = TRUE)
 ```
 
@@ -1358,7 +1330,7 @@ tidy(fit_recruits, conf.int = TRUE)
 
 `tidy()` is part of the **[broom](https://broom.tidymodels.org/)** package, used to summarize information from a wide variety of models.
 
-### Exercise 13
+### Exercise 12
 
 Here is a nicer-looking version of that parameter table, rendered with **[knitr](https://yihui.org/knitr/)**:
 
@@ -1380,7 +1352,7 @@ Rounding to one decimal place keeps the displayed values consistent with the fit
 
 The more variables we add, the more difficult it is to interpret the meaning of any particular coefficient. But interpretation also becomes less important. We don't really care about coefficients. We care about using our model to estimate quantities of interest.
 
-### Exercise 14
+### Exercise 13
 
 Add a sentence to your project summary explaining the structure of the model. Something like: "We model XX [concept of outcome, not variable name], [values of XX], as a [linear/logistic/multinomial/ordinal] function of XX [and maybe other covariates]."
 
@@ -1388,7 +1360,7 @@ Recall the beginning of our version of the summary:
 
 > People vary in height, and that variation is strongly patterned by sex. Using data from the National Health and Nutrition Examination Survey (NHANES) conducted by the Centers for Disease Control and Prevention, we seek to estimate the average height of male and female USMC recruits for the coming year. One concern is that USMC recruits are more physically fit than the general young-adult population and so may be systematically taller, meaning that the NHANES-based estimates probably understate recruit heights.
 
-```{r courage-14}
+```{r courage-13}
 question_text(NULL,
   message = "We model height as a normally distributed variable which is a linear function of sex.",
   answer(NULL, correct = TRUE),
@@ -1488,17 +1460,21 @@ Data science projects begin with a decision which we face. To make that decision
 
 ### Exercise 4
 
-In the R Terminal, run `predictions()` on `fit_recruits`.
-
-CP/CR.
+Ask your AI agent to add a chunk to `analysis.qmd` that runs `predictions(fit_recruits)`. Render. Copy the first few rows of the printed output from the rendered HTML below.
 
 ```{r temperance-4}
 question_text(NULL,
-  message = "    > predictions(fit_recruits)\n    \n     Estimate Std. Error    z Pr(>|z|)  2.5 % 97.5 %\n        174.8       1.01  173   <0.001  172.5  177.0\n        165.9       2.02   81.9 <0.001  161.8  170.0\n        174.8       1.01  173   <0.001  172.5  177.0\n        ... (50 rows total, one per observation)\n    \n    Type: numeric",
   answer(NULL, correct = TRUE),
-  allow_retry = FALSE,
+  allow_retry = TRUE,
+  try_again_button = "Edit Answer",
   incorrect = NULL,
-  rows = 5)
+  rows = 8)
+```
+
+###
+
+```{r temperance-4-test}
+predictions(fit_recruits)
 ```
 
 ###
@@ -1507,20 +1483,20 @@ question_text(NULL,
 
 ### Exercise 5
 
-In the R Terminal, run `plot_predictions()` on `fit_recruits` with `condition = "sex"`.
-
-CP/CR.
+Ask your AI agent to add a chunk to `analysis.qmd` that runs `plot_predictions(fit_recruits, condition = "sex")`. Render. Describe in one sentence what the plot shows.
 
 ```{r temperance-5}
 question_text(NULL,
-  message = "    > plot_predictions(fit_recruits, condition = \"sex\")\n\n(A plot opens showing two point estimates --- one for `Female` near 166 cm and one for `Male` near 175 cm --- each with a 95% confidence interval. The Female interval is visibly wider than the Male interval.)",
   answer(NULL, correct = TRUE),
-  allow_retry = FALSE,
+  allow_retry = TRUE,
+  try_again_button = "Edit Answer",
   incorrect = NULL,
-  rows = 5)
+  rows = 3)
 ```
 
-```{r temperance-5-test, include = FALSE}
+###
+
+```{r temperance-5-test}
 plot_predictions(fit_recruits, condition = "sex")
 ```
 
@@ -1530,20 +1506,20 @@ You should see two point estimates (one for Female, one for Male) with 95% confi
 
 ### Exercise 6
 
-In the R Terminal, run `plot_predictions()` on `fit_recruits` with `condition = "sex"` and `draw = FALSE`.
-
-CP/CR.
+Ask your AI agent to modify the previous chunk to add `draw = FALSE` to the `plot_predictions()` call. Render. Copy the printed tibble from the rendered HTML below.
 
 ```{r temperance-6}
 question_text(NULL,
-  message = "    > plot_predictions(fit_recruits, condition = \"sex\", draw = FALSE)\n      rowid estimate std.error statistic  p.value conf.low conf.high    sex\n    1     1    165.9      2.02      81.9   <0.001    161.8     170.0 Female\n    2     2    174.8      1.01     173      <0.001    172.5     177.0   Male",
   answer(NULL, correct = TRUE),
-  allow_retry = FALSE,
+  allow_retry = TRUE,
+  try_again_button = "Edit Answer",
   incorrect = NULL,
   rows = 5)
 ```
 
-```{r temperance-6-test, include = FALSE}
+###
+
+```{r temperance-6-test}
 plot_predictions(fit_recruits, condition = "sex", draw = FALSE)
 ```
 
