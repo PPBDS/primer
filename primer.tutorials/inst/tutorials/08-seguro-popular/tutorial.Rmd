@@ -299,7 +299,7 @@ Data science starts with some broad questions and a data set which might help us
 
 The specific question: *What is the average causal effect of Seguro Popular enrollment on a household's three-month out-of-pocket health spending?*
 
-We will work from the Seguro Popular rollout data, available in the `sps` tibble of the **[primer.data](https://github.com/PPBDS/primer.data)** package.
+We will work from the Seguro Popular rollout data, available in the `sps` tibble of the **primer.data** package.
 
 ### Exercise 1
 

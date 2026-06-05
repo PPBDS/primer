@@ -247,7 +247,7 @@ Data science starts with some broad questions and a data set which might help us
 
 The specific question: *What is the difference in expected graduation rates between colleges with tuition of $20,000 and colleges with tuition of $30,000?*
 
-We will work from the Department of Education's 2013 IPEDS database, available in the `colleges` tibble of the **[primer.data](https://github.com/PPBDS/primer.data)** package.
+We will work from the Department of Education's 2013 IPEDS database, available in the `colleges` tibble of the **primer.data** package.
 
 ### Exercise 1
 

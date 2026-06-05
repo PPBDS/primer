@@ -118,7 +118,7 @@ question_text(NULL,
 
 ###
 
-The `smokes` tibble in **[primer.tutorials](https://ppbds.github.io/primer/tutorials/)** is a 1,000-row teaching cut from NHANES 2009--2012, restricted to adults aged 20--80 with non-missing values on smoking status, age, and sex. The outcome `smoke` is coded `Yes` if the respondent reports having smoked at least 100 cigarettes in their lifetime --- the canonical NHANES "ever-smoker" definition, and the bar essentially every U.S. tobacco-policy researcher uses.
+The `smokes` tibble in **[primer.tutorials](https://github.com/PPBDS/primer.tutorials)** is a 1,000-row teaching cut from NHANES 2009--2012, restricted to adults aged 20--80 with non-missing values on smoking status, age, and sex. The outcome `smoke` is coded `Yes` if the respondent reports having smoked at least 100 cigarettes in their lifetime --- the canonical NHANES "ever-smoker" definition, and the bar essentially every U.S. tobacco-policy researcher uses.
 
 ### Exercise 4
 
@@ -225,7 +225,7 @@ Data science starts with some broad questions and a data set which might help us
 
 The specific question: *What is the difference in the probability of being an ever-smoker between a 30-year-old woman and a 70-year-old man?*
 
-We will work from a 1,000-adult sample of NHANES 2009--2012, available in the `smokes` tibble of the **[primer.tutorials](https://ppbds.github.io/primer/)** package.
+We will work from a 1,000-adult sample of NHANES 2009--2012, available in the `smokes` tibble of the **primer.tutorials** package.
 
 ### Exercise 1
 

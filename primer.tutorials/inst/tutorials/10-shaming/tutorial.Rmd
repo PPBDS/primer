@@ -255,7 +255,7 @@ Data science starts with some broad questions and a data set which might help us
 
 The specific question: *What is the average causal effect of the Neighbors postcard, relative to no postcard, on the probability that a registered voter casts a ballot in the August 2006 Michigan primary?*
 
-We will work from the Gerber-Green-Larimer 2006 Michigan experiment, available in the `shaming` tibble of the **[primer.data](https://github.com/PPBDS/primer.data)** package.
+We will work from the Gerber-Green-Larimer 2006 Michigan experiment, available in the `shaming` tibble of the **primer.data** package.
 
 Remember that Wisdom begins with a question and then moves on to the creation of a Preceptor Table and an examination of our data.
 
