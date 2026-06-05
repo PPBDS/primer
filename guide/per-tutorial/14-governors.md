@@ -1,0 +1,22 @@
+> Seed spec — §17 of the Primer authoring guide. To author this tutorial, read the index `../../CLAUDE.md`, the shared rules in `../authoring.md` + `../exercise-list.md`, and this file.
+
+### 14 — Governors  *(Position 10, Hard causal — recast from predictive)*
+
+- **Type:** example
+- **Status:** **Recast required.** The existing tutorial frames this as a predictive question — *"how long do gubernatorial candidates live after their election?"*. Under the new §1.5 alternation, position 10 is causal, and the Barfort et al. 2020 paper is a close-election RDD study whose natural framing *is* causal. Rewrite the tutorial around the causal question.
+- **"Imagine":** You are considering a run for governor and want to know whether winning changes how long you are likely to live.
+- **Dataset:** `governors` (Barfort et al. 2020) (`primer.data`)
+- **Outcome:** `lived_after` — years lived after election (continuous)
+- **Treatment / Key covariate:** election outcome (won/lost), identified by close-margin quasi-randomization
+- **Question (QoI):** What is the causal effect of winning a gubernatorial election on lifespan?
+- **Model:** Linear regression restricted to close-margin elections; treatment = win/lose. Interaction with `election_age` and `sex` optional.
+- **Causal / Predictive:** Causal
+- **Student project:** `governors`
+- **Data prep (revised):** `governors |> filter(year > 1945) |> filter(margin < 5) |> select(last_name, year, state, sex, lived_after, election_age, region, won)` → `x`  *(pseudocode — margin column name and cutoff to be confirmed against `primer.data`)*
+- **Final model (revised):** `linear_reg(engine = "lm") |> fit(lived_after ~ won + election_age + sex, data = x)` → `fit_governors`  *(treatment = `won`; interaction terms optional at Hard tier)*
+- **Preceptor Table:** Unit (Candidate) | Potential Outcomes (Years Lived if Won, Years Lived if Lost) | Treatment (Election Outcome) | Covariates (Age at Election, Sex)
+- **Population Table:** Source | Unit/Time (Candidate, Year) | Potential Outcomes (Years Lived if Won, Years Lived if Lost) | Treatment (Election Outcome) | Covariates (Age at Election, Sex)
+- **Author note:** The RDD identification story is what makes this Hard-tier — not the model specification itself (which is still a linear regression). The Justice section should name the RDD assumption explicitly and discuss the close-margin restriction as the mechanism that makes unconfoundedness plausible. Per §1.3 *unconfoundedness worked example (Hard)*, name the design family (RDD) without teaching it in depth; that framing belongs in the Difficult tier.
+
+---
+
