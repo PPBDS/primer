@@ -78,7 +78,7 @@ Key steps:
 
 1) Fork/download the target repo:
 
-```{r, eval=FALSE}
+````
 #| code-fold: false
 library(usethis)
 create_from_github(repo_spec = "PPBDS/INSERT-NAME-OF-PROJECT",
@@ -86,7 +86,7 @@ create_from_github(repo_spec = "PPBDS/INSERT-NAME-OF-PROJECT",
                    rstudio = FALSE,
                    destdir = "/Users/davidkane/Desktop/projects/",   # substitute your own path
                    protocol = "https")
-```
+````
 
 Obviously, you need to modify the string "INSERT-NAME-OF-PROJECT" to correspond to one of our projects. Most common options are **primer** (the monorepo that contains the book and the **[primer.tutorials](https://ppbds.github.io/primer/tutorials/)** package), **[primer.data](https://github.com/PPBDS/primer.data)**, **[vscode.tutorials](https://ppbds.github.io/vscode.tutorials/)**, and **[tutorial.helpers](https://ppbds.github.io/tutorial.helpers/)**. Do not try to clone **[primer.tutorials](https://ppbds.github.io/primer/tutorials/)** on its own — it lives inside `primer`. If, for some reason, you are working on a project which does not reside in the PPBDS organization, you should modify the first part of the `repo_spec` as well.
 
