@@ -79,12 +79,11 @@ Key steps:
 1) Fork/download the target repo:
 
 ````
-#| code-fold: false
 library(usethis)
 create_from_github(repo_spec = "PPBDS/INSERT-NAME-OF-PROJECT",
                    fork = TRUE,
                    rstudio = FALSE,
-                   destdir = "/Users/davidkane/Desktop/projects/",   # substitute your own path
+                   destdir = "/Users/davidkane/Desktop/projects/",
                    protocol = "https")
 ````
 
