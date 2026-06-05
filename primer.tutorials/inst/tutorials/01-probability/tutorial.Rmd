@@ -71,7 +71,7 @@ The Probability chapter starts from the most basic question: where does the data
 
 ### Exercise 1
 
-You should be working inside a GitHub repo named `probability`. Once you're inside the `probability` repo, create a new Quarto document titled `"Probability"` with yourself as the author, save it as `analysis.qmd`, render it, and open `analysis.html` with Live Server so the rendered HTML auto-refreshes on every later render. Create a `.gitignore` file with `analysis_files` on the first line followed by a blank line. Commit and push. Use AI however you like. In the R Terminal, run `show_file(".gitignore")`.
+You should be working inside a GitHub repo named `probability`. Once you're inside the `probability` repo, create a new Quarto document titled `"Probability"` with yourself as the author, save it as `analysis.qmd`, render it, and open `analysis.html` with Live Server so the rendered HTML auto-refreshes on every later render. Going forward, we will just tell you to "Render" when we want you to take these steps. Create a `.gitignore` file with `analysis_files` on the first line followed by a blank line. Commit and push. Use AI however you like. In the R Terminal, run `show_file(".gitignore")`.
 
 CP/CR.
 
