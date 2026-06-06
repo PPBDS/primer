@@ -1646,7 +1646,7 @@ Because `plot_predictions()` returns a ggplot object, you can continue with ggpl
 
 ### Exercise 7
 
-Work with AI to create a beautiful plot starting from the output of `plot_predictions(fit_att, condition = "treatment", draw = FALSE)`. Do this in your QMD. Title: key variables. Subtitle: key takeaway. Caption: data source. Axis labels: human-readable.
+Create a beautiful plot starting from the output of `plot_predictions(fit_att, condition = "treatment", draw = FALSE)`. Do this in your QMD. Title: key variables. Subtitle: key takeaway. Caption: data source. Axis labels: human-readable.
 
 Paste the plot code below.
 

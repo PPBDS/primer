@@ -1529,7 +1529,7 @@ Because `plot_predictions()` returns a ggplot object, you can continue with ggpl
 
 ### Exercise 7
 
-Work with AI to create a beautiful plot starting from the output of `plot_predictions(fit_recruits, condition = "sex", draw = FALSE)`. Do this in your QMD (much easier than typing in the R Terminal directly). Title: the key variables. Subtitle: the key takeaway. Caption: data source. Axis labels: human-readable with units.
+Create a beautiful plot starting from the output of `plot_predictions(fit_recruits, condition = "sex", draw = FALSE)`. Do this in your QMD (much easier than typing in the R Terminal directly). Title: the key variables. Subtitle: the key takeaway. Caption: data source. Axis labels: human-readable with units.
 
 Paste the plot code below.
 

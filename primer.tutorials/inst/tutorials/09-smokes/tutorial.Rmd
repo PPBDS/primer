@@ -1540,7 +1540,7 @@ plot_predictions(extract_fit_engine(fit_smokes), condition = c("age", "sex"), dr
 
 ### Exercise 7
 
-Work with AI to create a beautiful plot starting from the output of `plot_predictions(..., draw = FALSE)`. Do this in your QMD. Title: key variables. Subtitle: takeaway. Caption: data source. Y-axis: percentages. Paste the plot code below.
+Create a beautiful plot starting from the output of `plot_predictions(..., draw = FALSE)`. Do this in your QMD. Title: key variables. Subtitle: takeaway. Caption: data source. Y-axis: percentages. Paste the plot code below.
 
 ```{r temperance-7}
 question_text(NULL,

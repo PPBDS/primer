@@ -1632,7 +1632,7 @@ Because `plot_predictions()` returns a ggplot object, you can continue with ggpl
 
 ### Exercise 7
 
-Work with AI to create a beautiful plot starting from the output above. Do this in your QMD.
+Create a beautiful plot starting from the output above. Do this in your QMD.
 
 Paste the plot code below.
 
