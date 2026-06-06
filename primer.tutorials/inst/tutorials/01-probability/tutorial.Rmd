@@ -71,7 +71,7 @@ The Probability chapter starts from the most basic question: where does the data
 
 ### Exercise 1
 
-You should be working inside a GitHub repo named `probability`. Once you're inside the `probability` repo, create a new Quarto document titled `"Probability"` with yourself as the author, save it as `analysis.qmd`, render it, and open `analysis.html` with Live Server so the rendered HTML auto-refreshes on every later render. Going forward, we will just tell you to "Render" when we want you to take these steps. Create a `.gitignore` file with `analysis_files` on the first line followed by a blank line. Commit and push. Use AI however you like. In the R Terminal, run `show_file(".gitignore")`.
+You should be connected to a repo named `probability`. If you are not, create one and connect to it. Create a new Quarto document titled `"Probability"` with yourself as the author, save it as `analysis.qmd`, render it, and open `analysis.html` with Live Server so the rendered HTML auto-refreshes on every later render. Going forward, we will just tell you to "Render" when we want you to take these steps. Create a `.gitignore` file with `analysis_files` on the first line followed by a blank line. Commit and push. Use AI however you like. In the R Terminal, run `show_file(".gitignore")`. If that fails, it is probably because you have not yet loaded `library(tutorial.helpers)` in the R Terminal.
 
 CP/CR.
 
@@ -120,9 +120,9 @@ When we look at a histogram of an experiment's results, what we are really askin
 
 ### Exercise 1
 
-Ask your AI agent to add a function called `throw_dice()` to `analysis.qmd` that simulates rolling two fair dice `n` times and returns the sum of each pair as a numeric vector. A good implementation calls `sample(1:6, n, replace = TRUE)` once for each die and adds the two results. Then, in the same chunk, set the seed with `set.seed(10)` and call `throw_dice(5)`. Render. Copy the printed five-number vector from the rendered HTML below.
+In `analysis.qmd`, add a function called `throw_dice()` that simulates rolling two fair dice `n` times and returns the sum of each pair as a numeric vector. A good implementation calls `sample(1:6, n, replace = TRUE)` once for each die and adds the two results. Then, in the same chunk, set the seed with `set.seed(10)` and call `throw_dice(5)`. Render. Copy the printed five-number vector from the rendered HTML below.
 
-```{r dgm-1}
+```{r the-data-generating-mechanism-1}
 question_text(NULL,
   answer(NULL, correct = TRUE),
   allow_retry = TRUE,
@@ -133,7 +133,8 @@ question_text(NULL,
 
 ###
 
-```{r dgm-1-test}
+```{r the-data-generating-mechanism-1-test}
+#| echo: true
 set.seed(10)
 throw_dice(5)
 ```
@@ -144,20 +145,21 @@ The five sums you see are not the "true" probabilities of anything --- they are 
 
 ### Exercise 2
 
-Ask your AI agent to add a `ggplot` to `analysis.qmd` that calls `throw_dice(20)` (with `set.seed(10)` on the line above) and draws a histogram of the 20 sums, with the x-axis ticked at each integer from 2 to 12. Render. Describe in one sentence what shape you see.
+In `analysis.qmd`, add a `ggplot` chunk that calls `throw_dice(20)` (with `set.seed(10)` on the line above) and draws a histogram of the 20 sums, with the x-axis ticked at each integer from 2 to 12. Render. In the R Terminal, run `show_file("analysis.qmd", chunk = "Last")`. CP/CR.
 
-```{r dgm-2}
+```{r the-data-generating-mechanism-2}
 question_text(NULL,
   answer(NULL, correct = TRUE),
   allow_retry = TRUE,
   try_again_button = "Edit Answer",
   incorrect = NULL,
-  rows = 3)
+  rows = 10)
 ```
 
 ###
 
-```{r dgm-2-test}
+```{r the-data-generating-mechanism-2-test}
+#| echo: true
 set.seed(10)
 tibble(sum = throw_dice(20)) |>
   ggplot(aes(x = sum)) +
@@ -175,20 +177,21 @@ A reader who saw only this histogram, without the title telling them the dice we
 
 ### Exercise 3
 
-Now run the same 20-throw experiment ten different times --- ten separate "shifts" of an inspector rolling the same pair of fair dice --- and plot all ten histograms in one panel so we can compare them. Ask your AI agent to add a chunk to `analysis.qmd` that builds a tibble of 10 trials × 20 throws (using `tibble(trial = 1:10) |> mutate(throws = map(trial, ~ throw_dice(20))) |> unnest(throws)`), then plots a histogram of the sums faceted by `trial`. Render. Describe in one sentence what you notice about the ten panels.
+Now run the same 20-throw experiment ten different times --- ten separate "shifts" of an inspector rolling the same pair of fair dice --- and plot all ten histograms in one panel so we can compare them. In `analysis.qmd`, add a chunk that builds a tibble of 10 trials × 20 throws (using `tibble(trial = 1:10) |> mutate(throws = map(trial, ~ throw_dice(20))) |> unnest(throws)`), then plots a histogram of the sums faceted by `trial`. Render. In the R Terminal, run `show_file("analysis.qmd", chunk = "Last")`. CP/CR.
 
-```{r dgm-3}
+```{r the-data-generating-mechanism-3}
 question_text(NULL,
   answer(NULL, correct = TRUE),
   allow_retry = TRUE,
   try_again_button = "Edit Answer",
   incorrect = NULL,
-  rows = 3)
+  rows = 10)
 ```
 
 ###
 
-```{r dgm-3-test}
+```{r the-data-generating-mechanism-3-test}
+#| echo: true
 set.seed(10)
 tibble(trial = 1:10) |>
   mutate(throws = map(trial, ~ throw_dice(20))) |>
@@ -209,20 +212,21 @@ The ten panels are *strikingly different from each other*, even though they were
 
 ### Exercise 4
 
-Now do the opposite experiment: keep the dice fair and watch what happens as the number of rolls grows. Ask your AI agent to add a chunk to `analysis.qmd` that builds histograms for `n = 10, 20, 50, 100, 1000` throws of two fair dice, each in its own panel side by side. The recipe: `tibble(n = c(10, 20, 50, 100, 1000)) |> mutate(throws = map(n, throw_dice)) |> unnest(throws) |> mutate(n = factor(n, levels = c(10, 20, 50, 100, 1000)))`, then a faceted histogram. Use `scales = "free_y"` so the smaller panels are not crushed. Render. Describe in one sentence how the shape changes as `n` grows.
+Now do the opposite experiment: keep the dice fair and watch what happens as the number of rolls grows. In `analysis.qmd`, add a chunk that builds histograms for `n = 10, 20, 50, 100, 1000` throws of two fair dice, each in its own panel side by side. The recipe: `tibble(n = c(10, 20, 50, 100, 1000)) |> mutate(throws = map(n, throw_dice)) |> unnest(throws) |> mutate(n = factor(n, levels = c(10, 20, 50, 100, 1000)))`, then a faceted histogram. Use `scales = "free_y"` so the smaller panels are not crushed. Render. In the R Terminal, run `show_file("analysis.qmd", chunk = "Last")`. CP/CR.
 
-```{r dgm-4}
+```{r the-data-generating-mechanism-4}
 question_text(NULL,
   answer(NULL, correct = TRUE),
   allow_retry = TRUE,
   try_again_button = "Edit Answer",
   incorrect = NULL,
-  rows = 3)
+  rows = 10)
 ```
 
 ###
 
-```{r dgm-4-test}
+```{r the-data-generating-mechanism-4-test}
+#| echo: true
 set.seed(10)
 tibble(n = c(10, 20, 50, 100, 1000)) |>
   mutate(throws = map(n, throw_dice)) |>
@@ -245,20 +249,21 @@ At `n = 10` the histogram looks almost random. At `n = 1000` it is a clean trian
 
 ### Exercise 5
 
-Now flip the setup. Suppose the dice are *not* fair --- the 6 face has a 25% chance instead of the usual 1/6, and the other five faces share the remaining 75% equally (15% each). Ask your AI agent to add a chunk to `analysis.qmd` that re-runs Exercise 3's ten-panel experiment, but this time passes `weights = c(0.15, 0.15, 0.15, 0.15, 0.15, 0.25)` to `throw_dice()`. Use the same `set.seed(10)`. Render. Describe in one sentence how this set of ten panels compares to the fair-dice ten panels from Exercise 3.
+Now flip the setup. Suppose the dice are *not* fair --- the 6 face has a 25% chance instead of the usual 1/6, and the other five faces share the remaining 75% equally (15% each). In `analysis.qmd`, add a chunk that re-runs Exercise 3's ten-panel experiment, but this time passes `weights = c(0.15, 0.15, 0.15, 0.15, 0.15, 0.25)` to `throw_dice()`. Use the same `set.seed(10)`. Render. In the R Terminal, run `show_file("analysis.qmd", chunk = "Last")`. CP/CR.
 
-```{r dgm-5}
+```{r the-data-generating-mechanism-5}
 question_text(NULL,
   answer(NULL, correct = TRUE),
   allow_retry = TRUE,
   try_again_button = "Edit Answer",
   incorrect = NULL,
-  rows = 3)
+  rows = 10)
 ```
 
 ###
 
-```{r dgm-5-test}
+```{r the-data-generating-mechanism-5-test}
+#| echo: true
 set.seed(10)
 tibble(trial = 1:10) |>
   mutate(throws = map(trial,
@@ -280,20 +285,21 @@ These panels look *just as messy as the fair-dice panels in Exercise 3 did*. A r
 
 ### Exercise 6
 
-Finally, repeat Exercise 4's `n` progression with the same unfair dice. Ask your AI agent to add a chunk that does the same `n = 10, 20, 50, 100, 1000` faceted histogram, but with `weights = c(0.15, 0.15, 0.15, 0.15, 0.15, 0.25)` passed to each `throw_dice()` call. Render. Describe in one sentence at what value of `n` the dice start to look obviously rigged.
+Finally, repeat Exercise 4's `n` progression with the same unfair dice. Add a chunk to `analysis.qmd` that does the same `n = 10, 20, 50, 100, 1000` faceted histogram, but with `weights = c(0.15, 0.15, 0.15, 0.15, 0.15, 0.25)` passed to each `throw_dice()` call. Render. In the R Terminal, run `show_file("analysis.qmd", chunk = "Last")`. CP/CR.
 
-```{r dgm-6}
+```{r the-data-generating-mechanism-6}
 question_text(NULL,
   answer(NULL, correct = TRUE),
   allow_retry = TRUE,
   try_again_button = "Edit Answer",
   incorrect = NULL,
-  rows = 3)
+  rows = 10)
 ```
 
 ###
 
-```{r dgm-6-test}
+```{r the-data-generating-mechanism-6-test}
+#| echo: true
 set.seed(10)
 tibble(n = c(10, 20, 50, 100, 1000)) |>
   mutate(throws = map(n, ~ throw_dice(.x, weights = unfair_weights))) |>
@@ -329,7 +335,7 @@ At this moment, before you have seen any rolls, you think these two possibilitie
 
 ### Exercise 1
 
-Before looking at any actual rolls, we need to know what each DGM *looks like* in the limit. Ask your AI agent to add a chunk to `analysis.qmd` that plots two bar charts side by side: the theoretical PDF of the fair die (six bars at 1/6 each) and the theoretical PDF of the loaded die (five bars at 0.14 and a sixth bar at 0.30). Render. Describe in one sentence the visible difference between the two charts.
+Before looking at any actual rolls, we need to know what each DGM *looks like* in the limit. In `analysis.qmd`, add a chunk that plots two bar charts side by side: the theoretical PDF of the fair die (six bars at 1/6 each) and the theoretical PDF of the loaded die (five bars at 0.14 and a sixth bar at 0.30). Render. In the R Terminal, run `show_file("analysis.qmd", chunk = "Last")`. CP/CR.
 
 ```{r measuring-surprise-1}
 question_text(NULL,
@@ -337,12 +343,13 @@ question_text(NULL,
   allow_retry = TRUE,
   try_again_button = "Edit Answer",
   incorrect = NULL,
-  rows = 3)
+  rows = 10)
 ```
 
 ###
 
 ```{r measuring-surprise-1-test}
+#| echo: true
 tibble(
   face = rep(1:6, 2),
   prob = c(rep(1/6, 6), loaded_weights),
@@ -364,7 +371,7 @@ The fair die's PDF is flat: every face at exactly 1/6. The loaded die's PDF is *
 
 ### Exercise 2
 
-Now look at twenty rolls of the loaded die. Ask your AI agent to add a chunk to `analysis.qmd` that uses `set.seed(10)` followed by `sample(1:6, 20, replace = TRUE, prob = c(0.14, 0.14, 0.14, 0.14, 0.14, 0.30))`, stores the result as `rolls_20`, and plots its histogram. Render. Look at the histogram and answer in one sentence: *given just this picture, are you 95% sure the die is loaded?*
+Now look at twenty rolls of the loaded die. In `analysis.qmd`, add a chunk that uses `set.seed(10)` followed by `sample(1:6, 20, replace = TRUE, prob = c(0.14, 0.14, 0.14, 0.14, 0.14, 0.30))`, stores the result as `rolls_20`, and plots its histogram. Render. In the R Terminal, run `show_file("analysis.qmd", chunk = "Last")`. CP/CR.given just this picture, are you 95% sure the die is loaded?*
 
 ```{r measuring-surprise-2}
 question_text(NULL,
@@ -372,12 +379,13 @@ question_text(NULL,
   allow_retry = TRUE,
   try_again_button = "Edit Answer",
   incorrect = NULL,
-  rows = 3)
+  rows = 10)
 ```
 
 ###
 
 ```{r measuring-surprise-2-test}
+#| echo: true
 set.seed(10)
 rolls_20 <- roll_die(20, weights = loaded_weights)
 
@@ -396,7 +404,7 @@ The 6 bar is the tallest, which is what the loaded DGM would predict --- but wit
 
 ### Exercise 3
 
-Now look at two hundred rolls of the same loaded die. Ask your AI agent to add a chunk that does the same thing as Exercise 2 but with `n = 200`. Use `set.seed(10)` again. Render. Describe in one sentence what you see now that you could not see at twenty rolls.
+Now look at two hundred rolls of the same loaded die. Add a chunk to `analysis.qmd` that does the same thing as Exercise 2 but with `n = 200`. Use `set.seed(10)` again. Render. In the R Terminal, run `show_file("analysis.qmd", chunk = "Last")`. CP/CR.
 
 ```{r measuring-surprise-3}
 question_text(NULL,
@@ -404,12 +412,13 @@ question_text(NULL,
   allow_retry = TRUE,
   try_again_button = "Edit Answer",
   incorrect = NULL,
-  rows = 3)
+  rows = 10)
 ```
 
 ###
 
 ```{r measuring-surprise-3-test}
+#| echo: true
 set.seed(10)
 rolls_200 <- roll_die(200, weights = loaded_weights)
 
@@ -428,7 +437,7 @@ The 6 bar is plainly taller than the others, and the five non-6 bars are roughly
 
 ### Exercise 4
 
-Each individual roll either supports the loaded-die hypothesis or undermines it. Ask your AI agent to add a chunk that computes the **likelihood ratio** of each face under loaded versus fair: $P(\text{face} \mid \text{loaded}) / P(\text{face} \mid \text{fair})$. Print a small tibble with one row per face. Render. Copy the printed tibble below.
+Each individual roll either supports the loaded-die hypothesis or undermines it. Add a chunk to `analysis.qmd` that computes the **likelihood ratio** of each face under loaded versus fair: $P(\text{face} \mid \text{loaded}) / P(\text{face} \mid \text{fair})$. Print a small tibble with one row per face. Render. Copy the printed tibble below.
 
 ```{r measuring-surprise-4}
 question_text(NULL,
@@ -442,6 +451,7 @@ question_text(NULL,
 ###
 
 ```{r measuring-surprise-4-test}
+#| echo: true
 tibble(face = 1:6,
        p_loaded = loaded_weights,
        p_fair   = 1/6,
@@ -456,7 +466,7 @@ Rolling a 6 is **1.8 times more likely** under loaded than under fair; rolling a
 
 Now combine the 20-roll evidence into a single posterior probability. With a 50/50 prior and independent rolls, the math is simple: multiply our prior odds (1, since 50/50) by the likelihood ratio for each roll. The resulting odds, divided by *one plus those odds*, give the posterior probability of "loaded."
 
-Ask your AI agent to add a chunk to `analysis.qmd` that takes `rolls_20` from Exercise 2, multiplies the per-roll likelihood ratios together (or, equivalently, sums their logs and exponentiates), and prints the posterior probability of "loaded." Render. Copy the printed number.
+In `analysis.qmd`, add a chunk that takes `rolls_20` from Exercise 2, multiplies the per-roll likelihood ratios together (or, equivalently, sums their logs and exponentiates), and prints the posterior probability of "loaded." Render. Copy the printed number.
 
 ```{r measuring-surprise-5}
 question_text(NULL,
@@ -470,6 +480,7 @@ question_text(NULL,
 ###
 
 ```{r measuring-surprise-5-test}
+#| echo: true
 set.seed(10)
 rolls_20 <- roll_die(20, weights = loaded_weights)
 posterior_loaded_20 <- 1 / (1 + exp(-sum(log_lr(rolls_20))))
@@ -482,7 +493,7 @@ Twenty rolls put our posterior at about 0.86 --- meaningfully past 50/50, but we
 
 ### Exercise 6
 
-Now do the same calculation for the 200-roll sample. Ask your AI agent to repeat Exercise 5 with `rolls_200` from Exercise 3. Render. Copy the printed number.
+Now do the same calculation for the 200-roll sample. Repeat Exercise 5 with `rolls_200` from Exercise 3. Render. Copy the printed number.
 
 ```{r measuring-surprise-6}
 question_text(NULL,
@@ -496,6 +507,7 @@ question_text(NULL,
 ###
 
 ```{r measuring-surprise-6-test}
+#| echo: true
 set.seed(10)
 rolls_200 <- roll_die(200, weights = loaded_weights)
 posterior_loaded_200 <- 1 / (1 + exp(-sum(log_lr(rolls_200))))
@@ -508,7 +520,7 @@ Two hundred rolls leave essentially zero doubt --- the posterior is indistinguis
 
 ### Exercise 7
 
-The most interesting question is not what the posterior is at the *end* of 200 rolls but how it *evolves*, roll by roll, from 0.50. Ask your AI agent to add a chunk that, starting from `rolls_200`, computes the cumulative sum of log likelihood ratios, converts each cumulative log-odds value to a posterior probability of "loaded," and plots that posterior against the roll number from 1 to 200. Add a horizontal reference line at 0.95. Render. Describe in one sentence what the plot shows.
+The most interesting question is not what the posterior is at the *end* of 200 rolls but how it *evolves*, roll by roll, from 0.50. Add a chunk to `analysis.qmd` that, starting from `rolls_200`, computes the cumulative sum of log likelihood ratios, converts each cumulative log-odds value to a posterior probability of "loaded," and plots that posterior against the roll number from 1 to 200. Add a horizontal reference line at 0.95. Render. In the R Terminal, run `show_file("analysis.qmd", chunk = "Last")`. CP/CR.
 
 ```{r measuring-surprise-7}
 question_text(NULL,
@@ -516,12 +528,13 @@ question_text(NULL,
   allow_retry = TRUE,
   try_again_button = "Edit Answer",
   incorrect = NULL,
-  rows = 3)
+  rows = 10)
 ```
 
 ###
 
 ```{r measuring-surprise-7-test}
+#| echo: true
 set.seed(10)
 rolls_200 <- roll_die(200, weights = loaded_weights)
 
@@ -548,7 +561,7 @@ The line starts at 50%, wobbles a bit while every individual roll matters, then 
 
 ### Exercise 8
 
-One run is one run. To see how *typical* that run was, ask your AI agent to add a chunk that repeats the whole experiment 1,000 times: for each repetition, roll the loaded die until the posterior probability of "loaded" first crosses 95%, and record how many rolls that took. Then plot a histogram of those 1,000 stopping times. Render. Describe in one sentence what the histogram shows about how reliable our "rolls to 95%" answer is.
+One run is one run. To see how *typical* that run was, add a chunk to `analysis.qmd` that repeats the whole experiment 1,000 times: for each repetition, roll the loaded die until the posterior probability of "loaded" first crosses 95%, and record how many rolls that took. Then plot a histogram of those 1,000 stopping times. Render. In the R Terminal, run `show_file("analysis.qmd", chunk = "Last")`. CP/CR.
 
 ```{r measuring-surprise-8}
 question_text(NULL,
@@ -556,12 +569,13 @@ question_text(NULL,
   allow_retry = TRUE,
   try_again_button = "Edit Answer",
   incorrect = NULL,
-  rows = 3)
+  rows = 10)
 ```
 
 ###
 
 ```{r measuring-surprise-8-test}
+#| echo: true
 set.seed(42)
 stop_times <- replicate(1000, {
   rolls    <- roll_die(500, weights = loaded_weights)
