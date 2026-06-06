@@ -204,7 +204,7 @@ The square root in the denominator is doing important work. Suppose we had drawn
 
 ### Exercise 4
 
-Time to draw the picture. Add a `ggplot` to the same chunk showing the single sample mean as a point with a horizontal error bar covering mean ± 1.96·SE, and a red dashed vertical line at the truth. Render and look at the plot in `analysis.html`. Describe in one sentence what you see.
+Time to draw the picture. Add a `ggplot` to the same chunk showing the single sample mean as a point with a horizontal error bar covering mean ± 1.96·SE, and a red dashed vertical line at the truth. Render. In the R Terminal, run `show_file("analysis.qmd", chunk = "Last")`. CP/CR.
 
 ```{r sampling-and-the-standard-error-4}
 question_text(NULL,
@@ -212,7 +212,7 @@ question_text(NULL,
   allow_retry = TRUE,
   try_again_button = "Edit Answer",
   incorrect = NULL,
-  rows = 3)
+  rows = 10)
 ```
 
 ###
@@ -266,7 +266,7 @@ Each row is one of the thousand hypothetical "what if we had drawn a different 5
 
 ### Exercise 6
 
-Now plot the first 100 of those intervals as horizontal error bars stacked vertically, with the truth marked as a vertical red line. (We use 100 rather than 1,000 so the picture stays readable.) Render. Describe in one sentence what you see.
+Now plot the first 100 of those intervals as horizontal error bars stacked vertically, with the truth marked as a vertical red line. (We use 100 rather than 1,000 so the picture stays readable.) Render. In the R Terminal, run `show_file("analysis.qmd", chunk = "Last")`. CP/CR.
 
 ```{r sampling-and-the-standard-error-6}
 question_text(NULL,
@@ -274,7 +274,7 @@ question_text(NULL,
   allow_retry = TRUE,
   try_again_button = "Edit Answer",
   incorrect = NULL,
-  rows = 3)
+  rows = 10)
 ```
 
 ###
@@ -374,7 +374,7 @@ head(biased_sample |> select(age, primary_06, sex))
 
 ### Exercise 2
 
-Before trusting any downstream results, we want to *see* that the bias is doing what we wrote it to do. Add a side-by-side histogram comparing the age distribution of `biased_sample` against an unbiased sample of the same size. The unbiased reference can be `unbiased_sample <- shaming |> slice_sample(n = 50)` with `set.seed(11)`. Bind the two with an `origin` column and `facet_wrap(~ origin)`. Render. Describe in one sentence what you see.
+Before trusting any downstream results, we want to *see* that the bias is doing what we wrote it to do. Add a side-by-side histogram comparing the age distribution of `biased_sample` against an unbiased sample of the same size. The unbiased reference can be `unbiased_sample <- shaming |> slice_sample(n = 50)` with `set.seed(11)`. Bind the two with an `origin` column and `facet_wrap(~ origin)`. Render. In the R Terminal, run `show_file("analysis.qmd", chunk = "Last")`. CP/CR.
 
 ```{r biased-sampling-2}
 question_text(NULL,
@@ -382,7 +382,7 @@ question_text(NULL,
   allow_retry = TRUE,
   try_again_button = "Edit Answer",
   incorrect = NULL,
-  rows = 3)
+  rows = 10)
 ```
 
 ###
@@ -462,7 +462,7 @@ This is exactly the same code as before, with one change: `slice_sample(..., wei
 
 ### Exercise 5
 
-Plot the first 100 rows of `biased_samples` as horizontal error bars with a red dashed vertical line at the truth --- same picture as the unbiased version, but on `biased_samples`. Render. Describe in one sentence what you see.
+Plot the first 100 rows of `biased_samples` as horizontal error bars with a red dashed vertical line at the truth --- same picture as the unbiased version, but on `biased_samples`. Render. In the R Terminal, run `show_file("analysis.qmd", chunk = "Last")`. CP/CR.
 
 ```{r biased-sampling-5}
 question_text(NULL,
@@ -470,7 +470,7 @@ question_text(NULL,
   allow_retry = TRUE,
   try_again_button = "Edit Answer",
   incorrect = NULL,
-  rows = 3)
+  rows = 10)
 ```
 
 ###
@@ -523,7 +523,7 @@ This is the single most important lesson of the whole tutorial: **a bigger sampl
 
 ### Exercise 7
 
-To see *where* the biased sample means are clustering, plot a density curve of `biased_samples$sample_mean` with a red dashed vertical line at the truth and a black solid vertical line at the average of `sample_mean`. Drop the y-axis since density-plot y-values are not meaningful. Render. Describe in one sentence what you see.
+To see *where* the biased sample means are clustering, plot a density curve of `biased_samples$sample_mean` with a red dashed vertical line at the truth and a black solid vertical line at the average of `sample_mean`. Drop the y-axis since density-plot y-values are not meaningful. Render. In the R Terminal, run `show_file("analysis.qmd", chunk = "Last")`. CP/CR.
 
 ```{r biased-sampling-7}
 question_text(NULL,
@@ -531,7 +531,7 @@ question_text(NULL,
   allow_retry = TRUE,
   try_again_button = "Edit Answer",
   incorrect = NULL,
-  rows = 3)
+  rows = 10)
 ```
 
 ###
