@@ -1230,17 +1230,13 @@ question_text(NULL,
 
 ###
 
-````
-```{r}
+<pre><code>
 #| cache: true
 fit_smokes <- logistic_reg(engine = "glm") |>
   fit(smoke ~ age + sex, data = smokes)
-```
 
-```{r}
 fit_smokes
-```
-````
+</code></pre>
 
 ###
 
@@ -1424,16 +1420,14 @@ question_text(NULL,
 
 ###
 
-````
-```{r}
+<pre><code>
 #| message: false
 library(tidyverse)
 library(primer.data)
 library(tidymodels)
 library(broom)
 library(marginaleffects)
-```
-````
+</code></pre>
 
 ###
 

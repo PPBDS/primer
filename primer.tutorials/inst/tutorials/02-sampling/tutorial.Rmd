@@ -101,13 +101,11 @@ question_text(NULL,
 
 ###
 
-````
-```{r}
+<pre><code>
 #| message: false
 library(tidyverse)
 library(primer.data)
-```
-````
+</code></pre>
 
 ###
 
@@ -322,8 +320,7 @@ question_text(NULL,
 
 ###
 
-````
-```{r}
+<pre><code>
 #| cache: true
 set.seed(10)
 samples <- tibble(trial = 1:1000) |>
@@ -335,9 +332,7 @@ samples <- tibble(trial = 1:1000) |>
     upper       = sample_mean + 1.96 * sample_se
   ) |>
   select(-sample)
-```
 
-```{r}
 ggplot(samples |> slice(1:100), aes(y = trial)) +
   geom_errorbarh(aes(xmin = lower, xmax = upper),
                  height = 0.3, alpha = 0.5) +
@@ -349,8 +344,7 @@ ggplot(samples |> slice(1:100), aes(y = trial)) +
        x = "Age (years)",
        y = "Sample number") +
   theme_minimal()
-```
-````
+</code></pre>
 
 ###
 
@@ -396,8 +390,7 @@ question_text(NULL,
 
 ###
 
-````
-```{r}
+<pre><code>
 ggplot(samples |> slice(1:100), aes(y = trial)) +
   geom_errorbarh(aes(xmin = lower, xmax = upper),
                  height = 0.3, alpha = 0.5) +
@@ -410,8 +403,7 @@ ggplot(samples |> slice(1:100), aes(y = trial)) +
        y = "Sample number",
        caption = "Source: Gerber, Green, Larimer 2008 via primer.data::shaming") +
   theme_minimal()
-```
-````
+</code></pre>
 
 ###
 
@@ -580,8 +572,7 @@ question_text(NULL,
 
 ###
 
-````
-```{r}
+<pre><code>
 #| cache: true
 set.seed(10)
 shaming_wt <- shaming |> mutate(wt = if_else(age > 40, 3, 1))
@@ -594,9 +585,7 @@ biased_samples <- tibble(trial = 1:1000) |>
     upper       = sample_mean + 1.96 * sample_se
   ) |>
   select(-sample)
-```
 
-```{r}
 ggplot(biased_samples |> slice(1:100), aes(y = trial)) +
   geom_errorbarh(aes(xmin = lower, xmax = upper),
                  height = 0.3, alpha = 0.5) +
@@ -608,8 +597,7 @@ ggplot(biased_samples |> slice(1:100), aes(y = trial)) +
        x = "Age (years)",
        y = "Sample number") +
   theme_minimal()
-```
-````
+</code></pre>
 
 ###
 
@@ -692,8 +680,7 @@ question_text(NULL,
 
 ###
 
-````
-```{r}
+<pre><code>
 ggplot(biased_samples, aes(x = sample_mean)) +
   geom_density(fill = "grey70", color = "grey30") +
   geom_vline(xintercept = truth, color = "red",
@@ -707,8 +694,7 @@ ggplot(biased_samples, aes(x = sample_mean)) +
   theme_minimal() +
   theme(axis.text.y = element_blank(),
         axis.ticks.y = element_blank())
-```
-````
+</code></pre>
 
 ###
 

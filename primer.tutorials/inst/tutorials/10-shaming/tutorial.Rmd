@@ -597,8 +597,7 @@ question_text(NULL,
 
 ###
 
-````
-```{r}
+<pre><code>
 #| cache: true
 x <- shaming |>
   mutate(civ_engage = primary_00 + primary_02 + primary_04 +
@@ -612,12 +611,9 @@ x <- shaming |>
     levels = c("Rarely Vote", "Sometimes Vote", "Always Vote"))) |>
   mutate(voted = as.factor(primary_06)) |>
   drop_na()
-```
 
-```{r}
 head(x)
-```
-````
+</code></pre>
 
 ###
 
@@ -1518,17 +1514,13 @@ question_text(NULL,
 
 ###
 
-````
-```{r}
+<pre><code>
 #| cache: true
 fit_shaming <- logistic_reg(engine = "glm") |>
   fit(voted ~ age + sex + treatment*voter_class, data = x)
-```
 
-```{r}
 fit_shaming
-```
-````
+</code></pre>
 
 ###
 
@@ -1751,16 +1743,14 @@ question_text(NULL,
 
 ###
 
-````
-```{r}
+<pre><code>
 #| message: false
 library(tidyverse)
 library(primer.data)
 library(tidymodels)
 library(broom)
 library(marginaleffects)
-```
-````
+</code></pre>
 
 ###
 

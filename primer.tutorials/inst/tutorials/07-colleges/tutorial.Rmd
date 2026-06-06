@@ -558,8 +558,7 @@ question_text(NULL,
 
 ###
 
-````
-```{r}
+<pre><code>
 #| cache: true
 x <- colleges |>
   select(tuition, grad_rate, selectivity) |>
@@ -569,12 +568,9 @@ x <- colleges |>
                               levels = c("Elite", "Highly Selective",
                                          "Moderately Selective",
                                          "Lowly Selective", "Non-selective")))
-```
 
-```{r}
 head(x)
-```
-````
+</code></pre>
 
 ###
 
@@ -1364,18 +1360,14 @@ question_text(NULL,
 
 ###
 
-````
-```{r}
+<pre><code>
 #| cache: true
 fit_colleges <- linear_reg() |>
   set_engine("lm") |>
   fit(grad_rate ~ tuition + selectivity, data = x)
-```
 
-```{r}
 fit_colleges
-```
-````
+</code></pre>
 
 ###
 
@@ -1591,16 +1583,14 @@ question_text(NULL,
 
 ###
 
-````
-```{r}
+<pre><code>
 #| message: false
 library(tidyverse)
 library(primer.data)
 library(tidymodels)
 library(broom)
 library(marginaleffects)
-```
-````
+</code></pre>
 
 ###
 

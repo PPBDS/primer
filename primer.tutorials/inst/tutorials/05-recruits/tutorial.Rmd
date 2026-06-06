@@ -1259,18 +1259,14 @@ question_text(NULL,
 
 ###
 
-````
-```{r}
+<pre><code>
 #| cache: true
 fit_recruits <- linear_reg() |>
   set_engine("lm") |>
   fit(height ~ sex, data = recruits)
-```
 
-```{r}
 fit_recruits
-```
-````
+</code></pre>
 
 ###
 
@@ -1448,16 +1444,14 @@ question_text(NULL,
 
 ###
 
-````
-```{r}
+<pre><code>
 #| message: false
 library(tidyverse)
 library(primer.data)
 library(tidymodels)
 library(broom)
 library(marginaleffects)
-```
-````
+</code></pre>
 
 ###
 

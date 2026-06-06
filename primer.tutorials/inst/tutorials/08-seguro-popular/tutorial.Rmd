@@ -122,13 +122,11 @@ question_text(NULL,
 
 ###
 
-````
-```{r}
+<pre><code>
 #| message: false
 library(tidyverse)
 library(primer.data)
-```
-````
+</code></pre>
 
 ###
 
@@ -381,20 +379,16 @@ question_text(NULL,
 
 ###
 
-````
-```{r}
+<pre><code>
 #| cache: true
 x <- sps |>
   select(treatment, t2_health_exp_3m, age, sex, education) |>
   drop_na() |>
   mutate(treatment = factor(if_else(treatment == 1, "Enrolled", "Not enrolled"),
                             levels = c("Not enrolled", "Enrolled")))
-```
 
-```{r}
 head(x)
-```
-````
+</code></pre>
 
 ###
 
@@ -1429,17 +1423,13 @@ question_text(NULL,
 
 ###
 
-````
-```{r}
+<pre><code>
 #| cache: true
 fit_sp <- linear_reg(engine = "lm") |>
   fit(t2_health_exp_3m ~ treatment, data = x)
-```
 
-```{r}
 fit_sp
-```
-````
+</code></pre>
 
 ###
 
@@ -1601,16 +1591,14 @@ question_text(NULL,
 
 ###
 
-````
-```{r}
+<pre><code>
 tidy(fit_sp, conf.int = TRUE) |>
   select(term, estimate, conf.low, conf.high) |>
   knitr::kable(
     caption = "Estimates and 95% CIs. Source: King et al. (2009) Seguro Popular rollout via primer.data",
     digits = 0
   )
-```
-````
+</code></pre>
 
 ###
 
@@ -1700,16 +1688,14 @@ question_text(NULL,
 
 ###
 
-````
-```{r}
+<pre><code>
 #| message: false
 library(tidyverse)
 library(primer.data)
 library(tidymodels)
 library(broom)
 library(marginaleffects)
-```
-````
+</code></pre>
 
 ###
 
@@ -1861,8 +1847,7 @@ question_text(NULL,
 
 ###
 
-````
-```{r}
+<pre><code>
 plot_predictions(fit_sp, condition = "treatment", draw = FALSE) |>
   ggplot(aes(x = treatment, y = estimate)) +
   geom_pointrange(aes(ymin = conf.low, ymax = conf.high)) +
@@ -1874,8 +1859,7 @@ plot_predictions(fit_sp, condition = "treatment", draw = FALSE) |>
     caption = "Source: King et al. (2009) Seguro Popular rollout via primer.data"
   ) +
   theme_minimal()
-```
-````
+</code></pre>
 
 ###
 
@@ -1936,37 +1920,30 @@ question_text(NULL,
 
 ###
 
-````
+<pre><code>
 ---
 title: "Seguro Popular"
-author: "<your name>"
+author: "&lt;your name&gt;"
 execute:
   echo: false
 ---
 
-```{r}
 #| message: false
 library(tidyverse)
 library(tidymodels)
 library(primer.data)
 library(broom)
 library(marginaleffects)
-```
 
-```{r}
 x <- sps |>
   select(treatment, t2_health_exp_3m, age, sex, education) |>
   drop_na() |>
   mutate(treatment = factor(if_else(treatment == 1, "Enrolled", "Not enrolled"),
                             levels = c("Not enrolled", "Enrolled")))
-```
 
-```{r}
 fit_sp <- linear_reg(engine = "lm") |>
   fit(t2_health_exp_3m ~ treatment, data = x)
-```
 
-```{r}
 plot_predictions(fit_sp, condition = "treatment", draw = FALSE) |>
   ggplot(aes(x = treatment, y = estimate)) +
   geom_pointrange(aes(ymin = conf.low, ymax = conf.high)) +
@@ -1978,10 +1955,9 @@ plot_predictions(fit_sp, condition = "treatment", draw = FALSE) |>
     caption = "Source: King et al. (2009) Seguro Popular rollout via primer.data"
   ) +
   theme_minimal()
-```
 
 Households' out-of-pocket spending on health care is a key marker of financial vulnerability. Using the 27,569-household follow-up sample from Mexico's 2005--06 randomized evaluation of Seguro Popular, we estimate the average causal effect of enrollment on three-month out-of-pocket spending. One concern is that randomization happened at the community level, not the household level. We model three-month spending as a normally distributed variable which is a linear function of treatment. We estimate that enrollment reduced spending by about 63 pesos on average, with a 95% confidence interval of roughly -105 to -22 pesos --- a small but statistically detectable reduction.
-````
+</code></pre>
 
 ###
 
