@@ -514,7 +514,8 @@ question_text(NULL,
 
 ###
 
-```{r wisdom-11-test, echo = TRUE}
+```{r wisdom-11-test}
+#| echo: true
 recruits |> count(sex)
 ```
 
@@ -1103,7 +1104,8 @@ question_text(NULL,
 
 ###
 
-```{r courage-2-test, echo = TRUE}
+```{r courage-2-test}
+#| echo: true
 linear_reg(engine = "lm")
 ```
 
@@ -1126,7 +1128,8 @@ question_text(NULL,
 
 ###
 
-```{r courage-3-test, echo = TRUE}
+```{r courage-3-test}
+#| echo: true
 linear_reg(engine = "lm") |>
   fit(height ~ sex, data = recruits)
 ```
@@ -1179,7 +1182,8 @@ question_text(NULL,
 
 ###
 
-```{r courage-5-test, echo = TRUE}
+```{r courage-5-test}
+#| echo: true
 linear_reg(engine = "lm") |>
   fit(height ~ age, data = recruits)
 ```
@@ -1260,7 +1264,8 @@ question_text(NULL,
 
 ###
 
-```{r courage-8-test, echo = TRUE}
+```{r courage-8-test}
+#| echo: true
 fit_recruits
 ```
 
@@ -1322,7 +1327,8 @@ question_text(NULL,
 
 ###
 
-```{r courage-11-test, echo = TRUE}
+```{r courage-11-test}
+#| echo: true
 tidy(fit_recruits, conf.int = TRUE)
 ```
 
@@ -1473,7 +1479,8 @@ question_text(NULL,
 
 ###
 
-```{r temperance-4-test, echo = TRUE}
+```{r temperance-4-test}
+#| echo: true
 predictions(fit_recruits)
 ```
 
@@ -1496,7 +1503,8 @@ question_text(NULL,
 
 ###
 
-```{r temperance-5-test, echo = TRUE}
+```{r temperance-5-test}
+#| echo: true
 plot_predictions(fit_recruits, condition = "sex")
 ```
 
@@ -1519,7 +1527,8 @@ question_text(NULL,
 
 ###
 
-```{r temperance-6-test, echo = TRUE}
+```{r temperance-6-test}
+#| echo: true
 plot_predictions(fit_recruits, condition = "sex", draw = FALSE)
 ```
 

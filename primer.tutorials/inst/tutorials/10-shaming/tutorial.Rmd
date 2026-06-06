@@ -1260,7 +1260,8 @@ question_text(NULL,
 
 ###
 
-```{r courage-2-test, echo = TRUE}
+```{r courage-2-test}
+#| echo: true
 logistic_reg(engine = "glm")
 ```
 
@@ -1283,7 +1284,8 @@ question_text(NULL,
 
 ###
 
-```{r courage-3-test, echo = TRUE}
+```{r courage-3-test}
+#| echo: true
 logistic_reg(engine = "glm") |>
   fit(voted ~ treatment, data = x)
 ```
@@ -1335,7 +1337,8 @@ question_text(NULL,
 
 ###
 
-```{r courage-5-test, echo = TRUE}
+```{r courage-5-test}
+#| echo: true
 logistic_reg(engine = "glm") |>
   fit(voted ~ treatment + age, data = x)
 ```
@@ -1387,7 +1390,8 @@ question_text(NULL,
 
 ###
 
-```{r courage-7-test, echo = TRUE}
+```{r courage-7-test}
+#| echo: true
 logistic_reg(engine = "glm") |>
   fit(voted ~ age + sex + treatment*voter_class, data = x)
 ```
@@ -1461,7 +1465,8 @@ question_text(NULL,
 
 ###
 
-```{r courage-10-test, echo = TRUE}
+```{r courage-10-test}
+#| echo: true
 fit_shaming
 ```
 
@@ -1484,7 +1489,8 @@ question_text(NULL,
 
 ###
 
-```{r courage-11-test, message = FALSE, echo = TRUE}
+```{r courage-11-test, message = FALSE}
+#| echo: true
 library(easystats)
 check_predictions(extract_fit_engine(fit_shaming))
 ```
@@ -1560,7 +1566,8 @@ question_text(NULL,
 
 ###
 
-```{r courage-14-test, echo = TRUE}
+```{r courage-14-test}
+#| echo: true
 tidy(fit_shaming, conf.int = TRUE)
 ```
 
@@ -1718,7 +1725,8 @@ question_text(NULL,
 
 ###
 
-```{r temperance-4-test, echo = TRUE}
+```{r temperance-4-test}
+#| echo: true
 avg_comparisons(extract_fit_engine(fit_shaming), variables = "treatment")
 ```
 
@@ -1741,7 +1749,8 @@ question_text(NULL,
 
 ###
 
-```{r temperance-5-test, echo = TRUE}
+```{r temperance-5-test}
+#| echo: true
 avg_comparisons(extract_fit_engine(fit_shaming),
                 variables = "treatment",
                 by = "voter_class")
@@ -1766,7 +1775,8 @@ question_text(NULL,
 
 ###
 
-```{r temperance-6-test, echo = TRUE}
+```{r temperance-6-test}
+#| echo: true
 plot_predictions(extract_fit_engine(fit_shaming),
                  condition = c("treatment", "voter_class"))
 ```
@@ -1790,7 +1800,8 @@ question_text(NULL,
 
 ###
 
-```{r temperance-7-test, echo = TRUE}
+```{r temperance-7-test}
+#| echo: true
 plot_predictions(extract_fit_engine(fit_shaming),
                  condition = c("treatment", "voter_class"),
                  draw = FALSE)

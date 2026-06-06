@@ -624,7 +624,8 @@ question_text(NULL,
 
 ###
 
-```{r wisdom-12-test, echo = TRUE}
+```{r wisdom-12-test}
+#| echo: true
 x |> count(treatment)
 ```
 
@@ -1237,7 +1238,8 @@ question_text(NULL,
 
 ###
 
-```{r courage-2-test, echo = TRUE}
+```{r courage-2-test}
+#| echo: true
 linear_reg(engine = "lm")
 ```
 
@@ -1260,7 +1262,8 @@ question_text(NULL,
 
 ###
 
-```{r courage-3-test, echo = TRUE}
+```{r courage-3-test}
+#| echo: true
 linear_reg(engine = "lm") |>
   fit(t2_health_exp_3m ~ treatment, data = x)
 ```
@@ -1313,7 +1316,8 @@ question_text(NULL,
 
 ###
 
-```{r courage-5-test, echo = TRUE}
+```{r courage-5-test}
+#| echo: true
 linear_reg(engine = "lm") |>
   fit(t2_health_exp_3m ~ treatment + age, data = x)
 ```
@@ -1393,7 +1397,8 @@ question_text(NULL,
 
 ###
 
-```{r courage-8-test, echo = TRUE}
+```{r courage-8-test}
+#| echo: true
 fit_sp
 ```
 
@@ -1527,7 +1532,8 @@ question_text(NULL,
 
 ###
 
-```{r courage-13-test, echo = TRUE}
+```{r courage-13-test}
+#| echo: true
 tidy(fit_sp, conf.int = TRUE)
 ```
 
@@ -1689,7 +1695,8 @@ question_text(NULL,
 
 ###
 
-```{r temperance-4-test, echo = TRUE}
+```{r temperance-4-test}
+#| echo: true
 predictions(fit_sp)
 ```
 
@@ -1712,7 +1719,8 @@ question_text(NULL,
 
 ###
 
-```{r temperance-5-test, echo = TRUE}
+```{r temperance-5-test}
+#| echo: true
 plot_predictions(fit_sp, condition = "treatment")
 ```
 
@@ -1735,7 +1743,8 @@ question_text(NULL,
 
 ###
 
-```{r temperance-6-test, echo = TRUE}
+```{r temperance-6-test}
+#| echo: true
 plot_predictions(fit_sp, condition = "treatment", draw = FALSE)
 ```
 

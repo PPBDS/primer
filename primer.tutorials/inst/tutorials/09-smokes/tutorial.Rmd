@@ -1025,7 +1025,8 @@ question_text(NULL,
 
 ###
 
-```{r courage-1-test, echo = TRUE}
+```{r courage-1-test}
+#| echo: true
 logistic_reg(engine = "glm")
 ```
 
@@ -1048,7 +1049,8 @@ question_text(NULL,
 
 ###
 
-```{r courage-2-test, echo = TRUE}
+```{r courage-2-test}
+#| echo: true
 logistic_reg(engine = "glm") |>
   fit(smoke ~ sex, data = smokes)
 ```
@@ -1100,7 +1102,8 @@ question_text(NULL,
 
 ###
 
-```{r courage-4-test, echo = TRUE}
+```{r courage-4-test}
+#| echo: true
 logistic_reg(engine = "glm") |>
   fit(smoke ~ age, data = smokes)
 ```
@@ -1152,7 +1155,8 @@ question_text(NULL,
 
 ###
 
-```{r courage-6-test, echo = TRUE}
+```{r courage-6-test}
+#| echo: true
 logistic_reg(engine = "glm") |>
   fit(smoke ~ age + sex, data = smokes)
 ```
@@ -1231,7 +1235,8 @@ question_text(NULL,
 
 ###
 
-```{r courage-9-test, echo = TRUE}
+```{r courage-9-test}
+#| echo: true
 fit_smokes
 ```
 
@@ -1254,7 +1259,8 @@ question_text(NULL,
 
 ###
 
-```{r courage-10-test, message = FALSE, echo = TRUE}
+```{r courage-10-test, message = FALSE}
+#| echo: true
 library(easystats)
 check_predictions(extract_fit_engine(fit_smokes))
 ```
@@ -1317,7 +1323,8 @@ question_text(NULL,
 
 ###
 
-```{r courage-13-test, echo = TRUE}
+```{r courage-13-test}
+#| echo: true
 tidy(fit_smokes, conf.int = TRUE)
 ```
 
@@ -1457,7 +1464,8 @@ question_text(NULL,
 
 ###
 
-```{r temperance-3-test, echo = TRUE}
+```{r temperance-3-test}
+#| echo: true
 predictions(extract_fit_engine(fit_smokes),
             newdata = data.frame(age = c(30, 70, 30, 70),
                                  sex = c("Female", "Female", "Male", "Male")))
@@ -1482,7 +1490,8 @@ question_text(NULL,
 
 ###
 
-```{r temperance-4-test, echo = TRUE}
+```{r temperance-4-test}
+#| echo: true
 plot_predictions(extract_fit_engine(fit_smokes), condition = c("age", "sex"))
 ```
 
@@ -1507,7 +1516,8 @@ question_text(NULL,
 
 ###
 
-```{r temperance-5-test, echo = TRUE}
+```{r temperance-5-test}
+#| echo: true
 avg_comparisons(extract_fit_engine(fit_smokes), variables = "sex")
 ```
 
@@ -1530,7 +1540,8 @@ question_text(NULL,
 
 ###
 
-```{r temperance-6-test, echo = TRUE}
+```{r temperance-6-test}
+#| echo: true
 plot_predictions(extract_fit_engine(fit_smokes), condition = c("age", "sex"), draw = FALSE)
 ```
 

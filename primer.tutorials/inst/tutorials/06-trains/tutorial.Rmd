@@ -1238,7 +1238,8 @@ question_text(NULL,
 
 ###
 
-```{r courage-2-test, echo = TRUE}
+```{r courage-2-test}
+#| echo: true
 linear_reg(engine = "lm")
 ```
 
@@ -1261,7 +1262,8 @@ question_text(NULL,
 
 ###
 
-```{r courage-3-test, echo = TRUE}
+```{r courage-3-test}
+#| echo: true
 linear_reg(engine = "lm") |>
   fit(att_end ~ treatment, data = trains)
 ```
@@ -1314,7 +1316,8 @@ question_text(NULL,
 
 ###
 
-```{r courage-5-test, echo = TRUE}
+```{r courage-5-test}
+#| echo: true
 linear_reg(engine = "lm") |>
   fit(att_end ~ treatment + age, data = trains)
 ```
@@ -1394,7 +1397,8 @@ question_text(NULL,
 
 ###
 
-```{r courage-8-test, echo = TRUE}
+```{r courage-8-test}
+#| echo: true
 fit_att
 ```
 
@@ -1448,7 +1452,8 @@ question_text(NULL,
 
 ###
 
-```{r courage-11-test, echo = TRUE}
+```{r courage-11-test}
+#| echo: true
 tidy(fit_att, conf.int = TRUE)
 ```
 
@@ -1590,7 +1595,8 @@ question_text(NULL,
 
 ###
 
-```{r temperance-4-test, echo = TRUE}
+```{r temperance-4-test}
+#| echo: true
 predictions(fit_att)
 ```
 
@@ -1613,7 +1619,8 @@ question_text(NULL,
 
 ###
 
-```{r temperance-5-test, echo = TRUE}
+```{r temperance-5-test}
+#| echo: true
 plot_predictions(fit_att, condition = "treatment")
 ```
 
@@ -1636,7 +1643,8 @@ question_text(NULL,
 
 ###
 
-```{r temperance-6-test, echo = TRUE}
+```{r temperance-6-test}
+#| echo: true
 plot_predictions(fit_att, condition = "treatment", draw = FALSE)
 ```
 

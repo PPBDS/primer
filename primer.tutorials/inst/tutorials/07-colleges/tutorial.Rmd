@@ -1117,7 +1117,8 @@ question_text(NULL,
 
 ###
 
-```{r courage-2-test, echo = TRUE}
+```{r courage-2-test}
+#| echo: true
 linear_reg(engine = "lm")
 ```
 
@@ -1140,7 +1141,8 @@ question_text(NULL,
 
 ###
 
-```{r courage-3-test, echo = TRUE}
+```{r courage-3-test}
+#| echo: true
 linear_reg(engine = "lm") |>
   fit(grad_rate ~ selectivity, data = x)
 ```
@@ -1193,7 +1195,8 @@ question_text(NULL,
 
 ###
 
-```{r courage-5-test, echo = TRUE}
+```{r courage-5-test}
+#| echo: true
 linear_reg(engine = "lm") |>
   fit(grad_rate ~ tuition, data = x)
 ```
@@ -1246,7 +1249,8 @@ question_text(NULL,
 
 ###
 
-```{r courage-7-test, echo = TRUE}
+```{r courage-7-test}
+#| echo: true
 linear_reg(engine = "lm") |>
   fit(grad_rate ~ tuition + selectivity, data = x)
 ```
@@ -1325,7 +1329,8 @@ question_text(NULL,
 
 ###
 
-```{r courage-10-test, echo = TRUE}
+```{r courage-10-test}
+#| echo: true
 fit_colleges
 ```
 
@@ -1421,7 +1426,8 @@ question_text(NULL,
 
 ###
 
-```{r courage-14-test, echo = TRUE}
+```{r courage-14-test}
+#| echo: true
 tidy(fit_colleges, conf.int = TRUE)
 ```
 
@@ -1576,7 +1582,8 @@ question_text(NULL,
 
 ###
 
-```{r temperance-4-test, echo = TRUE}
+```{r temperance-4-test}
+#| echo: true
 predictions(fit_colleges)
 ```
 
@@ -1599,7 +1606,8 @@ question_text(NULL,
 
 ###
 
-```{r temperance-5-test, echo = TRUE}
+```{r temperance-5-test}
+#| echo: true
 plot_predictions(fit_colleges, condition = c("tuition", "selectivity"))
 ```
 
@@ -1622,7 +1630,8 @@ question_text(NULL,
 
 ###
 
-```{r temperance-6-test, echo = TRUE}
+```{r temperance-6-test}
+#| echo: true
 plot_predictions(fit_colleges, condition = c("tuition", "selectivity"), draw = FALSE)
 ```
 
