@@ -120,34 +120,11 @@ When we look at a histogram of an experiment's results, what we are really askin
 
 ### Exercise 1
 
-In `analysis.qmd`, add a function called `throw_dice()` that simulates rolling two fair dice `n` times and returns the sum of each pair as a numeric vector. A good implementation calls `sample(1:6, n, replace = TRUE)` once for each die and adds the two results. Then, in the same chunk, set the seed with `set.seed(10)` and call `throw_dice(5)`. Render. Copy the printed five-number vector from the rendered HTML below.
+A finished `analysis.qmd` has a setup chunk (libraries), one working chunk where the current analysis is being built and revised, and --- when an artifact gets reused across exercises --- one or more "create" chunks that define those artifacts once and cache them. We'll need a reusable function for throwing two dice.
+
+In `analysis.qmd`, add a cached "create" chunk that defines a function `throw_dice(n, weights = rep(1/6, 6))` that simulates `n` rolls of two dice (with the per-face probability vector `weights` defaulting to a fair die) and returns the sum of each pair as a numeric vector of length `n`. Render. In the R Terminal, run `show_file("analysis.qmd", chunk = "Last")`. CP/CR.
 
 ```{r the-data-generating-mechanism-1}
-question_text(NULL,
-  answer(NULL, correct = TRUE),
-  allow_retry = TRUE,
-  try_again_button = "Edit Answer",
-  incorrect = NULL,
-  rows = 2)
-```
-
-###
-
-```{r the-data-generating-mechanism-1-test}
-#| echo: true
-set.seed(10)
-throw_dice(5)
-```
-
-###
-
-The five sums you see are not the "true" probabilities of anything --- they are just five draws from the *data generating mechanism* (DGM) that produced them. The DGM here is *roll two fair dice and add the faces*; the data is the five-number vector. With only five rolls, almost any DGM could have produced the same vector. Knowing the truth (fair dice, sum from 2 to 12 with a peak at 7) does not by itself tell us anything about how clearly that truth will show up in a small sample --- and in a real problem we would not know the truth at all.
-
-### Exercise 2
-
-In `analysis.qmd`, add a `ggplot` chunk that calls `throw_dice(20)` (with `set.seed(10)` on the line above) and draws a histogram of the 20 sums, with the x-axis ticked at each integer from 2 to 12. Render. In the R Terminal, run `show_file("analysis.qmd", chunk = "Last")`. CP/CR.
-
-```{r the-data-generating-mechanism-2}
 question_text(NULL,
   answer(NULL, correct = TRUE),
   allow_retry = TRUE,
@@ -158,7 +135,60 @@ question_text(NULL,
 
 ###
 
+```{r the-data-generating-mechanism-1-test}
+#| echo: true
+throw_dice <- function(n = 1, weights = rep(1/6, 6)) {
+  d1 <- sample(1:6, n, replace = TRUE, prob = weights)
+  d2 <- sample(1:6, n, replace = TRUE, prob = weights)
+  d1 + d2
+}
+```
+
+###
+
+The `weights` argument lets us later swap a fair die for an unfair one without redefining the function. Caching the chunk (`#| cache: true`) means Quarto won't re-source the function on every render --- a tiny benefit here, but the discipline matters for the much heavier model fits you'll meet in later tutorials.
+
+### Exercise 2
+
+Now exercise the function. In a new working chunk in `analysis.qmd`, set the seed with `set.seed(10)` and call `throw_dice(5)`. Render. Copy the printed five-number vector from the rendered HTML below.
+
+```{r the-data-generating-mechanism-2}
+question_text(NULL,
+  answer(NULL, correct = TRUE),
+  allow_retry = TRUE,
+  try_again_button = "Edit Answer",
+  incorrect = NULL,
+  rows = 2)
+```
+
+###
+
 ```{r the-data-generating-mechanism-2-test}
+#| echo: true
+set.seed(10)
+throw_dice(5)
+```
+
+###
+
+The five sums you see are not the "true" probabilities of anything --- they are just five draws from the *data generating mechanism* (DGM) that produced them. The DGM here is *roll two fair dice and add the faces*; the data is the five-number vector. With only five rolls, almost any DGM could have produced the same vector. Knowing the truth (fair dice, sum from 2 to 12 with a peak at 7) does not by itself tell us anything about how clearly that truth will show up in a small sample --- and in a real problem we would not know the truth at all.
+
+### Exercise 3
+
+Modify the working chunk so that, instead of printing the five sums, it draws a histogram of 20 throws of two fair dice with the x-axis ticked at each integer sum from 2 to 12. Keep `set.seed(10)`. Render. In the R Terminal, run `show_file("analysis.qmd", chunk = "Last")`. CP/CR.
+
+```{r the-data-generating-mechanism-3}
+question_text(NULL,
+  answer(NULL, correct = TRUE),
+  allow_retry = TRUE,
+  try_again_button = "Edit Answer",
+  incorrect = NULL,
+  rows = 10)
+```
+
+###
+
+```{r the-data-generating-mechanism-3-test}
 #| echo: true
 set.seed(10)
 tibble(sum = throw_dice(20)) |>
@@ -175,11 +205,11 @@ tibble(sum = throw_dice(20)) |>
 
 A reader who saw only this histogram, without the title telling them the dice were fair, would have a hard time guessing the underlying DGM. The bumps and gaps look like they might mean *something* --- maybe the dice favor a particular sum, maybe they avoid another --- but with twenty rolls each of those features could just be noise. The histogram is the *PDF of the data*; we still know almost nothing about the *PDF of the DGM*.
 
-### Exercise 3
+### Exercise 4
 
-Now run the same 20-throw experiment ten different times --- ten separate "shifts" of an inspector rolling the same pair of fair dice --- and plot all ten histograms in one panel so we can compare them. In `analysis.qmd`, add a chunk that builds a tibble of 10 trials × 20 throws (using `tibble(trial = 1:10) |> mutate(throws = map(trial, ~ throw_dice(20))) |> unnest(throws)`), then plots a histogram of the sums faceted by `trial`. Render. In the R Terminal, run `show_file("analysis.qmd", chunk = "Last")`. CP/CR.
+Now run the same 20-throw experiment ten different times --- ten separate "shifts" of an inspector rolling the same pair of fair dice --- and plot all ten histograms in one panel so we can compare them. Modify the working chunk to plot ten such histograms together, faceted by trial. Keep `set.seed(10)`. Render. In the R Terminal, run `show_file("analysis.qmd", chunk = "Last")`. CP/CR.
 
-```{r the-data-generating-mechanism-3}
+```{r the-data-generating-mechanism-4}
 question_text(NULL,
   answer(NULL, correct = TRUE),
   allow_retry = TRUE,
@@ -190,7 +220,7 @@ question_text(NULL,
 
 ###
 
-```{r the-data-generating-mechanism-3-test}
+```{r the-data-generating-mechanism-4-test}
 #| echo: true
 set.seed(10)
 tibble(trial = 1:10) |>
@@ -210,11 +240,11 @@ tibble(trial = 1:10) |>
 
 The ten panels are *strikingly different from each other*, even though they were all generated by the exact same DGM. Some panels are peaked, others are flat. Some have a missing sum (no 7s!) that the true DGM says should be the most common outcome. **At twenty rolls, many wildly different DGMs are consistent with the data.** This is the *PDF over data generating mechanisms* the chapter mentions: with little data, that PDF is wide --- lots of dice configurations could have produced any one of those panels.
 
-### Exercise 4
+### Exercise 5
 
-Now do the opposite experiment: keep the dice fair and watch what happens as the number of rolls grows. In `analysis.qmd`, add a chunk that builds histograms for `n = 10, 20, 50, 100, 1000` throws of two fair dice, each in its own panel side by side. The recipe: `tibble(n = c(10, 20, 50, 100, 1000)) |> mutate(throws = map(n, throw_dice)) |> unnest(throws) |> mutate(n = factor(n, levels = c(10, 20, 50, 100, 1000)))`, then a faceted histogram. Use `scales = "free_y"` so the smaller panels are not crushed. Render. In the R Terminal, run `show_file("analysis.qmd", chunk = "Last")`. CP/CR.
+Now do the opposite experiment: keep the dice fair and watch what happens as the number of rolls grows. Modify the working chunk to plot histograms for `n = 10, 20, 50, 100, 1000` throws of two fair dice, each panel side by side, with the y-axis allowed to vary by panel so the smaller panels are not crushed. Keep `set.seed(10)`. Render. In the R Terminal, run `show_file("analysis.qmd", chunk = "Last")`. CP/CR.
 
-```{r the-data-generating-mechanism-4}
+```{r the-data-generating-mechanism-5}
 question_text(NULL,
   answer(NULL, correct = TRUE),
   allow_retry = TRUE,
@@ -225,7 +255,7 @@ question_text(NULL,
 
 ###
 
-```{r the-data-generating-mechanism-4-test}
+```{r the-data-generating-mechanism-5-test}
 #| echo: true
 set.seed(10)
 tibble(n = c(10, 20, 50, 100, 1000)) |>
@@ -247,45 +277,9 @@ tibble(n = c(10, 20, 50, 100, 1000)) |>
 
 At `n = 10` the histogram looks almost random. At `n = 1000` it is a clean triangle, peaking at 7 with the familiar 2-and-12 corners. The DGM has not changed --- the dice were fair throughout. What changed is how clearly the *PDF of the data* (the histograms) reflects the *PDF of the DGM* (the triangle). **As `n` grows, the PDF over data generating mechanisms narrows: only DGMs that produce something close to a triangle remain consistent with what we saw.** The data has rejected a lot of candidates.
 
-### Exercise 5
-
-Now flip the setup. Suppose the dice are *not* fair --- the 6 face has a 25% chance instead of the usual 1/6, and the other five faces share the remaining 75% equally (15% each). In `analysis.qmd`, add a chunk that re-runs Exercise 3's ten-panel experiment, but this time passes `weights = c(0.15, 0.15, 0.15, 0.15, 0.15, 0.25)` to `throw_dice()`. Use the same `set.seed(10)`. Render. In the R Terminal, run `show_file("analysis.qmd", chunk = "Last")`. CP/CR.
-
-```{r the-data-generating-mechanism-5}
-question_text(NULL,
-  answer(NULL, correct = TRUE),
-  allow_retry = TRUE,
-  try_again_button = "Edit Answer",
-  incorrect = NULL,
-  rows = 10)
-```
-
-###
-
-```{r the-data-generating-mechanism-5-test}
-#| echo: true
-set.seed(10)
-tibble(trial = 1:10) |>
-  mutate(throws = map(trial,
-                      ~ throw_dice(20, weights = unfair_weights))) |>
-  unnest(throws) |>
-  ggplot(aes(x = throws)) +
-  geom_bar(fill = "grey50") +
-  facet_wrap(~ trial, nrow = 2) +
-  scale_x_continuous(breaks = 2:12) +
-  labs(title = "Ten samples of 20 throws each --- unfair dice (P(6) = 0.25)",
-       subtitle = "Can you tell at a glance that these came from unfair dice?",
-       x = "Sum", y = "Count") +
-  theme_minimal()
-```
-
-###
-
-These panels look *just as messy as the fair-dice panels in Exercise 3 did*. A reader handed only these ten histograms, with no caption telling them the dice were rigged, would not be able to tell the dice apart from a fair pair. The slight bias (P(6) = 0.25 instead of 1/6) shifts the average sum by only half a point --- but the noise from drawing twenty rolls per panel is larger than that. **Many DGMs are consistent with the same sparse data**: the true unfair-dice DGM is one of them, but so is the fair-dice DGM. Twenty rolls per inspector is not enough to tell them apart.
-
 ### Exercise 6
 
-Finally, repeat Exercise 4's `n` progression with the same unfair dice. Add a chunk to `analysis.qmd` that does the same `n = 10, 20, 50, 100, 1000` faceted histogram, but with `weights = c(0.15, 0.15, 0.15, 0.15, 0.15, 0.25)` passed to each `throw_dice()` call. Render. In the R Terminal, run `show_file("analysis.qmd", chunk = "Last")`. CP/CR.
+Now flip the setup. Suppose the dice are *not* fair --- each die's 6 face has a 25% chance instead of the usual 1/6, and the other five faces share the remaining 75% equally. Modify the working chunk to re-run Exercise 4's ten-panel experiment using this unfair die. Keep `set.seed(10)`. Render. In the R Terminal, run `show_file("analysis.qmd", chunk = "Last")`. CP/CR.
 
 ```{r the-data-generating-mechanism-6}
 question_text(NULL,
@@ -301,8 +295,44 @@ question_text(NULL,
 ```{r the-data-generating-mechanism-6-test}
 #| echo: true
 set.seed(10)
+tibble(trial = 1:10) |>
+  mutate(throws = map(trial,
+                      ~ throw_dice(20, weights = c(0.15, 0.15, 0.15, 0.15, 0.15, 0.25)))) |>
+  unnest(throws) |>
+  ggplot(aes(x = throws)) +
+  geom_bar(fill = "grey50") +
+  facet_wrap(~ trial, nrow = 2) +
+  scale_x_continuous(breaks = 2:12) +
+  labs(title = "Ten samples of 20 throws each --- unfair dice (P(6) = 0.25)",
+       subtitle = "Can you tell at a glance that these came from unfair dice?",
+       x = "Sum", y = "Count") +
+  theme_minimal()
+```
+
+###
+
+These panels look *just as messy as the fair-dice panels in Exercise 4 did*. A reader handed only these ten histograms, with no caption telling them the dice were rigged, would not be able to tell the dice apart from a fair pair. The slight bias (P(6) = 0.25 instead of 1/6) shifts the average sum by only half a point --- but the noise from drawing twenty rolls per panel is larger than that. **Many DGMs are consistent with the same sparse data**: the true unfair-dice DGM is one of them, but so is the fair-dice DGM. Twenty rolls per inspector is not enough to tell them apart.
+
+### Exercise 7
+
+Finally, repeat Exercise 5's `n` progression with the same unfair dice. Modify the working chunk to plot the `n = 10, 20, 50, 100, 1000` faceted histogram with the unfair-die weights. Keep `set.seed(10)`. Render. In the R Terminal, run `show_file("analysis.qmd", chunk = "Last")`. CP/CR.
+
+```{r the-data-generating-mechanism-7}
+question_text(NULL,
+  answer(NULL, correct = TRUE),
+  allow_retry = TRUE,
+  try_again_button = "Edit Answer",
+  incorrect = NULL,
+  rows = 10)
+```
+
+###
+
+```{r the-data-generating-mechanism-7-test}
+#| echo: true
+set.seed(10)
 tibble(n = c(10, 20, 50, 100, 1000)) |>
-  mutate(throws = map(n, ~ throw_dice(.x, weights = unfair_weights))) |>
+  mutate(throws = map(n, ~ throw_dice(.x, weights = c(0.15, 0.15, 0.15, 0.15, 0.15, 0.25)))) |>
   unnest(throws) |>
   mutate(n = factor(n, levels = c(10, 20, 50, 100, 1000))) |>
   ggplot(aes(x = throws)) +
@@ -335,7 +365,7 @@ At this moment, before you have seen any rolls, you think these two possibilitie
 
 ### Exercise 1
 
-Before looking at any actual rolls, we need to know what each DGM *looks like* in the limit. In `analysis.qmd`, add a chunk that plots two bar charts side by side: the theoretical PDF of the fair die (six bars at 1/6 each) and the theoretical PDF of the loaded die (five bars at 0.14 and a sixth bar at 0.30). Render. In the R Terminal, run `show_file("analysis.qmd", chunk = "Last")`. CP/CR.
+Before looking at any actual rolls, we need to know what each DGM *looks like* in the limit. Start a new working chunk in `analysis.qmd` that plots two bar charts side by side: the theoretical PDF of the fair die (six bars at 1/6 each) and the theoretical PDF of the loaded die (five bars at 0.14 and a sixth bar at 0.30). Render. In the R Terminal, run `show_file("analysis.qmd", chunk = "Last")`. CP/CR.
 
 ```{r measuring-surprise-1}
 question_text(NULL,
@@ -352,7 +382,7 @@ question_text(NULL,
 #| echo: true
 tibble(
   face = rep(1:6, 2),
-  prob = c(rep(1/6, 6), loaded_weights),
+  prob = c(rep(1/6, 6), c(0.14, 0.14, 0.14, 0.14, 0.14, 0.30)),
   die  = rep(c("Fair", "Loaded"), each = 6)
 ) |>
   ggplot(aes(x = factor(face), y = prob)) +
@@ -371,7 +401,7 @@ The fair die's PDF is flat: every face at exactly 1/6. The loaded die's PDF is *
 
 ### Exercise 2
 
-Now look at twenty rolls of the loaded die. In `analysis.qmd`, add a chunk that uses `set.seed(10)` followed by `sample(1:6, 20, replace = TRUE, prob = c(0.14, 0.14, 0.14, 0.14, 0.14, 0.30))`, stores the result as `rolls_20`, and plots its histogram. Render. In the R Terminal, run `show_file("analysis.qmd", chunk = "Last")`. CP/CR.given just this picture, are you 95% sure the die is loaded?*
+Now look at twenty rolls of the loaded die. Modify the working chunk to draw 20 rolls of the loaded die, store the result as `rolls_20`, and plot a bar chart of how often each face appeared. Use `set.seed(10)`. Render. In the R Terminal, run `show_file("analysis.qmd", chunk = "Last")`. CP/CR.
 
 ```{r measuring-surprise-2}
 question_text(NULL,
@@ -387,7 +417,8 @@ question_text(NULL,
 ```{r measuring-surprise-2-test}
 #| echo: true
 set.seed(10)
-rolls_20 <- roll_die(20, weights = loaded_weights)
+rolls_20 <- sample(1:6, 20, replace = TRUE,
+                   prob = c(0.14, 0.14, 0.14, 0.14, 0.14, 0.30))
 
 tibble(face = rolls_20) |>
   ggplot(aes(x = factor(face, levels = 1:6))) +
@@ -404,7 +435,7 @@ The 6 bar is the tallest, which is what the loaded DGM would predict --- but wit
 
 ### Exercise 3
 
-Now look at two hundred rolls of the same loaded die. Add a chunk to `analysis.qmd` that does the same thing as Exercise 2 but with `n = 200`. Use `set.seed(10)` again. Render. In the R Terminal, run `show_file("analysis.qmd", chunk = "Last")`. CP/CR.
+Now look at two hundred rolls of the same loaded die. Modify the working chunk to repeat Exercise 2's exercise with 200 rolls instead of 20, storing the result as `rolls_200`. Use `set.seed(10)`. Render. In the R Terminal, run `show_file("analysis.qmd", chunk = "Last")`. CP/CR.
 
 ```{r measuring-surprise-3}
 question_text(NULL,
@@ -420,7 +451,8 @@ question_text(NULL,
 ```{r measuring-surprise-3-test}
 #| echo: true
 set.seed(10)
-rolls_200 <- roll_die(200, weights = loaded_weights)
+rolls_200 <- sample(1:6, 200, replace = TRUE,
+                    prob = c(0.14, 0.14, 0.14, 0.14, 0.14, 0.30))
 
 tibble(face = rolls_200) |>
   ggplot(aes(x = factor(face, levels = 1:6))) +
@@ -437,7 +469,7 @@ The 6 bar is plainly taller than the others, and the five non-6 bars are roughly
 
 ### Exercise 4
 
-Each individual roll either supports the loaded-die hypothesis or undermines it. Add a chunk to `analysis.qmd` that computes the **likelihood ratio** of each face under loaded versus fair: $P(\text{face} \mid \text{loaded}) / P(\text{face} \mid \text{fair})$. Print a small tibble with one row per face. Render. Copy the printed tibble below.
+Each individual roll either supports the loaded-die hypothesis or undermines it. Modify the working chunk to print a small tibble with one row per face listing the **likelihood ratio** of that face under loaded versus fair: $P(\text{face} \mid \text{loaded}) / P(\text{face} \mid \text{fair})$. Render. Copy the printed tibble from the rendered HTML below.
 
 ```{r measuring-surprise-4}
 question_text(NULL,
@@ -453,7 +485,7 @@ question_text(NULL,
 ```{r measuring-surprise-4-test}
 #| echo: true
 tibble(face = 1:6,
-       p_loaded = loaded_weights,
+       p_loaded = c(0.14, 0.14, 0.14, 0.14, 0.14, 0.30),
        p_fair   = 1/6,
        likelihood_ratio = round(p_loaded / p_fair, 3))
 ```
@@ -464,9 +496,9 @@ Rolling a 6 is **1.8 times more likely** under loaded than under fair; rolling a
 
 ### Exercise 5
 
-Now combine the 20-roll evidence into a single posterior probability. With a 50/50 prior and independent rolls, the math is simple: multiply our prior odds (1, since 50/50) by the likelihood ratio for each roll. The resulting odds, divided by *one plus those odds*, give the posterior probability of "loaded."
+The next few exercises combine many per-roll likelihood ratios into a single posterior probability. The cleanest way to do that is to *sum the logs* (not multiply the ratios): logs add instead of multiply, which is numerically stabler over hundreds of rolls and easier to plot. We will reuse this calculation, so it earns its own helper.
 
-In `analysis.qmd`, add a chunk that takes `rolls_20` from Exercise 2, multiplies the per-roll likelihood ratios together (or, equivalently, sums their logs and exponentiates), and prints the posterior probability of "loaded." Render. Copy the printed number.
+In `analysis.qmd`, add a cached create chunk that defines a function `log_lr(rolls)` taking a vector of rolls (each value 1-6) and returning a vector of per-roll log likelihood ratios of loaded over fair, using the loaded weights (P(6) = 0.30, others 0.14). Render. In the R Terminal, run `show_file("analysis.qmd", chunk = "Last")`. CP/CR.
 
 ```{r measuring-surprise-5}
 question_text(NULL,
@@ -474,26 +506,26 @@ question_text(NULL,
   allow_retry = TRUE,
   try_again_button = "Edit Answer",
   incorrect = NULL,
-  rows = 3)
+  rows = 10)
 ```
 
 ###
 
 ```{r measuring-surprise-5-test}
 #| echo: true
-set.seed(10)
-rolls_20 <- roll_die(20, weights = loaded_weights)
-posterior_loaded_20 <- 1 / (1 + exp(-sum(log_lr(rolls_20))))
-round(posterior_loaded_20, 4)
+log_lr <- function(rolls) {
+  loaded <- c(0.14, 0.14, 0.14, 0.14, 0.14, 0.30)
+  log(loaded[rolls] / (1/6))
+}
 ```
 
 ###
 
-Twenty rolls put our posterior at about 0.86 --- meaningfully past 50/50, but well short of the 95% threshold we set for ourselves. Our intuition from the histogram in Exercise 2 ("looks loaded, but I would not bet") corresponds, on the number line, to "0.86." The histogram and the number now agree, but the number is the thing you can act on.
+The function takes a vector of roll outcomes and returns the per-roll log of the likelihood ratio: a positive number when the face is a 6 (more likely under loaded), and a slightly negative number otherwise. `sum(log_lr(rolls))` is the cumulative log-odds in favor of loaded; the posterior probability is then $1 / (1 + e^{-\text{log-odds}})$. Caching keeps Quarto from re-defining the helper on every render.
 
 ### Exercise 6
 
-Now do the same calculation for the 200-roll sample. Repeat Exercise 5 with `rolls_200` from Exercise 3. Render. Copy the printed number.
+Now combine the 20-roll evidence into a single posterior probability. With a 50/50 prior and independent rolls, the math is simple: sum the per-roll log likelihood ratios, then convert the resulting log-odds to a probability via $1 / (1 + e^{-\text{log-odds}})$. Modify the working chunk to take `rolls_20` from Exercise 2, use the `log_lr()` helper, and print the posterior probability that the die is loaded, rounded to four decimals. Render. Copy the printed number from the rendered HTML below.
 
 ```{r measuring-surprise-6}
 question_text(NULL,
@@ -509,7 +541,36 @@ question_text(NULL,
 ```{r measuring-surprise-6-test}
 #| echo: true
 set.seed(10)
-rolls_200 <- roll_die(200, weights = loaded_weights)
+rolls_20 <- sample(1:6, 20, replace = TRUE,
+                   prob = c(0.14, 0.14, 0.14, 0.14, 0.14, 0.30))
+posterior_loaded_20 <- 1 / (1 + exp(-sum(log_lr(rolls_20))))
+round(posterior_loaded_20, 4)
+```
+
+###
+
+Twenty rolls put our posterior at about 0.86 --- meaningfully past 50/50, but well short of the 95% threshold we set for ourselves. Our intuition from the bar chart in Exercise 2 ("looks loaded, but I would not bet") corresponds, on the number line, to "0.86." The picture and the number now agree, but the number is the thing you can act on.
+
+### Exercise 7
+
+Now do the same calculation for the 200-roll sample. Repeat Exercise 6 with `rolls_200` from Exercise 3, rounded to six decimals. Render. Copy the printed number from the rendered HTML below.
+
+```{r measuring-surprise-7}
+question_text(NULL,
+  answer(NULL, correct = TRUE),
+  allow_retry = TRUE,
+  try_again_button = "Edit Answer",
+  incorrect = NULL,
+  rows = 3)
+```
+
+###
+
+```{r measuring-surprise-7-test}
+#| echo: true
+set.seed(10)
+rolls_200 <- sample(1:6, 200, replace = TRUE,
+                    prob = c(0.14, 0.14, 0.14, 0.14, 0.14, 0.30))
 posterior_loaded_200 <- 1 / (1 + exp(-sum(log_lr(rolls_200))))
 round(posterior_loaded_200, 6)
 ```
@@ -518,11 +579,11 @@ round(posterior_loaded_200, 6)
 
 Two hundred rolls leave essentially zero doubt --- the posterior is indistinguishable from 1. The data has rejected the fair-die DGM as effectively as the data ever could. **Notice what the calculation produces: not "the die is loaded" but "the probability that the die is loaded, given what we have seen, is 0.9999."** Belief is on a continuum; certainty is a useful limit, not a starting point.
 
-### Exercise 7
+### Exercise 8
 
-The most interesting question is not what the posterior is at the *end* of 200 rolls but how it *evolves*, roll by roll, from 0.50. Add a chunk to `analysis.qmd` that, starting from `rolls_200`, computes the cumulative sum of log likelihood ratios, converts each cumulative log-odds value to a posterior probability of "loaded," and plots that posterior against the roll number from 1 to 200. Add a horizontal reference line at 0.95. Render. In the R Terminal, run `show_file("analysis.qmd", chunk = "Last")`. CP/CR.
+The most interesting question is not what the posterior is at the *end* of 200 rolls but how it *evolves*, roll by roll, from 0.50. Modify the working chunk to plot the running posterior over the 200 rolls in `rolls_200` --- one point per roll, with a horizontal reference line at 0.95. Render. In the R Terminal, run `show_file("analysis.qmd", chunk = "Last")`. CP/CR.
 
-```{r measuring-surprise-7}
+```{r measuring-surprise-8}
 question_text(NULL,
   answer(NULL, correct = TRUE),
   allow_retry = TRUE,
@@ -533,10 +594,11 @@ question_text(NULL,
 
 ###
 
-```{r measuring-surprise-7-test}
+```{r measuring-surprise-8-test}
 #| echo: true
 set.seed(10)
-rolls_200 <- roll_die(200, weights = loaded_weights)
+rolls_200 <- sample(1:6, 200, replace = TRUE,
+                    prob = c(0.14, 0.14, 0.14, 0.14, 0.14, 0.30))
 
 tibble(
   roll      = 1:200,
@@ -559,11 +621,11 @@ tibble(
 
 The line starts at 50%, wobbles a bit while every individual roll matters, then climbs --- with steps up at every 6 and small steps down at every non-6 --- past the 95% line somewhere in the first few dozen rolls and stays there. **This plot *is* the third PDF the chapter talked about**: our belief about which DGM is true, updated in real time. The fair-die line would be the mirror image, climbing down to zero on the same data.
 
-### Exercise 8
+### Exercise 9
 
-One run is one run. To see how *typical* that run was, add a chunk to `analysis.qmd` that repeats the whole experiment 1,000 times: for each repetition, roll the loaded die until the posterior probability of "loaded" first crosses 95%, and record how many rolls that took. Then plot a histogram of those 1,000 stopping times. Render. In the R Terminal, run `show_file("analysis.qmd", chunk = "Last")`. CP/CR.
+One run is one run. To see how *typical* that run was, modify the working chunk to repeat the experiment 1,000 times: for each repetition, draw a long sequence of rolls from the loaded die, find the first roll at which the running posterior first crosses 0.95, and record how many rolls that took. Then plot a histogram of those 1,000 stopping times. Render. In the R Terminal, run `show_file("analysis.qmd", chunk = "Last")`. CP/CR.
 
-```{r measuring-surprise-8}
+```{r measuring-surprise-9}
 question_text(NULL,
   answer(NULL, correct = TRUE),
   allow_retry = TRUE,
@@ -574,11 +636,12 @@ question_text(NULL,
 
 ###
 
-```{r measuring-surprise-8-test}
+```{r measuring-surprise-9-test}
 #| echo: true
 set.seed(42)
 stop_times <- replicate(1000, {
-  rolls    <- roll_die(500, weights = loaded_weights)
+  rolls    <- sample(1:6, 500, replace = TRUE,
+                     prob = c(0.14, 0.14, 0.14, 0.14, 0.14, 0.30))
   log_odds <- cumsum(log_lr(rolls))
   post     <- 1 / (1 + exp(-log_odds))
   which(post >= 0.95)[1]
