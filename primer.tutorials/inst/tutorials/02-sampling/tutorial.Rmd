@@ -124,11 +124,11 @@ The `shaming` tibble holds registered Michigan voters from the 2006 get-out-the-
 ## Sampling and the Standard Error
 ###
 
-In real life we never see the whole universe. We see only a sample. From that sample we compute a number --- here, the average age --- and we want to know how close that number is to the truth. The tool that answers that question is the **standard error**. Over this section we will build, step by step, a single growing code chunk in `analysis.qmd` that draws samples, computes their averages, and visualizes how often those averages land near the truth.
+In real life we never see the whole universe. We see only a sample. From that sample we compute a number --- here, the average age --- and we want to know how close that number is to the truth. The tool that answers that question is the **standard error**. Over this section we will build, step by step, a working chunk in `analysis.qmd` that draws samples, computes their averages, and visualizes how often those averages land near the truth.
 
 ### Exercise 1
 
-Add a new code chunk to `analysis.qmd` that computes the mean of `age` in the `shaming` tibble, removing missing values, and then render. Copy the printed value from the rendered HTML below.
+Start a working chunk in `analysis.qmd` that computes the mean of `age` in the `shaming` tibble (skipping missing values), stores it as `truth`, and prints it. Render. Copy the printed value from the rendered HTML below.
 
 ```{r sampling-and-the-standard-error-1}
 question_text(NULL,
@@ -143,7 +143,8 @@ question_text(NULL,
 
 ```{r sampling-and-the-standard-error-1-test}
 #| echo: true
-mean(shaming$age, na.rm = TRUE)
+truth <- mean(shaming$age, na.rm = TRUE)
+truth
 ```
 
 ###
@@ -152,7 +153,7 @@ For the rest of the tutorial, treat this number --- about 49.79 years --- as the
 
 ### Exercise 2
 
-Now add lines to the same chunk that draw a reproducible sample of 50 voters and compute the sample mean: `set.seed(10)` at the top of the chunk, then `my_sample <- shaming |> slice_sample(n = 50)`, then `mean(my_sample$age, na.rm = TRUE)`. Render. Copy the printed sample mean from the rendered HTML.
+Modify the working chunk to draw a reproducible sample of 50 voters from `shaming`, store it as `my_sample`, compute its sample mean as `sample_mean`, and print `sample_mean`. Use `set.seed(10)`. Render. Copy the printed sample mean from the rendered HTML below.
 
 ```{r sampling-and-the-standard-error-2}
 question_text(NULL,
@@ -169,7 +170,8 @@ question_text(NULL,
 #| echo: true
 set.seed(10)
 my_sample <- shaming |> slice_sample(n = 50)
-mean(my_sample$age, na.rm = TRUE)
+sample_mean <- mean(my_sample$age, na.rm = TRUE)
+sample_mean
 ```
 
 ###
@@ -178,7 +180,7 @@ Our sample mean is about 50.02 years; the truth is 49.79. Close but not identica
 
 ### Exercise 3
 
-The **standard error** of a sample mean is the sample's standard deviation divided by the square root of the sample size. Add a line to the same chunk that prints `sd(my_sample$age, na.rm = TRUE) / sqrt(50)`. Render. Copy the printed value.
+The **standard error** of a sample mean is the sample's standard deviation divided by the square root of the sample size. Modify the working chunk to compute the standard error of `my_sample`'s mean, store it as `sample_se`, and print it. Render. Copy the printed value from the rendered HTML below.
 
 ```{r sampling-and-the-standard-error-3}
 question_text(NULL,
@@ -193,7 +195,8 @@ question_text(NULL,
 
 ```{r sampling-and-the-standard-error-3-test}
 #| echo: true
-sd(my_sample$age, na.rm = TRUE) / sqrt(50)
+sample_se <- sd(my_sample$age, na.rm = TRUE) / sqrt(50)
+sample_se
 ```
 
 ###
@@ -204,7 +207,7 @@ The square root in the denominator is doing important work. Suppose we had drawn
 
 ### Exercise 4
 
-Time to draw the picture. Add a `ggplot` to the same chunk showing the single sample mean as a point with a horizontal error bar covering mean ± 1.96·SE, and a red dashed vertical line at the truth. Render. In the R Terminal, run `show_file("analysis.qmd", chunk = "Last")`. CP/CR.
+Time to draw the picture. Modify the working chunk to plot `sample_mean` as a point with a horizontal error bar covering mean ± 1.96·`sample_se`, and a red dashed vertical line at `truth`. Render. In the R Terminal, run `show_file("analysis.qmd", chunk = "Last")`. CP/CR.
 
 ```{r sampling-and-the-standard-error-4}
 question_text(NULL,
@@ -242,7 +245,7 @@ That horizontal bar is the **95% confidence interval**. It is a statement about 
 
 ### Exercise 5
 
-To see the "about 95%" claim land, we need not one sample but many. Add lines that draw 1,000 samples of 50 voters each from `shaming`, and for each sample compute the mean, standard error, and lower and upper 95% confidence bounds, storing the result in a tibble called `samples`. The canonical pattern uses `tibble(trial = 1:1000)` followed by `mutate()` with `map()` and `map_dbl()`. Render. Copy the first few rows of `samples` from the rendered HTML.
+To see the "about 95%" claim land, we need not one sample but many. `samples` will be reused across the next three exercises, so build it once and cache it. Add a cached create chunk to `analysis.qmd` that constructs a tibble `samples` with 1,000 rows --- each row representing one 50-voter draw from `shaming` and carrying that draw's sample mean, standard error, and lower and upper bounds of the 95% confidence interval. Use `set.seed(10)`. Render. In the R Terminal, run `show_file("analysis.qmd", chunk = "Last")`. CP/CR.
 
 ```{r sampling-and-the-standard-error-5}
 question_text(NULL,
@@ -250,23 +253,33 @@ question_text(NULL,
   allow_retry = TRUE,
   try_again_button = "Edit Answer",
   incorrect = NULL,
-  rows = 8)
+  rows = 15)
 ```
 
 ###
 
 ```{r sampling-and-the-standard-error-5-test}
 #| echo: true
+set.seed(10)
+samples <- tibble(trial = 1:1000) |>
+  mutate(
+    sample      = map(trial, ~ shaming |> slice_sample(n = 50)),
+    sample_mean = map_dbl(sample, ~ mean(.x$age, na.rm = TRUE)),
+    sample_se   = map_dbl(sample, ~ sd(.x$age, na.rm = TRUE) / sqrt(50)),
+    lower       = sample_mean - 1.96 * sample_se,
+    upper       = sample_mean + 1.96 * sample_se
+  ) |>
+  select(-sample)
 head(samples)
 ```
 
 ###
 
-Each row is one of the thousand hypothetical "what if we had drawn a different 50 voters?" experiments. Each carries its own sample mean, its own standard error, and its own 95% confidence interval. Most are near the truth; a few are far away.
+Each row is one of the thousand hypothetical "what if we had drawn a different 50 voters?" experiments, carrying its own mean, standard error, and 95% interval. Caching the chunk (`#| cache: true`) means Quarto reuses the saved 1,000-row tibble on subsequent renders rather than redoing the simulation each time. For 50,000 draws that's a couple of seconds saved; for the heavier model fits in later tutorials, it can be the difference between a one-second and a one-minute render.
 
 ### Exercise 6
 
-Now plot the first 100 of those intervals as horizontal error bars stacked vertically, with the truth marked as a vertical red line. (We use 100 rather than 1,000 so the picture stays readable.) Render. In the R Terminal, run `show_file("analysis.qmd", chunk = "Last")`. CP/CR.
+Now plot the first 100 of those intervals as horizontal error bars stacked vertically, with `truth` marked as a vertical red line. (We use 100 rather than 1,000 so the picture stays readable.) Modify the working chunk to draw this plot. Render. In the R Terminal, run `show_file("analysis.qmd", chunk = "Last")`. CP/CR.
 
 ```{r sampling-and-the-standard-error-6}
 question_text(NULL,
@@ -300,7 +313,7 @@ Most intervals cross the red line --- those contain the truth. A handful do not.
 
 ### Exercise 7
 
-Let's count. Compute the fraction of the 1,000 intervals in `samples` whose `lower` is less than the truth and whose `upper` is greater. Render. Copy the printed value.
+Let's count. Modify the working chunk to compute and print the fraction of the 1,000 intervals in `samples` that contain `truth` (`lower < truth & upper > truth`). Render. Copy the printed value from the rendered HTML below.
 
 ```{r sampling-and-the-standard-error-7}
 question_text(NULL,
@@ -325,7 +338,7 @@ About 94.5% of the intervals contained the truth --- close to the 95% the method
 
 ### Exercise 8
 
-Polish the 100-sample plot for the final document: clear title, a one-line subtitle naming the takeaway, a caption pointing to `primer.data`, axis labels with units, and `theme_minimal()`. Then stage `analysis.qmd`, commit with the message `"Add sampling and standard error analysis"`, and push to GitHub. In the R Terminal, run `show_file("analysis.qmd", chunk = "Last")` and paste the output below.
+Polish the 100-sample plot for the final document: clear title, a one-line subtitle naming the takeaway, a caption pointing to `primer.data`, axis labels with units, and `theme_minimal()`. Then stage `analysis.qmd`, commit with the message `"Add sampling and standard error analysis"`, and push to GitHub. In the R Terminal, run `show_file("analysis.qmd", chunk = "Last")`. CP/CR.
 
 ```{r sampling-and-the-standard-error-8}
 question_text(NULL,
@@ -350,7 +363,7 @@ In the previous section the sampling was *random* --- every voter in the univers
 
 Suppose a get-out-the-vote campaign's door-knock app, by quirk of its routing, makes voters over the age of 40 *three times as likely* to appear in a sample as voters 40 or younger. The voters themselves haven't changed; the universe is the same `shaming` tibble. Only the *mechanism* that pulls voters into the sample has changed.
 
-Add a new code chunk to `analysis.qmd` that creates a biased sample of 50 voters: first add a column `wt` to `shaming` that is `3` when `age > 40` and `1` otherwise, then draw 50 rows using `slice_sample(n = 50, weight_by = wt)`. Use `set.seed(10)`. Call the result `biased_sample`. Render and copy the first few rows of `biased_sample` from the rendered HTML.
+Start a new working chunk in `analysis.qmd` that draws a biased sample of 50 voters from `shaming`, where voters over 40 are three times as likely to be picked as voters aged 40 or younger. Store the result as `biased_sample`. Use `set.seed(10)`. Print the first few rows of `biased_sample`'s `age`, `primary_06`, and `sex` columns. Render. Copy the printed rows from the rendered HTML below.
 
 ```{r biased-sampling-1}
 question_text(NULL,
@@ -365,16 +378,20 @@ question_text(NULL,
 
 ```{r biased-sampling-1-test}
 #| echo: true
+set.seed(10)
+biased_sample <- shaming |>
+  mutate(wt = if_else(age > 40, 3, 1)) |>
+  slice_sample(n = 50, weight_by = wt)
 head(biased_sample |> select(age, primary_06, sex))
 ```
 
 ###
 
-`weight_by` tells `slice_sample()` to make each row's probability of being picked proportional to that row's weight. Rows with `wt = 3` are three times as likely to land in the sample as rows with `wt = 1`.
+A weighting argument to `slice_sample()` makes each row's probability of being picked proportional to that row's weight. Rows with weight `3` are three times as likely to land in the sample as rows with weight `1`.
 
 ### Exercise 2
 
-Before trusting any downstream results, we want to *see* that the bias is doing what we wrote it to do. Add a side-by-side histogram comparing the age distribution of `biased_sample` against an unbiased sample of the same size. The unbiased reference can be `unbiased_sample <- shaming |> slice_sample(n = 50)` with `set.seed(11)`. Bind the two with an `origin` column and `facet_wrap(~ origin)`. Render. In the R Terminal, run `show_file("analysis.qmd", chunk = "Last")`. CP/CR.
+Before trusting any downstream results, we want to *see* that the bias is doing what we wrote it to do. Modify the working chunk to also draw an unbiased reference sample of 50 voters from `shaming` (with `set.seed(11)`) and plot the age distributions of the biased and unbiased samples side by side. Render. In the R Terminal, run `show_file("analysis.qmd", chunk = "Last")`. CP/CR.
 
 ```{r biased-sampling-2}
 question_text(NULL,
@@ -413,7 +430,7 @@ In the universe (`shaming`), about 76% of voters are over 40. In the unbiased sa
 
 ### Exercise 3
 
-Now compute and print the mean and standard error of `age` in `biased_sample` the same way we did in the previous section. Render. Copy both printed values.
+Now compute and print the mean and standard error of `age` in `biased_sample` the same way we did in the previous section. Modify the working chunk so the last two lines print these two numbers. Render. Copy both printed values from the rendered HTML below.
 
 ```{r biased-sampling-3}
 question_text(NULL,
@@ -438,7 +455,7 @@ Two things to notice. First, the biased sample's mean is 55.26 --- about 5.5 yea
 
 ### Exercise 4
 
-Repeat the 1,000-sample exercise from the previous section, but with the biased mechanism. Draw 1,000 biased samples of 50 voters each (using `weight_by = wt` and `set.seed(10)`) and store the means, standard errors, and 95% confidence bounds in a tibble called `biased_samples`. Render. Copy the first few rows.
+We now want a thousand biased samples, parallel to the thousand unbiased ones in `samples`. `biased_samples` will be reused across the next three exercises, so build it once and cache it. Add a cached create chunk to `analysis.qmd` that constructs a tibble `biased_samples` with 1,000 rows --- each row representing one biased 50-voter draw from `shaming` (with the same age > 40 weighting) and carrying that draw's sample mean, standard error, and lower and upper bounds of the 95% confidence interval. Use `set.seed(10)`. Render. In the R Terminal, run `show_file("analysis.qmd", chunk = "Last")`. CP/CR.
 
 ```{r biased-sampling-4}
 question_text(NULL,
@@ -446,23 +463,34 @@ question_text(NULL,
   allow_retry = TRUE,
   try_again_button = "Edit Answer",
   incorrect = NULL,
-  rows = 8)
+  rows = 15)
 ```
 
 ###
 
 ```{r biased-sampling-4-test}
 #| echo: true
+set.seed(10)
+shaming_wt <- shaming |> mutate(wt = if_else(age > 40, 3, 1))
+biased_samples <- tibble(trial = 1:1000) |>
+  mutate(
+    sample      = map(trial, ~ shaming_wt |> slice_sample(n = 50, weight_by = wt)),
+    sample_mean = map_dbl(sample, ~ mean(.x$age, na.rm = TRUE)),
+    sample_se   = map_dbl(sample, ~ sd(.x$age, na.rm = TRUE) / sqrt(50)),
+    lower       = sample_mean - 1.96 * sample_se,
+    upper       = sample_mean + 1.96 * sample_se
+  ) |>
+  select(-sample)
 head(biased_samples)
 ```
 
 ###
 
-This is exactly the same code as before, with one change: `slice_sample(..., weight_by = wt)` instead of `slice_sample(..., n = 50)`. The downstream calculations don't know they're operating on biased samples; they cannot know.
+The downstream code is identical to what built `samples` in the previous section --- only the draw itself is biased. `biased_samples` will be heavy to recompute on every render, so caching it earns its keep.
 
 ### Exercise 5
 
-Plot the first 100 rows of `biased_samples` as horizontal error bars with a red dashed vertical line at the truth --- same picture as the unbiased version, but on `biased_samples`. Render. In the R Terminal, run `show_file("analysis.qmd", chunk = "Last")`. CP/CR.
+Plot the first 100 rows of `biased_samples` as horizontal error bars with a red dashed vertical line at `truth` --- same picture as the unbiased version, but on `biased_samples`. Modify the working chunk to draw this plot. Render. In the R Terminal, run `show_file("analysis.qmd", chunk = "Last")`. CP/CR.
 
 ```{r biased-sampling-5}
 question_text(NULL,
@@ -496,7 +524,7 @@ Compare this to the unbiased picture from the previous section. There the error 
 
 ### Exercise 6
 
-Compute the fraction of the 1,000 intervals in `biased_samples` that contain the truth. Render. Copy the printed value.
+Modify the working chunk to compute and print the fraction of the 1,000 intervals in `biased_samples` that contain `truth`. Render. Copy the printed value from the rendered HTML below.
 
 ```{r biased-sampling-6}
 question_text(NULL,
@@ -523,7 +551,7 @@ This is the single most important lesson of the whole tutorial: **a bigger sampl
 
 ### Exercise 7
 
-To see *where* the biased sample means are clustering, plot a density curve of `biased_samples$sample_mean` with a red dashed vertical line at the truth and a black solid vertical line at the average of `sample_mean`. Drop the y-axis since density-plot y-values are not meaningful. Render. In the R Terminal, run `show_file("analysis.qmd", chunk = "Last")`. CP/CR.
+To see *where* the biased sample means are clustering, modify the working chunk to plot a density curve of `biased_samples$sample_mean` with a red dashed vertical line at `truth` and a black solid vertical line at the average of `sample_mean`. Render. In the R Terminal, run `show_file("analysis.qmd", chunk = "Last")`. CP/CR.
 
 ```{r biased-sampling-7}
 question_text(NULL,
@@ -558,7 +586,7 @@ The bell sits to the right of the truth. The average of the biased sample means 
 
 ### Exercise 8
 
-Stage `analysis.qmd`, commit with the message `"Add biased sampling demonstration"`, and push to GitHub. In the R Terminal, run `show_file("analysis.qmd", chunk = "Last")` and paste the output below.
+Stage `analysis.qmd`, commit with the message `"Add biased sampling demonstration"`, and push to GitHub. In the R Terminal, run `show_file("analysis.qmd", chunk = "Last")`. CP/CR.
 
 ```{r biased-sampling-8}
 question_text(NULL,
