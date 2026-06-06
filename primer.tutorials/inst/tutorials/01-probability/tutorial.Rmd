@@ -134,7 +134,7 @@ When we look at a histogram of an experiment's results, what we are really askin
 
 ### Exercise 1
 
-A finished `analysis.qmd` has a setup chunk (libraries) and --- as the analysis grows --- a small number of working chunks plus, when an artifact will be reused across exercises, one or two "create" chunks dedicated to those artifacts. We will need a reusable function for throwing two dice. We will build it the natural way: write the function and use it in one chunk first, and refactor for caching in the next exercise.
+A finished `analysis.qmd` has a setup chunk (libraries) and --- as the analysis grows --- a small number of working chunks plus, when an artifact will be reused across exercises, one or two "create" chunks dedicated to those artifacts. We will need a reusable function for throwing two dice. We will build it the natural way: write the function and use it in one chunk first; the next three exercises then refactor it into a cached "create" chunk (one exercise to clean the chunk, one to turn caching on, one to keep the cache out of git).
 
 In `analysis.qmd`, add a new code chunk that defines a function `throw_dice(n, weights = rep(1/6, 6))` simulating `n` rolls of two dice (with the per-face probability vector `weights` defaulting to a fair die) and returning the sum of each pair as a numeric vector of length `n`. In the same chunk, set the seed with `set.seed(10)` and call `throw_dice(5)`. Render. Copy the printed five-number vector from the rendered HTML below.
 
@@ -166,42 +166,11 @@ The five sums you see are not the "true" probabilities of anything --- they are 
 
 ### Exercise 2
 
-`throw_dice()` will be called from many later exercises, so it earns its own cached "create" chunk: a chunk that defines the function once and reuses the saved definition on every subsequent render.
+`throw_dice()` will be called from many later exercises, so it earns its own cached "create" chunk --- a chunk that defines the function once and reuses the saved definition on every subsequent render. The next three exercises set that up.
 
-Refactor your chunk from Exercise 1 into two chunks. Remove the `set.seed(10)` and `throw_dice(5)` lines from the chunk that defines `throw_dice()`, leaving only the function definition, and add `#| cache: true` to that chunk's options. Then add a new working chunk below it containing `set.seed(10)` and `throw_dice(5)`. Render. In the R Terminal, run `show_file("analysis.qmd")`. CP/CR.
+First, clean up the chunk so only the function definition remains. In your chunk from Exercise 1, delete the `set.seed(10)` and `throw_dice(5)` lines, leaving just the function definition. Render. In the R Terminal, run `show_file("analysis.qmd", chunk = "Last")`. CP/CR.
 
 ```{r the-data-generating-mechanism-2}
-question_text(NULL,
-  answer(NULL, correct = TRUE),
-  allow_retry = TRUE,
-  try_again_button = "Edit Answer",
-  incorrect = NULL,
-  rows = 15)
-```
-
-###
-
-<pre><code>
-#| cache: true
-throw_dice <- function(n = 1, weights = rep(1/6, 6)) {
-  d1 <- sample(1:6, n, replace = TRUE, prob = weights)
-  d2 <- sample(1:6, n, replace = TRUE, prob = weights)
-  d1 + d2
-}
-
-set.seed(10)
-throw_dice(5)
-</code></pre>
-
-###
-
-`#| cache: true` tells Quarto to store the function and reload it from disk on subsequent renders rather than re-defining it from scratch. The benefit is tiny for a four-line function but huge for the model fits you will meet in later tutorials --- the same discipline applies, so we get the habit in early. Cached objects live in an `analysis_cache/` directory that Quarto creates next to your QMD; we add that directory to `.gitignore` in a moment.
-
-### Exercise 3
-
-Modify the working chunk so that, instead of printing the five sums, it draws a histogram of 20 throws of two fair dice with the x-axis ticked at each integer sum from 2 to 12. Keep `set.seed(10)`. Render. In the R Terminal, run `show_file("analysis.qmd", chunk = "Last")`. CP/CR.
-
-```{r the-data-generating-mechanism-3}
 question_text(NULL,
   answer(NULL, correct = TRUE),
   allow_retry = TRUE,
@@ -212,7 +181,81 @@ question_text(NULL,
 
 ###
 
-```{r the-data-generating-mechanism-3-test}
+<pre><code>throw_dice <- function(n = 1, weights = rep(1/6, 6)) {
+  d1 <- sample(1:6, n, replace = TRUE, prob = weights)
+  d2 <- sample(1:6, n, replace = TRUE, prob = weights)
+  d1 + d2
+}
+</code></pre>
+
+###
+
+A chunk ready to cache should contain only the artifact it defines --- nothing else. Anything that *uses* the artifact will move into a separate working chunk that gets added later.
+
+### Exercise 3
+
+Now add `#| cache: true` as the first line inside the chunk (above the function definition). Render the QMD. Rendering with caching turned on creates a new `analysis_cache/` directory next to your `analysis.qmd`, which holds the saved function so Quarto can reload it on subsequent renders instead of re-defining it from scratch. To confirm the directory is there, run `ls` in the **bash Terminal** (not the R Terminal). CP/CR.
+
+```{r the-data-generating-mechanism-3}
+question_text(NULL,
+  answer(NULL, correct = TRUE),
+  allow_retry = TRUE,
+  try_again_button = "Edit Answer",
+  incorrect = NULL,
+  rows = 5)
+```
+
+###
+
+<pre><code>$ ls
+analysis.qmd  analysis_cache  analysis_files  analysis.html
+</code></pre>
+
+###
+
+`#| cache: true` is a render-time feature: caching is wired up by `quarto render`, not by anything that happens interactively. The benefit is tiny for a four-line function but huge for the model fits you will meet in later tutorials --- the discipline transfers, so we get the habit in early.
+
+### Exercise 4
+
+Take a look at the Source Control icon in the VS Code activity bar. The count of changed files has just jumped, because the new `analysis_cache/` directory and everything inside it now look like untracked work to git. Cached files should never go to GitHub --- they're machine-specific and regenerated on every render.
+
+Add `analysis_cache` to your `.gitignore` on its own line. In the R Terminal, run `show_file(".gitignore")`. CP/CR.
+
+```{r the-data-generating-mechanism-4}
+question_text(NULL,
+  answer(NULL, correct = TRUE),
+  allow_retry = TRUE,
+  try_again_button = "Edit Answer",
+  incorrect = NULL,
+  rows = 5)
+```
+
+###
+
+<pre><code>analysis_files
+analysis_cache
+</code></pre>
+
+###
+
+The Source Control change count should now drop back to whatever it was before the render. Cached objects live next to the QMD, not in version control.
+
+### Exercise 5
+
+Start a new working chunk below the cached `throw_dice` chunk that draws a histogram of 20 throws of two fair dice with the x-axis ticked at each integer sum from 2 to 12. Use `set.seed(10)`. Render. In the R Terminal, run `show_file("analysis.qmd", chunk = "Last")`. CP/CR.
+
+```{r the-data-generating-mechanism-5}
+question_text(NULL,
+  answer(NULL, correct = TRUE),
+  allow_retry = TRUE,
+  try_again_button = "Edit Answer",
+  incorrect = NULL,
+  rows = 10)
+```
+
+###
+
+```{r the-data-generating-mechanism-5-test}
 #| echo: true
 set.seed(10)
 tibble(sum = throw_dice(20)) |>
@@ -229,11 +272,11 @@ tibble(sum = throw_dice(20)) |>
 
 A reader who saw only this histogram, without the title telling them the dice were fair, would have a hard time guessing the underlying DGM. The bumps and gaps look like they might mean *something* --- maybe the dice favor a particular sum, maybe they avoid another --- but with twenty rolls each of those features could just be noise. The histogram is the *PDF of the data*; we still know almost nothing about the *PDF of the DGM*.
 
-### Exercise 4
+### Exercise 6
 
 Now run the same 20-throw experiment ten different times --- ten separate "shifts" of an inspector rolling the same pair of fair dice --- and plot all ten histograms in one panel so we can compare them. Modify the working chunk to plot ten such histograms together, faceted by trial. Keep `set.seed(10)`. Render. In the R Terminal, run `show_file("analysis.qmd", chunk = "Last")`. CP/CR.
 
-```{r the-data-generating-mechanism-4}
+```{r the-data-generating-mechanism-6}
 question_text(NULL,
   answer(NULL, correct = TRUE),
   allow_retry = TRUE,
@@ -244,7 +287,7 @@ question_text(NULL,
 
 ###
 
-```{r the-data-generating-mechanism-4-test}
+```{r the-data-generating-mechanism-6-test}
 #| echo: true
 set.seed(10)
 tibble(trial = 1:10) |>
@@ -264,11 +307,11 @@ tibble(trial = 1:10) |>
 
 The ten panels are *strikingly different from each other*, even though they were all generated by the exact same DGM. Some panels are peaked, others are flat. Some have a missing sum (no 7s!) that the true DGM says should be the most common outcome. **At twenty rolls, many wildly different DGMs are consistent with the data.** This is the *PDF over data generating mechanisms* the chapter mentions: with little data, that PDF is wide --- lots of dice configurations could have produced any one of those panels.
 
-### Exercise 5
+### Exercise 7
 
 Now do the opposite experiment: keep the dice fair and watch what happens as the number of rolls grows. Modify the working chunk to plot histograms for `n = 10, 20, 50, 100, 1000` throws of two fair dice, each panel side by side, with the y-axis allowed to vary by panel so the smaller panels are not crushed. Keep `set.seed(10)`. Render. In the R Terminal, run `show_file("analysis.qmd", chunk = "Last")`. CP/CR.
 
-```{r the-data-generating-mechanism-5}
+```{r the-data-generating-mechanism-7}
 question_text(NULL,
   answer(NULL, correct = TRUE),
   allow_retry = TRUE,
@@ -279,7 +322,7 @@ question_text(NULL,
 
 ###
 
-```{r the-data-generating-mechanism-5-test}
+```{r the-data-generating-mechanism-7-test}
 #| echo: true
 set.seed(10)
 tibble(n = c(10, 20, 50, 100, 1000)) |>
@@ -301,11 +344,11 @@ tibble(n = c(10, 20, 50, 100, 1000)) |>
 
 At `n = 10` the histogram looks almost random. At `n = 1000` it is a clean triangle, peaking at 7 with the familiar 2-and-12 corners. The DGM has not changed --- the dice were fair throughout. What changed is how clearly the *PDF of the data* (the histograms) reflects the *PDF of the DGM* (the triangle). **As `n` grows, the PDF over data generating mechanisms narrows: only DGMs that produce something close to a triangle remain consistent with what we saw.** The data has rejected a lot of candidates.
 
-### Exercise 6
+### Exercise 8
 
 Now flip the setup. Suppose the dice are *not* fair --- each die's 6 face has a 25% chance instead of the usual 1/6, and the other five faces share the remaining 75% equally. Modify the working chunk to re-run Exercise 4's ten-panel experiment using this unfair die. Keep `set.seed(10)`. Render. In the R Terminal, run `show_file("analysis.qmd", chunk = "Last")`. CP/CR.
 
-```{r the-data-generating-mechanism-6}
+```{r the-data-generating-mechanism-8}
 question_text(NULL,
   answer(NULL, correct = TRUE),
   allow_retry = TRUE,
@@ -316,7 +359,7 @@ question_text(NULL,
 
 ###
 
-```{r the-data-generating-mechanism-6-test}
+```{r the-data-generating-mechanism-8-test}
 #| echo: true
 set.seed(10)
 tibble(trial = 1:10) |>
@@ -337,11 +380,11 @@ tibble(trial = 1:10) |>
 
 These panels look *just as messy as the fair-dice panels in Exercise 4 did*. A reader handed only these ten histograms, with no caption telling them the dice were rigged, would not be able to tell the dice apart from a fair pair. The slight bias (P(6) = 0.25 instead of 1/6) shifts the average sum by only half a point --- but the noise from drawing twenty rolls per panel is larger than that. **Many DGMs are consistent with the same sparse data**: the true unfair-dice DGM is one of them, but so is the fair-dice DGM. Twenty rolls per inspector is not enough to tell them apart.
 
-### Exercise 7
+### Exercise 9
 
 Finally, repeat Exercise 5's `n` progression with the same unfair dice. Modify the working chunk to plot the `n = 10, 20, 50, 100, 1000` faceted histogram with the unfair-die weights. Keep `set.seed(10)`. Render. In the R Terminal, run `show_file("analysis.qmd", chunk = "Last")`. CP/CR.
 
-```{r the-data-generating-mechanism-7}
+```{r the-data-generating-mechanism-9}
 question_text(NULL,
   answer(NULL, correct = TRUE),
   allow_retry = TRUE,
@@ -352,7 +395,7 @@ question_text(NULL,
 
 ###
 
-```{r the-data-generating-mechanism-7-test}
+```{r the-data-generating-mechanism-9-test}
 #| echo: true
 set.seed(10)
 tibble(n = c(10, 20, 50, 100, 1000)) |>
@@ -554,9 +597,9 @@ Twenty rolls put our posterior at about 0.86 --- meaningfully past 50/50, but we
 
 ### Exercise 6
 
-`log_lr()` will be reused across the next three exercises, so it earns its own cached create chunk.
+`log_lr()` will be reused across the next three exercises, so it earns its own cached create chunk. As with `throw_dice()` in the previous section, we'll do this in two steps: clean the chunk now, then turn caching on in the next exercise. (No `.gitignore` step this time --- `analysis_cache` is already ignored.)
 
-Refactor your working chunk into two chunks. Move the `log_lr` definition into its own create chunk (with `#| cache: true`) and leave the `rolls_20` regeneration plus the posterior calculation in the working chunk. Render. In the R Terminal, run `show_file("analysis.qmd")`. CP/CR.
+In the chunk where you defined `log_lr()`, delete everything *after* the function definition --- the `set.seed(10)`, the `rolls_20` line, the `posterior_loaded_20` line, and the `round()` call. Render. In the R Terminal, run `show_file("analysis.qmd", chunk = "Last")`. CP/CR.
 
 ```{r measuring-surprise-6}
 question_text(NULL,
@@ -564,34 +607,52 @@ question_text(NULL,
   allow_retry = TRUE,
   try_again_button = "Edit Answer",
   incorrect = NULL,
-  rows = 15)
+  rows = 8)
 ```
 
 ###
 
-<pre><code>
-#| cache: true
-log_lr <- function(rolls) {
+<pre><code>log_lr <- function(rolls) {
   loaded <- c(0.14, 0.14, 0.14, 0.14, 0.14, 0.30)
   log(loaded[rolls] / (1/6))
 }
-
-set.seed(10)
-rolls_20 <- sample(1:6, 20, replace = TRUE,
-                   prob = c(0.14, 0.14, 0.14, 0.14, 0.14, 0.30))
-posterior_loaded_20 <- 1 / (1 + exp(-sum(log_lr(rolls_20))))
-round(posterior_loaded_20, 4)
 </code></pre>
 
 ###
 
-`log_lr()` is now in its own create chunk: defined once, cached, reused by every later exercise without re-defining the function on every render. Same refactoring pattern as `throw_dice()` in the previous section --- and the model fits in later tutorials.
+The chunk is now ready to cache: just the helper definition, no usage.
 
 ### Exercise 7
 
-Now do the same calculation for the 200-roll sample. Repeat Exercise 5's posterior calculation with `rolls_200` from Exercise 3, rounded to six decimals. Render. Copy the printed number from the rendered HTML below.
+Add `#| cache: true` as the first line inside the chunk. Render the QMD. In the R Terminal, run `show_file("analysis.qmd", chunk = "Last")`. CP/CR.
 
 ```{r measuring-surprise-7}
+question_text(NULL,
+  answer(NULL, correct = TRUE),
+  allow_retry = TRUE,
+  try_again_button = "Edit Answer",
+  incorrect = NULL,
+  rows = 8)
+```
+
+###
+
+<pre><code>#| cache: true
+log_lr <- function(rolls) {
+  loaded <- c(0.14, 0.14, 0.14, 0.14, 0.14, 0.30)
+  log(loaded[rolls] / (1/6))
+}
+</code></pre>
+
+###
+
+`log_lr()` is now in its own cached create chunk: defined once, reused by every later exercise without re-defining the function on every render. Same refactoring pattern as `throw_dice()` in the previous section --- and the model fits in later tutorials.
+
+### Exercise 8
+
+Now do the same posterior calculation for the 200-roll sample. Start a new working chunk below the cached `log_lr` chunk: regenerate `rolls_200` (`set.seed(10)`, then `sample(1:6, 200, replace = TRUE, prob = c(0.14, 0.14, 0.14, 0.14, 0.14, 0.30))`), then print `round(1 / (1 + exp(-sum(log_lr(rolls_200)))), 6)`. Render. Copy the printed number from the rendered HTML below.
+
+```{r measuring-surprise-8}
 question_text(NULL,
   answer(NULL, correct = TRUE),
   allow_retry = TRUE,
@@ -602,7 +663,7 @@ question_text(NULL,
 
 ###
 
-```{r measuring-surprise-7-test}
+```{r measuring-surprise-8-test}
 #| echo: true
 set.seed(10)
 rolls_200 <- sample(1:6, 200, replace = TRUE,
@@ -615,11 +676,11 @@ round(posterior_loaded_200, 6)
 
 Two hundred rolls leave essentially zero doubt --- the posterior is indistinguishable from 1. The data has rejected the fair-die DGM as effectively as the data ever could. **Notice what the calculation produces: not "the die is loaded" but "the probability that the die is loaded, given what we have seen, is 0.9999."** Belief is on a continuum; certainty is a useful limit, not a starting point.
 
-### Exercise 8
+### Exercise 9
 
 The most interesting question is not what the posterior is at the *end* of 200 rolls but how it *evolves*, roll by roll, from 0.50. Modify the working chunk to plot the running posterior over the 200 rolls in `rolls_200` --- one point per roll, with a horizontal reference line at 0.95. Render. In the R Terminal, run `show_file("analysis.qmd", chunk = "Last")`. CP/CR.
 
-```{r measuring-surprise-8}
+```{r measuring-surprise-9}
 question_text(NULL,
   answer(NULL, correct = TRUE),
   allow_retry = TRUE,
@@ -630,7 +691,7 @@ question_text(NULL,
 
 ###
 
-```{r measuring-surprise-8-test}
+```{r measuring-surprise-9-test}
 #| echo: true
 set.seed(10)
 rolls_200 <- sample(1:6, 200, replace = TRUE,
@@ -657,11 +718,11 @@ tibble(
 
 The line starts at 50%, wobbles a bit while every individual roll matters, then climbs --- with steps up at every 6 and small steps down at every non-6 --- past the 95% line somewhere in the first few dozen rolls and stays there. **This plot *is* the third PDF the chapter talked about**: our belief about which DGM is true, updated in real time. The fair-die line would be the mirror image, climbing down to zero on the same data.
 
-### Exercise 9
+### Exercise 10
 
 One run is one run. To see how *typical* that run was, modify the working chunk to repeat the experiment 1,000 times: for each repetition, draw a long sequence of rolls from the loaded die, find the first roll at which the running posterior first crosses 0.95, and record how many rolls that took. Then plot a histogram of those 1,000 stopping times. Render. In the R Terminal, run `show_file("analysis.qmd", chunk = "Last")`. CP/CR.
 
-```{r measuring-surprise-9}
+```{r measuring-surprise-10}
 question_text(NULL,
   answer(NULL, correct = TRUE),
   allow_retry = TRUE,
@@ -672,7 +733,7 @@ question_text(NULL,
 
 ###
 
-```{r measuring-surprise-9-test}
+```{r measuring-surprise-10-test}
 #| echo: true
 set.seed(42)
 stop_times <- replicate(1000, {
