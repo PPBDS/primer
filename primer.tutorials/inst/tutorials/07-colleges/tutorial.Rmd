@@ -511,7 +511,7 @@ cat(
 
 ### Exercise 11
 
-We need a cleaned tibble. In `analysis.qmd`, add a cached code chunk that creates a tibble called `x` by taking `colleges`, selecting `tuition`, `grad_rate`, and `selectivity`, filtering to rows with tuition above $20,000 (so `tuition > 2`), dropping rows with missing values, and recoding `selectivity` as a factor with the levels in the order `Elite`, `Highly Selective`, `Moderately Selective`, `Lowly Selective`, `Non-selective`. Render. In the R Terminal, run `show_file("analysis.qmd", chunk = "Last")`. CP/CR.
+We need a cleaned tibble. In `analysis.qmd`, add a new code chunk that creates a tibble called `x` by taking `colleges`, selecting `tuition`, `grad_rate`, and `selectivity`, filtering to rows with tuition above $20,000 (so `tuition > 2`), dropping rows with missing values, and recoding `selectivity` as a factor with the levels in the order `Elite`, `Highly Selective`, `Moderately Selective`, `Lowly Selective`, `Non-selective`. Then on the next line, print `head(x)`. Render. Copy the printed first few rows from the rendered HTML below.
 
 ```{r wisdom-11}
 question_text(NULL,
@@ -519,7 +519,41 @@ question_text(NULL,
   allow_retry = TRUE,
   try_again_button = "Edit Answer",
   incorrect = NULL,
-  rows = 12)
+  rows = 8)
+```
+
+###
+
+```{r wisdom-11-test}
+#| echo: true
+x <- colleges |>
+  select(tuition, grad_rate, selectivity) |>
+  filter(tuition > 2) |>
+  drop_na() |>
+  mutate(selectivity = factor(as.character(selectivity),
+                              levels = c("Elite", "Highly Selective",
+                                         "Moderately Selective",
+                                         "Lowly Selective", "Non-selective")))
+head(x)
+```
+
+###
+
+`filter(tuition > 2)` restricts to schools charging at least $20,000/year, which removes a handful of community-college-priced entries in the IPEDS snapshot that don't fit the four-year residential model we care about. `drop_na()` silently removes rows missing any of the three variables --- a simplification Justice will revisit. The factor recoding pins the selectivity levels in the order we want them to appear in later tables and plots --- otherwise they would sort alphabetically.
+
+### Exercise 12
+
+The pipeline that builds `x` runs every time you render. It's quick here, but the discipline matters: `x` will be used by every later modeling exercise, so it earns its own cached create chunk.
+
+Refactor your chunk from Exercise 11 into two chunks. Move the `x <- ...` pipeline into its own create chunk with `#| cache: true`, and leave `head(x)` in the working chunk. Render. In the R Terminal, run `show_file("analysis.qmd")`. CP/CR.
+
+```{r wisdom-12}
+question_text(NULL,
+  answer(NULL, correct = TRUE),
+  allow_retry = TRUE,
+  try_again_button = "Edit Answer",
+  incorrect = NULL,
+  rows = 20)
 ```
 
 ###
@@ -536,17 +570,21 @@ x <- colleges |>
                                          "Moderately Selective",
                                          "Lowly Selective", "Non-selective")))
 ```
+
+```{r}
+head(x)
+```
 ````
 
 ###
 
-`filter(tuition > 2)` restricts to schools charging at least $20,000/year, which removes a handful of community-college-priced entries in the IPEDS snapshot that don't fit the four-year residential model we care about. `drop_na()` silently removes rows missing any of the three variables --- a simplification Justice will revisit. The factor recoding pins the selectivity levels in the order we want them to appear in later tables and plots --- otherwise they would sort alphabetically. The `#| cache: true` option makes Quarto store the result and reload it on subsequent renders rather than re-running the pipeline every time.
+`x` is now in its own create chunk: built once, cached, reused by every later exercise without re-running the pipeline on every render. Same refactoring pattern as the helpers in 01-probability and the model fits in later tutorials.
 
-### Exercise 12
+### Exercise 13
 
 Write the first two sentences of the summary paragraph. The first sentence is a general statement about the overall topic, mentioning the general class of outcome and at least one covariate. The second sentence introduces the data source and the specific question.
 
-```{r wisdom-12}
+```{r wisdom-13}
 question_text(NULL,
   message = "Where students go to college and what they pay for it varies enormously, and so does the likelihood that they will finish. We help today's students choose by examining how graduation rate varies with tuition and selectivity, using 2013 IPEDS data on roughly 900 US four-year colleges and universities --- the most recent reliable national snapshot we have.",
   answer(NULL, correct = TRUE),
@@ -941,41 +979,37 @@ A non-representative sample doesn't *guarantee* a biased estimate --- it's possi
 
 ### Exercise 10
 
-Add `library(tidymodels)` to the setup chunk in `analysis.qmd` and render.
-
-CP/CR.
+A statistical model consists of two parts: the probability family and the link function. The probability family is the probability distribution that generates the randomness in our data. Our outcome variable is `grad_rate` --- continuous. What probability family should we use?
 
 ```{r justice-10}
 question_text(NULL,
+  message = "Normal: $Y \\sim N(\\mu, \\sigma^2)$. The Normal distribution is the standard choice for continuous outcomes.",
   answer(NULL, correct = TRUE),
-  allow_retry = TRUE,
-  try_again_button = "Edit Answer",
+  allow_retry = FALSE,
   incorrect = NULL,
-  rows = 3)
+  rows = 4)
 ```
 
 ###
 
-Our outcome variable `grad_rate` is continuous. The probability family is Normal: $Y \sim N(\mu, \sigma^2)$.
+While you're here, also add `library(tidymodels)` to the setup chunk in `analysis.qmd` so the rest of Courage can call `linear_reg()` and `fit()`.
 
 ### Exercise 11
 
-Add `library(broom)` to the setup chunk in `analysis.qmd` and render.
-
-CP/CR.
+The link function is the mathematical formula that links our data to the unknown parameters. What is the link function for a continuous outcome?
 
 ```{r justice-11}
 question_text(NULL,
+  message = "Linear: $\\mu = \\beta_0 + \\beta_1 X_1 + \\ldots + \\beta_n X_n$. Our model will be a linear regression.",
   answer(NULL, correct = TRUE),
-  allow_retry = TRUE,
-  try_again_button = "Edit Answer",
+  allow_retry = FALSE,
   incorrect = NULL,
-  rows = 3)
+  rows = 4)
 ```
 
 ###
 
-The link function for a continuous outcome is linear. Our model will be a linear regression.
+While you're here, also add `library(broom)` to the setup chunk in `analysis.qmd` so we can call `tidy()` on the fitted model in Courage.
 
 ### Exercise 12
 
@@ -1288,7 +1322,7 @@ The shrinkage from 16.4 to 9.0 percentage points is the effect of adjustment. Se
 
 ### Exercise 9
 
-We've settled on the final fit. In `analysis.qmd`, add a cached code chunk that assigns the result of `linear_reg() |> set_engine("lm") |> fit(grad_rate ~ tuition + selectivity, data = x)` to `fit_colleges`. Render. In the R Terminal, run `show_file("analysis.qmd", chunk = "Last")`. CP/CR.
+We've settled on the final fit. In `analysis.qmd`, add a new code chunk that assigns the result of `linear_reg() |> set_engine("lm") |> fit(grad_rate ~ tuition + selectivity, data = x)` to `fit_colleges`, then on the next line prints `fit_colleges`. Render. Copy the printed model summary from the rendered HTML below.
 
 ```{r courage-9}
 question_text(NULL,
@@ -1296,7 +1330,36 @@ question_text(NULL,
   allow_retry = TRUE,
   try_again_button = "Edit Answer",
   incorrect = NULL,
-  rows = 8)
+  rows = 5)
+```
+
+###
+
+```{r courage-9-test}
+#| echo: true
+fit_colleges <- linear_reg() |>
+  set_engine("lm") |>
+  fit(grad_rate ~ tuition + selectivity, data = x)
+fit_colleges
+```
+
+###
+
+In data science, **we deal with words, math, and code, but the most important of these is code.**
+
+### Exercise 10
+
+Re-fitting the model on every render is wasteful. `fit_colleges` earns its own cached create chunk.
+
+Refactor your chunk from Exercise 9 into two chunks. Move the `fit_colleges <- ...` assignment into its own create chunk with `#| cache: true`, and leave `fit_colleges` (on its own line) in the working chunk. Render. In the R Terminal, run `show_file("analysis.qmd")`. CP/CR.
+
+```{r courage-10}
+question_text(NULL,
+  answer(NULL, correct = TRUE),
+  allow_retry = TRUE,
+  try_again_button = "Edit Answer",
+  incorrect = NULL,
+  rows = 15)
 ```
 
 ###
@@ -1308,35 +1371,15 @@ fit_colleges <- linear_reg() |>
   set_engine("lm") |>
   fit(grad_rate ~ tuition + selectivity, data = x)
 ```
+
+```{r}
+fit_colleges
+```
 ````
 
 ###
 
-`#| cache: true` tells Quarto to store the fitted object and reload it on subsequent renders rather than re-fitting every time. The next render --- without changing this chunk --- just loads the saved fit.
-
-### Exercise 10
-
-Now print the fitted model. In `analysis.qmd`, add a chunk that names `fit_colleges` on its own line. Render. Copy the printed model summary from the rendered HTML.
-
-```{r courage-10}
-question_text(NULL,
-  answer(NULL, correct = TRUE),
-  allow_retry = TRUE,
-  try_again_button = "Edit Answer",
-  incorrect = NULL,
-  rows = 5)
-```
-
-###
-
-```{r courage-10-test}
-#| echo: true
-fit_colleges
-```
-
-###
-
-In data science, **we deal with words, math, and code, but the most important of these is code.**
+`#| cache: true` tells Quarto to store the fitted object and reload it from disk on subsequent renders rather than re-fitting every time.
 
 ### Exercise 11
 
@@ -1543,8 +1586,21 @@ question_text(NULL,
   allow_retry = TRUE,
   try_again_button = "Edit Answer",
   incorrect = NULL,
-  rows = 3)
+  rows = 8)
 ```
+
+###
+
+````
+```{r}
+#| message: false
+library(tidyverse)
+library(primer.data)
+library(tidymodels)
+library(broom)
+library(marginaleffects)
+```
+````
 
 ###
 

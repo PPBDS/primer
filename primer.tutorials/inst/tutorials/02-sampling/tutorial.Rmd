@@ -70,6 +70,13 @@ question_text(NULL,
 
 ###
 
+```
+analysis_files
+
+```
+
+###
+
 A *census* measures every unit in a population --- and it is usually too expensive, and often impossible: any population that reaches into the future can never be fully counted. So almost all of data science works instead from a *sample* and reasons back to the population. How much we can trust that reasoning is the subject of this tutorial.
 
 ### Exercise 2
@@ -91,6 +98,16 @@ question_text(NULL,
   incorrect = NULL,
   rows = 5)
 ```
+
+###
+
+````
+```{r}
+#| message: false
+library(tidyverse)
+library(primer.data)
+```
+````
 
 ###
 
@@ -245,7 +262,7 @@ That horizontal bar is the **95% confidence interval**. It is a statement about 
 
 ### Exercise 5
 
-To see the "about 95%" claim land, we need not one sample but many. `samples` will be reused across the next three exercises, so build it once and cache it. Add a cached create chunk to `analysis.qmd` that constructs a tibble `samples` with 1,000 rows --- each row representing one 50-voter draw from `shaming` and carrying that draw's sample mean, standard error, and lower and upper bounds of the 95% confidence interval. Use `set.seed(10)`. Render. In the R Terminal, run `show_file("analysis.qmd", chunk = "Last")`. CP/CR.
+To see the "about 95%" claim land, we need not one sample but many. Modify the working chunk to build a tibble `samples` with 1,000 rows --- each row representing one 50-voter draw from `shaming` and carrying that draw's sample mean, standard error, and lower and upper bounds of the 95% confidence interval --- and then plot the first 100 of those intervals as horizontal error bars stacked vertically with `truth` marked as a vertical red line. Use `set.seed(10)`. Render. In the R Terminal, run `show_file("analysis.qmd", chunk = "Last")`. CP/CR.
 
 ```{r sampling-and-the-standard-error-5}
 question_text(NULL,
@@ -270,30 +287,7 @@ samples <- tibble(trial = 1:1000) |>
     upper       = sample_mean + 1.96 * sample_se
   ) |>
   select(-sample)
-head(samples)
-```
 
-###
-
-Each row is one of the thousand hypothetical "what if we had drawn a different 50 voters?" experiments, carrying its own mean, standard error, and 95% interval. Caching the chunk (`#| cache: true`) means Quarto reuses the saved 1,000-row tibble on subsequent renders rather than redoing the simulation each time. For 50,000 draws that's a couple of seconds saved; for the heavier model fits in later tutorials, it can be the difference between a one-second and a one-minute render.
-
-### Exercise 6
-
-Now plot the first 100 of those intervals as horizontal error bars stacked vertically, with `truth` marked as a vertical red line. (We use 100 rather than 1,000 so the picture stays readable.) Modify the working chunk to draw this plot. Render. In the R Terminal, run `show_file("analysis.qmd", chunk = "Last")`. CP/CR.
-
-```{r sampling-and-the-standard-error-6}
-question_text(NULL,
-  answer(NULL, correct = TRUE),
-  allow_retry = TRUE,
-  try_again_button = "Edit Answer",
-  incorrect = NULL,
-  rows = 10)
-```
-
-###
-
-```{r sampling-and-the-standard-error-6-test}
-#| echo: true
 ggplot(samples |> slice(1:100), aes(y = trial)) +
   geom_errorbarh(aes(xmin = lower, xmax = upper),
                  height = 0.3, alpha = 0.5) +
@@ -309,7 +303,58 @@ ggplot(samples |> slice(1:100), aes(y = trial)) +
 
 ###
 
-Most intervals cross the red line --- those contain the truth. A handful do not. The misses are not a sign the method is broken; they are exactly what we should expect when each interval is meant to catch the truth 95% of the time.
+Each row of `samples` is one of the thousand hypothetical "what if we had drawn a different 50 voters?" experiments, carrying its own mean, standard error, and 95% interval. Most intervals cross the red line --- those contain the truth. A handful do not. The misses are not a sign the method is broken; they are exactly what we should expect when each interval is meant to catch the truth 95% of the time.
+
+### Exercise 6
+
+`samples` will be reused across the next two exercises (coverage, polished plot), so it earns its own cached create chunk.
+
+Refactor your working chunk into two chunks. Move the `samples` construction (everything from `set.seed(10)` through the `select(-sample)`) into its own create chunk with `#| cache: true`, and leave the `ggplot(...)` call in the working chunk. Render. In the R Terminal, run `show_file("analysis.qmd")`. CP/CR.
+
+```{r sampling-and-the-standard-error-6}
+question_text(NULL,
+  answer(NULL, correct = TRUE),
+  allow_retry = TRUE,
+  try_again_button = "Edit Answer",
+  incorrect = NULL,
+  rows = 25)
+```
+
+###
+
+````
+```{r}
+#| cache: true
+set.seed(10)
+samples <- tibble(trial = 1:1000) |>
+  mutate(
+    sample      = map(trial, ~ shaming |> slice_sample(n = 50)),
+    sample_mean = map_dbl(sample, ~ mean(.x$age, na.rm = TRUE)),
+    sample_se   = map_dbl(sample, ~ sd(.x$age, na.rm = TRUE) / sqrt(50)),
+    lower       = sample_mean - 1.96 * sample_se,
+    upper       = sample_mean + 1.96 * sample_se
+  ) |>
+  select(-sample)
+```
+
+```{r}
+ggplot(samples |> slice(1:100), aes(y = trial)) +
+  geom_errorbarh(aes(xmin = lower, xmax = upper),
+                 height = 0.3, alpha = 0.5) +
+  geom_point(aes(x = sample_mean), size = 0.6) +
+  geom_vline(xintercept = truth, color = "red",
+             linetype = "dashed") +
+  labs(title = "100 samples of 50 voters each",
+       subtitle = "Most 95% intervals contain the truth; a few miss",
+       x = "Age (years)",
+       y = "Sample number") +
+  theme_minimal()
+```
+````
+
+###
+
+`samples` is now in its own create chunk: built once, cached, reused by every later exercise without redoing the 50,000 draws on every render. For this section that's a couple of seconds saved; for the heavier model fits in later tutorials, it can be the difference between a one-second and a one-minute render.
 
 ### Exercise 7
 
@@ -348,6 +393,25 @@ question_text(NULL,
   incorrect = NULL,
   rows = 10)
 ```
+
+###
+
+````
+```{r}
+ggplot(samples |> slice(1:100), aes(y = trial)) +
+  geom_errorbarh(aes(xmin = lower, xmax = upper),
+                 height = 0.3, alpha = 0.5) +
+  geom_point(aes(x = sample_mean), size = 0.6) +
+  geom_vline(xintercept = truth, color = "red",
+             linetype = "dashed") +
+  labs(title = "100 unbiased samples of 50 voters each",
+       subtitle = "About 95% of the intervals contain the truth",
+       x = "Age (years)",
+       y = "Sample number",
+       caption = "Source: Gerber, Green, Larimer 2008 via primer.data::shaming") +
+  theme_minimal()
+```
+````
 
 ###
 
@@ -455,7 +519,7 @@ Two things to notice. First, the biased sample's mean is 55.26 --- about 5.5 yea
 
 ### Exercise 4
 
-We now want a thousand biased samples, parallel to the thousand unbiased ones in `samples`. `biased_samples` will be reused across the next three exercises, so build it once and cache it. Add a cached create chunk to `analysis.qmd` that constructs a tibble `biased_samples` with 1,000 rows --- each row representing one biased 50-voter draw from `shaming` (with the same age > 40 weighting) and carrying that draw's sample mean, standard error, and lower and upper bounds of the 95% confidence interval. Use `set.seed(10)`. Render. In the R Terminal, run `show_file("analysis.qmd", chunk = "Last")`. CP/CR.
+We now want a thousand biased samples, parallel to the thousand unbiased ones in `samples`. Modify the working chunk to build a tibble `biased_samples` with 1,000 rows --- each row representing one biased 50-voter draw from `shaming` (with the same age > 40 weighting) and carrying that draw's sample mean, standard error, and lower and upper bounds of the 95% confidence interval --- and then plot the first 100 of those intervals as horizontal error bars with `truth` marked as a vertical red line. Use `set.seed(10)`. Render. In the R Terminal, run `show_file("analysis.qmd", chunk = "Last")`. CP/CR.
 
 ```{r biased-sampling-4}
 question_text(NULL,
@@ -481,30 +545,7 @@ biased_samples <- tibble(trial = 1:1000) |>
     upper       = sample_mean + 1.96 * sample_se
   ) |>
   select(-sample)
-head(biased_samples)
-```
 
-###
-
-The downstream code is identical to what built `samples` in the previous section --- only the draw itself is biased. `biased_samples` will be heavy to recompute on every render, so caching it earns its keep.
-
-### Exercise 5
-
-Plot the first 100 rows of `biased_samples` as horizontal error bars with a red dashed vertical line at `truth` --- same picture as the unbiased version, but on `biased_samples`. Modify the working chunk to draw this plot. Render. In the R Terminal, run `show_file("analysis.qmd", chunk = "Last")`. CP/CR.
-
-```{r biased-sampling-5}
-question_text(NULL,
-  answer(NULL, correct = TRUE),
-  allow_retry = TRUE,
-  try_again_button = "Edit Answer",
-  incorrect = NULL,
-  rows = 10)
-```
-
-###
-
-```{r biased-sampling-5-test}
-#| echo: true
 ggplot(biased_samples |> slice(1:100), aes(y = trial)) +
   geom_errorbarh(aes(xmin = lower, xmax = upper),
                  height = 0.3, alpha = 0.5) +
@@ -520,7 +561,59 @@ ggplot(biased_samples |> slice(1:100), aes(y = trial)) +
 
 ###
 
-Compare this to the unbiased picture from the previous section. There the error bars were *centered* on the truth and the misses split roughly half above and half below. Here the error bars are *shifted right* --- they cluster above the truth, and the misses are almost always too high. Bias has a *direction*; sampling noise does not.
+The downstream code is identical to what built `samples` in the previous section --- only the draw itself is biased. Compare this picture to the unbiased one from the previous section. There the error bars were *centered* on the truth and the misses split roughly half above and half below. Here the error bars are *shifted right* --- they cluster above the truth, and the misses are almost always too high. Bias has a *direction*; sampling noise does not.
+
+### Exercise 5
+
+`biased_samples` will be reused across the next two exercises (coverage, density of biased means), so it earns its own cached create chunk.
+
+Refactor your working chunk into two chunks. Move the `biased_samples` construction (everything from `set.seed(10)` through the `select(-sample)`) into its own create chunk with `#| cache: true`, and leave the `ggplot(...)` call in the working chunk. Render. In the R Terminal, run `show_file("analysis.qmd")`. CP/CR.
+
+```{r biased-sampling-5}
+question_text(NULL,
+  answer(NULL, correct = TRUE),
+  allow_retry = TRUE,
+  try_again_button = "Edit Answer",
+  incorrect = NULL,
+  rows = 25)
+```
+
+###
+
+````
+```{r}
+#| cache: true
+set.seed(10)
+shaming_wt <- shaming |> mutate(wt = if_else(age > 40, 3, 1))
+biased_samples <- tibble(trial = 1:1000) |>
+  mutate(
+    sample      = map(trial, ~ shaming_wt |> slice_sample(n = 50, weight_by = wt)),
+    sample_mean = map_dbl(sample, ~ mean(.x$age, na.rm = TRUE)),
+    sample_se   = map_dbl(sample, ~ sd(.x$age, na.rm = TRUE) / sqrt(50)),
+    lower       = sample_mean - 1.96 * sample_se,
+    upper       = sample_mean + 1.96 * sample_se
+  ) |>
+  select(-sample)
+```
+
+```{r}
+ggplot(biased_samples |> slice(1:100), aes(y = trial)) +
+  geom_errorbarh(aes(xmin = lower, xmax = upper),
+                 height = 0.3, alpha = 0.5) +
+  geom_point(aes(x = sample_mean), size = 0.6) +
+  geom_vline(xintercept = truth, color = "red",
+             linetype = "dashed") +
+  labs(title = "100 biased samples of 50 voters each",
+       subtitle = "Most 95% intervals sit to the RIGHT of the truth",
+       x = "Age (years)",
+       y = "Sample number") +
+  theme_minimal()
+```
+````
+
+###
+
+`biased_samples` is now in its own create chunk: built once, cached, reused by every later exercise. Same refactoring pattern as `samples` in the previous section.
 
 ### Exercise 6
 
@@ -596,6 +689,26 @@ question_text(NULL,
   incorrect = NULL,
   rows = 10)
 ```
+
+###
+
+````
+```{r}
+ggplot(biased_samples, aes(x = sample_mean)) +
+  geom_density(fill = "grey70", color = "grey30") +
+  geom_vline(xintercept = truth, color = "red",
+             linetype = "dashed") +
+  geom_vline(xintercept = mean(biased_samples$sample_mean)) +
+  labs(title = "Distribution of 1,000 biased sample means",
+       subtitle = "Black: average of biased means. Red dashed: truth.",
+       x = "Sample mean of age (years)",
+       y = NULL,
+       caption = "Source: Gerber, Green, Larimer 2008 via primer.data::shaming") +
+  theme_minimal() +
+  theme(axis.text.y = element_blank(),
+        axis.ticks.y = element_blank())
+```
+````
 
 ###
 

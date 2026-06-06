@@ -924,43 +924,37 @@ When representativeness is violated, our parameter estimates *might* be biased -
 
 ### Exercise 10
 
-A statistical model consists of two parts: the probability family and the link function. The probability family is the probability distribution which generates the randomness in our data. The link function is the mathematical formula which links our data to the unknown parameters. Add `library(tidymodels)` to the setup chunk in `analysis.qmd` and render. CP/CR.
+A statistical model consists of two parts: the probability family and the link function. The probability family is the probability distribution that generates the randomness in our data. Our outcome variable is `height` --- continuous. What probability family should we use?
 
 ```{r justice-10}
 question_text(NULL,
+  message = "Normal: $Y \\sim N(\\mu, \\sigma^2)$. The Normal distribution is the standard choice for continuous outcomes.",
   answer(NULL, correct = TRUE),
-  allow_retry = TRUE,
-  try_again_button = "Edit Answer",
+  allow_retry = FALSE,
   incorrect = NULL,
-  rows = 6)
+  rows = 4)
 ```
 
 ###
 
-Our outcome variable `height` is continuous. The probability family is Normal:
-
-$$Y \sim N(\mu, \sigma^2)$$
+While you're here, also add `library(tidymodels)` to the setup chunk in `analysis.qmd` so the rest of Courage can call `linear_reg()` and `fit()`.
 
 ### Exercise 11
 
-Add `library(broom)` to the setup chunk in `analysis.qmd` and render. CP/CR.
+The link function is the mathematical formula that links our data to the unknown parameters. What is the link function for a continuous outcome?
 
 ```{r justice-11}
 question_text(NULL,
+  message = "Linear: $\\mu = \\beta_0 + \\beta_1 X_1 + \\ldots + \\beta_n X_n$. Our model will be a linear regression.",
   answer(NULL, correct = TRUE),
-  allow_retry = TRUE,
-  try_again_button = "Edit Answer",
+  allow_retry = FALSE,
   incorrect = NULL,
-  rows = 3)
+  rows = 4)
 ```
 
 ###
 
-The link function for a continuous outcome is linear:
-
-$$\mu = \beta_0 + \beta_1 X_1 + \ldots + \beta_n X_n$$
-
-Our model will be a linear regression.
+While you're here, also add `library(broom)` to the setup chunk in `analysis.qmd` so we can call `tidy()` on the fitted model in Courage.
 
 ### Exercise 12
 
@@ -1223,7 +1217,7 @@ The wide confidence interval that includes zero is exactly what *"this covariate
 
 ### Exercise 7
 
-We've settled on the final fit. In `analysis.qmd`, add a cached code chunk that assigns the result of `linear_reg() |> set_engine("lm") |> fit(height ~ sex, data = recruits)` to `fit_recruits`. Render. In the R Terminal, run `show_file("analysis.qmd", chunk = "Last")`. CP/CR.
+We've settled on the final fit. In `analysis.qmd`, add a new code chunk that assigns the result of `linear_reg() |> set_engine("lm") |> fit(height ~ sex, data = recruits)` to `fit_recruits`, then on the next line prints `fit_recruits`. Render. Copy the printed model summary from the rendered HTML below.
 
 ```{r courage-7}
 question_text(NULL,
@@ -1231,7 +1225,36 @@ question_text(NULL,
   allow_retry = TRUE,
   try_again_button = "Edit Answer",
   incorrect = NULL,
-  rows = 8)
+  rows = 5)
+```
+
+###
+
+```{r courage-7-test}
+#| echo: true
+fit_recruits <- linear_reg() |>
+  set_engine("lm") |>
+  fit(height ~ sex, data = recruits)
+fit_recruits
+```
+
+###
+
+In data science, **we deal with words, math, and code, but the most important of these is code.** We created the mathematical structure of the model and then wrote a model formula in order to estimate the unknown parameters.
+
+### Exercise 8
+
+Re-fitting the model on every render is wasteful --- the fit's the same each time. `fit_recruits` earns its own cached create chunk.
+
+Refactor your chunk from Exercise 7 into two chunks. Move the `fit_recruits <- ...` assignment into its own create chunk with `#| cache: true`, and leave `fit_recruits` (on its own line) in the working chunk. Render. In the R Terminal, run `show_file("analysis.qmd")`. CP/CR.
+
+```{r courage-8}
+question_text(NULL,
+  answer(NULL, correct = TRUE),
+  allow_retry = TRUE,
+  try_again_button = "Edit Answer",
+  incorrect = NULL,
+  rows = 15)
 ```
 
 ###
@@ -1243,35 +1266,15 @@ fit_recruits <- linear_reg() |>
   set_engine("lm") |>
   fit(height ~ sex, data = recruits)
 ```
+
+```{r}
+fit_recruits
+```
 ````
 
 ###
 
-`#| cache: true` tells Quarto to store the fitted object and reload it on subsequent renders rather than re-fitting every time. The next time you render your QMD --- without changing this chunk --- Quarto will just load the saved fit.
-
-### Exercise 8
-
-Now print the fitted model. In `analysis.qmd`, add a chunk that names `fit_recruits` on its own line. Render. Copy the printed model summary from the rendered HTML.
-
-```{r courage-8}
-question_text(NULL,
-  answer(NULL, correct = TRUE),
-  allow_retry = TRUE,
-  try_again_button = "Edit Answer",
-  incorrect = NULL,
-  rows = 5)
-```
-
-###
-
-```{r courage-8-test}
-#| echo: true
-fit_recruits
-```
-
-###
-
-In data science, **we deal with words, math, and code, but the most important of these is code.** We created the mathematical structure of the model and then wrote a model formula in order to estimate the unknown parameters.
+`#| cache: true` tells Quarto to store the fitted object and reload it from disk on subsequent renders rather than re-fitting every time. For a 50-row linear regression the savings are small; for the larger model fits in later tutorials, caching can be the difference between a one-second and a one-minute render.
 
 ### Exercise 9
 
@@ -1440,8 +1443,21 @@ question_text(NULL,
   allow_retry = TRUE,
   try_again_button = "Edit Answer",
   incorrect = NULL,
-  rows = 3)
+  rows = 8)
 ```
+
+###
+
+````
+```{r}
+#| message: false
+library(tidyverse)
+library(primer.data)
+library(tidymodels)
+library(broom)
+library(marginaleffects)
+```
+````
 
 ###
 

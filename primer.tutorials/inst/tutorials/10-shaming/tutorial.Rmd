@@ -546,34 +546,88 @@ cat(
 
 ### Exercise 10
 
-The model in this tutorial uses a derived covariate, `voter_class`, built by summing past primary and general turnout in 2000, 2002, and 2004 and binning the total into three categories. In `analysis.qmd`, add a cached code chunk that creates a tibble called `x` by taking `shaming`, building a `civ_engage` column from the six 2000/2002/2004 primary and general turnout columns, selecting `primary_06`, `treatment`, `sex`, `age`, and `civ_engage`, dropping missing values, recoding `civ_engage` into a 3-level factor `voter_class` with levels in the order `Rarely Vote`, `Sometimes Vote`, `Always Vote`, recoding `primary_06` as a factor `voted`, and dropping missing values once more. Render. In the R Terminal, run:
-
-```
-show_file("analysis.qmd", chunk = "Last")
-```
-
-CP/CR.
+The model in this tutorial uses a derived covariate, `voter_class`, built by summing past primary and general turnout in 2000, 2002, and 2004 and binning the total into three categories. In `analysis.qmd`, add a new code chunk that creates a tibble called `x` by taking `shaming`, building a `civ_engage` column from the six 2000/2002/2004 primary and general turnout columns, selecting `primary_06`, `treatment`, `sex`, `age`, and `civ_engage`, dropping missing values, recoding `civ_engage` into a 3-level factor `voter_class` with levels in the order `Rarely Vote`, `Sometimes Vote`, `Always Vote`, recoding `primary_06` as a factor `voted`, and dropping missing values once more. Then on the next line print `head(x)`. Render. Copy the printed first few rows from the rendered HTML below.
 
 ```{r wisdom-10}
 question_text(NULL,
-  message = "    > show_file(\"analysis.qmd\", chunk = \"Last\")\n    ```{r}\n    #| cache: true\n    x <- shaming |>\n      mutate(civ_engage = primary_00 + primary_02 + primary_04 +\n                          general_00 + general_02 + general_04) |>\n      select(primary_06, treatment, sex, age, civ_engage) |>\n      drop_na() |>\n      mutate(voter_class = factor(case_when(\n        civ_engage %in% c(5, 6) ~ \"Always Vote\",\n        civ_engage %in% c(3, 4) ~ \"Sometimes Vote\",\n        civ_engage %in% c(1, 2) ~ \"Rarely Vote\"),\n        levels = c(\"Rarely Vote\", \"Sometimes Vote\", \"Always Vote\"))) |>\n      mutate(voted = as.factor(primary_06)) |>\n      drop_na()\n    ```",
   answer(NULL, correct = TRUE),
-  allow_retry = FALSE,
+  allow_retry = TRUE,
+  try_again_button = "Edit Answer",
   incorrect = NULL,
-  rows = 14)
+  rows = 8)
+```
+
+###
+
+```{r wisdom-10-test}
+#| echo: true
+x <- shaming |>
+  mutate(civ_engage = primary_00 + primary_02 + primary_04 +
+                      general_00 + general_02 + general_04) |>
+  select(primary_06, treatment, sex, age, civ_engage) |>
+  drop_na() |>
+  mutate(voter_class = factor(case_when(
+    civ_engage %in% c(5, 6) ~ "Always Vote",
+    civ_engage %in% c(3, 4) ~ "Sometimes Vote",
+    civ_engage %in% c(1, 2) ~ "Rarely Vote"),
+    levels = c("Rarely Vote", "Sometimes Vote", "Always Vote"))) |>
+  mutate(voted = as.factor(primary_06)) |>
+  drop_na()
+head(x)
 ```
 
 ###
 
 Two things worth flagging: setting the `levels` of `voter_class` explicitly forces `Rarely Vote` to be the reference category in the regression (rather than alphabetical, which would put `Always Vote` first). And the second `drop_na()` after `case_when()` catches any voter with `civ_engage = 0`, who would otherwise be coded `NA` --- a deliberate choice, since voters with zero past elections are mostly newly registered and respond to GOTV very differently from the rest.
 
+### Exercise 11
+
+The pipeline that builds `x` runs every time you render. It's not slow at 344K rows, but `x` will be used by every later modeling exercise, so it earns its own cached create chunk.
+
+Refactor your chunk from Exercise 10 into two chunks. Move the `x <- ...` pipeline into its own create chunk with `#| cache: true`, and leave `head(x)` in the working chunk. Render. In the R Terminal, run `show_file("analysis.qmd")`. CP/CR.
+
+```{r wisdom-11}
+question_text(NULL,
+  answer(NULL, correct = TRUE),
+  allow_retry = TRUE,
+  try_again_button = "Edit Answer",
+  incorrect = NULL,
+  rows = 25)
+```
+
+###
+
+````
+```{r}
+#| cache: true
+x <- shaming |>
+  mutate(civ_engage = primary_00 + primary_02 + primary_04 +
+                      general_00 + general_02 + general_04) |>
+  select(primary_06, treatment, sex, age, civ_engage) |>
+  drop_na() |>
+  mutate(voter_class = factor(case_when(
+    civ_engage %in% c(5, 6) ~ "Always Vote",
+    civ_engage %in% c(3, 4) ~ "Sometimes Vote",
+    civ_engage %in% c(1, 2) ~ "Rarely Vote"),
+    levels = c("Rarely Vote", "Sometimes Vote", "Always Vote"))) |>
+  mutate(voted = as.factor(primary_06)) |>
+  drop_na()
+```
+
+```{r}
+head(x)
+```
+````
+
+###
+
 From this point on, every modeling step uses the cleaned tibble `x`, not raw `shaming`. Commit and push.
 
-### Exercise 11
+### Exercise 12
 
 Write the first two sentences of the summary paragraph. The first introduces the topic; the second introduces the data and the specific question.
 
-```{r wisdom-11}
+```{r wisdom-12}
 question_text(NULL,
   message = "Voter mobilization is a perennial campaign question: which messaging --- if any --- gets registered voters who would otherwise stay home to actually show up. Using the 344,084-voter Gerber-Green-Larimer 2006 randomized field experiment in Michigan, we estimate the average causal effect of the Neighbors postcard on the probability that a registered voter casts a ballot in the August 2006 primary.",
   answer(NULL, correct = TRUE),
@@ -1063,43 +1117,37 @@ The great advantage of randomization is that it guarantees unconfoundedness for 
 
 ### Exercise 12
 
-A statistical model consists of two parts: the probability family and the link function. The probability family is the distribution which generates the randomness in our data; the link function is the mathematical formula connecting the data to the unknown parameters.
-
-Add `library(tidymodels)` to the setup chunk in `analysis.qmd` and render.
-
-CP/CR.
+A statistical model consists of two parts: the probability family and the link function. The probability family is the probability distribution that generates the randomness in our data. Our outcome variable is `voted` --- binary. What probability family should we use?
 
 ```{r justice-12}
 question_text(NULL,
+  message = "Bernoulli: $Y \\sim \\text{Bernoulli}(\\rho)$, where $\\rho$ is the probability the voter cast a ballot.",
   answer(NULL, correct = TRUE),
-  allow_retry = TRUE,
-  try_again_button = "Edit Answer",
+  allow_retry = FALSE,
   incorrect = NULL,
-  rows = 3)
+  rows = 4)
 ```
 
 ###
 
-Our outcome variable `voted` is binary. The probability family is therefore Bernoulli: $Y \sim \text{Bernoulli}(\rho)$, where $\rho$ is the probability the voter cast a ballot.
+While you're here, also add `library(tidymodels)` to the setup chunk in `analysis.qmd` so the rest of Courage can call `logistic_reg()` and `fit()`.
 
 ### Exercise 13
 
-Add `library(broom)` to the setup chunk in `analysis.qmd` and render.
-
-CP/CR.
+The link function is the mathematical formula that links our data to the unknown parameters. What is the link function for a binary outcome?
 
 ```{r justice-13}
 question_text(NULL,
+  message = "Logit: $\\log\\!\\big(\\rho/(1-\\rho)\\big) = \\beta_0 + \\beta_1 X_1 + \\cdots + \\beta_n X_n$. Our model will be a logistic regression with an interaction term.",
   answer(NULL, correct = TRUE),
-  allow_retry = TRUE,
-  try_again_button = "Edit Answer",
+  allow_retry = FALSE,
   incorrect = NULL,
-  rows = 3)
+  rows = 4)
 ```
 
 ###
 
-The link function for a binary outcome is the logit: $\log\!\big(\rho/(1-\rho)\big) = \beta_0 + \beta_1 X_1 + \cdots + \beta_n X_n$. Our model will be a logistic regression with an interaction term.
+While you're here, also add `library(broom)` to the setup chunk in `analysis.qmd` so we can call `tidy()` on the fitted model in Courage.
 
 ### Exercise 14
 
@@ -1429,32 +1477,9 @@ In an interaction model, the main effect of `treatment` is not *the* treatment e
 
 ### Exercise 9
 
-We've settled on the final fit. In `analysis.qmd`, add a cached code chunk that assigns the result of `logistic_reg(engine = "glm") |> fit(voted ~ age + sex + treatment*voter_class, data = x)` to `fit_shaming`. Render. In the R Terminal, run:
-
-```
-show_file("analysis.qmd", chunk = "Last")
-```
-
-CP/CR.
+We've settled on the final fit. In `analysis.qmd`, add a new code chunk that assigns the result of `logistic_reg(engine = "glm") |> fit(voted ~ age + sex + treatment*voter_class, data = x)` to `fit_shaming`, then on the next line prints `fit_shaming`. Render. Copy the printed model summary from the rendered HTML below.
 
 ```{r courage-9}
-question_text(NULL,
-  message = "    > show_file(\"analysis.qmd\", chunk = \"Last\")\n    ```{r}\n    #| cache: true\n    fit_shaming <- logistic_reg(engine = \"glm\") |>\n      fit(voted ~ age + sex + treatment*voter_class, data = x)\n    ```",
-  answer(NULL, correct = TRUE),
-  allow_retry = FALSE,
-  incorrect = NULL,
-  rows = 8)
-```
-
-###
-
-`#| cache: true` tells Quarto to reuse the saved fit on subsequent renders. Even at 344K rows our fit takes only about a second, but caching is the right habit to build for the heavier models you'll meet later in the curriculum.
-
-### Exercise 10
-
-Now print the fitted model. In `analysis.qmd`, add a chunk that names `fit_shaming` on its own line. Render. Copy the printed model summary from the rendered HTML.
-
-```{r courage-10}
 question_text(NULL,
   answer(NULL, correct = TRUE),
   allow_retry = TRUE,
@@ -1465,14 +1490,49 @@ question_text(NULL,
 
 ###
 
-```{r courage-10-test}
+```{r courage-9-test}
 #| echo: true
+fit_shaming <- logistic_reg(engine = "glm") |>
+  fit(voted ~ age + sex + treatment*voter_class, data = x)
 fit_shaming
 ```
 
 ###
 
 In data science, **we deal with words, math, and code, but the most important of these is code.**
+
+### Exercise 10
+
+Re-fitting the model on every render is wasteful --- even at 344K rows our fit takes a second or so, time worth saving. `fit_shaming` earns its own cached create chunk.
+
+Refactor your chunk from Exercise 9 into two chunks. Move the `fit_shaming <- ...` assignment into its own create chunk with `#| cache: true`, and leave `fit_shaming` (on its own line) in the working chunk. Render. In the R Terminal, run `show_file("analysis.qmd")`. CP/CR.
+
+```{r courage-10}
+question_text(NULL,
+  answer(NULL, correct = TRUE),
+  allow_retry = TRUE,
+  try_again_button = "Edit Answer",
+  incorrect = NULL,
+  rows = 15)
+```
+
+###
+
+````
+```{r}
+#| cache: true
+fit_shaming <- logistic_reg(engine = "glm") |>
+  fit(voted ~ age + sex + treatment*voter_class, data = x)
+```
+
+```{r}
+fit_shaming
+```
+````
+
+###
+
+`#| cache: true` tells Quarto to reuse the saved fit on subsequent renders. Caching is the right habit to build for the heavier models you'll meet later in the curriculum.
 
 ### Exercise 11
 
@@ -1686,8 +1746,21 @@ question_text(NULL,
   allow_retry = TRUE,
   try_again_button = "Edit Answer",
   incorrect = NULL,
-  rows = 3)
+  rows = 8)
 ```
+
+###
+
+````
+```{r}
+#| message: false
+library(tidyverse)
+library(primer.data)
+library(tidymodels)
+library(broom)
+library(marginaleffects)
+```
+````
 
 ###
 

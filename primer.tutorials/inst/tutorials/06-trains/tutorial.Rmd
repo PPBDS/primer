@@ -1044,41 +1044,37 @@ The great advantage of randomized assignment is that it guarantees unconfoundedn
 
 ### Exercise 12
 
-Add `library(tidymodels)` to the setup chunk in `analysis.qmd` and render.
-
-CP/CR.
+A statistical model consists of two parts: the probability family and the link function. The probability family is the probability distribution that generates the randomness in our data. Our outcome variable is `att_end` --- a continuous integer. What probability family should we use?
 
 ```{r justice-12}
 question_text(NULL,
+  message = "Normal: $Y \\sim N(\\mu, \\sigma^2)$. We treat `att_end` as continuous --- the integer values are a coarse measurement of an underlying attitude.",
   answer(NULL, correct = TRUE),
-  allow_retry = TRUE,
-  try_again_button = "Edit Answer",
+  allow_retry = FALSE,
   incorrect = NULL,
-  rows = 3)
+  rows = 4)
 ```
 
 ###
 
-Our outcome variable `att_end` is a continuous integer. The probability family is Normal: $Y \sim N(\mu, \sigma^2)$.
+While you're here, also add `library(tidymodels)` to the setup chunk in `analysis.qmd` so the rest of Courage can call `linear_reg()` and `fit()`.
 
 ### Exercise 13
 
-Add `library(broom)` to the setup chunk in `analysis.qmd` and render.
-
-CP/CR.
+The link function is the mathematical formula that links our data to the unknown parameters. What is the link function for a continuous outcome?
 
 ```{r justice-13}
 question_text(NULL,
+  message = "Linear: $\\mu = \\beta_0 + \\beta_1 X_1 + \\ldots$ Our model will be a linear regression with one binary covariate (the treatment).",
   answer(NULL, correct = TRUE),
-  allow_retry = TRUE,
-  try_again_button = "Edit Answer",
+  allow_retry = FALSE,
   incorrect = NULL,
-  rows = 3)
+  rows = 4)
 ```
 
 ###
 
-The link function for a continuous outcome is linear: $\mu = \beta_0 + \beta_1 X_1 + \ldots$ Our model will be a linear regression with one binary covariate (the treatment).
+While you're here, also add `library(broom)` to the setup chunk in `analysis.qmd` so we can call `tidy()` on the fitted model in Courage.
 
 ### Exercise 14
 
@@ -1357,36 +1353,9 @@ Notice the language for `age`: *"when we compare two groups of commuters... in t
 
 ### Exercise 7
 
-We've settled on the final fit. In `analysis.qmd`, add a cached code chunk that assigns the result of `linear_reg(engine = "lm") |> fit(att_end ~ treatment, data = trains)` to `fit_att`. Render. In the R Terminal, run `show_file("analysis.qmd", chunk = "Last")`. CP/CR.
+We've settled on the final fit. In `analysis.qmd`, add a new code chunk that assigns the result of `linear_reg(engine = "lm") |> fit(att_end ~ treatment, data = trains)` to `fit_att`, then on the next line prints `fit_att`. Render. Copy the printed model summary from the rendered HTML below.
 
 ```{r courage-7}
-question_text(NULL,
-  answer(NULL, correct = TRUE),
-  allow_retry = TRUE,
-  try_again_button = "Edit Answer",
-  incorrect = NULL,
-  rows = 8)
-```
-
-###
-
-````
-```{r}
-#| cache: true
-fit_att <- linear_reg(engine = "lm") |>
-  fit(att_end ~ treatment, data = trains)
-```
-````
-
-###
-
-`#| cache: true` tells Quarto to store the fitted object and reload it on subsequent renders rather than re-fitting every time. The next render --- without changing this chunk --- just loads the saved fit.
-
-### Exercise 8
-
-Now print the fitted model. In `analysis.qmd`, add a chunk that names `fit_att` on its own line. Render. Copy the printed model summary from the rendered HTML.
-
-```{r courage-8}
 question_text(NULL,
   answer(NULL, correct = TRUE),
   allow_retry = TRUE,
@@ -1397,14 +1366,49 @@ question_text(NULL,
 
 ###
 
-```{r courage-8-test}
+```{r courage-7-test}
 #| echo: true
+fit_att <- linear_reg(engine = "lm") |>
+  fit(att_end ~ treatment, data = trains)
 fit_att
 ```
 
 ###
 
 In data science, **we deal with words, math, and code, but the most important of these is code.**
+
+### Exercise 8
+
+Re-fitting the model on every render is wasteful --- the fit's the same each time. `fit_att` earns its own cached create chunk.
+
+Refactor your chunk from Exercise 7 into two chunks. Move the `fit_att <- ...` assignment into its own create chunk with `#| cache: true`, and leave `fit_att` (on its own line) in the working chunk. Render. In the R Terminal, run `show_file("analysis.qmd")`. CP/CR.
+
+```{r courage-8}
+question_text(NULL,
+  answer(NULL, correct = TRUE),
+  allow_retry = TRUE,
+  try_again_button = "Edit Answer",
+  incorrect = NULL,
+  rows = 15)
+```
+
+###
+
+````
+```{r}
+#| cache: true
+fit_att <- linear_reg(engine = "lm") |>
+  fit(att_end ~ treatment, data = trains)
+```
+
+```{r}
+fit_att
+```
+````
+
+###
+
+`#| cache: true` tells Quarto to store the fitted object and reload it from disk on subsequent renders rather than re-fitting every time. The next render --- without changing this chunk --- just loads the saved fit.
 
 ### Exercise 9
 
@@ -1556,8 +1560,21 @@ question_text(NULL,
   allow_retry = TRUE,
   try_again_button = "Edit Answer",
   incorrect = NULL,
-  rows = 3)
+  rows = 8)
 ```
+
+###
+
+````
+```{r}
+#| message: false
+library(tidyverse)
+library(primer.data)
+library(tidymodels)
+library(broom)
+library(marginaleffects)
+```
+````
 
 ###
 

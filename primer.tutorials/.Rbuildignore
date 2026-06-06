@@ -16,3 +16,4 @@
 ^\.Rhistory$
 ^\.claude$
 ^data-raw$
+^CLAUDE\.md$

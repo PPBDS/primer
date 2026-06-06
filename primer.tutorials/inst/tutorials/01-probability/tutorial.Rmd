@@ -67,7 +67,7 @@ This tutorial supports the [Probability](https://ppbds.github.io/primer/01-proba
 
 The world confronts us. Make decisions we must.
 
-The Probability chapter starts from the most basic question: where does the data we see come from? In any data analysis, three different probability distributions are in play. The first is the *PDF of the data* --- the distribution of the values we have actually observed, often shown as a histogram. The second is the *PDF of the data generating mechanism* --- the unobservable process the data came from, the "true" distribution we wish we knew. The third is the *PDF over data generating mechanisms* --- the set of mechanisms that are still consistent with what we have seen, narrower when we have more data and wider when we have less. Data analysis is the act of using the first to learn about the second, with the third tracking how confident we should be. This tutorial walks through the idea by hand with a simple example: rolling two dice.
+In any data analysis, three different probability distributions are in play. The first is the *PDF of the data* --- the distribution of the values we have actually observed, often shown as a histogram. The second is the *PDF of the data generating mechanism* --- the unobservable process the data came from, the "true" distribution we wish we knew. The third is the *PDF over possible data generating mechanisms* --- the set of mechanisms that are still consistent with what we have seen. Data analysis is the act of using the first to learn about the second, with the third tracking how confident we should be. This tutorial walks through some of these ideas by hand with a simple example: rolling two dice.
 
 ### Exercise 1
 
@@ -86,7 +86,14 @@ question_text(NULL,
 
 ###
 
-A *probability* is a number between 0 and 1 expressing how confident we are about something. The first kind of probability we will meet is the chance of a single die landing on a particular face --- a clean 1/6 if the die is fair. By the end of this section we will be asking probabilities of more complicated things, like *"is the die fair at all?"*
+```
+analysis_files
+
+```
+
+###
+
+A *probability* is a number between 0 and 1 expressing how confident we are about something. The first kind of probability we will meet is the chance of a single die landing on a particular face --- a clean 1/6 if the die is fair.
 
 ### Exercise 2
 
@@ -110,6 +117,15 @@ question_text(NULL,
 
 ###
 
+````
+```{r}
+#| message: false
+library(tidyverse)
+```
+````
+
+###
+
 "Random" in a computer is not really random --- it is a long deterministic sequence designed to *look* random. The `set.seed()` calls you will see throughout this tutorial pin the simulator to a known starting point, so the histograms in your rendered HTML will line up exactly with the ones we show as our version. Without `set.seed()`, every render would give different results --- still valid, just not reproducible.
 
 
@@ -120,9 +136,9 @@ When we look at a histogram of an experiment's results, what we are really askin
 
 ### Exercise 1
 
-A finished `analysis.qmd` has a setup chunk (libraries), one working chunk where the current analysis is being built and revised, and --- when an artifact gets reused across exercises --- one or more "create" chunks that define those artifacts once and cache them. We'll need a reusable function for throwing two dice.
+A finished `analysis.qmd` has a setup chunk (libraries) and --- as the analysis grows --- a small number of working chunks plus, when an artifact will be reused across exercises, one or two "create" chunks dedicated to those artifacts. We will need a reusable function for throwing two dice. We will build it the natural way: write the function and use it in one chunk first, and refactor for caching in the next exercise.
 
-In `analysis.qmd`, add a cached "create" chunk that defines a function `throw_dice(n, weights = rep(1/6, 6))` that simulates `n` rolls of two dice (with the per-face probability vector `weights` defaulting to a fair die) and returns the sum of each pair as a numeric vector of length `n`. Render. In the R Terminal, run `show_file("analysis.qmd", chunk = "Last")`. CP/CR.
+In `analysis.qmd`, add a new code chunk that defines a function `throw_dice(n, weights = rep(1/6, 6))` simulating `n` rolls of two dice (with the per-face probability vector `weights` defaulting to a fair die) and returning the sum of each pair as a numeric vector of length `n`. In the same chunk, set the seed with `set.seed(10)` and call `throw_dice(5)`. Render. Copy the printed five-number vector from the rendered HTML below.
 
 ```{r the-data-generating-mechanism-1}
 question_text(NULL,
@@ -130,7 +146,7 @@ question_text(NULL,
   allow_retry = TRUE,
   try_again_button = "Edit Answer",
   incorrect = NULL,
-  rows = 10)
+  rows = 2)
 ```
 
 ###
@@ -142,15 +158,19 @@ throw_dice <- function(n = 1, weights = rep(1/6, 6)) {
   d2 <- sample(1:6, n, replace = TRUE, prob = weights)
   d1 + d2
 }
+set.seed(10)
+throw_dice(5)
 ```
 
 ###
 
-The `weights` argument lets us later swap a fair die for an unfair one without redefining the function. Caching the chunk (`#| cache: true`) means Quarto won't re-source the function on every render --- a tiny benefit here, but the discipline matters for the much heavier model fits you'll meet in later tutorials.
+The five sums you see are not the "true" probabilities of anything --- they are just five draws from the *data generating mechanism* (DGM) that produced them. The DGM here is *roll two fair dice and add the faces*; the data is the five-number vector. With only five rolls, almost any DGM could have produced the same vector. Knowing the truth (fair dice, sum from 2 to 12 with a peak at 7) does not by itself tell us anything about how clearly that truth will show up in a small sample --- and in a real problem we would not know the truth at all. The `weights` argument lets us later swap a fair die for an unfair one without redefining the function.
 
 ### Exercise 2
 
-Now exercise the function. In a new working chunk in `analysis.qmd`, set the seed with `set.seed(10)` and call `throw_dice(5)`. Render. Copy the printed five-number vector from the rendered HTML below.
+`throw_dice()` will be called from many later exercises, so it earns its own cached "create" chunk: a chunk that defines the function once and reuses the saved definition on every subsequent render.
+
+Refactor your chunk from Exercise 1 into two chunks. Remove the `set.seed(10)` and `throw_dice(5)` lines from the chunk that defines `throw_dice()`, leaving only the function definition, and add `#| cache: true` to that chunk's options. Then add a new working chunk below it containing `set.seed(10)` and `throw_dice(5)`. Render. In the R Terminal, run `show_file("analysis.qmd")`. CP/CR.
 
 ```{r the-data-generating-mechanism-2}
 question_text(NULL,
@@ -158,20 +178,30 @@ question_text(NULL,
   allow_retry = TRUE,
   try_again_button = "Edit Answer",
   incorrect = NULL,
-  rows = 2)
+  rows = 15)
 ```
 
 ###
 
-```{r the-data-generating-mechanism-2-test}
-#| echo: true
+````
+```{r}
+#| cache: true
+throw_dice <- function(n = 1, weights = rep(1/6, 6)) {
+  d1 <- sample(1:6, n, replace = TRUE, prob = weights)
+  d2 <- sample(1:6, n, replace = TRUE, prob = weights)
+  d1 + d2
+}
+```
+
+```{r}
 set.seed(10)
 throw_dice(5)
 ```
+````
 
 ###
 
-The five sums you see are not the "true" probabilities of anything --- they are just five draws from the *data generating mechanism* (DGM) that produced them. The DGM here is *roll two fair dice and add the faces*; the data is the five-number vector. With only five rolls, almost any DGM could have produced the same vector. Knowing the truth (fair dice, sum from 2 to 12 with a peak at 7) does not by itself tell us anything about how clearly that truth will show up in a small sample --- and in a real problem we would not know the truth at all.
+`#| cache: true` tells Quarto to store the function and reload it from disk on subsequent renders rather than re-defining it from scratch. The benefit is tiny for a four-line function but huge for the model fits you will meet in later tutorials --- the same discipline applies, so we get the habit in early. Cached objects live in an `analysis_cache/` directory that Quarto creates next to your QMD; we add that directory to `.gitignore` in a moment.
 
 ### Exercise 3
 
@@ -496,38 +526,11 @@ Rolling a 6 is **1.8 times more likely** under loaded than under fair; rolling a
 
 ### Exercise 5
 
-The next few exercises combine many per-roll likelihood ratios into a single posterior probability. The cleanest way to do that is to *sum the logs* (not multiply the ratios): logs add instead of multiply, which is numerically stabler over hundreds of rolls and easier to plot. We will reuse this calculation, so it earns its own helper.
+The next few exercises combine many per-roll likelihood ratios into a single posterior probability. The cleanest way to do that is to *sum the logs* (not multiply the ratios): logs add instead of multiply, which is numerically stabler over hundreds of rolls and easier to plot. With a 50/50 prior and independent rolls, the math is simple: sum the per-roll log likelihood ratios, then convert the resulting log-odds to a probability via $1 / (1 + e^{-\text{log-odds}})$.
 
-In `analysis.qmd`, add a cached create chunk that defines a function `log_lr(rolls)` taking a vector of rolls (each value 1-6) and returning a vector of per-roll log likelihood ratios of loaded over fair, using the loaded weights (P(6) = 0.30, others 0.14). Render. In the R Terminal, run `show_file("analysis.qmd", chunk = "Last")`. CP/CR.
+Modify the working chunk to define a helper function `log_lr(rolls)` that, given a vector of rolls (each value 1-6), returns a vector of per-roll log likelihood ratios of loaded over fair (using the loaded weights P(6) = 0.30, others 0.14). Then in the same chunk, use `log_lr()` on `rolls_20` from Exercise 2 to print the posterior probability that the die is loaded, rounded to four decimals. Render. Copy the printed number from the rendered HTML below.
 
 ```{r measuring-surprise-5}
-question_text(NULL,
-  answer(NULL, correct = TRUE),
-  allow_retry = TRUE,
-  try_again_button = "Edit Answer",
-  incorrect = NULL,
-  rows = 10)
-```
-
-###
-
-```{r measuring-surprise-5-test}
-#| echo: true
-log_lr <- function(rolls) {
-  loaded <- c(0.14, 0.14, 0.14, 0.14, 0.14, 0.30)
-  log(loaded[rolls] / (1/6))
-}
-```
-
-###
-
-The function takes a vector of roll outcomes and returns the per-roll log of the likelihood ratio: a positive number when the face is a 6 (more likely under loaded), and a slightly negative number otherwise. `sum(log_lr(rolls))` is the cumulative log-odds in favor of loaded; the posterior probability is then $1 / (1 + e^{-\text{log-odds}})$. Caching keeps Quarto from re-defining the helper on every render.
-
-### Exercise 6
-
-Now combine the 20-roll evidence into a single posterior probability. With a 50/50 prior and independent rolls, the math is simple: sum the per-roll log likelihood ratios, then convert the resulting log-odds to a probability via $1 / (1 + e^{-\text{log-odds}})$. Modify the working chunk to take `rolls_20` from Exercise 2, use the `log_lr()` helper, and print the posterior probability that the die is loaded, rounded to four decimals. Render. Copy the printed number from the rendered HTML below.
-
-```{r measuring-surprise-6}
 question_text(NULL,
   answer(NULL, correct = TRUE),
   allow_retry = TRUE,
@@ -538,8 +541,12 @@ question_text(NULL,
 
 ###
 
-```{r measuring-surprise-6-test}
+```{r measuring-surprise-5-test}
 #| echo: true
+log_lr <- function(rolls) {
+  loaded <- c(0.14, 0.14, 0.14, 0.14, 0.14, 0.30)
+  log(loaded[rolls] / (1/6))
+}
 set.seed(10)
 rolls_20 <- sample(1:6, 20, replace = TRUE,
                    prob = c(0.14, 0.14, 0.14, 0.14, 0.14, 0.30))
@@ -551,9 +558,48 @@ round(posterior_loaded_20, 4)
 
 Twenty rolls put our posterior at about 0.86 --- meaningfully past 50/50, but well short of the 95% threshold we set for ourselves. Our intuition from the bar chart in Exercise 2 ("looks loaded, but I would not bet") corresponds, on the number line, to "0.86." The picture and the number now agree, but the number is the thing you can act on.
 
+### Exercise 6
+
+`log_lr()` will be reused across the next three exercises, so it earns its own cached create chunk.
+
+Refactor your working chunk into two chunks. Move the `log_lr` definition into its own create chunk (with `#| cache: true`) and leave the `rolls_20` regeneration plus the posterior calculation in the working chunk. Render. In the R Terminal, run `show_file("analysis.qmd")`. CP/CR.
+
+```{r measuring-surprise-6}
+question_text(NULL,
+  answer(NULL, correct = TRUE),
+  allow_retry = TRUE,
+  try_again_button = "Edit Answer",
+  incorrect = NULL,
+  rows = 15)
+```
+
+###
+
+````
+```{r}
+#| cache: true
+log_lr <- function(rolls) {
+  loaded <- c(0.14, 0.14, 0.14, 0.14, 0.14, 0.30)
+  log(loaded[rolls] / (1/6))
+}
+```
+
+```{r}
+set.seed(10)
+rolls_20 <- sample(1:6, 20, replace = TRUE,
+                   prob = c(0.14, 0.14, 0.14, 0.14, 0.14, 0.30))
+posterior_loaded_20 <- 1 / (1 + exp(-sum(log_lr(rolls_20))))
+round(posterior_loaded_20, 4)
+```
+````
+
+###
+
+`log_lr()` is now in its own create chunk: defined once, cached, reused by every later exercise without re-defining the function on every render. Same refactoring pattern as `throw_dice()` in the previous section --- and the model fits in later tutorials.
+
 ### Exercise 7
 
-Now do the same calculation for the 200-roll sample. Repeat Exercise 6 with `rolls_200` from Exercise 3, rounded to six decimals. Render. Copy the printed number from the rendered HTML below.
+Now do the same calculation for the 200-roll sample. Repeat Exercise 5's posterior calculation with `rolls_200` from Exercise 3, rounded to six decimals. Render. Copy the printed number from the rendered HTML below.
 
 ```{r measuring-surprise-7}
 question_text(NULL,
@@ -686,6 +732,42 @@ question_text(NULL,
 
 ###
 
+````
+---
+title: "Probability"
+author: "<your name>"
+execute:
+  echo: false
+---
+
+```{r}
+#| message: false
+library(tidyverse)
+```
+
+```{r}
+#| cache: true
+throw_dice <- function(n = 1, weights = rep(1/6, 6)) {
+  d1 <- sample(1:6, n, replace = TRUE, prob = weights)
+  d2 <- sample(1:6, n, replace = TRUE, prob = weights)
+  d1 + d2
+}
+```
+
+```{r}
+#| cache: true
+log_lr <- function(rolls) {
+  loaded <- c(0.14, 0.14, 0.14, 0.14, 0.14, 0.30)
+  log(loaded[rolls] / (1/6))
+}
+```
+
+(The final working chunk from Measuring Surprise: 1,000 simulated runs
+of rolls-to-95%-posterior, plotted as a histogram.)
+````
+
+###
+
 The published version of your QMD is the one your instructor --- and your future self --- will look at most closely. Make sure it tells a clean story end to end: the histograms in Topic 1, the loaded-die plots in Topic 2, the time-series of belief, the stopping-time distribution.
 
 ### Exercise 2
@@ -709,6 +791,12 @@ question_text(NULL,
 
 ###
 
+```
+https://<your-github-username>.github.io/probability/analysis.html
+```
+
+###
+
 This URL is now a permanent, shareable record of your probability work --- live data science in the open.
 
 ### Exercise 3
@@ -722,6 +810,12 @@ question_text(NULL,
   try_again_button = "Edit Answer",
   incorrect = NULL,
   rows = 3)
+```
+
+###
+
+```
+https://github.com/<your-github-username>/probability
 ```
 
 ###

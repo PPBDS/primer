@@ -877,43 +877,37 @@ Stability looks across time periods; representativeness looks within time period
 
 ### Exercise 11
 
-A statistical model consists of two parts: the probability family and the link function. The probability family is the distribution which generates the randomness in our data; the link function is the mathematical formula connecting the data to the unknown parameters.
-
-Add `library(tidymodels)` to the setup chunk in `analysis.qmd` and render.
-
-CP/CR.
+A statistical model consists of two parts: the probability family and the link function. The probability family is the probability distribution that generates the randomness in our data. Our outcome variable is `smoke` --- binary. What probability family should we use?
 
 ```{r justice-11}
 question_text(NULL,
+  message = "Bernoulli: $Y \\sim \\text{Bernoulli}(\\rho)$, where $\\rho$ is the probability that `smoke = \"Yes\"` for a given adult.",
   answer(NULL, correct = TRUE),
-  allow_retry = TRUE,
-  try_again_button = "Edit Answer",
+  allow_retry = FALSE,
   incorrect = NULL,
-  rows = 3)
+  rows = 4)
 ```
 
 ###
 
-Our outcome variable `smoke` is binary. The probability family is therefore Bernoulli: $Y \sim \text{Bernoulli}(\rho)$, where $\rho$ is the probability that `smoke = "Yes"` for a given adult.
+While you're here, also add `library(tidymodels)` to the setup chunk in `analysis.qmd` so the rest of Courage can call `logistic_reg()` and `fit()`.
 
 ### Exercise 12
 
-Add `library(broom)` to the setup chunk in `analysis.qmd` and render.
-
-CP/CR.
+The link function is the mathematical formula that links our data to the unknown parameters. What is the link function for a binary outcome?
 
 ```{r justice-12}
 question_text(NULL,
+  message = "Logit: $\\log\\!\\big(\\rho/(1-\\rho)\\big) = \\beta_0 + \\beta_1 X_1 + \\cdots + \\beta_n X_n$. Our model will be a logistic regression --- the first one in the curriculum.",
   answer(NULL, correct = TRUE),
-  allow_retry = TRUE,
-  try_again_button = "Edit Answer",
+  allow_retry = FALSE,
   incorrect = NULL,
-  rows = 3)
+  rows = 4)
 ```
 
 ###
 
-The link function for a binary outcome is the logit: $\log\!\big(\rho/(1-\rho)\big) = \beta_0 + \beta_1 X_1 + \cdots + \beta_n X_n$. Our model will be a logistic regression --- the first one in the curriculum.
+While you're here, also add `library(broom)` to the setup chunk in `analysis.qmd` so we can call `tidy()` on the fitted model in Courage.
 
 ### Exercise 13
 
@@ -1195,36 +1189,9 @@ The more variables we add, the harder it gets to interpret any one coefficient -
 
 ### Exercise 8
 
-We've settled on the final fit. In `analysis.qmd`, add a cached code chunk that assigns the result of `logistic_reg(engine = "glm") |> fit(smoke ~ age + sex, data = smokes)` to `fit_smokes`. Render. In the R Terminal, run `show_file("analysis.qmd", chunk = "Last")`. CP/CR.
+We've settled on the final fit. In `analysis.qmd`, add a new code chunk that assigns the result of `logistic_reg(engine = "glm") |> fit(smoke ~ age + sex, data = smokes)` to `fit_smokes`, then on the next line prints `fit_smokes`. Render. Copy the printed model summary from the rendered HTML below.
 
 ```{r courage-8}
-question_text(NULL,
-  answer(NULL, correct = TRUE),
-  allow_retry = TRUE,
-  try_again_button = "Edit Answer",
-  incorrect = NULL,
-  rows = 8)
-```
-
-###
-
-````
-```{r}
-#| cache: true
-fit_smokes <- logistic_reg(engine = "glm") |>
-  fit(smoke ~ age + sex, data = smokes)
-```
-````
-
-###
-
-`#| cache: true` tells Quarto to store the fitted object and reload it on subsequent renders rather than re-fitting every time.
-
-### Exercise 9
-
-Now print the fitted model. In `analysis.qmd`, add a chunk that names `fit_smokes` on its own line. Render. Copy the printed model summary from the rendered HTML.
-
-```{r courage-9}
 question_text(NULL,
   answer(NULL, correct = TRUE),
   allow_retry = TRUE,
@@ -1235,14 +1202,49 @@ question_text(NULL,
 
 ###
 
-```{r courage-9-test}
+```{r courage-8-test}
 #| echo: true
+fit_smokes <- logistic_reg(engine = "glm") |>
+  fit(smoke ~ age + sex, data = smokes)
 fit_smokes
 ```
 
 ###
 
 Logistic-regression coefficients live on the log-odds scale, which is not a scale anyone reads directly. A coefficient of +0.05 on `age` means that the *log* of the *odds* of being an ever-smoker goes up by 0.05 for each additional year of age --- a statement most people cannot intuit. The real interpretation happens in Temperance, where we use `marginaleffects::predictions()` to turn the log-odds back into probabilities.
+
+### Exercise 9
+
+Re-fitting the model on every render is wasteful. `fit_smokes` earns its own cached create chunk.
+
+Refactor your chunk from Exercise 8 into two chunks. Move the `fit_smokes <- ...` assignment into its own create chunk with `#| cache: true`, and leave `fit_smokes` (on its own line) in the working chunk. Render. In the R Terminal, run `show_file("analysis.qmd")`. CP/CR.
+
+```{r courage-9}
+question_text(NULL,
+  answer(NULL, correct = TRUE),
+  allow_retry = TRUE,
+  try_again_button = "Edit Answer",
+  incorrect = NULL,
+  rows = 15)
+```
+
+###
+
+````
+```{r}
+#| cache: true
+fit_smokes <- logistic_reg(engine = "glm") |>
+  fit(smoke ~ age + sex, data = smokes)
+```
+
+```{r}
+fit_smokes
+```
+````
+
+###
+
+`#| cache: true` tells Quarto to store the fitted object and reload it on subsequent renders rather than re-fitting every time.
 
 ### Exercise 10
 
@@ -1417,8 +1419,21 @@ question_text(NULL,
   allow_retry = TRUE,
   try_again_button = "Edit Answer",
   incorrect = NULL,
-  rows = 3)
+  rows = 8)
 ```
+
+###
+
+````
+```{r}
+#| message: false
+library(tidyverse)
+library(primer.data)
+library(tidymodels)
+library(broom)
+library(marginaleffects)
+```
+````
 
 ###
 

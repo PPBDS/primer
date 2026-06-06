@@ -337,7 +337,7 @@ The Preceptor Table only includes the variables mentioned in the question; in ca
 
 ### Exercise 3
 
-Before we explore the data, we need to prepare it. In `analysis.qmd`, add a cached code chunk that builds `x` --- the analysis tibble we will work from for the rest of this tutorial --- by selecting `treatment`, `t2_health_exp_3m`, `age`, `sex`, and `education` from `sps`, dropping any rows with missing values, and recoding `treatment` as a factor with `"Not enrolled"` as the reference level. Render. In the R Terminal, run `show_file("analysis.qmd", chunk = "Last")`. CP/CR.
+Before we explore the data, we need to prepare it. In `analysis.qmd`, add a new code chunk that builds `x` --- the analysis tibble we will work from for the rest of this tutorial --- by selecting `treatment`, `t2_health_exp_3m`, `age`, `sex`, and `education` from `sps`, dropping any rows with missing values, and recoding `treatment` as a factor with `"Not enrolled"` as the reference level. Then on the next line, print `head(x)`. Render. Copy the printed first few rows from the rendered HTML below.
 
 ```{r wisdom-3}
 question_text(NULL,
@@ -345,7 +345,38 @@ question_text(NULL,
   allow_retry = TRUE,
   try_again_button = "Edit Answer",
   incorrect = NULL,
-  rows = 10)
+  rows = 8)
+```
+
+###
+
+```{r wisdom-3-test}
+#| echo: true
+x <- sps |>
+  select(treatment, t2_health_exp_3m, age, sex, education) |>
+  drop_na() |>
+  mutate(treatment = factor(if_else(treatment == 1, "Enrolled", "Not enrolled"),
+                            levels = c("Not enrolled", "Enrolled")))
+head(x)
+```
+
+###
+
+Recoding `treatment` as a factor with `"Not enrolled"` as the reference level makes the regression coefficient in Courage read as *the effect of enrollment relative to no enrollment*, which is the direction we will ultimately want.
+
+### Exercise 4
+
+`x` will be used by every later modeling exercise, so it earns its own cached create chunk.
+
+Refactor your chunk from Exercise 3 into two chunks. Move the `x <- ...` pipeline into its own create chunk with `#| cache: true`, and leave `head(x)` in the working chunk. Render. In the R Terminal, run `show_file("analysis.qmd")`. CP/CR.
+
+```{r wisdom-4}
+question_text(NULL,
+  answer(NULL, correct = TRUE),
+  allow_retry = TRUE,
+  try_again_button = "Edit Answer",
+  incorrect = NULL,
+  rows = 20)
 ```
 
 ###
@@ -359,17 +390,21 @@ x <- sps |>
   mutate(treatment = factor(if_else(treatment == 1, "Enrolled", "Not enrolled"),
                             levels = c("Not enrolled", "Enrolled")))
 ```
+
+```{r}
+head(x)
+```
 ````
 
 ###
 
 `#| cache: true` tells Quarto to store the result of the chunk on disk and reload it on subsequent renders, so the data prep only runs once. From here on, any later chunk in your QMD that uses `x` will use the cached copy --- which is what makes the rest of the tutorial fast to re-render.
 
-### Exercise 4
+### Exercise 5
 
 Look at how `t2_health_exp_3m` differs between the treatment and control groups. Write R code that plots `t2_health_exp_3m` by `treatment` as a jitter plot, with `treatment` on the x-axis and the outcome on the y-axis (capped at 5000 pesos so the long tail doesn't crush the plot), plus a point showing the group mean. Paste the code below.
 
-```{r wisdom-4}
+```{r wisdom-5}
 question_text(NULL,
   message = "    x |>\n      filter(t2_health_exp_3m <= 5000) |>\n      ggplot(aes(x = treatment, y = t2_health_exp_3m)) +\n      geom_jitter(width = 0.2, alpha = 0.4) +\n      stat_summary(fun = mean, geom = \"point\", size = 4, color = \"steelblue\") +\n      scale_y_continuous(labels = scales::label_dollar(prefix = \"$\")) +\n      labs(\n        title = \"Out-of-Pocket Spending by Enrollment Status\",\n        subtitle = \"Blue dot = group mean\",\n        x = \"Treatment\",\n        y = \"3-month spending (pesos)\",\n        caption = \"Source: King et al. (2009) Seguro Popular rollout via primer.data\"\n      ) +\n      theme_minimal()",
   answer(NULL, correct = TRUE),
@@ -400,11 +435,11 @@ x |>
   theme_minimal()
 ```
 
-### Exercise 5
+### Exercise 6
 
 Describe the key components of Preceptor Tables in general, without worrying about this specific problem. Use words like "units," "outcomes," and "covariates."
 
-```{r wisdom-5}
+```{r wisdom-6}
 question_text(NULL,
   message = "The rows of the Preceptor Table are the units. The outcome is at least one of the columns. If the problem is causal, there will be at least two (potential) outcome columns. The other columns are covariates. If the problem is causal, at least one of the covariates will be considered a treatment.",
   answer(NULL, correct = TRUE),
@@ -417,11 +452,11 @@ question_text(NULL,
 
 This problem is causal, so one of the covariates is a treatment. In our problem, the treatment is `treatment` --- whether a household had enrolled in Seguro Popular by the follow-up survey. There is a potential outcome for each of the two possible values of the treatment.
 
-### Exercise 6
+### Exercise 7
 
 What are the units for this problem?
 
-```{r wisdom-6}
+```{r wisdom-7}
 question_text(NULL,
   message = "Each row is one household in the universe of households eligible for Seguro Popular at the time of the evaluation (2005--06). The original survey covered about 50,000 households across 74 randomized communities; our analysis sample is the 27,569-row `sps` tibble of follow-up survey records, restricted to households with complete data on treatment, follow-up spending, age, sex, and education.",
   answer(NULL, correct = TRUE),
@@ -434,11 +469,11 @@ question_text(NULL,
 
 Specifying the unit forces a question precise enough to answer. We model households here, but a policy maker really cares about aggregate consequences across families.
 
-### Exercise 7
+### Exercise 8
 
 What is the outcome variable for this problem?
 
-```{r wisdom-7}
+```{r wisdom-8}
 question_text(NULL,
   message = "Keep track of two outcome variables: the one in our Preceptor Table and the one in our data. In this case, both are `t2_health_exp_3m` --- the household's total out-of-pocket health spending over the three months prior to the follow-up survey, in Mexican pesos. The variable is bounded below by zero and has a long right tail (most households spend little; a few spend a great deal).",
   answer(NULL, correct = TRUE),
@@ -451,11 +486,11 @@ question_text(NULL,
 
 The outcome we really care about --- *"did enrollment relieve financial strain on Mexican families?"* --- is fuzzier than what `t2_health_exp_3m` measures. The variable captures pesos out the door but not, say, foregone care or borrowing.
 
-### Exercise 8
+### Exercise 9
 
 What is a covariate which you think might be useful for this problem, regardless of whether or not it might be included in the data?
 
-```{r wisdom-8}
+```{r wisdom-9}
 question_text(NULL,
   message = "Household income is a strong candidate. Lower-income households presumably benefit more in absolute terms from enrollment because they were spending a larger share of disposable income on health. We don't have direct income in our data, but `education` is a plausible proxy.",
   answer(NULL, correct = TRUE),
@@ -468,11 +503,11 @@ question_text(NULL,
 
 The term *covariates* is used in three ways: variables that *might* matter, variables we have data for, and variables we end up putting in the model. Most of the candidates a researcher lists never make it into the final model.
 
-### Exercise 9
+### Exercise 10
 
 What is the treatment for this problem?
 
-```{r wisdom-9}
+```{r wisdom-10}
 question_text(NULL,
   message = "The treatment is `treatment`, which takes the values `Enrolled` and `Not enrolled`. The Ministry of Health manipulated treatment by random assignment of the rollout to communities; our `treatment` variable records, at follow-up, whether a household's community had been treated.",
   answer(NULL, correct = TRUE),
@@ -485,11 +520,11 @@ question_text(NULL,
 
 A treatment is just another covariate which, for the purposes of this specific problem, we are assuming can be manipulated. Because the assignment was randomized, the *can* in *"can be manipulated"* is real here, not hypothetical.
 
-### Exercise 10
+### Exercise 11
 
 What moment in time does the Preceptor Table refer to?
 
-```{r wisdom-10}
+```{r wisdom-11}
 question_text(NULL,
   message = "The follow-up survey window in 2005--06: roughly ten months after the rollout began. Our outcome (`t2_health_exp_3m`) refers to the three months before that follow-up moment.",
   answer(NULL, correct = TRUE),
@@ -502,11 +537,11 @@ question_text(NULL,
 
 A Preceptor Table can never really refer to an exact instant in time. The follow-up was a survey window, not a single moment.
 
-### Exercise 11
+### Exercise 12
 
 Describe in words the Preceptor Table for this problem.
 
-```{r wisdom-11}
+```{r wisdom-12}
 question_text(NULL,
   message = "The Preceptor Table has four columns: one identifying each household, two potential-outcome columns (`Spending if Enrolled` and `Spending if Not Enrolled`), and one treatment column (`Treatment`). Each row represents one household at the time of the Seguro Popular follow-up survey. For each household, only one potential outcome is observable; the other --- the counterfactual --- is unknown, and the Preceptor Table marks it as such.",
   answer(NULL, correct = TRUE),
@@ -609,11 +644,11 @@ cat(
 )
 ```
 
-### Exercise 12
+### Exercise 13
 
 Take a moment to confirm the structure of our analysis sample. In `analysis.qmd`, add a chunk that runs `x |> count(treatment)`. Render. Copy the printed tibble from the rendered HTML.
 
-```{r wisdom-12}
+```{r wisdom-13}
 question_text(NULL,
   answer(NULL, correct = TRUE),
   allow_retry = TRUE,
@@ -624,7 +659,7 @@ question_text(NULL,
 
 ###
 
-```{r wisdom-12-test}
+```{r wisdom-13-test}
 #| echo: true
 x |> count(treatment)
 ```
@@ -633,11 +668,11 @@ x |> count(treatment)
 
 The sample is well-balanced between the two arms because randomization was at the community level and the 27,569-row analysis sample inherits that balance --- about 13,700 households in each arm. With this much data, the standard error on the treatment coefficient will be small enough to detect a real effect even though the underlying average effect is itself small in peso terms.
 
-### Exercise 13
+### Exercise 14
 
 Write the first two sentences of the summary paragraph. The first introduces the topic; the second introduces the data and the specific question.
 
-```{r wisdom-13}
+```{r wisdom-14}
 question_text(NULL,
   message = "Households' out-of-pocket spending on health care is a key marker of financial vulnerability. Using the 27,569-household follow-up sample from Mexico's 2005--06 randomized evaluation of Seguro Popular, we estimate the average causal effect of enrollment on three-month out-of-pocket spending.",
   answer(NULL, correct = TRUE),
@@ -1071,41 +1106,37 @@ The great advantage of randomization is that it guarantees unconfoundedness *for
 
 ### Exercise 12
 
-A statistical model consists of two parts: the probability family and the link function. Add `library(tidymodels)` to the setup chunk in `analysis.qmd` and render.
-
-CP/CR.
+A statistical model consists of two parts: the probability family and the link function. The probability family is the probability distribution that generates the randomness in our data. Our outcome variable is `t2_health_exp_3m` --- a continuous quantity (pesos). What probability family should we use?
 
 ```{r justice-12}
 question_text(NULL,
+  message = "Normal: $Y \\sim N(\\mu, \\sigma^2)$. The Normal distribution is the standard choice for continuous outcomes, even when --- as here --- the empirical distribution is right-skewed with a heavy zero-spending mode.",
   answer(NULL, correct = TRUE),
-  allow_retry = TRUE,
-  try_again_button = "Edit Answer",
+  allow_retry = FALSE,
   incorrect = NULL,
-  rows = 3)
+  rows = 4)
 ```
 
 ###
 
-Our outcome variable `t2_health_exp_3m` is a continuous quantity (pesos). The probability family is Normal: $Y \sim N(\mu, \sigma^2)$.
+While you're here, also add `library(tidymodels)` to the setup chunk in `analysis.qmd` so the rest of Courage can call `linear_reg()` and `fit()`.
 
 ### Exercise 13
 
-Add `library(broom)` to the setup chunk in `analysis.qmd` and render.
-
-CP/CR.
+The link function is the mathematical formula that links our data to the unknown parameters. What is the link function for a continuous outcome?
 
 ```{r justice-13}
 question_text(NULL,
+  message = "Identity (linear): $\\mu = \\beta_0 + \\beta_1 X_1 + \\cdots + \\beta_n X_n$. Our model will be a linear regression.",
   answer(NULL, correct = TRUE),
-  allow_retry = TRUE,
-  try_again_button = "Edit Answer",
+  allow_retry = FALSE,
   incorrect = NULL,
-  rows = 3)
+  rows = 4)
 ```
 
 ###
 
-The link function for a continuous outcome is the identity (linear): $\mu = \beta_0 + \beta_1 X_1 + \cdots + \beta_n X_n$. Our model will be a linear regression.
+While you're here, also add `library(broom)` to the setup chunk in `analysis.qmd` so we can call `tidy()` on the fitted model in Courage.
 
 ### Exercise 14
 
@@ -1357,36 +1388,9 @@ Notice the language for `age`: *"when we compare two groups of households... in 
 
 ### Exercise 7
 
-We've settled on the final fit. In `analysis.qmd`, add a cached code chunk that assigns the result of `linear_reg(engine = "lm") |> fit(t2_health_exp_3m ~ treatment, data = x)` to `fit_sp`. Render. In the R Terminal, run `show_file("analysis.qmd", chunk = "Last")`. CP/CR.
+We've settled on the final fit. In `analysis.qmd`, add a new code chunk that assigns the result of `linear_reg(engine = "lm") |> fit(t2_health_exp_3m ~ treatment, data = x)` to `fit_sp`, then on the next line prints `fit_sp`. Render. Copy the printed model summary from the rendered HTML below.
 
 ```{r courage-7}
-question_text(NULL,
-  answer(NULL, correct = TRUE),
-  allow_retry = TRUE,
-  try_again_button = "Edit Answer",
-  incorrect = NULL,
-  rows = 8)
-```
-
-###
-
-````
-```{r}
-#| cache: true
-fit_sp <- linear_reg(engine = "lm") |>
-  fit(t2_health_exp_3m ~ treatment, data = x)
-```
-````
-
-###
-
-`#| cache: true` tells Quarto to store the fitted object and reload it on subsequent renders rather than re-fitting every time. For a single `lm` on 27,569 rows the saving is small; the same pattern will matter much more once we move to Bayesian fits later in the curriculum. From here on, any later chunk in your QMD that uses `fit_sp` will use the cached copy.
-
-### Exercise 8
-
-Now print the fitted model. In `analysis.qmd`, add a chunk that names `fit_sp` on its own line. Render. Copy the printed model summary from the rendered HTML.
-
-```{r courage-8}
 question_text(NULL,
   answer(NULL, correct = TRUE),
   allow_retry = TRUE,
@@ -1397,14 +1401,49 @@ question_text(NULL,
 
 ###
 
-```{r courage-8-test}
+```{r courage-7-test}
 #| echo: true
+fit_sp <- linear_reg(engine = "lm") |>
+  fit(t2_health_exp_3m ~ treatment, data = x)
 fit_sp
 ```
 
 ###
 
 In data science, **we deal with words, math, and code, but the most important of these is code.**
+
+### Exercise 8
+
+Re-fitting the model on every render is wasteful. `fit_sp` earns its own cached create chunk.
+
+Refactor your chunk from Exercise 7 into two chunks. Move the `fit_sp <- ...` assignment into its own create chunk with `#| cache: true`, and leave `fit_sp` (on its own line) in the working chunk. Render. In the R Terminal, run `show_file("analysis.qmd")`. CP/CR.
+
+```{r courage-8}
+question_text(NULL,
+  answer(NULL, correct = TRUE),
+  allow_retry = TRUE,
+  try_again_button = "Edit Answer",
+  incorrect = NULL,
+  rows = 15)
+```
+
+###
+
+````
+```{r}
+#| cache: true
+fit_sp <- linear_reg(engine = "lm") |>
+  fit(t2_health_exp_3m ~ treatment, data = x)
+```
+
+```{r}
+fit_sp
+```
+````
+
+###
+
+`#| cache: true` tells Quarto to store the fitted object and reload it on subsequent renders rather than re-fitting every time. For a single `lm` on 27,569 rows the saving is small; the same pattern will matter much more once we move to Bayesian fits later in the curriculum.
 
 ### Exercise 9
 
@@ -1656,8 +1695,21 @@ question_text(NULL,
   allow_retry = TRUE,
   try_again_button = "Edit Answer",
   incorrect = NULL,
-  rows = 3)
+  rows = 8)
 ```
+
+###
+
+````
+```{r}
+#| message: false
+library(tidyverse)
+library(primer.data)
+library(tidymodels)
+library(broom)
+library(marginaleffects)
+```
+````
 
 ###
 
