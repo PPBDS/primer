@@ -305,9 +305,9 @@ Each row of `samples` is one of the thousand hypothetical "what if we had drawn 
 
 ### Exercise 6
 
-`samples` will be reused across the next two exercises (coverage, polished plot), so it earns its own cached create chunk.
+`samples` will be reused across the next two exercises (coverage, polished plot), so it earns its own cached create chunk. The next three exercises set that up: clean the chunk, turn caching on, add the cache directory to `.gitignore`.
 
-Refactor your working chunk into two chunks. Move the `samples` construction (everything from `set.seed(10)` through the `select(-sample)`) into its own create chunk with `#| cache: true`, and leave the `ggplot(...)` call in the working chunk. Render. In the R Terminal, run `show_file("analysis.qmd")`. CP/CR.
+First, clean up. In your working chunk, delete the `ggplot(...)` call from the bottom, leaving just the `set.seed(10)` through the `select(-sample)` pipeline that builds `samples`. Render. In the R Terminal, run `show_file("analysis.qmd", chunk = "Last")`. CP/CR.
 
 ```{r sampling-and-the-standard-error-6}
 question_text(NULL,
@@ -315,14 +315,12 @@ question_text(NULL,
   allow_retry = TRUE,
   try_again_button = "Edit Answer",
   incorrect = NULL,
-  rows = 25)
+  rows = 12)
 ```
 
 ###
 
-<pre><code>
-#| cache: true
-set.seed(10)
+<pre><code>set.seed(10)
 samples <- tibble(trial = 1:1000) |>
   mutate(
     sample      = map(trial, ~ shaming |> slice_sample(n = 50)),
@@ -332,29 +330,65 @@ samples <- tibble(trial = 1:1000) |>
     upper       = sample_mean + 1.96 * sample_se
   ) |>
   select(-sample)
-
-ggplot(samples |> slice(1:100), aes(y = trial)) +
-  geom_errorbarh(aes(xmin = lower, xmax = upper),
-                 height = 0.3, alpha = 0.5) +
-  geom_point(aes(x = sample_mean), size = 0.6) +
-  geom_vline(xintercept = truth, color = "red",
-             linetype = "dashed") +
-  labs(title = "100 samples of 50 voters each",
-       subtitle = "Most 95% intervals contain the truth; a few miss",
-       x = "Age (years)",
-       y = "Sample number") +
-  theme_minimal()
 </code></pre>
 
 ###
 
-`samples` is now in its own create chunk: built once, cached, reused by every later exercise without redoing the 50,000 draws on every render. For this section that's a couple of seconds saved; for the heavier model fits in later tutorials, it can be the difference between a one-second and a one-minute render.
+A chunk ready to cache should contain only the artifact it builds --- nothing else.
 
 ### Exercise 7
 
-Let's count. Modify the working chunk to compute and print the fraction of the 1,000 intervals in `samples` that contain `truth` (`lower < truth & upper > truth`). Render. Copy the printed value from the rendered HTML below.
+Add `#| cache: true` as the first line inside the chunk (above `set.seed(10)`). Render the QMD. Rendering with caching turned on creates an `analysis_cache/` directory next to your `analysis.qmd`, which holds the saved tibble so Quarto can reload it on subsequent renders rather than redoing the 50,000 draws. To confirm the directory is there, run `ls` in the **bash Terminal** (not the R Terminal). CP/CR.
 
 ```{r sampling-and-the-standard-error-7}
+question_text(NULL,
+  answer(NULL, correct = TRUE),
+  allow_retry = TRUE,
+  try_again_button = "Edit Answer",
+  incorrect = NULL,
+  rows = 5)
+```
+
+###
+
+<pre><code>$ ls
+analysis.qmd  analysis_cache  analysis_files  analysis.html
+</code></pre>
+
+###
+
+`#| cache: true` is a render-time feature: caching is wired up by `quarto render`, not by anything interactive. For these 1,000 draws the saving is a couple of seconds; for the heavier model fits in later tutorials, it can be the difference between a one-second and a one-minute render.
+
+### Exercise 8
+
+The Source Control change count just jumped, because the new `analysis_cache/` directory and everything inside it now look like untracked work to git. Cached files should never go to GitHub --- they're machine-specific and regenerated on every render.
+
+Add `analysis_cache` to your `.gitignore` on its own line. In the R Terminal, run `show_file(".gitignore")`. CP/CR.
+
+```{r sampling-and-the-standard-error-8}
+question_text(NULL,
+  answer(NULL, correct = TRUE),
+  allow_retry = TRUE,
+  try_again_button = "Edit Answer",
+  incorrect = NULL,
+  rows = 5)
+```
+
+###
+
+<pre><code>analysis_files
+analysis_cache
+</code></pre>
+
+###
+
+The Source Control change count should now drop back to whatever it was before the render. Cached objects live next to the QMD, not in version control.
+
+### Exercise 9
+
+Let's count. Start a new working chunk below the cached `samples` chunk that computes and prints the fraction of the 1,000 intervals in `samples` that contain `truth` (`lower < truth & upper > truth`). Render. Copy the printed value from the rendered HTML below.
+
+```{r sampling-and-the-standard-error-9}
 question_text(NULL,
   answer(NULL, correct = TRUE),
   allow_retry = TRUE,
@@ -365,7 +399,7 @@ question_text(NULL,
 
 ###
 
-```{r sampling-and-the-standard-error-7-test}
+```{r sampling-and-the-standard-error-9-test}
 #| echo: true
 samples |>
   summarise(coverage = mean(lower < truth & upper > truth))
@@ -375,11 +409,11 @@ samples |>
 
 About 94.5% of the intervals contained the truth --- close to the 95% the method advertises, not exactly 95%. That gap (94.5% vs. 95%) is normal sampling noise. Run the whole procedure a second time with a different seed and you would get a different number close to but not equal to 95%.
 
-### Exercise 8
+### Exercise 10
 
 Polish the 100-sample plot for the final document: clear title, a one-line subtitle naming the takeaway, a caption pointing to `primer.data`, axis labels with units, and `theme_minimal()`. Then stage `analysis.qmd`, commit with the message `"Add sampling and standard error analysis"`, and push to GitHub. In the R Terminal, run `show_file("analysis.qmd", chunk = "Last")`. CP/CR.
 
-```{r sampling-and-the-standard-error-8}
+```{r sampling-and-the-standard-error-10}
 question_text(NULL,
   answer(NULL, correct = TRUE),
   allow_retry = TRUE,
@@ -557,9 +591,9 @@ The downstream code is identical to what built `samples` in the previous section
 
 ### Exercise 5
 
-`biased_samples` will be reused across the next two exercises (coverage, density of biased means), so it earns its own cached create chunk.
+`biased_samples` will be reused across the next two exercises (coverage, density of biased means), so it earns its own cached create chunk. As with the first cache, we clean up first, then turn caching on. (No `.gitignore` step this time --- `analysis_cache` is already ignored.)
 
-Refactor your working chunk into two chunks. Move the `biased_samples` construction (everything from `set.seed(10)` through the `select(-sample)`) into its own create chunk with `#| cache: true`, and leave the `ggplot(...)` call in the working chunk. Render. In the R Terminal, run `show_file("analysis.qmd")`. CP/CR.
+Clean up the working chunk. Delete the `ggplot(...)` call from the bottom, leaving just the `set.seed(10)` through the `select(-sample)` pipeline that builds `biased_samples`. Render. In the R Terminal, run `show_file("analysis.qmd", chunk = "Last")`. CP/CR.
 
 ```{r biased-sampling-5}
 question_text(NULL,
@@ -567,13 +601,44 @@ question_text(NULL,
   allow_retry = TRUE,
   try_again_button = "Edit Answer",
   incorrect = NULL,
-  rows = 25)
+  rows = 12)
 ```
 
 ###
 
-<pre><code>
-#| cache: true
+<pre><code>set.seed(10)
+shaming_wt <- shaming |> mutate(wt = if_else(age > 40, 3, 1))
+biased_samples <- tibble(trial = 1:1000) |>
+  mutate(
+    sample      = map(trial, ~ shaming_wt |> slice_sample(n = 50, weight_by = wt)),
+    sample_mean = map_dbl(sample, ~ mean(.x$age, na.rm = TRUE)),
+    sample_se   = map_dbl(sample, ~ sd(.x$age, na.rm = TRUE) / sqrt(50)),
+    lower       = sample_mean - 1.96 * sample_se,
+    upper       = sample_mean + 1.96 * sample_se
+  ) |>
+  select(-sample)
+</code></pre>
+
+###
+
+Chunk is ready to cache.
+
+### Exercise 6
+
+Add `#| cache: true` as the first line inside the chunk (above `set.seed(10)`). Render the QMD. In the R Terminal, run `show_file("analysis.qmd", chunk = "Last")`. CP/CR.
+
+```{r biased-sampling-6}
+question_text(NULL,
+  answer(NULL, correct = TRUE),
+  allow_retry = TRUE,
+  try_again_button = "Edit Answer",
+  incorrect = NULL,
+  rows = 12)
+```
+
+###
+
+<pre><code>#| cache: true
 set.seed(10)
 shaming_wt <- shaming |> mutate(wt = if_else(age > 40, 3, 1))
 biased_samples <- tibble(trial = 1:1000) |>
@@ -585,29 +650,17 @@ biased_samples <- tibble(trial = 1:1000) |>
     upper       = sample_mean + 1.96 * sample_se
   ) |>
   select(-sample)
-
-ggplot(biased_samples |> slice(1:100), aes(y = trial)) +
-  geom_errorbarh(aes(xmin = lower, xmax = upper),
-                 height = 0.3, alpha = 0.5) +
-  geom_point(aes(x = sample_mean), size = 0.6) +
-  geom_vline(xintercept = truth, color = "red",
-             linetype = "dashed") +
-  labs(title = "100 biased samples of 50 voters each",
-       subtitle = "Most 95% intervals sit to the RIGHT of the truth",
-       x = "Age (years)",
-       y = "Sample number") +
-  theme_minimal()
 </code></pre>
 
 ###
 
-`biased_samples` is now in its own create chunk: built once, cached, reused by every later exercise. Same refactoring pattern as `samples` in the previous section.
+`biased_samples` is now in its own cached create chunk: built once, reused by every later exercise. Same refactoring pattern as `samples` in the previous section.
 
-### Exercise 6
+### Exercise 7
 
-Modify the working chunk to compute and print the fraction of the 1,000 intervals in `biased_samples` that contain `truth`. Render. Copy the printed value from the rendered HTML below.
+Start a new working chunk below the cached `biased_samples` chunk that computes and prints the fraction of the 1,000 intervals in `biased_samples` that contain `truth`. Render. Copy the printed value from the rendered HTML below.
 
-```{r biased-sampling-6}
+```{r biased-sampling-7}
 question_text(NULL,
   answer(NULL, correct = TRUE),
   allow_retry = TRUE,
@@ -618,7 +671,7 @@ question_text(NULL,
 
 ###
 
-```{r biased-sampling-6-test}
+```{r biased-sampling-7-test}
 #| echo: true
 biased_samples |>
   summarise(coverage = mean(lower < truth & upper > truth))
@@ -630,11 +683,11 @@ Coverage dropped from 94.5% in the unbiased section to **46%** here. Confidence 
 
 This is the single most important lesson of the whole tutorial: **a bigger sample does not fix a biased sampling mechanism**. If we had used 1,000 biased voters instead of 50, the standard error would have shrunk by roughly a factor of $\sqrt{1000/50} \approx 4.5$ --- intervals about a fifth as wide --- and coverage would have *gotten worse*, because the narrower intervals would now miss the truth almost every time. More data sharpens the wrong answer.
 
-### Exercise 7
+### Exercise 8
 
 To see *where* the biased sample means are clustering, modify the working chunk to plot a density curve of `biased_samples$sample_mean` with a red dashed vertical line at `truth` and a black solid vertical line at the average of `sample_mean`. Render. In the R Terminal, run `show_file("analysis.qmd", chunk = "Last")`. CP/CR.
 
-```{r biased-sampling-7}
+```{r biased-sampling-8}
 question_text(NULL,
   answer(NULL, correct = TRUE),
   allow_retry = TRUE,
@@ -645,7 +698,7 @@ question_text(NULL,
 
 ###
 
-```{r biased-sampling-7-test}
+```{r biased-sampling-8-test}
 #| echo: true
 ggplot(biased_samples, aes(x = sample_mean)) +
   geom_density(fill = "grey70", color = "grey30") +
@@ -665,11 +718,11 @@ ggplot(biased_samples, aes(x = sample_mean)) +
 
 The bell sits to the right of the truth. The average of the biased sample means is about 53.4 --- roughly 3.6 years above the truth of 49.79. That gap, between where the sample means cluster and where the truth lives, is **bias**. Sampling noise spreads each individual estimate around the cluster center; bias moves the cluster center itself.
 
-### Exercise 8
+### Exercise 9
 
 Stage `analysis.qmd`, commit with the message `"Add biased sampling demonstration"`, and push to GitHub. In the R Terminal, run `show_file("analysis.qmd", chunk = "Last")`. CP/CR.
 
-```{r biased-sampling-8}
+```{r biased-sampling-9}
 question_text(NULL,
   answer(NULL, correct = TRUE),
   allow_retry = TRUE,

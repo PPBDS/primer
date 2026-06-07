@@ -1244,9 +1244,9 @@ In data science, **we deal with words, math, and code, but the most important of
 
 ### Exercise 8
 
-Re-fitting the model on every render is wasteful --- the fit's the same each time. `fit_recruits` earns its own cached create chunk.
+Re-fitting the model on every render is wasteful --- the fit's the same each time. `fit_recruits` earns its own cached create chunk. The next three exercises set that up: clean the chunk, turn caching on, add the cache directory to `.gitignore`.
 
-Refactor your chunk from Exercise 7 into two chunks. Move the `fit_recruits <- ...` assignment into its own create chunk with `#| cache: true`, and leave `fit_recruits` (on its own line) in the working chunk. Render. In the R Terminal, run `show_file("analysis.qmd")`. CP/CR.
+First, clean up. In your chunk from Exercise 7, delete the `fit_recruits` line at the bottom, leaving just the `fit_recruits <- linear_reg() ...` assignment. Render. In the R Terminal, run `show_file("analysis.qmd", chunk = "Last")`. CP/CR.
 
 ```{r courage-8}
 question_text(NULL,
@@ -1254,25 +1254,69 @@ question_text(NULL,
   allow_retry = TRUE,
   try_again_button = "Edit Answer",
   incorrect = NULL,
-  rows = 15)
+  rows = 8)
 ```
 
 ###
 
-<pre><code>
-#| cache: true
-fit_recruits <- linear_reg() |>
+<pre><code>fit_recruits <- linear_reg() |>
   set_engine("lm") |>
   fit(height ~ sex, data = recruits)
-
-fit_recruits
 </code></pre>
 
 ###
 
-`#| cache: true` tells Quarto to store the fitted object and reload it from disk on subsequent renders rather than re-fitting every time. For a 50-row linear regression the savings are small; for the larger model fits in later tutorials, caching can be the difference between a one-second and a one-minute render.
+A chunk ready to cache should contain only the artifact it builds --- nothing else.
 
 ### Exercise 9
+
+Add `#| cache: true` as the first line inside the chunk. Render the QMD. Rendering creates an `analysis_cache/` directory next to your `analysis.qmd`, which holds the saved fit so Quarto can reload it on subsequent renders rather than re-fitting every time. To confirm the directory is there, run `ls` in the **bash Terminal**. CP/CR.
+
+```{r courage-9}
+question_text(NULL,
+  answer(NULL, correct = TRUE),
+  allow_retry = TRUE,
+  try_again_button = "Edit Answer",
+  incorrect = NULL,
+  rows = 5)
+```
+
+###
+
+<pre><code>$ ls
+analysis.qmd  analysis_cache  analysis_files  analysis.html
+</code></pre>
+
+###
+
+For a 50-row linear regression the savings are small; for the larger model fits in later tutorials, caching can be the difference between a one-second and a one-minute render.
+
+### Exercise 10
+
+The Source Control change count just jumped, because `analysis_cache/` and everything inside it now look like untracked work to git. Cached files should never go to GitHub --- they're machine-specific and regenerated on every render.
+
+Add `analysis_cache` to your `.gitignore` on its own line. In the R Terminal, run `show_file(".gitignore")`. CP/CR.
+
+```{r courage-10}
+question_text(NULL,
+  answer(NULL, correct = TRUE),
+  allow_retry = TRUE,
+  try_again_button = "Edit Answer",
+  incorrect = NULL,
+  rows = 5)
+```
+
+###
+
+<pre><code>analysis_files
+analysis_cache
+</code></pre>
+
+###
+
+The Source Control change count should drop back to whatever it was before the render. Cached objects live next to the QMD, not in version control.
+
+### Exercise 11
 
 With the parameters estimated, we can write the fitted model as a concrete formula:
 
@@ -1286,36 +1330,11 @@ Note the differences from the abstract form shown in the preamble. First, we hav
 
 A data generating mechanism is just a formula, something which we can write down and implement with computer code. Of course, there is randomness built into the DGM, but we won't worry about that detail for now.
 
-### Exercise 10
+### Exercise 12
 
-Add `*_cache` to your `.gitignore` file. Cached objects are often large and don't belong on GitHub.
+Start a new working chunk below the cached `fit_recruits` chunk that runs `tidy(fit_recruits, conf.int = TRUE)`. This returns 95% intervals for all the parameters in our model. Render. Copy the printed tibble from the rendered HTML.
 
-In the R Terminal, run:
-
-```
-show_file(".gitignore")
-```
-
-CP/CR.
-
-```{r courage-10}
-question_text(NULL,
-  message = "    > show_file(\".gitignore\")\n    analysis_files\n    *_cache",
-  answer(NULL, correct = TRUE),
-  allow_retry = FALSE,
-  incorrect = NULL,
-  rows = 5)
-```
-
-###
-
-Because of the change in your `.gitignore` (assuming you saved it), the cache directory should not appear in the Source Control panel --- Git is ignoring it. Commit and push.
-
-### Exercise 11
-
-In `analysis.qmd`, add a chunk that runs `tidy(fit_recruits, conf.int = TRUE)`. This returns 95% intervals for all the parameters in our model. Render. Copy the printed tibble from the rendered HTML.
-
-```{r courage-11}
+```{r courage-12}
 question_text(NULL,
   answer(NULL, correct = TRUE),
   allow_retry = TRUE,
@@ -1326,7 +1345,7 @@ question_text(NULL,
 
 ###
 
-```{r courage-11-test}
+```{r courage-12-test}
 #| echo: true
 tidy(fit_recruits, conf.int = TRUE)
 ```
@@ -1335,7 +1354,7 @@ tidy(fit_recruits, conf.int = TRUE)
 
 `tidy()` is part of the **[broom](https://broom.tidymodels.org/)** package, used to summarize information from a wide variety of models.
 
-### Exercise 12
+### Exercise 13
 
 Here is a nicer-looking version of that parameter table, rendered with **[knitr](https://yihui.org/knitr/)**:
 
@@ -1357,7 +1376,7 @@ Rounding to one decimal place keeps the displayed values consistent with the fit
 
 The more variables we add, the more difficult it is to interpret the meaning of any particular coefficient. But interpretation also becomes less important. We don't really care about coefficients. We care about using our model to estimate quantities of interest.
 
-### Exercise 13
+### Exercise 14
 
 Add a sentence to your project summary explaining the structure of the model. Something like: "We model XX [concept of outcome, not variable name], [values of XX], as a [linear/logistic/multinomial/ordinal] function of XX [and maybe other covariates]."
 
@@ -1365,7 +1384,7 @@ Recall the beginning of our version of the summary:
 
 > People vary in height, and that variation is strongly patterned by sex. Using data from the National Health and Nutrition Examination Survey (NHANES) conducted by the Centers for Disease Control and Prevention, we seek to estimate the average height of male and female USMC recruits for the coming year. One concern is that USMC recruits are more physically fit than the general young-adult population and so may be systematically taller, meaning that the NHANES-based estimates probably understate recruit heights.
 
-```{r courage-13}
+```{r courage-14}
 question_text(NULL,
   message = "We model height as a normally distributed variable which is a linear function of sex.",
   answer(NULL, correct = TRUE),

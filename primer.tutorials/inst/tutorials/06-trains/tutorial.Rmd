@@ -1379,9 +1379,9 @@ In data science, **we deal with words, math, and code, but the most important of
 
 ### Exercise 8
 
-Re-fitting the model on every render is wasteful --- the fit's the same each time. `fit_att` earns its own cached create chunk.
+Re-fitting the model on every render is wasteful --- the fit's the same each time. `fit_att` earns its own cached create chunk. The next three exercises set that up: clean the chunk, turn caching on, add the cache directory to `.gitignore`.
 
-Refactor your chunk from Exercise 7 into two chunks. Move the `fit_att <- ...` assignment into its own create chunk with `#| cache: true`, and leave `fit_att` (on its own line) in the working chunk. Render. In the R Terminal, run `show_file("analysis.qmd")`. CP/CR.
+First, clean up. In your chunk from Exercise 7, delete the `fit_att` line at the bottom, leaving just the `fit_att <- linear_reg(...) |> fit(...)` assignment. Render. In the R Terminal, run `show_file("analysis.qmd", chunk = "Last")`. CP/CR.
 
 ```{r courage-8}
 question_text(NULL,
@@ -1389,24 +1389,68 @@ question_text(NULL,
   allow_retry = TRUE,
   try_again_button = "Edit Answer",
   incorrect = NULL,
-  rows = 15)
+  rows = 8)
 ```
 
 ###
 
-<pre><code>
-#| cache: true
-fit_att <- linear_reg(engine = "lm") |>
+<pre><code>fit_att <- linear_reg(engine = "lm") |>
   fit(att_end ~ treatment, data = trains)
-
-fit_att
 </code></pre>
 
 ###
 
-`#| cache: true` tells Quarto to store the fitted object and reload it from disk on subsequent renders rather than re-fitting every time. The next render --- without changing this chunk --- just loads the saved fit.
+A chunk ready to cache should contain only the artifact it builds --- nothing else.
 
 ### Exercise 9
+
+Add `#| cache: true` as the first line inside the chunk. Render the QMD. Rendering creates an `analysis_cache/` directory next to your `analysis.qmd`, which holds the saved fit so Quarto can reload it on subsequent renders rather than re-fitting every time. To confirm the directory is there, run `ls` in the **bash Terminal**. CP/CR.
+
+```{r courage-9}
+question_text(NULL,
+  answer(NULL, correct = TRUE),
+  allow_retry = TRUE,
+  try_again_button = "Edit Answer",
+  incorrect = NULL,
+  rows = 5)
+```
+
+###
+
+<pre><code>$ ls
+analysis.qmd  analysis_cache  analysis_files  analysis.html
+</code></pre>
+
+###
+
+For a one-binary-covariate `lm` on 115 rows the savings are small; the same pattern will matter much more once we move to heavier models later in the curriculum.
+
+### Exercise 10
+
+The Source Control change count just jumped, because `analysis_cache/` and everything inside it now look like untracked work to git. Cached files should never go to GitHub --- they're machine-specific and regenerated on every render.
+
+Add `analysis_cache` to your `.gitignore` on its own line. In the R Terminal, run `show_file(".gitignore")`. CP/CR.
+
+```{r courage-10}
+question_text(NULL,
+  answer(NULL, correct = TRUE),
+  allow_retry = TRUE,
+  try_again_button = "Edit Answer",
+  incorrect = NULL,
+  rows = 5)
+```
+
+###
+
+<pre><code>analysis_files
+analysis_cache
+</code></pre>
+
+###
+
+The Source Control change count should drop back to whatever it was before the render. Cached objects live next to the QMD, not in version control.
+
+### Exercise 11
 
 With the parameters estimated, we can write the fitted model as a concrete formula:
 
@@ -1420,28 +1464,11 @@ $$\hat{\text{att\_end}} = 8.45 + 1.55 \cdot \text{treatmentTreated}$$
 
 A data generating mechanism is just a formula, something which we can write down and implement with computer code.
 
-### Exercise 10
+### Exercise 12
 
-Add `*_cache` to your `.gitignore` file. In the R Terminal, run `show_file(".gitignore")`. CP/CR.
+Start a new working chunk below the cached `fit_att` chunk that runs `tidy(fit_att, conf.int = TRUE)`. This returns 95% intervals for all the parameters in our model. Render. Copy the printed tibble from the rendered HTML.
 
-```{r courage-10}
-question_text(NULL,
-  message = "    > show_file(\".gitignore\")\n    analysis_files\n    *_cache",
-  answer(NULL, correct = TRUE),
-  allow_retry = FALSE,
-  incorrect = NULL,
-  rows = 5)
-```
-
-###
-
-Cached objects are often large and don't belong on GitHub.
-
-### Exercise 11
-
-In `analysis.qmd`, add a chunk that runs `tidy(fit_att, conf.int = TRUE)`. This returns 95% intervals for all the parameters in our model. Render. Copy the printed tibble from the rendered HTML.
-
-```{r courage-11}
+```{r courage-12}
 question_text(NULL,
   answer(NULL, correct = TRUE),
   allow_retry = TRUE,
@@ -1452,7 +1479,7 @@ question_text(NULL,
 
 ###
 
-```{r courage-11-test}
+```{r courage-12-test}
 #| echo: true
 tidy(fit_att, conf.int = TRUE)
 ```
@@ -1461,11 +1488,11 @@ tidy(fit_att, conf.int = TRUE)
 
 `tidy()` is part of the **[broom](https://broom.tidymodels.org/)** package.
 
-### Exercise 12
+### Exercise 13
 
 Create a new code chunk in your QMD. Make a nice-looking table from the tibble returned by `tidy(fit_att, conf.int = TRUE)`. Include only the `term`, `estimate`, `conf.low`, and `conf.high` columns, rounded to three significant figures. You may use **[knitr](https://yihui.org/knitr/)**, **[gt](https://gt.rstudio.com/)**, or any other table package — add it to your setup chunk if needed. Include a title or caption naming the data source. Render the QMD. In the R Terminal, run `show_file("analysis.qmd", chunk = "Last")`. CP/CR.
 
-```{r courage-12}
+```{r courage-13}
 question_text(NULL,
   message = "    > show_file(\"analysis.qmd\", chunk = \"Last\")\n    ```{r}\n    library(knitr)\n    tidy(fit_att, conf.int = TRUE) |>\n      select(term, estimate, conf.low, conf.high) |>\n      mutate(across(where(is.numeric), \\(x) signif(x, 3))) |>\n      kable(\n        caption = \"Parameter Estimates and 95% CIs. Source: Enos (2014) via primer.data\"\n      )\n    ```",
   answer(NULL, correct = TRUE),
@@ -1479,11 +1506,11 @@ question_text(NULL,
 
 At the very least, your table should include a title and a caption with the data source. We care about using our model to estimate quantities of interest, not about the parameters themselves.
 
-### Exercise 13
+### Exercise 14
 
 Add a sentence to your project summary explaining the structure of the model. Something like: "We model X as a linear function of Y."
 
-```{r courage-13}
+```{r courage-14}
 question_text(NULL,
   message = "We model immigration attitudes as a linear function of exposure to Spanish-speakers.",
   answer(NULL, correct = TRUE),

@@ -582,9 +582,9 @@ Two things worth flagging: setting the `levels` of `voter_class` explicitly forc
 
 ### Exercise 11
 
-The pipeline that builds `x` runs every time you render. It's not slow at 344K rows, but `x` will be used by every later modeling exercise, so it earns its own cached create chunk.
+The pipeline that builds `x` runs every time you render. It's not slow at 344K rows, but `x` will be used by every later modeling exercise, so it earns its own cached create chunk. The next three exercises set that up: clean the chunk, turn caching on, add the cache directory to `.gitignore`.
 
-Refactor your chunk from Exercise 10 into two chunks. Move the `x <- ...` pipeline into its own create chunk with `#| cache: true`, and leave `head(x)` in the working chunk. Render. In the R Terminal, run `show_file("analysis.qmd")`. CP/CR.
+First, clean up. In your chunk from Exercise 10, delete the `head(x)` line at the bottom, leaving just the `x <- shaming |> ...` pipeline. Render. In the R Terminal, run `show_file("analysis.qmd", chunk = "Last")`. CP/CR.
 
 ```{r wisdom-11}
 question_text(NULL,
@@ -592,14 +592,12 @@ question_text(NULL,
   allow_retry = TRUE,
   try_again_button = "Edit Answer",
   incorrect = NULL,
-  rows = 25)
+  rows = 15)
 ```
 
 ###
 
-<pre><code>
-#| cache: true
-x <- shaming |>
+<pre><code>x <- shaming |>
   mutate(civ_engage = primary_00 + primary_02 + primary_04 +
                       general_00 + general_02 + general_04) |>
   select(primary_06, treatment, sex, age, civ_engage) |>
@@ -611,19 +609,65 @@ x <- shaming |>
     levels = c("Rarely Vote", "Sometimes Vote", "Always Vote"))) |>
   mutate(voted = as.factor(primary_06)) |>
   drop_na()
-
-head(x)
 </code></pre>
 
 ###
 
-From this point on, every modeling step uses the cleaned tibble `x`, not raw `shaming`. Commit and push.
+A chunk ready to cache should contain only the artifact it builds.
 
 ### Exercise 12
 
-Write the first two sentences of the summary paragraph. The first introduces the topic; the second introduces the data and the specific question.
+Add `#| cache: true` as the first line inside the chunk. Render the QMD. Rendering creates an `analysis_cache/` directory next to your `analysis.qmd`, which holds the saved tibble so Quarto can reload it on subsequent renders rather than re-running the 344K-row pipeline every time. To confirm the directory is there, run `ls` in the **bash Terminal**. CP/CR.
 
 ```{r wisdom-12}
+question_text(NULL,
+  answer(NULL, correct = TRUE),
+  allow_retry = TRUE,
+  try_again_button = "Edit Answer",
+  incorrect = NULL,
+  rows = 5)
+```
+
+###
+
+<pre><code>$ ls
+analysis.qmd  analysis_cache  analysis_files  analysis.html
+</code></pre>
+
+###
+
+For 344K rows the pipeline runs in about a second, so the savings are modest; the same pattern matters more for the model fits in Courage.
+
+### Exercise 13
+
+The Source Control change count just jumped, because `analysis_cache/` and everything inside it now look like untracked work to git. Cached files should never go to GitHub --- they're machine-specific and regenerated on every render.
+
+Add `analysis_cache` to your `.gitignore` on its own line. In the R Terminal, run `show_file(".gitignore")`. CP/CR.
+
+```{r wisdom-13}
+question_text(NULL,
+  answer(NULL, correct = TRUE),
+  allow_retry = TRUE,
+  try_again_button = "Edit Answer",
+  incorrect = NULL,
+  rows = 5)
+```
+
+###
+
+<pre><code>analysis_files
+analysis_cache
+</code></pre>
+
+###
+
+From this point on, every modeling step uses the cleaned tibble `x`, not raw `shaming`. The Source Control change count should drop back to whatever it was before the render.
+
+### Exercise 14
+
+Write the first two sentences of the summary paragraph. The first introduces the topic; the second introduces the data and the specific question.
+
+```{r wisdom-14}
 question_text(NULL,
   message = "Voter mobilization is a perennial campaign question: which messaging --- if any --- gets registered voters who would otherwise stay home to actually show up. Using the 344,084-voter Gerber-Green-Larimer 2006 randomized field experiment in Michigan, we estimate the average causal effect of the Neighbors postcard on the probability that a registered voter casts a ballot in the August 2006 primary.",
   answer(NULL, correct = TRUE),
@@ -1499,9 +1543,9 @@ In data science, **we deal with words, math, and code, but the most important of
 
 ### Exercise 10
 
-Re-fitting the model on every render is wasteful --- even at 344K rows our fit takes a second or so, time worth saving. `fit_shaming` earns its own cached create chunk.
+Re-fitting the model on every render is wasteful --- even at 344K rows our fit takes a second or so, time worth saving. `fit_shaming` earns its own cached create chunk. As with `x` earlier, we clean up first, then turn caching on. (No `.gitignore` step this time --- `analysis_cache` is already ignored.)
 
-Refactor your chunk from Exercise 9 into two chunks. Move the `fit_shaming <- ...` assignment into its own create chunk with `#| cache: true`, and leave `fit_shaming` (on its own line) in the working chunk. Render. In the R Terminal, run `show_file("analysis.qmd")`. CP/CR.
+Clean up. In your chunk from Exercise 9, delete the `fit_shaming` line at the bottom, leaving just the `fit_shaming <- logistic_reg(...) |> fit(...)` assignment. Render. In the R Terminal, run `show_file("analysis.qmd", chunk = "Last")`. CP/CR.
 
 ```{r courage-10}
 question_text(NULL,
@@ -1509,28 +1553,48 @@ question_text(NULL,
   allow_retry = TRUE,
   try_again_button = "Edit Answer",
   incorrect = NULL,
-  rows = 15)
+  rows = 8)
 ```
 
 ###
 
-<pre><code>
-#| cache: true
+<pre><code>fit_shaming <- logistic_reg(engine = "glm") |>
+  fit(voted ~ age + sex + treatment*voter_class, data = x)
+</code></pre>
+
+###
+
+Ready to cache.
+
+### Exercise 11
+
+Add `#| cache: true` as the first line inside the chunk. Render the QMD. In the R Terminal, run `show_file("analysis.qmd", chunk = "Last")`. CP/CR.
+
+```{r courage-11}
+question_text(NULL,
+  answer(NULL, correct = TRUE),
+  allow_retry = TRUE,
+  try_again_button = "Edit Answer",
+  incorrect = NULL,
+  rows = 8)
+```
+
+###
+
+<pre><code>#| cache: true
 fit_shaming <- logistic_reg(engine = "glm") |>
   fit(voted ~ age + sex + treatment*voter_class, data = x)
-
-fit_shaming
 </code></pre>
 
 ###
 
 `#| cache: true` tells Quarto to reuse the saved fit on subsequent renders. Caching is the right habit to build for the heavier models you'll meet later in the curriculum.
 
-### Exercise 11
+### Exercise 12
 
 To check whether our model is reasonable, we compare our actual outcome distribution to draws simulated from the fitted model. In `analysis.qmd`, add a chunk that loads **[easystats](https://easystats.github.io/easystats/)** (`library(easystats)`) and runs `check_predictions(extract_fit_engine(fit_shaming))`. The `extract_fit_engine()` step is necessary because `easystats::check_predictions()` expects a `glm` object, not the `parsnip` wrapper that `tidymodels` produces. Render. In the R Terminal, run `show_file("analysis.qmd", chunk = "Last")`. CP/CR.
 
-```{r courage-11}
+```{r courage-12}
 question_text(NULL,
   answer(NULL, correct = TRUE),
   allow_retry = TRUE,
@@ -1541,7 +1605,7 @@ question_text(NULL,
 
 ###
 
-```{r courage-11-test, message = FALSE}
+```{r courage-12-test, message = FALSE}
 #| echo: true
 library(easystats)
 check_predictions(extract_fit_engine(fit_shaming))
@@ -1551,7 +1615,7 @@ check_predictions(extract_fit_engine(fit_shaming))
 
 `check_predictions()` compares your actual data with data simulated from your fitted model. For a binary outcome with this much data, the check is mostly a sanity check --- it confirms the model isn't catastrophically miscalibrated. It does *not* confirm the model is well-specified: a more thoughtful diagnostic would split the comparison by voter class or by treatment to see whether the model's calibration is uniform.
 
-### Exercise 12
+### Exercise 13
 
 With the parameters estimated, we can write the fitted model as a concrete formula:
 
@@ -1578,7 +1642,7 @@ Each `treatment*` term is a 0/1 dummy: 1 if the voter received that postcard, 0 
 
 A data generating mechanism is just a formula, something we can write down and implement with computer code. The non-linearity ($1/(1 + e^{-\eta})$) and the seventeen parameters together are why coefficient-by-coefficient interpretation is awkward; `marginaleffects` in Temperance gives us the cleaner reading on the outcome scale.
 
-### Exercise 13
+### Exercise 14
 
 Add `*_cache` to your `.gitignore`. Cached objects don't belong on GitHub.
 
@@ -1590,7 +1654,7 @@ show_file(".gitignore")
 
 CP/CR.
 
-```{r courage-13}
+```{r courage-14}
 question_text(NULL,
   message = "    > show_file(\".gitignore\")\n    analysis_files\n    *_cache",
   answer(NULL, correct = TRUE),
@@ -1603,11 +1667,11 @@ question_text(NULL,
 
 Commit and push.
 
-### Exercise 14
+### Exercise 15
 
 In `analysis.qmd`, add a chunk that runs `tidy(fit_shaming, conf.int = TRUE)`. This returns 95% intervals for all the parameters in our model. Render. Copy the printed tibble from the rendered HTML.
 
-```{r courage-14}
+```{r courage-15}
 question_text(NULL,
   answer(NULL, correct = TRUE),
   allow_retry = TRUE,
@@ -1618,7 +1682,7 @@ question_text(NULL,
 
 ###
 
-```{r courage-14-test}
+```{r courage-15-test}
 #| echo: true
 tidy(fit_shaming, conf.int = TRUE)
 ```
@@ -1627,7 +1691,7 @@ tidy(fit_shaming, conf.int = TRUE)
 
 `tidy()` is part of **[broom](https://broom.tidymodels.org/)**, used to summarize information from a wide variety of models. The `estimate`, `conf.low`, and `conf.high` columns are all on the log-odds scale --- the same scale as the model's link function.
 
-### Exercise 15
+### Exercise 16
 
 Create a new code chunk in your QMD. Make a nice-looking table from the tibble returned by `tidy()`. Insert your table code, Render the QMD, and in the R Terminal run:
 
@@ -1637,7 +1701,7 @@ show_file("analysis.qmd", chunk = "Last")
 
 CP/CR.
 
-```{r courage-15}
+```{r courage-16}
 question_text(NULL,
   message = "    > show_file(\"analysis.qmd\", chunk = \"Last\")\n    ```{r}\n    tidy(fit_shaming, conf.int = TRUE) |>\n      select(term, estimate, conf.low, conf.high) |>\n      knitr::kable(\n        caption = \"Logistic-regression estimates (log-odds scale) and 95% CIs.  Source: Gerber, Green, Larimer 2008 via primer.data::shaming\",\n        digits = 3\n      )\n    ```",
   answer(NULL, correct = TRUE),
@@ -1650,11 +1714,11 @@ question_text(NULL,
 
 A nice table includes a title, a caption with the data source, and reasonable rounding. For a 17-parameter logistic regression, three decimal places keeps the small interaction coefficients visible without over-precising the larger main-effect ones.
 
-### Exercise 16
+### Exercise 17
 
 Add a sentence to your project summary explaining the model structure.
 
-```{r courage-16}
+```{r courage-17}
 question_text(NULL,
   message = "We model voter turnout as a Bernoulli variable which is a logistic function of treatment, voter class, the treatment-by-voter-class interaction, age, and sex.",
   answer(NULL, correct = TRUE),

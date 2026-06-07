@@ -543,9 +543,9 @@ head(x)
 
 ### Exercise 12
 
-The pipeline that builds `x` runs every time you render. It's quick here, but the discipline matters: `x` will be used by every later modeling exercise, so it earns its own cached create chunk.
+The pipeline that builds `x` runs every time you render. It's quick here, but `x` will be used by every later modeling exercise, so it earns its own cached create chunk. The next three exercises set that up: clean the chunk, turn caching on, add the cache directory to `.gitignore`.
 
-Refactor your chunk from Exercise 11 into two chunks. Move the `x <- ...` pipeline into its own create chunk with `#| cache: true`, and leave `head(x)` in the working chunk. Render. In the R Terminal, run `show_file("analysis.qmd")`. CP/CR.
+First, clean up. In your chunk from Exercise 11, delete the `head(x)` line at the bottom, leaving just the `x <- colleges ...` pipeline. Render. In the R Terminal, run `show_file("analysis.qmd", chunk = "Last")`. CP/CR.
 
 ```{r wisdom-12}
 question_text(NULL,
@@ -553,14 +553,12 @@ question_text(NULL,
   allow_retry = TRUE,
   try_again_button = "Edit Answer",
   incorrect = NULL,
-  rows = 20)
+  rows = 12)
 ```
 
 ###
 
-<pre><code>
-#| cache: true
-x <- colleges |>
+<pre><code>x <- colleges |>
   select(tuition, grad_rate, selectivity) |>
   filter(tuition > 2) |>
   drop_na() |>
@@ -568,19 +566,65 @@ x <- colleges |>
                               levels = c("Elite", "Highly Selective",
                                          "Moderately Selective",
                                          "Lowly Selective", "Non-selective")))
-
-head(x)
 </code></pre>
 
 ###
 
-`x` is now in its own create chunk: built once, cached, reused by every later exercise without re-running the pipeline on every render. Same refactoring pattern as the helpers in 01-probability and the model fits in later tutorials.
+A chunk ready to cache should contain only the artifact it builds.
 
 ### Exercise 13
 
-Write the first two sentences of the summary paragraph. The first sentence is a general statement about the overall topic, mentioning the general class of outcome and at least one covariate. The second sentence introduces the data source and the specific question.
+Add `#| cache: true` as the first line inside the chunk. Render the QMD. Rendering creates an `analysis_cache/` directory next to your `analysis.qmd`, which holds the saved tibble so Quarto can reload it on subsequent renders rather than re-running the pipeline every time. To confirm the directory is there, run `ls` in the **bash Terminal**. CP/CR.
 
 ```{r wisdom-13}
+question_text(NULL,
+  answer(NULL, correct = TRUE),
+  allow_retry = TRUE,
+  try_again_button = "Edit Answer",
+  incorrect = NULL,
+  rows = 5)
+```
+
+###
+
+<pre><code>$ ls
+analysis.qmd  analysis_cache  analysis_files  analysis.html
+</code></pre>
+
+###
+
+The savings here are small; the same pattern matters more when the cached pipeline takes seconds (or minutes) rather than milliseconds.
+
+### Exercise 14
+
+The Source Control change count just jumped, because `analysis_cache/` and everything inside it now look like untracked work to git. Cached files should never go to GitHub --- they're machine-specific and regenerated on every render.
+
+Add `analysis_cache` to your `.gitignore` on its own line. In the R Terminal, run `show_file(".gitignore")`. CP/CR.
+
+```{r wisdom-14}
+question_text(NULL,
+  answer(NULL, correct = TRUE),
+  allow_retry = TRUE,
+  try_again_button = "Edit Answer",
+  incorrect = NULL,
+  rows = 5)
+```
+
+###
+
+<pre><code>analysis_files
+analysis_cache
+</code></pre>
+
+###
+
+The Source Control change count should drop back to whatever it was before the render.
+
+### Exercise 15
+
+Write the first two sentences of the summary paragraph. The first sentence is a general statement about the overall topic, mentioning the general class of outcome and at least one covariate. The second sentence introduces the data source and the specific question.
+
+```{r wisdom-15}
 question_text(NULL,
   message = "Where students go to college and what they pay for it varies enormously, and so does the likelihood that they will finish. We help today's students choose by examining how graduation rate varies with tuition and selectivity, using 2013 IPEDS data on roughly 900 US four-year colleges and universities --- the most recent reliable national snapshot we have.",
   answer(NULL, correct = TRUE),
@@ -1345,9 +1389,9 @@ In data science, **we deal with words, math, and code, but the most important of
 
 ### Exercise 10
 
-Re-fitting the model on every render is wasteful. `fit_colleges` earns its own cached create chunk.
+Re-fitting the model on every render is wasteful. `fit_colleges` earns its own cached create chunk. As with the first cache, we clean up first, then turn caching on. (No `.gitignore` step this time --- `analysis_cache` is already ignored.)
 
-Refactor your chunk from Exercise 9 into two chunks. Move the `fit_colleges <- ...` assignment into its own create chunk with `#| cache: true`, and leave `fit_colleges` (on its own line) in the working chunk. Render. In the R Terminal, run `show_file("analysis.qmd")`. CP/CR.
+Clean up. In your chunk from Exercise 9, delete the `fit_colleges` line at the bottom, leaving just the `fit_colleges <- linear_reg() ...` assignment. Render. In the R Terminal, run `show_file("analysis.qmd", chunk = "Last")`. CP/CR.
 
 ```{r courage-10}
 question_text(NULL,
@@ -1355,25 +1399,46 @@ question_text(NULL,
   allow_retry = TRUE,
   try_again_button = "Edit Answer",
   incorrect = NULL,
-  rows = 15)
+  rows = 8)
 ```
 
 ###
 
-<pre><code>
-#| cache: true
+<pre><code>fit_colleges <- linear_reg() |>
+  set_engine("lm") |>
+  fit(grad_rate ~ tuition + selectivity, data = x)
+</code></pre>
+
+###
+
+Ready to cache.
+
+### Exercise 11
+
+Add `#| cache: true` as the first line inside the chunk. Render the QMD. In the R Terminal, run `show_file("analysis.qmd", chunk = "Last")`. CP/CR.
+
+```{r courage-11}
+question_text(NULL,
+  answer(NULL, correct = TRUE),
+  allow_retry = TRUE,
+  try_again_button = "Edit Answer",
+  incorrect = NULL,
+  rows = 8)
+```
+
+###
+
+<pre><code>#| cache: true
 fit_colleges <- linear_reg() |>
   set_engine("lm") |>
   fit(grad_rate ~ tuition + selectivity, data = x)
-
-fit_colleges
 </code></pre>
 
 ###
 
 `#| cache: true` tells Quarto to store the fitted object and reload it from disk on subsequent renders rather than re-fitting every time.
 
-### Exercise 11
+### Exercise 12
 
 One way to check whether our model is reasonable is to compare the distribution of our actual outcome (`grad_rate`) with the distribution of fitted values from the model. If the model is well-specified, the two distributions should look similar.
 
@@ -1407,7 +1472,7 @@ ggplot(fitted_df, aes(x = value, fill = source)) +
 
 In a good model, the distribution of fitted values looks like the distribution of the actual outcome. Big divergences mean our model is missing something --- here, the fitted values cluster more tightly than the actual graduation rates do, which means our model can't reproduce the very-high and very-low extremes. That's a real limitation; whether it matters depends on which questions we ask the fit later.
 
-### Exercise 12
+### Exercise 13
 
 With the parameters estimated, we can write the fitted model as a concrete formula:
 
@@ -1429,11 +1494,11 @@ Each selectivity term is a dummy 0/1 variable (e.g. `Highly Selective` is 1 if t
 
 A data generating mechanism is just a formula, something which we can write down and implement with computer code.
 
-### Exercise 13
+### Exercise 14
 
 Add `*_cache` to `.gitignore`. In the R Terminal, run `show_file(".gitignore")`. CP/CR.
 
-```{r courage-13}
+```{r courage-14}
 question_text(NULL,
   message = "    > show_file(\".gitignore\")\n    analysis_files\n    *_cache",
   answer(NULL, correct = TRUE),
@@ -1446,11 +1511,11 @@ question_text(NULL,
 
 Cached objects are often large and don't belong on GitHub.
 
-### Exercise 14
+### Exercise 15
 
 In `analysis.qmd`, add a chunk that runs `tidy(fit_colleges, conf.int = TRUE)`. This returns 95% intervals for all the parameters in our model. Render. Copy the printed tibble from the rendered HTML.
 
-```{r courage-14}
+```{r courage-15}
 question_text(NULL,
   answer(NULL, correct = TRUE),
   allow_retry = TRUE,
@@ -1461,7 +1526,7 @@ question_text(NULL,
 
 ###
 
-```{r courage-14-test}
+```{r courage-15-test}
 #| echo: true
 tidy(fit_colleges, conf.int = TRUE)
 ```
@@ -1470,7 +1535,7 @@ tidy(fit_colleges, conf.int = TRUE)
 
 `tidy()` returns a tibble with one row per parameter --- intercept plus one per covariate (with 4 dummy rows for the 5-level `selectivity`).
 
-### Exercise 15
+### Exercise 16
 
 Here is a nicer-looking version of that parameter table, rendered with **[knitr](https://yihui.org/knitr/)**:
 
@@ -1490,11 +1555,11 @@ tidy(fit_colleges, conf.int = TRUE) |>
 
 We care about using our model to estimate quantities of interest, not about the parameters themselves.
 
-### Exercise 16
+### Exercise 17
 
 Add a sentence to your project summary explaining the structure of the model.
 
-```{r courage-16}
+```{r courage-17}
 question_text(NULL,
   message = "We model graduation rate as a normally distributed variable which is a linear function of tuition and selectivity.",
   answer(NULL, correct = TRUE),
