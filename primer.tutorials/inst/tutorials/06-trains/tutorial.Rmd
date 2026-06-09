@@ -1221,7 +1221,7 @@ The abstract data generating mechanism shown in the preamble uses generic variab
 
 ### Exercise 2
 
-Because our outcome variable is continuous, add a code chunk to `analysis.qmd` that begins building the model with `linear_reg(engine = "lm")`. Render. Copy the printed model object from the rendered HTML.
+Because our outcome variable is continuous, add a code chunk to `analysis.qmd` that begins building the model with `linear_reg(engine = "lm")`. Render. In the R Terminal, run `show_file("analysis.qmd", chunk = "Last")`. CP/CR.
 
 ```{r courage-2}
 question_text(NULL,
@@ -1245,7 +1245,7 @@ For R-based modeling, the **[tidymodels](https://www.tidymodels.org/)** framewor
 
 ### Exercise 3
 
-Extend the chunk in `analysis.qmd` to `linear_reg(engine = "lm") |> fit(att_end ~ treatment, data = trains)`. This is the central causal model: outcome on the binary, randomized `treatment`. Render. Copy the printed fit object from the rendered HTML.
+Extend the chunk in `analysis.qmd` to `linear_reg(engine = "lm") |> fit(att_end ~ treatment, data = trains)`. This is the central causal model: outcome on the binary, randomized `treatment`. Render. In the R Terminal, run `show_file("analysis.qmd", chunk = "Last")`. CP/CR.
 
 ```{r courage-3}
 question_text(NULL,
@@ -1299,7 +1299,7 @@ This is a *causal* interpretation: because Enos randomized which platforms got t
 
 ### Exercise 5
 
-Refit with the formula `fit(att_end ~ treatment + age, data = trains)`, adjusting for `age`. This adds a continuous covariate to the causal model. Render. Copy the printed fit object from the rendered HTML.
+Refit with the formula `fit(att_end ~ treatment + age, data = trains)`, adjusting for `age`. This adds a continuous covariate to the causal model. Render. In the R Terminal, run `show_file("analysis.qmd", chunk = "Last")`. CP/CR.
 
 ```{r courage-5}
 question_text(NULL,
@@ -1353,7 +1353,7 @@ Notice the language for `age`: *"when we compare two groups of commuters... in t
 
 ### Exercise 7
 
-We've settled on the final fit. In `analysis.qmd`, add a new code chunk that assigns the result of `linear_reg(engine = "lm") |> fit(att_end ~ treatment, data = trains)` to `fit_att`, then on the next line prints `fit_att`. Render. Copy the printed model summary from the rendered HTML below.
+We've settled on the final fit. In `analysis.qmd`, add a new code chunk that assigns the result of `linear_reg(engine = "lm") |> fit(att_end ~ treatment, data = trains)` to `fit_att`, then on the next line prints `fit_att`. Render. In the R Terminal, run `show_file("analysis.qmd", chunk = "Last")`. CP/CR.
 
 ```{r courage-7}
 question_text(NULL,
@@ -1466,7 +1466,7 @@ A data generating mechanism is just a formula, something which we can write down
 
 ### Exercise 12
 
-Start a new working chunk below the cached `fit_att` chunk that runs `tidy(fit_att, conf.int = TRUE)`. This returns 95% intervals for all the parameters in our model. Render. Copy the printed tibble from the rendered HTML.
+Start a new working chunk below the cached `fit_att` chunk that runs `tidy(fit_att, conf.int = TRUE)`. This returns 95% intervals for all the parameters in our model. Render. In the R Terminal, run `show_file("analysis.qmd", chunk = "Last")`. CP/CR.
 
 ```{r courage-12}
 question_text(NULL,
@@ -1620,7 +1620,7 @@ In order to make progress, we need to drill down to one specific question.
 
 ### Exercise 4
 
-In `analysis.qmd`, add a chunk that runs `predictions(fit_att)`. Render. Copy the first few rows of the printed output from the rendered HTML below.
+In `analysis.qmd`, add a chunk that runs `predictions(fit_att)`. Render. In the R Terminal, run `show_file("analysis.qmd", chunk = "Last")`. CP/CR.
 
 ```{r temperance-4}
 question_text(NULL,
@@ -1668,7 +1668,7 @@ You should see two point estimates (Control and Treated) with 95% confidence int
 
 ### Exercise 6
 
-Modify the previous chunk to add `draw = FALSE` to the `plot_predictions()` call. Render. Copy the printed tibble from the rendered HTML below.
+Modify the previous chunk to add `draw = FALSE` to the `plot_predictions()` call. Render. In the R Terminal, run `show_file("analysis.qmd", chunk = "Last")`. CP/CR.
 
 ```{r temperance-6}
 question_text(NULL,
@@ -1784,12 +1784,47 @@ Rearrange the material in your QMD so the order is graphic, then summary paragra
 
 ```{r temperance-11}
 question_text(NULL,
-  message = "    > show_file(\"analysis.qmd\")\n    ---\n    title: \"Trains\"\n    author: \"<your name>\"\n    execute:\n      echo: false\n    ---\n    \n    ```{r}\n    #| message: false\n    library(tidyverse)\n    library(tidymodels)\n    library(primer.data)\n    library(broom)\n    library(marginaleffects)\n    ```\n    \n    ```{r}\n    #| cache: true\n    fit_att <- linear_reg(engine = \"lm\") |>\n      fit(att_end ~ treatment, data = trains)\n    ```\n    \n    ```{r}\n    plot_predictions(fit_att, condition = \"treatment\", draw = FALSE) |>\n      ggplot(aes(x = treatment, y = estimate)) +\n      geom_pointrange(aes(ymin = conf.low, ymax = conf.high)) +\n      labs(\n        title = \"Causal Effect of Spanish-Speaker Exposure on Immigration Attitudes\",\n        subtitle = \"Treated commuters score about 1.5 points higher on the 3-15 scale\",\n        x = \"Treatment Assignment\", y = \"Expected Attitude Score\",\n        caption = \"Source: Enos (2014) via primer.data\"\n      ) +\n      theme_minimal()\n    ```\n    \n    Attitudes toward immigration respond to brief encounters with speakers of another language, at least in the short run. Using data from Ryan Enos's January 2012 randomized experiment on Boston-area Metra platforms (115 commuters), we estimate the average causal effect of Spanish-speaker exposure on anti-immigration attitudes. The experiment was run on a Boston-area commuter population that may differ systematically from the Georgia voters our candidate cares about, so the effect may not transfer. We model immigration attitudes as a linear function of treatment. We estimate that two weeks of Spanish-speaker exposure raises the end-of-experiment attitude score by about 1.55 points on the 3-to-15 scale, with a 95% confidence interval from about 0.51 to 2.58.",
   answer(NULL, correct = TRUE),
-  allow_retry = FALSE,
+  allow_retry = TRUE,
+  try_again_button = "Edit Answer",
   incorrect = NULL,
   rows = 10)
 ```
+
+###
+
+<pre><code>
+---
+title: "Trains"
+author: "&lt;your name&gt;"
+execute:
+  echo: false
+---
+
+#| message: false
+library(tidyverse)
+library(tidymodels)
+library(primer.data)
+library(broom)
+library(marginaleffects)
+
+#| cache: true
+fit_att <- linear_reg(engine = "lm") |>
+  fit(att_end ~ treatment, data = trains)
+
+plot_predictions(fit_att, condition = "treatment", draw = FALSE) |>
+  ggplot(aes(x = treatment, y = estimate)) +
+  geom_pointrange(aes(ymin = conf.low, ymax = conf.high)) +
+  labs(
+    title = "Causal Effect of Spanish-Speaker Exposure on Immigration Attitudes",
+    subtitle = "Treated commuters score about 1.5 points higher on the 3-15 scale",
+    x = "Treatment Assignment", y = "Expected Attitude Score",
+    caption = "Source: Enos (2014) via primer.data"
+  ) +
+  theme_minimal()
+
+Attitudes toward immigration respond to brief encounters with speakers of another language, at least in the short run. Using data from Ryan Enos's January 2012 randomized experiment on Boston-area Metra platforms (115 commuters), we estimate the average causal effect of Spanish-speaker exposure on anti-immigration attitudes. The experiment was run on a Boston-area commuter population that may differ systematically from the Georgia voters our candidate cares about, so the effect may not transfer. We model immigration attitudes as a linear function of treatment. We estimate that two weeks of Spanish-speaker exposure raises the end-of-experiment attitude score by about 1.55 points on the 3-to-15 scale, with a 95% confidence interval from about 0.51 to 2.58.
+</code></pre>
 
 ###
 

@@ -511,7 +511,7 @@ cat(
 
 ### Exercise 11
 
-We need a cleaned tibble. In `analysis.qmd`, add a new code chunk that creates a tibble called `x` by taking `colleges`, selecting `tuition`, `grad_rate`, and `selectivity`, filtering to rows with tuition above $20,000 (so `tuition > 2`), dropping rows with missing values, and recoding `selectivity` as a factor with the levels in the order `Elite`, `Highly Selective`, `Moderately Selective`, `Lowly Selective`, `Non-selective`. Then on the next line, print `head(x)`. Render. Copy the printed first few rows from the rendered HTML below.
+We need a cleaned tibble. In `analysis.qmd`, add a new code chunk that creates a tibble called `x` by taking `colleges`, selecting `tuition`, `grad_rate`, and `selectivity`, filtering to rows with tuition above $20,000 (so `tuition > 2`), dropping rows with missing values, and recoding `selectivity` as a factor with the levels in the order `Elite`, `Highly Selective`, `Moderately Selective`, `Lowly Selective`, `Non-selective`. Then on the next line, print `head(x)`. Render. In the R Terminal, run `show_file("analysis.qmd", chunk = "Last")`. CP/CR.
 
 ```{r wisdom-11}
 question_text(NULL,
@@ -1178,7 +1178,7 @@ The abstract data generating mechanism shown in the preamble uses generic variab
 
 ### Exercise 2
 
-Because our outcome variable is continuous, add a code chunk to `analysis.qmd` that begins building the model with `linear_reg(engine = "lm")`. Render. Copy the printed model object from the rendered HTML.
+Because our outcome variable is continuous, add a code chunk to `analysis.qmd` that begins building the model with `linear_reg(engine = "lm")`. Render. In the R Terminal, run `show_file("analysis.qmd", chunk = "Last")`. CP/CR.
 
 ```{r courage-2}
 question_text(NULL,
@@ -1202,7 +1202,7 @@ Within the R modeling community, **[tidymodels](https://www.tidymodels.org/)** i
 
 ### Exercise 3
 
-Extend the chunk in `analysis.qmd` to `linear_reg(engine = "lm") |> fit(grad_rate ~ selectivity, data = x)`. This fits a first candidate model using only the five-level `selectivity` factor. Render. Copy the printed fit object from the rendered HTML.
+Extend the chunk in `analysis.qmd` to `linear_reg(engine = "lm") |> fit(grad_rate ~ selectivity, data = x)`. This fits a first candidate model using only the five-level `selectivity` factor. Render. In the R Terminal, run `show_file("analysis.qmd", chunk = "Last")`. CP/CR.
 
 ```{r courage-3}
 question_text(NULL,
@@ -1256,7 +1256,7 @@ For a multi-level categorical, every dummy coefficient is read *relative to the 
 
 ### Exercise 5
 
-Change the formula to `fit(grad_rate ~ tuition, data = x)`. This refits with the continuous covariate `tuition` instead of the selectivity factor. Render. Copy the printed fit object from the rendered HTML.
+Change the formula to `fit(grad_rate ~ tuition, data = x)`. This refits with the continuous covariate `tuition` instead of the selectivity factor. Render. In the R Terminal, run `show_file("analysis.qmd", chunk = "Last")`. CP/CR.
 
 ```{r courage-5}
 question_text(NULL,
@@ -1310,7 +1310,7 @@ The slope is **a comparison, not a change**: we are comparing two groups of coll
 
 ### Exercise 7
 
-Fit the final model in `analysis.qmd` with the formula `fit(grad_rate ~ tuition + selectivity, data = x)`. This combines the two candidates. Render. Copy the printed fit object from the rendered HTML.
+Fit the final model in `analysis.qmd` with the formula `fit(grad_rate ~ tuition + selectivity, data = x)`. This combines the two candidates. Render. In the R Terminal, run `show_file("analysis.qmd", chunk = "Last")`. CP/CR.
 
 ```{r courage-7}
 question_text(NULL,
@@ -1362,7 +1362,7 @@ The shrinkage from 16.4 to 9.0 percentage points is the effect of adjustment. Se
 
 ### Exercise 9
 
-We've settled on the final fit. In `analysis.qmd`, add a new code chunk that assigns the result of `linear_reg() |> set_engine("lm") |> fit(grad_rate ~ tuition + selectivity, data = x)` to `fit_colleges`, then on the next line prints `fit_colleges`. Render. Copy the printed model summary from the rendered HTML below.
+We've settled on the final fit. In `analysis.qmd`, add a new code chunk that assigns the result of `linear_reg() |> set_engine("lm") |> fit(grad_rate ~ tuition + selectivity, data = x)` to `fit_colleges`, then on the next line prints `fit_colleges`. Render. In the R Terminal, run `show_file("analysis.qmd", chunk = "Last")`. CP/CR.
 
 ```{r courage-9}
 question_text(NULL,
@@ -1513,7 +1513,7 @@ Cached objects are often large and don't belong on GitHub.
 
 ### Exercise 15
 
-In `analysis.qmd`, add a chunk that runs `tidy(fit_colleges, conf.int = TRUE)`. This returns 95% intervals for all the parameters in our model. Render. Copy the printed tibble from the rendered HTML.
+In `analysis.qmd`, add a chunk that runs `tidy(fit_colleges, conf.int = TRUE)`. This returns 95% intervals for all the parameters in our model. Render. In the R Terminal, run `show_file("analysis.qmd", chunk = "Last")`. CP/CR.
 
 ```{r courage-15}
 question_text(NULL,
@@ -1680,7 +1680,7 @@ Data science projects begin with a decision which we face. To make that decision
 
 ### Exercise 4
 
-In `analysis.qmd`, add a chunk that runs `predictions(fit_colleges)`. Render. Copy the first few rows of the printed output from the rendered HTML below.
+In `analysis.qmd`, add a chunk that runs `predictions(fit_colleges)`. Render. In the R Terminal, run `show_file("analysis.qmd", chunk = "Last")`. CP/CR.
 
 ```{r temperance-4}
 question_text(NULL,
@@ -1728,7 +1728,7 @@ Conditioning on two variables gives us a two-dimensional predicted surface --- h
 
 ### Exercise 6
 
-Modify the previous chunk to add `draw = FALSE` to the `plot_predictions()` call. Render. Copy the printed tibble from the rendered HTML below.
+Modify the previous chunk to add `draw = FALSE` to the `plot_predictions()` call. Render. In the R Terminal, run `show_file("analysis.qmd", chunk = "Last")`. CP/CR.
 
 ```{r temperance-6}
 question_text(NULL,
@@ -1847,12 +1847,56 @@ Rearrange the material in your QMD so the order is graphic, then summary paragra
 
 ```{r temperance-11}
 question_text(NULL,
-  message = "    > show_file(\"analysis.qmd\")\n    ---\n    title: \"Colleges\"\n    author: \"<your name>\"\n    execute:\n      echo: false\n    ---\n    \n    ```{r}\n    #| message: false\n    library(tidyverse)\n    library(tidymodels)\n    library(primer.data)\n    library(broom)\n    library(marginaleffects)\n    ```\n    \n    ```{r}\n    x <- colleges |>\n      select(tuition, grad_rate, selectivity) |>\n      filter(tuition > 2) |>\n      drop_na()\n    ```\n    \n    ```{r}\n    #| cache: true\n    fit_colleges <- linear_reg() |>\n      set_engine(\"lm\") |>\n      fit(grad_rate ~ tuition + selectivity, data = x)\n    ```\n    \n    ```{r}\n    plot_predictions(fit_colleges, condition = c(\"tuition\", \"selectivity\"), draw = FALSE) |>\n      ggplot(aes(x = tuition, y = estimate, color = selectivity)) +\n      geom_ribbon(aes(ymin = conf.low, ymax = conf.high, fill = selectivity),\n                  alpha = 0.15, color = NA) +\n      geom_line(size = 1) +\n      labs(\n        title = \"Predicted Graduation Rate by Tuition and Selectivity\",\n        subtitle = \"Within each selectivity tier, every $10k of tuition adds ~9 percentage points\",\n        x = \"Tuition ($10,000)\", y = \"Predicted Graduation Rate\",\n        color = \"Selectivity\", fill = \"Selectivity\",\n        caption = \"Source: IPEDS 2013 via primer.data\"\n      ) +\n      theme_minimal()\n    ```\n    \n    Where students go to college and what they pay for it varies enormously, and so does the likelihood that they will finish. We help today's students choose by examining how graduation rate varies with tuition and selectivity, using 2013 IPEDS data on roughly 900 US four-year colleges and universities --- the most recent reliable national snapshot we have. The 13-year gap between our data and the question is a real concern: tuition has risen much faster than inflation since 2013, and the price/graduation relationship may have shifted. We model graduation rate as a normally distributed variable which is a linear function of tuition and selectivity. We estimate that within a given selectivity tier, each $10,000 of tuition is associated with about 9 percentage points higher graduation rate, with a 95% confidence interval of 7 to 11 percentage points; Elite colleges have graduation rates about 20 percentage points higher than Lowly Selective ones at comparable tuition.",
   answer(NULL, correct = TRUE),
-  allow_retry = FALSE,
+  allow_retry = TRUE,
+  try_again_button = "Edit Answer",
   incorrect = NULL,
   rows = 10)
 ```
+
+###
+
+<pre><code>
+---
+title: "Colleges"
+author: "&lt;your name&gt;"
+execute:
+  echo: false
+---
+
+#| message: false
+library(tidyverse)
+library(tidymodels)
+library(primer.data)
+library(broom)
+library(marginaleffects)
+
+x <- colleges |>
+  select(tuition, grad_rate, selectivity) |>
+  filter(tuition > 2) |>
+  drop_na()
+
+#| cache: true
+fit_colleges <- linear_reg() |>
+  set_engine("lm") |>
+  fit(grad_rate ~ tuition + selectivity, data = x)
+
+plot_predictions(fit_colleges, condition = c("tuition", "selectivity"), draw = FALSE) |>
+  ggplot(aes(x = tuition, y = estimate, color = selectivity)) +
+  geom_ribbon(aes(ymin = conf.low, ymax = conf.high, fill = selectivity),
+              alpha = 0.15, color = NA) +
+  geom_line(size = 1) +
+  labs(
+    title = "Predicted Graduation Rate by Tuition and Selectivity",
+    subtitle = "Within each selectivity tier, every $10k of tuition adds ~9 percentage points",
+    x = "Tuition ($10,000)", y = "Predicted Graduation Rate",
+    color = "Selectivity", fill = "Selectivity",
+    caption = "Source: IPEDS 2013 via primer.data"
+  ) +
+  theme_minimal()
+
+Where students go to college and what they pay for it varies enormously, and so does the likelihood that they will finish. We help today's students choose by examining how graduation rate varies with tuition and selectivity, using 2013 IPEDS data on roughly 900 US four-year colleges and universities --- the most recent reliable national snapshot we have. The 13-year gap between our data and the question is a real concern: tuition has risen much faster than inflation since 2013, and the price/graduation relationship may have shifted. We model graduation rate as a normally distributed variable which is a linear function of tuition and selectivity. We estimate that within a given selectivity tier, each $10,000 of tuition is associated with about 9 percentage points higher graduation rate, with a 95% confidence interval of 7 to 11 percentage points; Elite colleges have graduation rates about 20 percentage points higher than Lowly Selective ones at comparable tuition.
+</code></pre>
 
 ###
 

@@ -501,7 +501,7 @@ cat(
 
 ### Exercise 11
 
-Because `recruits` is already prepared (filtered to ages 18--27, restricted to `height`, `sex`, and `age`, and missing rows dropped), there is no data-prep code to write. Take a moment to verify the breakdown that matters most for what comes next. In `analysis.qmd`, add a chunk that runs `recruits |> count(sex)`. Render. Copy the printed tibble from the rendered HTML below.
+Because `recruits` is already prepared (filtered to ages 18--27, restricted to `height`, `sex`, and `age`, and missing rows dropped), there is no data-prep code to write. Take a moment to verify the breakdown that matters most for what comes next. In `analysis.qmd`, add a chunk that runs `recruits |> count(sex)`. Render. In the R Terminal, run `show_file("analysis.qmd", chunk = "Last")`. CP/CR.
 
 ```{r wisdom-11}
 question_text(NULL,
@@ -1085,7 +1085,7 @@ The abstract data generating mechanism shown in the preamble uses generic variab
 
 ### Exercise 2
 
-Because our outcome variable is continuous, add a code chunk to `analysis.qmd` that begins building the model with `linear_reg(engine = "lm")`. Render. Copy the printed model object from the rendered HTML.
+Because our outcome variable is continuous, add a code chunk to `analysis.qmd` that begins building the model with `linear_reg(engine = "lm")`. Render. In the R Terminal, run `show_file("analysis.qmd", chunk = "Last")`. CP/CR.
 
 ```{r courage-2}
 question_text(NULL,
@@ -1109,7 +1109,7 @@ linear_reg(engine = "lm")
 
 ### Exercise 3
 
-Extend the chunk in `analysis.qmd` to `linear_reg(engine = "lm") |> fit(height ~ sex, data = recruits)`. This is our first candidate model: outcome on the binary `sex`. Render. Copy the printed fit object from the rendered HTML.
+Extend the chunk in `analysis.qmd` to `linear_reg(engine = "lm") |> fit(height ~ sex, data = recruits)`. This is our first candidate model: outcome on the binary `sex`. Render. In the R Terminal, run `show_file("analysis.qmd", chunk = "Last")`. CP/CR.
 
 ```{r courage-3}
 question_text(NULL,
@@ -1163,7 +1163,7 @@ Notice the language: *"when we compare two groups,"* not *"raising sex by one un
 
 ### Exercise 5
 
-Change the formula to `fit(height ~ age, data = recruits)`. This refits with `age`, a continuous covariate, instead of `sex`. Render. Copy the printed fit object from the rendered HTML.
+Change the formula to `fit(height ~ age, data = recruits)`. This refits with `age`, a continuous covariate, instead of `sex`. Render. In the R Terminal, run `show_file("analysis.qmd", chunk = "Last")`. CP/CR.
 
 ```{r courage-5}
 question_text(NULL,
@@ -1217,7 +1217,7 @@ The wide confidence interval that includes zero is exactly what *"this covariate
 
 ### Exercise 7
 
-We've settled on the final fit. In `analysis.qmd`, add a new code chunk that assigns the result of `linear_reg() |> set_engine("lm") |> fit(height ~ sex, data = recruits)` to `fit_recruits`, then on the next line prints `fit_recruits`. Render. Copy the printed model summary from the rendered HTML below.
+We've settled on the final fit. In `analysis.qmd`, add a new code chunk that assigns the result of `linear_reg() |> set_engine("lm") |> fit(height ~ sex, data = recruits)` to `fit_recruits`, then on the next line prints `fit_recruits`. Render. In the R Terminal, run `show_file("analysis.qmd", chunk = "Last")`. CP/CR.
 
 ```{r courage-7}
 question_text(NULL,
@@ -1332,7 +1332,7 @@ A data generating mechanism is just a formula, something which we can write down
 
 ### Exercise 12
 
-Start a new working chunk below the cached `fit_recruits` chunk that runs `tidy(fit_recruits, conf.int = TRUE)`. This returns 95% intervals for all the parameters in our model. Render. Copy the printed tibble from the rendered HTML.
+Start a new working chunk below the cached `fit_recruits` chunk that runs `tidy(fit_recruits, conf.int = TRUE)`. This returns 95% intervals for all the parameters in our model. Render. In the R Terminal, run `show_file("analysis.qmd", chunk = "Last")`. CP/CR.
 
 ```{r courage-12}
 question_text(NULL,
@@ -1495,7 +1495,7 @@ Data science projects begin with a decision which we face. To make that decision
 
 ### Exercise 4
 
-In `analysis.qmd`, add a chunk that runs `predictions(fit_recruits)`. Render. Copy the first few rows of the printed output from the rendered HTML below.
+In `analysis.qmd`, add a chunk that runs `predictions(fit_recruits)`. Render. In the R Terminal, run `show_file("analysis.qmd", chunk = "Last")`. CP/CR.
 
 ```{r temperance-4}
 question_text(NULL,
@@ -1543,7 +1543,7 @@ You should see two point estimates (one for Female, one for Male) with 95% confi
 
 ### Exercise 6
 
-Modify the previous chunk to add `draw = FALSE` to the `plot_predictions()` call. Render. Copy the printed tibble from the rendered HTML below.
+Modify the previous chunk to add `draw = FALSE` to the `plot_predictions()` call. Render. In the R Terminal, run `show_file("analysis.qmd", chunk = "Last")`. CP/CR.
 
 ```{r temperance-6}
 question_text(NULL,
@@ -1673,12 +1673,48 @@ CP/CR.
 
 ```{r temperance-11}
 question_text(NULL,
-  message = "    > show_file(\"analysis.qmd\")\n    ---\n    title: \"Recruits\"\n    author: \"<your name>\"\n    execute:\n      echo: false\n    ---\n    \n    ```{r}\n    #| message: false\n    library(tidyverse)\n    library(tidymodels)\n    library(primer.tutorials)\n    library(broom)\n    library(marginaleffects)\n    ```\n    \n    ```{r}\n    #| cache: true\n    fit_recruits <- linear_reg() |>\n      set_engine(\"lm\") |>\n      fit(height ~ sex, data = recruits)\n    ```\n    \n    ```{r}\n    plot_predictions(fit_recruits, condition = \"sex\", draw = FALSE) |>\n      ggplot(aes(x = sex, y = estimate)) +\n      geom_pointrange(aes(ymin = conf.low, ymax = conf.high)) +\n      labs(\n        title = \"Forecast Height for USMC Recruits\",\n        subtitle = \"Male recruits are expected to be about 9 cm taller\",\n        x = \"Sex\", y = \"Expected Height (cm)\",\n        caption = \"Source: 50-row sample from NHANES via primer.tutorials::recruits\"\n      ) +\n      theme_minimal()\n    ```\n    \n    People vary in height, and that variation is strongly patterned by sex. Using a 50-row teaching sample drawn from the National Health and Nutrition Examination Survey (NHANES, conducted by the Centers for Disease Control and Prevention), we seek to estimate the average height of male and female USMC recruits for the coming year. One concern is that USMC recruits are more physically fit than the general young-adult population and so may be systematically taller, meaning that the NHANES-based estimates probably understate recruit heights. We model height as a normally distributed variable which is a linear function of sex. We estimate that the average male recruit will be about 175 cm tall and the average female recruit about 166 cm, with confidence intervals that are visibly wider for the female estimate because there are only ten female rows in our sample.",
   answer(NULL, correct = TRUE),
-  allow_retry = FALSE,
+  allow_retry = TRUE,
+  try_again_button = "Edit Answer",
   incorrect = NULL,
   rows = 10)
 ```
+
+###
+
+<pre><code>
+---
+title: "Recruits"
+author: "&lt;your name&gt;"
+execute:
+  echo: false
+---
+
+#| message: false
+library(tidyverse)
+library(tidymodels)
+library(primer.tutorials)
+library(broom)
+library(marginaleffects)
+
+#| cache: true
+fit_recruits <- linear_reg() |>
+  set_engine("lm") |>
+  fit(height ~ sex, data = recruits)
+
+plot_predictions(fit_recruits, condition = "sex", draw = FALSE) |>
+  ggplot(aes(x = sex, y = estimate)) +
+  geom_pointrange(aes(ymin = conf.low, ymax = conf.high)) +
+  labs(
+    title = "Forecast Height for USMC Recruits",
+    subtitle = "Male recruits are expected to be about 9 cm taller",
+    x = "Sex", y = "Expected Height (cm)",
+    caption = "Source: 50-row sample from NHANES via primer.tutorials::recruits"
+  ) +
+  theme_minimal()
+
+People vary in height, and that variation is strongly patterned by sex. Using a 50-row teaching sample drawn from the National Health and Nutrition Examination Survey (NHANES, conducted by the Centers for Disease Control and Prevention), we seek to estimate the average height of male and female USMC recruits for the coming year. One concern is that USMC recruits are more physically fit than the general young-adult population and so may be systematically taller, meaning that the NHANES-based estimates probably understate recruit heights. We model height as a normally distributed variable which is a linear function of sex. We estimate that the average male recruit will be about 175 cm tall and the average female recruit about 166 cm, with confidence intervals that are visibly wider for the female estimate because there are only ten female rows in our sample.
+</code></pre>
 
 ###
 

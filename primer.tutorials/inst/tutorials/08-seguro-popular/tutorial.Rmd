@@ -335,7 +335,7 @@ The Preceptor Table only includes the variables mentioned in the question; in ca
 
 ### Exercise 3
 
-Before we explore the data, we need to prepare it. In `analysis.qmd`, add a new code chunk that builds `x` --- the analysis tibble we will work from for the rest of this tutorial --- by selecting `treatment`, `t2_health_exp_3m`, `age`, `sex`, and `education` from `sps`, dropping any rows with missing values, and recoding `treatment` as a factor with `"Not enrolled"` as the reference level. Then on the next line, print `head(x)`. Render. Copy the printed first few rows from the rendered HTML below.
+Before we explore the data, we need to prepare it. In `analysis.qmd`, add a new code chunk that builds `x` --- the analysis tibble we will work from for the rest of this tutorial --- by selecting `treatment`, `t2_health_exp_3m`, `age`, `sex`, and `education` from `sps`, dropping any rows with missing values, and recoding `treatment` as a factor with `"Not enrolled"` as the reference level. Then on the next line, print `head(x)`. Render. In the R Terminal, run `show_file("analysis.qmd", chunk = "Last")`. CP/CR.
 
 ```{r wisdom-3}
 question_text(NULL,
@@ -684,7 +684,7 @@ cat(
 
 ### Exercise 15
 
-Take a moment to confirm the structure of our analysis sample. In `analysis.qmd`, add a chunk that runs `x |> count(treatment)`. Render. Copy the printed tibble from the rendered HTML.
+Take a moment to confirm the structure of our analysis sample. In `analysis.qmd`, add a chunk that runs `x |> count(treatment)`. Render. In the R Terminal, run `show_file("analysis.qmd", chunk = "Last")`. CP/CR.
 
 ```{r wisdom-15}
 question_text(NULL,
@@ -1294,7 +1294,7 @@ Justice fixed the structural choices --- continuous outcome, linear regression, 
 
 ### Exercise 2
 
-Because our outcome variable is continuous, add a code chunk to `analysis.qmd` that begins building the model with `linear_reg(engine = "lm")`. Render. Copy the printed model object from the rendered HTML.
+Because our outcome variable is continuous, add a code chunk to `analysis.qmd` that begins building the model with `linear_reg(engine = "lm")`. Render. In the R Terminal, run `show_file("analysis.qmd", chunk = "Last")`. CP/CR.
 
 ```{r courage-2}
 question_text(NULL,
@@ -1318,7 +1318,7 @@ linear_reg(engine = "lm")
 
 ### Exercise 3
 
-Extend the chunk in `analysis.qmd` to `linear_reg(engine = "lm") |> fit(t2_health_exp_3m ~ treatment, data = x)`. This is the central causal model: outcome on the binary, randomized `treatment`. Render. Copy the printed fit object from the rendered HTML.
+Extend the chunk in `analysis.qmd` to `linear_reg(engine = "lm") |> fit(t2_health_exp_3m ~ treatment, data = x)`. This is the central causal model: outcome on the binary, randomized `treatment`. Render. In the R Terminal, run `show_file("analysis.qmd", chunk = "Last")`. CP/CR.
 
 ```{r courage-3}
 question_text(NULL,
@@ -1372,7 +1372,7 @@ Causal language is appropriate here because community-level treatment was random
 
 ### Exercise 5
 
-Refit with the formula `fit(t2_health_exp_3m ~ treatment + age, data = x)`, adjusting for `age`. This adds a continuous covariate to the causal model. Render. Copy the printed fit object from the rendered HTML.
+Refit with the formula `fit(t2_health_exp_3m ~ treatment + age, data = x)`, adjusting for `age`. This adds a continuous covariate to the causal model. Render. In the R Terminal, run `show_file("analysis.qmd", chunk = "Last")`. CP/CR.
 
 ```{r courage-5}
 question_text(NULL,
@@ -1426,7 +1426,7 @@ Notice the language for `age`: *"when we compare two groups of households... in 
 
 ### Exercise 7
 
-We've settled on the final fit. In `analysis.qmd`, add a new code chunk that assigns the result of `linear_reg(engine = "lm") |> fit(t2_health_exp_3m ~ treatment, data = x)` to `fit_sp`, then on the next line prints `fit_sp`. Render. Copy the printed model summary from the rendered HTML below.
+We've settled on the final fit. In `analysis.qmd`, add a new code chunk that assigns the result of `linear_reg(engine = "lm") |> fit(t2_health_exp_3m ~ treatment, data = x)` to `fit_sp`, then on the next line prints `fit_sp`. Render. In the R Terminal, run `show_file("analysis.qmd", chunk = "Last")`. CP/CR.
 
 ```{r courage-7}
 question_text(NULL,
@@ -1612,7 +1612,7 @@ In a good model, the distribution of fitted values looks like the distribution o
 
 ### Exercise 14
 
-In `analysis.qmd`, add a chunk that runs `tidy(fit_sp, conf.int = TRUE)`. This returns 95% intervals for all the parameters in our model. Render. Copy the printed tibble from the rendered HTML.
+In `analysis.qmd`, add a chunk that runs `tidy(fit_sp, conf.int = TRUE)`. This returns 95% intervals for all the parameters in our model. Render. In the R Terminal, run `show_file("analysis.qmd", chunk = "Last")`. CP/CR.
 
 ```{r courage-14}
 question_text(NULL,
@@ -1784,7 +1784,7 @@ To make a decision wisely, we need good estimates of many unknown numbers. Drill
 
 ### Exercise 4
 
-In `analysis.qmd`, add a chunk that runs `predictions(fit_sp)`. Render. Copy the first few rows of the printed output from the rendered HTML below.
+In `analysis.qmd`, add a chunk that runs `predictions(fit_sp)`. Render. In the R Terminal, run `show_file("analysis.qmd", chunk = "Last")`. CP/CR.
 
 ```{r temperance-4}
 question_text(NULL,
@@ -1832,7 +1832,7 @@ The plot shows two point estimates --- one for *Not enrolled* near 794 pesos, on
 
 ### Exercise 6
 
-Modify the previous chunk to add `draw = FALSE` to the `plot_predictions()` call. Render. Copy the printed tibble from the rendered HTML below.
+Modify the previous chunk to add `draw = FALSE` to the `plot_predictions()` call. Render. In the R Terminal, run `show_file("analysis.qmd", chunk = "Last")`. CP/CR.
 
 ```{r temperance-6}
 question_text(NULL,

@@ -136,7 +136,7 @@ When we look at a histogram of an experiment's results, what we are really askin
 
 A finished `analysis.qmd` has a setup chunk (libraries) and --- as the analysis grows --- a small number of working chunks plus, when an artifact will be reused across exercises, one or two "create" chunks dedicated to those artifacts. We will need a reusable function for throwing two dice. We will build it the natural way: write the function and use it in one chunk first; the next three exercises then refactor it into a cached "create" chunk (one exercise to clean the chunk, one to turn caching on, one to keep the cache out of git).
 
-In `analysis.qmd`, add a new code chunk that defines a function `throw_dice(n, weights = rep(1/6, 6))` simulating `n` rolls of two dice (with the per-face probability vector `weights` defaulting to a fair die) and returning the sum of each pair as a numeric vector of length `n`. In the same chunk, set the seed with `set.seed(10)` and call `throw_dice(5)`. Render. Copy the printed five-number vector from the rendered HTML below.
+In `analysis.qmd`, add a new code chunk that defines a function `throw_dice(n, weights = rep(1/6, 6))` simulating `n` rolls of two dice (with the per-face probability vector `weights` defaulting to a fair die) and returning the sum of each pair as a numeric vector of length `n`. In the same chunk, set the seed with `set.seed(10)` and call `throw_dice(5)`. Render. In the R Terminal, run `show_file("analysis.qmd", chunk = "Last")`. CP/CR.
 
 ```{r the-data-generating-mechanism-1}
 question_text(NULL,
@@ -536,7 +536,7 @@ The 6 bar is plainly taller than the others, and the five non-6 bars are roughly
 
 ### Exercise 4
 
-Each individual roll either supports the loaded-die hypothesis or undermines it. Modify the working chunk to print a small tibble with one row per face listing the **likelihood ratio** of that face under loaded versus fair: $P(\text{face} \mid \text{loaded}) / P(\text{face} \mid \text{fair})$. Render. Copy the printed tibble from the rendered HTML below.
+Each individual roll either supports the loaded-die hypothesis or undermines it. Modify the working chunk to print a small tibble with one row per face listing the **likelihood ratio** of that face under loaded versus fair: $P(\text{face} \mid \text{loaded}) / P(\text{face} \mid \text{fair})$. Render. In the R Terminal, run `show_file("analysis.qmd", chunk = "Last")`. CP/CR.
 
 ```{r measuring-surprise-4}
 question_text(NULL,
@@ -565,7 +565,7 @@ Rolling a 6 is **1.8 times more likely** under loaded than under fair; rolling a
 
 The next few exercises combine many per-roll likelihood ratios into a single posterior probability. The cleanest way to do that is to *sum the logs* (not multiply the ratios): logs add instead of multiply, which is numerically stabler over hundreds of rolls and easier to plot. With a 50/50 prior and independent rolls, the math is simple: sum the per-roll log likelihood ratios, then convert the resulting log-odds to a probability via $1 / (1 + e^{-\text{log-odds}})$.
 
-Modify the working chunk to define a helper function `log_lr(rolls)` that, given a vector of rolls (each value 1-6), returns a vector of per-roll log likelihood ratios of loaded over fair (using the loaded weights P(6) = 0.30, others 0.14). Then in the same chunk, use `log_lr()` on `rolls_20` from Exercise 2 to print the posterior probability that the die is loaded, rounded to four decimals. Render. Copy the printed number from the rendered HTML below.
+Modify the working chunk to define a helper function `log_lr(rolls)` that, given a vector of rolls (each value 1-6), returns a vector of per-roll log likelihood ratios of loaded over fair (using the loaded weights P(6) = 0.30, others 0.14). Then in the same chunk, use `log_lr()` on `rolls_20` from Exercise 2 to print the posterior probability that the die is loaded, rounded to four decimals. Render. In the R Terminal, run `show_file("analysis.qmd", chunk = "Last")`. CP/CR.
 
 ```{r measuring-surprise-5}
 question_text(NULL,
@@ -650,7 +650,7 @@ log_lr <- function(rolls) {
 
 ### Exercise 8
 
-Now do the same posterior calculation for the 200-roll sample. Start a new working chunk below the cached `log_lr` chunk: regenerate `rolls_200` (`set.seed(10)`, then `sample(1:6, 200, replace = TRUE, prob = c(0.14, 0.14, 0.14, 0.14, 0.14, 0.30))`), then print `round(1 / (1 + exp(-sum(log_lr(rolls_200)))), 6)`. Render. Copy the printed number from the rendered HTML below.
+Now do the same posterior calculation for the 200-roll sample. Start a new working chunk below the cached `log_lr` chunk: regenerate `rolls_200` (`set.seed(10)`, then `sample(1:6, 200, replace = TRUE, prob = c(0.14, 0.14, 0.14, 0.14, 0.14, 0.30))`), then print `round(1 / (1 + exp(-sum(log_lr(rolls_200)))), 6)`. Render. In the R Terminal, run `show_file("analysis.qmd", chunk = "Last")`. CP/CR.
 
 ```{r measuring-surprise-8}
 question_text(NULL,

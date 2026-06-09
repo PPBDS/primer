@@ -546,7 +546,7 @@ cat(
 
 ### Exercise 10
 
-The model in this tutorial uses a derived covariate, `voter_class`, built by summing past primary and general turnout in 2000, 2002, and 2004 and binning the total into three categories. In `analysis.qmd`, add a new code chunk that creates a tibble called `x` by taking `shaming`, building a `civ_engage` column from the six 2000/2002/2004 primary and general turnout columns, selecting `primary_06`, `treatment`, `sex`, `age`, and `civ_engage`, dropping missing values, recoding `civ_engage` into a 3-level factor `voter_class` with levels in the order `Rarely Vote`, `Sometimes Vote`, `Always Vote`, recoding `primary_06` as a factor `voted`, and dropping missing values once more. Then on the next line print `head(x)`. Render. Copy the printed first few rows from the rendered HTML below.
+The model in this tutorial uses a derived covariate, `voter_class`, built by summing past primary and general turnout in 2000, 2002, and 2004 and binning the total into three categories. In `analysis.qmd`, add a new code chunk that creates a tibble called `x` by taking `shaming`, building a `civ_engage` column from the six 2000/2002/2004 primary and general turnout columns, selecting `primary_06`, `treatment`, `sex`, `age`, and `civ_engage`, dropping missing values, recoding `civ_engage` into a 3-level factor `voter_class` with levels in the order `Rarely Vote`, `Sometimes Vote`, `Always Vote`, recoding `primary_06` as a factor `voted`, and dropping missing values once more. Then on the next line print `head(x)`. Render. In the R Terminal, run `show_file("analysis.qmd", chunk = "Last")`. CP/CR.
 
 ```{r wisdom-10}
 question_text(NULL,
@@ -1335,7 +1335,7 @@ Justice settled the structural choices --- binary outcome, Bernoulli family, log
 
 ### Exercise 2
 
-Because our outcome variable is binary, in `analysis.qmd`, add a code chunk that begins building the model with `logistic_reg(engine = "glm")`. Render. Copy the printed model object from the rendered HTML.
+Because our outcome variable is binary, in `analysis.qmd`, add a code chunk that begins building the model with `logistic_reg(engine = "glm")`. Render. In the R Terminal, run `show_file("analysis.qmd", chunk = "Last")`. CP/CR.
 
 ```{r courage-2}
 question_text(NULL,
@@ -1359,7 +1359,7 @@ logistic_reg(engine = "glm")
 
 ### Exercise 3
 
-In `analysis.qmd`, extend the chunk to `linear_reg(engine = "lm") |> fit(voted ~ treatment, data = x)`. This is the simplest causal model: outcome on the multi-arm treatment, no covariates. Render. Copy the printed fit object from the rendered HTML.
+In `analysis.qmd`, extend the chunk to `linear_reg(engine = "lm") |> fit(voted ~ treatment, data = x)`. This is the simplest causal model: outcome on the multi-arm treatment, no covariates. Render. In the R Terminal, run `show_file("analysis.qmd", chunk = "Last")`. CP/CR.
 
 ```{r courage-3}
 question_text(NULL,
@@ -1412,7 +1412,7 @@ Causal language --- *causal effect* --- is appropriate here because random assig
 
 ### Exercise 5
 
-Refit with an adjustment covariate, using the formula `fit(voted ~ treatment + age, data = x)`. In an observational study, adjusting for a real covariate often moves the treatment estimate substantially, because adjustment is how we deal with confounding. In a randomized experiment, treatment assignment is by construction independent of any pre-treatment covariate, so adjustment should leave the treatment estimate essentially unchanged. Let's check. Render. Copy the printed fit object from the rendered HTML.
+Refit with an adjustment covariate, using the formula `fit(voted ~ treatment + age, data = x)`. In an observational study, adjusting for a real covariate often moves the treatment estimate substantially, because adjustment is how we deal with confounding. In a randomized experiment, treatment assignment is by construction independent of any pre-treatment covariate, so adjustment should leave the treatment estimate essentially unchanged. Let's check. Render. In the R Terminal, run `show_file("analysis.qmd", chunk = "Last")`. CP/CR.
 
 ```{r courage-5}
 question_text(NULL,
@@ -1465,7 +1465,7 @@ The fact that the treatment estimate is robust to adjustment is itself evidence 
 
 ### Exercise 7
 
-Fit the final model in `analysis.qmd` with the formula `fit(voted ~ age + sex + treatment*voter_class, data = x)`. The `treatment*voter_class` term means *treatment effects are allowed to vary by voter class* --- the kind of heterogeneity the EDA plot in Wisdom hinted at. Render. Copy the printed fit object from the rendered HTML.
+Fit the final model in `analysis.qmd` with the formula `fit(voted ~ age + sex + treatment*voter_class, data = x)`. The `treatment*voter_class` term means *treatment effects are allowed to vary by voter class* --- the kind of heterogeneity the EDA plot in Wisdom hinted at. Render. In the R Terminal, run `show_file("analysis.qmd", chunk = "Last")`. CP/CR.
 
 ```{r courage-7}
 question_text(NULL,
@@ -1517,7 +1517,7 @@ In an interaction model, the main effect of `treatment` is not *the* treatment e
 
 ### Exercise 9
 
-We've settled on the final fit. In `analysis.qmd`, add a new code chunk that assigns the result of `logistic_reg(engine = "glm") |> fit(voted ~ age + sex + treatment*voter_class, data = x)` to `fit_shaming`, then on the next line prints `fit_shaming`. Render. Copy the printed model summary from the rendered HTML below.
+We've settled on the final fit. In `analysis.qmd`, add a new code chunk that assigns the result of `logistic_reg(engine = "glm") |> fit(voted ~ age + sex + treatment*voter_class, data = x)` to `fit_shaming`, then on the next line prints `fit_shaming`. Render. In the R Terminal, run `show_file("analysis.qmd", chunk = "Last")`. CP/CR.
 
 ```{r courage-9}
 question_text(NULL,
@@ -1669,7 +1669,7 @@ Commit and push.
 
 ### Exercise 15
 
-In `analysis.qmd`, add a chunk that runs `tidy(fit_shaming, conf.int = TRUE)`. This returns 95% intervals for all the parameters in our model. Render. Copy the printed tibble from the rendered HTML.
+In `analysis.qmd`, add a chunk that runs `tidy(fit_shaming, conf.int = TRUE)`. This returns 95% intervals for all the parameters in our model. Render. In the R Terminal, run `show_file("analysis.qmd", chunk = "Last")`. CP/CR.
 
 ```{r courage-15}
 question_text(NULL,
@@ -1839,7 +1839,7 @@ A specific question must specify a number to compute. *"How does the postcard tr
 
 ### Exercise 4
 
-`avg_comparisons()` computes average causal effects on the outcome scale. In `analysis.qmd`, add a chunk that runs `avg_comparisons(extract_fit_engine(fit_shaming), variables = "treatment")`. The `extract_fit_engine()` step is required because `marginaleffects` needs the underlying `glm` object, not the `parsnip` wrapper. Render. Copy the printed output from the rendered HTML below.
+`avg_comparisons()` computes average causal effects on the outcome scale. In `analysis.qmd`, add a chunk that runs `avg_comparisons(extract_fit_engine(fit_shaming), variables = "treatment")`. The `extract_fit_engine()` step is required because `marginaleffects` needs the underlying `glm` object, not the `parsnip` wrapper. Render. In the R Terminal, run `show_file("analysis.qmd", chunk = "Last")`. CP/CR.
 
 ```{r temperance-4}
 question_text(NULL,
@@ -1863,7 +1863,7 @@ Each row is the average difference in *predicted probability of voting* between 
 
 ### Exercise 5
 
-Now break the comparisons down by voter class. In `analysis.qmd`, add a chunk that runs `avg_comparisons(extract_fit_engine(fit_shaming), variables = "treatment", by = "voter_class")`. Render. Copy the printed output from the rendered HTML below.
+Now break the comparisons down by voter class. In `analysis.qmd`, add a chunk that runs `avg_comparisons(extract_fit_engine(fit_shaming), variables = "treatment", by = "voter_class")`. Render. In the R Terminal, run `show_file("analysis.qmd", chunk = "Last")`. CP/CR.
 
 ```{r temperance-5}
 question_text(NULL,
@@ -1914,7 +1914,7 @@ Two-variable conditioning shows the effect surface of the model: predicted proba
 
 ### Exercise 7
 
-Modify the previous `plot_predictions` chunk in `analysis.qmd` to add `draw = FALSE` to the call. Render. Copy the first few rows of the printed tibble from the rendered HTML below.
+Modify the previous `plot_predictions` chunk in `analysis.qmd` to add `draw = FALSE` to the call. Render. In the R Terminal, run `show_file("analysis.qmd", chunk = "Last")`. CP/CR.
 
 ```{r temperance-7}
 question_text(NULL,
@@ -2050,12 +2050,65 @@ CP/CR.
 
 ```{r temperance-12}
 question_text(NULL,
-  message = "    > show_file(\"analysis.qmd\")\n    ---\n    title: \"Shaming\"\n    author: \"<your name>\"\n    execute:\n      echo: false\n    ---\n    \n    ```{r}\n    #| message: false\n    library(tidyverse)\n    library(tidymodels)\n    library(primer.data)\n    library(broom)\n    library(marginaleffects)\n    ```\n    \n    ```{r}\n    x <- shaming |>\n      mutate(civ_engage = primary_00 + primary_02 + primary_04 +\n                          general_00 + general_02 + general_04) |>\n      select(primary_06, treatment, sex, age, civ_engage) |>\n      drop_na() |>\n      mutate(voter_class = factor(case_when(\n        civ_engage %in% c(5, 6) ~ \"Always Vote\",\n        civ_engage %in% c(3, 4) ~ \"Sometimes Vote\",\n        civ_engage %in% c(1, 2) ~ \"Rarely Vote\"),\n        levels = c(\"Rarely Vote\", \"Sometimes Vote\", \"Always Vote\"))) |>\n      mutate(voted = as.factor(primary_06)) |>\n      drop_na()\n    ```\n    \n    ```{r}\n    #| cache: true\n    fit_shaming <- logistic_reg(engine = \"glm\") |>\n      fit(voted ~ age + sex + treatment*voter_class, data = x)\n    ```\n    \n    ```{r}\n    plot_predictions(extract_fit_engine(fit_shaming),\n                     condition = c(\"treatment\", \"voter_class\"),\n                     draw = FALSE) |>\n      ggplot(aes(x = treatment, y = estimate, color = voter_class)) +\n      geom_pointrange(aes(ymin = conf.low, ymax = conf.high), size = 0.7) +\n      scale_x_discrete(limits = c(\"No Postcard\", \"Civic Duty\", \"Hawthorne\",\n                                  \"Self\", \"Neighbors\")) +\n      scale_y_continuous(labels = scales::label_percent(), limits = c(0, 0.75)) +\n      facet_wrap(~ voter_class) +\n      labs(title = \"Predicted Turnout by Postcard and Voter Class\",\n           subtitle = \"Neighbors moves Sometimes/Always voters most\",\n           x = NULL, y = NULL, color = \"Voter Class\",\n           caption = \"Source: Gerber, Green, Larimer 2008 via primer.data::shaming\") +\n      theme_minimal() +\n      theme(legend.position = \"none\", axis.text.x = element_text(angle = 30, hjust = 1))\n    ```\n    \n    Voter mobilization is a perennial campaign question. Using the 344,084-voter Gerber-Green-Larimer 2006 randomized field experiment in Michigan, we estimate the average causal effect of the Neighbors postcard on the probability that a registered voter casts a ballot in the August 2006 primary. One concern is that random assignment happened at the household level, so our 95% intervals are mildly optimistic. We model voter turnout as a Bernoulli variable which is a logistic function of treatment, voter class, the treatment-by-voter-class interaction, age, and sex. We estimate that the Neighbors postcard raises the probability of voting by about 8.1 percentage points on average, with the effect concentrated among Sometimes/Always voters (8-9 pp) and notably smaller among Rarely Vote voters (4 pp).",
   answer(NULL, correct = TRUE),
-  allow_retry = FALSE,
+  allow_retry = TRUE,
+  try_again_button = "Edit Answer",
   incorrect = NULL,
   rows = 14)
 ```
+
+###
+
+<pre><code>
+---
+title: "Shaming"
+author: "&lt;your name&gt;"
+execute:
+  echo: false
+---
+
+#| message: false
+library(tidyverse)
+library(tidymodels)
+library(primer.data)
+library(broom)
+library(marginaleffects)
+
+x <- shaming |>
+  mutate(civ_engage = primary_00 + primary_02 + primary_04 +
+                      general_00 + general_02 + general_04) |>
+  select(primary_06, treatment, sex, age, civ_engage) |>
+  drop_na() |>
+  mutate(voter_class = factor(case_when(
+    civ_engage %in% c(5, 6) ~ "Always Vote",
+    civ_engage %in% c(3, 4) ~ "Sometimes Vote",
+    civ_engage %in% c(1, 2) ~ "Rarely Vote"),
+    levels = c("Rarely Vote", "Sometimes Vote", "Always Vote"))) |>
+  mutate(voted = as.factor(primary_06)) |>
+  drop_na()
+
+#| cache: true
+fit_shaming <- logistic_reg(engine = "glm") |>
+  fit(voted ~ age + sex + treatment*voter_class, data = x)
+
+plot_predictions(extract_fit_engine(fit_shaming),
+                 condition = c("treatment", "voter_class"),
+                 draw = FALSE) |>
+  ggplot(aes(x = treatment, y = estimate, color = voter_class)) +
+  geom_pointrange(aes(ymin = conf.low, ymax = conf.high), size = 0.7) +
+  scale_x_discrete(limits = c("No Postcard", "Civic Duty", "Hawthorne",
+                              "Self", "Neighbors")) +
+  scale_y_continuous(labels = scales::label_percent(), limits = c(0, 0.75)) +
+  facet_wrap(~ voter_class) +
+  labs(title = "Predicted Turnout by Postcard and Voter Class",
+       subtitle = "Neighbors moves Sometimes/Always voters most",
+       x = NULL, y = NULL, color = "Voter Class",
+       caption = "Source: Gerber, Green, Larimer 2008 via primer.data::shaming") +
+  theme_minimal() +
+  theme(legend.position = "none", axis.text.x = element_text(angle = 30, hjust = 1))
+
+Voter mobilization is a perennial campaign question. Using the 344,084-voter Gerber-Green-Larimer 2006 randomized field experiment in Michigan, we estimate the average causal effect of the Neighbors postcard on the probability that a registered voter casts a ballot in the August 2006 primary. One concern is that random assignment happened at the household level, so our 95% intervals are mildly optimistic. We model voter turnout as a Bernoulli variable which is a logistic function of treatment, voter class, the treatment-by-voter-class interaction, age, and sex. We estimate that the Neighbors postcard raises the probability of voting by about 8.1 percentage points on average, with the effect concentrated among Sometimes/Always voters (8-9 pp) and notably smaller among Rarely Vote voters (4 pp).
+</code></pre>
 
 ###
 

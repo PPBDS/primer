@@ -113,7 +113,7 @@ The one number we wish we knew about the whole population --- here, the average 
 
 ### Exercise 3
 
-Add a code chunk to `analysis.qmd` that prints the `shaming` tibble (just `shaming` on its own line). Render, and copy the first few rows from the rendered HTML below.
+Add a code chunk to `analysis.qmd` that prints the `shaming` tibble (just `shaming` on its own line). Render. In the R Terminal, run `show_file("analysis.qmd", chunk = "Last")`. CP/CR.
 
 ```{r introduction-3}
 question_text(NULL,
@@ -143,7 +143,7 @@ In real life we never see the whole universe. We see only a sample. From that sa
 
 ### Exercise 1
 
-Start a working chunk in `analysis.qmd` that computes the mean of `age` in the `shaming` tibble (skipping missing values), stores it as `truth`, and prints it. Render. Copy the printed value from the rendered HTML below.
+Start a working chunk in `analysis.qmd` that computes the mean of `age` in the `shaming` tibble (skipping missing values), stores it as `truth`, and prints it. Render. In the R Terminal, run `show_file("analysis.qmd", chunk = "Last")`. CP/CR.
 
 ```{r sampling-and-the-standard-error-1}
 question_text(NULL,
@@ -168,7 +168,7 @@ For the rest of the tutorial, treat this number --- about 49.79 years --- as the
 
 ### Exercise 2
 
-Modify the working chunk to draw a reproducible sample of 50 voters from `shaming`, store it as `my_sample`, compute its sample mean as `sample_mean`, and print `sample_mean`. Use `set.seed(10)`. Render. Copy the printed sample mean from the rendered HTML below.
+Modify the working chunk to draw a reproducible sample of 50 voters from `shaming`, store it as `my_sample`, compute its sample mean as `sample_mean`, and print `sample_mean`. Use `set.seed(10)`. Render. In the R Terminal, run `show_file("analysis.qmd", chunk = "Last")`. CP/CR.
 
 ```{r sampling-and-the-standard-error-2}
 question_text(NULL,
@@ -195,7 +195,7 @@ Our sample mean is about 50.02 years; the truth is 49.79. Close but not identica
 
 ### Exercise 3
 
-The **standard error** of a sample mean is the sample's standard deviation divided by the square root of the sample size. Modify the working chunk to compute the standard error of `my_sample`'s mean, store it as `sample_se`, and print it. Render. Copy the printed value from the rendered HTML below.
+The **standard error** of a sample mean is the sample's standard deviation divided by the square root of the sample size. Modify the working chunk to compute the standard error of `my_sample`'s mean, store it as `sample_se`, and print it. Render. In the R Terminal, run `show_file("analysis.qmd", chunk = "Last")`. CP/CR.
 
 ```{r sampling-and-the-standard-error-3}
 question_text(NULL,
@@ -386,7 +386,7 @@ The Source Control change count should now drop back to whatever it was before t
 
 ### Exercise 9
 
-Let's count. Start a new working chunk below the cached `samples` chunk that computes and prints the fraction of the 1,000 intervals in `samples` that contain `truth` (`lower < truth & upper > truth`). Render. Copy the printed value from the rendered HTML below.
+Let's count. Start a new working chunk below the cached `samples` chunk that computes and prints the fraction of the 1,000 intervals in `samples` that contain `truth` (`lower < truth & upper > truth`). Render. In the R Terminal, run `show_file("analysis.qmd", chunk = "Last")`. CP/CR.
 
 ```{r sampling-and-the-standard-error-9}
 question_text(NULL,
@@ -453,7 +453,7 @@ In the previous section the sampling was *random* --- every voter in the univers
 
 Suppose a get-out-the-vote campaign's door-knock app, by quirk of its routing, makes voters over the age of 40 *three times as likely* to appear in a sample as voters 40 or younger. The voters themselves haven't changed; the universe is the same `shaming` tibble. Only the *mechanism* that pulls voters into the sample has changed.
 
-Start a new working chunk in `analysis.qmd` that draws a biased sample of 50 voters from `shaming`, where voters over 40 are three times as likely to be picked as voters aged 40 or younger. Store the result as `biased_sample`. Use `set.seed(10)`. Print the first few rows of `biased_sample`'s `age`, `primary_06`, and `sex` columns. Render. Copy the printed rows from the rendered HTML below.
+Start a new working chunk in `analysis.qmd` that draws a biased sample of 50 voters from `shaming`, where voters over 40 are three times as likely to be picked as voters aged 40 or younger. Store the result as `biased_sample`. Use `set.seed(10)`. Print the first few rows of `biased_sample`'s `age`, `primary_06`, and `sex` columns. Render. In the R Terminal, run `show_file("analysis.qmd", chunk = "Last")`. CP/CR.
 
 ```{r biased-sampling-1}
 question_text(NULL,
@@ -520,7 +520,7 @@ In the universe (`shaming`), about 76% of voters are over 40. In the unbiased sa
 
 ### Exercise 3
 
-Now compute and print the mean and standard error of `age` in `biased_sample` the same way we did in the previous section. Modify the working chunk so the last two lines print these two numbers. Render. Copy both printed values from the rendered HTML below.
+Now compute and print the mean and standard error of `age` in `biased_sample` the same way we did in the previous section. Modify the working chunk so the last two lines print these two numbers. Render. In the R Terminal, run `show_file("analysis.qmd", chunk = "Last")`. CP/CR.
 
 ```{r biased-sampling-3}
 question_text(NULL,
@@ -658,7 +658,7 @@ biased_samples <- tibble(trial = 1:1000) |>
 
 ### Exercise 7
 
-Start a new working chunk below the cached `biased_samples` chunk that computes and prints the fraction of the 1,000 intervals in `biased_samples` that contain `truth`. Render. Copy the printed value from the rendered HTML below.
+Start a new working chunk below the cached `biased_samples` chunk that computes and prints the fraction of the 1,000 intervals in `biased_samples` that contain `truth`. Render. In the R Terminal, run `show_file("analysis.qmd", chunk = "Last")`. CP/CR.
 
 ```{r biased-sampling-7}
 question_text(NULL,

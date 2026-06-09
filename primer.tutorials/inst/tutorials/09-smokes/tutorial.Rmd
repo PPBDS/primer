@@ -1006,7 +1006,7 @@ Remember that Courage creates the data generating mechanism.
 
 ### Exercise 1
 
-Because our outcome variable is binary, add a code chunk to `analysis.qmd` that begins building the model with `logistic_reg(engine = "glm")`. Render. Copy the printed model object from the rendered HTML.
+Because our outcome variable is binary, add a code chunk to `analysis.qmd` that begins building the model with `logistic_reg(engine = "glm")`. Render. In the R Terminal, run `show_file("analysis.qmd", chunk = "Last")`. CP/CR.
 
 ```{r courage-1}
 question_text(NULL,
@@ -1030,7 +1030,7 @@ logistic_reg(engine = "glm")
 
 ### Exercise 2
 
-Extend the chunk in `analysis.qmd` to `linear_reg(engine = "lm") |> fit(smoke ~ sex, data = smokes)`. This is the simplest candidate model: `smoke` regressed on the binary covariate `sex`. Render. Copy the printed fit object from the rendered HTML.
+Extend the chunk in `analysis.qmd` to `linear_reg(engine = "lm") |> fit(smoke ~ sex, data = smokes)`. This is the simplest candidate model: `smoke` regressed on the binary covariate `sex`. Render. In the R Terminal, run `show_file("analysis.qmd", chunk = "Last")`. CP/CR.
 
 ```{r courage-2}
 question_text(NULL,
@@ -1083,7 +1083,7 @@ The character variable `sex` becomes a 0/1 dummy called `sexMale`: 1 for Male, 0
 
 ### Exercise 4
 
-Fit a candidate that uses age instead, with the formula `fit(smoke ~ age, data = smokes)`. This swaps in the continuous covariate. Render. Copy the printed fit object from the rendered HTML.
+Fit a candidate that uses age instead, with the formula `fit(smoke ~ age, data = smokes)`. This swaps in the continuous covariate. Render. In the R Terminal, run `show_file("analysis.qmd", chunk = "Last")`. CP/CR.
 
 ```{r courage-4}
 question_text(NULL,
@@ -1136,7 +1136,7 @@ A coefficient whose CI just barely crosses zero is the harder pedagogical case. 
 
 ### Exercise 6
 
-Fit the final model in `analysis.qmd` with the formula `fit(smoke ~ age + sex, data = smokes)`. Render. Copy the printed fit object from the rendered HTML.
+Fit the final model in `analysis.qmd` with the formula `fit(smoke ~ age + sex, data = smokes)`. Render. In the R Terminal, run `show_file("analysis.qmd", chunk = "Last")`. CP/CR.
 
 ```{r courage-6}
 question_text(NULL,
@@ -1189,7 +1189,7 @@ The more variables we add, the harder it gets to interpret any one coefficient -
 
 ### Exercise 8
 
-We've settled on the final fit. In `analysis.qmd`, add a new code chunk that assigns the result of `logistic_reg(engine = "glm") |> fit(smoke ~ age + sex, data = smokes)` to `fit_smokes`, then on the next line prints `fit_smokes`. Render. Copy the printed model summary from the rendered HTML below.
+We've settled on the final fit. In `analysis.qmd`, add a new code chunk that assigns the result of `logistic_reg(engine = "glm") |> fit(smoke ~ age + sex, data = smokes)` to `fit_smokes`, then on the next line prints `fit_smokes`. Render. In the R Terminal, run `show_file("analysis.qmd", chunk = "Last")`. CP/CR.
 
 ```{r courage-8}
 question_text(NULL,
@@ -1352,7 +1352,7 @@ Commit and push.
 
 ### Exercise 15
 
-In `analysis.qmd`, add a chunk that runs `tidy(fit_smokes, conf.int = TRUE)`. This returns 95% intervals for all the parameters in our model. Render. Copy the printed tibble from the rendered HTML.
+In `analysis.qmd`, add a chunk that runs `tidy(fit_smokes, conf.int = TRUE)`. This returns 95% intervals for all the parameters in our model. Render. In the R Terminal, run `show_file("analysis.qmd", chunk = "Last")`. CP/CR.
 
 ```{r courage-15}
 question_text(NULL,
@@ -1504,7 +1504,7 @@ predictions(extract_fit_engine(fit_smokes),
                                  sex = c("Female", "Female", "Male", "Male")))
 ```
 
-The `extract_fit_engine()` step is required because `marginaleffects` needs the underlying `glm` object, not the `parsnip` wrapper. Render. Copy the printed output from the rendered HTML below.
+The `extract_fit_engine()` step is required because `marginaleffects` needs the underlying `glm` object, not the `parsnip` wrapper. Render. In the R Terminal, run `show_file("analysis.qmd", chunk = "Last")`. CP/CR.
 
 ```{r temperance-3}
 question_text(NULL,
@@ -1556,7 +1556,7 @@ Two-variable conditioning (`condition = c("age", "sex")`) shows the effect surfa
 
 Predictions tell us the level of the outcome at specific covariate values. *Comparisons* tell us how the outcome shifts when we change one covariate while holding others fixed. Most of the questions we ultimately ask --- *"how big is the sex difference?"*, *"how much does a 40-year age gap move things?"* --- are comparisons, not predictions.
 
-In `analysis.qmd`, add a chunk that runs `avg_comparisons(extract_fit_engine(fit_smokes), variables = "sex")`. Render. Copy the printed output from the rendered HTML below.
+In `analysis.qmd`, add a chunk that runs `avg_comparisons(extract_fit_engine(fit_smokes), variables = "sex")`. Render. In the R Terminal, run `show_file("analysis.qmd", chunk = "Last")`. CP/CR.
 
 ```{r temperance-5}
 question_text(NULL,
@@ -1580,7 +1580,7 @@ The estimate of 0.133 is the average difference in predicted probability of bein
 
 ### Exercise 6
 
-Modify the previous `plot_predictions` chunk in `analysis.qmd` to add `draw = FALSE` to the call. Render. Copy the first few rows of the printed tibble from the rendered HTML below.
+Modify the previous `plot_predictions` chunk in `analysis.qmd` to add `draw = FALSE` to the call. Render. In the R Terminal, run `show_file("analysis.qmd", chunk = "Last")`. CP/CR.
 
 ```{r temperance-6}
 question_text(NULL,
@@ -1711,12 +1711,53 @@ CP/CR.
 
 ```{r temperance-11}
 question_text(NULL,
-  message = "    > show_file(\"analysis.qmd\")\n    ---\n    title: \"Smokes\"\n    author: \"<your name>\"\n    execute:\n      echo: false\n    ---\n    \n    ```{r}\n    #| message: false\n    library(tidyverse)\n    library(tidymodels)\n    library(primer.tutorials)\n    library(broom)\n    library(marginaleffects)\n    ```\n    \n    ```{r}\n    #| cache: true\n    fit_smokes <- logistic_reg(engine = \"glm\") |>\n      fit(smoke ~ age + sex, data = smokes)\n    ```\n    \n    ```{r}\n    plot_predictions(extract_fit_engine(fit_smokes),\n                     condition = c(\"age\", \"sex\"),\n                     draw = FALSE) |>\n      ggplot(aes(x = age, y = estimate, color = sex, fill = sex)) +\n      geom_ribbon(aes(ymin = conf.low, ymax = conf.high),\n                  alpha = 0.2, color = NA) +\n      geom_line(linewidth = 1.1) +\n      scale_y_continuous(labels = scales::label_percent(),\n                         limits = c(0, 0.7)) +\n      labs(\n        title    = \"Probability of Being an Ever-Smoker, by Age and Sex\",\n        subtitle = \"Men of any age are about 13 percentage points more likely than women to be ever-smokers\",\n        x = \"Age\", y = NULL, color = \"Sex\", fill = \"Sex\",\n        caption = \"Source: NHANES 2009-2012 via primer.tutorials::smokes\"\n      ) +\n      theme_minimal()\n    ```\n    \n    Lifetime smoking is one of the strongest predictors of long-term health outcomes. Using a 1,000-adult sample from the 2009-2012 NHANES waves, we estimate the probability of being an ever-smoker as a function of age and sex. One concern is that smoking rates have shifted unevenly across cohorts since the data was collected, so the slope on age may misstate the relationship for 2026 adults. We model ever-smoker status as a Bernoulli variable which is a logistic function of age and sex. We estimate that a 70-year-old man has about a 54% chance of being an ever-smoker compared to about 34% for a 30-year-old woman, with the male-female gap (~13 pp) much more precisely estimated than the age gap.",
   answer(NULL, correct = TRUE),
-  allow_retry = FALSE,
+  allow_retry = TRUE,
+  try_again_button = "Edit Answer",
   incorrect = NULL,
   rows = 12)
 ```
+
+###
+
+<pre><code>
+---
+title: "Smokes"
+author: "&lt;your name&gt;"
+execute:
+  echo: false
+---
+
+#| message: false
+library(tidyverse)
+library(tidymodels)
+library(primer.tutorials)
+library(broom)
+library(marginaleffects)
+
+#| cache: true
+fit_smokes <- logistic_reg(engine = "glm") |>
+  fit(smoke ~ age + sex, data = smokes)
+
+plot_predictions(extract_fit_engine(fit_smokes),
+                 condition = c("age", "sex"),
+                 draw = FALSE) |>
+  ggplot(aes(x = age, y = estimate, color = sex, fill = sex)) +
+  geom_ribbon(aes(ymin = conf.low, ymax = conf.high),
+              alpha = 0.2, color = NA) +
+  geom_line(linewidth = 1.1) +
+  scale_y_continuous(labels = scales::label_percent(),
+                     limits = c(0, 0.7)) +
+  labs(
+    title    = "Probability of Being an Ever-Smoker, by Age and Sex",
+    subtitle = "Men of any age are about 13 percentage points more likely than women to be ever-smokers",
+    x = "Age", y = NULL, color = "Sex", fill = "Sex",
+    caption = "Source: NHANES 2009-2012 via primer.tutorials::smokes"
+  ) +
+  theme_minimal()
+
+Lifetime smoking is one of the strongest predictors of long-term health outcomes. Using a 1,000-adult sample from the 2009-2012 NHANES waves, we estimate the probability of being an ever-smoker as a function of age and sex. One concern is that smoking rates have shifted unevenly across cohorts since the data was collected, so the slope on age may misstate the relationship for 2026 adults. We model ever-smoker status as a Bernoulli variable which is a logistic function of age and sex. We estimate that a 70-year-old man has about a 54% chance of being an ever-smoker compared to about 34% for a 30-year-old woman, with the male-female gap (~13 pp) much more precisely estimated than the age gap.
+</code></pre>
 
 ###
 
