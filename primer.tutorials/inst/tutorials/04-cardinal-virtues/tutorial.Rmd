@@ -743,9 +743,24 @@ question_text(NULL,
 
 ### Exercise 2
 
-For the primary (predictive) question, what would the fitted model look like in plain language?
+Define the data generating mechanism.
 
 ```{r courage-2}
+question_text(NULL,
+  message = "The Data Generating Mechanism is the final model, the one we use to answer the question. It is a model of the process by which the world generates the data we observe.",
+  answer(NULL, correct = TRUE),
+  allow_retry = FALSE,
+  incorrect = NULL,
+  rows = 4)
+```
+
+###
+
+### Exercise 3
+
+For the primary (predictive) question, what would the fitted model look like in plain language?
+
+```{r courage-3}
 question_text(NULL,
   message = "We would model SAT score as a normally distributed variable which is a linear function of zero or more covariates --- in the simplest case, an intercept-only model that produces a single expected SAT score and a measure of its spread. With covariates added (PSAT score, hours studied, prior GPA), the model would produce per-junior expected SAT scores.",
   answer(NULL, correct = TRUE),
@@ -756,11 +771,11 @@ question_text(NULL,
 
 ###
 
-### Exercise 3
+### Exercise 4
 
 For the paired causal question, what would the *fitted model* look like? (How does it differ from the predictive case?)
 
-```{r courage-3}
+```{r courage-4}
 question_text(NULL,
   message = "The fitted model uses the same code and the same coefficients as the predictive version --- the only difference is the question we ask of it. The model includes the treatment variable as a covariate, and we read its coefficient as the average causal effect of the tutoring class on SAT score (under unconfoundedness and the other Justice assumptions). The math is identical to the predictive case; what changes is the analyst's interpretation.",
   answer(NULL, correct = TRUE),

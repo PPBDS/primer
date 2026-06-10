@@ -769,9 +769,24 @@ question_text(NULL,
 
 ### Exercise 2
 
-For the primary (causal) question, what would the fitted model look like in plain language?
+Define the data generating mechanism.
 
 ```{r courage-2}
+question_text(NULL,
+  message = "The Data Generating Mechanism is the final model, the one we use to answer the question. It is a model of the process by which the world generates the data we observe.",
+  answer(NULL, correct = TRUE),
+  allow_retry = FALSE,
+  incorrect = NULL,
+  rows = 4)
+```
+
+###
+
+### Exercise 3
+
+For the primary (causal) question, what would the fitted model look like in plain language?
+
+```{r courage-3}
 question_text(NULL,
   message = "We would model contribution rate as a normally distributed variable which is a linear function of the treatment (whether the employee was counseled) and zero or more pre-treatment covariates (age, tenure, salary, prior contribution rate). The fitted coefficient on the treatment variable, under unconfoundedness, would be our estimate of the average causal effect of the counseling program on contribution rate. The model would also produce uncertainty around that estimate --- a 95% confidence interval.",
   answer(NULL, correct = TRUE),
@@ -782,11 +797,11 @@ question_text(NULL,
 
 ###
 
-### Exercise 3
+### Exercise 4
 
 For the paired predictive question, how would the fitted model differ from the causal one?
 
-```{r courage-3}
+```{r courage-4}
 question_text(NULL,
   message = "It wouldn't, mechanically. The same R code --- `linear_reg() |> fit(contribution_rate ~ treatment + covariates, data = x)` --- fits both. The difference is what the analyst is willing to claim. For the predictive question, we would not call the treatment-arm comparison a 'causal effect' and would not need to defend unconfoundedness; we would just call it a difference in expected contribution rate between the two groups, and report it with comparison language rather than causal language.",
   answer(NULL, correct = TRUE),

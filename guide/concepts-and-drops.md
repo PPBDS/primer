@@ -14,6 +14,8 @@ The §1.3 worked examples elsewhere in this file no longer carry the *definition
 
 Use the wording below verbatim as the `message` text in written-answer exercises that ask for a definition. Use the same wording (or a close paraphrase) in chapter prose.
 
+**Exception — staged definitions.** Five terms — *Justice*, *validity*, *stability*, *representativeness*, and *unconfoundedness* — have **staged simpler-frame versions** for early-tier tutorials. The canonical (final) wording is the one below; the simpler-frame wordings live in [`key-concepts.qmd`](../book/key-concepts.qmd) under each term's *Where this comes from* subsection (see also the *A note on staged definitions* preface at the top of that chapter). §1.3 in this file owns the **tier-routing rule** — which version a given tutorial-tier should use. When you write a yes-answer `message =` for one of these terms in an early-tier tutorial, the staged simpler-frame wording is correct; the rule is *verbatim against the tier-appropriate canonical*, not *verbatim against the final canonical*. The 03 (Rubin Causal Model) and 04 (Cardinal Virtues) tutorials, for example, use the simpler-frame *Justice* (*"Justice reviews the Population Table and selects the formula for the data generating mechanism."*) as their `message =` text — that is correct, not a drift.
+
 ### Four Cardinal Virtues
 
 > *Wisdom, Justice, Courage, and Temperance.*
