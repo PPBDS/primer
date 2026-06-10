@@ -339,7 +339,7 @@ pt_primary_html <- gt::gt(pt_primary_tibble, id = "pt_primary") |>
     locations = gt::cells_column_spanners(spanners = "treatment_span")
   ) |>
   gt::opt_css(css = "#pt_primary .gt_footnote { max-width: 1px; word-break: break-word; }") |>
-  gt::as_raw_html()
+  gt::as_raw_html(inline_css = FALSE)
 
 cat("```{=html}\n",
     '<div style="display: inline-block; width: auto; max-width: 100%;">',
@@ -413,7 +413,7 @@ pt_paired_html <- gt::gt(pt_paired_tibble, id = "pt_paired") |>
     locations = gt::cells_column_spanners(spanners = "outcome_span")
   ) |>
   gt::opt_css(css = "#pt_paired .gt_footnote { max-width: 1px; word-break: break-word; }") |>
-  gt::as_raw_html()
+  gt::as_raw_html(inline_css = FALSE)
 
 cat("```{=html}\n",
     '<div style="display: inline-block; width: auto; max-width: 100%;">',
@@ -579,7 +579,7 @@ pop_primary_html <- gt::gt(pop_primary_tibble, id = "pop_primary") |>
     locations = gt::cells_title()
   ) |>
   gt::opt_css(css = "#pop_primary .gt_footnote { max-width: 1px; word-break: break-word; }") |>
-  gt::as_raw_html()
+  gt::as_raw_html(inline_css = FALSE)
 
 cat("```{=html}\n",
     '<div style="display: inline-block; width: auto; max-width: 100%;">',
@@ -729,7 +729,7 @@ pop_paired_html <- gt::gt(pop_paired_tibble, id = "pop_paired") |>
     locations = gt::cells_title()
   ) |>
   gt::opt_css(css = "#pop_paired .gt_footnote { max-width: 1px; word-break: break-word; }") |>
-  gt::as_raw_html()
+  gt::as_raw_html(inline_css = FALSE)
 
 cat("```{=html}\n",
     '<div style="display: inline-block; width: auto; max-width: 100%;">',

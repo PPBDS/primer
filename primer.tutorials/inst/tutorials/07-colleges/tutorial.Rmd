@@ -497,7 +497,7 @@ pre_gt_html <- gt::gt(pre_tibble, id = "preceptor_tbl") |>
       }
     "
   ) |>
-  gt::as_raw_html()
+  gt::as_raw_html(inline_css = FALSE)
 
 cat(
   "```{=html}\n",
@@ -703,7 +703,7 @@ pre_gt_html_j <- gt::gt(pre_tibble_j, id = "preceptor_tbl_justice") |>
       }
     "
   ) |>
-  gt::as_raw_html()
+  gt::as_raw_html(inline_css = FALSE)
 
 cat(
   "```{=html}\n",
@@ -775,7 +775,7 @@ data_gt_html <- gt::gt(data_tibble, id = "data_tbl") |>
       }
     "
   ) |>
-  gt::as_raw_html()
+  gt::as_raw_html(inline_css = FALSE)
 
 cat(
   "```{=html}\n",
@@ -937,7 +937,7 @@ pop_gt_html <- gt::gt(pop_tibble, id = "population_tbl") |>
       }
     "
   ) |>
-  gt::as_raw_html()
+  gt::as_raw_html(inline_css = FALSE)
 
 cat(
   "```{=html}\n",
@@ -1143,7 +1143,7 @@ pop_gt_html_c <- gt::gt(pop_tibble_c, id = "population_tbl_courage") |>
       }
     "
   ) |>
-  gt::as_raw_html()
+  gt::as_raw_html(inline_css = FALSE)
 
 cat(
   "```{=html}\n",
