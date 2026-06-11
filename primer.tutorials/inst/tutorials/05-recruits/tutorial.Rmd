@@ -1460,6 +1460,7 @@ question_text(NULL,
   incorrect = NULL,
   rows = 8)
 ```
+<!-- HK: Exercise 2 tells students to add library(marginaleffects) but never tells them to install it first with install.packages("marginaleffects"). Students who don't have it installed will get an error. -->
 
 ###
 
