@@ -145,6 +145,8 @@ question_text(NULL,
   rows = 5)
 ```
 
+<!-- HK: The expected answer for Exercise 4 does not match the actual output of ?colleges. The real documentation describes IPEDS as a system conducted since 1992 to calculate contribution of postsecondary education to gross national product, not what the expected answer says.-->
+
 ###
 
 Note that `tuition` is recorded in units of $10,000 per year --- a tuition value of `3` means $30,000/year, not $3. Easy to miss; easy to misinterpret later.
