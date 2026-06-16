@@ -2056,7 +2056,7 @@ Copy/paste the URL to your GitHub repo.
 
 ```{r temperance-13}
 question_text(NULL,
-  message = "https://github.com/<your-github-username>/sps",
+  message = "https://github.com/<your-github-username>/seguro-popular",
   answer(NULL, correct = TRUE),
   allow_retry = FALSE,
   incorrect = NULL,
