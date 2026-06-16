@@ -1030,7 +1030,9 @@ logistic_reg(engine = "glm")
 
 ### Exercise 2
 
-Extend the chunk in `analysis.qmd` to `linear_reg(engine = "lm") |> fit(smoke ~ sex, data = smokes)`. This is the simplest candidate model: `smoke` regressed on the binary covariate `sex`. Render. In the R Terminal, run `show_file("analysis.qmd", chunk = "Last")`. CP/CR.
+<!-- VK: Prompt text said "linear_reg(engine = "lm")" but expected output shows "logistic_reg(engine = "glm")" so I changed the prompt to match the expected output. -->
+
+Extend the chunk in `analysis.qmd` to `logistic_reg(engine = "glm") |> fit(smoke ~ sex, data = smokes)`. This is the simplest candidate model: `smoke` regressed on the binary covariate `sex`. Render. In the R Terminal, run `show_file("analysis.qmd", chunk = "Last")`. CP/CR.
 
 ```{r courage-2}
 question_text(NULL,
@@ -1463,6 +1465,8 @@ question_text(NULL,
 ```
 
 ###
+
+<!-- VK: Should be library(primer.tutorials)? -->
 
 <pre><code>
 #| message: false
