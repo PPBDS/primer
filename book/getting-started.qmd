@@ -4,11 +4,17 @@
 
 The world confronts us. Make decisions we must.
 
-We do all of our data science in the cloud, using GitHub Codespaces with Visual Studio Code (VS Code). This chapter walks you through your first two tutorials and the workflow you'll use throughout the book.
+We do all of our data science in the cloud, using GitHub Codespaces with Visual Studio Code (VS Code). This chapter walks you through your first tutorials and the workflow you'll use throughout the book.
 
-Every tutorial after this chapter gets its own GitHub repository. You will create those repositories from a template like `PPBDS/codespace-starter`, a template which gives every tutorial the same VS Code setup, the same installed R packages, and the same extensions. The rule for naming the repository is simple: take the tutorial id (the tutorial title in lowercase, with spaces replaced by dashes) and use that as the repository name. For "Introduction to R," that is `introduction-to-r`. For "Probability," `probability`. And so on.
+There are three ways to work, and you will meet all three:
 
-Before you set up your first real working repository, though, you will launch a Codespace directly on `PPBDS/codespace-starter` --- without making a copy first --- as a throwaway sandbox to learn the platform. You will complete the "Getting Started" tutorial there, then delete the Codespace. After that you will create your first owned repository, `introduction-to-r`, and launch a Codespace on it to do the "Introduction to R" tutorial.
+- **Start** --- Launch a Codespace directly on `PPBDS/codespace-starter`, a public repository you do *not* own. It is fast (the image is pre-built) and needs no setup. Nothing you do *in the Codespace* persists once you delete it, but you can still complete tutorials and download your answers. **The first several tutorials --- including "Introduction to R" --- work entirely this way: no repository required.**
+- **Launch** *(recommended)* --- Launch that same fast `codespace-starter` Codespace, then run one command (`make_repo.sh`) that creates a repository you *own* and sets you up to work in it. You get the quick startup *and* a permanent home for your work. You will need this for later tutorials whose work you want to keep and build on.
+- **Template** --- Use GitHub's "Use this template" button to copy `codespace-starter` into a repository you own, then launch a Codespace on that copy. It does the same job as Launch, but the first launch is **slow** (several minutes) because your copy has no pre-built image. We document it as a fallback; prefer **Launch**.
+
+For the **first four or five tutorials** you just use **Start** mode and download your answers --- there is nothing to set up and no repository to manage. Later tutorials ask you to save your work in a repository you own; for those you will use **Launch** (recommended) or **Template**. When you do create a repository, the naming rule is simple: the repository name is the tutorial id (the tutorial title in lowercase, with spaces replaced by dashes) --- so "Probability" becomes `probability`, and so on.
+
+In this chapter you will use **Start** mode to run both the "Getting Started" and "Introduction to R" tutorials. Then, so you are ready when you need it, we walk through **Launch** (and **Template**) for creating your own repository later.
 
 ## GitHub {.unnumbered}
 
@@ -20,7 +26,9 @@ On GitHub, your projects are organized into "repositories," usually called "repo
 
 GitHub gives every account 60 free Codespaces hours per month, and more if you join [GitHub Education](https://github.com/education), an option that we highly recommend for students. It also provides lots of free storage. Free hours are not infinite, however, so it is your responsibility to stop (and delete) Codespaces you are not using.
 
-## A throwaway Codespace {.unnumbered}
+## Start mode: a throwaway Codespace {.unnumbered}
+
+In **Start mode** you work inside a `codespace-starter` Codespace that you do not own. It is the fastest way to get going and perfect for trying things out or running a tutorial, but nothing you do persists once you delete the Codespace. We use it here to learn the platform and run the "Getting Started" tutorial.
 
 Go to [`https://github.com/PPBDS/codespace-starter`](https://github.com/PPBDS/codespace-starter).
 
@@ -162,6 +170,12 @@ knitr::include_graphics("getting-started/images/cs-11.png")
 
 Read and follow the instructions. At the end of the tutorial, download your answers.
 
+### Running the Introduction to R tutorial {.unnumbered}
+
+The first several tutorials all work this same way, so let's do one more right here in the same throwaway Codespace. Open the **R Tutorials** panel again, click **[tutorial.helpers](https://ppbds.github.io/tutorial.helpers/)**, and start the **Introduction to R** tutorial. Read and follow the instructions, and download your answers at the end --- just as you did for "Getting Started."
+
+You can run any of the first several tutorials this way in a Start-mode Codespace. Because there is no repository, the *only* thing you keep is the answers file you download, so be sure to download it before you delete the Codespace.
+
 ### Stopping, restarting and deleting the Codespace {.unnumbered}
 
 A Codespace is your responsibility in the same way that your laptop is your responsibility. While a Codespace is running it counts against your free hours, and an unused Codespace will be deleted by GitHub after 30 days.
@@ -213,9 +227,96 @@ Once you are done with a Codespace, you should **delete it.** To do so, go to yo
 
 This Codespace was a sandbox. You do not own `PPBDS/codespace-starter`, so there is nowhere for your work to go once you stop using the Codespace. That is fine — you have already downloaded your tutorial answers, which is the only thing here worth keeping.
 
-## Your own Codespace {.unnumbered}
+## Launch mode: your own repo, the fast way {.unnumbered}
 
-Now you will do the same, but in a repository you own — which is how every tutorial works from this point onward.
+**This is the recommended method for tutorials that need their own repository.** You launch the same fast, pre-built `codespace-starter` Codespace you used in Start mode, then run a single command that creates a repository you *own* and sets you up to work in it --- so you get the quick startup *and* a permanent home for your work.
+
+You will not need this for a while: the first several tutorials run entirely in Start mode. But when a tutorial asks you to keep your work in your own repository, this is how. The walkthrough below uses `my-tutorial` as a stand-in --- put the id of whatever tutorial you are on in its place.
+
+### Launching the Codespace {.unnumbered}
+
+Exactly as in Start mode: from [`https://github.com/PPBDS/codespace-starter`](https://github.com/PPBDS/codespace-starter), click the green **Code** button, switch to the **Codespaces** tab, and click **"Create codespace on main."**
+
+When the Codespace finishes loading, the terminal greets you with a banner:
+
+```
+════════════════════════════════════════════════════════════
+   ✅  YOUR CODESPACE IS READY
+
+   Start your own project (creates a new repo):
+       bash /workspaces/codespace-starter/.devcontainer/make_repo.sh <repo-name>
+
+   Full guide: /workspaces/codespace-starter/.devcontainer/STUDENT_WORKFLOW.md
+
+   Type `clear` to remove this banner.
+════════════════════════════════════════════════════════════
+```
+
+That banner is also your "ready" signal: when it appears, every extension and R package is installed and the Codespace is fully set up. (If you want it gone, type `clear`, as it suggests.)
+
+### Creating your repository {.unnumbered}
+
+In the terminal, run the command the banner shows, using the tutorial id as the repository name:
+
+```
+bash .devcontainer/make_repo.sh my-tutorial
+```
+
+The **first time** you run this in a Codespace, you are asked to sign in to GitHub: a one-time code appears and a browser tab opens --- paste the code and click **Authorize**. This signs you in as *yourself*, which is what lets the Codespace create and save to your own repositories. (Out of the box, a Codespace launched on `codespace-starter` can only touch `codespace-starter`.) You do this **once per Codespace**.
+
+When it finishes, a second banner confirms what happened:
+
+```
+════════════════════════════════════════════════════════════
+   🎉  Created your repo: my-tutorial   (/workspaces/my-tutorial)
+
+   👉 Open it:  File → Open Folder → /workspaces/my-tutorial
+      (the editor may switch on its own; if not, use that menu)
+
+   Then, working inside your repo:
+   • Save your work:    commit + push  (Source Control panel, left)
+   • Publish a graphic: see .devcontainer/STUDENT_WORKFLOW.md
+════════════════════════════════════════════════════════════
+```
+
+Your repository now exists at `https://github.com/<your-username>/my-tutorial`, and a copy has been downloaded into the Codespace at `/workspaces/my-tutorial`.
+
+### Opening your repository {.unnumbered}
+
+Do the one manual step the banner points to: **File → Open Folder → `/workspaces/my-tutorial`**, and confirm in the dialog. (A Codespace will not reliably switch folders from a script, so you do this by hand.) The window reloads into your repository.
+
+After the reload, the banner changes to show where you are:
+
+```
+════════════════════════════════════════════════════════════
+   📂  Your repo: my-tutorial
+
+   • Explorer shows my-tutorial?  You're in it — commit & push via
+     the Source Control panel (left).
+   • If not:  File → Open Folder → /workspaces/my-tutorial
+
+   Guide: /workspaces/codespace-starter/.devcontainer/STUDENT_WORKFLOW.md
+   Type `clear` to remove this banner.
+════════════════════════════════════════════════════════════
+```
+
+Look at the **Explorer** in the upper left --- it should now read `MY-TUTORIAL`. You are working inside your own repository, and anything you commit and push from the **Source Control** panel is saved there permanently.
+
+### Running the tutorial {.unnumbered}
+
+Click the **R Tutorials** icon on the Activity Bar, click **[tutorial.helpers](https://ppbds.github.io/tutorial.helpers/)**, and start your tutorial --- the same way you started "Getting Started" in Start mode. Read and follow the instructions, and download your answers at the end.
+
+Because this repository is *yours*, you can also save your work to GitHub: open the **Source Control** panel on the left, type a short message, and click **✓ Commit**, then **Sync Changes** (or **Publish Branch** the first time).
+
+### Stopping the Codespace {.unnumbered}
+
+When you are done, **stop** the Codespace (Command Palette → "Codespaces: Stop Current Codespace," or from your [Codespaces page](https://github.com/codespaces)). Your work is safe in your `my-tutorial` repository, so it is fine to reopen this Codespace later or to delete it --- deleting discards only the Codespace, never your pushed work. (As always, anything you have *not* committed and pushed is lost when a Codespace is deleted.)
+
+## Template mode: your own repo, the slow way {.unnumbered}
+
+**Launch mode (above) is the recommended way to create a tutorial repository.** Like Launch, this is only for the later tutorials that need their own repository. It produces the *same* kind of owned repository, but its first launch is **much slower**, so use it only as a fallback --- for a given tutorial you use Launch *or* Template, not both.
+
+It works by copying `codespace-starter` into a repository you own. (The screenshots below were captured with an example repo name; use your tutorial's id.)
 
 ### Creating the repository from the template {.unnumbered}
 
@@ -225,14 +326,14 @@ Go back to [`https://github.com/PPBDS/codespace-starter`](https://github.com/PPB
 knitr::include_graphics("getting-started/images/new-2.png")
 ```
 
-In the **Repository name** field, type `introduction-to-r`. That is the tutorial id for the Introduction to R tutorial — the rule is *tutorial title, lowercase, spaces replaced by dashes*, and you will follow it for every tutorial in the book. Leave everything else at the defaults. Click **Create repository from template.**
+In the **Repository name** field, type the tutorial id (its title in lowercase, spaces replaced by dashes --- the same naming rule as Launch mode). Leave everything else at the defaults, then click **Create repository from template.**
 
 
 ```{r}
 knitr::include_graphics("getting-started/images/new-3.png")
 ```
 
-You now own a repository at `https://github.com/<your-username>/introduction-to-r`. It is identical to `PPBDS/codespace-starter` but yours — anything you do here can be saved permanently, unlike in the throwaway Codespace.
+You now own a repository at `https://github.com/<your-username>/<tutorial-id>`. It is identical to `PPBDS/codespace-starter` but yours --- anything you do here can be saved permanently, unlike in a Start-mode Codespace.
 
 ### Launching a Codespace on your repo {.unnumbered}
 
@@ -242,21 +343,21 @@ From your new repository's page, click the green **Code** button, switch to the 
 knitr::include_graphics("getting-started/images/new-4.png")
 ```
 
-This Codespace will take several minutes longer to launch than the first one. Read the rest of this chapter while you are waiting. The throwaway Codespace started from `PPBDS/codespace-starter`, which has a pre-built container image. Your new repository does not, so the container has to build from scratch the first time. Subsequent launches of this *same* Codespace will be fast.
+This Codespace takes **several minutes longer** to launch than a Start- or Launch-mode one. The reason: `PPBDS/codespace-starter` has a pre-built container image, but your template copy does not, so the container builds from scratch the first time. (That slow build is exactly why we recommend Launch.) Subsequent launches of this *same* Codespace are fast.
 
-### Running the Introduction to R tutorial {.unnumbered}
+### Running the tutorial {.unnumbered}
 
-Once the Codespace is fully loaded, click the **R Tutorials** icon on the Activity Bar, click on **[tutorial.helpers](https://ppbds.github.io/tutorial.helpers/)**, and start the **Introduction to R** tutorial.
+Once the Codespace is fully loaded, click the **R Tutorials** icon on the Activity Bar, click on **[tutorial.helpers](https://ppbds.github.io/tutorial.helpers/)**, and start your tutorial.
 
 ```{r}
 knitr::include_graphics("getting-started/images/new-5.png")
 ```
 
-Read and follow the instructions. At the end of the tutorial, download your answers.
+Read and follow the instructions. At the end, download your answers, and commit + push your work from the **Source Control** panel.
 
 ### Stopping the Codespace {.unnumbered}
 
-When you are done with the tutorial, **stop** the Codespace — same way as before, via the Command Palette or your [Codespaces page](https://github.com/codespaces). You should then delete the Codespace. (Strictly speaking, you can delete the Codespace without stopping it first.) **Warning**: If you delete a Codespace, all your work on a tutorial disappears. Your answers are saved if you stop/start a Codespace or if you start/stop your browser. But deleting a Codespace deletes all answers.
+When you are done, **stop** the Codespace --- via the Command Palette or your [Codespaces page](https://github.com/codespaces). Because your work lives in your own repository, your committed-and-pushed work is safe whether you stop, reopen, or delete the Codespace. (Anything you have *not* committed and pushed is lost on delete.)
 
 ## Using your own machine
 
@@ -267,7 +368,6 @@ You can do all of this work on your own laptop, if you prefer. But, in that case
   "reditorsupport.r",
   "quarto.quarto",
   "PPBDS.vscode-r-tutorials",
-  "google.gemini-cli-vscode-ide-companion",
   "ritwickdey.LiveServer",
   "tomoki1207.pdf",
   "mechatroner.rainbow-csv"
@@ -298,10 +398,10 @@ But this should be enough to get you started, should you decide to go this route
 You should have done the following:
 
 - Signed up for a GitHub account.
-- Launched a Codespace directly on `PPBDS/codespace-starter`, completed the **Getting Started** tutorial from **[tutorial.helpers](https://ppbds.github.io/tutorial.helpers/)**, and **deleted** the Codespace.
-- Created your own repository named `introduction-to-r` from the `codespace-starter` template, launched a Codespace on it, completed the **Introduction to R** tutorial from **[tutorial.helpers](https://ppbds.github.io/tutorial.helpers/)**, and **deleted** the Codespace.
+- Used **Start** mode --- a throwaway Codespace on `PPBDS/codespace-starter` --- to complete the **Getting Started** and **Introduction to R** tutorials from **[tutorial.helpers](https://ppbds.github.io/tutorial.helpers/)**, downloaded your answers, then **deleted** the Codespace.
+- Seen how **Launch** (recommended) and **Template** (slower fallback) create a repository you *own*, for the later tutorials that need one.
 
-Going forward, every tutorial gets its own repository. The rule is always the same: the repository name is the tutorial id (the tutorial title in lowercase, with spaces replaced by dashes). 
+For the first several tutorials you just use **Start** mode and download your answers --- no repository needed. When a later tutorial does need its own repository, use **Launch** (or **Template**), naming it with the tutorial id (the title in lowercase, with spaces replaced by dashes).
 
 Let's get started!
 
