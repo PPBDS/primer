@@ -1473,6 +1473,8 @@ library(broom)
 library(marginaleffects)
 </code></pre>
 
+<!-- HK: This example setup chunk shows library(primer.data) but Exercise 3 in the Introduction correctly establishes that the smokes dataset requires library(primer.tutorials) not primer.data. -->
+
 ###
 
 The tool for translating log-odds coefficients into outcome-scale probabilities is the **[marginaleffects](https://marginaleffects.com/)** package, with companion book *[Model to Meaning](https://marginaleffects.com/)* by Vincent Arel-Bundock.
