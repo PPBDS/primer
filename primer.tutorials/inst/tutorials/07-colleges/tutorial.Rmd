@@ -138,7 +138,7 @@ In the R Terminal, type `?colleges` and paste the Description below.
 
 ```{r introduction-4}
 question_text(NULL,
-  message = "A dataset from the Department of Education's 2013 IPEDS database containing information on U.S. four-year colleges and universities. Variables include tuition (in $10,000), graduation rate, SAT score, enrollment, and a five-level selectivity rating.",
+  message = "This dataset is from the Integrated Postsecondary Education Data System (IPEDS), a system of interrelated surveys conducted annually by the National Center for Education Statistics. These surveys have been conducted since 1992 and primarily aims to calculate the contribution of postsecondary education to the gross national product.",
   answer(NULL, correct = TRUE),
   allow_retry = FALSE,
   incorrect = NULL,
