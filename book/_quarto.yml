@@ -18,6 +18,7 @@ book:
     - index.qmd
     - preamble.qmd
     - getting-started.qmd
+    - git-and-github.qmd
     - 01-probability.qmd
     - 02-sampling.qmd
     - 03-rubin-causal-model.qmd
