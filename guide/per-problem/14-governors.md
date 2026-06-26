@@ -9,7 +9,7 @@
 - **Dataset:** `governors` (Barfort et al. 2020) (`primer.data`)
 - **Outcome:** `lived_after` — years lived after election (continuous)
 - **Treatment / Key covariate:** election outcome (won/lost), identified by close-margin quasi-randomization
-- **Question (QoI):** What is the causal effect of winning a gubernatorial election on lifespan?
+- **Quantity of Interest (QoI):** What is the causal effect of winning a gubernatorial election on lifespan?
 - **Model:** Linear regression restricted to close-margin elections; treatment = win/lose. Interaction with `election_age` and `sex` optional.
 - **Causal / Predictive:** Causal
 - **Student project:** `governors`

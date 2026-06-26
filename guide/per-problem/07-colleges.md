@@ -8,7 +8,7 @@
 - **Dataset:** `colleges` (`primer.data`), ~900 U.S. colleges/universities (DOE IPEDS 2013)
 - **Outcome:** `grad_rate` — graduation rate (continuous, 0–1)
 - **Treatment / Key covariate:** `tuition` (continuous)
-- **Question (QoI):** What effect does the tuition of a college have on its graduation rate?
+- **Quantity of Interest (QoI):** What effect does the tuition of a college have on its graduation rate?
 - **Model:** Linear regression with ordinal categorical predictor
 - **Causal / Predictive:** Predictive
 - **Student project:** `colleges`

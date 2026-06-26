@@ -8,7 +8,7 @@
 - **Dataset:** NES (`primer.data`), 1992 presidential election
 - **Outcome:** `pres_vote` — vote choice (Clinton / Bush / Perot)
 - **Treatment / Key covariate:** `sex` (Male/Female)
-- **Question (QoI):** What was the difference in voting preference of men and women in the 1992 US Presidential election?
+- **Quantity of Interest (QoI):** What was the difference in voting preference of men and women in the 1992 US Presidential election?
 - **Model:** Multinomial logistic regression
 - **Causal / Predictive:** Predictive
 - **Student project:** `nes`

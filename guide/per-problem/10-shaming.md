@@ -8,7 +8,7 @@
 - **Dataset:** `shaming` (Gerber, Green, Larimer 2008) (`primer.data`)
 - **Outcome:** `primary_06` — voted in 2006 primary (binary)
 - **Treatment / Key covariate:** `treatment` — social-pressure mailing type (randomized)
-- **Question (QoI):** What is the causal effect of social-pressure postcards on voter turnout?
+- **Quantity of Interest (QoI):** What is the causal effect of social-pressure postcards on voter turnout?
 - **Model:** Logistic regression with interaction (`treatment * voter_class`)
 - **Causal / Predictive:** Causal
 - **Student project:** `shaming`

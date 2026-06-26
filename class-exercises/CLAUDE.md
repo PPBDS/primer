@@ -6,7 +6,7 @@ You are authoring a **Primer class exercise** — one of three artifacts the pro
 
 ## One seed, up to three renderings
 
-The load-bearing idea: **the upstream material is shared, and the artifact is downstream.** Given a dataset, a question (QoI), a model, and the Preceptor/Population Tables, you can render a **chapter**, a **tutorial**, or a **class exercise** — or any subset. **We do not always build all three.** A problem may have a tutorial but no class exercise, a chapter but no tutorial, and so on.
+The load-bearing idea: **the upstream material is shared, and the artifact is downstream.** Given a dataset, a Quantity of Interest (QoI), a model, and the Preceptor/Population Tables, you can render a **chapter**, a **tutorial**, or a **class exercise** — or any subset. **We do not always build all three.** A problem may have a tutorial but no class exercise, a chapter but no tutorial, and so on.
 
 That shared upstream already exists and already has a home: the **seed spec** at [`../guide/per-problem/<id>.md`](../guide/per-problem/). Each seed names the dataset, the "Imagine that you are…" scenario, the broad question and the narrow QoI, the causal/predictive framing, the data-prep step, the final model, the Preceptor and Population Table column structure, and a **Renderings** line tracking which of the three artifacts exist or are planned. A class exercise **consumes that seed; it does not re-derive it.** The question and the model are the same question and model the chapter and tutorial use.
 

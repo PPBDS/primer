@@ -8,7 +8,7 @@
 - **Dataset:** `ces` (Cooperative Election Study) (`primer.data`), 2020
 - **Outcome:** `approval` — presidential approval (ordinal, 5 categories)
 - **Treatment / Key covariate:** `ideology` (Very Liberal … Very Conservative)
-- **Question (QoI):** What is the average difference in Trump approval between Very Liberal and Very Conservative voters?
+- **Quantity of Interest (QoI):** What is the average difference in Trump approval between Very Liberal and Very Conservative voters?
 - **Model:** Ordinal logistic regression (`MASS::polr`)
 - **Causal / Predictive:** Predictive
 - **Student project:** `ces`

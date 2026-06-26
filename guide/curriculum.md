@@ -146,7 +146,7 @@ The Primer is designed so that most example tutorials (and the chapters that mat
 
 **Definition-only edits do not need a rebuild.** Changing just the wording of a canonical definition in Key Concepts works as find-and-replace in every tutorial. Regeneration earns its keep for *structural* changes: progression pacing (is Medium too steep between Tutorial 7 and Tutorial 8?), coverage (has this tutorial asked the canonical exercises from §13 that are due this tutorial?), cross-tutorial consistency (do the Difficult tutorials consistently drive model revision from the PPC per §1.3?). These are hard to see when each tutorial is considered in isolation and hard to fix without walking the whole sequence.
 
-**The seed lives in §17.** Each example tutorial's entry in §17 specifies the "Imagine that you are…" scenario, the dataset, the outcome variable, the treatment / key covariate, the question (QoI), the model, and the Preceptor and Population Table column structure. That — plus the rules in §4–§14 — is enough to regenerate a tutorial from scratch. The §17 entries are the stable core; everything around them (exercise wording, knowledge drops, specific transitions) is derivative.
+**The seed lives in §17.** Each example tutorial's entry in §17 specifies the "Imagine that you are…" scenario, the dataset, the outcome variable, the treatment / key covariate, the Quantity of Interest (QoI), the model, and the Preceptor and Population Table column structure. That — plus the rules in §4–§14 — is enough to regenerate a tutorial from scratch. The §17 entries are the stable core; everything around them (exercise wording, knowledge drops, specific transitions) is derivative.
 
 **Writing order.**
 

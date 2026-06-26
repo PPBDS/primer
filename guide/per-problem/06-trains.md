@@ -8,7 +8,7 @@
 - **Dataset:** `trains` (Enos 2014), Boston commuters, 2012 (`primer.data`)
 - **Outcome:** `att_end` — immigration attitude after experiment (integer, 3–15)
 - **Treatment / Key covariate:** `treatment` — exposure to Spanish-speakers on train platform (randomized)
-- **Question (QoI):** What is the average causal effect of exposure to Spanish-speakers on attitudes toward immigration?
+- **Quantity of Interest (QoI):** What is the average causal effect of exposure to Spanish-speakers on attitudes toward immigration?
 - **Model:** Linear regression, randomized experiment
 - **Causal / Predictive:** Causal
 - **Student project:** `trains`

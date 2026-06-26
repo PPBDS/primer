@@ -8,7 +8,7 @@
 - **Dataset:** `mail` (2020 Philadelphia mail-in voting field experiment; Morris et al.)
 - **Outcome:** `applied_mail` — binary; whether the voter applied for a mail ballot before the 26-May deadline
 - **Treatment:** `treatment` — three-arm factor: `No Postcard`, `Self`, `Neighborhood`
-- **Question (QoI):** What is the causal effect of each postcard wording on the probability a registered voter applies for a mail ballot?
+- **Quantity of Interest (QoI):** What is the causal effect of each postcard wording on the probability a registered voter applies for a mail ballot?
 - **Model:** Logistic regression with multi-arm treatment; interpretation via `marginaleffects::avg_comparisons()` back to the probability scale (Medium-tier adds `comparisons()` per §13.5)
 - **Causal / Predictive:** Causal
 - **Student project:** `mail`

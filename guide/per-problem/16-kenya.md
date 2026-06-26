@@ -8,7 +8,7 @@
 - **Dataset:** `kenya` (Harris et al., "Electoral Administration in Fledgling Democracies: Experimental Evidence from Kenya")
 - **Outcome:** `reg_byrv13` — registered-voter count at polling location during intervention period divided by registered voters at that polling location in 2013 (continuous rate)
 - **Treatment:** `treatment` — six-arm factor: `control`, `SMS`, `local`, `canvass`, `local + SMS`, `local + canvass`
-- **Question (QoI):** Which intervention produces the largest causal increase in voter registration, and how does the best intervention vary with community characteristics (poverty, distance to polling station, population density)?
+- **Quantity of Interest (QoI):** Which intervention produces the largest causal increase in voter registration, and how does the best intervention vary with community characteristics (poverty, distance to polling station, population density)?
 - **Model:** **Causal forest** via the `grf` package (`grf::multi_arm_causal_forest()` for the six-arm case). Parameter interpretation is skipped per §13.5 *Interpretability ceiling*; all answering happens via `marginaleffects::predictions()` / `comparisons()` on the forest's conditional-average-treatment-effect estimates, or via `grf`'s native prediction API.
 - **Causal / Predictive:** Causal
 - **Student project:** `kenya`

@@ -9,7 +9,7 @@
 - **Dataset:** `sps` (King et al. 2009 Seguro Popular randomized rollout, Mexico 2005–06)
 - **Outcome:** `t2_health_exp_3m` — total health-related household expenditure in the 3 months before the follow-up survey (pesos; continuous)
 - **Treatment:** `treatment` — binary; 1 = household in a cluster randomly assigned to Seguro Popular rollout, 0 = control cluster
-- **Question (QoI):** What is the causal effect of Seguro Popular enrollment on household out-of-pocket health expenditures?
+- **Quantity of Interest (QoI):** What is the causal effect of Seguro Popular enrollment on household out-of-pocket health expenditures?
 - **Model:** Linear regression, binary treatment (optionally one covariate for adjustment)
 - **Causal / Predictive:** Causal
 - **Student project:** `seguro-popular`
