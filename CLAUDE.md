@@ -71,3 +71,5 @@ The authoring of a chapter/tutorial pair is a conversation. Do not try to produc
 This protocol is a default; deviate when it makes sense. Where a decision is small and reversible (phrasing of a knowledge drop, which concrete example to use in an exercise), just make it. Where a decision shapes the rest of the chapter (dataset, QoI, functional form), pause and ask.
 
 When you pause to ask, make it easy for David to answer: short list of options, your recommendation, your reasoning. Do not ask open-ended questions when a multiple-choice question will do.
+
+**Record corrections.** Whenever David corrects you, write the lesson down in the relevant `CLAUDE.md` (the most specific one — e.g. `class-exercises/CLAUDE.md` for a class-exercise correction) *and* fix the instance that prompted it. The point is that the same correction never has to be given twice.

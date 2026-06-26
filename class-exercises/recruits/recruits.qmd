@@ -1,0 +1,89 @@
+---
+title: "Wisdom and Recruits"
+execute:
+  echo: false
+---
+
+```{r}
+#| label: setup
+#| message: false
+
+library(tidyverse)
+library(gt)
+library(primer.tutorials)
+
+```
+
+## Background Information
+
+The `recruits` dataset is a 50-row teaching cut of the National Health and Nutrition Examination Survey (NHANES), restricted to young adults aged 18--27 and to three columns: `height` (centimeters), `sex`, and `age`. The sample is deliberately uneven --- 40 men and 10 women --- so that the two group means have visibly different standard errors. Think of these people as stand-ins for next year's incoming Marine Corps bootcamp recruits: a population whose heights we must anticipate well enough to order the right mix of uniforms.
+
+Source: subset of `primer.data::nhanes`. See `data-raw/recruits.R` in the `primer.tutorials` package for the sampling script.
+
+### Scenarios
+
+1) Imagine you are the quartermaster in charge of ordering uniforms for next year's Marine Corps bootcamp recruits. You want to forecast how tall those recruits will be, based on what you know about them (their sex, their age).
+
+2) Imagine you are a researcher who wants to know whether sex *causes* a difference in height --- the average causal effect of being female versus male on a person's height.
+
+### Data
+
+For this assignment we use the `recruits` dataset from the `primer.tutorials` package.
+
+* Explore the data. What is the outcome variable? How is it distributed?
+
+```{r}
+recruits
+```
+
+```{r}
+summary(recruits)
+table(recruits$sex)
+```
+
+```{r}
+recruits |>
+  ggplot(aes(x = height)) +
+    geom_histogram(bins = 20) +
+      coord_cartesian(xlim = c(140, 200))
+```
+
+### Preceptor Table
+
+What sorts of questions are we trying to answer?
+
+In order to build the Preceptor Table, we need to know: Is the model causal or predictive? What are units? What are the outcomes? What are the covariates? What are the treatments? Describe the mathematical structure of the model. Answer each for **both** scenarios:
+
+* Causal or predictive?
+
+* Units:
+
+* Outcome:
+
+* Covariates:
+
+* Treatment:
+
+Now construct the Preceptor Table for each scenario (Scenario 1 predictive; Scenario 2 with potential outcomes).
+
+### Population Table
+
+Construct the Population Table for each scenario.
+
+Then answer each question below:
+
+Describe the Population Table in your own words---what does each row represent in this context? Then, for each of the four key assumptions (validity, stability, representativeness, and unconfoundedness), provide both a definition in your own words and one specific counter-example for each assumption.
+
+Describe the Population Table in words:
+
+Counter-example to the assumption of validity:
+
+Counter-example to the assumption of stability:
+
+Counter-example to the assumption of representativeness:
+
+Counter-example to the assumption of unconfoundedness:
+
+### Modeling
+
+The outcome variable is `height`, the height of each person in centimeters. What kind of regression model should you use to predict or explain `height`? Explain your choice based on what kind of variable `height` is.

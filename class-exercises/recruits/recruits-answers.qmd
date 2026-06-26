@@ -1,0 +1,354 @@
+---
+title: "Wisdom and Recruits (Answer Key)"
+execute:
+  echo: false
+---
+
+```{r}
+#| label: setup
+#| message: false
+
+library(tidyverse)
+library(gt)
+library(primer.tutorials)
+
+```
+
+## Background Information
+
+The `recruits` dataset is a 50-row teaching cut of the National Health and Nutrition Examination Survey (NHANES), restricted to young adults aged 18--27 and to three columns: `height` (centimeters), `sex`, and `age`. The sample is deliberately uneven --- 40 men and 10 women --- so that the two group means have visibly different standard errors. Think of these people as stand-ins for next year's incoming Marine Corps bootcamp recruits: a population whose heights we must anticipate well enough to order the right mix of uniforms.
+
+Source: subset of `primer.data::nhanes`. See `data-raw/recruits.R` in the `primer.tutorials` package for the sampling script.
+
+### Scenarios
+
+1) Imagine you are the quartermaster in charge of ordering uniforms for next year's Marine Corps bootcamp recruits. You want to forecast how tall those recruits will be, based on what you know about them (their sex, their age).
+
+2) Imagine you are a researcher who wants to know whether sex *causes* a difference in height --- the average causal effect of being female versus male on a person's height.
+
+### Data
+
+For this assignment we use the `recruits` dataset from the `primer.tutorials` package.
+
+* Explore the data. What is the outcome variable? How is it distributed?
+
+```{r}
+recruits
+```
+
+```{r}
+summary(recruits)
+table(recruits$sex)
+```
+
+```{r}
+recruits |>
+  ggplot(aes(x = height)) +
+    geom_histogram(bins = 20) +
+      coord_cartesian(xlim = c(140, 200))
+```
+
+### Preceptor Table
+
+What sorts of questions are we trying to answer?
+
+In order to build the Preceptor Table, we need to know: Is the model causal or predictive? What are units? What are the outcomes? What are the covariates? What are the treatments? Describe the mathematical structure of the model.
+
+* Causal or predictive?
+
+Scenario 1: Predictive --- we forecast the height of next year's recruits from characteristics we already know (sex, age). No intervention is contemplated.
+
+Scenario 2: Causal --- we ask for the effect of sex on height. The implied manipulation (change a person's sex and watch their height respond) is biologically incoherent. We include it anyway, because contrasting it with Scenario 1 is the sharpest way to see what separates a prediction from a causal effect. It is an absurd question, not a sensible one.
+
+* Units:
+
+Each row is one USMC recruit expected to enlist next year --- about 25,000 to 30,000 of them. The two scenarios share the same units; Scenario 2 simply views each recruit through two potential heights.
+
+* Outcome:
+
+Height in centimeters (`height`), a continuous variable. This is what we must know in order to order uniforms. In the predictive table it is a single `Outcome` column; in the causal table it becomes two potential-outcome columns (`Height if Female`, `Height if Male`).
+
+* Covariates:
+
+`sex` (Male/Female) and `age` (18--27). In Scenario 1, `sex` is a covariate. In Scenario 2, `sex` is the *treatment* (so it moves under its own Treatment spanner); the column is identical, only the analyst's commitment changes.
+
+* Treatment:
+
+Scenario 1 has no treatment --- it is purely predictive. Scenario 2 treats `sex` as the treatment (Female vs Male), which is exactly why the causal framing collapses: sex is not something anyone can assign.
+
+Scenario 1 Preceptor Table (primary, predictive):
+
+```{r}
+#| echo: false
+#| results: asis
+pt_primary_tibble <- tibble::tribble(
+  ~`Recruit`,        ~`Height (cm)`, ~`Sex`,
+  "Recruit 1",       "150",          "Female",
+  "Recruit 2",       "172",          "Male",
+  "...",             "...",          "...",
+  "Recruit 5,000",   "160",          "Female"
+)
+
+pt_primary_html <- gt::gt(pt_primary_tibble, id = "pt_primary") |>
+  gt::tab_header(title = "Preceptor Table --- Primary (predictive) question") |>
+  gt::tab_spanner(label = "Unit",      id = "unit_span",       columns = c(`Recruit`)) |>
+  gt::tab_spanner(label = "Outcome",   id = "outcome_span",    columns = c(`Height (cm)`)) |>
+  gt::tab_spanner(label = "Covariate", id = "covariates_span", columns = c(`Sex`)) |>
+  gt::cols_align(align = "left",  columns = c(`Recruit`, `Sex`)) |>
+  gt::cols_align(align = "right", columns = c(`Height (cm)`)) |>
+  gt::fmt_markdown(columns = gt::everything()) |>
+  gt::tab_options(
+    heading.title.font.size   = "1.5em",
+    heading.title.font.weight = "bolder",
+    column_labels.font.weight = "normal"
+  ) |>
+  gt::tab_style(style = gt::cell_text(weight = "bold"),
+                locations = gt::cells_column_spanners()) |>
+  gt::tab_style(style = gt::cell_text(align = "left"),
+                locations = gt::cells_column_spanners(spanners = c("unit_span", "covariates_span"))) |>
+  gt::tab_style(style = gt::cell_text(align = "right"),
+                locations = gt::cells_column_spanners(spanners = "outcome_span")) |>
+  gt::tab_footnote(
+    footnote = "If all the information in this table were available, we could answer the question: What will be the average height of male and female USMC recruits next year?",
+    locations = gt::cells_title()
+  ) |>
+  gt::tab_footnote(
+    footnote = "Each row is one USMC recruit expected to enlist during the coming year, about 25,000 to 30,000 recruits in total.",
+    locations = gt::cells_column_spanners(spanners = "unit_span")
+  ) |>
+  gt::tab_footnote(
+    footnote = "Height in centimeters, measured at enlistment.",
+    locations = gt::cells_column_spanners(spanners = "outcome_span")
+  ) |>
+  gt::tab_footnote(
+    footnote = "Sex, taking values 'Male' or 'Female', as recorded at enlistment.",
+    locations = gt::cells_column_spanners(spanners = "covariates_span")
+  ) |>
+  gt::opt_css(css = "#pt_primary .gt_footnote { max-width: 1px; word-break: break-word; }") |>
+  gt::as_raw_html()
+
+cat("```{=html}\n",
+    '<div style="display: inline-block; width: auto; max-width: 100%;">',
+    pt_primary_html, "</div>\n```\n", sep = "")
+```
+
+Scenario 2 Preceptor Table (paired, causal):
+
+```{r}
+#| echo: false
+#| results: asis
+hatch <- function(x) {
+  paste0(
+    '<span style="background-image: repeating-linear-gradient(',
+    '45deg, rgba(0,0,0,0.12) 0 1px, transparent 1px 6px);',
+    ' padding: 6px 10px; margin: -6px -10px; display: block;">',
+    x, '</span>'
+  )
+}
+
+pt_paired_tibble <- tibble::tribble(
+  ~`Recruit`,         ~`Height if Female`, ~`Height if Male`, ~`Sex`,
+  "Recruit 1",        "150",               "159",             "Female",
+  "Recruit 2",        "163",               "172",             "Male",
+  "...",              "...",               "...",             "...",
+  "Recruit 5,000",    "160",               "169",             "Female"
+)
+
+pt_paired_html <- gt::gt(pt_paired_tibble, id = "pt_paired") |>
+  gt::tab_header(title = "Preceptor Table --- Paired (causal) question") |>
+  gt::tab_spanner(label = "Unit",                id = "unit_span",
+                  columns = c(`Recruit`)) |>
+  gt::tab_spanner(label = "Potential Outcomes", id = "outcome_span",
+                  columns = c(`Height if Female`, `Height if Male`)) |>
+  gt::tab_spanner(label = "Treatment",           id = "treatment_span",
+                  columns = c(`Sex`)) |>
+  gt::cols_align(align = "left",  columns = c(`Recruit`, `Sex`)) |>
+  gt::cols_align(align = "right", columns = c(`Height if Female`, `Height if Male`)) |>
+  gt::fmt_markdown(columns = gt::everything()) |>
+  gt::tab_options(
+    heading.title.font.size   = "1.5em",
+    heading.title.font.weight = "bolder",
+    column_labels.font.weight = "normal"
+  ) |>
+  gt::tab_style(style = gt::cell_text(weight = "bold"),
+                locations = gt::cells_column_spanners()) |>
+  gt::tab_style(style = gt::cell_text(align = "left"),
+                locations = gt::cells_column_spanners(spanners = c("unit_span", "treatment_span"))) |>
+  gt::tab_style(style = gt::cell_text(align = "right"),
+                locations = gt::cells_column_spanners(spanners = "outcome_span")) |>
+  # Hatch each row's unobservable counterfactual:
+  # Rows 1 and 4 actually-Female → "Height if Male" is the counterfactual.
+  # Row 2 actually-Male → "Height if Female" is the counterfactual.
+  gt::text_transform(
+    locations = gt::cells_body(columns = `Height if Male`, rows = c(1, 4)),
+    fn = function(x) hatch(x)
+  ) |>
+  gt::text_transform(
+    locations = gt::cells_body(columns = `Height if Female`, rows = 2),
+    fn = function(x) hatch(x)
+  ) |>
+  gt::tab_footnote(
+    footnote = "If all the information in this table were available, we could answer the question: What is the causal effect of sex on a recruit's height? The implied manipulation (toggling a recruit's sex) is not realizable; the table is a pedagogical device, not a defensible causal claim.",
+    locations = gt::cells_title()
+  ) |>
+  gt::tab_footnote(
+    footnote = "Each row is one USMC recruit. Same units as the primary Preceptor Table.",
+    locations = gt::cells_column_spanners(spanners = "unit_span")
+  ) |>
+  gt::tab_footnote(
+    footnote = "Each row's cross-hatched cell marks the unobservable counterfactual --- the height the recruit would have had under the sex they were not assigned. The truth would exist if the counterfactual existed; nothing in reality could ever reveal it.",
+    locations = gt::cells_column_spanners(spanners = "outcome_span")
+  ) |>
+  gt::tab_footnote(
+    footnote = "The treatment is the recruit's actual sex. Putting it under a Treatment spanner is what marks this table as causal; in the primary Preceptor Table the same column sat under a Covariate spanner.",
+    locations = gt::cells_column_spanners(spanners = "treatment_span")
+  ) |>
+  gt::opt_css(css = "#pt_paired .gt_footnote { max-width: 1px; word-break: break-word; }") |>
+  gt::as_raw_html()
+
+cat("```{=html}\n",
+    '<div style="display: inline-block; width: auto; max-width: 100%;">',
+    pt_paired_html, "</div>\n```\n", sep = "")
+```
+
+The two Preceptor Tables differ in exactly the two ways the predictive/causal split requires: the primary has one `Outcome` column, the paired has two potential-outcome columns with the unobservable counterfactual hatched; and `Sex` sits under `Covariate` in the primary but under `Treatment` in the paired. The column itself is identical --- only the analyst's commitment changed.
+
+### Population Table
+
+Scenario 1 Population Table (primary, predictive):
+
+```{r}
+#| echo: false
+#| results: asis
+pop_primary_tibble <- tibble::tribble(
+  ~Source,     ~`Young Adult`,    ~`Year`, ~`Height (cm)`, ~`Sex`,
+  "...",       "...",             "...",   "...",          "...",
+  "Data",      "NHANES 1",        "2002",  "162",          "Female",
+  "Data",      "NHANES 2",        "2005",  "178",          "Male",
+  "Data",      "...",             "...",   "...",          "...",
+  "Data",      "NHANES 50",       "2015",  "170",          "Male",
+  "...",       "...",             "...",   "...",          "...",
+  "Preceptor", "Recruit 1",       "2026",  "150",          "Female",
+  "Preceptor", "Recruit 2",       "2026",  "172",          "Male",
+  "Preceptor", "...",             "...",   "...",          "...",
+  "Preceptor", "Recruit 5,000",   "2026",  "160",          "Female",
+  "...",       "...",             "...",   "...",          "..."
+)
+
+pop_primary_html <- gt::gt(pop_primary_tibble, id = "pop_primary") |>
+  gt::tab_header(title = "Population Table --- Primary question") |>
+  gt::tab_spanner(label = "Unit/Time", id = "unit_span",       columns = c(`Young Adult`, `Year`)) |>
+  gt::tab_spanner(label = "Outcome",   id = "outcome_span",    columns = c(`Height (cm)`)) |>
+  gt::tab_spanner(label = "Covariate", id = "covariates_span", columns = c(`Sex`)) |>
+  gt::cols_align(align = "left",  columns = c(`Source`, `Young Adult`, `Sex`)) |>
+  gt::cols_align(align = "right", columns = c(`Year`, `Height (cm)`)) |>
+  gt::fmt_markdown(columns = gt::everything()) |>
+  gt::tab_options(
+    heading.title.font.size   = "1.5em",
+    heading.title.font.weight = "bolder",
+    column_labels.font.weight = "normal"
+  ) |>
+  gt::tab_style(style = gt::cell_text(weight = "bold"),
+                locations = gt::cells_column_spanners()) |>
+  gt::tab_style(style = gt::cell_text(align = "left"),
+                locations = gt::cells_column_spanners(spanners = c("unit_span", "covariates_span"))) |>
+  gt::tab_style(style = gt::cell_text(align = "right"),
+                locations = gt::cells_column_spanners(spanners = "outcome_span")) |>
+  gt::tab_footnote(
+    footnote = "Data rows are 50 NHANES respondents aged 18-27, examined between 1999 and the most recent release. Preceptor rows are the 25,000-to-30,000 USMC recruits expected to enlist in 2026. The two blocks share the broader population of US young adults aged 18-27 but differ in era, in self-selection, and in measurement procedure.",
+    locations = gt::cells_title()
+  ) |>
+  gt::opt_css(css = "#pop_primary .gt_footnote { max-width: 1px; word-break: break-word; }") |>
+  gt::as_raw_html()
+
+cat("```{=html}\n",
+    '<div style="display: inline-block; width: auto; max-width: 100%;">',
+    pop_primary_html, "</div>\n```\n", sep = "")
+```
+
+Scenario 2 Population Table (paired, causal):
+
+```{r}
+#| echo: false
+#| results: asis
+pop_paired_tibble <- tibble::tribble(
+  ~Source,     ~`Young Adult`,    ~`Year`, ~`Height if Female`, ~`Height if Male`, ~`Sex`,
+  "...",       "...",             "...",   "...",               "...",             "...",
+  "Data",      "NHANES 1",        "2002",  "162",               "...",             "Female",
+  "Data",      "NHANES 2",        "2005",  "...",               "178",             "Male",
+  "Data",      "...",             "...",   "...",               "...",             "...",
+  "Data",      "NHANES 50",       "2015",  "...",               "170",             "Male",
+  "...",       "...",             "...",   "...",               "...",             "...",
+  "Preceptor", "Recruit 1",       "2026",  "150",               "159",             "Female",
+  "Preceptor", "Recruit 2",       "2026",  "163",               "172",             "Male",
+  "Preceptor", "...",             "...",   "...",               "...",             "...",
+  "Preceptor", "Recruit 5,000",   "2026",  "160",               "169",             "Female",
+  "...",       "...",             "...",   "...",               "...",             "..."
+)
+
+pop_paired_html <- gt::gt(pop_paired_tibble, id = "pop_paired") |>
+  gt::tab_header(title = "Population Table --- Paired (causal) question") |>
+  gt::tab_spanner(label = "Unit/Time",          id = "unit_span",       columns = c(`Young Adult`, `Year`)) |>
+  gt::tab_spanner(label = "Potential Outcomes", id = "outcome_span",    columns = c(`Height if Female`, `Height if Male`)) |>
+  gt::tab_spanner(label = "Treatment",          id = "treatment_span",  columns = c(`Sex`)) |>
+  gt::cols_align(align = "left",  columns = c(`Source`, `Young Adult`, `Sex`)) |>
+  gt::cols_align(align = "right", columns = c(`Year`, `Height if Female`, `Height if Male`)) |>
+  gt::fmt_markdown(columns = gt::everything()) |>
+  gt::tab_options(
+    heading.title.font.size   = "1.5em",
+    heading.title.font.weight = "bolder",
+    column_labels.font.weight = "normal"
+  ) |>
+  gt::tab_style(style = gt::cell_text(weight = "bold"),
+                locations = gt::cells_column_spanners()) |>
+  gt::tab_style(style = gt::cell_text(align = "left"),
+                locations = gt::cells_column_spanners(spanners = c("unit_span", "treatment_span"))) |>
+  gt::tab_style(style = gt::cell_text(align = "right"),
+                locations = gt::cells_column_spanners(spanners = "outcome_span")) |>
+  # Hatch the Preceptor rows' unobservable counterfactuals.
+  # Row 8 (Recruit 1, Female) → "Height if Male" is the counterfactual.
+  # Row 9 (Recruit 2, Male) → "Height if Female" is the counterfactual.
+  # Row 11 (Recruit 5,000, Female) → "Height if Male" is the counterfactual.
+  gt::text_transform(
+    locations = gt::cells_body(columns = `Height if Male`, rows = c(8, 11)),
+    fn = function(x) hatch(x)
+  ) |>
+  gt::text_transform(
+    locations = gt::cells_body(columns = `Height if Female`, rows = 9),
+    fn = function(x) hatch(x)
+  ) |>
+  gt::tab_footnote(
+    footnote = "Same row structure as the primary Population Table, with two outcome columns instead of one. In Data rows, only one potential outcome is observed --- the one matching the recruit's actual sex; the counterfactual is '...' because no empirical process recorded it. In Preceptor rows, both potential outcomes are filled in; the unobservable counterfactual is hatched.",
+    locations = gt::cells_title()
+  ) |>
+  gt::opt_css(css = "#pop_paired .gt_footnote { max-width: 1px; word-break: break-word; }") |>
+  gt::as_raw_html()
+
+cat("```{=html}\n",
+    '<div style="display: inline-block; width: auto; max-width: 100%;">',
+    pop_paired_html, "</div>\n```\n", sep = "")
+```
+
+Answer each question mentioned below:
+  Describe the Population Table in your own words---what does each row represent in this context? Then, for each of the four key assumptions (validity, stability, representativeness, and unconfoundedness), provide both a definition in your own words and one specific counter-example for each assumption.
+
+Describe the Population Table in words:
+  Each row is one young adult at one moment in time, drawn from the broader population of US young adults aged 18--27 that both our data and our recruits come from. The "Data" rows are the 50 NHANES respondents we actually measured (height observed); the "Preceptor" rows are next year's prospective recruits (height to be predicted), at 2026. In Scenario 2, the outcome splits into two potential-height columns; in the Data rows only the observed one is filled and the counterfactual is "...", while in the Preceptor rows both are filled with the unobservable one hatched.
+
+Counter-example to the assumption of validity (consistency of a column's meaning across data and Preceptor Table):
+  Both `height` columns are labeled the same, but NHANES heights are measured by trained examiners on a fixed stadiometer with shoes off, while recruit heights are recorded at intake, possibly with shoes on and at a different time of day (people are measurably shorter by evening). A systematic offset of a centimeter or two means the data's "height" is not exactly the same construct as the Preceptor Table's "height."
+
+Counter-example to the assumption of stability (the parameters relating the columns are the same across data, population, and Preceptor Table):
+  If the male--female height gap --- the parameter we care about --- were different in the era the NHANES data was collected than it is for next year's recruits (say, because of a secular change in nutrition that affected one sex more than the other), then fitting on the old data and applying it to 2026 recruits would use an unstable parameter. (Note: a mere shift in the *mean* height is not a stability violation; only a shift in the *parameters* is.)
+
+Counter-example to the assumption of representativeness (data represents the population, which represents the Preceptor Table):
+  Our 50-row sample is deliberately 40 male / 10 female and drops NHANES survey weights, so it is not a random sample of US young adults. And actual Marine recruits are self-selected and fitness-screened, so they are not a random draw from the population either --- they are likely taller on average. Either gap can bias the estimate for the recruits we actually care about.
+
+Counter-example to the assumption of unconfoundedness (treatment assignment is independent of the potential outcomes given covariates --- Scenario 2 only):
+  Sex is not an assignable treatment: there is no randomization mechanism, so "treatment assignment independent of potential outcomes" cannot even be coherently stated. Any honest assignment mechanism would be biological and confounded with thousands of unobserved variables (genetics, in-utero hormonal exposure) that also drive adult height. Unconfoundedness fails --- which is the substantive reason the causal question is absurd, not merely rhetorical.
+
+### Modeling
+
+The outcome variable is `height`, the height of each person in centimeters. What kind of regression model should you use to predict or explain `height`? Explain your choice based on what kind of variable `height` is.
+
+  You should use a linear regression model, because `height` is a continuous (numeric) variable. A linear model such as `height ~ sex` (or `height ~ sex + age`) estimates a mean height for each sex --- and, with age included, a per-year adjustment --- which is exactly what the quartermaster needs. Logistic and multinomial models are for categorical outcomes and do not apply here.

@@ -2,7 +2,7 @@
 
 You are authoring a **Primer class exercise** — one of three artifacts the project can build from a single problem, alongside the book chapter (`book/`) and the learnr tutorial (`primer.tutorials/`). Start at the repo index [`../CLAUDE.md`](../CLAUDE.md) for the curriculum, the base-guide relationship, and the collaboration protocol.
 
-> **Status: starter document.** This guide is a skeleton. The decisions that define what a class exercise physically *is* (format, length, live workflow) are not settled yet — they are collected under **Open questions** below and must be resolved with David before this guide acts as a real contract. Until then, do not invent structure; ask.
+> **Reference example: [`recruits/`](recruits/).** The format below is established; `recruits/` is the canonical worked example. A few rendering details (listed under **Open questions**) are still unsettled — ask before inventing structure for those.
 
 ## One seed, up to three renderings
 
@@ -10,7 +10,21 @@ The load-bearing idea: **the upstream material is shared, and the artifact is do
 
 That shared upstream already exists and already has a home: the **seed spec** at [`../guide/per-problem/<id>.md`](../guide/per-problem/). Each seed names the dataset, the "Imagine that you are…" scenario, the broad question and the narrow QoI, the causal/predictive framing, the data-prep step, the final model, the Preceptor and Population Table column structure, and a **Renderings** line tracking which of the three artifacts exist or are planned. A class exercise **consumes that seed; it does not re-derive it.** The question and the model are the same question and model the chapter and tutorial use.
 
-So this guide is **not** the place to specify data, question, or model — those live in the seed. This guide specifies only what is *distinctive about rendering a seed as a class exercise*: the in-class format, the time box, the live/collaborative workflow, and how (if at all) it differs from the tutorial built from the same seed.
+So this guide is **not** the place to specify data, question, or model — those live in the seed. This guide specifies only what is *distinctive about rendering a seed as a class exercise*: the in-class format, the file layout, and how it differs from the tutorial built from the same seed.
+
+## How a class exercise is built
+
+A class exercise is a pair of Quarto documents in a folder named for the problem — **no number** (the curriculum number is irrelevant in the classroom). See [`recruits/`](recruits/) for the worked example.
+
+- **Folder.** `class-exercises/<name>/`, where `<name>` is the problem's main name (e.g. `recruits`). Not numbered.
+- **Two files, one exercise:**
+  - `<name>.qmd` — the **student handout**: questions and prompts the student answers by typing directly into the document.
+  - `<name>-answers.qmd` — the **TF answer key**: the *same* questions with our answers filled in, plus the worked Preceptor/Population Tables. Title carries `(Answer Key)`.
+  - The student file is the answer key with the answer prose and the worked `gt` tables removed — building those is the student's task. Keep the two in sync: every question in one appears, identically worded, in the other.
+- **Quarto, `echo: false`.** Both files are `.qmd` with a YAML `execute: echo: false` block and a `setup` chunk loading the packages the data needs (`tidyverse`, `gt`, and whichever package ships the dataset — `primer.tutorials` for `recruits`, `primer.data` for most others). Render with `quarto render` to confirm they build; the generated `.html`/`_files` are git-ignored, do not commit them.
+- **Structure (mirrors the example).** Background Information (with real-world sources where useful) → **Scenarios** (a predictive framing *and* a causal framing of the same outcome, exactly the seed's primary + paired questions — include the causal one even when its manipulation is absurd, and say so) → **Data** (a few EDA chunks: print the tibble, `summary()`, a histogram) → **Preceptor Table** (the causal/predictive · units · outcome · covariates · treatment checklist, then a `gt` table per scenario) → **Population Table** (a `gt` table per scenario; describe it in words; the four Justice assumptions — validity, stability, representativeness, unconfoundedness — each defined and given a problem-specific counter-example) → **Modeling** (which model and why, from the variable type). This is the Wisdom→Justice→Courage arc in one handout.
+- **Preceptor and Population Tables use the project standard — never improvised.** Build them with the full `gt` pipeline from [`../guide/tables.md`](../guide/tables.md) §10: spanners with fixed IDs (`unit_span`, `outcome_span`, `treatment_span`, `covariates_span`), the footnote set, the hatch helper for causal counterfactuals, the 11-row Population Table layout, and the `opt_css` → `as_raw_html()` → `cat()`-in-`results: asis` ending. The fastest correct path is to **copy the matching tables from the problem's chapter** (`../book/<NN-name>.qmd`) or tutorial and adapt them — for `recruits`, the four tables come straight from `book/05-recruits.qmd` (primary→Scenario 1, paired→Scenario 2). Do **not** write ad-hoc flat `gt()` tables; the answer key's tables must look exactly like the chapter's.
+- **Seed-driven content.** Dataset, scenarios, outcome, covariates, treatment, model, and table column structure all come from the seed; do not re-derive them. After building, set the seed's **Renderings** line `class exercise ✓`.
 
 ## What is already fixed
 
@@ -25,17 +39,14 @@ So this guide is **not** the place to specify data, question, or model — those
 - The matching chapter (`../book/`) and tutorial (`../primer.tutorials/`) for the same slot, if they exist — the class exercise shares their primary question, tables, and fitted model.
 - Shared with chapters and tutorials: [`../guide/curriculum.md`](../guide/curriculum.md), [`../guide/tables.md`](../guide/tables.md), [`../guide/concepts-and-drops.md`](../guide/concepts-and-drops.md), [`../guide/guidance.md`](../guide/guidance.md).
 
-## Open questions (resolve with David before this becomes a real contract)
+## Open questions (still unsettled — ask David)
 
-The upstream questions (data / question / model / tables) are **answered** — they come from the seed. What remains are the *rendering* decisions, which are David's to make:
+The upstream (data / question / model / tables) comes from the seed, and the format and file layout are settled (above). What remains:
 
-1. **Format and file type.** What does a class exercise physically look like? A `.qmd` to render, an `.Rmd` learnr tutorial, a markdown handout, slides, or instructor notes + a student handout?
-2. **File and naming conventions.** Reuse the shared `NN-name` slug? One file per problem, or a subdirectory? Where does rendered output go, and where do these files live — here in `class-exercises/`, or somewhere else?
-3. **Base-guide inheritance.** Does the base tutorial guide (which governs tutorials) also govern class exercises, govern them with explicit overrides, or not apply?
-4. **Structure.** Follow the four Cardinal Virtues (Wisdom, Justice, Courage, Temperance) like chapters and tutorials, or a different arc suited to a live session?
-5. **AI-mediated or not.** Tutorials use the AI-era workflow (students prompt an AI to build `analysis.qmd`). Same here, or hands-on-in-class differently?
-6. **Length / time box and solo-vs-group.** What class duration is one exercise sized for, and is it individual, paired, or whole-class?
-7. **Same data or parallel data.** Reuse the seed's exact dataset/QoI, or deliberately use a parallel-but-different dataset so the exercise is not a rerun of the tutorial?
-8. **Guide home.** Should the detailed authoring guidance live here, or as a new part under [`../guide/`](../guide/) (e.g. `guide/class-exercises.md`) with this file as a thin router — mirroring how `book/` and `primer.tutorials/` route into `guide/`?
+1. **One exercise per problem, or one per virtue?** `recruits/` is a single end-to-end exercise. The example title pattern ("Wisdom and Recruits") could instead imply a `wisdom`/`justice`/`courage`/`temperance` file set per problem. Current default: one per problem.
+2. **Base-guide inheritance.** Does the base tutorial guide (which governs tutorials) also govern class exercises, govern them with explicit overrides, or not apply? Note the class exercise already departs from the base guide's AI-mediated `analysis.qmd` workflow — students type answers directly into the handout `.qmd` — so at minimum that is an override.
+3. **Length / time box and solo-vs-group.** What class duration is one exercise sized for, and is it individual, paired, or whole-class?
+4. **Coverage.** Which problems get a class exercise? (Not necessarily all 16 — see the seed **Renderings** lines.)
+5. **Guide home.** Keep this guidance here, or move it to a new part under [`../guide/`](../guide/) (e.g. `guide/class-exercises.md`) with this file as a thin router — mirroring how `book/` and `primer.tutorials/` route into `guide/`?
 
-Once David answers these, fold the answers into the sections above, delete the resolved open questions, and remove the **starter document** banner.
+As David settles these, fold the answers in above and trim this list.
