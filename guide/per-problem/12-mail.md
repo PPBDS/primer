@@ -3,6 +3,7 @@
 ### 12 — Mail  *(Position 8, Medium causal)*
 
 - **Type:** example *(to be authored — dataset and framing chosen; exercise content still to write)*
+- **Renderings:** chapter planned · tutorial planned · class exercise —
 - **"Imagine":** You are on the Philadelphia City Commissioners' office ahead of the next general election. You have a fixed postcard-printing budget and want to know which nudge message — "safer for you" or "safer for your neighborhood" — actually moves people to apply for a mail ballot.
 - **Dataset:** `mail` (2020 Philadelphia mail-in voting field experiment; Morris et al.)
 - **Outcome:** `applied_mail` — binary; whether the voter applied for a mail ballot before the 26-May deadline

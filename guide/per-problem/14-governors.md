@@ -3,6 +3,7 @@
 ### 14 — Governors  *(Position 10, Hard causal — recast from predictive)*
 
 - **Type:** example
+- **Renderings:** chapter planned · tutorial planned · class exercise —
 - **Status:** **Recast required.** The existing tutorial frames this as a predictive question — *"how long do gubernatorial candidates live after their election?"*. Under the new §1.5 alternation, position 10 is causal, and the Barfort et al. 2020 paper is a close-election RDD study whose natural framing *is* causal. Rewrite the tutorial around the causal question.
 - **"Imagine":** You are considering a run for governor and want to know whether winning changes how long you are likely to live.
 - **Dataset:** `governors` (Barfort et al. 2020) (`primer.data`)

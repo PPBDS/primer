@@ -3,6 +3,7 @@
 ### 07 — Colleges  *(Position 3, Easy predictive)*
 
 - **Type:** example
+- **Renderings:** chapter ✓ · tutorial ✓ · class exercise —
 - **"Imagine":** You are a data scientist at a non-profit helping students find the best college.
 - **Dataset:** `colleges` (`primer.data`), ~900 U.S. colleges/universities (DOE IPEDS 2013)
 - **Outcome:** `grad_rate` — graduation rate (continuous, 0–1)

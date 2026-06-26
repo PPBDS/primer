@@ -25,7 +25,7 @@ The base guide is the source of truth for everything common to all such tutorial
 - exercise rhythm, the `question_text()` question types, knowledge-drop discipline, CP/CR and `show_file()` evidence;
 - `echo = FALSE`, test-chunk discipline, code-chunk labeling, the setup-chunk skeleton, data handling, and formatting (package names bold+linked, function names with `()`, sentence case).
 
-This guide covers only what is **specific to the Primer**: the Cardinal Virtues structure, the EMH progression, predictive/causal pairing, Preceptor and Population Tables, the canonical definitions, the knowledge-drop library, the master exercise list, and the per-tutorial seed specs.
+This guide covers only what is **specific to the Primer**: the Cardinal Virtues structure, the EMH progression, predictive/causal pairing, Preceptor and Population Tables, the canonical definitions, the knowledge-drop library, the master exercise list, and the per-problem seed specs.
 
 **Precedence.** On workflow and shared conventions, the base guide wins. On Primer-specific pedagogy, this guide wins. Anywhere the Primer departs from the base guide, that departure must be an **explicit, on-the-record override** — called out as such at the point it occurs — never a silent difference.
 
@@ -42,10 +42,10 @@ The detailed guide lives under [`guide/`](guide/). **Read only the parts your cu
 | [`guide/chapters.md`](guide/chapters.md) | §4 Chapter structure | **chapters** (`book/`) |
 | [`guide/authoring.md`](guide/authoring.md) | §3 file conventions, §5 tutorial structure, §6 question flow, §7 exercise types, §9 AI-mediated exercises, §15 R tooling | **tutorials** (`primer.tutorials/`) |
 | [`guide/exercise-list.md`](guide/exercise-list.md) | §13 Master exercise list | **tutorials** — the per-virtue exercise sequence |
-| [`guide/per-tutorial/<id>.md`](guide/per-tutorial/) | §17 seed spec for one tutorial | **tutorials** — read only the one you're building (e.g. `guide/per-tutorial/08-seguro-popular.md`) |
+| [`guide/per-problem/<id>.md`](guide/per-problem/) | §17 seed spec for one problem | **tutorials** — read only the one you're building (e.g. `guide/per-problem/08-seguro-popular.md`) |
 | [`guide/open-items.md`](guide/open-items.md) | §16 Open items | checking pending TODOs |
 
-**Authoring a tutorial:** base guide → this index → [`primer.tutorials/CLAUDE.md`](primer.tutorials/CLAUDE.md) (which routes you to `guide/authoring.md` + `guide/exercise-list.md` + `guide/per-tutorial/<id>.md`), pulling in `guide/curriculum.md`, `guide/tables.md`, `guide/concepts-and-drops.md`, `guide/guidance.md` as needed. **Writing a chapter:** base guide → this index → [`book/CLAUDE.md`](book/CLAUDE.md) (which routes you to `guide/chapters.md` + the shared parts).
+**Authoring a tutorial:** base guide → this index → [`primer.tutorials/CLAUDE.md`](primer.tutorials/CLAUDE.md) (which routes you to `guide/authoring.md` + `guide/exercise-list.md` + `guide/per-problem/<id>.md`), pulling in `guide/curriculum.md`, `guide/tables.md`, `guide/concepts-and-drops.md`, `guide/guidance.md` as needed. **Writing a chapter:** base guide → this index → [`book/CLAUDE.md`](book/CLAUDE.md) (which routes you to `guide/chapters.md` + the shared parts).
 
 ## Curriculum at a glance
 
@@ -66,7 +66,7 @@ The authoring of a chapter/tutorial pair is a conversation. Do not try to produc
 3. **David picks.** Iterate on the dataset, the unit, the outcome, the treatment (if causal), and a short list of covariates. The same choices govern both the primary and the paired question.
 4. **Claude drafts both Preceptor Tables and both Population Tables** as `gt` code — primary question first, paired question second. David reviews and corrects.
 5. **Claude drafts the chapter Wisdom section**, then the tutorial Wisdom section. David reviews. Repeat by virtue: Justice, Courage, Temperance.
-6. **Claude checks spaced-repetition coverage** against the per-tutorial specifications in §17 and adjusts which recurring questions this tutorial asks.
+6. **Claude checks spaced-repetition coverage** against the per-problem specifications in §17 and adjusts which recurring questions this tutorial asks.
 
 This protocol is a default; deviate when it makes sense. Where a decision is small and reversible (phrasing of a knowledge drop, which concrete example to use in an exercise), just make it. Where a decision shapes the rest of the chapter (dataset, QoI, functional form), pause and ask.
 

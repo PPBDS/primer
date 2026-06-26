@@ -1,12 +1,14 @@
-# Primer authoring guide — Per-tutorial seed specs (§17)
+# Primer authoring guide — Per-problem seed specs (§17)
 
 > A part of the Primer authoring guide. Start at the index — [`CLAUDE.md`](CLAUDE.md) — which maps each `§` to its file. **Section numbers are unchanged**, so every `§N.M` cross-reference in the guide still resolves via that map.
 
 ---
 
-## 17. Per-tutorial problem specifications
+## 17. Per-problem specifications
 
-Key parameters for each tutorial in the `primer.tutorials` package. Use these entries to orient new authoring sessions: the dataset, the primary question, the model to fit, and the Preceptor Table and Population Table column structure. Tutorials marked **miscellaneous** have no full data-science exercise (no Preceptor Table, no model fit). All others are **example** tutorials.
+Key parameters for each problem in the curriculum. **A seed is the shared upstream — dataset, question (QoI), model, and the Preceptor and Population Tables — from which any of three artifacts can be rendered: a book chapter (`book/`), a learnr tutorial (`primer.tutorials/`), and/or a class exercise (`class-exercises/`). We do not always build all three.** Use these entries to orient new authoring sessions whichever artifact you are rendering: the dataset, the primary question, the model to fit, and the Preceptor Table and Population Table column structure. Problems marked **miscellaneous** have no full data-science exercise (no Preceptor Table, no model fit). All others are **example** problems.
+
+**Renderings field.** Each seed entry carries a `**Renderings:**` line recording which of the three artifacts exist or are planned — `chapter`, `tutorial`, `class exercise` — each marked `✓` (built), `planned`, or `—` (not intended). This makes the seed the index of coverage across artifacts and makes the "not always all three" rule operational. Update the line when you build or plan an artifact from the seed.
 
 **The §17 seed names a *final model* per tutorial; Courage's §13.4 three-fit interpretation block is generated from that.** Each entry below specifies the final model the tutorial fits, but the Courage section actually fits two or three candidate models (Fit A → Fit B → Fit C) so students can practice parameter interpretation across covariate types. The candidate fits are chosen by the author at draft time from the dataset's available covariates and need not be listed in the §17 entry. See §13.4 *The Courage parameter-interpretation block* for the design pattern, and the `05-recruits` / `06-trains` / `07-colleges` tutorials for worked examples.
 
@@ -27,4 +29,4 @@ Preceptor Table and Population Table columns are listed by spanner in order. Pop
 **Miscellaneous tutorials (01–04) are frozen inheritance.** They predate this CLAUDE.md rewrite and are not specified here beyond the `Type: miscellaneous` tag. Do not rewrite them to match the §13 master exercise list; their existing content stands. They do not follow the example-tutorial structure (Wisdom / Justice / Courage / Temperance with per-virtue preambles), the EMH progression rules, or the §17 seed-entry pattern. When the rest of the curriculum changes (terminology shifts, renumbering, etc.), touch them only as needed for consistency — not to restructure.
 
 
-Each tutorial has its own file in this directory (e.g. `08-seguro-popular.md`); **read only the one you are authoring**, alongside `../exercise-list.md`.
+Each problem has its own file in this directory (e.g. `08-seguro-popular.md`); **read only the one you are authoring**, alongside `../exercise-list.md`.

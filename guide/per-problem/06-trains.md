@@ -3,6 +3,7 @@
 ### 06 — Trains  *(Position 2, Easy causal)*
 
 - **Type:** example
+- **Renderings:** chapter ✓ · tutorial ✓ · class exercise —
 - **"Imagine":** You are a campaign manager for a Republican congressional candidate in Georgia who wants to increase anti-immigration sentiment among voters.
 - **Dataset:** `trains` (Enos 2014), Boston commuters, 2012 (`primer.data`)
 - **Outcome:** `att_end` — immigration attitude after experiment (integer, 3–15)

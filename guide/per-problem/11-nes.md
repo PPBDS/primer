@@ -3,6 +3,7 @@
 ### 11 — NES  *(Position 7, Medium predictive)*
 
 - **Type:** example
+- **Renderings:** chapter planned · tutorial planned · class exercise —
 - **"Imagine":** You are a political scientist studying the 1992 presidential election, curious whether men and women differed in their support for Clinton, Bush, and Perot. There are many decisions to make.
 - **Dataset:** NES (`primer.data`), 1992 presidential election
 - **Outcome:** `pres_vote` — vote choice (Clinton / Bush / Perot)

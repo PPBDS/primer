@@ -3,6 +3,7 @@
 ### 10 — Shaming  *(Position 6, Medium causal)*
 
 - **Type:** example
+- **Renderings:** chapter ✓ · tutorial ✓ · class exercise —
 - **"Imagine":** You are running for Governor of Texas and must decide how to allocate campaign resources.
 - **Dataset:** `shaming` (Gerber, Green, Larimer 2008) (`primer.data`)
 - **Outcome:** `primary_06` — voted in 2006 primary (binary)

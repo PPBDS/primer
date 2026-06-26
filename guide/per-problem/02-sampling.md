@@ -3,6 +3,7 @@
 ### 02 — Sampling
 
 - **Type:** miscellaneous
+- **Renderings:** chapter ✓ · tutorial ✓ · class exercise —
 
 ---
 

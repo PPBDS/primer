@@ -8,7 +8,7 @@ What to read:
 
 - [`../guide/authoring.md`](../guide/authoring.md) — Primer tutorial structure, question flow, exercise types, child documents, R tooling.
 - [`../guide/exercise-list.md`](../guide/exercise-list.md) — the master exercise list (the per-virtue exercise sequence).
-- [`../guide/per-tutorial/<id>.md`](../guide/per-tutorial/) — the seed spec for the tutorial you're building (read only that one).
+- [`../guide/per-problem/<id>.md`](../guide/per-problem/) — the seed spec for the problem you're building (read only that one).
 - Shared with chapters: [`../guide/curriculum.md`](../guide/curriculum.md) (tier and framing), [`../guide/tables.md`](../guide/tables.md), [`../guide/concepts-and-drops.md`](../guide/concepts-and-drops.md), [`../guide/guidance.md`](../guide/guidance.md).
 
 The tutorial directory, YAML `id`, packaged tibble (where applicable), and student repo all share one string per tutorial (e.g. `08-seguro-popular`); see `../guide/authoring.md` §3.

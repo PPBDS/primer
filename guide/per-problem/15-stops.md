@@ -3,6 +3,7 @@
 ### 15 — TODO  *(Position 11, Hard predictive — non-parametric / random forest — GAP)*
 
 - **Type:** example *(to be authored)*
+- **Renderings:** chapter planned · tutorial planned · class exercise —
 - **Status:** **Gap.** Non-parametric predictive tutorial does not exist.
 - **Target:** Random forest or gradient-boosted model on a predictive question where the outcome-scale prediction matters more than parameter interpretation. Per §13.5 *Interpretability ceiling by model family*, the parameter-interpretation block is cut entirely — replace with a single exercise whose purpose is to articulate *why* the model's parameters aren't interpretable, then hand off to `marginaleffects::predictions()` / `plot_predictions()` for all question-answering.
 - **Constraint:** Must be predictive and Hard (§1.5). The current `stops` tutorial (formerly `14-stops`) is a natural candidate to recast — `arrested ~ race + sex + zone + …` on the Open Policing data benefits from non-linearity and interactions a linear model can't capture well — but we should evaluate whether `stops` is the best home for the curriculum's first RF tutorial vs. a cleaner dataset.

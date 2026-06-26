@@ -3,6 +3,7 @@
 ### 16 — Kenya  *(Position 12, Hard causal — causal forest — curriculum capstone)*
 
 - **Type:** example *(to be authored — dataset and framing chosen; exercise content still to write)*
+- **Renderings:** chapter planned · tutorial planned · class exercise —
 - **"Imagine":** You are an advisor to Kenya's electoral commission ahead of the 2027 election. Your budget can fund one — maybe two — of six possible interventions to boost voter registration: SMS, local administrators, canvassing, or combinations. The right choice almost certainly varies by community: SMS probably works best where phone density is high; a local admin may matter more in isolated, low-poverty areas. You want a *policy rule*, not a single causal effect.
 - **Dataset:** `kenya` (Harris et al., "Electoral Administration in Fledgling Democracies: Experimental Evidence from Kenya")
 - **Outcome:** `reg_byrv13` — registered-voter count at polling location during intervention period divided by registered voters at that polling location in 2013 (continuous rate)

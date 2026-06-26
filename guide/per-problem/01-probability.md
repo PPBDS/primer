@@ -3,6 +3,7 @@
 ### 01 — Probability
 
 - **Type:** miscellaneous
+- **Renderings:** chapter ✓ · tutorial ✓ · class exercise —
 
 ---
 

@@ -3,6 +3,7 @@
 ### 13 — CES  *(Position 9, Hard predictive)*
 
 - **Type:** example
+- **Renderings:** chapter planned · tutorial planned · class exercise —
 - **"Imagine":** You are a pollster preparing for an upcoming election, exploring 2020 Trump approval patterns across ideology and education levels.
 - **Dataset:** `ces` (Cooperative Election Study) (`primer.data`), 2020
 - **Outcome:** `approval` — presidential approval (ordinal, 5 categories)
