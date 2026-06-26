@@ -1,21 +1,12 @@
 ## Priorities
 
-Next two months . . .
+Move these teaching chapters to an Appendix.
 
-1) Update teaching material to use VS Code and GitHub spaces. 
+Switching Getting Started to Using Codebases. Also runs getting started tutorial and submit answers.
 
-    * Start with Getting Started tutorial, or something like it
-    in tutorial.helpers.
+Add Using AI chapter which starts students using AI early. Also runs 01-introduction tutorial and submit answers.
 
-    * Update show_file() so that it looks for the target file recursively.
-
-    * Material in positron.tutorials needs a VS code option or companion.
-
-2) Update Getting Started chapter, VS code section. Add more material.
-
-3) Fix primer.tutorials and the associated chapters.
-
-4) Get way better at Claude Code. Consider incorporating Claude Code in the class.
+Git/GitHub chapter happens in conjunction with GitHub tutorials. Maybe these are at the start of week 2.
 
 
 ### Ordered outcomes
@@ -34,18 +25,6 @@ rand_forest(): "ordinalForest"
 These models can be fitted, tuned, and evaluated with tidymodels. For the evaluation, we’ve added a specific performance metric for ordered categories: the ranked probability score (RPS). The function ranked_prob_score() is in the new yardstick release and requires an ordered factor for the outcome.
 
 ### tab_pfn() looks cool
-
-### Alec
-
-
-
-## Aashna
-
-Fix Height
-
-Start work on Immigration. 
-
-Check the source code for make_exercise
 
 
 
