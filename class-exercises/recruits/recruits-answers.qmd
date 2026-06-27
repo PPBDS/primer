@@ -13,17 +13,27 @@ library(gt)
 library(primer.tutorials)
 ```
 
+## Imagine
+
+Imagine that you are a logistics analyst at U.S. Marine Corps Supply, planning next year's bootcamp uniform order. You want to use the available data to make a sensible forecast for the recruits who will arrive next year.
+
+The data describe a sample of recruits with information such as height, sex, and age. Each row is one recruit, and the goal is to use what is known before the forecast to reason about what will happen next year.
+
 ## Wisdom
 
 We are working with the `recruits` dataset. This exercise is a predictive modeling exercise. We will use it to reason about how to forecast the height of next year's recruits from information we already know about them.
 
-What question are we trying to answer?
+What question might you try to answer if you are a logistics analyst planning next year's uniform order?
 
 We are trying to forecast the average height of next year's Marine Corps recruits from information such as sex and age.
 
 What are the units, outcome, and covariates in this problem?
 
-The units are individual recruits. The outcome is `height`, measured in centimeters. The relevant covariates are `sex` and `age`.
+- Unit: one recruit
+- Outcome: `height` in centimeters
+- Covariates: `sex` and `age`
+- Treatment (if any): none
+- Quantity of interest: the expected height for future recruits, summarized by the fitted model
 
 What belongs in the conceptual Preceptor Table for this problem? You do not need to construct it yet.
 
@@ -122,7 +132,7 @@ What outcome are we modeling? What predictors will we use?
 
 The outcome is `height`, a continuous numeric variable. We will model it with a Gaussian linear model and an identity link. A linear model is appropriate because height is continuous and the mean height can be described as a linear function of the predictors.
 
-Why is a linear model reasonable here?
+Why is this model reasonable?
 
 A linear model is reasonable because the mean height can be expressed as a linear function of the predictors, and the outcome is continuous rather than categorical.
 
@@ -143,7 +153,14 @@ What is the main conclusion from the fitted model?
 
 The fitted model says that female recruits are shorter on average than male recruits, and the model can be used to estimate the expected height for a recruit with given covariates.
 
-Create one plot that summarizes the fitted model and the data. Then write a short Quarto document that includes the plot and a brief interpretation. Publish the result to GitHub Pages.
+Ask AI to create a plot that summarizes the fitted model and the data. Use AI for the coding, and then write a short Quarto document that includes the plot and a brief interpretation. Publish the result to GitHub Pages.
+
+If you finish early, ask AI to help you explore one of these ideas for the recruits data:
+
+- suggest a better-looking plot with clearer labels, colors, or annotations for the height-by-sex relationship;
+- identify any unusual recruits or outliers and explain whether they change the main conclusion;
+- use functions such as `summarise()`, `group_by()`, `filter()`, or `arrange()` to examine the data more closely and then describe what you learn;
+- ask AI to propose a few follow-up questions about the data that could shape a stronger final Quarto report.
 
 Teaching fellow prompt: Ask the class to explain the difference between a fitted mean and a future observation.
 
