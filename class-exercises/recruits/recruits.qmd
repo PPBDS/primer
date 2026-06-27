@@ -4,86 +4,107 @@ execute:
   echo: false
 ---
 
+## Imagine
+
+Imagine that you are a logistics analyst at U.S. Marine Corps Supply, planning next year's bootcamp uniform order. You want to use the available data to make a sensible forecast for the recruits who will arrive next year.
+
+The data describe a sample of recruits with information such as height, sex, and age. Each row is one recruit, and the goal is to use what is known before the forecast to reason about what will happen next year.
+
+## Wisdom
+
+We are working with the `recruits` dataset. This exercise is a predictive modeling exercise. We will use it to reason about how to forecast the height of next year's recruits from information we already know about them.
+
+What question might you try to answer if you are a logistics analyst planning next year's uniform order?
+
+### Question for Class This Week
+
+Does height differ between male and female recruits? If so, by how much on average?
+
+**What are the units, outcome, and covariates in this question?**
+
+- Unit:
+- Outcome:
+- Covariates:
+- Treatment (if any):
+- Quantity of interest:
+
+What are the units, outcome, and covariates in this problem?
+
+- Unit:
+- Outcome:
+- Covariates:
+- Treatment (if any):
+- Quantity of interest:
+
+What belongs in the conceptual Preceptor Table for this problem? You do not need to construct it yet.
+
+The instructor will display the completed Preceptor Table after the discussion.
+
+## Justice
+
+Now that we know the question, we need to think about the population and the assumptions that justify using the data to answer it.
+
+Describe the Population Table in your own words.
+
+What is one realistic violation of validity or representativeness in this problem?
+
+Why is unconfoundedness not part of this predictive modeling problem?
+
+## Courage
+
+Before we fit a model, we should understand what model we are using and why.
+
+What outcome are we modeling? What predictors will we use?
+
+Why is this model reasonable?
+
+The instructor will show the fitted model and its output.
+
+## Exploratory Data Analysis Exercises
+
+Before fitting the model, let's explore the data to understand the relationship between height and sex. Work through these three coding exercises, running each in a separate R script or your R terminal.
+
+**Exercise 1: Visualize height by sex**
+
+Use AI to create a plot that shows the distribution of height separately for male and female recruits. Include appropriate labels and a title. What do you notice about the two distributions?
+
+**Exercise 2: Summary statistics by sex**
+
+Use AI to calculate the mean, standard deviation, and count of recruits for each sex. Organize the output in a clean table. Why might the difference in sample sizes (40 vs. 10) matter for our model?
+
+**Exercise 3: Age and height relationship**
+
+Use AI to create a scatter plot showing the relationship between age and height, colored by sex. Does age appear to be related to height in this sample?
+
+## Temperance
+
+Now that the model is fitted, we need to interpret it carefully and turn the result into a short Quarto report.
+
+What is the main conclusion from the fitted model?
+
+This is the code Preceptor has prepared for you. It loads the data, prepares it, and fits the model so you can build on it before asking AI to create the plot.
+
 ```{r}
-#| label: setup
+#| label: preceptor-code
 #| message: false
 
 library(tidyverse)
-library(gt)
 library(primer.tutorials)
 
+data("recruits", package = "primer.tutorials")
+
+recruits <- recruits |>
+  mutate(sex = factor(sex, levels = c("Male", "Female")))
+
+fit_recruits <- lm(height ~ sex, data = recruits)
+summary(fit_recruits)
 ```
 
-## Background Information
+Ask AI to create a plot that summarizes the fitted model and the data. Use AI for the coding, and then write a short Quarto document that includes the plot and a brief interpretation. Publish the result to GitHub Pages.
 
-The `recruits` dataset is a 50-row teaching cut of the National Health and Nutrition Examination Survey (NHANES), restricted to young adults aged 18--27 and to three columns: `height` (centimeters), `sex`, and `age`. The sample is deliberately uneven --- 40 men and 10 women --- so that the two group means have visibly different standard errors. Think of these people as stand-ins for next year's incoming Marine Corps bootcamp recruits: a population whose heights we must anticipate well enough to order the right mix of uniforms.
+If you finish early, ask AI to help you explore one of these ideas for the recruits data:
 
-Source: subset of `primer.data::nhanes`. See `data-raw/recruits.R` in the `primer.tutorials` package for the sampling script.
-
-### Scenarios
-
-1) Imagine you are the quartermaster in charge of ordering uniforms for next year's Marine Corps bootcamp recruits. You want to forecast how tall those recruits will be, based on what you know about them (their sex, their age).
-
-2) Imagine you are a researcher who wants to know whether sex *causes* a difference in height --- the average causal effect of being female versus male on a person's height.
-
-### Data
-
-For this assignment we use the `recruits` dataset from the `primer.tutorials` package.
-
-* Explore the data. What is the outcome variable? How is it distributed?
-
-```{r}
-recruits
-```
-
-```{r}
-summary(recruits)
-table(recruits$sex)
-```
-
-```{r}
-recruits |>
-  ggplot(aes(x = height)) +
-    geom_histogram(bins = 20) +
-      coord_cartesian(xlim = c(140, 200))
-```
-
-### Preceptor Table
-
-What sorts of questions are we trying to answer?
-
-In order to build the Preceptor Table, we need to know: Is the model causal or predictive? What are units? What are the outcomes? What are the covariates? What are the treatments? Describe the mathematical structure of the model. Answer each for **both** scenarios:
-
-* Causal or predictive?
-
-* Units:
-
-* Outcome:
-
-* Covariates:
-
-* Treatment:
-
-Now construct the Preceptor Table for each scenario (Scenario 1 predictive; Scenario 2 with potential outcomes).
-
-### Population Table
-
-Construct the Population Table for each scenario.
-
-Then answer each question below:
-
-Describe the Population Table in your own words---what does each row represent in this context? Then, for each of the four key assumptions (validity, stability, representativeness, and unconfoundedness), provide both a definition in your own words and one specific counter-example for each assumption.
-
-Describe the Population Table in words:
-
-Counter-example to the assumption of validity:
-
-Counter-example to the assumption of stability:
-
-Counter-example to the assumption of representativeness:
-
-Counter-example to the assumption of unconfoundedness:
-
-### Modeling
-
-The outcome variable is `height`, the height of each person in centimeters. What kind of regression model should you use to predict or explain `height`? Explain your choice based on what kind of variable `height` is.
+- suggest a better-looking plot with clearer labels, colors, or annotations for the height-by-sex relationship;
+- identify any unusual recruits or outliers and explain whether they change the main conclusion;
+- use functions such as `summarise()`, `group_by()`, `filter()`, or `arrange()` to examine the data more closely and then describe what you learn;
+- ask AI to propose a few follow-up questions about the data that could shape a stronger final Quarto report.
