@@ -19,7 +19,7 @@ We are working with the `recruits` dataset. This exercise is a predictive modeli
 
 What question are we trying to answer?
 
-What are the units in this problem? What is the outcome? What covariates are relevant? Is there a treatment here? What quantity of interest do we want to summarize?
+What are the units, outcome, and covariates in this problem?
 
 What belongs in the conceptual Preceptor Table for this problem? You do not need to construct it yet.
 
@@ -29,13 +29,9 @@ The instructor will display the completed Preceptor Table after the discussion.
 
 Now that we know the question, we need to think about the population and the assumptions that justify using the data to answer it.
 
-Describe the Population Table in your own words. What does each row represent in this context?
+Describe the Population Table in your own words.
 
-For each of the key assumptions, define it in your own words and give one realistic counterexample for the current problem.
-
-- Validity
-- Stability
-- Representativeness
+What is one realistic violation of validity or representativeness in this problem?
 
 Why is unconfoundedness not part of this predictive modeling problem?
 
@@ -43,16 +39,16 @@ Why is unconfoundedness not part of this predictive modeling problem?
 
 Before we fit a model, we should understand what model we are using and why.
 
-What outcome are we modeling? What predictors will we use? Which probability family and link function are appropriate here? Explain why a linear model is reasonable for this outcome.
+What outcome are we modeling? What predictors will we use?
 
-What do the model parameters mean in this setting?
+Why is a linear model reasonable here?
 
 The instructor will show the fitted model and its output.
 
 ## Temperance
 
-Now that the model is fitted, we need to interpret it carefully.
+Now that the model is fitted, we need to interpret it carefully and turn the result into a short Quarto report.
 
-How should we interpret the fitted coefficients? What does the fitted model say about the average height of male and female recruits?
+What is the main conclusion from the fitted model?
 
-How would we use the fitted model to make a prediction for a new recruit? What uncertainty remains? What are the limitations of this model? How does the answer to the original question depend on those limitations?
+Create one plot that summarizes the fitted model and the data. Then write a short Quarto document that includes the plot and a brief interpretation. Publish the result to GitHub Pages.

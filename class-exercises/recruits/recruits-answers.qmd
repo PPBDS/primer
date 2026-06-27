@@ -21,9 +21,9 @@ What question are we trying to answer?
 
 We are trying to forecast the average height of next year's Marine Corps recruits from information such as sex and age.
 
-What are the units in this problem? What is the outcome? What covariates are relevant? Is there a treatment here? What quantity of interest do we want to summarize?
+What are the units, outcome, and covariates in this problem?
 
-The units are individual recruits. The outcome is `height`, measured in centimeters. The relevant covariates are `sex` and `age`. This exercise does not include a treatment, because we are making a predictive forecast rather than asking about an intervention. The quantity of interest is the expected height of recruits, or the mean height for groups defined by the available covariates.
+The units are individual recruits. The outcome is `height`, measured in centimeters. The relevant covariates are `sex` and `age`.
 
 What belongs in the conceptual Preceptor Table for this problem? You do not need to construct it yet.
 
@@ -67,15 +67,13 @@ cat("```{=html}\n",
 
 Now that we know the question, we need to think about the population and the assumptions that justify using the data to answer it.
 
-Describe the Population Table in your own words. What does each row represent in this context?
+Describe the Population Table in your own words.
 
 Each row is one young adult observed at one moment in time, and the table connects the observed data to the recruits we want to forecast. The rows labeled "Data" come from the sample we observed; the rows labeled "Preceptor" represent the future recruits we want to predict.
 
-For each of the key assumptions, define it in your own words and give one realistic counterexample for the current problem.
+What is one realistic violation of validity or representativeness in this problem?
 
-- Validity: The measurement and the meaning of the outcome should be the same in the data and in the target population. A counterexample would be if the observed heights were recorded with different measurement rules than the heights we care about for recruits.
-- Stability: The relationship between the covariates and the outcome should be similar across the data and the target recruits. A counterexample would be if the sex gap in height changed substantially between the sample period and the coming year.
-- Representativeness: The data should be a reasonable stand-in for the recruits we want to predict. A counterexample would be if the sample were heavily unbalanced by sex or if the recruits were a very different group from the people in the data.
+A realistic violation of validity would be if measured heights were recorded with different rules than the heights we care about for recruits. A realistic violation of representativeness would be if the sample were heavily unbalanced by sex or if the future recruits were a very different group from the people in the data.
 
 Why is unconfoundedness not part of this predictive modeling problem?
 
@@ -120,13 +118,13 @@ cat("```{=html}\n",
 
 Before we fit a model, we should understand what model we are using and why.
 
-What outcome are we modeling? What predictors will we use? Which probability family and link function are appropriate here? Explain why a linear model is reasonable for this outcome.
+What outcome are we modeling? What predictors will we use?
 
 The outcome is `height`, a continuous numeric variable. We will model it with a Gaussian linear model and an identity link. A linear model is appropriate because height is continuous and the mean height can be described as a linear function of the predictors.
 
-What do the model parameters mean in this setting?
+Why is a linear model reasonable here?
 
-The intercept is the expected height for the reference group, and the coefficient for `sexFemale` measures the expected change in height for female recruits relative to male recruits.
+A linear model is reasonable because the mean height can be expressed as a linear function of the predictors, and the outcome is continuous rather than categorical.
 
 Teaching fellow prompt: Ask the class to explain why a linear model is the right choice for a continuous height outcome.
 
@@ -139,15 +137,13 @@ summary(fit_recruits)
 
 ## Temperance
 
-Now that the model is fitted, we need to interpret it carefully.
+Now that the model is fitted, we need to interpret it carefully and turn the result into a short Quarto report.
 
-How should we interpret the fitted coefficients? What does the fitted model say about the average height of male and female recruits?
+What is the main conclusion from the fitted model?
 
-The fitted model says that the average height for male recruits is the intercept, while the average height for female recruits is the intercept plus the coefficient for `sexFemale`. In this sample, the fitted model implies that female recruits are shorter on average than male recruits.
+The fitted model says that female recruits are shorter on average than male recruits, and the model can be used to estimate the expected height for a recruit with given covariates.
 
-How would we use the fitted model to make a prediction for a new recruit? What uncertainty remains? What are the limitations of this model? How does the answer to the original question depend on those limitations?
-
-We would plug the covariates for a new recruit into the fitted model to obtain a predicted mean height. The model does not tell us exactly what the recruit's height will be; it gives an expected value and leaves residual variation unexplained. The model is limited by the sample size, by the fact that we only used `sex`, and by the assumption that the same pattern will hold for next year's recruits. The answer to the original question depends on whether those assumptions are reasonable.
+Create one plot that summarizes the fitted model and the data. Then write a short Quarto document that includes the plot and a brief interpretation. Publish the result to GitHub Pages.
 
 Teaching fellow prompt: Ask the class to explain the difference between a fitted mean and a future observation.
 
