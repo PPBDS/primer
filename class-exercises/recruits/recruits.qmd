@@ -4,15 +4,6 @@ execute:
   echo: false
 ---
 
-```{r}
-#| label: setup
-#| message: false
-
-library(tidyverse)
-library(gt)
-library(primer.tutorials)
-```
-
 ## Imagine
 
 Imagine that you are a logistics analyst at U.S. Marine Corps Supply, planning next year's bootcamp uniform order. You want to use the available data to make a sensible forecast for the recruits who will arrive next year.
@@ -62,6 +53,24 @@ The instructor will show the fitted model and its output.
 Now that the model is fitted, we need to interpret it carefully and turn the result into a short Quarto report.
 
 What is the main conclusion from the fitted model?
+
+This is the code Preceptor has prepared for you. It loads the data, prepares it, and fits the model so you can build on it before asking AI to create the plot.
+
+```{r}
+#| label: preceptor-code
+#| message: false
+
+library(tidyverse)
+library(primer.tutorials)
+
+data("recruits", package = "primer.tutorials")
+
+recruits <- recruits |>
+  mutate(sex = factor(sex, levels = c("Male", "Female")))
+
+fit_recruits <- lm(height ~ sex, data = recruits)
+summary(fit_recruits)
+```
 
 Ask AI to create a plot that summarizes the fitted model and the data. Use AI for the coding, and then write a short Quarto document that includes the plot and a brief interpretation. Publish the result to GitHub Pages.
 
