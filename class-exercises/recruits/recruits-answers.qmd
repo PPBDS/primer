@@ -27,6 +27,18 @@ What question might you try to answer if you are a logistics analyst planning ne
 
 We are trying to forecast the average height of next year's Marine Corps recruits from information such as sex and age.
 
+### Question for Class This Week
+
+Does height differ between male and female recruits? If so, by how much on average?
+
+**What are the units, outcome, and covariates in this question?**
+
+- Unit: one recruit
+- Outcome: `height` in centimeters
+- Covariates: `sex`
+- Treatment (if any): none
+- Quantity of interest: the average height for male and female recruits, and the difference between them
+
 What are the units, outcome, and covariates in this problem?
 
 - Unit: one recruit
@@ -145,24 +157,103 @@ fit_recruits <- lm(height ~ sex, data = recruits)
 summary(fit_recruits)
 ```
 
+## Exploratory Data Analysis Exercises
+
+Before fitting the model, let's explore the data to understand the relationship between height and sex.
+
+### Exercise 1: Visualize height by sex
+
+Use AI to create a plot that shows the distribution of height separately for male and female recruits. Include appropriate labels and a title. What do you notice about the two distributions?
+
+**Sample output:**
+
+```{r}
+recruits |>
+  ggplot(aes(x = height, fill = sex)) +
+  geom_density(alpha = 0.6) +
+  labs(
+    title = "Height Distribution by Sex",
+    x = "Height (cm)",
+    y = "Density",
+    fill = "Sex"
+  ) +
+  theme_minimal()
+```
+
+**What students should notice:** The male distribution is clearly shifted to the right (taller) compared to the female distribution. There is overlap but clear separation between the two groups.
+
+**Follow-up question for students:** If you were a logistics analyst ordering uniforms, why would it be important to break down the height distribution by sex rather than treating all recruits as one group?
+
+---
+
+### Exercise 2: Summary statistics by sex
+
+Use AI to calculate the mean, standard deviation, and count of recruits for each sex. Organize the output in a clean table. Why might the difference in sample sizes (40 vs. 10) matter for our model?
+
+**Sample output:**
+
+```{r}
+recruits |>
+  group_by(sex) |>
+  summarise(
+    N = n(),
+    Mean_Height = mean(height),
+    SD_Height = sd(height),
+    .groups = "drop"
+  )
+```
+
+```
+# A tibble: 2 × 4
+  sex        N Mean_Height SD_Height
+  <fct>    <int>       <dbl>     <dbl>
+1 Female      10        162.      4.67
+2 Male        40        175.      6.45
+```
+
+**What students should notice:** Males are on average 13 cm taller. The female group is much smaller (10 vs. 40), so estimates for female recruits will have more uncertainty.
+
+**Follow-up question for students:** Which group's estimate (male or female average height) will have the larger standard error? Why?
+
+**Teaching fellow prompt:** This is a key insight for Temperance --- the unequal sample sizes mean the confidence intervals will have different widths. This deliberate imbalance in the data is there to make students notice and reason about precision.
+
+---
+
+### Exercise 3: Age and height relationship
+
+Use AI to create a scatter plot showing the relationship between age and height, colored by sex. Does age appear to be related to height in this sample?
+
+**Sample output:**
+
+```{r}
+recruits |>
+  ggplot(aes(x = age, y = height, color = sex)) +
+  geom_point(size = 3, alpha = 0.7) +
+  geom_smooth(method = "lm", se = FALSE) +
+  labs(
+    title = "Height vs. Age by Sex",
+    x = "Age (years)",
+    y = "Height (cm)",
+    color = "Sex"
+  ) +
+  theme_minimal()
+```
+
+**What students should notice:** Age shows almost no relationship to height in this sample (the lines are nearly flat). This suggests that sex is a much stronger predictor of height than age in this age range (18--27). The sex difference is consistent across ages.
+
+**Follow-up question for students:** Given this plot, do you think the model `height ~ sex` will be more predictive than `height ~ age`? Why?
+
+---
+
 ## Temperance
 
 Now that the model is fitted, we need to interpret it carefully and turn the result into a short Quarto report.
 
 What is the main conclusion from the fitted model?
 
-The fitted model says that female recruits are shorter on average than male recruits, and the model can be used to estimate the expected height for a recruit with given covariates.
+Male recruits are taller on average than female recruits. The difference is about 13 cm, with male recruits averaging around 175 cm and female recruits averaging around 162 cm.
 
 Ask AI to create a plot that summarizes the fitted model and the data. Use AI for the coding, and then write a short Quarto document that includes the plot and a brief interpretation. Publish the result to GitHub Pages.
-
-If you finish early, ask AI to help you explore one of these ideas for the recruits data:
-
-- suggest a better-looking plot with clearer labels, colors, or annotations for the height-by-sex relationship;
-- identify any unusual recruits or outliers and explain whether they change the main conclusion;
-- use functions such as `summarise()`, `group_by()`, `filter()`, or `arrange()` to examine the data more closely and then describe what you learn;
-- ask AI to propose a few follow-up questions about the data that could shape a stronger final Quarto report.
-
-Teaching fellow prompt: Ask the class to explain the difference between a fitted mean and a future observation.
 
 ```{r}
 recruits |>

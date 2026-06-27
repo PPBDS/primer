@@ -16,6 +16,18 @@ We are working with the `recruits` dataset. This exercise is a predictive modeli
 
 What question might you try to answer if you are a logistics analyst planning next year's uniform order?
 
+### Question for Class This Week
+
+Does height differ between male and female recruits? If so, by how much on average?
+
+**What are the units, outcome, and covariates in this question?**
+
+- Unit:
+- Outcome:
+- Covariates:
+- Treatment (if any):
+- Quantity of interest:
+
 What are the units, outcome, and covariates in this problem?
 
 - Unit:
@@ -47,6 +59,22 @@ What outcome are we modeling? What predictors will we use?
 Why is this model reasonable?
 
 The instructor will show the fitted model and its output.
+
+## Exploratory Data Analysis Exercises
+
+Before fitting the model, let's explore the data to understand the relationship between height and sex. Work through these three coding exercises, running each in a separate R script or your R terminal.
+
+**Exercise 1: Visualize height by sex**
+
+Use AI to create a plot that shows the distribution of height separately for male and female recruits. Include appropriate labels and a title. What do you notice about the two distributions?
+
+**Exercise 2: Summary statistics by sex**
+
+Use AI to calculate the mean, standard deviation, and count of recruits for each sex. Organize the output in a clean table. Why might the difference in sample sizes (40 vs. 10) matter for our model?
+
+**Exercise 3: Age and height relationship**
+
+Use AI to create a scatter plot showing the relationship between age and height, colored by sex. Does age appear to be related to height in this sample?
 
 ## Temperance
 
