@@ -11,79 +11,48 @@ execute:
 library(tidyverse)
 library(gt)
 library(primer.tutorials)
-
 ```
 
-## Background Information
+## Wisdom
 
-The `recruits` dataset is a 50-row teaching cut of the National Health and Nutrition Examination Survey (NHANES), restricted to young adults aged 18--27 and to three columns: `height` (centimeters), `sex`, and `age`. The sample is deliberately uneven --- 40 men and 10 women --- so that the two group means have visibly different standard errors. Think of these people as stand-ins for next year's incoming Marine Corps bootcamp recruits: a population whose heights we must anticipate well enough to order the right mix of uniforms.
+We are working with the `recruits` dataset. This exercise is a predictive modeling exercise. We will use it to reason about how to forecast the height of next year's recruits from information we already know about them.
 
-Source: subset of `primer.data::nhanes`. See `data-raw/recruits.R` in the `primer.tutorials` package for the sampling script.
+What question are we trying to answer?
 
-### Scenarios
+What are the units in this problem? What is the outcome? What covariates are relevant? Is there a treatment here? What quantity of interest do we want to summarize?
 
-1) Imagine you are the quartermaster in charge of ordering uniforms for next year's Marine Corps bootcamp recruits. You want to forecast how tall those recruits will be, based on what you know about them (their sex, their age).
+What belongs in the conceptual Preceptor Table for this problem? You do not need to construct it yet.
 
-2) Imagine you are a researcher who wants to know whether sex *causes* a difference in height --- the average causal effect of being female versus male on a person's height.
+The instructor will display the completed Preceptor Table after the discussion.
 
-### Data
+## Justice
 
-For this assignment we use the `recruits` dataset from the `primer.tutorials` package.
+Now that we know the question, we need to think about the population and the assumptions that justify using the data to answer it.
 
-* Explore the data. What is the outcome variable? How is it distributed?
+Describe the Population Table in your own words. What does each row represent in this context?
 
-```{r}
-recruits
-```
+For each of the key assumptions, define it in your own words and give one realistic counterexample for the current problem.
 
-```{r}
-summary(recruits)
-table(recruits$sex)
-```
+- Validity
+- Stability
+- Representativeness
 
-```{r}
-recruits |>
-  ggplot(aes(x = height)) +
-    geom_histogram(bins = 20) +
-      coord_cartesian(xlim = c(140, 200))
-```
+Why is unconfoundedness not part of this predictive modeling problem?
 
-### Preceptor Table
+## Courage
 
-What sorts of questions are we trying to answer?
+Before we fit a model, we should understand what model we are using and why.
 
-In order to build the Preceptor Table, we need to know: Is the model causal or predictive? What are units? What are the outcomes? What are the covariates? What are the treatments? Describe the mathematical structure of the model. Answer each for **both** scenarios:
+What outcome are we modeling? What predictors will we use? Which probability family and link function are appropriate here? Explain why a linear model is reasonable for this outcome.
 
-* Causal or predictive?
+What do the model parameters mean in this setting?
 
-* Units:
+The instructor will show the fitted model and its output.
 
-* Outcome:
+## Temperance
 
-* Covariates:
+Now that the model is fitted, we need to interpret it carefully.
 
-* Treatment:
+How should we interpret the fitted coefficients? What does the fitted model say about the average height of male and female recruits?
 
-Now construct the Preceptor Table for each scenario (Scenario 1 predictive; Scenario 2 with potential outcomes).
-
-### Population Table
-
-Construct the Population Table for each scenario.
-
-Then answer each question below:
-
-Describe the Population Table in your own words---what does each row represent in this context? Then, for each of the four key assumptions (validity, stability, representativeness, and unconfoundedness), provide both a definition in your own words and one specific counter-example for each assumption.
-
-Describe the Population Table in words:
-
-Counter-example to the assumption of validity:
-
-Counter-example to the assumption of stability:
-
-Counter-example to the assumption of representativeness:
-
-Counter-example to the assumption of unconfoundedness:
-
-### Modeling
-
-The outcome variable is `height`, the height of each person in centimeters. What kind of regression model should you use to predict or explain `height`? Explain your choice based on what kind of variable `height` is.
+How would we use the fitted model to make a prediction for a new recruit? What uncertainty remains? What are the limitations of this model? How does the answer to the original question depend on those limitations?
