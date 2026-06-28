@@ -9,51 +9,45 @@ execute:
 #| message: false
 
 library(tidyverse)
-library(gt)
 library(primer.tutorials)
 ```
 
-## Imagine
 
-Imagine that you are a logistics analyst at U.S. Marine Corps Supply, planning next year's bootcamp uniform order. You want to use the available data to make a sensible forecast for the recruits who will arrive next year.
-
-The data describe a sample of recruits with information such as height, sex, and age. Each row is one recruit, and the goal is to use what is known before the forecast to reason about what will happen next year.
 
 ## Wisdom
 
-We are working with the `recruits` dataset. This exercise is a predictive modeling exercise. We will use it to reason about how to forecast the height of next year's recruits from information we already know about them.
-
-What question might you try to answer if you are a logistics analyst planning next year's uniform order?
-
-We are trying to forecast the average height of next year's Marine Corps recruits from information such as sex and age.
-
-### Question for Class This Week
-
-Does height differ between male and female recruits? If so, by how much on average?
+What will be the average height of male and female USMC recruits next year?
 
 **What are the units, outcome, and covariates in this question?**
 
-- Unit: one recruit
-- Outcome: `height` in centimeters
-- Covariates: `sex`
-- Treatment (if any): none
-- Quantity of interest: the average height for male and female recruits, and the difference between them
+- Unit: 
 
-What are the units, outcome, and covariates in this problem?
+One recruit
 
-- Unit: one recruit
-- Outcome: `height` in centimeters
-- Covariates: `sex` and `age`
-- Treatment (if any): none
-- Quantity of interest: the expected height for future recruits, summarized by the fitted model
+- Outcome:
 
-What belongs in the conceptual Preceptor Table for this problem? You do not need to construct it yet.
+ `height` in centimeters
 
-The conceptual Preceptor Table should have one row per recruit, a height outcome column, and the covariates we know before prediction. In this exercise, the columns are unit, outcome, and covariates.
+- Covariates: 
 
-Teaching fellow prompt: Ask the class to define Wisdom and a Preceptor Table in their own words before they answer.
+`sex`
 
-The instructor will display the completed Preceptor Table after the discussion.
+- Treatment (if any): 
+
+None
+
+- Quantity of interest: 
+
+The average height for male and female recruits, and the difference between them.
+
+
+
+Describe the key components of a Preceptor table for this problem; Use words like "units," "outcomes," and "covariates."
+
+The Preceptor Table should have one row per recruit. In this exercise, the columns are unit, outcome, and covariates.
+
+
+
 
 ```{r}
 #| echo: false
@@ -87,21 +81,8 @@ cat("```{=html}\n",
 
 ## Justice
 
-Now that we know the question, we need to think about the population and the assumptions that justify using the data to answer it.
+Describe the key components of a Population table for this problem. 
 
-Describe the Population Table in your own words.
-
-Each row is one young adult observed at one moment in time, and the table connects the observed data to the recruits we want to forecast. The rows labeled "Data" come from the sample we observed; the rows labeled "Preceptor" represent the future recruits we want to predict.
-
-What is one realistic violation of validity or representativeness in this problem?
-
-A realistic violation of validity would be if measured heights were recorded with different rules than the heights we care about for recruits. A realistic violation of representativeness would be if the sample were heavily unbalanced by sex or if the future recruits were a very different group from the people in the data.
-
-Why is unconfoundedness not part of this predictive modeling problem?
-
-Unconfoundedness is not part of this problem because we are not asking about a treatment effect. There is no intervention being assigned, so there is no need to reason about treatment assignment being independent of potential outcomes.
-
-Teaching fellow prompt: Ask the class to define Justice and a Population Table before they answer.
 
 ```{r}
 #| echo: false
@@ -136,9 +117,28 @@ cat("```{=html}\n",
     population_html, "</div>\n```", sep = "")
 ```
 
-## Courage
 
-Before we fit a model, we should understand what model we are using and why.
+Each row is one young adult observed at one moment in time, and the table connects the observed data to the recruits we want to forecast. The rows labeled "Data" come from the sample we observed; the rows labeled "Preceptor" represent the future recruits we want to predict.
+
+
+
+Counter-example to the assumption of validity:
+
+
+
+Counter-example to the assumption of stability:
+
+
+
+Counter-example to the assumption of representativeness:
+
+
+
+Counter-example to the assumption of unconfoundedness:
+
+
+
+## Courage
 
 What outcome are we modeling? What predictors will we use?
 
@@ -148,9 +148,6 @@ Why is this model reasonable?
 
 A linear model is reasonable because the mean height can be expressed as a linear function of the predictors, and the outcome is continuous rather than categorical.
 
-Teaching fellow prompt: Ask the class to explain why a linear model is the right choice for a continuous height outcome.
-
-The instructor will show the fitted model and its output.
 
 ```{r}
 fit_recruits <- lm(height ~ sex, data = recruits)
@@ -159,7 +156,6 @@ summary(fit_recruits)
 
 ## Exploratory Data Analysis Exercises
 
-Before fitting the model, let's explore the data to understand the relationship between height and sex.
 
 ### Exercise 1: Visualize height by sex
 
@@ -247,7 +243,6 @@ recruits |>
 
 ## Temperance
 
-Now that the model is fitted, we need to interpret it carefully and turn the result into a short Quarto report.
 
 What is the main conclusion from the fitted model?
 
