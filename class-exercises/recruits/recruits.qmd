@@ -96,29 +96,37 @@ Create a candidate model, modeling the outcome height as a linear function of th
 
 Create another candidate model, modeling the outcome height as a linear function of the continuous covariate age. 
 
-
-
+  
 ## Temperance
 
-Use `predictions(fit_recruits)` and `plot_predictions(fit_recruits, condition = "sex", draw = FALSE)` to forecast the average height of USMC recruits next year in a visualization.
+Use `predictions(fit_recruits)` to estimate the average height of male and female USMC recruits next year.
 
 
 
-The expected height of a male recruit: 
+What is the expected height of a female recruit?
 
 
 
-The expected height of a female recruit:
+What is the expected height of a male recruit?
 
 
 
-Using your fitted model, estimate the 10th and 90th percentiles of recruit height by sex.
+Create a visualization of these predictions using `plot_predictions()`.
 
 
 
-Based on your estimates, explain how the USMC could use these percentiles when ordering uniforms.
+What measure of uncertainty is shown?
 
 
-Why might your estimate of the average recruit height be wrong? 
+
+Why is the confidence interval wider for female recruits?
+
+
+
+Besides the average height, identify two additional quantities of interest the Quartermaster might care about.
+
+
+
+Why might these estimated average heights be wrong?
 
 

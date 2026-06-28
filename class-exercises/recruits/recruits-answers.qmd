@@ -21,6 +21,7 @@ library(primer.tutorials)
 What will be the average height of male and female USMC recruits next year?
 
 
+
 **What are the units, outcome, and covariates for this question?**
 
 - Units: 
@@ -44,10 +45,9 @@ None
 The average height for male and female recruits, and the difference between them.
 
 
-
 Describe the key components of a Preceptor table for this problem; Use words like "units," "outcomes," and "covariates."
 
-The Preceptor Table should have one row per recruit. In this exercise, the columns are unit, outcome, and covariates.
+  The Preceptor Table should have one row per recruit. In this exercise, the columns are unit, outcome, and covariates.
 
 ```{r}
 #| echo: false
@@ -78,7 +78,6 @@ cat("```{=html}\n",
     '<div style="display: inline-block; width: auto; max-width: 100%;">',
     preceptor_html, "</div>\n```", sep = "")
 ```
-
 
 
 Create a plot that shows the relationship between height and sex.
@@ -157,31 +156,31 @@ cat("```{=html}\n",
 
 Counter-example to the assumption of validity:
 
-The height column in NHANES is measured differently than the height column in the Preceptor Table, so the two columns may not represent exactly the same construct.
+  The height column in NHANES is measured differently than the height column in the Preceptor Table, so the two columns may not represent exactly the same construct.
 
 Counter-example to the assumption of stability:
 
-The relationship between height and sex may have changed over time, so the model parameters (such as the intercept or the slope on sexMale) may not be the same for the data and the Preceptor Table.
+  The relationship between height and sex may have changed over time, so the model parameters (such as the intercept or the slope on sexMale) may not be the same for the data and the Preceptor Table.
 
 Counter-example to the assumption of representativeness:
 
-The NHANES sample is not representative of future USMC recruits because recruits are self-selected and screened for military service.
+  The NHANES sample is not representative of future USMC recruits because recruits are self-selected and screened for military service.
 
 Counter-example to the assumption of unconfoundedness:
 
-Sex is not a manipulable treatment, and treatment assignment is not independent of the potential outcomes, so the unconfoundedness assumption fails.
+  Sex is not a manipulable treatment, and treatment assignment is not independent of the potential outcomes, so the unconfoundedness assumption fails.
 
 What probability family should we use?
 
-Normal Distribution
+  Normal Distribution
 
 Why should we use that probability family?
 
-The Normal distribution is the standard choice for continuous outcomes.
+  The Normal distribution is the standard choice for continuous outcomes.
 
 What is the link function for our outcome?
 
-Our model will be a linear regression.
+  Our model will be a linear regression.
 
 ## Courage
 
@@ -204,60 +203,60 @@ fit_age <- linear_reg(engine = "lm") |>
 
 ## Temperance
 
-Use `predictions(fit_recruits)` and `plot_predictions(fit_recruits, condition = "sex", draw = FALSE)` to forecast the average height of USMC recruits next year in a visualization.
+Use `predictions(fit_recruits)` to estimate the average height of male and female USMC recruits next year.
 
 ```{r}
-#| message: false
-library(tidyverse)
-library(tidymodels)
-library(primer.tutorials)
-library(broom)
-library(marginaleffects)
-
-#| cache: true
-fit_recruits <- linear_reg() |>
-  set_engine("lm") |>
-  fit(height ~ sex, data = recruits)
-
-plot_predictions(fit_recruits, condition = "sex", draw = FALSE) |>
-  ggplot(aes(x = sex, y = estimate)) +
-  geom_pointrange(aes(ymin = conf.low, ymax = conf.high)) +
-  labs(
-    title = "Forecast Height for USMC Recruits",
-    subtitle = "Male recruits are expected to be about 9 cm taller than female recruits",
-    x = "Sex",
-    y = "Expected Height (cm)",
-    caption = "Source: 50-row sample from NHANES via primer.tutorials::recruits"
-  ) +
-  theme_minimal()
+predictions(fit_recruits)
 ```
 
-The expected height of a male recruit: 
+What is the expected height of a female recruit?
 
-The expected height of a male recruit is about 174.8 cm, with a 95% confidence interval of roughly [172.5, 177.0].
+  The expected height of a female recruit is about **165.9 cm**, with a 95% confidence interval of approximately **161.8 cm to 170.0 cm**.
 
-The expected height of a female recruit:
+What is the expected height of a male recruit?
 
-The expected height of a female recruit is about 165.9 cm, with a 95% confidence interval of roughly [161.8, 170.0].
+  The expected height of a male recruit is about **174.8 cm**, with a 95% confidence interval of approximately **172.5 cm to 177.0 cm**.
 
-Using your fitted model, estimate the 10th and 90th percentiles of recruit height by sex.
+Create a visualization of these predictions using `plot_predictions()`.
 
 ```{r}
-predictions(
+plot_predictions(
   fit_recruits,
-  newdata = tibble(
-    sex = c("Female", "Male")
-  )
-)
+  condition = "sex",
+  draw = FALSE
+) |>
+  ggplot(aes(x = sex, y = estimate)) +
+  geom_pointrange(
+    aes(
+      ymin = conf.low,
+      ymax = conf.high
+    ),
+    linewidth = 0.7
+  ) +
+  labs(
+    title = "Predicted Average Height of USMC Recruits by Sex",
+    subtitle = "Male recruits are predicted to be taller on average than female recruits.",
+    x = "Sex",
+    y = "Predicted Height (cm)",
+    caption = "Source: 50-row teaching sample from NHANES via primer.tutorials::recruits"
+  ) +
+  theme_minimal(base_size = 13)
 ```
 
-Based on your estimates, explain how the USMC could use these percentiles when ordering uniforms.
 
- The USMC could use these estimates to decide how many extra-small and extra-large uniforms should be stocked.
+What measure of uncertainty is shown?
 
+  The vertical error bars show **95% confidence intervals** for the estimated average height of each group.
 
+Why is the confidence interval wider for female recruits?
 
-Why might your estimate of the average recruit height be wrong? 
+  There are only **10 female observations** compared with **40 male observations**, so the female average is estimated with less precision.
 
+Besides the average height, identify two additional quantities of interest the Quartermaster might care about.
 
-USMC recruits are likely taller than the NHANES population because recruits are self-selected and screened for military service.
+- The **tallest recruit**, to ensure the largest uniform size is available.
+- The **10th and 90th percentiles** of recruit height, to estimate how many extra-small and extra-large uniforms should be ordered.
+
+Why might these estimated average heights be wrong?
+
+  The estimates rely on NHANES data rather than actual USMC recruits. Because recruits are self-selected, screened for military service, and likely taller on average than the general young-adult population, the model probably understates recruit height. In addition, the reported confidence intervals reflect only sampling uncertainty and do not account for possible violations of validity, stability, or representativeness.
