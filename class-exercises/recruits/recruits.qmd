@@ -4,10 +4,19 @@ execute:
   echo: false
 ---
 
+```{r}
+#| label: setup
+#| message: false
+library(tidyverse)
+library(tidymodels)
+library(marginaleffects)
+library(primer.tutorials)
+```
 
 ## Wisdom
 
 What will be the average height of male and female USMC recruits next year?
+
 
 **What are the units, outcome, and covariates for this question?**
 
@@ -66,6 +75,7 @@ Counter-example to the assumption of representativeness:
 Counter-example to the assumption of unconfoundedness:
 
 
+
 What probability family should we use?
 
 
@@ -90,5 +100,25 @@ Create another candidate model, modeling the outcome height as a linear function
 
 ## Temperance
 
+Use `predictions(fit_recruits)` and `plot_predictions(fit_recruits, condition = "sex", draw = FALSE)` to forecast the average height of USMC recruits next year in a visualization.
 
-What is the main conclusion from the fitted model?
+
+
+The expected height of a male recruit: 
+
+
+
+The expected height of a female recruit:
+
+
+
+Using your fitted model, estimate the 10th and 90th percentiles of recruit height by sex.
+
+
+
+Based on your estimates, explain how the USMC could use these percentiles when ordering uniforms.
+
+
+Why might your estimate of the average recruit height be wrong? 
+
+
