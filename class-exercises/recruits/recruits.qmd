@@ -9,7 +9,7 @@ execute:
 
 What will be the average height of male and female USMC recruits next year?
 
-**What are the units, outcome, and covariates in this question?**
+**What are the units, outcome, and covariates for this question?**
 
 - Units:
 
@@ -36,9 +36,20 @@ Describe the key components of a Preceptor table for this problem; Use words lik
 
 
 
+Create a plot that shows the relationship between height and sex.
+
+
+
+Create a plot that shows the relationship between height by age.
+
+
+
+
 ## Justice
 
 Describe the key components of a Population table for this problem. 
+
+
 
 Counter-example to the assumption of validity:
 
@@ -55,48 +66,29 @@ Counter-example to the assumption of representativeness:
 Counter-example to the assumption of unconfoundedness:
 
 
+What probability family should we use?
+
+
+
+Why should we use that probability family?
+
+
+
+What is the link function for our outcome?
+
+
 
 ## Courage
 
-What outcome are we modeling? What predictors will we use?
-
-Why is this model reasonable?
+Create a candidate model, modeling the outcome height as a linear function of the binary covariate sex.
 
 
-## Exploratory Data Analysis Exercises
+
+Create another candidate model, modeling the outcome height as a linear function of the continuous covariate age. 
 
 
-**Exercise 1: Visualize height by sex**
-
-Use AI to create a plot that shows the distribution of height separately for male and female recruits. Include appropriate labels and a title. What do you notice about the two distributions?
-
-**Exercise 2: Summary statistics by sex**
-
-Use AI to calculate the mean, standard deviation, and count of recruits for each sex. Organize the output in a clean table. Why might the difference in sample sizes (40 vs. 10) matter for our model?
-
-**Exercise 3: Age and height relationship**
-
-Use AI to create a scatter plot showing the relationship between age and height, colored by sex. Does age appear to be related to height in this sample?
 
 ## Temperance
 
 
 What is the main conclusion from the fitted model?
-
-This is the code Preceptor has prepared for you. It loads the data, prepares it, and fits the model so you can build on it before asking AI to create the plot.
-
-```{r}
-#| label: preceptor-code
-#| message: false
-
-library(tidyverse)
-library(primer.tutorials)
-
-data("recruits", package = "primer.tutorials")
-
-recruits <- recruits |>
-  mutate(sex = factor(sex, levels = c("Male", "Female")))
-
-fit_recruits <- lm(height ~ sex, data = recruits)
-summary(fit_recruits)
-```

@@ -18,13 +18,13 @@ library(primer.tutorials)
 
 What will be the average height of male and female USMC recruits next year?
 
-**What are the units, outcome, and covariates in this question?**
+**What are the units, outcome, and covariates for this question?**
 
-- Unit: 
+- Units: 
 
 One recruit
 
-- Outcome:
+- Outcomes:
 
  `height` in centimeters
 
@@ -79,6 +79,43 @@ cat("```{=html}\n",
     preceptor_html, "</div>\n```", sep = "")
 ```
 
+
+
+Create a plot that shows the relationship between height and sex.
+
+```{r}
+recruits |>
+  ggplot(aes(x = height, fill = sex)) +
+  geom_density(alpha = 0.6) +
+  labs(
+    title = "Height Distribution by Sex",
+    x = "Height (cm)",
+    y = "Density",
+    fill = "Sex"
+  ) +
+  theme_minimal()
+```
+
+
+Create a plot that shows the relationship between height by age.
+
+```{r}
+recruits |>
+  ggplot(aes(x = age, y = height, color = sex)) +
+  geom_point(size = 3, alpha = 0.7) +
+  geom_smooth(method = "lm", se = FALSE) +
+  labs(
+    title = "Height vs. Age by Sex",
+    x = "Age (years)",
+    y = "Height (cm)",
+    color = "Sex"
+  ) +
+  theme_minimal()
+```
+
+
+---
+
 ## Justice
 
 Describe the key components of a Population table for this problem. 
@@ -118,10 +155,6 @@ cat("```{=html}\n",
 ```
 
 
-Each row is one young adult observed at one moment in time, and the table connects the observed data to the recruits we want to forecast. The rows labeled "Data" come from the sample we observed; the rows labeled "Preceptor" represent the future recruits we want to predict.
-
-
-
 Counter-example to the assumption of validity:
 
 
@@ -138,108 +171,38 @@ Counter-example to the assumption of unconfoundedness:
 
 
 
+
+What probability family should we use?
+
+
+
+Why should we use that probability family?
+
+
+
+What is the link function for our outcome?
+
+
+
 ## Courage
 
-What outcome are we modeling? What predictors will we use?
-
-The outcome is `height`, a continuous numeric variable. We will model it with a Gaussian linear model and an identity link. A linear model is appropriate because height is continuous and the mean height can be described as a linear function of the predictors.
-
-Why is this model reasonable?
-
-A linear model is reasonable because the mean height can be expressed as a linear function of the predictors, and the outcome is continuous rather than categorical.
-
+Create a candidate model, modeling the outcome height as a linear function of the binary covariate sex.
 
 ```{r}
-fit_recruits <- lm(height ~ sex, data = recruits)
-summary(fit_recruits)
+#| echo: true
+linear_reg(engine = "lm") |>
+  fit(height ~ sex, data = recruits)
 ```
 
-## Exploratory Data Analysis Exercises
 
+Create another candidate model, modeling the outcome height as a linear function of the continuous covariate age. 
 
-### Exercise 1: Visualize height by sex
-
-Use AI to create a plot that shows the distribution of height separately for male and female recruits. Include appropriate labels and a title. What do you notice about the two distributions?
-
-**Sample output:**
-
-```{r}
-recruits |>
-  ggplot(aes(x = height, fill = sex)) +
-  geom_density(alpha = 0.6) +
-  labs(
-    title = "Height Distribution by Sex",
-    x = "Height (cm)",
-    y = "Density",
-    fill = "Sex"
-  ) +
-  theme_minimal()
+```{r courage-5-test}
+#| echo: true
+linear_reg(engine = "lm") |>
+  fit(height ~ age, data = recruits)
 ```
 
-**What students should notice:** The male distribution is clearly shifted to the right (taller) compared to the female distribution. There is overlap but clear separation between the two groups.
-
-**Follow-up question for students:** If you were a logistics analyst ordering uniforms, why would it be important to break down the height distribution by sex rather than treating all recruits as one group?
-
----
-
-### Exercise 2: Summary statistics by sex
-
-Use AI to calculate the mean, standard deviation, and count of recruits for each sex. Organize the output in a clean table. Why might the difference in sample sizes (40 vs. 10) matter for our model?
-
-**Sample output:**
-
-```{r}
-recruits |>
-  group_by(sex) |>
-  summarise(
-    N = n(),
-    Mean_Height = mean(height),
-    SD_Height = sd(height),
-    .groups = "drop"
-  )
-```
-
-```
-# A tibble: 2 × 4
-  sex        N Mean_Height SD_Height
-  <fct>    <int>       <dbl>     <dbl>
-1 Female      10        162.      4.67
-2 Male        40        175.      6.45
-```
-
-**What students should notice:** Males are on average 13 cm taller. The female group is much smaller (10 vs. 40), so estimates for female recruits will have more uncertainty.
-
-**Follow-up question for students:** Which group's estimate (male or female average height) will have the larger standard error? Why?
-
-**Teaching fellow prompt:** This is a key insight for Temperance --- the unequal sample sizes mean the confidence intervals will have different widths. This deliberate imbalance in the data is there to make students notice and reason about precision.
-
----
-
-### Exercise 3: Age and height relationship
-
-Use AI to create a scatter plot showing the relationship between age and height, colored by sex. Does age appear to be related to height in this sample?
-
-**Sample output:**
-
-```{r}
-recruits |>
-  ggplot(aes(x = age, y = height, color = sex)) +
-  geom_point(size = 3, alpha = 0.7) +
-  geom_smooth(method = "lm", se = FALSE) +
-  labs(
-    title = "Height vs. Age by Sex",
-    x = "Age (years)",
-    y = "Height (cm)",
-    color = "Sex"
-  ) +
-  theme_minimal()
-```
-
-**What students should notice:** Age shows almost no relationship to height in this sample (the lines are nearly flat). This suggests that sex is a much stronger predictor of height than age in this age range (18--27). The sex difference is consistent across ages.
-
-**Follow-up question for students:** Given this plot, do you think the model `height ~ sex` will be more predictive than `height ~ age`? Why?
-
----
 
 ## Temperance
 
