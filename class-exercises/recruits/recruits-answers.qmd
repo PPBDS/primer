@@ -11,6 +11,7 @@ execute:
 library(tidyverse)
 library(tidymodels)
 library(marginaleffects)
+library(gt)
 library(primer.tutorials)
 ```
 
