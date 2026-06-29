@@ -9,51 +9,46 @@ execute:
 #| message: false
 
 library(tidyverse)
+library(tidymodels)
+library(marginaleffects)
 library(gt)
 library(primer.tutorials)
 ```
 
-## Imagine
 
-Imagine that you are a logistics analyst at U.S. Marine Corps Supply, planning next year's bootcamp uniform order. You want to use the available data to make a sensible forecast for the recruits who will arrive next year.
-
-The data describe a sample of recruits with information such as height, sex, and age. Each row is one recruit, and the goal is to use what is known before the forecast to reason about what will happen next year.
 
 ## Wisdom
 
-We are working with the `recruits` dataset. This exercise is a predictive modeling exercise. We will use it to reason about how to forecast the height of next year's recruits from information we already know about them.
+What will be the average height of male and female USMC recruits next year?
 
-What question might you try to answer if you are a logistics analyst planning next year's uniform order?
 
-We are trying to forecast the average height of next year's Marine Corps recruits from information such as sex and age.
 
-### Question for Class This Week
+**What are the units, outcome, and covariates for this question?**
 
-Does height differ between male and female recruits? If so, by how much on average?
+- Units: 
 
-**What are the units, outcome, and covariates in this question?**
+One recruit
 
-- Unit: one recruit
-- Outcome: `height` in centimeters
-- Covariates: `sex`
-- Treatment (if any): none
-- Quantity of interest: the average height for male and female recruits, and the difference between them
+- Outcomes:
 
-What are the units, outcome, and covariates in this problem?
+ `height` in centimeters
 
-- Unit: one recruit
-- Outcome: `height` in centimeters
-- Covariates: `sex` and `age`
-- Treatment (if any): none
-- Quantity of interest: the expected height for future recruits, summarized by the fitted model
+- Covariates: 
 
-What belongs in the conceptual Preceptor Table for this problem? You do not need to construct it yet.
+`sex`
 
-The conceptual Preceptor Table should have one row per recruit, a height outcome column, and the covariates we know before prediction. In this exercise, the columns are unit, outcome, and covariates.
+- Treatment (if any): 
 
-Teaching fellow prompt: Ask the class to define Wisdom and a Preceptor Table in their own words before they answer.
+None
 
-The instructor will display the completed Preceptor Table after the discussion.
+- Quantity of interest: 
+
+The average height for male and female recruits, and the difference between them.
+
+
+Describe the key components of a Preceptor table for this problem; Use words like "units," "outcomes," and "covariates."
+
+  The Preceptor Table should have one row per recruit. In this exercise, the columns are unit, outcome, and covariates.
 
 ```{r}
 #| echo: false
@@ -85,23 +80,46 @@ cat("```{=html}\n",
     preceptor_html, "</div>\n```", sep = "")
 ```
 
+
+Create a plot that shows the relationship between height and sex.
+
+```{r}
+recruits |>
+  ggplot(aes(x = height, fill = sex)) +
+  geom_density(alpha = 0.6) +
+  labs(
+    title = "Height Distribution by Sex",
+    x = "Height (cm)",
+    y = "Density",
+    fill = "Sex"
+  ) +
+  theme_minimal()
+```
+
+
+Create a plot that shows the relationship between height by age.
+
+```{r}
+recruits |>
+  ggplot(aes(x = age, y = height, color = sex)) +
+  geom_point(size = 3, alpha = 0.7) +
+  geom_smooth(method = "lm", se = FALSE) +
+  labs(
+    title = "Height vs. Age by Sex",
+    x = "Age (years)",
+    y = "Height (cm)",
+    color = "Sex"
+  ) +
+  theme_minimal()
+```
+
+
+---
+
 ## Justice
 
-Now that we know the question, we need to think about the population and the assumptions that justify using the data to answer it.
+Describe the key components of a Population table for this problem. 
 
-Describe the Population Table in your own words.
-
-Each row is one young adult observed at one moment in time, and the table connects the observed data to the recruits we want to forecast. The rows labeled "Data" come from the sample we observed; the rows labeled "Preceptor" represent the future recruits we want to predict.
-
-What is one realistic violation of validity or representativeness in this problem?
-
-A realistic violation of validity would be if measured heights were recorded with different rules than the heights we care about for recruits. A realistic violation of representativeness would be if the sample were heavily unbalanced by sex or if the future recruits were a very different group from the people in the data.
-
-Why is unconfoundedness not part of this predictive modeling problem?
-
-Unconfoundedness is not part of this problem because we are not asking about a treatment effect. There is no intervention being assigned, so there is no need to reason about treatment assignment being independent of potential outcomes.
-
-Teaching fellow prompt: Ask the class to define Justice and a Population Table before they answer.
 
 ```{r}
 #| echo: false
@@ -136,141 +154,110 @@ cat("```{=html}\n",
     population_html, "</div>\n```", sep = "")
 ```
 
+
+Counter-example to the assumption of validity:
+
+  The height column in NHANES is measured differently than the height column in the Preceptor Table, so the two columns may not represent exactly the same construct.
+
+Counter-example to the assumption of stability:
+
+  The relationship between height and sex may have changed over time, so the model parameters (such as the intercept or the slope on sexMale) may not be the same for the data and the Preceptor Table.
+
+Counter-example to the assumption of representativeness:
+
+  The NHANES sample is not representative of future USMC recruits because recruits are self-selected and screened for military service.
+
+Counter-example to the assumption of unconfoundedness:
+
+  Sex is not a manipulable treatment, and treatment assignment is not independent of the potential outcomes, so the unconfoundedness assumption fails.
+
+What probability family should we use?
+
+  Normal Distribution
+
+Why should we use that probability family?
+
+  The Normal distribution is the standard choice for continuous outcomes.
+
+What is the link function for our outcome?
+
+  Our model will be a linear regression.
+
 ## Courage
 
-Before we fit a model, we should understand what model we are using and why.
-
-What outcome are we modeling? What predictors will we use?
-
-The outcome is `height`, a continuous numeric variable. We will model it with a Gaussian linear model and an identity link. A linear model is appropriate because height is continuous and the mean height can be described as a linear function of the predictors.
-
-Why is this model reasonable?
-
-A linear model is reasonable because the mean height can be expressed as a linear function of the predictors, and the outcome is continuous rather than categorical.
-
-Teaching fellow prompt: Ask the class to explain why a linear model is the right choice for a continuous height outcome.
-
-The instructor will show the fitted model and its output.
+Create a candidate model, modeling the outcome height as a linear function of the binary covariate sex.
 
 ```{r}
-fit_recruits <- lm(height ~ sex, data = recruits)
-summary(fit_recruits)
+#| echo: true
+fit_recruits <- linear_reg(engine = "lm") |>
+  fit(height ~ sex, data = recruits)
 ```
 
-## Exploratory Data Analysis Exercises
+Create another candidate model, modeling the outcome height as a linear function of the continuous covariate age. 
 
-Before fitting the model, let's explore the data to understand the relationship between height and sex.
-
-### Exercise 1: Visualize height by sex
-
-Use AI to create a plot that shows the distribution of height separately for male and female recruits. Include appropriate labels and a title. What do you notice about the two distributions?
-
-**Sample output:**
-
-```{r}
-recruits |>
-  ggplot(aes(x = height, fill = sex)) +
-  geom_density(alpha = 0.6) +
-  labs(
-    title = "Height Distribution by Sex",
-    x = "Height (cm)",
-    y = "Density",
-    fill = "Sex"
-  ) +
-  theme_minimal()
+```{r courage-5-test}
+#| echo: true
+fit_age <- linear_reg(engine = "lm") |>
+  fit(height ~ age, data = recruits)
 ```
 
-**What students should notice:** The male distribution is clearly shifted to the right (taller) compared to the female distribution. There is overlap but clear separation between the two groups.
-
-**Follow-up question for students:** If you were a logistics analyst ordering uniforms, why would it be important to break down the height distribution by sex rather than treating all recruits as one group?
-
----
-
-### Exercise 2: Summary statistics by sex
-
-Use AI to calculate the mean, standard deviation, and count of recruits for each sex. Organize the output in a clean table. Why might the difference in sample sizes (40 vs. 10) matter for our model?
-
-**Sample output:**
-
-```{r}
-recruits |>
-  group_by(sex) |>
-  summarise(
-    N = n(),
-    Mean_Height = mean(height),
-    SD_Height = sd(height),
-    .groups = "drop"
-  )
-```
-
-```
-# A tibble: 2 × 4
-  sex        N Mean_Height SD_Height
-  <fct>    <int>       <dbl>     <dbl>
-1 Female      10        162.      4.67
-2 Male        40        175.      6.45
-```
-
-**What students should notice:** Males are on average 13 cm taller. The female group is much smaller (10 vs. 40), so estimates for female recruits will have more uncertainty.
-
-**Follow-up question for students:** Which group's estimate (male or female average height) will have the larger standard error? Why?
-
-**Teaching fellow prompt:** This is a key insight for Temperance --- the unequal sample sizes mean the confidence intervals will have different widths. This deliberate imbalance in the data is there to make students notice and reason about precision.
-
----
-
-### Exercise 3: Age and height relationship
-
-Use AI to create a scatter plot showing the relationship between age and height, colored by sex. Does age appear to be related to height in this sample?
-
-**Sample output:**
-
-```{r}
-recruits |>
-  ggplot(aes(x = age, y = height, color = sex)) +
-  geom_point(size = 3, alpha = 0.7) +
-  geom_smooth(method = "lm", se = FALSE) +
-  labs(
-    title = "Height vs. Age by Sex",
-    x = "Age (years)",
-    y = "Height (cm)",
-    color = "Sex"
-  ) +
-  theme_minimal()
-```
-
-**What students should notice:** Age shows almost no relationship to height in this sample (the lines are nearly flat). This suggests that sex is a much stronger predictor of height than age in this age range (18--27). The sex difference is consistent across ages.
-
-**Follow-up question for students:** Given this plot, do you think the model `height ~ sex` will be more predictive than `height ~ age`? Why?
-
----
 
 ## Temperance
 
-Now that the model is fitted, we need to interpret it carefully and turn the result into a short Quarto report.
-
-What is the main conclusion from the fitted model?
-
-Male recruits are taller on average than female recruits. The difference is about 13 cm, with male recruits averaging around 175 cm and female recruits averaging around 162 cm.
-
-Ask AI to create a plot that summarizes the fitted model and the data. Use AI for the coding, and then write a short Quarto document that includes the plot and a brief interpretation. Publish the result to GitHub Pages.
+Use `predictions(fit_recruits)` to estimate the average height of male and female USMC recruits next year.
 
 ```{r}
-recruits |>
-  ggplot(aes(x = sex, y = height)) +
-  geom_jitter(width = 0.1, alpha = 0.6) +
-  geom_point(
-    data = recruits |>
-      group_by(sex) |>
-      summarise(mean_height = mean(height), .groups = "drop"),
-    aes(y = mean_height),
-    color = "steelblue",
-    size = 3
+predictions(fit_recruits)
+```
+
+What is the expected height of a female recruit?
+
+  The expected height of a female recruit is about **165.9 cm**, with a 95% confidence interval of approximately **161.8 cm to 170.0 cm**.
+
+What is the expected height of a male recruit?
+
+  The expected height of a male recruit is about **174.8 cm**, with a 95% confidence interval of approximately **172.5 cm to 177.0 cm**.
+
+Create a visualization of these predictions using `plot_predictions()`.
+
+```{r}
+plot_predictions(
+  fit_recruits,
+  condition = "sex",
+  draw = FALSE
+) |>
+  ggplot(aes(x = sex, y = estimate)) +
+  geom_pointrange(
+    aes(
+      ymin = conf.low,
+      ymax = conf.high
+    ),
+    linewidth = 0.7
   ) +
   labs(
-    title = "Observed heights and average height by sex",
+    title = "Predicted Average Height of USMC Recruits by Sex",
+    subtitle = "Male recruits are predicted to be taller on average than female recruits.",
     x = "Sex",
-    y = "Height (cm)"
+    y = "Predicted Height (cm)",
+    caption = "Source: 50-row teaching sample from NHANES via primer.tutorials::recruits"
   ) +
-  theme_minimal()
+  theme_minimal(base_size = 13)
 ```
+
+
+What measure of uncertainty is shown?
+
+  The vertical error bars show **95% confidence intervals** for the estimated average height of each group.
+
+Why is the confidence interval wider for female recruits?
+
+  There are only **10 female observations** compared with **40 male observations**, so the female average is estimated with less precision.
+
+Besides the average height, identify two additional quantities of interest the Quartermaster might care about.
+
+- The **tallest recruit**, to ensure the largest uniform size is available.
+- The **10th and 90th percentiles** of recruit height, to estimate how many extra-small and extra-large uniforms should be ordered.
+
+Why might these estimated average heights be wrong?
+
+  The estimates rely on NHANES data rather than actual USMC recruits. Because recruits are self-selected, screened for military service, and likely taller on average than the general young-adult population, the model probably understates recruit height. In addition, the reported confidence intervals reflect only sampling uncertainty and do not account for possible violations of validity, stability, or representativeness.
