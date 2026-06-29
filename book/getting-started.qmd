@@ -4,23 +4,22 @@
 
 The world confronts us. Make decisions we must.
 
-We do all of our data science in the cloud, using GitHub Codespaces with Visual Studio Code (VS Code). This chapter gets you working the fast, zero-setup way and walks you through your first two tutorials.
+We do all of our data science in the cloud, using GitHub Codespaces with Visual Studio Code (VS Code). 
 
-The quickest way to begin is a **throwaway Codespace** launched directly on `PPBDS/codespace-starter`, a public repository you do *not* own. The image is pre-built, so it starts in about a minute and needs no setup. Nothing you do *in the Codespace* persists once you delete it, but you can still complete tutorials and download your answers --- and that is all you need for the **first several tutorials**, including "Introduction to R."
+The quickest way to begin is a **throwaway Codespace** launched directly on `PPBDS/codespace-starter`, a public repository you do *not* own. The image is pre-built, so it starts in about a minute and needs no setup. Nothing you do *in the Codespace* persists once you delete it, but you can still complete tutorials and download your answers.
 
-We call this approach **Start mode**. In this chapter you will use it to run both the "Getting Started" and "Introduction to R" tutorials, then stop and delete the Codespace.
+We call this approach **Start mode**. In this chapter you will use it to run both the "Getting Started" tutorial from the **tutorial.helpers** package.
 
-You will not need a repository of your own for a while. Once you have four or five tutorials behind you and want to keep your work and build on it, the next chapter, [Git and GitHub](git-and-github.qmd), shows you how to create a permanent home for it.
 
 ## GitHub {.unnumbered}
 
 Sign up for a GitHub account by following the instructions on the [GitHub homepage](https://github.com/). **Follow [this advice](https://happygitwithr.com/github-acct.html#username-advice) when choosing your username.**
 
-Use a permanent email address for this account — not one tied to your current school or job, which you'll lose access to when you move on. Your GitHub account is for life. Your school email is not. However, if you are a student or teacher, you will want to [assign your school email](https://github.com/settings/emails) as a second email to your account so that you can qualify for the [GitHub Student Developer Pack](https://education.github.com/pack) (free Copilot, extra Codespaces hours, and 100+ other perks). If your school doesn't issue email addresses, you can also apply by uploading a student ID or enrollment letter.
+Use a permanent email address for this account — not one tied to your current school or job, which you'll lose access to when you move on. Your GitHub account is for life. Your school email is not. However, if you are a student or teacher, you will want to [assign your school email](https://github.com/settings/emails) as a second email to your account so that you can qualify for the [GitHub Student Developer Pack](https://education.github.com/pack) (free Copilot, extra Codespaces hours, and other perks). 
 
 On GitHub, your projects are organized into "repositories," usually called "repos."
 
-GitHub gives every account 60 free Codespaces hours per month, and more if you join [GitHub Education](https://github.com/education), an option that we highly recommend for students. It also provides lots of free storage. Free hours are not infinite, however, so it is your responsibility to stop (and delete) Codespaces you are not using.
+GitHub gives every account 60 free Codespaces hours per month. Free hours are not infinite, however, so it is your responsibility to stop (and delete) Codespaces you are not using.
 
 ## Start mode: a throwaway Codespace {.unnumbered}
 
@@ -32,7 +31,7 @@ Go to [`https://github.com/PPBDS/codespace-starter`](https://github.com/PPBDS/co
 knitr::include_graphics("getting-started/images/cs-1.png")
 ```
 
-This is a public repository you do not own. You can still launch a Codespace from it, but nothing you do persists once the Codespace is deleted. That is intentional. This Codespace is for learning the platform, not for your permanent work.
+This Codespace is for learning the platform, not for your permanent work.
 
 ### Launching the Codespace {.unnumbered}
 
@@ -70,7 +69,7 @@ knitr::include_graphics("getting-started/images/post-command.png")
 ```
 
 
-The Codespace should now be displaying its GitHub-assigned name. The process is complete when your Codespace looks like this:
+The Codespace should now be displaying its GitHub-assigned name. The process is complete once a message appears informing you so.
 
 ```{r}
 knitr::include_graphics("getting-started/images/cs-3.png")
@@ -90,7 +89,7 @@ VS Code is an integrated development environment (IDE) for coding and data scien
 knitr::include_graphics("getting-started/images/chat-buttons-cs.png")
 ```
 
-* The "Activity Bar" is the narrow vertical strip on the far left with icons for Explorer, Search, Source Control, Extensions, etc. By default, the "Explorer" button is selected, showing that the only thing in the project is a (hidden) folder called `.devcontainer`. Click on that folder to show its contents.
+* The "Activity Bar" is the narrow vertical strip on the far left with icons for Explorer, Search, Source Control, Extensions, etc. By default, the "Explorer" button is selected, showing that the only thing in the project is a folder called `.devcontainer`. Click on that folder to show its contents.
 
 ```{r}
 knitr::include_graphics("getting-started/images/cs-4.png")
@@ -132,11 +131,11 @@ knitr::include_graphics("getting-started/images/cs-6.png")
 knitr::include_graphics("getting-started/images/cs-7.png")
 ```
 
-An IDE like VS Code is designed to organize all the different work we do as data scientists. We need to talk to the computer via the shell, talk to R, view plots, and so on.
+An IDE like VS Code is designed to organize all the different work we do as data scientists. We need to talk to the computer via the bash Terminal (often referred to as the "shell"), talk to R, view plots, and so on.
 
 ### Running the Getting Started tutorial {.unnumbered}
 
-If you hover your cursor over the Activity Bar on the far lefthand side, you can see the names of the different options. The second from the bottom is labeled "R Tutorials." Click on it. (You might need to click twice.) This brings up all the R packages with tutorials. Click on the package name **[tutorial.helpers](https://ppbds.github.io/tutorial.helpers/)**.
+If you hover your cursor over the Activity Bar on the far left-hand side, you can see the names of the different options. Near the bottom is one labeled "R Tutorials." Click on it. This brings up all the R packages with tutorials. Click on the package name **[tutorial.helpers](https://ppbds.github.io/tutorial.helpers/)**.
 
 ```{r}
 knitr::include_graphics("getting-started/images/cs-8.png")
@@ -166,12 +165,6 @@ knitr::include_graphics("getting-started/images/cs-11.png")
 
 Read and follow the instructions. At the end of the tutorial, download your answers.
 
-### Running the Introduction to R tutorial {.unnumbered}
-
-The first several tutorials all work this same way, so let's do one more right here in the same throwaway Codespace. Open the **R Tutorials** panel again, click **[tutorial.helpers](https://ppbds.github.io/tutorial.helpers/)**, and start the **Introduction to R** tutorial. Read and follow the instructions, and download your answers at the end --- just as you did for "Getting Started."
-
-You can run any of the first several tutorials this way in a Start-mode Codespace. Because there is no repository, the *only* thing you keep is the answers file you download, so be sure to download it before you delete the Codespace.
-
 ### Stopping, restarting and deleting the Codespace {.unnumbered}
 
 A Codespace is your responsibility in the same way that your laptop is your responsibility. While a Codespace is running it counts against your free hours, and an unused Codespace will be deleted by GitHub after 30 days.
@@ -188,7 +181,7 @@ On some browsers, the keyboard shortcut does not work. You can always access the
 knitr::include_graphics("getting-started/images/command-palette.png")
 ```
 
-Select "Codespaces: Stop Current Codespace." You will see a progress bar in the lower right.
+Select "Codespaces: Stop Current Codespace." 
 
 Third, you can go to your main Codespaces control panel at [`https://github.com/codespaces`](https://github.com/codespaces). You can also reach this page from any page on GitHub by clicking the menu icon in the upper left and selecting "Codespaces":
 
@@ -225,17 +218,15 @@ This Codespace was a sandbox. You do not own `PPBDS/codespace-starter`, so there
 
 ## Using your own machine
 
-You can do all of this work on your own laptop, if you prefer. But, in that case, you are responsible for setting everything up. That means installing VS Code, Git and R. You will almost certainly want to install the same VS Code extensions which we use:
+You can do all of this work on your own laptop, if you prefer. But, in that case, you are responsible for setting everything up. That means installing VS Code, Git and R. You will almost certainly want to install the same VS Code extensions which we use, including:
 
 ```
-"extensions": [
-  "reditorsupport.r",
-  "quarto.quarto",
-  "PPBDS.vscode-r-tutorials",
-  "ritwickdey.LiveServer",
-  "tomoki1207.pdf",
-  "mechatroner.rainbow-csv"
-],
+"reditorsupport.r",
+"quarto.quarto",
+"PPBDS.vscode-r-tutorials",
+"ritwickdey.LiveServer",
+"tomoki1207.pdf",
+"mechatroner.rainbow-csv"x
 ```
 
 This listing is from  the `.devcontainer/devcontainer.json` file from `PPBDS/codespace-starter`. You may also find it useful to use the same VS settings which are defined there. 
@@ -263,9 +254,8 @@ You should have done the following:
 
 - Signed up for a GitHub account.
 - Used **Start** mode --- a throwaway Codespace on `PPBDS/codespace-starter` --- to complete the **Getting Started** and **Introduction to R** tutorials from **[tutorial.helpers](https://ppbds.github.io/tutorial.helpers/)**, downloaded your answers, then **deleted** the Codespace.
-- Seen that you can replicate the same setup on your own machine, if you prefer.
 
-For the first several tutorials you just use **Start** mode and download your answers --- no repository needed. When a later tutorial asks you to keep your work and build on it, the next chapter, [Git and GitHub](git-and-github.qmd), shows you how to create a repository you own.
+For doing some tutorials, you can just use **Start** mode and download your answers --- no repository needed. When a later tutorial asks you to keep your work and build on it, the next chapter, [Git and GitHub](git-and-github.qmd), shows you how to create a repository you own.
 
 Let's get started!
 
