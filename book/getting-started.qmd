@@ -72,7 +72,7 @@ knitr::include_graphics("getting-started/images/post-command.png")
 The Codespace should now be displaying its GitHub-assigned name. The process is complete once a message appears informing you so.
 
 ```{r}
-knitr::include_graphics("getting-started/images/cs-3.png")
+knitr::include_graphics("getting-started/images/ready-message.png")
 ```
 
 The blue dash has disappeared. Several more extensions have been installed. The GitHub name, `fictional winner`, now appears next to the repo name as well as in the quick access window above the editor. Your name will be different, as GitHub assigns a unique name to each Codespace.
