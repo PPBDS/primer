@@ -239,7 +239,7 @@ Data science starts with some broad questions and a data set which might help us
 
 The specific question: *What is the average height of male and female USMC recruits?*
 
-We will work from the National Health and Nutrition Examination Survey (NHANES), conducted by the Centers for Disease Control and Prevention, available in the `nhanes` tibble of the **[primer.data](https://github.com/PPBDS/primer.data)** package.
+We will work from the `recruits` tibble in the **[primer.tutorials](https://github.com/PPBDS/primer.tutorials)** package --- a teaching cut of the National Health and Nutrition Examination Survey (NHANES), conducted by the Centers for Disease Control and Prevention, drawn from the `nhanes` tibble of the **[primer.data](https://github.com/PPBDS/primer.data)** package.
 
 ### Exercise 1
 
@@ -1467,7 +1467,7 @@ question_text(NULL,
 <pre><code>
 #| message: false
 library(tidyverse)
-library(primer.data)
+library(primer.tutorials)
 library(tidymodels)
 library(broom)
 library(marginaleffects)

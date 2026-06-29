@@ -1466,12 +1466,10 @@ question_text(NULL,
 
 ###
 
-<!-- VK: Should be library(primer.tutorials)? -->
-
 <pre><code>
 #| message: false
 library(tidyverse)
-library(primer.data)
+library(primer.tutorials)
 library(tidymodels)
 library(broom)
 library(marginaleffects)
