@@ -45,7 +45,7 @@ What will be the average height of male and female USMC recruits next year?
 
 
 
-Describe the key components of a Preceptor table for this problem; Use words like "units," "outcomes," and "covariates."
+Describe the key components of a Preceptor table for this problem:
 
 
 
