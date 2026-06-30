@@ -1,5 +1,8 @@
 ---
 title: "Wisdom and Recruits"
+format:
+  html: default
+  pdf: default
 execute:
   echo: false
 ---
@@ -7,20 +10,18 @@ execute:
 ```{r}
 #| label: setup
 #| message: false
+
 library(tidyverse)
 library(tidymodels)
 library(marginaleffects)
 library(primer.tutorials)
 ```
 
-
-
 ## Wisdom
 
 You are in charge of ordering uniforms for next year's Marine Corps bootcamp recruits.
 
 What will be the average height of male and female USMC recruits next year?
-
 
 **What are the units, outcome, and covariates for this question?**
 
@@ -48,7 +49,6 @@ Describe the key components of a Preceptor table for this problem; Use words lik
 
 
 
-
 Create a plot that shows the relationship between height and sex.
 
 
@@ -57,6 +57,7 @@ Create a plot that shows the relationship between height by age.
 
 
 
+---
 
 ## Justice
 
@@ -100,7 +101,8 @@ Create a candidate model, modeling the outcome height as a linear function of th
 
 Create another candidate model, modeling the outcome height as a linear function of the continuous covariate age. 
 
-  
+
+
 ## Temperance
 
 Use `predictions(fit_recruits)` to estimate the average height of male and female USMC recruits next year.
@@ -132,5 +134,3 @@ Besides the average height, identify two additional quantities of interest the Q
 
 
 Why might these estimated average heights be wrong?
-
-
