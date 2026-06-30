@@ -15,34 +15,35 @@ library(tidyverse)
 library(tidymodels)
 library(marginaleffects)
 library(gt)
+library(broom)
 library(primer.tutorials)
 ```
 
-## Wisdom
+## The Question
 
 You are in charge of ordering uniforms for next year's Marine Corps bootcamp recruits.
 
 What will be the average height of male and female USMC recruits next year?
 
+## Wisdom
+
 **What are the units, outcome, and covariates for this question?**
 
 - Units:
 
-Each row represents one USMC recruit expected to enlist during the coming year. There are roughly 5,000 such recruits per year.
+Each row represents one USMC recruit expected to enlist during the coming year. There are roughly 25,000 to 30,000 such recruits per year.
 
 - Outcomes:
 
-Keep track of two 'outcome' variables: the one in our Preceptor Table and the one in our data. In this case, they share the name `height` --- both refer to a young adult's standing height in centimeters --- though the *measurement procedure* behind each column differs.
+`height` in centimeters. Both our data and our Preceptor Table use this name, though the *measurement procedure* behind each column differs --- a concern we return to under validity.
 
 - Covariates:
 
-`sex` and `age` are candidates. Age at enlistment is a candidate. Height is nearly-but-not-quite stable by the age-18 window we care about, so a ten-year-older recruit is almost the same height as a fresh one. Another candidate is race or ethnicity, since height distributions vary across ancestry groups.
-  
+`sex` is the covariate the question forces us to include. `age` is a candidate we consider in Courage, but height is nearly stable across the 18--27 adult window, so we expect it to add little.
 
 - Treatment (if any):
 
-There are no treatments in this problem because we are building a predictive model. Nothing in `recruits` can be manipulated --- we cannot assign a recruit a different sex or a different height. Predictive models have covariates, not treatments.
-  
+None. This is a predictive model. Nothing in `recruits` can be manipulated --- we cannot assign a recruit a different sex. Predictive models have covariates, not treatments.
 
 - Quantity of interest:
 
@@ -53,85 +54,104 @@ Describe the key components of a Preceptor table for this problem:
 The Preceptor Table should have one row per recruit. In this exercise, the columns are Recruit, Height, and Sex. 
 
 ```{r}
+#| label: preceptor-table
 #| echo: false
 #| results: asis
 
 preceptor_tibble <- tibble::tribble(
-  ~`Recruit`            , ~`Height (cm)`, ~`Sex`   ,
-  "Emma Rodriguez"      , "166"         , "Female",
-  "Marcus Johnson"      , "180"         , "Male"  ,
-  "..."                 , "..."         , "..."   ,
-  "David Chen"          , "177"         , "Male"
+  ~`Recruit`,        ~`Height (cm)`, ~`Sex`,
+  "Emma Rodriguez",  "166",          "Female",
+  "Marcus Johnson",  "180",          "Male",
+  "...",             "...",          "...",
+  "David Chen",      "177",          "Male"
 )
 
-pre_title_footnote <- "If all the information in this table were available, we could answer the question: What is the average height of male and female USMC recruits next year?"
-
-pre_units_footnote <- "Each row represents one recruit entering USMC bootcamp in 2026. The total population of annual recruits is roughly 35,000–40,000 (about 10% female, 90% male by historical rates), though screening policies and self-selection may shift these proportions."
-
-pre_outcome_footnote <- "Height measured in centimeters from the soles of the feet to the top of the head, taken at standard military induction physical examination. This is a continuous measurement with no artificial rounding or truncation in our analysis."
-
+pre_title_footnote <- "If all the information in this table were available, we could answer the question: What will be the average height of male and female USMC recruits next year?"
+pre_units_footnote <- "Each row represents one recruit entering USMC bootcamp in 2026. The total population of annual recruits is roughly 25,000-30,000."
+pre_outcome_footnote <- "Height measured in centimeters from the soles of the feet to the top of the head, taken at standard military induction physical examination."
 pre_covariate_footnote <- "Sex as recorded on military identification: Male or Female. This is the trait the question uses to partition recruits into two comparison groups."
 
-pre_gt_html <- gt::gt(preceptor_tibble, id = "preceptor_tbl") |>
+preceptor_html <- gt::gt(preceptor_tibble, id = "preceptor_tbl") |>
   gt::tab_header(title = "Preceptor Table") |>
-  gt::tab_spanner(label = "Unit"     , id = "unit_span",
-    columns = c(`Recruit`)) |>
-  gt::tab_spanner(label = "Outcome"  , id = "outcome_span",
-    columns = c(`Height (cm)`)) |>
-  gt::tab_spanner(label = "Covariate", id = "covariates_span",
-    columns = c(`Sex`)) |>
-  gt::cols_align(align = "left" , columns = c(`Recruit`, `Sex`)) |>
+  gt::tab_spanner(label = "Unit", id = "unit_span", columns = c(`Recruit`)) |>
+  gt::tab_spanner(label = "Outcome", id = "outcome_span", columns = c(`Height (cm)`)) |>
+  gt::tab_spanner(label = "Covariate", id = "covariates_span", columns = c(`Sex`)) |>
+  gt::cols_align(align = "left", columns = c(`Recruit`, `Sex`)) |>
   gt::cols_align(align = "right", columns = c(`Height (cm)`)) |>
   gt::fmt_markdown(columns = gt::everything()) |>
   gt::tab_options(
-    heading.title.font.size   = "1.5em",
+    heading.title.font.size = "1.5em",
     heading.title.font.weight = "bolder",
     column_labels.font.weight = "normal"
   ) |>
-  gt::tab_style(
-    style     = gt::cell_text(weight = "bold"),
-    locations = gt::cells_column_spanners()
-  ) |>
-  gt::tab_style(
-    style     = gt::cell_text(align = "left"),
-    locations = gt::cells_column_spanners(spanners = c("unit_span", "covariates_span"))
-  ) |>
-  gt::tab_style(
-    style     = gt::cell_text(align = "right"),
-    locations = gt::cells_column_spanners(spanners = "outcome_span")
-  ) |>
-  gt::tab_footnote(footnote = pre_title_footnote,
-    locations = gt::cells_title()) |>
-  gt::tab_footnote(footnote = pre_units_footnote,
-    locations = gt::cells_column_spanners(spanners = "unit_span")) |>
-  gt::tab_footnote(footnote = pre_outcome_footnote,
-    locations = gt::cells_column_spanners(spanners = "outcome_span")) |>
-  gt::tab_footnote(footnote = pre_covariate_footnote,
-    locations = gt::cells_column_spanners(spanners = "covariates_span")) |>
-  gt::opt_css(
-    css = "
-      #preceptor_tbl .gt_footnote {
-        max-width: 1px;
-        word-break: break-word;
-      }
-    "
-  ) |>
+  gt::tab_style(style = gt::cell_text(weight = "bold"),
+                locations = gt::cells_column_spanners()) |>
+  gt::tab_style(style = gt::cell_text(align = "left"),
+                locations = gt::cells_column_spanners(spanners = c("unit_span", "covariates_span"))) |>
+  gt::tab_style(style = gt::cell_text(align = "right"),
+                locations = gt::cells_column_spanners(spanners = "outcome_span")) |>
+  gt::tab_footnote(footnote = pre_title_footnote, locations = gt::cells_title()) |>
+  gt::tab_footnote(footnote = pre_units_footnote, locations = gt::cells_column_spanners(spanners = "unit_span")) |>
+  gt::tab_footnote(footnote = pre_outcome_footnote, locations = gt::cells_column_spanners(spanners = "outcome_span")) |>
+  gt::tab_footnote(footnote = pre_covariate_footnote, locations = gt::cells_column_spanners(spanners = "covariates_span")) |>
+  gt::opt_css(css = "#preceptor_tbl .gt_footnote { max-width: 1px; word-break: break-word; }") |>
   gt::as_raw_html()
 
-cat(
-  "```{=html}\n",
-  '<div style="display: inline-block; width: auto; max-width: 100%;">',
-  pre_gt_html,
-  "</div>\n",
-  "```\n",
-  sep = ""
-)
+cat("```{=html}\n",
+    '<div style="display: inline-block; width: auto; max-width: 100%;">',
+    preceptor_html, "</div>\n```\n", sep = "")
 ```
 
-Create a plot that shows the relationship between height and sex.
+The Preceptor Table is the smallest table that, if every cell were filled in with the truth, would make the question's answer easy to read off. 
+
+
+EDA:
+
+Before fitting a model, look at the data. The hour spent on a careful EDA almost always saves a day downstream. We look at height-by-sex three complementary ways, then height-by-age three complementary ways.
+
+**Plots that show the relationship between height and sex.**
 
 ```{r}
+#| label: eda-height-sex-boxplot
 #| echo: true
+
+recruits |>
+  ggplot(aes(x = sex, y = height, fill = sex)) +
+  geom_boxplot(width = 0.5, alpha = 0.7, show.legend = FALSE) +
+  labs(
+    title = "Height by Sex: Boxplot",
+    subtitle = "The median male recruit is taller than essentially every female recruit",
+    x = "Sex",
+    y = "Height (cm)"
+  ) +
+  theme_minimal()
+```
+
+The boxplot shows medians, spread, and the near-complete separation between the two boxes' interquartile ranges -- a first signal that sex carries real information about height.
+
+```{r}
+#| label: eda-height-sex-violin
+#| echo: true
+
+recruits |>
+  ggplot(aes(x = sex, y = height, fill = sex)) +
+  geom_violin(alpha = 0.6, show.legend = FALSE) +
+  geom_jitter(width = 0.08, alpha = 0.5, size = 1.5) +
+  labs(
+    title = "Height by Sex: Violin Plot with Jittered Points",
+    subtitle = "Each dot is one recruit; the violin width shows where heights cluster",
+    x = "Sex",
+    y = "Height (cm)"
+  ) +
+  theme_minimal()
+```
+
+The violin plot adds shape to the boxplot's summary, and the jittered points let us see exactly how few female recruits (10) there are compared to male recruits (40) -- a fact the boxplot alone hides.
+
+```{r}
+#| label: eda-height-sex-density
+#| echo: true
+
 sex_counts <- recruits |> count(sex)
 
 recruits |>
@@ -152,10 +172,12 @@ recruits |>
 
 Male recruits outnumber female recruits four to one in this sample, so the male curve covers roughly four times as much area as the female curve. This is due to the sample size, and should not be taken as evidence that male and female heights are equally common or equally variable.
 
-Create a plot that shows the relationship between height by age.
+**Plots that show the relationship between height and age.**
 
 ```{r}
+#| label: eda-height-age-scatter
 #| echo: true
+
 age_fits <- recruits |>
   group_by(sex) |>
   summarize(slope = coef(lm(height ~ age))[["age"]], .groups = "drop")
@@ -169,7 +191,7 @@ recruits |>
     subtitle = paste0(
       "Slope is ", round(age_fits$slope[age_fits$sex == "Female"], 2),
       " cm/yr for females and ", round(age_fits$slope[age_fits$sex == "Male"], 2),
-      " cm/yr for males — both near zero, as expected for adults"
+      " cm/yr for males -- both near zero, as expected for adults"
     ),
     x = "Age (years)",
     y = "Height (cm)",
@@ -178,181 +200,305 @@ recruits |>
   theme_minimal()
 ```
 
-Among adults aged 18-27, height has mostly stopped changing, so neither line should show a strong trend. Whatever slope appears is sampling noise, not a real age effect.
+```{r}
+#| label: eda-height-age-density2d
+#| echo: true
+
+recruits |>
+  ggplot(aes(x = age, y = height)) +
+  geom_density_2d_filled(alpha = 0.7, show.legend = FALSE) +
+  geom_point(aes(color = sex), size = 2) +
+  labs(
+    title = "Joint Density of Age and Height",
+    subtitle = "No diagonal tilt to the density contours -- age and height are not jointly trending",
+    x = "Age (years)",
+    y = "Height (cm)",
+    color = "Sex"
+  ) +
+  theme_minimal()
+```
+
+The 2D density contours would tilt diagonally if taller recruits skewed older or younger; they don't, reinforcing the flat-slope reading from the scatterplot.
+
+```{r}
+#| label: eda-age-distribution
+#| echo: true
+
+recruits |>
+  ggplot(aes(x = age, fill = sex)) +
+  geom_histogram(binwidth = 2, alpha = 0.6, position = "identity") +
+  labs(
+    title = "Age Distribution by Sex",
+    subtitle = "Both sexes are spread fairly evenly across the 18-27 window",
+    x = "Age (years)",
+    y = "Count",
+    fill = "Sex"
+  ) +
+  theme_minimal()
+```
+
+This last plot checks a precondition for the age-slope reading: if one sex were concentrated at one end of the age range, an apparent age effect could really be a sex effect in disguise, which is not the case here.
+
+Among adults aged 18-27, height has mostly stopped changing, so none of these views show a strong age trend. Whatever slope appears is sampling noise, not a real age effect.
 
 ------------------------------------------------------------------------
 
 ## Justice
 
 ```{r}
+#| label: population-table
 #| echo: false
 #| results: asis
 
 population_tibble <- tibble::tribble(
-  ~Source    , ~`Recruit`        , ~`Year`, ~`Height (cm)`, ~`Sex`   ,
-  "..."      , "..."             , "..."  , "..."          , "..."   ,
-  "Data"     , "Emma Rodriguez"  , "2005" , "165"          , "Female",
-  "Data"     , "Marcus Johnson"  , "2005" , "179"          , "Male"  ,
-  "Data"     , "..."             , "..."  , "..."          , "..."   ,
-  "Data"     , "David Chen"      , "2005" , "176"          , "Male"  ,
-  "..."      , "..."             , "..."  , "..."          , "..."   ,
-  "Preceptor", "Emma Rodriguez"  , "2026" , "166"          , "Female",
-  "Preceptor", "Marcus Johnson"  , "2026" , "180"          , "Male"  ,
-  "Preceptor", "..."             , "..."  , "..."          , "..."   ,
-  "Preceptor", "David Chen"      , "2026" , "177"          , "Male"  ,
-  "..."      , "..."             , "..."  , "..."          , "..."
+  ~Source,     ~`Recruit`,       ~`Year`, ~`Height (cm)`, ~`Sex`,
+  "...",       "...",            "...",   "...",          "...",
+  "Data",      "Emma Rodriguez", "2005",  "165",          "Female",
+  "Data",      "Marcus Johnson", "2005",  "179",          "Male",
+  "Data",      "...",            "...",   "...",          "...",
+  "Data",      "David Chen",     "2005",  "176",          "Male",
+  "...",       "...",            "...",   "...",          "...",
+  "Preceptor", "Emma Rodriguez", "2026",  "166",          "Female",
+  "Preceptor", "Marcus Johnson", "2026",  "180",          "Male",
+  "Preceptor", "...",            "...",   "...",          "...",
+  "Preceptor", "David Chen",     "2026",  "177",          "Male",
+  "...",       "...",            "...",   "...",          "..."
 )
 
-pop_title_footnote <- "This table bridges from NHANES data (2003–2006) to next year's USMC recruits. Both come from the population of young adults aged 18–27 living in the United States."
+pop_title_footnote <- "This table bridges from NHANES data (circa 2005) to next year's USMC recruits. Both come from the population of young adults aged 18-27 living in the United States."
+pop_units_footnote <- "Data rows are 50 participants in NHANES, surveyed circa 2003-2006. Preceptor rows are recruits entering USMC bootcamp in 2026. The same three individuals appear in both blocks at different ages -- the 20-year gap is the stability concern."
+pop_outcome_footnote <- "Height in centimeters, measured from sole to crown using standardized NHANES protocols."
+pop_covariate_footnote <- "Sex as recorded in each source: self-reported/interviewer-recorded at NHANES survey time; military-identification-recorded at USMC enlistment."
 
-pop_units_footnote <- "Each row is a young adult at a specific time. Data rows are 50 participants in the National Health and Nutrition Examination Survey (NHANES), a cross-sectional sample of the US non-institutionalized civilian population, surveyed between 2003 and 2006. Preceptor rows are recruits entering USMC bootcamp in 2026, drawn from volunteers aged 18–27. The 20-year gap between the data era and the prediction year, and the shift from a population sample to military volunteers, both raise representativeness concerns."
-
-pop_outcome_footnote <- "Height in centimeters, measured from sole to crown. NHANES used standardized protocols. Preceptor rows show the (unobservable) height each recruit will have in 2026, which we model by assuming NHANES heights remain stable across the population."
-
-pop_covariate_footnote <- "Sex as recorded in the two data sources. NHANES sex is self-reported or interviewer-recorded at survey time. USMC recruits' sex comes from military identification at induction. Both are treated as a binary Male/Female classification."
-
-pop_gt_html <- gt::gt(population_tibble, id = "population_tbl") |>
+population_html <- gt::gt(population_tibble, id = "population_tbl") |>
   gt::tab_header(title = "Population Table") |>
-  gt::tab_spanner(label = "Unit/Time"  , id = "unit_span",
-    columns = c(`Recruit`, `Year`)) |>
-  gt::tab_spanner(label = "Outcome"    , id = "outcome_span",
-    columns = c(`Height (cm)`)) |>
-  gt::tab_spanner(label = "Covariate"  , id = "covariates_span",
-    columns = c(`Sex`)) |>
-  gt::cols_align(align = "left" , columns = c(`Source`, `Recruit`, `Sex`)) |>
+  gt::tab_spanner(label = "Unit/Time", id = "unit_span", columns = c(`Recruit`, `Year`)) |>
+  gt::tab_spanner(label = "Outcome", id = "outcome_span", columns = c(`Height (cm)`)) |>
+  gt::tab_spanner(label = "Covariate", id = "covariates_span", columns = c(`Sex`)) |>
+  gt::cols_align(align = "left", columns = c(`Source`, `Recruit`, `Sex`)) |>
   gt::cols_align(align = "right", columns = c(`Year`, `Height (cm)`)) |>
   gt::fmt_markdown(columns = gt::everything()) |>
   gt::tab_options(
-    heading.title.font.size   = "1.5em",
+    heading.title.font.size = "1.5em",
     heading.title.font.weight = "bolder",
     column_labels.font.weight = "normal"
   ) |>
-  gt::tab_style(
-    style     = gt::cell_text(weight = "bold"),
-    locations = gt::cells_column_spanners()
-  ) |>
-  gt::tab_style(
-    style     = gt::cell_text(align = "left"),
-    locations = gt::cells_column_spanners(spanners = c("unit_span", "covariates_span"))
-  ) |>
-  gt::tab_style(
-    style     = gt::cell_text(align = "right"),
-    locations = gt::cells_column_spanners(spanners = "outcome_span")
-  ) |>
-  gt::tab_footnote(footnote = pop_title_footnote,
-    locations = gt::cells_title()) |>
-  gt::tab_footnote(footnote = pop_units_footnote,
-    locations = gt::cells_column_spanners(spanners = "unit_span")) |>
-  gt::tab_footnote(footnote = pop_outcome_footnote,
-    locations = gt::cells_column_spanners(spanners = "outcome_span")) |>
-  gt::tab_footnote(footnote = pop_covariate_footnote,
-    locations = gt::cells_column_spanners(spanners = "covariates_span")) |>
-  gt::opt_css(
-    css = "
-      #population_tbl .gt_footnote {
-        max-width: 1px;
-        word-break: break-word;
-      }
-    "
-  ) |>
+  gt::tab_style(style = gt::cell_text(weight = "bold"),
+                locations = gt::cells_column_spanners()) |>
+  gt::tab_style(style = gt::cell_text(align = "left"),
+                locations = gt::cells_column_spanners(spanners = c("unit_span", "covariates_span"))) |>
+  gt::tab_style(style = gt::cell_text(align = "right"),
+                locations = gt::cells_column_spanners(spanners = "outcome_span")) |>
+  gt::tab_footnote(footnote = pop_title_footnote, locations = gt::cells_title()) |>
+  gt::tab_footnote(footnote = pop_units_footnote, locations = gt::cells_column_spanners(spanners = "unit_span")) |>
+  gt::tab_footnote(footnote = pop_outcome_footnote, locations = gt::cells_column_spanners(spanners = "outcome_span")) |>
+  gt::tab_footnote(footnote = pop_covariate_footnote, locations = gt::cells_column_spanners(spanners = "covariates_span")) |>
+  gt::opt_css(css = "#population_tbl .gt_footnote { max-width: 1px; word-break: break-word; }") |>
   gt::as_raw_html()
 
-cat(
-  "```{=html}\n",
-  '<div style="display: inline-block; width: auto; max-width: 100%;">',
-  pop_gt_html,
-  "</div>\n",
-  "```\n",
-  sep = ""
-)
+cat("```{=html}\n",
+    '<div style="display: inline-block; width: auto; max-width: 100%;">',
+    population_html, "</div>\n```\n", sep = "")
 ```
 
 Counter-example to the assumption of validity:
 
-The height column in NHANES might be measured differently than the height column in the Preceptor Table, so the two columns may not represent exactly the same construct. NHANES heights are measured in the Mobile Examination Center by trained examiners using a fixed stadiometer, with shoes removed, instructions standardized across all participants. USMC heights are recorded at the recruiting office or at bootcamp intake, with whatever stadiometer is available, possibly with shoes on, possibly with whatever instructional drift has accumulated since the last standardization. A systematic offset of a centimeter or two between the two procedures would not be surprising.
-
+  NHANES heights are measured in a Mobile Examination Center by trained examiners using a fixed stadiometer, shoes off, standardized instructions. USMC heights are recorded at the recruiting office or at bootcamp intake, with whatever stadiometer is on hand, possibly with shoes on. A systematic offset of a centimeter or two between the two procedures would not be surprising, so our `height` column in the data may not be exactly the same construct as the Preceptor Table's `height`.
 
 Counter-example to the assumption of stability:
 
-The relationship between height and sex may have changed over time, so the model parameters (such as the intercept or the slope on sexMale) may not be the same for the data and the Preceptor Table. For Recruits, the relevant stability worry is small. Adult human height has been stable for the broad U.S. young-adult population for several decades — the intercept may have drifted upward by a centimeter or two as nutrition has improved, but the male-female height gap (the parameter we care about most) has barely moved.
+  Adult human height has been broadly stable across recent decades for the US young-adult population, but the *intercept* may have drifted upward by a centimeter or two as nutrition has improved. If the male-female height gap (the slope we care about most) had also drifted, the model's `sexMale` coefficient --- estimated on 2005-era data --- would not be the right coefficient for 2026.
 
 Counter-example to the assumption of representativeness:
 
-Data → Population. NHANES is much closer to a probability sample than most U.S. health surveys because it uses a stratified, multistage sampling design to represent the U.S. civilian, non-institutionalized population. However, the educational version of NHANES used here omits the survey weights, and our 50-row teaching sample further over-represents males (40 males, 10 females) to highlight differences in estimation uncertainty. As a result, our data are not representative of U.S. young adults. This does not necessarily bias our estimates, but it weakens our justification for treating the sample as representative of the target population.
-
-Population → Preceptor Table. Even if NHANES perfectly represented U.S. young adults, that population is still different from the population of future USMC recruits. Military recruits are volunteers who must meet eligibility and fitness requirements, so they are not a random sample of young adults. If recruits differ systematically from the general population in characteristics related to height, then a model trained on NHANES may not accurately predict the average height of next year's recruits. Any resulting prediction error would arise because the target population differs from the population represented by the data.
+  Data &rarr; Population: NHANES is close to a probability sample of the US population, but the educational cut we use drops the survey weights, and our 50-row sample deliberately over-represents males (40 vs. 10) to make the standard-error contrast visible. 
+  
+  Population &rarr; Preceptor Table: USMC recruits are self-selected volunteers who pass a fitness screen, so they are very likely taller on average than the general NHANES-sampled population of the same age. Our model probably understates true recruit height.
 
 Counter-example to the assumption of unconfoundedness:
 
-None. Unconfoundedness applies only to causal questions, ours is predictive. We are not trying to estimate the causal effect of sex on height. 
+  None. Unconfoundedness applies only to causal questions; ours is predictive. We are not estimating the causal effect of sex on height.
 
 What probability family should we use?
 
-Normal Distribution
+  Normal Distribution
 
 Why should we use that probability family?
 
-The Normal distribution is the standard choice for continuous outcomes.
+  The Normal distribution is the standard choice for continuous outcomes.
 
 What is the link function for our outcome?
 
-Our model will be a linear regression.
+  Our model will be a linear regression.
 
 ## Courage
 
-Create a candidate model, modeling the outcome height as a linear function of the binary covariate sex.
+The abstract data generating mechanism coming out of Justice is:
+
+$$Y = \beta_0 + \beta_1 X_1 + \cdots + \beta_n X_n + \epsilon, \quad \epsilon \sim N(0, \sigma^2)$$
+
+
+**Candidate model 1: height as a function of sex.**
 
 ```{r}
+#| label: candidate-model-sex
+#| echo: true
+
+fit_sex <- linear_reg(engine = "lm") |>
+  fit(height ~ sex, data = recruits)
+
+fit_sex |>
+  tidy(conf.int = TRUE) |>
+  select(term, estimate, conf.low, conf.high) |>
+  mutate(across(where(is.numeric), \(x) round(x, 1)))
+```
+
+The slope on `sexMale` is about 8.9 cm with a 95% confidence interval that excludes zero -- comparing two recruits differing only in sex, the male recruit is expected to be about 9 cm taller.
+
+**Candidate model 2: height as a function of age.**
+
+```{r}
+#| label: candidate-model-age
+#| echo: true
+
+fit_age <- linear_reg(engine = "lm") |>
+  fit(height ~ age, data = recruits)
+
+fit_age |>
+  tidy(conf.int = TRUE) |>
+  select(term, estimate, conf.low, conf.high) |>
+  mutate(across(where(is.numeric), \(x) round(x, 2)))
+```
+
+The slope on `age` is indistinguishable from zero, confirming what the EDA already showed: adult height has stopped changing in this age window, so age adds no predictive signal on its own.
+
+**Candidate model 3: height as a function of sex and age.**
+
+```{r}
+#| label: candidate-model-sex-age
+#| echo: true
+
+fit_sex_age <- linear_reg(engine = "lm") |>
+  fit(height ~ sex + age, data = recruits)
+
+fit_sex_age |>
+  tidy(conf.int = TRUE) |>
+  select(term, estimate, conf.low, conf.high) |>
+  mutate(across(where(is.numeric), \(x) round(x, 2)))
+```
+
+Adding `age` to the sex-only model leaves the `sexMale` coefficient essentially unchanged and the `age` coefficient still indistinguishable from zero. This is what we'd expect since age and sex are roughly uncorrelated in our sample, and age has no real relationship with height in this window.
+
+**Chosen model.** Because adding `age` does not change the answer to our question, the simpler model is preferable -- it is easier to explain, just as accurate, and avoids implying age matters when it doesn't:
+
+```{r}
+#| label: chosen-model
+#| echo: true
+
 fit_recruits <- linear_reg(engine = "lm") |>
   fit(height ~ sex, data = recruits)
+
 fit_recruits
 ```
 
-Create another candidate model, modeling the outcome height as a linear function of the continuous covariate age.
+$$\widehat{\text{Height}} = 165.9 + 8.9 \cdot \text{sexMale}$$
 
-```{r courage-5-test}
-fit_age <- linear_reg(engine = "lm") |>
-  fit(height ~ age, data = recruits)
-fit_age
+`sexMale` is a 0/1 dummy: 1 for male, 0 for female. The intercept (165.9) is the expected height of a female recruit; adding the slope (8.9) gives the expected male recruit height of 174.8 cm. **This is our data generating mechanism.**
+
+**Model checking.** A simple sanity check: the distribution of fitted values should resemble the distribution of actual heights in central tendency, even though the model only produces two distinct predicted values.
+
+```{r}
+#| label: model-check-fitted-vs-actual
+#| echo: true
+
+fitted_df <- tibble(
+  value = c(recruits$height, predict(extract_fit_engine(fit_recruits))),
+  source = c(rep("Actual", nrow(recruits)), rep("Fitted", nrow(recruits)))
+)
+
+fitted_df |>
+  ggplot(aes(x = value, fill = source)) +
+  geom_density(alpha = 0.5) +
+  labs(
+    title = "Actual vs. Fitted Heights",
+    subtitle = "The fitted distribution is a two-point mass; the actual distribution is wider",
+    x = "Height (cm)",
+    y = NULL,
+    fill = "Source"
+  ) +
+  theme_minimal() +
+  theme(axis.text.y = element_blank(), axis.ticks.y = element_blank())
 ```
+
+```{r}
+#| label: model-check-residuals
+#| echo: true
+
+augment(fit_recruits, new_data = recruits) |>
+  ggplot(aes(x = sex, y = .resid)) +
+  geom_jitter(width = 0.1, alpha = 0.6) +
+  geom_hline(yintercept = 0, linetype = "dashed", color = "grey40") +
+  labs(
+    title = "Residuals by Sex",
+    subtitle = "Residuals scatter evenly around zero in both groups -- no obvious misfit",
+    x = "Sex",
+    y = "Residual (cm)"
+  ) +
+  theme_minimal()
+```
+
+The two distributions agree on central tendency and rough shape but differ on spread, which we expect from a model using only one binary covariate. The residual plot shows no systematic pattern by sex -- the model is not over- or under-predicting either group on average, which is the main thing we want to check before trusting the predictions in Temperance.
 
 ## Temperance
 
-Use `predictions(fit_recruits)` to estimate the average height of male and female USMC recruits next year.
+
+**Predicted values.** `predictions()` returns the model's fitted height for every recruit in our sample.
 
 ```{r}
-predictions(fit_recruits)
+#| label: predictions-raw
+#| echo: true
+
+predictions(fit_recruits) |>
+  as_tibble() |>
+  select(sex, estimate, conf.low, conf.high) |>
+  head(6)
 ```
 
-What is the expected height of a female recruit?
-
-The expected height of a female recruit is about **165.9 cm**, with a 95% confidence interval of approximately **161.8 cm to 170.0 cm**.
-
-What is the expected height of a male recruit?
-
-The expected height of a male recruit is about **174.8 cm**, with a 95% confidence interval of approximately **172.5 cm to 177.0 cm**.
-
-Create a visualization of these predictions using `plot_predictions()`.
+**Average predictions.** We don't care about any one recruit's prediction -- we care about the average prediction for each sex, which is exactly what `avg_predictions()` gives us, grouped by `sex`.
 
 ```{r}
+#| label: average-predictions
 #| echo: true
+
+avg_predictions(fit_recruits, by = "sex")
+```
+
+Tthe expected height of a female recruit is about 165.9 cm (95% CI roughly 161.8 to 170.0), and a male recruit about 174.8 cm (95% CI roughly 172.5 to 177.0).
+
+**Comparison between groups.** `avg_comparisons()` directly answers "how much taller, on average, are male recruits than female recruits?" -- the same number as the regression slope, but computed and labeled as a comparison rather than read off a coefficient table.
+
+```{r}
+#| label: avg-comparison-sex
+#| echo: true
+
+avg_comparisons(fit_recruits, variables = "sex")
+```
+
+The estimate (about 8.9 cm) and its confidence interval are exactly what `avg_predictions()` implies by subtraction, but `avg_comparisons()` does the subtraction and the uncertainty propagation for us -- useful as soon as we want a single number with a single confidence interval for "the difference," rather than two separate intervals we'd have to compare by eye.
+
+**Visualization of predictions.**
+
+```{r}
+#| label: prediction-plot
+#| echo: true
+
 avg_preds <- avg_predictions(fit_recruits, variables = "sex")
 taller_sex <- avg_preds$sex[which.max(avg_preds$estimate)]
 height_diff <- round(diff(range(avg_preds$estimate)), 1)
 
-plot_predictions(
-  fit_recruits,
-  condition = "sex",
-  draw = FALSE
-) |>
+plot_predictions(fit_recruits, condition = "sex", draw = FALSE) |>
   ggplot(aes(x = sex, y = estimate)) +
-  geom_pointrange(
-    aes(
-      ymin = conf.low,
-      ymax = conf.high
-    ),
-    linewidth = 0.7
-  ) +
+  geom_pointrange(aes(ymin = conf.low, ymax = conf.high), linewidth = 0.7) +
   labs(
     title = "Predicted Average Height of USMC Recruits by Sex",
     subtitle = paste0(taller_sex, " recruits are predicted to be about ", height_diff, " cm taller, on average"),
@@ -363,15 +509,37 @@ plot_predictions(
   theme_minimal(base_size = 13)
 ```
 
-What measure of uncertainty is shown?
+```{r}
+#| label: comparison-plot
+#| echo: true
 
-The vertical error bars show **95% confidence intervals** for the estimated average height of each group.
+plot_comparisons(fit_recruits, variables = "sex") +
+  labs(
+    title = "Estimated Difference in Height: Male vs. Female",
+    subtitle = "A single comparison with its own confidence interval, rather than two overlapping intervals",
+    y = "Difference in Predicted Height (cm)"
+  ) +
+  theme_minimal(base_size = 13)
+```
 
-Why is the confidence interval wider for female recruits?
+**Interpretation.** Comparing two recruits differing only in sex, the male recruit is expected to be about 8.9 cm taller, 95% CI roughly [4.3, 13.4] cm. Notice the language throughout: *comparison*, not *cause*, *raise*, or *change* -- `sex` is a covariate in a predictive model, not a treatment.
 
-There are only **10 female observations** compared with **40 male observations**, so the female average is estimated with less precision.
+**Uncertainty and practical significance.** The female confidence interval is visibly wider than the male interval -- about twice as wide. The standard error of a group mean shrinks with the square root of sample size, so the 40-versus-10 split in our data directly produces this asymmetry. Practically, an 8.9 cm difference is large enough to matter for uniform sizing: it's roughly the gap between two adjacent standard sizes in most clothing systems, so treating male and female recruits identically when ordering uniforms would be a mistake.
 
+**Additional quantities of interest.** The average height answers the specific question we asked, but a campaign-quality answer for the Quartermaster also wants:
 
-Why might these estimated average heights be wrong?
+- The **maximum** height expected among next year's recruits, to make sure the largest uniform size is in stock.
+- The **10th and 90th percentiles** of height within each sex, to size the extra-small and extra-large orders.
 
-The estimates may be wrong because the model is based on NHANES, which surveys the general U.S. population, rather than people who actually enlist in the Marine Corps. For example, joining the Marines is voluntary, so people who choose to enlist may differ from the average young adult in important ways, such as physical fitness or body size. In addition, recruits must meet medical and physical eligibility requirements before they can serve. If the people who enlist and qualify tend to be taller (or shorter) than the general population, then our predicted average heights will be biased. Finally, the confidence intervals only measure sampling uncertainty—they do not account for problems such as using the wrong population, omitted variables, or changes in recruit characteristics over time.
+Both are available from the same fitted DGM by simulation (drawing many synthetic recruits from the fitted Normal distribution and summarizing), even though we have not worked through the simulation mechanics here.
+
+**Remaining uncertainty.** The reported confidence intervals capture only sampling uncertainty under the model's assumptions. They do not capture uncertainty about whether those assumptions themselves are correct.
+
+**Possible sources of bias.** Three things are likely wrong with our answer. 
+
+  1) USMC recruits are taller than the general NHANES-sampled population because the fitness screen filters out shorter applicants and recruits are self-selected -- our model probably understates true recruit height by a centimeter or two.
+  
+  2) Our sample is small, especially for females (10 rows), so the female interval -- while correctly computed under the model -- doesn't reflect the extra uncertainty from the validity and representativeness gaps discussed in Justice; a cautious analyst would widen it further. 
+  
+  3) The world is always more uncertain than our models would have us believe: even with every assumption exactly right, the reported interval is only the *Preceptor's Posterior* -- the best posterior achievable under our assumptions -- not the truth.
+
