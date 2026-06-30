@@ -1,0 +1,19 @@
+# Quarto render output (regenerate with `quarto render`)
+*.html
+*_files/
+*.pdf
+/.quarto/
+
+# LaTeX intermediates (Quarto PDF generation)
+*.tex
+*.log
+*.aux
+*.fls
+*.fdb_latexmk
+*.synctex.gz
+*.md.html
+*.md.pdf
+
+#should these be ignored??
+*.pdf.md
+*.html.md
