@@ -1,5 +1,8 @@
 ---
 title: "Wisdom and Recruits (Answer Key)"
+format:
+  html: default
+  pdf: default
 execute:
   echo: false
 ---
@@ -16,11 +19,12 @@ library(primer.tutorials)
 ```
 
 
-
 ## Wisdom
 
-What will be the average height of male and female USMC recruits next year?
+You are in charge of ordering uniforms for next year's Marine Corps bootcamp recruits.
 
+
+What will be the average height of male and female USMC recruits next year?
 
 
 **What are the units, outcome, and covariates for this question?**
@@ -53,65 +57,131 @@ Describe the key components of a Preceptor table for this problem; Use words lik
 ```{r}
 #| echo: false
 #| results: asis
+
 preceptor_tibble <- tibble::tribble(
-  ~Unit, ~Outcome, ~Covariate,
-  "Recruit 1", "150", "Female",
-  "Recruit 2", "172", "Male",
-  "...", "...", "...",
-  "Recruit 5,000", "160", "Female"
+  ~`Recruit`            , ~`Height (cm)`, ~`Sex`   ,
+  "Emma Rodriguez"      , "166"         , "Female",
+  "Marcus Johnson"      , "180"         , "Male"  ,
+  "..."                 , "..."         , "..."   ,
+  "David Chen"          , "177"         , "Male"
 )
 
-preceptor_html <- gt::gt(preceptor_tibble, id = "preceptor_table") |>
-  gt::tab_header(title = "Completed Preceptor Table") |>
-  gt::tab_spanner(label = "Unit", id = "unit_span", columns = "Unit") |>
-  gt::tab_spanner(label = "Outcome", id = "outcome_span", columns = "Outcome") |>
-  gt::tab_spanner(label = "Covariate", id = "covariates_span", columns = "Covariate") |>
-  gt::cols_align(align = "left", columns = c(Unit, Covariate)) |>
-  gt::cols_align(align = "right", columns = "Outcome") |>
+pre_title_footnote <- "If all the information in this table were available, we could answer the question: What is the average height of male and female USMC recruits next year?"
+
+pre_units_footnote <- "Each row represents one recruit entering USMC bootcamp in 2026. The total population of annual recruits is roughly 35,000–40,000 (about 10% female, 90% male by historical rates), though screening policies and self-selection may shift these proportions."
+
+pre_outcome_footnote <- "Height measured in centimeters from the soles of the feet to the top of the head, taken at standard military induction physical examination. This is a continuous measurement with no artificial rounding or truncation in our analysis."
+
+pre_covariate_footnote <- "Sex as recorded on military identification: Male or Female. This is the trait the question uses to partition recruits into two comparison groups."
+
+pre_gt_html <- gt::gt(preceptor_tibble, id = "preceptor_tbl") |>
+  gt::tab_header(title = "Preceptor Table") |>
+  gt::tab_spanner(label = "Unit"     , id = "unit_span",
+    columns = c(`Recruit`)) |>
+  gt::tab_spanner(label = "Outcome"  , id = "outcome_span",
+    columns = c(`Height (cm)`)) |>
+  gt::tab_spanner(label = "Covariate", id = "covariates_span",
+    columns = c(`Sex`)) |>
+  gt::cols_align(align = "left" , columns = c(`Recruit`, `Sex`)) |>
+  gt::cols_align(align = "right", columns = c(`Height (cm)`)) |>
   gt::fmt_markdown(columns = gt::everything()) |>
-  gt::tab_style(style = gt::cell_text(weight = "bold"), locations = gt::cells_column_spanners()) |>
-  gt::tab_footnote(footnote = "Each row is one recruit whose height we want to predict.", locations = gt::cells_column_spanners(spanners = "unit_span")) |>
-  gt::tab_footnote(footnote = "The outcome is height in centimeters.", locations = gt::cells_column_spanners(spanners = "outcome_span")) |>
-  gt::tab_footnote(footnote = "The covariates are sex and age, known before prediction.", locations = gt::cells_column_spanners(spanners = "covariates_span")) |>
+  gt::tab_options(
+    heading.title.font.size   = "1.5em",
+    heading.title.font.weight = "bolder",
+    column_labels.font.weight = "normal"
+  ) |>
+  gt::tab_style(
+    style     = gt::cell_text(weight = "bold"),
+    locations = gt::cells_column_spanners()
+  ) |>
+  gt::tab_style(
+    style     = gt::cell_text(align = "left"),
+    locations = gt::cells_column_spanners(spanners = c("unit_span", "covariates_span"))
+  ) |>
+  gt::tab_style(
+    style     = gt::cell_text(align = "right"),
+    locations = gt::cells_column_spanners(spanners = "outcome_span")
+  ) |>
+  gt::tab_footnote(footnote = pre_title_footnote,
+    locations = gt::cells_title()) |>
+  gt::tab_footnote(footnote = pre_units_footnote,
+    locations = gt::cells_column_spanners(spanners = "unit_span")) |>
+  gt::tab_footnote(footnote = pre_outcome_footnote,
+    locations = gt::cells_column_spanners(spanners = "outcome_span")) |>
+  gt::tab_footnote(footnote = pre_covariate_footnote,
+    locations = gt::cells_column_spanners(spanners = "covariates_span")) |>
+  gt::opt_css(
+    css = "
+      #preceptor_tbl .gt_footnote {
+        max-width: 1px;
+        word-break: break-word;
+      }
+    "
+  ) |>
   gt::as_raw_html()
 
-cat("```{=html}\n",
-    '<div style="display: inline-block; width: auto; max-width: 100%;">',
-    preceptor_html, "</div>\n```", sep = "")
+cat(
+  "```{=html}\n",
+  '<div style="display: inline-block; width: auto; max-width: 100%;">',
+  pre_gt_html,
+  "</div>\n",
+  "```\n",
+  sep = ""
+)
 ```
 
 
 Create a plot that shows the relationship between height and sex.
 
 ```{r}
+#| echo: true
+sex_counts <- recruits |> count(sex)
+
 recruits |>
   ggplot(aes(x = height, fill = sex)) +
-  geom_density(alpha = 0.6) +
+  geom_density(aes(y = after_stat(count)), alpha = 0.6) +
   labs(
     title = "Height Distribution by Sex",
+    subtitle = paste0(
+      "Area is scaled by sample size: n = ", sex_counts$n[sex_counts$sex == "Male"],
+      " male vs. n = ", sex_counts$n[sex_counts$sex == "Female"], " female recruits"
+    ),
     x = "Height (cm)",
-    y = "Density",
+    y = "Count-scaled density",
     fill = "Sex"
   ) +
   theme_minimal()
 ```
 
+Male recruits outnumber female recruits four to one in this sample, so the male curve covers roughly four times as much area as the female curve. That's a feature of the sample size, not evidence that male and female heights are equally common or equally variable — it's worth noticing before fitting any model.
 
 Create a plot that shows the relationship between height by age.
 
 ```{r}
+#| echo: true
+age_fits <- recruits |>
+  group_by(sex) |>
+  summarize(slope = coef(lm(height ~ age))[["age"]], .groups = "drop")
+
 recruits |>
   ggplot(aes(x = age, y = height, color = sex)) +
   geom_point(size = 3, alpha = 0.7) +
   geom_smooth(method = "lm", se = FALSE) +
   labs(
     title = "Height vs. Age by Sex",
+    subtitle = paste0(
+      "Slope is ", round(age_fits$slope[age_fits$sex == "Female"], 2),
+      " cm/yr for females and ", round(age_fits$slope[age_fits$sex == "Male"], 2),
+      " cm/yr for males — both near zero, as expected for adults"
+    ),
     x = "Age (years)",
     y = "Height (cm)",
     color = "Sex"
   ) +
   theme_minimal()
 ```
+
+Among adults aged 18-27, height has mostly stopped changing, so neither line should show a strong trend. Whatever slope appears is sampling noise, not a real age effect — and there is no reason the two sexes' noise should point in the same direction, so the two slopes are computed and reported separately rather than assumed.
 
 
 ---
@@ -124,34 +194,84 @@ Describe the key components of a Population table for this problem.
 ```{r}
 #| echo: false
 #| results: asis
+
 population_tibble <- tibble::tribble(
-  ~Source, ~`Unit / Time`, ~Outcome, ~Covariate,
-  "Data", "NHANES 1 (2002)", "162", "Female",
-  "Data", "NHANES 2 (2005)", "178", "Male",
-  "...", "...", "...", "...",
-  "Preceptor", "Recruit 1 (2026)", "150", "Female",
-  "Preceptor", "Recruit 2 (2026)", "172", "Male",
-  "...", "...", "...", "...",
-  "Preceptor", "Recruit 5,000 (2026)", "160", "Female"
+  ~Source    , ~`Recruit`        , ~`Year`, ~`Height (cm)`, ~`Sex`   ,
+  "..."      , "..."             , "..."  , "..."          , "..."   ,
+  "Data"     , "Emma Rodriguez"  , "2005" , "165"          , "Female",
+  "Data"     , "Marcus Johnson"  , "2005" , "179"          , "Male"  ,
+  "Data"     , "..."             , "..."  , "..."          , "..."   ,
+  "Data"     , "David Chen"      , "2005" , "176"          , "Male"  ,
+  "..."      , "..."             , "..."  , "..."          , "..."   ,
+  "Preceptor", "Emma Rodriguez"  , "2026" , "166"          , "Female",
+  "Preceptor", "Marcus Johnson"  , "2026" , "180"          , "Male"  ,
+  "Preceptor", "..."             , "..."  , "..."          , "..."   ,
+  "Preceptor", "David Chen"      , "2026" , "177"          , "Male"  ,
+  "..."      , "..."             , "..."  , "..."          , "..."
 )
 
-population_html <- gt::gt(population_tibble, id = "population_table") |>
-  gt::tab_header(title = "Completed Population Table") |>
-  gt::tab_spanner(label = "Unit / Time", id = "unit_span", columns = "Unit / Time") |>
-  gt::tab_spanner(label = "Outcome", id = "outcome_span", columns = "Outcome") |>
-  gt::tab_spanner(label = "Covariate", id = "covariates_span", columns = "Covariate") |>
-  gt::cols_align(align = "left", columns = c(Source, `Unit / Time`, Covariate)) |>
-  gt::cols_align(align = "right", columns = "Outcome") |>
+pop_title_footnote <- "This table bridges from NHANES data (2003–2006) to next year's USMC recruits. Both come from the population of young adults aged 18–27 living in the United States."
+
+pop_units_footnote <- "Each row is a young adult at a specific time. Data rows are 50 participants in the National Health and Nutrition Examination Survey (NHANES), a cross-sectional sample of the US non-institutionalized civilian population, surveyed between 2003 and 2006. Preceptor rows are recruits entering USMC bootcamp in 2026, drawn from volunteers aged 18–27. The 20-year gap between the data era and the prediction year, and the shift from a population sample to military volunteers, both raise representativeness concerns."
+
+pop_outcome_footnote <- "Height in centimeters, measured from sole to crown. NHANES used standardized protocols. Preceptor rows show the (unobservable) height each recruit will have in 2026, which we model by assuming NHANES heights remain stable across the population."
+
+pop_covariate_footnote <- "Sex as recorded in the two data sources. NHANES sex is self-reported or interviewer-recorded at survey time. USMC recruits' sex comes from military identification at induction. Both are treated as a binary Male/Female classification."
+
+pop_gt_html <- gt::gt(population_tibble, id = "population_tbl") |>
+  gt::tab_header(title = "Population Table") |>
+  gt::tab_spanner(label = "Unit/Time"  , id = "unit_span",
+    columns = c(`Recruit`, `Year`)) |>
+  gt::tab_spanner(label = "Outcome"    , id = "outcome_span",
+    columns = c(`Height (cm)`)) |>
+  gt::tab_spanner(label = "Covariate"  , id = "covariates_span",
+    columns = c(`Sex`)) |>
+  gt::cols_align(align = "left" , columns = c(`Source`, `Recruit`, `Sex`)) |>
+  gt::cols_align(align = "right", columns = c(`Year`, `Height (cm)`)) |>
   gt::fmt_markdown(columns = gt::everything()) |>
-  gt::tab_style(style = gt::cell_text(weight = "bold"), locations = gt::cells_column_spanners()) |>
-  gt::tab_footnote(footnote = "The data rows are the observed sample; the preceptor rows are the recruits we want to predict.", locations = gt::cells_column_spanners(spanners = "unit_span")) |>
-  gt::tab_footnote(footnote = "The outcome is height in centimeters.", locations = gt::cells_column_spanners(spanners = "outcome_span")) |>
-  gt::tab_footnote(footnote = "The covariate is sex, which is known before prediction.", locations = gt::cells_column_spanners(spanners = "covariates_span")) |>
+  gt::tab_options(
+    heading.title.font.size   = "1.5em",
+    heading.title.font.weight = "bolder",
+    column_labels.font.weight = "normal"
+  ) |>
+  gt::tab_style(
+    style     = gt::cell_text(weight = "bold"),
+    locations = gt::cells_column_spanners()
+  ) |>
+  gt::tab_style(
+    style     = gt::cell_text(align = "left"),
+    locations = gt::cells_column_spanners(spanners = c("unit_span", "covariates_span"))
+  ) |>
+  gt::tab_style(
+    style     = gt::cell_text(align = "right"),
+    locations = gt::cells_column_spanners(spanners = "outcome_span")
+  ) |>
+  gt::tab_footnote(footnote = pop_title_footnote,
+    locations = gt::cells_title()) |>
+  gt::tab_footnote(footnote = pop_units_footnote,
+    locations = gt::cells_column_spanners(spanners = "unit_span")) |>
+  gt::tab_footnote(footnote = pop_outcome_footnote,
+    locations = gt::cells_column_spanners(spanners = "outcome_span")) |>
+  gt::tab_footnote(footnote = pop_covariate_footnote,
+    locations = gt::cells_column_spanners(spanners = "covariates_span")) |>
+  gt::opt_css(
+    css = "
+      #population_tbl .gt_footnote {
+        max-width: 1px;
+        word-break: break-word;
+      }
+    "
+  ) |>
   gt::as_raw_html()
 
-cat("```{=html}\n",
-    '<div style="display: inline-block; width: auto; max-width: 100%;">',
-    population_html, "</div>\n```", sep = "")
+cat(
+  "```{=html}\n",
+  '<div style="display: inline-block; width: auto; max-width: 100%;">',
+  pop_gt_html,
+  "</div>\n",
+  "```\n",
+  sep = ""
+)
 ```
 
 
@@ -188,7 +308,6 @@ What is the link function for our outcome?
 Create a candidate model, modeling the outcome height as a linear function of the binary covariate sex.
 
 ```{r}
-#| echo: true
 fit_recruits <- linear_reg(engine = "lm") |>
   fit(height ~ sex, data = recruits)
 ```
@@ -196,7 +315,6 @@ fit_recruits <- linear_reg(engine = "lm") |>
 Create another candidate model, modeling the outcome height as a linear function of the continuous covariate age. 
 
 ```{r courage-5-test}
-#| echo: true
 fit_age <- linear_reg(engine = "lm") |>
   fit(height ~ age, data = recruits)
 ```
@@ -221,6 +339,11 @@ What is the expected height of a male recruit?
 Create a visualization of these predictions using `plot_predictions()`.
 
 ```{r}
+#| echo: true
+avg_preds <- avg_predictions(fit_recruits, variables = "sex")
+taller_sex <- avg_preds$sex[which.max(avg_preds$estimate)]
+height_diff <- round(diff(range(avg_preds$estimate)), 1)
+
 plot_predictions(
   fit_recruits,
   condition = "sex",
@@ -236,7 +359,7 @@ plot_predictions(
   ) +
   labs(
     title = "Predicted Average Height of USMC Recruits by Sex",
-    subtitle = "Male recruits are predicted to be taller on average than female recruits.",
+    subtitle = paste0(taller_sex, " recruits are predicted to be about ", height_diff, " cm taller, on average"),
     x = "Sex",
     y = "Predicted Height (cm)",
     caption = "Source: 50-row teaching sample from NHANES via primer.tutorials::recruits"
@@ -244,6 +367,7 @@ plot_predictions(
   theme_minimal(base_size = 13)
 ```
 
+This plot turns the regression into a direct answer for the Quartermaster: predicted heights with their precision, not just two numbers in a table.
 
 What measure of uncertainty is shown?
 
