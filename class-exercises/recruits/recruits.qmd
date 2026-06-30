@@ -13,7 +13,11 @@ library(marginaleffects)
 library(primer.tutorials)
 ```
 
+
+
 ## Wisdom
+
+You are in charge of ordering uniforms for next year's Marine Corps bootcamp recruits.
 
 What will be the average height of male and female USMC recruits next year?
 

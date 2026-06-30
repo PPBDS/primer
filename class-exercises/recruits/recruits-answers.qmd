@@ -1,5 +1,8 @@
 ---
 title: "Wisdom and Recruits (Answer Key)"
+format:
+  html: default
+  pdf: default
 execute:
   echo: false
 ---
@@ -16,11 +19,12 @@ library(primer.tutorials)
 ```
 
 
-
 ## Wisdom
 
-What will be the average height of male and female USMC recruits next year?
+You are in charge of ordering uniforms for next year's Marine Corps bootcamp recruits.
 
+
+What will be the average height of male and female USMC recruits next year?
 
 
 **What are the units, outcome, and covariates for this question?**
