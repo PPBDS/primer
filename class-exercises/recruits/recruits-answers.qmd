@@ -1,5 +1,5 @@
 ---
-title: "Wisdom and Recruits (Answer Key)"
+title: "Recruits Answer Guideline"
 format:
   html: default
   pdf: default
@@ -51,7 +51,7 @@ The average height for male and female recruits, and the difference between them
 
 Describe the key components of a Preceptor table for this problem:
 
-The Preceptor Table should have one row per recruit. In this exercise, the columns are Recruit, Height, and Sex. 
+  The Preceptor Table should have one row per recruit. In this exercise, the columns are Recruit, Height, and Sex. 
 
 ```{r}
 #| label: preceptor-table
@@ -200,45 +200,6 @@ recruits |>
   theme_minimal()
 ```
 
-```{r}
-#| label: eda-height-age-density2d
-#| echo: true
-
-recruits |>
-  ggplot(aes(x = age, y = height)) +
-  geom_density_2d_filled(alpha = 0.7, show.legend = FALSE) +
-  geom_point(aes(color = sex), size = 2) +
-  labs(
-    title = "Joint Density of Age and Height",
-    subtitle = "No diagonal tilt to the density contours -- age and height are not jointly trending",
-    x = "Age (years)",
-    y = "Height (cm)",
-    color = "Sex"
-  ) +
-  theme_minimal()
-```
-
-The 2D density contours would tilt diagonally if taller recruits skewed older or younger; they don't, reinforcing the flat-slope reading from the scatterplot.
-
-```{r}
-#| label: eda-age-distribution
-#| echo: true
-
-recruits |>
-  ggplot(aes(x = age, fill = sex)) +
-  geom_histogram(binwidth = 2, alpha = 0.6, position = "identity") +
-  labs(
-    title = "Age Distribution by Sex",
-    subtitle = "Both sexes are spread fairly evenly across the 18-27 window",
-    x = "Age (years)",
-    y = "Count",
-    fill = "Sex"
-  ) +
-  theme_minimal()
-```
-
-This last plot checks a precondition for the age-slope reading: if one sex were concentrated at one end of the age range, an apparent age effect could really be a sex effect in disguise, which is not the case here.
-
 Among adults aged 18-27, height has mostly stopped changing, so none of these views show a strong age trend. Whatever slope appears is sampling noise, not a real age effect.
 
 ------------------------------------------------------------------------
@@ -303,33 +264,33 @@ cat("```{=html}\n",
 
 Counter-example to the assumption of validity:
 
-  NHANES heights are measured in a Mobile Examination Center by trained examiners using a fixed stadiometer, shoes off, standardized instructions. USMC heights are recorded at the recruiting office or at bootcamp intake, with whatever stadiometer is on hand, possibly with shoes on. A systematic offset of a centimeter or two between the two procedures would not be surprising, so our `height` column in the data may not be exactly the same construct as the Preceptor Table's `height`.
+> NHANES heights are measured in a Mobile Examination Center by trained examiners using a fixed stadiometer, shoes off, standardized instructions. USMC heights are recorded at the recruiting office or at bootcamp intake, with whatever stadiometer is on hand, possibly with shoes on. A systematic offset of a centimeter or two between the two procedures would not be surprising, so our `height` column in the data may not be exactly the same construct as the Preceptor Table's `height`.
 
 Counter-example to the assumption of stability:
 
-  Adult human height has been broadly stable across recent decades for the US young-adult population, but the *intercept* may have drifted upward by a centimeter or two as nutrition has improved. If the male-female height gap (the slope we care about most) had also drifted, the model's `sexMale` coefficient --- estimated on 2005-era data --- would not be the right coefficient for 2026.
+> Adult human height has been broadly stable across recent decades for the US young-adult population, but the *intercept* may have drifted upward by a centimeter or two as nutrition has improved. If the male-female height gap (the slope we care about most) had also drifted, the model's `sexMale` coefficient --- estimated on 2005-era data --- would not be the right coefficient for 2026.
 
 Counter-example to the assumption of representativeness:
 
-  Data &rarr; Population: NHANES is close to a probability sample of the US population, but the educational cut we use drops the survey weights, and our 50-row sample deliberately over-represents males (40 vs. 10) to make the standard-error contrast visible. 
+> Data &rarr; Population: NHANES is close to a probability sample of the US population, but the educational cut we use drops the survey weights, and our 50-row sample deliberately over-represents males (40 vs. 10) to make the standard-error contrast visible. 
   
-  Population &rarr; Preceptor Table: USMC recruits are self-selected volunteers who pass a fitness screen, so they are very likely taller on average than the general NHANES-sampled population of the same age. Our model probably understates true recruit height.
+> Population &rarr; Preceptor Table: USMC recruits are self-selected volunteers who pass a fitness screen, so they are very likely taller on average than the general NHANES-sampled population of the same age. Our model probably understates true recruit height.
 
 Counter-example to the assumption of unconfoundedness:
 
-  None. Unconfoundedness applies only to causal questions; ours is predictive. We are not estimating the causal effect of sex on height.
+ > None. Unconfoundedness applies only to causal questions; ours is predictive. We are not estimating the causal effect of sex on height.
 
 What probability family should we use?
 
-  Normal Distribution
+> Normal Distribution
 
 Why should we use that probability family?
 
-  The Normal distribution is the standard choice for continuous outcomes.
+> The Normal distribution is the standard choice for continuous outcomes.
 
 What is the link function for our outcome?
 
-  Our model will be a linear regression.
+> Our model will be a linear regression.
 
 ## Courage
 
@@ -473,7 +434,7 @@ predictions(fit_recruits) |>
 avg_predictions(fit_recruits, by = "sex")
 ```
 
-Tthe expected height of a female recruit is about 165.9 cm (95% CI roughly 161.8 to 170.0), and a male recruit about 174.8 cm (95% CI roughly 172.5 to 177.0).
+The expected height of a female recruit is about 165.9 cm (95% CI roughly 161.8 to 170.0), and a male recruit about 174.8 cm (95% CI roughly 172.5 to 177.0).
 
 **Comparison between groups.** `avg_comparisons()` directly answers "how much taller, on average, are male recruits than female recruits?" -- the same number as the regression slope, but computed and labeled as a comparison rather than read off a coefficient table.
 
@@ -509,19 +470,6 @@ plot_predictions(fit_recruits, condition = "sex", draw = FALSE) |>
   theme_minimal(base_size = 13)
 ```
 
-```{r}
-#| label: comparison-plot
-#| echo: true
-
-plot_comparisons(fit_recruits, variables = "sex") +
-  labs(
-    title = "Estimated Difference in Height: Male vs. Female",
-    subtitle = "A single comparison with its own confidence interval, rather than two overlapping intervals",
-    y = "Difference in Predicted Height (cm)"
-  ) +
-  theme_minimal(base_size = 13)
-```
-
 **Interpretation.** Comparing two recruits differing only in sex, the male recruit is expected to be about 8.9 cm taller, 95% CI roughly [4.3, 13.4] cm. Notice the language throughout: *comparison*, not *cause*, *raise*, or *change* -- `sex` is a covariate in a predictive model, not a treatment.
 
 **Uncertainty and practical significance.** The female confidence interval is visibly wider than the male interval -- about twice as wide. The standard error of a group mean shrinks with the square root of sample size, so the 40-versus-10 split in our data directly produces this asymmetry. Practically, an 8.9 cm difference is large enough to matter for uniform sizing: it's roughly the gap between two adjacent standard sizes in most clothing systems, so treating male and female recruits identically when ordering uniforms would be a mistake.
@@ -537,9 +485,9 @@ Both are available from the same fitted DGM by simulation (drawing many syntheti
 
 **Possible sources of bias.** Three things are likely wrong with our answer. 
 
-  1) USMC recruits are taller than the general NHANES-sampled population because the fitness screen filters out shorter applicants and recruits are self-selected -- our model probably understates true recruit height by a centimeter or two.
+> 1) USMC recruits are taller than the general NHANES-sampled population because the fitness screen filters out shorter applicants and recruits are self-selected -- our model probably understates true recruit height by a centimeter or two.
   
-  2) Our sample is small, especially for females (10 rows), so the female interval -- while correctly computed under the model -- doesn't reflect the extra uncertainty from the validity and representativeness gaps discussed in Justice; a cautious analyst would widen it further. 
+> 2) Our sample is small, especially for females (10 rows), so the female interval -- while correctly computed under the model -- doesn't reflect the extra uncertainty from the validity and representativeness gaps discussed in Justice; a cautious analyst would widen it further. 
   
-  3) The world is always more uncertain than our models would have us believe: even with every assumption exactly right, the reported interval is only the *Preceptor's Posterior* -- the best posterior achievable under our assumptions -- not the truth.
+> 3) The world is always more uncertain than our models would have us believe: even with every assumption exactly right, the reported interval is only the *Preceptor's Posterior* -- the best posterior achievable under our assumptions -- not the truth.
 

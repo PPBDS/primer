@@ -1,5 +1,5 @@
 ---
-title: "Wisdom and Recruits"
+title: "Recruits"
 format:
   html: default
   pdf: default
