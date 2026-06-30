@@ -15,7 +15,7 @@ We call this approach **Start mode**. In this chapter you will use it to run bot
 
 Sign up for a GitHub account by following the instructions on the [GitHub homepage](https://github.com/). **Follow [this advice](https://happygitwithr.com/github-acct.html#username-advice) when choosing your username.**
 
-Use a permanent email address for this account — not one tied to your current school or job, which you'll lose access to when you move on. Your GitHub account is for life. Your school email is not. However, if you are a student or teacher, you will want to [assign your school email](https://github.com/settings/emails) as a second email to your account so that you can qualify for the [GitHub Student Developer Pack](https://education.github.com/pack) (free Copilot, extra Codespaces hours, and other perks). 
+Use your school email address for this account, if you are a student. The [GitHub Student Developer Pack](https://education.github.com/pack) provides all sorts of perks, but you must visit that page to turn on the benefits. It confirms your student status on the basis of you having an email account at your school. Next, [add a second email address](https://github.com/settings/emails) for this account, a permanent one that is not tied to your current school or job. After all, your school email address will disappear someday but your GitHub account is for life. 
 
 On GitHub, your projects are organized into "repositories," usually called "repos."
 
