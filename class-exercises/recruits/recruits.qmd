@@ -45,23 +45,23 @@ What will be the average height of male and female USMC recruits next year?
 
 
 
-Describe the key components of a Preceptor table for this problem:
+Describe the key components of a Preceptor Table for this problem; Use words like "units," "outcomes," and "covariates."
 
 
 
-Create a plot that shows the relationship between height and sex.
+Create a plot that shows the relationship between height and sex. Briefly describe what it shows.
 
 
 
-Create a plot that shows the relationship between height by age.
+Create a plot that shows the relationship between height and age. Briefly describe what it shows.
 
 
 
----
+------------------------------------------------------------------------
 
 ## Justice
 
-Describe the key components of a Population table for this problem. 
+Describe the key components of a Population Table for this problem.
 
 
 
@@ -93,35 +93,59 @@ What is the link function for our outcome?
 
 
 
+------------------------------------------------------------------------
+
 ## Courage
 
-Create a candidate model, modeling the outcome height as a linear function of the binary covariate sex.
+Create a candidate model, modeling the outcome `height` as a linear function of the binary covariate `sex`. Call it `fit_sex`.
 
 
 
-Create another candidate model, modeling the outcome height as a linear function of the continuous covariate age. 
+Create a candidate model, modeling the outcome `height` as a linear function of the continuous covariate `age`. Call it `fit_age`.
 
 
+
+Create a candidate model, modeling `height` as a linear function of both `sex` and `age`. Call it `fit_sex_age`.
+
+
+
+Which model should we choose, and why? Define `fit_recruits` as your chosen model and write out the fitted equation.
+
+
+
+Create a plot or table that checks whether your chosen model's fitted values are reasonable compared to the actual data.
+
+
+
+------------------------------------------------------------------------
 
 ## Temperance
 
-Use `predictions(fit_recruits)` to estimate the average height of male and female USMC recruits next year.
+Use `predictions(fit_recruits)` to estimate the fitted height for individual recruits in the sample.
 
 
 
-What is the expected height of a female recruit?
+Use `avg_predictions(fit_recruits, by = "sex")` to estimate the average height of male and female USMC recruits next year.
 
 
 
-What is the expected height of a male recruit?
+What is the expected height of a female recruit (with 95% CI)?
 
 
 
-Create a visualization of these predictions using `plot_predictions()`.
+What is the expected height of a male recruit (with 95% CI)?
 
 
 
-What measure of uncertainty is shown?
+Use `avg_comparisons(fit_recruits, variables = "sex")` to estimate the difference in average height between male and female recruits.
+
+
+
+Create a visualization of the average predictions by sex using `plot_predictions()`.
+
+
+
+What measure of uncertainty is shown in this plot?
 
 
 
@@ -129,8 +153,10 @@ Why is the confidence interval wider for female recruits?
 
 
 
-Besides the average height, identify two additional quantities of interest the Quartermaster might care about.
+Besides the average height, identify two additional quantities of interest the Quartermaster might care about when ordering uniforms.
 
 
 
-Why might these estimated average heights be wrong?
+Why might these estimated average heights be wrong? Identify at least two possible sources of bias.
+
+
