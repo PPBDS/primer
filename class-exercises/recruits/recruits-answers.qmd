@@ -18,41 +18,39 @@ library(gt)
 library(primer.tutorials)
 ```
 
-
 ## Wisdom
 
 You are in charge of ordering uniforms for next year's Marine Corps bootcamp recruits.
 
-
 What will be the average height of male and female USMC recruits next year?
-
 
 **What are the units, outcome, and covariates for this question?**
 
-- Units: 
+- Units:
 
-One recruit
+Each row represents one USMC recruit expected to enlist during the coming year. There are roughly 5,000 such recruits per year.
 
 - Outcomes:
 
- `height` in centimeters
+Keep track of two 'outcome' variables: the one in our Preceptor Table and the one in our data. In this case, they share the name `height` --- both refer to a young adult's standing height in centimeters --- though the *measurement procedure* behind each column differs.
 
-- Covariates: 
+- Covariates:
 
-`sex`
+`sex` and `age` are candidates. Age at enlistment is a candidate. Height is nearly-but-not-quite stable by the age-18 window we care about, so a ten-year-older recruit is almost the same height as a fresh one. Another candidate is race or ethnicity, since height distributions vary across ancestry groups.
+  
 
-- Treatment (if any): 
+- Treatment (if any):
 
-None
+There are no treatments in this problem because we are building a predictive model. Nothing in `recruits` can be manipulated --- we cannot assign a recruit a different sex or a different height. Predictive models have covariates, not treatments.
+  
 
-- Quantity of interest: 
+- Quantity of interest:
 
 The average height for male and female recruits, and the difference between them.
 
+Describe the key components of a Preceptor table for this problem:
 
-Describe the key components of a Preceptor table for this problem; Use words like "units," "outcomes," and "covariates."
-
-  The Preceptor Table should have one row per recruit. In this exercise, the columns are unit, outcome, and covariates.
+The Preceptor Table should have one row per recruit. In this exercise, the columns are Recruit, Height, and Sex. 
 
 ```{r}
 #| echo: false
@@ -130,7 +128,6 @@ cat(
 )
 ```
 
-
 Create a plot that shows the relationship between height and sex.
 
 ```{r}
@@ -153,7 +150,7 @@ recruits |>
   theme_minimal()
 ```
 
-Male recruits outnumber female recruits four to one in this sample, so the male curve covers roughly four times as much area as the female curve. That's a feature of the sample size, not evidence that male and female heights are equally common or equally variable — it's worth noticing before fitting any model.
+Male recruits outnumber female recruits four to one in this sample, so the male curve covers roughly four times as much area as the female curve. This is due to the sample size, and should not be taken as evidence that male and female heights are equally common or equally variable.
 
 Create a plot that shows the relationship between height by age.
 
@@ -181,15 +178,11 @@ recruits |>
   theme_minimal()
 ```
 
-Among adults aged 18-27, height has mostly stopped changing, so neither line should show a strong trend. Whatever slope appears is sampling noise, not a real age effect — and there is no reason the two sexes' noise should point in the same direction, so the two slopes are computed and reported separately rather than assumed.
+Among adults aged 18-27, height has mostly stopped changing, so neither line should show a strong trend. Whatever slope appears is sampling noise, not a real age effect.
 
-
----
+------------------------------------------------------------------------
 
 ## Justice
-
-Describe the key components of a Population table for this problem. 
-
 
 ```{r}
 #| echo: false
@@ -274,34 +267,36 @@ cat(
 )
 ```
 
-
 Counter-example to the assumption of validity:
 
-  The height column in NHANES is measured differently than the height column in the Preceptor Table, so the two columns may not represent exactly the same construct.
+The height column in NHANES might be measured differently than the height column in the Preceptor Table, so the two columns may not represent exactly the same construct. NHANES heights are measured in the Mobile Examination Center by trained examiners using a fixed stadiometer, with shoes removed, instructions standardized across all participants. USMC heights are recorded at the recruiting office or at bootcamp intake, with whatever stadiometer is available, possibly with shoes on, possibly with whatever instructional drift has accumulated since the last standardization. A systematic offset of a centimeter or two between the two procedures would not be surprising.
+
 
 Counter-example to the assumption of stability:
 
-  The relationship between height and sex may have changed over time, so the model parameters (such as the intercept or the slope on sexMale) may not be the same for the data and the Preceptor Table.
+The relationship between height and sex may have changed over time, so the model parameters (such as the intercept or the slope on sexMale) may not be the same for the data and the Preceptor Table. For Recruits, the relevant stability worry is small. Adult human height has been stable for the broad U.S. young-adult population for several decades — the intercept may have drifted upward by a centimeter or two as nutrition has improved, but the male-female height gap (the parameter we care about most) has barely moved.
 
 Counter-example to the assumption of representativeness:
 
-  The NHANES sample is not representative of future USMC recruits because recruits are self-selected and screened for military service.
+Data → Population. NHANES is much closer to a probability sample than most U.S. health surveys because it uses a stratified, multistage sampling design to represent the U.S. civilian, non-institutionalized population. However, the educational version of NHANES used here omits the survey weights, and our 50-row teaching sample further over-represents males (40 males, 10 females) to highlight differences in estimation uncertainty. As a result, our data are not representative of U.S. young adults. This does not necessarily bias our estimates, but it weakens our justification for treating the sample as representative of the target population.
+
+Population → Preceptor Table. Even if NHANES perfectly represented U.S. young adults, that population is still different from the population of future USMC recruits. Military recruits are volunteers who must meet eligibility and fitness requirements, so they are not a random sample of young adults. If recruits differ systematically from the general population in characteristics related to height, then a model trained on NHANES may not accurately predict the average height of next year's recruits. Any resulting prediction error would arise because the target population differs from the population represented by the data.
 
 Counter-example to the assumption of unconfoundedness:
 
-  Sex is not a manipulable treatment, and treatment assignment is not independent of the potential outcomes, so the unconfoundedness assumption fails.
+None. Unconfoundedness applies only to causal questions, ours is predictive. We are not trying to estimate the causal effect of sex on height. 
 
 What probability family should we use?
 
-  Normal Distribution
+Normal Distribution
 
 Why should we use that probability family?
 
-  The Normal distribution is the standard choice for continuous outcomes.
+The Normal distribution is the standard choice for continuous outcomes.
 
 What is the link function for our outcome?
 
-  Our model will be a linear regression.
+Our model will be a linear regression.
 
 ## Courage
 
@@ -310,15 +305,16 @@ Create a candidate model, modeling the outcome height as a linear function of th
 ```{r}
 fit_recruits <- linear_reg(engine = "lm") |>
   fit(height ~ sex, data = recruits)
+fit_recruits
 ```
 
-Create another candidate model, modeling the outcome height as a linear function of the continuous covariate age. 
+Create another candidate model, modeling the outcome height as a linear function of the continuous covariate age.
 
 ```{r courage-5-test}
 fit_age <- linear_reg(engine = "lm") |>
   fit(height ~ age, data = recruits)
+fit_age
 ```
-
 
 ## Temperance
 
@@ -330,11 +326,11 @@ predictions(fit_recruits)
 
 What is the expected height of a female recruit?
 
-  The expected height of a female recruit is about **165.9 cm**, with a 95% confidence interval of approximately **161.8 cm to 170.0 cm**.
+The expected height of a female recruit is about **165.9 cm**, with a 95% confidence interval of approximately **161.8 cm to 170.0 cm**.
 
 What is the expected height of a male recruit?
 
-  The expected height of a male recruit is about **174.8 cm**, with a 95% confidence interval of approximately **172.5 cm to 177.0 cm**.
+The expected height of a male recruit is about **174.8 cm**, with a 95% confidence interval of approximately **172.5 cm to 177.0 cm**.
 
 Create a visualization of these predictions using `plot_predictions()`.
 
@@ -367,21 +363,15 @@ plot_predictions(
   theme_minimal(base_size = 13)
 ```
 
-This plot turns the regression into a direct answer for the Quartermaster: predicted heights with their precision, not just two numbers in a table.
-
 What measure of uncertainty is shown?
 
-  The vertical error bars show **95% confidence intervals** for the estimated average height of each group.
+The vertical error bars show **95% confidence intervals** for the estimated average height of each group.
 
 Why is the confidence interval wider for female recruits?
 
-  There are only **10 female observations** compared with **40 male observations**, so the female average is estimated with less precision.
+There are only **10 female observations** compared with **40 male observations**, so the female average is estimated with less precision.
 
-Besides the average height, identify two additional quantities of interest the Quartermaster might care about.
-
-- The **tallest recruit**, to ensure the largest uniform size is available.
-- The **10th and 90th percentiles** of recruit height, to estimate how many extra-small and extra-large uniforms should be ordered.
 
 Why might these estimated average heights be wrong?
 
-  The estimates rely on NHANES data rather than actual USMC recruits. Because recruits are self-selected, screened for military service, and likely taller on average than the general young-adult population, the model probably understates recruit height. In addition, the reported confidence intervals reflect only sampling uncertainty and do not account for possible violations of validity, stability, or representativeness.
+The estimates may be wrong because the model is based on NHANES, which surveys the general U.S. population, rather than people who actually enlist in the Marine Corps. For example, joining the Marines is voluntary, so people who choose to enlist may differ from the average young adult in important ways, such as physical fitness or body size. In addition, recruits must meet medical and physical eligibility requirements before they can serve. If the people who enlist and qualify tend to be taller (or shorter) than the general population, then our predicted average heights will be biased. Finally, the confidence intervals only measure sampling uncertainty—they do not account for problems such as using the wrong population, omitted variables, or changes in recruit characteristics over time.
