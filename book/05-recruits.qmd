@@ -61,15 +61,18 @@ This is a *predictive* question --- the kind of question that calls for a predic
 A note on language. *Average height* and *expected height* are not the same thing. The *average* height of next year's recruits is a real physical fact: line up everyone who shows up, measure each one, divide by the count, and you have a number. We will not have those measurements (those recruits have not shown up yet), so we cannot compute the average directly. What our model will produce is an *expected* height --- the model's best guess of what the average should be, given our data and our assumptions. *Expected* and *average* are not the same; we will return to that distinction in later chapters. For now, the Preceptor Table is about averages we cannot directly observe; the model is about expected values that approximate them.
 
 ```{r}
-#| echo: false
-#| results: asis
 pt_primary_tibble <- tibble::tribble(
   ~`Recruit`,        ~`Height (cm)`, ~`Sex`,
-  "Recruit 1",       "150",          "Female",
-  "Recruit 2",       "172",          "Male",
+  "Emma Rodriguez",  "166",          "Female",
+  "Marcus Johnson",  "180",          "Male",
   "...",             "...",          "...",
-  "Recruit 5,000",   "160",          "Female"
+  "David Chen",      "177",          "Male"
 )
+
+pre_title_footnote    <- "If all the information in this table were available, we could answer the question: What will be the average height of male and female USMC recruits next year?"
+pre_units_footnote    <- "Each row is one USMC recruit expected to enlist during 2026, about 25,000 to 30,000 recruits in total."
+pre_outcome_footnote  <- "Height in centimeters, measured at enlistment."
+pre_covariate_footnote <- "Sex, taking values 'Male' or 'Female', as recorded at enlistment."
 
 pt_primary_html <- gt::gt(pt_primary_tibble, id = "pt_primary") |>
   gt::tab_header(title = "Preceptor Table --- Primary (predictive) question") |>
@@ -90,22 +93,10 @@ pt_primary_html <- gt::gt(pt_primary_tibble, id = "pt_primary") |>
                 locations = gt::cells_column_spanners(spanners = c("unit_span", "covariates_span"))) |>
   gt::tab_style(style = gt::cell_text(align = "right"),
                 locations = gt::cells_column_spanners(spanners = "outcome_span")) |>
-  gt::tab_footnote(
-    footnote = "If all the information in this table were available, we could answer the question: What will be the average height of male and female USMC recruits next year?",
-    locations = gt::cells_title()
-  ) |>
-  gt::tab_footnote(
-    footnote = "Each row is one USMC recruit expected to enlist during the coming year, about 25,000 to 30,000 recruits in total.",
-    locations = gt::cells_column_spanners(spanners = "unit_span")
-  ) |>
-  gt::tab_footnote(
-    footnote = "Height in centimeters, measured at enlistment.",
-    locations = gt::cells_column_spanners(spanners = "outcome_span")
-  ) |>
-  gt::tab_footnote(
-    footnote = "Sex, taking values 'Male' or 'Female', as recorded at enlistment.",
-    locations = gt::cells_column_spanners(spanners = "covariates_span")
-  ) |>
+  gt::tab_footnote(footnote = pre_title_footnote, locations = gt::cells_title()) |>
+  gt::tab_footnote(footnote = pre_units_footnote, locations = gt::cells_column_spanners(spanners = "unit_span")) |>
+  gt::tab_footnote(footnote = pre_outcome_footnote, locations = gt::cells_column_spanners(spanners = "outcome_span")) |>
+  gt::tab_footnote(footnote = pre_covariate_footnote, locations = gt::cells_column_spanners(spanners = "covariates_span")) |>
   gt::opt_css(css = "#pt_primary .gt_footnote { max-width: 1px; word-break: break-word; }") |>
   gt::as_raw_html()
 
@@ -208,8 +199,6 @@ The reason we ask the absurd question anyway is to make a point. The same fitted
 The predictive reading is honest. The causal reading is mostly pedagogical: it shows that the predictive/causal distinction is *something the analyst commits to*, not something the data forces. With sex and height, the causal reading is absurd; with the *exact same fit*, a different problem might support a defensible causal reading. The point of writing both Preceptor Tables for this chapter is to make that visible.
 
 ```{r}
-#| echo: false
-#| results: asis
 hatch <- function(x) {
   paste0(
     '<span style="background-image: repeating-linear-gradient(',
@@ -220,21 +209,24 @@ hatch <- function(x) {
 }
 
 pt_paired_tibble <- tibble::tribble(
-  ~`Recruit`,         ~`Height if Female`, ~`Height if Male`, ~`Sex`,
-  "Recruit 1",        "150",               "159",             "Female",
-  "Recruit 2",        "163",               "172",             "Male",
-  "...",              "...",               "...",             "...",
-  "Recruit 5,000",    "160",               "169",             "Female"
+  ~`Recruit`,        ~`Height if Female`, ~`Height if Male`, ~`Sex`,
+  "Emma Rodriguez",  "166",                "174",             "Female",
+  "Marcus Johnson",  "171",                "180",             "Male",
+  "...",             "...",                "...",             "...",
+  "David Chen",      "168",                "177",             "Male"
 )
+
+pre_title_footnote_c    <- "If all the information in this table were available, we could answer the question: What is the causal effect of sex on a recruit's height? The implied manipulation (toggling a recruit's sex) is not realizable; the table is a pedagogical device, not a defensible causal claim."
+pre_units_footnote_c    <- "Each row is one USMC recruit. Same units as the primary Preceptor Table."
+pre_outcome_footnote_c  <- "Each row's cross-hatched cell marks the unobservable counterfactual --- the height the recruit would have had under the sex they were not assigned. The truth would exist if the counterfactual existed; nothing in reality could ever reveal it."
+pre_treatment_footnote_c <- "The treatment is the recruit's actual sex. Putting it under a Treatment spanner is what marks this table as causal; in the primary Preceptor Table the same column sat under a Covariate spanner."
+pre_effect_footnote_c   <- "The causal effect for Marcus Johnson is the difference between his two potential outcomes: 180 - 171 = 9 cm. Because the Preceptor Table shows the unobservable truth, this is the true causal effect for him, not an estimate."
 
 pt_paired_html <- gt::gt(pt_paired_tibble, id = "pt_paired") |>
   gt::tab_header(title = "Preceptor Table --- Paired (causal) question") |>
-  gt::tab_spanner(label = "Unit",                id = "unit_span",
-                  columns = c(`Recruit`)) |>
-  gt::tab_spanner(label = "Potential Outcomes", id = "outcome_span",
-                  columns = c(`Height if Female`, `Height if Male`)) |>
-  gt::tab_spanner(label = "Treatment",           id = "treatment_span",
-                  columns = c(`Sex`)) |>
+  gt::tab_spanner(label = "Unit",               id = "unit_span",      columns = c(`Recruit`)) |>
+  gt::tab_spanner(label = "Potential Outcomes", id = "outcome_span",   columns = c(`Height if Female`, `Height if Male`)) |>
+  gt::tab_spanner(label = "Treatment",          id = "treatment_span", columns = c(`Sex`)) |>
   gt::cols_align(align = "left",  columns = c(`Recruit`, `Sex`)) |>
   gt::cols_align(align = "right", columns = c(`Height if Female`, `Height if Male`)) |>
   gt::fmt_markdown(columns = gt::everything()) |>
@@ -249,9 +241,6 @@ pt_paired_html <- gt::gt(pt_paired_tibble, id = "pt_paired") |>
                 locations = gt::cells_column_spanners(spanners = c("unit_span", "treatment_span"))) |>
   gt::tab_style(style = gt::cell_text(align = "right"),
                 locations = gt::cells_column_spanners(spanners = "outcome_span")) |>
-  # Hatch each row's unobservable counterfactual:
-  # Rows 1 and 4 actually-Female → "Height if Male" is the counterfactual.
-  # Row 2 actually-Male → "Height if Female" is the counterfactual.
   gt::text_transform(
     locations = gt::cells_body(columns = `Height if Male`, rows = c(1, 4)),
     fn = function(x) hatch(x)
@@ -260,22 +249,11 @@ pt_paired_html <- gt::gt(pt_paired_tibble, id = "pt_paired") |>
     locations = gt::cells_body(columns = `Height if Female`, rows = 2),
     fn = function(x) hatch(x)
   ) |>
-  gt::tab_footnote(
-    footnote = "If all the information in this table were available, we could answer the question: What is the causal effect of sex on a recruit's height? The implied manipulation (toggling a recruit's sex) is not realizable; the table is a pedagogical device, not a defensible causal claim.",
-    locations = gt::cells_title()
-  ) |>
-  gt::tab_footnote(
-    footnote = "Each row is one USMC recruit. Same units as the primary Preceptor Table.",
-    locations = gt::cells_column_spanners(spanners = "unit_span")
-  ) |>
-  gt::tab_footnote(
-    footnote = "Each row's cross-hatched cell marks the unobservable counterfactual --- the height the recruit would have had under the sex they were not assigned. The truth would exist if the counterfactual existed; nothing in reality could ever reveal it.",
-    locations = gt::cells_column_spanners(spanners = "outcome_span")
-  ) |>
-  gt::tab_footnote(
-    footnote = "The treatment is the recruit's actual sex. Putting it under a Treatment spanner is what marks this table as causal; in the primary Preceptor Table the same column sat under a Covariate spanner.",
-    locations = gt::cells_column_spanners(spanners = "treatment_span")
-  ) |>
+  gt::tab_footnote(footnote = pre_title_footnote_c, locations = gt::cells_title()) |>
+  gt::tab_footnote(footnote = pre_units_footnote_c, locations = gt::cells_column_spanners(spanners = "unit_span")) |>
+  gt::tab_footnote(footnote = pre_outcome_footnote_c, locations = gt::cells_column_spanners(spanners = "outcome_span")) |>
+  gt::tab_footnote(footnote = pre_treatment_footnote_c, locations = gt::cells_column_spanners(spanners = "treatment_span")) |>
+  gt::tab_footnote(footnote = pre_effect_footnote_c, locations = gt::cells_body(columns = `Recruit`, rows = 2)) |>
   gt::opt_css(css = "#pt_paired .gt_footnote { max-width: 1px; word-break: break-word; }") |>
   gt::as_raw_html()
 
@@ -311,29 +289,32 @@ The bridge runs in one direction: *data → population → Preceptor Table*. The
 ### The Population Table for the primary question
 
 ```{r}
-#| echo: false
-#| results: asis
 pop_primary_tibble <- tibble::tribble(
-  ~Source,     ~`Young Adult`,    ~`Year`, ~`Height (cm)`, ~`Sex`,
-  "...",       "...",             "...",   "...",          "...",
-  "Data",      "NHANES 1",        "2002",  "162",          "Female",
-  "Data",      "NHANES 2",        "2005",  "178",          "Male",
-  "Data",      "...",             "...",   "...",          "...",
-  "Data",      "NHANES 50",       "2015",  "170",          "Male",
-  "...",       "...",             "...",   "...",          "...",
-  "Preceptor", "Recruit 1",       "2026",  "150",          "Female",
-  "Preceptor", "Recruit 2",       "2026",  "172",          "Male",
-  "Preceptor", "...",             "...",   "...",          "...",
-  "Preceptor", "Recruit 5,000",   "2026",  "160",          "Female",
-  "...",       "...",             "...",   "...",          "..."
+  ~Source,     ~`Recruit`,       ~`Year`, ~`Height (cm)`, ~`Sex`,
+  "...",       "...",            "...",   "...",          "...",
+  "Data",      "Emma Rodriguez", "2002",  "162",          "Female",
+  "Data",      "Marcus Johnson", "2005",  "179",          "Male",
+  "Data",      "...",            "...",   "...",          "...",
+  "Data",      "David Chen",     "2010",  "175",          "Male",
+  "...",       "...",            "...",   "...",          "...",
+  "Preceptor", "Emma Rodriguez", "2026",  "166",          "Female",
+  "Preceptor", "Marcus Johnson", "2026",  "180",          "Male",
+  "Preceptor", "...",            "...",   "...",          "...",
+  "Preceptor", "David Chen",     "2026",  "177",          "Male",
+  "...",       "...",            "...",   "...",          "..."
 )
+
+pop_title_footnote   <- "This table combines NHANES data with the Preceptor Table's 2026 recruits, drawn from the same broader population of US young adults aged 18-27."
+pop_units_footnote   <- "Data rows are 50 NHANES respondents aged 18-27, examined between 1999 and the most recent release. Preceptor rows are the 25,000-to-30,000 USMC recruits expected to enlist in 2026. The same three individuals appear in both blocks at different ages, reflecting the time gap that drives the stability discussion."
+pop_outcome_footnote <- "Height in centimeters. NHANES used a standardized stadiometer protocol; USMC enlistment heights may be measured with less standardization. Both blocks report the same construct, with the caveat raised under validity."
+pop_covariate_footnote <- "Sex as recorded in each source: self-reported or interviewer-recorded at NHANES survey time, military-identification-recorded at USMC enlistment."
 
 pop_primary_html <- gt::gt(pop_primary_tibble, id = "pop_primary") |>
   gt::tab_header(title = "Population Table --- Primary question") |>
-  gt::tab_spanner(label = "Unit/Time", id = "unit_span",       columns = c(`Young Adult`, `Year`)) |>
+  gt::tab_spanner(label = "Unit/Time", id = "unit_span",       columns = c(`Recruit`, `Year`)) |>
   gt::tab_spanner(label = "Outcome",   id = "outcome_span",    columns = c(`Height (cm)`)) |>
   gt::tab_spanner(label = "Covariate", id = "covariates_span", columns = c(`Sex`)) |>
-  gt::cols_align(align = "left",  columns = c(`Source`, `Young Adult`, `Sex`)) |>
+  gt::cols_align(align = "left",  columns = c(`Source`, `Recruit`, `Sex`)) |>
   gt::cols_align(align = "right", columns = c(`Year`, `Height (cm)`)) |>
   gt::fmt_markdown(columns = gt::everything()) |>
   gt::tab_options(
@@ -347,10 +328,10 @@ pop_primary_html <- gt::gt(pop_primary_tibble, id = "pop_primary") |>
                 locations = gt::cells_column_spanners(spanners = c("unit_span", "covariates_span"))) |>
   gt::tab_style(style = gt::cell_text(align = "right"),
                 locations = gt::cells_column_spanners(spanners = "outcome_span")) |>
-  gt::tab_footnote(
-    footnote = "Data rows are 50 NHANES respondents aged 18-27, examined between 1999 and the most recent release. Preceptor rows are the 25,000-to-30,000 USMC recruits expected to enlist in 2026. The two blocks share the broader population of US young adults aged 18-27 but differ in era, in self-selection, and in measurement procedure.",
-    locations = gt::cells_title()
-  ) |>
+  gt::tab_footnote(footnote = pop_title_footnote, locations = gt::cells_title()) |>
+  gt::tab_footnote(footnote = pop_units_footnote, locations = gt::cells_column_spanners(spanners = "unit_span")) |>
+  gt::tab_footnote(footnote = pop_outcome_footnote, locations = gt::cells_column_spanners(spanners = "outcome_span")) |>
+  gt::tab_footnote(footnote = pop_covariate_footnote, locations = gt::cells_column_spanners(spanners = "covariates_span")) |>
   gt::opt_css(css = "#pop_primary .gt_footnote { max-width: 1px; word-break: break-word; }") |>
   gt::as_raw_html()
 
@@ -404,29 +385,42 @@ This is the substantive reason the paired causal question is absurd, not just rh
 The paired Population Table has the same row structure as the primary --- 50 NHANES Data rows and 25,000-to-30,000 Preceptor rows --- but two outcome columns instead of one (`Height if Female`, `Height if Male`). In Data rows, the unobserved counterfactual is `...`. In Preceptor rows, both potential outcomes are filled in, with the unobservable one hatched.
 
 ```{r}
-#| echo: false
-#| results: asis
+hatch <- function(x) {
+  paste0(
+    '<span style="background-image: repeating-linear-gradient(',
+    '45deg, rgba(0,0,0,0.12) 0 1px, transparent 1px 6px);',
+    ' padding: 6px 10px; margin: -6px -10px; display: block;">',
+    x, '</span>'
+  )
+}
+
 pop_paired_tibble <- tibble::tribble(
-  ~Source,     ~`Young Adult`,    ~`Year`, ~`Height if Female`, ~`Height if Male`, ~`Sex`,
-  "...",       "...",             "...",   "...",               "...",             "...",
-  "Data",      "NHANES 1",        "2002",  "162",               "...",             "Female",
-  "Data",      "NHANES 2",        "2005",  "...",               "178",             "Male",
-  "Data",      "...",             "...",   "...",               "...",             "...",
-  "Data",      "NHANES 50",       "2015",  "...",               "170",             "Male",
-  "...",       "...",             "...",   "...",               "...",             "...",
-  "Preceptor", "Recruit 1",       "2026",  "150",               "159",             "Female",
-  "Preceptor", "Recruit 2",       "2026",  "163",               "172",             "Male",
-  "Preceptor", "...",             "...",   "...",               "...",             "...",
-  "Preceptor", "Recruit 5,000",   "2026",  "160",               "169",             "Female",
-  "...",       "...",             "...",   "...",               "...",             "..."
+  ~Source,     ~`Recruit`,       ~`Year`, ~`Height if Female`, ~`Height if Male`, ~`Sex`,
+  "...",       "...",            "...",   "...",               "...",             "...",
+  "Data",      "Emma Rodriguez", "2002",  "162",               "...",             "Female",
+  "Data",      "Marcus Johnson", "2005",  "...",               "179",             "Male",
+  "Data",      "...",            "...",   "...",               "...",             "...",
+  "Data",      "David Chen",     "2010",  "...",               "175",             "Male",
+  "...",       "...",            "...",   "...",               "...",             "...",
+  "Preceptor", "Emma Rodriguez", "2026",  "166",               "174",             "Female",
+  "Preceptor", "Marcus Johnson", "2026",  "171",               "180",             "Male",
+  "Preceptor", "...",            "...",   "...",               "...",             "...",
+  "Preceptor", "David Chen",     "2026",  "168",               "177",             "Male",
+  "...",       "...",            "...",   "...",               "...",             "..."
 )
 
+pop_title_footnote_c   <- "Same row structure as the primary Population Table. In Data rows only one potential outcome was observed --- the one matching the recruit's actual sex; the counterfactual is '...' because no empirical process recorded it. In Preceptor rows both potential outcomes are filled in, with the unobservable one hatched."
+pop_units_footnote_c   <- "Each row is a recruit at a specific time. The same three individuals appear in the Data block (their measured age) and the Preceptor block (2026), illustrating the gap stability must bridge."
+pop_outcome_footnote_c <- "Height in centimeters. The hatched cells mark the truth that exists but could never be observed in reality."
+pop_treatment_footnote_c <- "Sex, taking values 'Male' or 'Female'. In the Data rows this is the sex actually observed; in the Preceptor rows it is the realized sex, with the counterfactual sex's outcome hatched."
+pop_effect_footnote_c  <- "The causal effect for Marcus Johnson is the difference between his two potential outcomes: 180 - 171 = 9 cm. Because the Preceptor rows show the unobservable truth, this is the true causal effect for him, not an estimate."
+
 pop_paired_html <- gt::gt(pop_paired_tibble, id = "pop_paired") |>
-  gt::tab_header(title = "Population Table --- Paired (causal) question") |>
-  gt::tab_spanner(label = "Unit/Time",          id = "unit_span",       columns = c(`Young Adult`, `Year`)) |>
-  gt::tab_spanner(label = "Potential Outcomes", id = "outcome_span",    columns = c(`Height if Female`, `Height if Male`)) |>
-  gt::tab_spanner(label = "Treatment",          id = "treatment_span",  columns = c(`Sex`)) |>
-  gt::cols_align(align = "left",  columns = c(`Source`, `Young Adult`, `Sex`)) |>
+  gt::tab_header(title = "Population Table --- Paired question") |>
+  gt::tab_spanner(label = "Unit/Time",          id = "unit_span",      columns = c(`Recruit`, `Year`)) |>
+  gt::tab_spanner(label = "Potential Outcomes", id = "outcome_span",   columns = c(`Height if Female`, `Height if Male`)) |>
+  gt::tab_spanner(label = "Treatment",          id = "treatment_span", columns = c(`Sex`)) |>
+  gt::cols_align(align = "left",  columns = c(`Source`, `Recruit`, `Sex`)) |>
   gt::cols_align(align = "right", columns = c(`Year`, `Height if Female`, `Height if Male`)) |>
   gt::fmt_markdown(columns = gt::everything()) |>
   gt::tab_options(
@@ -440,22 +434,19 @@ pop_paired_html <- gt::gt(pop_paired_tibble, id = "pop_paired") |>
                 locations = gt::cells_column_spanners(spanners = c("unit_span", "treatment_span"))) |>
   gt::tab_style(style = gt::cell_text(align = "right"),
                 locations = gt::cells_column_spanners(spanners = "outcome_span")) |>
-  # Hatch the Preceptor rows' unobservable counterfactuals.
-  # Row 8 (Recruit 1, Female) → "Height if Male" is the counterfactual.
-  # Row 9 (Recruit 2, Male) → "Height if Female" is the counterfactual.
-  # Row 11 (Recruit 5,000, Female) → "Height if Male" is the counterfactual.
   gt::text_transform(
-    locations = gt::cells_body(columns = `Height if Male`, rows = c(8, 11)),
+    locations = gt::cells_body(columns = `Height if Male`, rows = c(2, 8, 11)),
     fn = function(x) hatch(x)
   ) |>
   gt::text_transform(
-    locations = gt::cells_body(columns = `Height if Female`, rows = 9),
+    locations = gt::cells_body(columns = `Height if Female`, rows = c(3, 5, 9)),
     fn = function(x) hatch(x)
   ) |>
-  gt::tab_footnote(
-    footnote = "Same row structure as the primary Population Table, with two outcome columns instead of one. In Data rows, only one potential outcome is observed --- the one matching the recruit's actual sex; the counterfactual is '...' because no empirical process recorded it. In Preceptor rows, both potential outcomes are filled in; the unobservable counterfactual is hatched.",
-    locations = gt::cells_title()
-  ) |>
+  gt::tab_footnote(footnote = pop_title_footnote_c, locations = gt::cells_title()) |>
+  gt::tab_footnote(footnote = pop_units_footnote_c, locations = gt::cells_column_spanners(spanners = "unit_span")) |>
+  gt::tab_footnote(footnote = pop_outcome_footnote_c, locations = gt::cells_column_spanners(spanners = "outcome_span")) |>
+  gt::tab_footnote(footnote = pop_treatment_footnote_c, locations = gt::cells_column_spanners(spanners = "treatment_span")) |>
+  gt::tab_footnote(footnote = pop_effect_footnote_c, locations = gt::cells_body(columns = `Recruit`, rows = 8)) |>
   gt::opt_css(css = "#pop_paired .gt_footnote { max-width: 1px; word-break: break-word; }") |>
   gt::as_raw_html()
 

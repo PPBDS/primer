@@ -61,15 +61,18 @@ This is a *predictive* question --- the kind of question that calls for a predic
 A note on the binary-outcome model and what its parameters mean. A logistic regression is not a linear regression of the binary outcome on the covariates --- it is a linear regression of *the log-odds of the outcome being 1* on the covariates. The log-odds scale is not the scale a public-health analyst or a state Commissioner thinks in; they think in *probabilities*, and so do we. The chapter will read the model two ways: through the raw coefficient table (which is on the log-odds scale and not interpretable by inspection) and through the predicted probabilities that **[marginaleffects](https://marginaleffects.com/)** delivers on the outcome scale. The Temperance section commits us to the outcome-scale reading; the coefficient table is a tool for Courage, not an answer to a Commissioner.
 
 ```{r}
-#| echo: false
-#| results: asis
 pt_primary_tibble <- tibble::tribble(
   ~`Adult`,           ~`Ever-Smoker`, ~`Age`, ~`Sex`,
-  "Adult 1",          "No",           "30",   "Female",
-  "Adult 2",          "Yes",          "55",   "Male",
+  "Maria Gonzalez",   "No",           "30",   "Female",
+  "Robert Klein",     "Yes",          "55",   "Male",
   "...",              "...",          "...",  "...",
-  "Adult N",          "Yes",          "70",   "Male"
+  "James Whitfield",  "Yes",          "70",   "Male"
 )
+
+pre_title_footnote     <- "If all the information in this table were available, we could answer the question: What is the difference in the probability of being an ever-smoker between a 30-year-old woman and a 70-year-old man?"
+pre_units_footnote     <- "Each row is one US adult aged 20-80 in 2026, the population a state anti-smoking campaign aims to reach, roughly 235 million people."
+pre_outcome_footnote   <- "Ever-smoker status: 'Yes' if the adult has smoked at least 100 cigarettes in their lifetime (the CDC standard), 'No' otherwise."
+pre_covariates_footnote <- "Age in years (20-80) and self-reported sex (Female or Male) --- the two demographic axes the question references, and the axes an outreach campaign can segment its targeting on."
 
 pt_primary_html <- gt::gt(pt_primary_tibble, id = "pt_primary") |>
   gt::tab_header(title = "Preceptor Table --- Primary (predictive) question") |>
@@ -88,22 +91,10 @@ pt_primary_html <- gt::gt(pt_primary_tibble, id = "pt_primary") |>
                 locations = gt::cells_column_spanners()) |>
   gt::tab_style(style = gt::cell_text(align = "left"),
                 locations = gt::cells_column_spanners(spanners = c("unit_span", "outcome_span", "covariates_span"))) |>
-  gt::tab_footnote(
-    footnote = "If all the information in this table were available, we could answer the question: What is the difference in the probability of being an ever-smoker between a 30-year-old woman and a 70-year-old man?",
-    locations = gt::cells_title()
-  ) |>
-  gt::tab_footnote(
-    footnote = "Each row is one U.S. adult aged 20-80 in 2026 --- the population the state health department's outreach is supposed to inform. The estimated adult population is roughly 235 million.",
-    locations = gt::cells_column_spanners(spanners = "unit_span")
-  ) |>
-  gt::tab_footnote(
-    footnote = "Ever-smoker status: 'Yes' if the adult has smoked at least 100 cigarettes in their lifetime (the CDC standard), 'No' otherwise. This is a binary outcome, modeled with logistic regression.",
-    locations = gt::cells_column_spanners(spanners = "outcome_span")
-  ) |>
-  gt::tab_footnote(
-    footnote = "Age in years (continuous integer, 20-80) and self-reported sex (Female or Male). Together these are the demographic axes the question references --- and are also what an outreach campaign can actually segment its targeting on.",
-    locations = gt::cells_column_spanners(spanners = "covariates_span")
-  ) |>
+  gt::tab_footnote(footnote = pre_title_footnote, locations = gt::cells_title()) |>
+  gt::tab_footnote(footnote = pre_units_footnote, locations = gt::cells_column_spanners(spanners = "unit_span")) |>
+  gt::tab_footnote(footnote = pre_outcome_footnote, locations = gt::cells_column_spanners(spanners = "outcome_span")) |>
+  gt::tab_footnote(footnote = pre_covariates_footnote, locations = gt::cells_column_spanners(spanners = "covariates_span")) |>
   gt::opt_css(css = "#pt_primary .gt_footnote { max-width: 1px; word-break: break-word; }") |>
   gt::as_raw_html()
 
@@ -219,24 +210,33 @@ The same fitted model serves both framings. The same coefficient on `sexMale` (a
 The predictive reading is honest. The causal reading is not. The same point will recur each time the curriculum's covariates are biological or developmental rather than experimentally manipulable.
 
 ```{r}
-#| echo: false
-#| results: asis
+hatch <- function(x) {
+  paste0(
+    '<span style="background-image: repeating-linear-gradient(',
+    '45deg, rgba(0,0,0,0.12) 0 1px, transparent 1px 6px);',
+    ' padding: 6px 10px; margin: -6px -10px; display: block;">',
+    x, '</span>'
+  )
+}
+
 pt_paired_tibble <- tibble::tribble(
   ~`Adult`,           ~`Ever-Smoker if 30yF`, ~`Ever-Smoker if 70yM`, ~`Age`, ~`Sex`,
-  "Adult 1",          "No",                   "Yes",                  "30",   "Female",
-  "Adult 2",          "No",                   "Yes",                  "55",   "Male",
-  "...",              "...",                  "...",                  "...",  "...",
-  "Adult N",          "No",                   "Yes",                  "70",   "Male"
+  "Maria Gonzalez",   "No",                    "Yes",                  "30",   "Female",
+  "James Whitfield",  "No",                    "Yes",                  "70",   "Male",
+  "...",              "...",                   "...",                  "...",  "...",
+  "Patricia Nguyen",  "No",                    "Yes",                  "30",   "Female"
 )
+
+pre_title_footnote_c     <- "If all the information in this table were available, we could answer the question: What is the causal effect of being older (or being male) on the probability of being an ever-smoker? The implied manipulation (toggling an adult's age or sex) is not realizable; the table is a pedagogical device for making the predictive/causal distinction visible, not a defensible causal claim."
+pre_units_footnote_c     <- "Each row is one adult chosen because their actual age and sex match one of the two profiles being compared."
+pre_outcome_footnote_c   <- "Two potential outcomes per row: ever-smoker status at age 30 and female versus at age 70 and male. The cell matching the adult's actual profile is observed; the other is the unobservable counterfactual, hatched."
+pre_treatment_footnote_c <- "The same Age and Sex columns that sat under a Covariates spanner in the primary Preceptor Table sit here under a Treatment spanner. The columns are identical; only the analyst's commitment changed."
 
 pt_paired_html <- gt::gt(pt_paired_tibble, id = "pt_paired") |>
   gt::tab_header(title = "Preceptor Table --- Paired (causal) question") |>
-  gt::tab_spanner(label = "Unit",                id = "unit_span",
-                  columns = c(`Adult`)) |>
-  gt::tab_spanner(label = "Potential Outcomes",  id = "outcome_span",
-                  columns = c(`Ever-Smoker if 30yF`, `Ever-Smoker if 70yM`)) |>
-  gt::tab_spanner(label = "Treatment",           id = "treatment_span",
-                  columns = c(`Age`, `Sex`)) |>
+  gt::tab_spanner(label = "Unit",               id = "unit_span",      columns = c(`Adult`)) |>
+  gt::tab_spanner(label = "Potential Outcomes", id = "outcome_span",   columns = c(`Ever-Smoker if 30yF`, `Ever-Smoker if 70yM`)) |>
+  gt::tab_spanner(label = "Treatment",          id = "treatment_span", columns = c(`Age`, `Sex`)) |>
   gt::cols_align(align = "left",  columns = c(`Adult`, `Ever-Smoker if 30yF`, `Ever-Smoker if 70yM`, `Sex`)) |>
   gt::cols_align(align = "right", columns = c(`Age`)) |>
   gt::fmt_markdown(columns = gt::everything()) |>
@@ -249,22 +249,18 @@ pt_paired_html <- gt::gt(pt_paired_tibble, id = "pt_paired") |>
                 locations = gt::cells_column_spanners()) |>
   gt::tab_style(style = gt::cell_text(align = "left"),
                 locations = gt::cells_column_spanners(spanners = c("unit_span", "outcome_span", "treatment_span"))) |>
-  gt::tab_footnote(
-    footnote = "If all the information in this table were available, we could answer the question: What is the causal effect of being older (or being male) on the probability of being an ever-smoker? The implied manipulation (toggling an adult's age or sex) is not realizable; the table is a pedagogical device for making the predictive/causal distinction visible, not a defensible causal claim.",
-    locations = gt::cells_title()
+  gt::text_transform(
+    locations = gt::cells_body(columns = `Ever-Smoker if 70yM`, rows = c(1, 4)),
+    fn = function(x) hatch(x)
   ) |>
-  gt::tab_footnote(
-    footnote = "Each row is one adult; same units as the primary table.",
-    locations = gt::cells_column_spanners(spanners = "unit_span")
+  gt::text_transform(
+    locations = gt::cells_body(columns = `Ever-Smoker if 30yF`, rows = 2),
+    fn = function(x) hatch(x)
   ) |>
-  gt::tab_footnote(
-    footnote = "Two potential outcomes per row: what the adult's ever-smoker status would be at age 30 and female versus at age 70 and male. Both are unobservable counterfactuals --- the implied treatment is incoherent, so the truth in each cell exists only in a pedagogical sense.",
-    locations = gt::cells_column_spanners(spanners = "outcome_span")
-  ) |>
-  gt::tab_footnote(
-    footnote = "The same Age and Sex columns that sat under a Covariates spanner in the primary Preceptor Table sit here under a Treatment spanner. The columns themselves are identical. Only the analyst's commitment changed.",
-    locations = gt::cells_column_spanners(spanners = "treatment_span")
-  ) |>
+  gt::tab_footnote(footnote = pre_title_footnote_c, locations = gt::cells_title()) |>
+  gt::tab_footnote(footnote = pre_units_footnote_c, locations = gt::cells_column_spanners(spanners = "unit_span")) |>
+  gt::tab_footnote(footnote = pre_outcome_footnote_c, locations = gt::cells_column_spanners(spanners = "outcome_span")) |>
+  gt::tab_footnote(footnote = pre_treatment_footnote_c, locations = gt::cells_column_spanners(spanners = "treatment_span")) |>
   gt::opt_css(css = "#pt_paired .gt_footnote { max-width: 1px; word-break: break-word; }") |>
   gt::as_raw_html()
 
@@ -300,22 +296,25 @@ The bridge runs *data → population → Preceptor Table*. Justice's job is to m
 ### The Population Table for the primary question
 
 ```{r}
-#| echo: false
-#| results: asis
 pop_primary_tibble <- tibble::tribble(
-  ~Source,     ~`Adult`,           ~`Year`, ~`Ever-Smoker`, ~`Age`, ~`Sex`,
-  "...",       "...",              "...",   "...",          "...",  "...",
-  "Data",      "NHANES 1",         "2010",  "Yes",          "55",   "Male",
-  "Data",      "NHANES 2",         "2011",  "No",           "32",   "Female",
-  "Data",      "...",              "...",   "...",          "...",  "...",
-  "Data",      "NHANES 1000",      "2012",  "No",           "44",   "Female",
-  "...",       "...",              "...",   "...",          "...",  "...",
-  "Preceptor", "Adult 1",          "2026",  "No",           "30",   "Female",
-  "Preceptor", "Adult 2",          "2026",  "Yes",          "55",   "Male",
-  "Preceptor", "...",              "...",   "...",          "...",  "...",
-  "Preceptor", "Adult N",          "2026",  "Yes",          "70",   "Male",
-  "...",       "...",              "...",   "...",          "...",  "..."
+  ~Source,     ~`Adult`,          ~`Year`, ~`Ever-Smoker`, ~`Age`, ~`Sex`,
+  "...",       "...",             "...",   "...",          "...",  "...",
+  "Data",      "Robert Klein",    "2010",  "Yes",          "39",   "Male",
+  "Data",      "Linda Park",      "2011",  "No",           "28",   "Female",
+  "Data",      "...",             "...",   "...",          "...",  "...",
+  "Data",      "James Whitfield", "2012",  "Yes",          "56",   "Male",
+  "...",       "...",             "...",   "...",          "...",  "...",
+  "Preceptor", "Maria Gonzalez",  "2026",  "No",           "30",   "Female",
+  "Preceptor", "Robert Klein",    "2026",  "Yes",          "55",   "Male",
+  "Preceptor", "...",             "...",   "...",          "...",  "...",
+  "Preceptor", "James Whitfield", "2026",  "Yes",          "70",   "Male",
+  "...",       "...",             "...",   "...",          "...",  "..."
 )
+
+pop_title_footnote     <- "This table combines NHANES 2009-2012 data with the Preceptor Table's 2026 adults, drawn from the same broader population of US adults aged 20-80."
+pop_units_footnote     <- "Data rows are NHANES respondents from 2010-2012. Preceptor rows are 2026 US adults. Robert Klein and James Whitfield appear in both blocks at different ages, illustrating the 14-to-16-year gap stability must bridge."
+pop_outcome_footnote   <- "Ever-smoker status from the NHANES questionnaire item on lifetime cigarette use, applied identically to Data and Preceptor rows."
+pop_covariates_footnote <- "Age and sex as recorded in each source: NHANES survey response for Data rows, the same individuals' 2026 age and unchanged sex for Preceptor rows."
 
 pop_primary_html <- gt::gt(pop_primary_tibble, id = "pop_primary") |>
   gt::tab_header(title = "Population Table --- Primary question") |>
@@ -334,10 +333,10 @@ pop_primary_html <- gt::gt(pop_primary_tibble, id = "pop_primary") |>
                 locations = gt::cells_column_spanners()) |>
   gt::tab_style(style = gt::cell_text(align = "left"),
                 locations = gt::cells_column_spanners(spanners = c("unit_span", "outcome_span", "covariates_span"))) |>
-  gt::tab_footnote(
-    footnote = "Data rows are 1,000 NHANES respondents from the 2009-2012 cycles, aged 20-80 at survey time, with complete data on smoking status, age, and sex. Preceptor rows are U.S. adults aged 20-80 in 2026 --- the population the state health department's anti-smoking campaign is intended to reach. The 13-to-17-year gap between data and Preceptor rows is the chapter's central representativeness and stability concern.",
-    locations = gt::cells_title()
-  ) |>
+  gt::tab_footnote(footnote = pop_title_footnote, locations = gt::cells_title()) |>
+  gt::tab_footnote(footnote = pop_units_footnote, locations = gt::cells_column_spanners(spanners = "unit_span")) |>
+  gt::tab_footnote(footnote = pop_outcome_footnote, locations = gt::cells_column_spanners(spanners = "outcome_span")) |>
+  gt::tab_footnote(footnote = pop_covariates_footnote, locations = gt::cells_column_spanners(spanners = "covariates_span")) |>
   gt::opt_css(css = "#pop_primary .gt_footnote { max-width: 1px; word-break: break-word; }") |>
   gt::as_raw_html()
 
@@ -395,23 +394,6 @@ This is the substantive reason the paired causal question is absurd, not just rh
 The paired Population Table has the same row structure as the primary --- 2009--2012 NHANES data rows, 2026 Preceptor rows --- but two potential-outcome columns instead of one, with the unobservable counterfactual hatched in the Preceptor rows and `...` in the Data rows.
 
 ```{r}
-#| echo: false
-#| results: asis
-pop_paired_tibble <- tibble::tribble(
-  ~Source,     ~`Adult`,           ~`Year`, ~`Ever-Smoker if 30yF`, ~`Ever-Smoker if 70yM`, ~`Age`, ~`Sex`,
-  "...",       "...",              "...",   "...",                  "...",                  "...",  "...",
-  "Data",      "NHANES 1",         "2010",  "...",                  "Yes",                  "55",   "Male",
-  "Data",      "NHANES 2",         "2011",  "No",                   "...",                  "32",   "Female",
-  "Data",      "...",              "...",   "...",                  "...",                  "...",  "...",
-  "Data",      "NHANES 1000",      "2012",  "No",                   "...",                  "44",   "Female",
-  "...",       "...",              "...",   "...",                  "...",                  "...",  "...",
-  "Preceptor", "Adult 1",          "2026",  "No",                   "Yes",                  "30",   "Female",
-  "Preceptor", "Adult 2",          "2026",  "No",                   "Yes",                  "55",   "Male",
-  "Preceptor", "...",              "...",   "...",                  "...",                  "...",  "...",
-  "Preceptor", "Adult N",          "2026",  "No",                   "Yes",                  "70",   "Male",
-  "...",       "...",              "...",   "...",                  "...",                  "...",  "..."
-)
-
 hatch <- function(x) {
   paste0(
     '<span style="background-image: repeating-linear-gradient(',
@@ -421,11 +403,31 @@ hatch <- function(x) {
   )
 }
 
+pop_paired_tibble <- tibble::tribble(
+  ~Source,     ~`Adult`,          ~`Year`, ~`Ever-Smoker if 30yF`, ~`Ever-Smoker if 70yM`, ~`Age`, ~`Sex`,
+  "...",       "...",             "...",   "...",                  "...",                  "...",  "...",
+  "Data",      "Patricia Nguyen", "2010",  "No",                   "...",                  "30",   "Female",
+  "Data",      "Linda Park",      "2011",  "No",                   "...",                  "28",   "Female",
+  "Data",      "...",             "...",   "...",                  "...",                  "...",  "...",
+  "Data",      "James Whitfield", "2012",  "...",                  "Yes",                  "56",   "Male",
+  "...",       "...",             "...",   "...",                  "...",                  "...",  "...",
+  "Preceptor", "Maria Gonzalez",  "2026",  "No",                   "Yes",                  "30",   "Female",
+  "Preceptor", "James Whitfield", "2026",  "No",                   "Yes",                  "70",   "Male",
+  "Preceptor", "...",             "...",   "...",                  "...",                  "...",  "...",
+  "Preceptor", "Patricia Nguyen", "2026",  "No",                   "Yes",                  "30",   "Female",
+  "...",       "...",             "...",   "...",                  "...",                  "...",  "..."
+)
+
+pop_title_footnote_c   <- "Same row structure as the primary Population Table, with two potential-outcome columns instead of one. Data rows have one '...' for the unobserved counterfactual; Preceptor rows have both potential outcomes filled in, with the unobservable one hatched."
+pop_units_footnote_c   <- "Data rows are NHANES respondents whose actual age and sex match one of the two profiles being compared. Preceptor rows reuse Maria Gonzalez and James Whitfield from the Preceptor Table."
+pop_outcome_footnote_c <- "Ever-smoker status under each of the two compared profiles. Hatching marks the truth that exists in the table but could never be observed in reality, since no adult is simultaneously both profiles."
+pop_treatment_footnote_c <- "Age and sex, jointly treated here as a two-level treatment (being a 30-year-old woman versus being a 70-year-old man) for this absurd, pedagogical causal framing."
+
 pop_paired_html <- gt::gt(pop_paired_tibble, id = "pop_paired") |>
   gt::tab_header(title = "Population Table --- Paired question") |>
-  gt::tab_spanner(label = "Unit/Time",          id = "unit_span",       columns = c(`Adult`, `Year`)) |>
-  gt::tab_spanner(label = "Potential Outcomes", id = "outcome_span",    columns = c(`Ever-Smoker if 30yF`, `Ever-Smoker if 70yM`)) |>
-  gt::tab_spanner(label = "Treatment",          id = "treatment_span",  columns = c(`Age`, `Sex`)) |>
+  gt::tab_spanner(label = "Unit/Time",          id = "unit_span",      columns = c(`Adult`, `Year`)) |>
+  gt::tab_spanner(label = "Potential Outcomes", id = "outcome_span",   columns = c(`Ever-Smoker if 30yF`, `Ever-Smoker if 70yM`)) |>
+  gt::tab_spanner(label = "Treatment",          id = "treatment_span", columns = c(`Age`, `Sex`)) |>
   gt::cols_align(align = "left",  columns = c(`Source`, `Adult`, `Ever-Smoker if 30yF`, `Ever-Smoker if 70yM`, `Sex`)) |>
   gt::cols_align(align = "right", columns = c(`Year`, `Age`)) |>
   gt::fmt_markdown(columns = gt::everything()) |>
@@ -439,13 +441,17 @@ pop_paired_html <- gt::gt(pop_paired_tibble, id = "pop_paired") |>
   gt::tab_style(style = gt::cell_text(align = "left"),
                 locations = gt::cells_column_spanners(spanners = c("unit_span", "outcome_span", "treatment_span"))) |>
   gt::text_transform(
-    locations = gt::cells_body(columns = c(`Ever-Smoker if 30yF`, `Ever-Smoker if 70yM`), rows = c(8, 9, 11)),
+    locations = gt::cells_body(columns = `Ever-Smoker if 70yM`, rows = c(2, 3, 7, 9, 10)),
     fn = function(x) hatch(x)
   ) |>
-  gt::tab_footnote(
-    footnote = "Same row structure as the primary Population Table, with two potential-outcome columns instead of one. Data rows have one '...' for the unobserved counterfactual; Preceptor rows have both potential outcomes filled in, with both hatched because the causal counterfactual is doubly incoherent for biological covariates.",
-    locations = gt::cells_title()
+  gt::text_transform(
+    locations = gt::cells_body(columns = `Ever-Smoker if 30yF`, rows = c(5, 8)),
+    fn = function(x) hatch(x)
   ) |>
+  gt::tab_footnote(footnote = pop_title_footnote_c, locations = gt::cells_title()) |>
+  gt::tab_footnote(footnote = pop_units_footnote_c, locations = gt::cells_column_spanners(spanners = "unit_span")) |>
+  gt::tab_footnote(footnote = pop_outcome_footnote_c, locations = gt::cells_column_spanners(spanners = "outcome_span")) |>
+  gt::tab_footnote(footnote = pop_treatment_footnote_c, locations = gt::cells_column_spanners(spanners = "treatment_span")) |>
   gt::opt_css(css = "#pop_paired .gt_footnote { max-width: 1px; word-break: break-word; }") |>
   gt::as_raw_html()
 
