@@ -1,8 +1,7 @@
 ---
-title: "Resumes Answer Guideline"
+title: "Resumes: Courage"
 format:
-  html:
-    embed-resources: true
+  html: default
   pdf: default
 execute:
   echo: false
@@ -37,6 +36,8 @@ The historian asks: What proportion of job applicants in Baltimore in the year 2
 The civil rights organization asks: What is the average causal effect of having a black-sounding name, rather than a white-sounding name, on the probability that a job applicant in Chicago today receives a callback?
 
 Note that we use the same data, and the same fitted model, to help both people.
+
+The Wisdom and Justice sections below are filled in with our answers, so you begin today with correct answers to everything that has gone before. Today's work is the Courage section.
 
 ## Wisdom
 
@@ -466,241 +467,30 @@ What is the link function for our outcome?
 
 ## Courage
 
-The abstract data generating mechanism coming out of Justice is:
-
-$$\text{logit}\left(\Pr(Y = 1)\right) = \beta_0 + \beta_1 X_1 + \cdots + \beta_n X_n$$
-
 ### Candidate Models
 
 Create a candidate model, modeling the outcome `call` as a function of the covariate `city`. Call it `fit_city`.
 
-```{r}
-#| label: candidate-model-city
-#| echo: true
 
-fit_city <- logistic_reg() |>
-  fit(call ~ city, data = resumes)
-
-fit_city |>
-  tidy(conf.int = TRUE) |>
-  select(term, estimate, conf.low, conf.high) |>
-  mutate(across(where(is.numeric), \(x) round(x, 2)))
-```
-
-The coefficient on `citychicago` is about −0.40 with a 95% confidence interval excluding zero: callbacks are less likely in Chicago than in Boston. Location matters, but it says nothing yet about the question both scenarios actually care about — so we add the name's ethnicity next.
 
 Create a candidate model, modeling `call` as a function of both `city` and `ethnicity`. Call it `fit_city_ethnicity`.
 
-```{r}
-#| label: candidate-model-city-ethnicity
-#| echo: true
 
-fit_city_ethnicity <- logistic_reg() |>
-  fit(call ~ city + ethnicity, data = resumes)
-
-fit_city_ethnicity |>
-  tidy(conf.int = TRUE) |>
-  select(term, estimate, conf.low, conf.high) |>
-  mutate(across(where(is.numeric), \(x) round(x, 2)))
-```
-
-The coefficient on `ethnicitycauc` is about 0.44 with a confidence interval excluding zero — a white-sounding name raises the log-odds of a callback, and the city coefficient barely moves, which is what randomized name assignment should produce. The EDA suggested resume quality might matter differently by ethnicity, so we test that next.
 
 Create a candidate model which adds `quality`, and its interaction with `ethnicity`, to `fit_city_ethnicity`. Call it `fit_quality`.
 
-```{r}
-#| label: candidate-model-quality
-#| echo: true
 
-fit_quality <- logistic_reg() |>
-  fit(call ~ city + ethnicity + quality + ethnicity * quality, data = resumes)
-
-fit_quality |>
-  tidy(conf.int = TRUE) |>
-  select(term, estimate, conf.low, conf.high) |>
-  mutate(across(where(is.numeric), \(x) round(x, 2)))
-```
-
-Both the `quality` main effect and its interaction with `ethnicity` have confidence intervals that comfortably include zero. The visual pattern from the EDA does not survive this simple model, so we drop `quality` and instead keep covariates whose intervals exclude zero — plus `sex`, which the historian's question forces us to include.
 
 ### The Data Generating Mechanism
 
 Which model should we choose, and why? Define `fit_resumes` as your chosen model and write out the fitted equation.
 
-```{r}
-#| label: chosen-model
-#| echo: true
 
-fit_resumes <- logistic_reg() |>
-  fit(call ~ sex + city + ethnicity + special, data = resumes)
-
-fit_resumes |>
-  tidy(conf.int = TRUE) |>
-  select(term, estimate, conf.low, conf.high) |>
-  mutate(across(where(is.numeric), \(x) round(x, 2)))
-```
-
-We choose `call ~ sex + city + ethnicity + special`. The `city`, `ethnicity`, and `special` (special skills) coefficients all have confidence intervals excluding zero. The `sex` coefficient's interval includes zero, but the historian's question explicitly asks about differences by sex, so the question — not the data — forces it into the model. Quality stays out, per `fit_quality` above.
-
-$$
-\text{logit}\left(\Pr(\text{call} = \text{yes})\right) = -2.75 - 0.13 \cdot \text{male} - 0.46 \cdot \text{chicago} + 0.45 \cdot \text{caucasian} + 0.82 \cdot \text{special}
-$$
-
-Each indicator is 0/1. The intercept describes a female applicant in Boston with a black-sounding name and no special skills; each coefficient shifts the log-odds of a callback. **This is our data generating mechanism.**
 
 ### Model Checking
 
 Create a plot or table that checks whether your chosen model's predicted callback probabilities are reasonable compared to the actual callback rates.
 
-```{r}
-#| label: model-check-calibration
-#| echo: true
 
-observed <- resumes |>
-  group_by(ethnicity, city) |>
-  summarize(rate = mean(call == "yes"), .groups = "drop") |>
-  mutate(source = "Observed")
-
-predicted <- avg_predictions(fit_resumes, type = "prob",
-                             by = c("ethnicity", "city")) |>
-  as_tibble() |>
-  filter(group == "yes") |>
-  select(ethnicity, city, rate = estimate) |>
-  mutate(source = "Predicted")
-
-calibration <- bind_rows(observed, predicted)
-
-max_gap <- calibration |>
-  pivot_wider(names_from = source, values_from = rate) |>
-  summarize(gap = max(abs(Observed - Predicted))) |>
-  pull(gap)
-
-calibration |>
-  ggplot(aes(x = interaction(ethnicity, city, sep = " / "), y = rate, fill = source)) +
-  geom_col(position = "dodge", width = 0.6) +
-  scale_y_continuous(labels = scales::percent_format(accuracy = 1)) +
-  labs(
-    title = "Observed vs. Predicted Callback Rates by Ethnicity and City",
-    subtitle = paste0("The largest observed-vs-predicted gap across the four groups is ",
-                      round(100 * max_gap, 2), " percentage points"),
-    x = "Name ethnicity / City",
-    y = "Callback rate",
-    fill = NULL
-  ) +
-  theme_minimal()
-```
-
-The model's average predicted callback probability tracks the observed callback rate closely in all four ethnicity-by-city groups. That is the main check we need before trusting the model's predictions in Temperance: it is not systematically over- or under-predicting any group we care about.
 
 ------------------------------------------------------------------------
-
-## Temperance
-
-### Predictions
-
-Use `predictions(fit_resumes, type = "prob")` to estimate the callback probability for individual resumes in the sample.
-
-```{r}
-#| label: predictions-raw
-#| echo: true
-
-predictions(fit_resumes, type = "prob") |>
-  as_tibble() |>
-  filter(group == "yes") |>
-  select(ethnicity, city, sex, special, estimate, conf.low, conf.high) |>
-  head(6)
-```
-
-`predictions()` returns one row per resume *per outcome class*; we filter to `group == "yes"` because the callback probability is what we care about. Each resume gets its own predicted probability, built from its own covariates — this is the stepping stone, not the answer.
-
-Use `avg_predictions(fit_resumes, type = "prob", by = "ethnicity")` to estimate the average callback probability for resumes with black-sounding and white-sounding names.
-
-```{r}
-#| label: average-predictions
-#| echo: true
-
-avg_predictions(fit_resumes, type = "prob", by = "ethnicity")
-```
-
-Read the `yes` rows: these are the headline numbers — the average callback probability for each kind of name, with confidence intervals. (The `no` rows are their mirror images.)
-
-What is the expected callback probability for an applicant with a black-sounding name (with 95% CI)?
-
-> About 6.5%, with a 95% CI of roughly [5.5%, 7.4%].
-
-What is the expected callback probability for an applicant with a white-sounding name (with 95% CI)?
-
-> About 9.7%, with a 95% CI of roughly [8.5%, 10.8%].
-
-### Comparisons
-
-Use `avg_comparisons(fit_resumes, variables = "ethnicity", type = "prob")` to estimate the difference in callback probability between white-sounding and black-sounding names.
-
-```{r}
-#| label: avg-comparison-ethnicity
-#| echo: true
-
-avg_comparisons(fit_resumes, variables = "ethnicity", type = "prob")
-```
-
-The `yes` row is the single number the questions ask for: a white-sounding name is associated with a callback probability about 3.2 percentage points higher (95% CI roughly [1.7, 4.7]) than a black-sounding name. On a base rate of 6.5%, 3.2 points is enormous — about 50% more callbacks. In practical terms, an applicant with a black-sounding name must send roughly 15 resumes to expect one callback; an identical resume with a white-sounding name needs about 10.
-
-### Visualizations
-
-Create a visualization of the average predictions by ethnicity using `plot_predictions()`.
-
-```{r}
-#| label: prediction-plot
-#| echo: true
-
-avg_preds <- avg_predictions(fit_resumes, type = "prob", by = "ethnicity") |>
-  as_tibble() |>
-  filter(group == "yes")
-
-prob_gap <- round(100 * diff(range(avg_preds$estimate)), 1)
-
-plot_predictions(fit_resumes, condition = "ethnicity", type = "prob", draw = FALSE) |>
-  filter(group == "yes") |>
-  ggplot(aes(x = ethnicity, y = estimate)) +
-  geom_pointrange(aes(ymin = conf.low, ymax = conf.high), linewidth = 0.7) +
-  scale_y_continuous(labels = scales::percent_format(accuracy = 1)) +
-  labs(
-    title = "Predicted Callback Probability by Name Ethnicity",
-    subtitle = paste0("White-sounding names are predicted to receive callbacks about ",
-                      prob_gap, " percentage points more often"),
-    x = "Name ethnicity (afam = African-American-sounding, cauc = White-sounding)",
-    y = "Predicted callback probability",
-    caption = "Source: Bertrand & Mullainathan (2004) resume experiment, 4,870 resumes"
-  ) +
-  theme_minimal(base_size = 13)
-```
-
-The plot makes the size of the gap — and the precision with which we estimate it — visible at a glance: the two intervals are far from overlapping.
-
-What measure of uncertainty is shown in this plot?
-
-> The vertical bars are 95% confidence intervals around each group's predicted average callback probability.
-
-### Interpretation
-
-How does the historian interpret the difference in callback probabilities? How does the civil rights organization interpret the same number differently?
-
-> **Historian:** the 3.2-point gap is a *comparison across rows* — applicants with black-sounding names got callbacks less often than applicants with white-sounding names. It describes the process that sorted applicants into jobs; it makes no claim about what would have happened to any particular applicant under a different name.
-
-> **Civil rights organization:** the same 3.2 points is an estimate of a *within-row* quantity — the average difference between each application's two potential outcomes. Because names were randomly assigned, the across-group comparison identifies the average causal effect: putting a black-sounding name on an otherwise identical resume *causes* roughly a one-third drop in the chance of a callback.
-
-### Humility
-
-Besides the average callback probabilities, identify two additional quantities of interest the person in your scenario might care about.
-
-> **Historian:** the callback gap by *sex* (her question names it directly, and our model's `sex` coefficient addresses it), and how the racial gap differed between cities — was Baltimore likely closer to the Boston pattern or the Chicago pattern?
-
-> **Civil rights organization:** whether the causal effect varies with resume quality — if a stronger resume cannot close the gap (as the EDA hinted), that redirects policy from "help applicants build resumes" toward the employers doing the screening. Also the effect expressed in applications-per-callback (about 15 versus 10), which is the number a job-seeker actually experiences.
-
-Why might these estimates be a poor answer to your scenario's question? Identify at least two possible sources of bias.
-
-> 1) The data are 25 years old (or, for the historian, from different cities than Baltimore). If hiring discrimination has changed in level or form since 2001 — or differed between Baltimore and Boston/Chicago in 2000 — the stability and representativeness gaps discussed in Justice bias our answer in ways the confidence intervals do not capture.
-
-> 2) The resumes were fictitious, sent only to newspaper help-wanted ads for entry-level jobs. Real applicant pools, real resumes, and modern online application channels may respond differently, so the estimated gap may not transfer to either protagonist's actual population of applications.
-
-> 3) The world is always more uncertain than our models would have us believe: even with every assumption exactly right, the reported intervals are only the *Preceptor's Posterior* — the best posterior achievable under our assumptions — not the truth.

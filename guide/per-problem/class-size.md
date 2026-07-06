@@ -11,7 +11,7 @@
   1. *Principal:* What will be the average fourth-grade math score of the students in my school next year, given their class type and background?
   2. *Texas DOE:* What is the average causal effect of assigning a Dallas student to a small class, rather than a regular class, on their fourth-grade math score?
 - **Dataset:** `data/class-size.csv` — 6,325 students from the Tennessee STAR experiment (Mosteller 1995; data cleaned and discussed in Imai, *Quantitative Social Science*). Students were randomly assigned to small (13–17), regular (22–25), or regular-with-aide classes in grades K–3. Columns: `race`, `classtype` (1/2/3), `yearssmall` (0–4 years spent in small classes), `hsgrad`, `g4math`, `g4reading`. **3,930 of 6,325 students (62%) are missing `g4math`** — balanced across class types (61.1–63.6%) but a first-order data-quality discussion.
-- **Underlying paper:** Mosteller (1995), "The Tennessee study of class size in the early school grades," *The Future of Children* 5(2). **PDF not yet in the folder** — not in `primer.data::inst/papers/` or the bootcamp repo; David to supply.
+- **Underlying paper:** Mosteller (1995), "The Tennessee study of class size in the early school grades," *The Future of Children* 5(2) — in the folder as `class-size-paper.pdf` (recovered via the Wayback Machine from EdSource's copy).
 - **Outcome:** `g4math` — fourth-grade standardized math score (continuous; mean ≈ 709, sd ≈ 43)
 - **Treatment (causal scenario):** class-type assignment (small / regular / regular with aid), randomized in the original experiment. Three levels → three potential outcomes.
 - **Covariates:** `race` (recoded White/Black/Others), `yearssmall` (dose: years spent in small classes)

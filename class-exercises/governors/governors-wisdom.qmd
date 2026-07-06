@@ -1,5 +1,5 @@
 ---
-title: "Governors"
+title: "Governors: Wisdom and Justice"
 format:
   html: default
   pdf: default
@@ -32,7 +32,7 @@ The researcher asks: What is the average causal effect of winning an election, r
 
 ## Wisdom
 
-### Units, Outcomes, and Covariates
+### Preceptor Table
 
 **What are the units, outcome, and covariates for your scenario's question?**
 
@@ -55,8 +55,6 @@ The researcher asks: What is the average causal effect of winning an election, r
 - Quantity of interest:
 
 
-
-### Preceptor Table
 
 Describe the key components of a Preceptor Table for your scenario; Use words like "units," "outcomes," and "covariates."
 
@@ -123,93 +121,3 @@ What is the link function for our outcome?
 
 
 ------------------------------------------------------------------------
-
-## Courage
-
-### Candidate Models
-
-Create a candidate model, modeling the outcome `lived_after` as a linear function of `election_result`. Call it `fit_result`.
-
-
-
-Create a candidate model, modeling `lived_after` as a linear function of both `election_result` and `election_age`. Call it `fit_result_age`.
-
-
-
-Create a candidate model which adds `win_margin` and `party` to `fit_result_age`. Call it `fit_margin_party`.
-
-
-
-### The Data Generating Mechanism
-
-Which model should we choose, and why? Define `fit_governors` as your chosen model and write out the fitted equation.
-
-
-
-### Model Checking
-
-Create a plot or table that checks whether your chosen model's fitted values are reasonable compared to the actual data.
-
-
-
-------------------------------------------------------------------------
-
-## Temperance
-
-### Predictions
-
-Use `predictions(fit_governors)` to estimate the years lived after the election for individual candidates in the sample.
-
-
-
-Use `avg_predictions(fit_governors, by = "election_result")` to estimate the average years lived after the election for winners and losers.
-
-
-
-What is the expected number of years lived after the election for a losing candidate (with 95% CI)?
-
-
-
-What is the expected number of years lived after the election for a winning candidate (with 95% CI)?
-
-
-
-### Comparisons
-
-Use `avg_comparisons(fit_governors, variables = "election_result")` to estimate the effect of winning on years lived after the election.
-
-
-
-Why is the estimate from `avg_comparisons()` so much larger than the difference between the two group averages from `avg_predictions()`?
-
-
-
-### Visualizations
-
-Create a visualization of the average predictions by election result using `plot_predictions()`.
-
-
-
-What measure of uncertainty is shown in this plot?
-
-
-
-Create a plot showing predicted years lived after the election as a function of `election_age`, separately for winners and losers.
-
-
-
-### Interpretation
-
-How does the life insurer interpret the estimated effect of winning? How does the researcher interpret the same number differently?
-
-
-
-### Humility
-
-Besides the average years lived, identify two additional quantities of interest the person in your scenario might care about.
-
-
-
-Why might these estimates be a poor answer to your scenario's question? Identify at least two possible sources of bias.
-
-

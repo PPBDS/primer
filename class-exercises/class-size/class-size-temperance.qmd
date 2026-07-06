@@ -1,8 +1,7 @@
 ---
-title: "Class Size Answer Guideline"
+title: "Class Size: Temperance"
 format:
-  html:
-    embed-resources: true
+  html: default
   pdf: default
 execute:
   echo: false
@@ -48,6 +47,8 @@ The principal asks: What will be the average fourth-grade math score of the stud
 The Texas Department of Education asks: What is the average causal effect of assigning a Dallas student to a small class, rather than a regular class, on their fourth-grade math score?
 
 Note that we use the same data, and the same fitted model, to help both people.
+
+The Wisdom, Justice, and Courage sections below are filled in with our answers, so you begin today with correct answers to everything that has gone before. Today's work is the Temperance section.
 
 ## Wisdom
 
@@ -606,142 +607,54 @@ The fitted values center correctly and the residuals show no systematic pattern 
 
 Use `predictions(fit_classsize)` to estimate the math score for individual students in the sample.
 
-```{r}
-#| label: predictions-raw
-#| echo: true
 
-predictions(fit_classsize) |>
-  as_tibble() |>
-  select(kind, race, yearssmall, estimate, conf.low, conf.high) |>
-  head(6)
-```
-
-One prediction per tested student, built from that student's own covariates — the stepping stone that shows what the model produces before we average.
 
 Use `avg_predictions(fit_classsize, by = "kind")` to estimate the average math score for each class type.
 
-```{r}
-#| label: average-predictions
-#| echo: true
 
-avg_predictions(fit_classsize, by = "kind")
-```
 
 What is the expected math score for a student in a small class (with 95% CI)?
 
-> About 709, with a 95% CI of roughly [706, 712].
+
 
 What is the expected math score for a student in a regular class (with 95% CI)?
 
-> About 710, with a 95% CI of roughly [707, 712].
+
 
 ### Comparisons
 
 Use `avg_comparisons(fit_classsize, variables = "kind")` to estimate the effect of each class type, relative to a regular class, on math scores.
 
-```{r}
-#| label: avg-comparison-kind
-#| echo: true
 
-avg_comparisons(fit_classsize, variables = "kind")
-```
-
-Both contrasts include zero: small − regular is −7.66 [−15.9, 0.6] (holding `yearssmall` fixed — the snapshot comparison) and regular-with-aide − regular is −1.95 [−6.1, 2.2]. We cannot distinguish either assignment effect from nothing.
 
 Use `avg_comparisons(fit_classsize, variables = "yearssmall")` to estimate the effect of one additional year spent in a small class.
 
-```{r}
-#| label: avg-comparison-yearssmall
-#| echo: true
 
-avg_comparisons(fit_classsize, variables = "yearssmall")
-```
-
-Each additional year in a small class is associated with about 2.2 more points, 95% CI roughly [0.1, 4.3]. This is the one number in the exercise that survives a confidence interval — and note the practical size: even four full years is only ~9 points on a scale where scores vary by 43 points around the mean. Statistically detectable is not the same as educationally transformative.
 
 ### Visualizations
 
 Create a visualization of the average predictions by class type using `plot_predictions()`.
 
-```{r}
-#| label: prediction-plot
-#| echo: true
 
-avg_preds_kind <- avg_predictions(fit_classsize, by = "kind") |>
-  as_tibble()
-
-kind_gap <- round(diff(range(avg_preds_kind$estimate)), 1)
-
-avg_preds_kind |>
-  ggplot(aes(x = kind, y = estimate)) +
-  geom_pointrange(aes(ymin = conf.low, ymax = conf.high), linewidth = 0.7) +
-  labs(
-    title = "Predicted Fourth-Grade Math Score by Class Type",
-    subtitle = paste0("The three class-type averages span only ", kind_gap,
-                      " points, and every interval overlaps the others"),
-    x = "Class type",
-    y = "Predicted math score",
-    caption = "Source: Tennessee STAR experiment (Mosteller 1995), 2,395 tested students"
-  ) +
-  theme_minimal(base_size = 13)
-```
 
 What measure of uncertainty is shown in this plot?
 
-> The vertical bars are 95% confidence intervals around each class type's predicted average score.
+
 
 Create a plot showing predicted math scores by class type and race.
 
-```{r}
-#| label: prediction-plot-kind-race
-#| echo: true
 
-preds_kind_race <- avg_predictions(fit_classsize, by = c("kind", "race")) |>
-  as_tibble()
-
-race_gap <- preds_kind_race |>
-  group_by(race) |>
-  summarize(mean_est = mean(estimate)) |>
-  summarize(gap = round(diff(range(mean_est)), 0)) |>
-  pull(gap)
-
-preds_kind_race |>
-  ggplot(aes(x = kind, y = estimate, color = race)) +
-  geom_pointrange(aes(ymin = conf.low, ymax = conf.high),
-                  position = position_dodge(width = 0.4), linewidth = 0.7) +
-  labs(
-    title = "Predicted Math Score by Class Type and Race",
-    subtitle = paste0("Race gaps (up to ~", race_gap,
-                      " points across group averages) dwarf every class-type difference"),
-    x = "Class type",
-    y = "Predicted math score",
-    color = "Race"
-  ) +
-  theme_minimal()
-```
-
-The vertical separation between race groups is many times larger than any horizontal movement across class types — a visual summary of the whole exercise: in this data, who the students are matters far more for fourth-grade math scores than what kind of class they sat in.
 
 ### Interpretation
 
 How does the principal interpret these estimates? How does the Texas Department of Education interpret the same numbers differently?
 
-> **Principal:** the predictions are forecasts *across rows*. She plugs each student's class type, race, and years-in-small-classes into the model and gets an expected score for planning — which students may need support, what the school-wide average will look like. Whether class size *causes* any of it is irrelevant to the forecast.
 
-> **Texas Department of Education:** the class-type contrasts are estimates of *within-row* causal effects, and they earn that reading only because STAR randomized assignment. The result is sobering: the assignment effect cannot be distinguished from zero, and the one significant number — 2.2 points per year of small-class dose — is also the *least* protected by randomization, because which students stayed in small classes for multiple years was not random.
 
 ### Humility
 
 Besides the average math scores, identify two additional quantities of interest the person in your scenario might care about.
 
-> **Principal:** predicted *reading* scores (the data has `g4reading` too), and the full distribution of predicted scores — percentiles, not just means — for deciding how many students will need intervention services.
 
-> **Texas Department of Education:** the dose-response effect of four full years versus one (roughly 4 × 2.2 ≈ 9 points), and the cost side: small classes require more teachers and classrooms, so the real quantity of interest is points gained per dollar spent, which our model informs but cannot answer alone.
 
 Why might these estimates be a poor answer to your scenario's question? Identify at least two possible sources of bias.
-
-> 1) Sixty-two percent of students are missing the outcome. The missingness is balanced across class types, but if the students who left the study (movers, dropouts) differ from those who stayed — and they almost surely do — every estimate is built on a selected 38% of the experiment.
-
-> 2) The dose is not randomized. Initial class assignment was random, but staying in a small class for two, three, or four years was not — so the 2.2-points-per-year coefficient, our only significant finding, may reflect which families kept their children in the program rather than what small classes do.
-
-> 3) Tennessee 1985 is not Chicago or Dallas 2026: different tests, different students, different schools (the validity, stability, and representativeness gaps from Justice). And the world is always more uncertain than our models would have us believe — the reported intervals are only the *Preceptor's Posterior*, the best posterior achievable under our assumptions, not the truth.

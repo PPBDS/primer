@@ -1,5 +1,5 @@
 ---
-title: "Resumes"
+title: "Resumes: Wisdom and Justice"
 format:
   html: default
   pdf: default
@@ -33,7 +33,7 @@ The civil rights organization asks: What is the average causal effect of having 
 
 ## Wisdom
 
-### Units, Outcomes, and Covariates
+### Preceptor Table
 
 **What are the units, outcome, and covariates for your scenario's question?**
 
@@ -56,8 +56,6 @@ The civil rights organization asks: What is the average causal effect of having 
 - Quantity of interest:
 
 
-
-### Preceptor Table
 
 Describe the key components of a Preceptor Table for your scenario; Use words like "units," "outcomes," and "covariates."
 
@@ -120,85 +118,3 @@ What is the link function for our outcome?
 
 
 ------------------------------------------------------------------------
-
-## Courage
-
-### Candidate Models
-
-Create a candidate model, modeling the outcome `call` as a function of the covariate `city`. Call it `fit_city`.
-
-
-
-Create a candidate model, modeling `call` as a function of both `city` and `ethnicity`. Call it `fit_city_ethnicity`.
-
-
-
-Create a candidate model which adds `quality`, and its interaction with `ethnicity`, to `fit_city_ethnicity`. Call it `fit_quality`.
-
-
-
-### The Data Generating Mechanism
-
-Which model should we choose, and why? Define `fit_resumes` as your chosen model and write out the fitted equation.
-
-
-
-### Model Checking
-
-Create a plot or table that checks whether your chosen model's predicted callback probabilities are reasonable compared to the actual callback rates.
-
-
-
-------------------------------------------------------------------------
-
-## Temperance
-
-### Predictions
-
-Use `predictions(fit_resumes, type = "prob")` to estimate the callback probability for individual resumes in the sample.
-
-
-
-Use `avg_predictions(fit_resumes, type = "prob", by = "ethnicity")` to estimate the average callback probability for resumes with black-sounding and white-sounding names.
-
-
-
-What is the expected callback probability for an applicant with a black-sounding name (with 95% CI)?
-
-
-
-What is the expected callback probability for an applicant with a white-sounding name (with 95% CI)?
-
-
-
-### Comparisons
-
-Use `avg_comparisons(fit_resumes, variables = "ethnicity", type = "prob")` to estimate the difference in callback probability between white-sounding and black-sounding names.
-
-
-
-### Visualizations
-
-Create a visualization of the average predictions by ethnicity using `plot_predictions()`.
-
-
-
-What measure of uncertainty is shown in this plot?
-
-
-
-### Interpretation
-
-How does the historian interpret the difference in callback probabilities? How does the civil rights organization interpret the same number differently?
-
-
-
-### Humility
-
-Besides the average callback probabilities, identify two additional quantities of interest the person in your scenario might care about.
-
-
-
-Why might these estimates be a poor answer to your scenario's question? Identify at least two possible sources of bias.
-
-

@@ -1,8 +1,7 @@
 ---
-title: "Governors Answer Guideline"
+title: "Governors: Courage"
 format:
-  html:
-    embed-resources: true
+  html: default
   pdf: default
 execute:
   echo: false
@@ -36,6 +35,8 @@ The life insurer asks: How many years, on average, will this year's US Senate ca
 The researcher asks: What is the average causal effect of winning an election, rather than losing it, on the number of years a candidate lives afterward?
 
 Note that we use the same data, and the same fitted model, to help both people.
+
+The Wisdom and Justice sections below are filled in with our answers, so you begin today with correct answers to everything that has gone before. Today's work is the Courage section.
 
 ## Wisdom
 
@@ -445,274 +446,30 @@ What is the link function for our outcome?
 
 ## Courage
 
-The abstract data generating mechanism coming out of Justice is:
-
-$$Y = \beta_0 + \beta_1 X_1 + \cdots + \beta_n X_n + \epsilon, \quad \epsilon \sim N(0, \sigma^2)$$
-
 ### Candidate Models
 
 Create a candidate model, modeling the outcome `lived_after` as a linear function of `election_result`. Call it `fit_result`.
 
-```{r}
-#| label: candidate-model-result
-#| echo: true
 
-fit_result <- linear_reg() |>
-  fit(lived_after ~ election_result, data = x)
-
-fit_result |>
-  tidy(conf.int = TRUE) |>
-  select(term, estimate, conf.low, conf.high) |>
-  mutate(across(where(is.numeric), \(x) round(x, 2)))
-```
-
-The raw win effect is about 2.4 years, but its confidence interval includes zero — comparing group averages alone, we cannot distinguish the effect from nothing. Age is the elephant in the room from the EDA, so we adjust for it next.
 
 Create a candidate model, modeling `lived_after` as a linear function of both `election_result` and `election_age`. Call it `fit_result_age`.
 
-```{r}
-#| label: candidate-model-result-age
-#| echo: true
 
-fit_result_age <- linear_reg() |>
-  fit(lived_after ~ election_result + election_age, data = x)
-
-fit_result_age |>
-  tidy(conf.int = TRUE) |>
-  select(term, estimate, conf.low, conf.high) |>
-  mutate(across(where(is.numeric), \(x) round(x, 2)))
-```
-
-Age at election is enormously informative (about −0.9 years of remaining life per year of age, interval far from zero), but the win coefficient barely moves and still cannot be distinguished from zero — consistent with the balance check in Wisdom, where winners and losers had nearly identical ages. The missing ingredient is `win_margin`: even inside the close window, winners sit above zero and losers below, so the running variable is entangled with the treatment. We control for it, and add `party`, next.
 
 Create a candidate model which adds `win_margin` and `party` to `fit_result_age`. Call it `fit_margin_party`.
 
-```{r}
-#| label: candidate-model-margin-party
-#| echo: true
 
-fit_margin_party <- linear_reg() |>
-  fit(lived_after ~ election_result + win_margin + election_age + party, data = x)
-
-fit_margin_party |>
-  tidy(conf.int = TRUE) |>
-  select(term, estimate, conf.low, conf.high) |>
-  mutate(across(where(is.numeric), \(x) round(x, 2)))
-```
-
-Controlling for the running variable changes everything: the win coefficient jumps to about 8.6 years with an interval excluding zero. Comparing candidates *at the same margin*, on opposite sides of the win/lose threshold, is the regression-discontinuity comparison the design intends — and it is only visible once `win_margin` is in the model.
 
 ### The Data Generating Mechanism
 
 Which model should we choose, and why? Define `fit_governors` as your chosen model and write out the fitted equation.
 
-```{r}
-#| label: chosen-model
-#| echo: true
 
-fit_governors <- linear_reg() |>
-  fit(lived_after ~ election_result + win_margin + election_age + party, data = x)
-
-fit_governors |>
-  tidy(conf.int = TRUE) |>
-  select(term, estimate, conf.low, conf.high) |>
-  mutate(across(where(is.numeric), \(x) round(x, 2)))
-```
-
-We choose the full model. `win_margin` must stay because it is the running variable that identifies the design; `election_age` because it dominates the outcome; and `party` because `partyRepublican` is distinguishable from zero (Republicans in this sample live about 4 years longer after election). The interval for `partyThird party` easily includes zero, but with a categorical variable we keep the whole variable as long as at least one of its dummies earns its place — dropping only the Third-party level is not an option.
-
-$$
-\widehat{\text{lived\_after}} = 67.6 + 8.63 \cdot \text{Win} - 1.46 \cdot \text{win\_margin} - 0.89 \cdot \text{election\_age} + 4.04 \cdot \text{Republican} - 9.50 \cdot \text{Third}
-$$
-
-**This is our data generating mechanism.**
 
 ### Model Checking
 
 Create a plot or table that checks whether your chosen model's fitted values are reasonable compared to the actual data.
 
-```{r}
-#| label: model-check-fitted-vs-actual
-#| echo: true
 
-fitted_df <- augment(fit_governors, new_data = x)
-
-fitted_df |>
-  select(lived_after, .pred) |>
-  pivot_longer(everything(), names_to = "source", values_to = "value") |>
-  mutate(source = if_else(source == ".pred", "Fitted", "Actual")) |>
-  ggplot(aes(x = value, fill = source)) +
-  geom_density(alpha = 0.5) +
-  labs(
-    title = "Actual vs. Fitted Years Lived After the Election",
-    subtitle = "The fitted distribution matches the center but is narrower than the actual data",
-    x = "Years lived after election",
-    y = NULL,
-    fill = "Source"
-  ) +
-  theme_minimal() +
-  theme(axis.text.y = element_blank(), axis.ticks.y = element_blank())
-```
-
-```{r}
-#| label: model-check-residuals
-#| echo: true
-
-fitted_df |>
-  mutate(.resid = lived_after - .pred) |>
-  ggplot(aes(x = election_age, y = .resid, color = election_result)) +
-  geom_point(alpha = 0.5) +
-  geom_hline(yintercept = 0, linetype = "dashed", color = "grey40") +
-  labs(
-    title = "Residuals vs. Age at Election",
-    subtitle = "Residuals scatter around zero with no clear pattern for winners or losers",
-    x = "Age at election",
-    y = "Residual (years)",
-    color = "Election result"
-  ) +
-  theme_minimal()
-```
-
-The fitted values center where the actual data center, and residuals show no systematic pattern across age or between winners and losers — the model is not obviously misfitting the groups our questions care about.
 
 ------------------------------------------------------------------------
-
-## Temperance
-
-### Predictions
-
-Use `predictions(fit_governors)` to estimate the years lived after the election for individual candidates in the sample.
-
-```{r}
-#| label: predictions-raw
-#| echo: true
-
-predictions(fit_governors) |>
-  as_tibble() |>
-  select(election_result, election_age, party, estimate, conf.low, conf.high) |>
-  head(6)
-```
-
-One prediction per candidacy, each built from that candidate's own covariates — the stepping stone that shows what the model produces before we start averaging.
-
-Use `avg_predictions(fit_governors, by = "election_result")` to estimate the average years lived after the election for winners and losers.
-
-```{r}
-#| label: average-predictions
-#| echo: true
-
-avg_predictions(fit_governors, by = "election_result")
-```
-
-What is the expected number of years lived after the election for a losing candidate (with 95% CI)?
-
-> About 27.2 years, with a 95% CI of roughly [25.2, 29.2].
-
-What is the expected number of years lived after the election for a winning candidate (with 95% CI)?
-
-> About 29.6 years, with a 95% CI of roughly [27.7, 31.5].
-
-### Comparisons
-
-Use `avg_comparisons(fit_governors, variables = "election_result")` to estimate the effect of winning on years lived after the election.
-
-```{r}
-#| label: avg-comparison-result
-#| echo: true
-
-avg_comparisons(fit_governors, variables = "election_result")
-```
-
-The estimate is about 8.6 additional years of life from winning, 95% CI roughly [3.3, 14.0]. Practically, that is an enormous number — a decade of life is more than most medical interventions deliver — which should already make us a little suspicious (see the bias discussion below).
-
-Why is the estimate from `avg_comparisons()` so much larger than the difference between the two group averages from `avg_predictions()`?
-
-> The group averages (29.6 vs. 27.2, a gap of 2.4) average each group over *its own* win margins: winners all have positive margins and losers negative ones, and the margin coefficient (−1.46 per point) drags the winners' average down and pushes the losers' up. `avg_comparisons()` instead flips `election_result` *within each row* while holding `win_margin` and everything else fixed — the counterfactual, within-row comparison the causal question actually asks — and recovers the 8.6-year coefficient. The across-row and within-row quantities differ precisely because treatment and running variable are entangled; this is the whole reason `win_margin` had to be in the model.
-
-### Visualizations
-
-Create a visualization of the average predictions by election result using `plot_predictions()`.
-
-```{r}
-#| label: prediction-plot
-#| echo: true
-
-cond_preds <- plot_predictions(fit_governors, condition = "election_result", draw = FALSE)
-
-cond_gap <- round(diff(range(cond_preds$estimate)), 1)
-
-cond_preds |>
-  ggplot(aes(x = election_result, y = estimate)) +
-  geom_pointrange(aes(ymin = conf.low, ymax = conf.high), linewidth = 0.7) +
-  labs(
-    title = "Predicted Years Lived After the Election, by Election Result",
-    subtitle = paste0("Holding margin, age, and party fixed, winners are predicted to live about ",
-                      cond_gap, " more years"),
-    x = "Election result",
-    y = "Predicted years lived after election",
-    caption = "Source: Barfort et al. (2021), 254 close gubernatorial elections, 1946-2003"
-  ) +
-  theme_minimal(base_size = 13)
-```
-
-Note that this plot shows *conditional* predictions — `plot_predictions()` with `condition` holds the other covariates fixed at typical values — so the gap it displays is the 8.6-year within-row effect, not the 2.4-year across-group gap.
-
-What measure of uncertainty is shown in this plot?
-
-> The vertical bars are 95% confidence intervals around each predicted average.
-
-Create a plot showing predicted years lived after the election as a function of `election_age`, separately for winners and losers.
-
-```{r}
-#| label: prediction-plot-age
-#| echo: true
-
-win_effect <- avg_comparisons(fit_governors, variables = "election_result") |>
-  as_tibble() |>
-  pull(estimate) |>
-  round(1)
-
-plot_predictions(fit_governors,
-                 condition = c("election_age", "election_result"),
-                 draw = FALSE) |>
-  ggplot(aes(x = election_age, y = estimate,
-             color = election_result, fill = election_result)) +
-  geom_ribbon(aes(ymin = conf.low, ymax = conf.high), alpha = 0.2, color = NA) +
-  geom_line(linewidth = 1) +
-  labs(
-    title = "Predicted Years Lived After the Election, by Age and Result",
-    subtitle = paste0("The two lines run parallel, separated by the ", win_effect,
-                      "-year winning effect at every age"),
-    x = "Age at election",
-    y = "Predicted years lived after election",
-    color = "Election result",
-    fill = "Election result"
-  ) +
-  theme_minimal()
-```
-
-Age does most of the predictive work — the lines fall steeply — while winning shifts the whole line upward by a constant amount, because our model has no interaction between age and the treatment.
-
-### Interpretation
-
-How does the life insurer interpret the estimated effect of winning? How does the researcher interpret the same number differently?
-
-> **Life insurer:** election result is just another rating factor. The insurer plugs each Senate candidate's age, party, and (once known) election result into the model and reads off an expected remaining lifespan for pricing — an *across-row* use. Whether winning causes longevity or merely marks healthier candidates is irrelevant to the premium.
-
-> **Researcher:** the 8.6 years is an estimate of the *within-row* causal effect — how much longer the same candidate would live having won rather than lost — and it deserves that interpretation only because close elections make treatment assignment as-if random. If the coin-flip argument fails, the researcher's number loses its meaning while the insurer's forecasts remain perfectly usable.
-
-### Humility
-
-Besides the average years lived, identify two additional quantities of interest the person in your scenario might care about.
-
-> **Life insurer:** the full predicted distribution of lifespans for a specific candidate profile (pricing depends on tail risk, not just the mean), and predictions for particular covariate combinations — say, a 77-year-old Democratic winner versus an 84-year-old Republican winner — built from a grid of the model's covariates.
-
-> **Researcher:** whether the effect differs by party (the model permits six predictions: two results × three parties) or by era, and the effect near the threshold specifically — the estimate at `win_margin = 0`, which is the purest version of the regression-discontinuity comparison.
-
-Why might these estimates be a poor answer to your scenario's question? Identify at least two possible sources of bias.
-
-> 1) The estimate is implausibly large, and the sample is small. Gelman's commentary on this paper argues that with only 254 close elections, noisy data plus the incentive to publish significant results can inflate estimates — a winner's-curse for effect sizes. An honest best guess for the true effect is far smaller than 8.6 years, with a range that plausibly includes zero or even negative values.
-
-> 2) Validity and representativeness gaps: our treatment is winning a *gubernatorial* race in 1946–2003, not a Senate race (insurer) or any race (researcher) in 2026 — and close elections are not representative of elections generally. Both leaps could shift the answer in either direction.
-
-> 3) The world is always more uncertain than our models would have us believe: even with every assumption exactly right, the reported intervals are only the *Preceptor's Posterior* — the best posterior achievable under our assumptions — not the truth.

@@ -8,7 +8,9 @@ Barfort, Klemmensen, and Larsen (2021) collected the lifespans of 3,587 candidat
 
 This repo has everything you need for this week's class exercise:
 
-- `governors.qmd` — the exercise handout. Type your answers directly into this document.
+- `governors-wisdom.qmd` — day 1: Wisdom and Justice. Type your answers directly into the document.
+- `governors-courage.qmd` — day 2: Courage. Begins with our answers to Wisdom and Justice.
+- `governors-temperance.qmd` — day 3: Temperance. Begins with our answers to Wisdom, Justice, and Courage.
 - `governors-answers.qmd` — the answer guideline.
 - `data/governors.csv` — the data.
 - `governors-paper.pdf` — the original Barfort, Klemmensen, and Larsen (2021) paper.
@@ -29,15 +31,17 @@ This repo has everything you need for this week's class exercise:
 [R](https://cran.r-project.org/), [Quarto](https://quarto.org/docs/get-started/), and these packages:
 
 ```r
-install.packages(c("tidyverse", "tidymodels", "marginaleffects", "broom"))
+install.packages(c("tidyverse", "tidymodels", "marginaleffects", "broom", "gt"))
 ```
 
 ## Work the exercise
 
-Open `governors.qmd` and type your answers into the blank space below each question. To render your document:
+Each class meeting has its own document. Work them in order: `governors-wisdom.qmd`, then `governors-courage.qmd`, then `governors-temperance.qmd`. Every document starts with the same background and data loading, and each later document begins with our answers to everything that came before — so you always work from correct foundations.
+
+Type your answers into the blank space below each question, then render:
 
 ```bash
-quarto render governors.qmd
+quarto render governors-wisdom.qmd
 ```
 
 Commit and push your work to your fork as you go.

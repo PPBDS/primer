@@ -7,6 +7,10 @@
 # The underlying paper for each exercise IS tracked (see CLAUDE.md)
 !*-paper.pdf
 
+# The rendered answer key (HTML + PDF) IS tracked (see CLAUDE.md)
+!*-answers.html
+!*-answers.pdf
+
 # LaTeX intermediates (Quarto PDF generation)
 *.tex
 *.log

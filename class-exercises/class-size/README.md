@@ -8,9 +8,12 @@ The Tennessee STAR experiment (Mosteller 1995) randomly assigned more than 6,000
 
 This repo has everything you need for this week's class exercise:
 
-- `class-size.qmd` — the exercise handout. Type your answers directly into this document.
+- `class-size-wisdom.qmd` — day 1: Wisdom and Justice. Type your answers directly into the document.
+- `class-size-courage.qmd` — day 2: Courage. Begins with our answers to Wisdom and Justice.
+- `class-size-temperance.qmd` — day 3: Temperance. Begins with our answers to Wisdom, Justice, and Courage.
 - `class-size-answers.qmd` — the answer guideline.
 - `data/class-size.csv` — the data.
+- `class-size-paper.pdf` — the original Mosteller (1995) paper.
 
 ## Get your own copy
 
@@ -28,15 +31,17 @@ This repo has everything you need for this week's class exercise:
 [R](https://cran.r-project.org/), [Quarto](https://quarto.org/docs/get-started/), and these packages:
 
 ```r
-install.packages(c("tidyverse", "tidymodels", "marginaleffects", "broom"))
+install.packages(c("tidyverse", "tidymodels", "marginaleffects", "broom", "gt"))
 ```
 
 ## Work the exercise
 
-Open `class-size.qmd` and type your answers into the blank space below each question. To render your document:
+Each class meeting has its own document. Work them in order: `class-size-wisdom.qmd`, then `class-size-courage.qmd`, then `class-size-temperance.qmd`. Every document starts with the same background and data loading, and each later document begins with our answers to everything that came before — so you always work from correct foundations.
+
+Type your answers into the blank space below each question, then render:
 
 ```bash
-quarto render class-size.qmd
+quarto render class-size-wisdom.qmd
 ```
 
 Commit and push your work to your fork as you go.

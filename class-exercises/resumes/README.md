@@ -8,7 +8,9 @@ Bertrand and Mullainathan (2004) sent 4,870 fictitious resumes to help-wanted ad
 
 This repo has everything you need for this week's class exercise:
 
-- `resumes.qmd` — the exercise handout. Type your answers directly into this document.
+- `resumes-wisdom.qmd` — day 1: Wisdom and Justice. Type your answers directly into the document.
+- `resumes-courage.qmd` — day 2: Courage. Begins with our answers to Wisdom and Justice.
+- `resumes-temperance.qmd` — day 3: Temperance. Begins with our answers to Wisdom, Justice, and Courage.
 - `resumes-answers.qmd` — the answer guideline.
 - `data/resumes.csv` — the data.
 - `resumes-paper.pdf` — the original Bertrand and Mullainathan (2004) paper.
@@ -29,15 +31,17 @@ This repo has everything you need for this week's class exercise:
 [R](https://cran.r-project.org/), [Quarto](https://quarto.org/docs/get-started/), and these packages:
 
 ```r
-install.packages(c("tidyverse", "tidymodels", "marginaleffects", "broom"))
+install.packages(c("tidyverse", "tidymodels", "marginaleffects", "broom", "gt"))
 ```
 
 ## Work the exercise
 
-Open `resumes.qmd` and type your answers into the blank space below each question. To render your document:
+Each class meeting has its own document. Work them in order: `resumes-wisdom.qmd`, then `resumes-courage.qmd`, then `resumes-temperance.qmd`. Every document starts with the same background and data loading, and each later document begins with our answers to everything that came before — so you always work from correct foundations.
+
+Type your answers into the blank space below each question, then render:
 
 ```bash
-quarto render resumes.qmd
+quarto render resumes-wisdom.qmd
 ```
 
 Commit and push your work to your fork as you go.

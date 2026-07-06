@@ -1,8 +1,7 @@
 ---
-title: "Class Size Answer Guideline"
+title: "Class Size: Courage"
 format:
-  html:
-    embed-resources: true
+  html: default
   pdf: default
 execute:
   echo: false
@@ -48,6 +47,8 @@ The principal asks: What will be the average fourth-grade math score of the stud
 The Texas Department of Education asks: What is the average causal effect of assigning a Dallas student to a small class, rather than a regular class, on their fourth-grade math score?
 
 Note that we use the same data, and the same fitted model, to help both people.
+
+The Wisdom and Justice sections below are filled in with our answers, so you begin today with correct answers to everything that has gone before. Today's work is the Courage section.
 
 ## Wisdom
 
@@ -469,279 +470,30 @@ What is the link function for our outcome?
 
 ## Courage
 
-The abstract data generating mechanism coming out of Justice is:
-
-$$Y = \beta_0 + \beta_1 X_1 + \cdots + \beta_n X_n + \epsilon, \quad \epsilon \sim N(0, \sigma^2)$$
-
 ### Candidate Models
 
 Create a candidate model, modeling the outcome `g4math` as a linear function of the class type `kind`. Call it `fit_kind`.
 
-```{r}
-#| label: candidate-model-kind
-#| echo: true
 
-fit_kind <- linear_reg() |>
-  fit(g4math ~ kind, data = star)
-
-fit_kind |>
-  tidy(conf.int = TRUE) |>
-  select(term, estimate, conf.low, conf.high) |>
-  mutate(across(where(is.numeric), \(x) round(x, 2)))
-```
-
-Both class-type coefficients have confidence intervals comfortably including zero — class type alone tells us essentially nothing about fourth-grade math scores, matching what the EDA showed. Perhaps class type matters once we account for who is in each class, so we add `race`.
 
 Create a candidate model, modeling `g4math` as a linear function of both `kind` and `race`. Call it `fit_kind_race`.
 
-```{r}
-#| label: candidate-model-kind-race
-#| echo: true
 
-fit_kind_race <- linear_reg() |>
-  fit(g4math ~ kind + race, data = star)
-
-fit_kind_race |>
-  tidy(conf.int = TRUE) |>
-  select(term, estimate, conf.low, conf.high) |>
-  mutate(across(where(is.numeric), \(x) round(x, 2)))
-```
-
-Race carries real signal — White students score about 16 points higher than Black students, with an interval far from zero — but the class-type coefficients barely move and still include zero. One more candidate: class type records only where a student sat in one year, while `yearssmall` records the *dose* — how many years (0–4) the student spent in small classes.
 
 Create a candidate model which adds `yearssmall` to `fit_kind_race`. Call it `fit_kind_race_years`.
 
-```{r}
-#| label: candidate-model-kind-race-years
-#| echo: true
 
-fit_kind_race_years <- linear_reg() |>
-  fit(g4math ~ kind + race + yearssmall, data = star)
-
-fit_kind_race_years |>
-  tidy(conf.int = TRUE) |>
-  select(term, estimate, conf.low, conf.high) |>
-  mutate(across(where(is.numeric), \(x) round(x, 2)))
-```
-
-Now something interesting appears: each additional year spent in a small class is worth about 2.2 points, with an interval excluding zero. The snapshot (`kind`) shows nothing; the dose (`yearssmall`) shows a small but real association. Note that `kindsmall` turns negative (−7.66) once `yearssmall` enters — the two variables are entangled, since students assigned to small classes accumulate more years in them; a student assigned small who stays all four years nets −7.66 + 4 × 2.18 ≈ +1 point relative to a regular-class student.
 
 ### The Data Generating Mechanism
 
 Which model should we choose, and why? Define `fit_classsize` as your chosen model and write out the fitted equation.
 
-```{r}
-#| label: chosen-model
-#| echo: true
 
-fit_classsize <- linear_reg() |>
-  fit(g4math ~ kind + race + yearssmall, data = star)
-
-fit_classsize |>
-  tidy(conf.int = TRUE) |>
-  select(term, estimate, conf.low, conf.high) |>
-  mutate(across(where(is.numeric), \(x) round(x, 2)))
-```
-
-We choose the full model. `race` and `yearssmall` earn their places with intervals excluding zero. The `kind` coefficients do not — but `kind` is the treatment the causal question is about, so the question, not the data, forces it into the model. Reporting "we cannot distinguish the assignment effect from zero" requires keeping the variable whose effect we cannot distinguish.
-
-$$
-\widehat{\text{g4math}} = 695 - 1.95 \cdot \text{regular\_with\_aid} - 7.66 \cdot \text{small} + 38.7 \cdot \text{Others} + 16.2 \cdot \text{White} + 2.18 \cdot \text{yearssmall}
-$$
-
-The intercept describes a Black student in a regular class with zero years in small classes. **This is our data generating mechanism.**
 
 ### Model Checking
 
 Create a plot or table that checks whether your chosen model's fitted values are reasonable compared to the actual data.
 
-```{r}
-#| label: model-check-fitted-vs-actual
-#| echo: true
 
-fitted_df <- augment(fit_classsize, new_data = star |> drop_na())
-
-fitted_df |>
-  select(g4math, .pred) |>
-  pivot_longer(everything(), names_to = "source", values_to = "value") |>
-  mutate(source = if_else(source == ".pred", "Fitted", "Actual")) |>
-  ggplot(aes(x = value, fill = source)) +
-  geom_density(alpha = 0.5) +
-  labs(
-    title = "Actual vs. Fitted Math Scores",
-    subtitle = "The fitted distribution matches the center but is far narrower than the actual scores",
-    x = "Fourth-grade math score",
-    y = NULL,
-    fill = "Source"
-  ) +
-  theme_minimal() +
-  theme(axis.text.y = element_blank(), axis.ticks.y = element_blank())
-```
-
-```{r}
-#| label: model-check-residuals
-#| echo: true
-
-fitted_df |>
-  mutate(.resid = g4math - .pred) |>
-  ggplot(aes(x = kind, y = .resid)) +
-  geom_jitter(width = 0.15, alpha = 0.3, size = 1) +
-  geom_hline(yintercept = 0, linetype = "dashed", color = "grey40") +
-  labs(
-    title = "Residuals by Class Type",
-    subtitle = "Residuals scatter evenly around zero in all three class types -- no obvious misfit",
-    x = "Class type",
-    y = "Residual (points)"
-  ) +
-  theme_minimal()
-```
-
-The fitted values center correctly and the residuals show no systematic pattern by class type. The narrowness of the fitted distribution is expected — our few covariates explain only a sliver of the person-to-person variation in test scores — and is itself a Temperance lesson about how much the model does not know.
 
 ------------------------------------------------------------------------
-
-## Temperance
-
-### Predictions
-
-Use `predictions(fit_classsize)` to estimate the math score for individual students in the sample.
-
-```{r}
-#| label: predictions-raw
-#| echo: true
-
-predictions(fit_classsize) |>
-  as_tibble() |>
-  select(kind, race, yearssmall, estimate, conf.low, conf.high) |>
-  head(6)
-```
-
-One prediction per tested student, built from that student's own covariates — the stepping stone that shows what the model produces before we average.
-
-Use `avg_predictions(fit_classsize, by = "kind")` to estimate the average math score for each class type.
-
-```{r}
-#| label: average-predictions
-#| echo: true
-
-avg_predictions(fit_classsize, by = "kind")
-```
-
-What is the expected math score for a student in a small class (with 95% CI)?
-
-> About 709, with a 95% CI of roughly [706, 712].
-
-What is the expected math score for a student in a regular class (with 95% CI)?
-
-> About 710, with a 95% CI of roughly [707, 712].
-
-### Comparisons
-
-Use `avg_comparisons(fit_classsize, variables = "kind")` to estimate the effect of each class type, relative to a regular class, on math scores.
-
-```{r}
-#| label: avg-comparison-kind
-#| echo: true
-
-avg_comparisons(fit_classsize, variables = "kind")
-```
-
-Both contrasts include zero: small − regular is −7.66 [−15.9, 0.6] (holding `yearssmall` fixed — the snapshot comparison) and regular-with-aide − regular is −1.95 [−6.1, 2.2]. We cannot distinguish either assignment effect from nothing.
-
-Use `avg_comparisons(fit_classsize, variables = "yearssmall")` to estimate the effect of one additional year spent in a small class.
-
-```{r}
-#| label: avg-comparison-yearssmall
-#| echo: true
-
-avg_comparisons(fit_classsize, variables = "yearssmall")
-```
-
-Each additional year in a small class is associated with about 2.2 more points, 95% CI roughly [0.1, 4.3]. This is the one number in the exercise that survives a confidence interval — and note the practical size: even four full years is only ~9 points on a scale where scores vary by 43 points around the mean. Statistically detectable is not the same as educationally transformative.
-
-### Visualizations
-
-Create a visualization of the average predictions by class type using `plot_predictions()`.
-
-```{r}
-#| label: prediction-plot
-#| echo: true
-
-avg_preds_kind <- avg_predictions(fit_classsize, by = "kind") |>
-  as_tibble()
-
-kind_gap <- round(diff(range(avg_preds_kind$estimate)), 1)
-
-avg_preds_kind |>
-  ggplot(aes(x = kind, y = estimate)) +
-  geom_pointrange(aes(ymin = conf.low, ymax = conf.high), linewidth = 0.7) +
-  labs(
-    title = "Predicted Fourth-Grade Math Score by Class Type",
-    subtitle = paste0("The three class-type averages span only ", kind_gap,
-                      " points, and every interval overlaps the others"),
-    x = "Class type",
-    y = "Predicted math score",
-    caption = "Source: Tennessee STAR experiment (Mosteller 1995), 2,395 tested students"
-  ) +
-  theme_minimal(base_size = 13)
-```
-
-What measure of uncertainty is shown in this plot?
-
-> The vertical bars are 95% confidence intervals around each class type's predicted average score.
-
-Create a plot showing predicted math scores by class type and race.
-
-```{r}
-#| label: prediction-plot-kind-race
-#| echo: true
-
-preds_kind_race <- avg_predictions(fit_classsize, by = c("kind", "race")) |>
-  as_tibble()
-
-race_gap <- preds_kind_race |>
-  group_by(race) |>
-  summarize(mean_est = mean(estimate)) |>
-  summarize(gap = round(diff(range(mean_est)), 0)) |>
-  pull(gap)
-
-preds_kind_race |>
-  ggplot(aes(x = kind, y = estimate, color = race)) +
-  geom_pointrange(aes(ymin = conf.low, ymax = conf.high),
-                  position = position_dodge(width = 0.4), linewidth = 0.7) +
-  labs(
-    title = "Predicted Math Score by Class Type and Race",
-    subtitle = paste0("Race gaps (up to ~", race_gap,
-                      " points across group averages) dwarf every class-type difference"),
-    x = "Class type",
-    y = "Predicted math score",
-    color = "Race"
-  ) +
-  theme_minimal()
-```
-
-The vertical separation between race groups is many times larger than any horizontal movement across class types — a visual summary of the whole exercise: in this data, who the students are matters far more for fourth-grade math scores than what kind of class they sat in.
-
-### Interpretation
-
-How does the principal interpret these estimates? How does the Texas Department of Education interpret the same numbers differently?
-
-> **Principal:** the predictions are forecasts *across rows*. She plugs each student's class type, race, and years-in-small-classes into the model and gets an expected score for planning — which students may need support, what the school-wide average will look like. Whether class size *causes* any of it is irrelevant to the forecast.
-
-> **Texas Department of Education:** the class-type contrasts are estimates of *within-row* causal effects, and they earn that reading only because STAR randomized assignment. The result is sobering: the assignment effect cannot be distinguished from zero, and the one significant number — 2.2 points per year of small-class dose — is also the *least* protected by randomization, because which students stayed in small classes for multiple years was not random.
-
-### Humility
-
-Besides the average math scores, identify two additional quantities of interest the person in your scenario might care about.
-
-> **Principal:** predicted *reading* scores (the data has `g4reading` too), and the full distribution of predicted scores — percentiles, not just means — for deciding how many students will need intervention services.
-
-> **Texas Department of Education:** the dose-response effect of four full years versus one (roughly 4 × 2.2 ≈ 9 points), and the cost side: small classes require more teachers and classrooms, so the real quantity of interest is points gained per dollar spent, which our model informs but cannot answer alone.
-
-Why might these estimates be a poor answer to your scenario's question? Identify at least two possible sources of bias.
-
-> 1) Sixty-two percent of students are missing the outcome. The missingness is balanced across class types, but if the students who left the study (movers, dropouts) differ from those who stayed — and they almost surely do — every estimate is built on a selected 38% of the experiment.
-
-> 2) The dose is not randomized. Initial class assignment was random, but staying in a small class for two, three, or four years was not — so the 2.2-points-per-year coefficient, our only significant finding, may reflect which families kept their children in the program rather than what small classes do.
-
-> 3) Tennessee 1985 is not Chicago or Dallas 2026: different tests, different students, different schools (the validity, stability, and representativeness gaps from Justice). And the world is always more uncertain than our models would have us believe — the reported intervals are only the *Preceptor's Posterior*, the best posterior achievable under our assumptions, not the truth.
