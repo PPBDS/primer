@@ -1,0 +1,178 @@
+---
+title: "Resumes"
+format:
+  html: default
+  pdf: default
+execute:
+  echo: false
+---
+
+```{r}
+#| label: setup
+#| message: false
+
+library(tidyverse)
+library(tidymodels)
+library(marginaleffects)
+
+resumes <- read_csv("data/resumes.csv", show_col_types = FALSE) |>
+  mutate(call = as.factor(call))
+```
+
+## Wisdom
+
+Your breakout room will be assigned one of these two scenarios:
+
+- Imagine that you are a contemporary historian studying US employment in the year 2000 in Baltimore. You want to understand the process by which some people got jobs and some did not.
+
+- Imagine that you work for a civil rights organization in Chicago. You want to understand the process by which black US citizens are discriminated against in hiring today.
+
+The historian asks: What proportion of job applicants in Baltimore in the year 2000 received callbacks, and how did that proportion differ by the applicant's race and sex?
+
+The civil rights organization asks: What is the average causal effect of having a black-sounding name, rather than a white-sounding name, on the probability that a job applicant in Chicago today receives a callback?
+
+Is your scenario's question causal or predictive? How do you know?
+
+
+
+**What are the units, outcome, and covariates for your scenario's question?**
+
+- Units:
+
+
+
+- Outcomes:
+
+
+
+- Covariates:
+
+
+
+- Treatment (if any):
+
+
+
+- Quantity of interest:
+
+
+
+Describe the key components of a Preceptor Table for your scenario; Use words like "units," "outcomes," and "covariates."
+
+
+
+Create a calculation that shows the overall callback rate, and the callback rate for each ethnicity. Briefly describe what you find.
+
+
+
+Create a plot that shows the relationship between callbacks and ethnicity. Briefly describe what it shows.
+
+
+
+Create a plot that shows the relationship between callbacks and resume quality, separately by ethnicity. Briefly describe what it shows.
+
+
+
+------------------------------------------------------------------------
+
+## Justice
+
+Describe the key components of a Population Table for your scenario.
+
+
+
+Counter-example to the assumption of validity:
+
+
+
+Counter-example to the assumption of stability:
+
+
+
+Counter-example to the assumption of representativeness:
+
+
+
+Counter-example to the assumption of unconfoundedness:
+
+
+
+What probability family should we use?
+
+
+
+Why should we use that probability family?
+
+
+
+What is the link function for our outcome?
+
+
+
+------------------------------------------------------------------------
+
+## Courage
+
+Create a candidate model, modeling the outcome `call` as a function of the covariate `city`. Call it `fit_city`.
+
+
+
+Create a candidate model, modeling `call` as a function of both `city` and `ethnicity`. Call it `fit_city_ethnicity`.
+
+
+
+Create a candidate model which adds `quality`, and its interaction with `ethnicity`, to `fit_city_ethnicity`. Call it `fit_quality`.
+
+
+
+Which model should we choose, and why? Define `fit_resumes` as your chosen model and write out the fitted equation.
+
+
+
+Create a plot or table that checks whether your chosen model's predicted callback probabilities are reasonable compared to the actual callback rates.
+
+
+
+------------------------------------------------------------------------
+
+## Temperance
+
+Use `predictions(fit_resumes, type = "prob")` to estimate the callback probability for individual resumes in the sample.
+
+
+
+Use `avg_predictions(fit_resumes, type = "prob", by = "ethnicity")` to estimate the average callback probability for resumes with black-sounding and white-sounding names.
+
+
+
+What is the expected callback probability for an applicant with a black-sounding name (with 95% CI)?
+
+
+
+What is the expected callback probability for an applicant with a white-sounding name (with 95% CI)?
+
+
+
+Use `avg_comparisons(fit_resumes, variables = "ethnicity", type = "prob")` to estimate the difference in callback probability between white-sounding and black-sounding names.
+
+
+
+Create a visualization of the average predictions by ethnicity using `plot_predictions()`.
+
+
+
+What measure of uncertainty is shown in this plot?
+
+
+
+How does the historian interpret the difference in callback probabilities? How does the civil rights organization interpret the same number differently?
+
+
+
+Besides the average callback probabilities, identify two additional quantities of interest the person in your scenario might care about.
+
+
+
+Why might these estimates be a poor answer to your scenario's question? Identify at least two possible sources of bias.
+
+

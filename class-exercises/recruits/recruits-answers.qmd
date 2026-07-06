@@ -49,7 +49,7 @@ None. This is a predictive model. Nothing in `recruits` can be manipulated --- w
 
 The average height for male and female recruits, and the difference between them.
 
-Describe the key components of a Preceptor table for this problem:
+Describe the key components of a Preceptor Table for this problem; Use words like "units," "outcomes," and "covariates."
 
   The Preceptor Table should have one row per recruit. In this exercise, the columns are Recruit, Height, and Sex. 
 
@@ -105,11 +105,7 @@ cat("```{=html}\n",
 The Preceptor Table is the smallest table that, if every cell were filled in with the truth, would make the question's answer easy to read off. 
 
 
-EDA:
-
-Before fitting a model, look at the data. The hour spent on a careful EDA almost always saves a day downstream. We look at height-by-sex three complementary ways, then height-by-age three complementary ways.
-
-**Plots that show the relationship between height and sex.**
+Create a plot that shows the relationship between height and sex. Briefly describe what it shows.
 
 ```{r}
 #| label: eda-height-sex-boxplot
@@ -172,7 +168,7 @@ recruits |>
 
 Male recruits outnumber female recruits four to one in this sample, so the male curve covers roughly four times as much area as the female curve. This is due to the sample size, and should not be taken as evidence that male and female heights are equally common or equally variable.
 
-**Plots that show the relationship between height and age.**
+Create a plot that shows the relationship between height and age. Briefly describe what it shows.
 
 ```{r}
 #| label: eda-height-age-scatter
@@ -205,6 +201,10 @@ Among adults aged 18-27, height has mostly stopped changing, so none of these vi
 ------------------------------------------------------------------------
 
 ## Justice
+
+Describe the key components of a Population Table for this problem.
+
+The Population Table has one row per person per year, drawn from the population of US young adults aged 18-27. The Data rows are NHANES participants (circa 2005); the Preceptor rows are next year's USMC recruits (2026). The columns are Source, Recruit, Year, Height, and Sex.
 
 ```{r}
 #| label: population-table
@@ -292,6 +292,8 @@ What is the link function for our outcome?
 
 > Our model will be a linear regression.
 
+------------------------------------------------------------------------
+
 ## Courage
 
 The abstract data generating mechanism coming out of Justice is:
@@ -299,7 +301,7 @@ The abstract data generating mechanism coming out of Justice is:
 $$Y = \beta_0 + \beta_1 X_1 + \cdots + \beta_n X_n + \epsilon, \quad \epsilon \sim N(0, \sigma^2)$$
 
 
-**Candidate model 1: height as a function of sex.**
+Create a candidate model, modeling the outcome `height` as a linear function of the binary covariate `sex`. Call it `fit_sex`.
 
 ```{r}
 #| label: candidate-model-sex
@@ -316,7 +318,7 @@ fit_sex |>
 
 The slope on `sexMale` is about 8.9 cm with a 95% confidence interval that excludes zero -- comparing two recruits differing only in sex, the male recruit is expected to be about 9 cm taller.
 
-**Candidate model 2: height as a function of age.**
+Create a candidate model, modeling the outcome `height` as a linear function of the continuous covariate `age`. Call it `fit_age`.
 
 ```{r}
 #| label: candidate-model-age
@@ -333,7 +335,7 @@ fit_age |>
 
 The slope on `age` is indistinguishable from zero, confirming what the EDA already showed: adult height has stopped changing in this age window, so age adds no predictive signal on its own.
 
-**Candidate model 3: height as a function of sex and age.**
+Create a candidate model, modeling `height` as a linear function of both `sex` and `age`. Call it `fit_sex_age`.
 
 ```{r}
 #| label: candidate-model-sex-age
@@ -350,7 +352,9 @@ fit_sex_age |>
 
 Adding `age` to the sex-only model leaves the `sexMale` coefficient essentially unchanged and the `age` coefficient still indistinguishable from zero. This is what we'd expect since age and sex are roughly uncorrelated in our sample, and age has no real relationship with height in this window.
 
-**Chosen model.** Because adding `age` does not change the answer to our question, the simpler model is preferable -- it is easier to explain, just as accurate, and avoids implying age matters when it doesn't:
+Which model should we choose, and why? Define `fit_recruits` as your chosen model and write out the fitted equation.
+
+Because adding `age` does not change the answer to our question, the simpler model is preferable -- it is easier to explain, just as accurate, and avoids implying age matters when it doesn't:
 
 ```{r}
 #| label: chosen-model
@@ -366,7 +370,9 @@ $$\widehat{\text{Height}} = 165.9 + 8.9 \cdot \text{sexMale}$$
 
 `sexMale` is a 0/1 dummy: 1 for male, 0 for female. The intercept (165.9) is the expected height of a female recruit; adding the slope (8.9) gives the expected male recruit height of 174.8 cm. **This is our data generating mechanism.**
 
-**Model checking.** A simple sanity check: the distribution of fitted values should resemble the distribution of actual heights in central tendency, even though the model only produces two distinct predicted values.
+Create a plot or table that checks whether your chosen model's fitted values are reasonable compared to the actual data.
+
+A simple sanity check: the distribution of fitted values should resemble the distribution of actual heights in central tendency, even though the model only produces two distinct predicted values.
 
 ```{r}
 #| label: model-check-fitted-vs-actual
@@ -410,10 +416,14 @@ augment(fit_recruits, new_data = recruits) |>
 
 The two distributions agree on central tendency and rough shape but differ on spread, which we expect from a model using only one binary covariate. The residual plot shows no systematic pattern by sex -- the model is not over- or under-predicting either group on average, which is the main thing we want to check before trusting the predictions in Temperance.
 
+------------------------------------------------------------------------
+
 ## Temperance
 
 
-**Predicted values.** `predictions()` returns the model's fitted height for every recruit in our sample.
+Use `predictions(fit_recruits)` to estimate the fitted height for individual recruits in the sample.
+
+`predictions()` returns the model's fitted height for every recruit in our sample.
 
 ```{r}
 #| label: predictions-raw
@@ -425,7 +435,9 @@ predictions(fit_recruits) |>
   head(6)
 ```
 
-**Average predictions.** We don't care about any one recruit's prediction -- we care about the average prediction for each sex, which is exactly what `avg_predictions()` gives us, grouped by `sex`.
+Use `avg_predictions(fit_recruits, by = "sex")` to estimate the average height of male and female USMC recruits next year.
+
+We don't care about any one recruit's prediction -- we care about the average prediction for each sex, which is exactly what `avg_predictions()` gives us, grouped by `sex`.
 
 ```{r}
 #| label: average-predictions
@@ -434,9 +446,17 @@ predictions(fit_recruits) |>
 avg_predictions(fit_recruits, by = "sex")
 ```
 
-The expected height of a female recruit is about 165.9 cm (95% CI roughly 161.8 to 170.0), and a male recruit about 174.8 cm (95% CI roughly 172.5 to 177.0).
+What is the expected height of a female recruit (with 95% CI)?
 
-**Comparison between groups.** `avg_comparisons()` directly answers "how much taller, on average, are male recruits than female recruits?" -- the same number as the regression slope, but computed and labeled as a comparison rather than read off a coefficient table.
+> About 165.9 cm, with a 95% CI of roughly [161.8, 170.0] cm.
+
+What is the expected height of a male recruit (with 95% CI)?
+
+> About 174.8 cm, with a 95% CI of roughly [172.5, 177.0] cm.
+
+Use `avg_comparisons(fit_recruits, variables = "sex")` to estimate the difference in average height between male and female recruits.
+
+`avg_comparisons()` directly answers "how much taller, on average, are male recruits than female recruits?" -- the same number as the regression slope, but computed and labeled as a comparison rather than read off a coefficient table.
 
 ```{r}
 #| label: avg-comparison-sex
@@ -447,7 +467,7 @@ avg_comparisons(fit_recruits, variables = "sex")
 
 The estimate (about 8.9 cm) and its confidence interval are exactly what `avg_predictions()` implies by subtraction, but `avg_comparisons()` does the subtraction and the uncertainty propagation for us -- useful as soon as we want a single number with a single confidence interval for "the difference," rather than two separate intervals we'd have to compare by eye.
 
-**Visualization of predictions.**
+Create a visualization of the average predictions by sex using `plot_predictions()`.
 
 ```{r}
 #| label: prediction-plot
@@ -470,11 +490,19 @@ plot_predictions(fit_recruits, condition = "sex", draw = FALSE) |>
   theme_minimal(base_size = 13)
 ```
 
-**Interpretation.** Comparing two recruits differing only in sex, the male recruit is expected to be about 8.9 cm taller, 95% CI roughly [4.3, 13.4] cm. Notice the language throughout: *comparison*, not *cause*, *raise*, or *change* -- `sex` is a covariate in a predictive model, not a treatment.
+Comparing two recruits differing only in sex, the male recruit is expected to be about 8.9 cm taller, 95% CI roughly [4.3, 13.4] cm. Notice the language throughout: *comparison*, not *cause*, *raise*, or *change* -- `sex` is a covariate in a predictive model, not a treatment. Practically, an 8.9 cm difference is large enough to matter for uniform sizing: it's roughly the gap between two adjacent standard sizes in most clothing systems, so treating male and female recruits identically when ordering uniforms would be a mistake.
 
-**Uncertainty and practical significance.** The female confidence interval is visibly wider than the male interval -- about twice as wide. The standard error of a group mean shrinks with the square root of sample size, so the 40-versus-10 split in our data directly produces this asymmetry. Practically, an 8.9 cm difference is large enough to matter for uniform sizing: it's roughly the gap between two adjacent standard sizes in most clothing systems, so treating male and female recruits identically when ordering uniforms would be a mistake.
+What measure of uncertainty is shown in this plot?
 
-**Additional quantities of interest.** The average height answers the specific question we asked, but a campaign-quality answer for the Quartermaster also wants:
+> The vertical bars are 95% confidence intervals around each group's predicted average height.
+
+Why is the confidence interval wider for female recruits?
+
+> The standard error of a group mean shrinks with the square root of sample size, and our sample has only 10 female recruits against 40 male recruits. That 40-versus-10 split directly produces the asymmetry, making the female interval about twice as wide.
+
+Besides the average height, identify two additional quantities of interest the Quartermaster might care about when ordering uniforms.
+
+The average height answers the specific question we asked, but a campaign-quality answer for the Quartermaster also wants:
 
 - The **maximum** height expected among next year's recruits, to make sure the largest uniform size is in stock.
 - The **10th and 90th percentiles** of height within each sex, to size the extra-small and extra-large orders.
@@ -483,7 +511,9 @@ Both are available from the same fitted DGM by simulation (drawing many syntheti
 
 **Remaining uncertainty.** The reported confidence intervals capture only sampling uncertainty under the model's assumptions. They do not capture uncertainty about whether those assumptions themselves are correct.
 
-**Possible sources of bias.** Three things are likely wrong with our answer. 
+Why might these estimated average heights be wrong? Identify at least two possible sources of bias.
+
+Three things are likely wrong with our answer. 
 
 > 1) USMC recruits are taller than the general NHANES-sampled population because the fitness screen filters out shorter applicants and recruits are self-selected -- our model probably understates true recruit height by a centimeter or two.
   
