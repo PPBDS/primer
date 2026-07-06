@@ -6,25 +6,19 @@ The Tennessee STAR experiment (Mosteller 1995) randomly assigned more than 6,000
 
 - Imagine you work for the Texas Department of Education. You want to understand student performance in small classes, relative to big classes, in Dallas. In Texas, there is data available like the data in the STAR project.
 
-This repo has everything you need for this week's class exercise:
+Each class meeting this week has its own repo, which you will fork that day:
 
-- `class-size-wisdom.qmd` — day 1: Wisdom and Justice. Type your answers directly into the document.
-- `class-size-courage.qmd` — day 2: Courage. Begins with our answers to Wisdom and Justice.
-- `class-size-temperance.qmd` — day 3: Temperance. Begins with our answers to Wisdom, Justice, and Courage.
-- `class-size-answers.qmd` — the answer guideline.
-- `data/class-size.csv` — the data.
-- `class-size-paper.pdf` — the original Mosteller (1995) paper.
+- `class-size-wisdom` — day 1: Wisdom and Justice.
+- `class-size-courage` — day 2: Courage. Its document begins with our answers to Wisdom and Justice.
+- `class-size-temperance` — day 3: Temperance. Its document begins with our answers to Wisdom, Justice, and Courage.
+
+This repo holds one meeting's exercise document (the `.qmd` file), the data (`data/class-size.csv`), the original Mosteller (1995) paper (`class-size-paper.pdf`), and this README.
 
 ## Get your own copy
 
 1. Click **Fork** (top right of this page) to make your own copy of this repo on your GitHub account.
-2. Clone *your fork* (not this repo) to your computer, replacing `<your-username>`:
-
-   ```bash
-   git clone https://github.com/<your-username>/class-size.git
-   ```
-
-3. Open the `class-size` folder in your IDE. Most of our students use VS Code.
+2. Clone *your fork* (not this repo): click the green **Code** button on your fork, copy the URL, and run `git clone <that-url>`.
+3. Open the cloned folder in your IDE. Most of our students use VS Code.
 
 ## What you need installed
 
@@ -36,12 +30,10 @@ install.packages(c("tidyverse", "tidymodels", "marginaleffects", "broom", "gt"))
 
 ## Work the exercise
 
-Each class meeting has its own document. Work them in order: `class-size-wisdom.qmd`, then `class-size-courage.qmd`, then `class-size-temperance.qmd`. Every document starts with the same background and data loading, and each later document begins with our answers to everything that came before — so you always work from correct foundations.
-
-Type your answers into the blank space below each question, then render:
+Open the `.qmd` file and type your answers into the blank space below each question. Each day's document starts with the same background and data loading, and the later documents begin with our answers to everything that came before — so you always work from correct foundations. Render as you go:
 
 ```bash
-quarto render class-size-wisdom.qmd
+quarto render class-size-wisdom.qmd   # use the name of this repo's .qmd file
 ```
 
 Commit and push your work to your fork as you go.

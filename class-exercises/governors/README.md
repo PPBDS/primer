@@ -6,25 +6,19 @@ Barfort, Klemmensen, and Larsen (2021) collected the lifespans of 3,587 candidat
 
 - Imagine you are a researcher. You want to know if winning candidates live longer.
 
-This repo has everything you need for this week's class exercise:
+Each class meeting this week has its own repo, which you will fork that day:
 
-- `governors-wisdom.qmd` — day 1: Wisdom and Justice. Type your answers directly into the document.
-- `governors-courage.qmd` — day 2: Courage. Begins with our answers to Wisdom and Justice.
-- `governors-temperance.qmd` — day 3: Temperance. Begins with our answers to Wisdom, Justice, and Courage.
-- `governors-answers.qmd` — the answer guideline.
-- `data/governors.csv` — the data.
-- `governors-paper.pdf` — the original Barfort, Klemmensen, and Larsen (2021) paper.
+- `governors-wisdom` — day 1: Wisdom and Justice.
+- `governors-courage` — day 2: Courage. Its document begins with our answers to Wisdom and Justice.
+- `governors-temperance` — day 3: Temperance. Its document begins with our answers to Wisdom, Justice, and Courage.
+
+This repo holds one meeting's exercise document (the `.qmd` file), the data (`data/governors.csv`), the original Barfort, Klemmensen, and Larsen (2021) paper (`governors-paper.pdf`), and this README.
 
 ## Get your own copy
 
 1. Click **Fork** (top right of this page) to make your own copy of this repo on your GitHub account.
-2. Clone *your fork* (not this repo) to your computer, replacing `<your-username>`:
-
-   ```bash
-   git clone https://github.com/<your-username>/governors.git
-   ```
-
-3. Open the `governors` folder in your IDE. Most of our students use VS Code.
+2. Clone *your fork* (not this repo): click the green **Code** button on your fork, copy the URL, and run `git clone <that-url>`.
+3. Open the cloned folder in your IDE. Most of our students use VS Code.
 
 ## What you need installed
 
@@ -36,12 +30,10 @@ install.packages(c("tidyverse", "tidymodels", "marginaleffects", "broom", "gt"))
 
 ## Work the exercise
 
-Each class meeting has its own document. Work them in order: `governors-wisdom.qmd`, then `governors-courage.qmd`, then `governors-temperance.qmd`. Every document starts with the same background and data loading, and each later document begins with our answers to everything that came before — so you always work from correct foundations.
-
-Type your answers into the blank space below each question, then render:
+Open the `.qmd` file and type your answers into the blank space below each question. Each day's document starts with the same background and data loading, and the later documents begin with our answers to everything that came before — so you always work from correct foundations. Render as you go:
 
 ```bash
-quarto render governors-wisdom.qmd
+quarto render governors-wisdom.qmd   # use the name of this repo's .qmd file
 ```
 
 Commit and push your work to your fork as you go.

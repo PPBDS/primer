@@ -2,7 +2,6 @@
 title: "Resumes: Temperance"
 format:
   html: default
-  pdf: default
 execute:
   echo: false
 ---

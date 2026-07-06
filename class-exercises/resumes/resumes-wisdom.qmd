@@ -2,7 +2,6 @@
 title: "Resumes: Wisdom and Justice"
 format:
   html: default
-  pdf: default
 execute:
   echo: false
 ---
