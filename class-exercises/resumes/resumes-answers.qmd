@@ -103,6 +103,7 @@ hist_pre_html <- gt::gt(hist_pre_tibble, id = "preceptor_hist_tbl") |>
   gt::tab_spanner(label = "Unit", id = "unit_span", columns = c(`Applicant`)) |>
   gt::tab_spanner(label = "Outcome", id = "outcome_span", columns = c(`Callback`)) |>
   gt::tab_spanner(label = "Covariates", id = "covariates_span", columns = c(`Race`, `Sex`)) |>
+  gt::cols_width(`Applicant` ~ gt::px(170), `Callback` ~ gt::px(100), `Race` ~ gt::px(100), `Sex` ~ gt::px(100)) |>
   gt::cols_align(align = "left", columns = c(`Applicant`, `Callback`, `Race`, `Sex`)) |>
   gt::fmt_markdown(columns = gt::everything()) |>
   gt::tab_options(
@@ -160,6 +161,7 @@ civil_pre_html <- gt::gt(civil_pre_tibble, id = "preceptor_civil_tbl") |>
   gt::tab_spanner(label = "Potential Outcomes", id = "outcome_span",
                   columns = c(`Callback if Black Name`, `Callback if White Name`)) |>
   gt::tab_spanner(label = "Treatment", id = "treatment_span", columns = c(`Name on Resume`)) |>
+  gt::cols_width(`Applicant` ~ gt::px(170), `Callback if Black Name` ~ gt::px(130), `Callback if White Name` ~ gt::px(130), `Name on Resume` ~ gt::px(140)) |>
   gt::cols_align(align = "left", columns = gt::everything()) |>
   gt::fmt_markdown(columns = gt::everything()) |>
   gt::tab_options(
@@ -226,10 +228,7 @@ eth_rates |>
   scale_y_continuous(labels = scales::percent_format(accuracy = 1)) +
   labs(
     title = "Callback Rate by Name Ethnicity",
-    subtitle = paste0(
-      "White-sounding names: ", round(100 * eth_rates$rate[eth_rates$ethnicity == "cauc"], 1),
-      "% vs. black-sounding names: ", round(100 * eth_rates$rate[eth_rates$ethnicity == "afam"], 1), "%"
-    ),
+    subtitle = "White-sounding names get about 50% more callbacks",
     x = "Name ethnicity (afam = African-American-sounding, cauc = White-sounding)",
     y = "Callback rate"
   ) +
@@ -242,19 +241,12 @@ The rate comparison is the headline: white-sounding names are called back half a
 #| label: eda-callback-ethnicity-counts
 #| echo: true
 
-call_counts <- resumes |> count(ethnicity, call)
-
 resumes |>
   ggplot(aes(x = ethnicity, fill = call)) +
   geom_bar(position = "stack") +
   labs(
     title = "Callback Counts by Name Ethnicity",
-    subtitle = paste0(
-      "Callbacks are rare: ", call_counts$n[call_counts$ethnicity == "afam" & call_counts$call == "yes"],
-      " of ", sum(call_counts$n[call_counts$ethnicity == "afam"]), " afam resumes vs. ",
-      call_counts$n[call_counts$ethnicity == "cauc" & call_counts$call == "yes"],
-      " of ", sum(call_counts$n[call_counts$ethnicity == "cauc"]), " cauc resumes"
-    ),
+    subtitle = "Most resumes of either kind get no callback at all",
     x = "Name ethnicity",
     y = "Number of resumes",
     fill = "Callback"
@@ -274,22 +266,13 @@ quality_rates <- resumes |>
   group_by(ethnicity, quality) |>
   summarize(rate = mean(call == "yes"), .groups = "drop")
 
-quality_gaps <- quality_rates |>
-  pivot_wider(names_from = quality, values_from = rate) |>
-  mutate(gap = high - low)
-
 quality_rates |>
   ggplot(aes(x = ethnicity, y = rate, fill = quality)) +
   geom_col(position = "dodge", width = 0.6) +
   scale_y_continuous(labels = scales::percent_format(accuracy = 1)) +
   labs(
     title = "Callback Rate by Resume Quality and Name Ethnicity",
-    subtitle = paste0(
-      "High quality adds ", round(100 * quality_gaps$gap[quality_gaps$ethnicity == "cauc"], 1),
-      " points for white-sounding names, but only ",
-      round(100 * quality_gaps$gap[quality_gaps$ethnicity == "afam"], 1),
-      " points for black-sounding names"
-    ),
+    subtitle = "A better resume helps white-sounding names much more",
     x = "Name ethnicity",
     y = "Callback rate",
     fill = "Resume quality"
@@ -341,6 +324,7 @@ hist_pop_html <- gt::gt(hist_pop_tibble, id = "population_hist_tbl") |>
   gt::tab_spanner(label = "Unit/Time", id = "unit_span", columns = c(`Applicant`, `Year`)) |>
   gt::tab_spanner(label = "Outcome", id = "outcome_span", columns = c(`Callback`)) |>
   gt::tab_spanner(label = "Covariates", id = "covariates_span", columns = c(`Race`, `Sex`)) |>
+  gt::cols_width(`Source` ~ gt::px(110), `Applicant` ~ gt::px(170), `Year` ~ gt::px(80), `Callback` ~ gt::px(100), `Race` ~ gt::px(100), `Sex` ~ gt::px(100)) |>
   gt::cols_align(align = "left", columns = c(`Source`, `Applicant`, `Callback`, `Race`, `Sex`)) |>
   gt::cols_align(align = "right", columns = c(`Year`)) |>
   gt::fmt_markdown(columns = gt::everything()) |>
@@ -396,6 +380,7 @@ civil_pop_html <- gt::gt(civil_pop_tibble, id = "population_civil_tbl") |>
   gt::tab_spanner(label = "Potential Outcomes", id = "outcome_span",
                   columns = c(`Callback if Black Name`, `Callback if White Name`)) |>
   gt::tab_spanner(label = "Treatment", id = "treatment_span", columns = c(`Name on Resume`)) |>
+  gt::cols_width(`Source` ~ gt::px(110), `Applicant` ~ gt::px(170), `Year` ~ gt::px(80), `Callback if Black Name` ~ gt::px(130), `Callback if White Name` ~ gt::px(130), `Name on Resume` ~ gt::px(140)) |>
   gt::cols_align(align = "left", columns = c(`Source`, `Applicant`, `Callback if Black Name`, `Callback if White Name`, `Name on Resume`)) |>
   gt::cols_align(align = "right", columns = c(`Year`)) |>
   gt::fmt_markdown(columns = gt::everything()) |>
@@ -570,19 +555,13 @@ predicted <- avg_predictions(fit_resumes, type = "prob",
 
 calibration <- bind_rows(observed, predicted)
 
-max_gap <- calibration |>
-  pivot_wider(names_from = source, values_from = rate) |>
-  summarize(gap = max(abs(Observed - Predicted))) |>
-  pull(gap)
-
 calibration |>
   ggplot(aes(x = interaction(ethnicity, city, sep = " / "), y = rate, fill = source)) +
   geom_col(position = "dodge", width = 0.6) +
   scale_y_continuous(labels = scales::percent_format(accuracy = 1)) +
   labs(
     title = "Observed vs. Predicted Callback Rates by Ethnicity and City",
-    subtitle = paste0("The largest observed-vs-predicted gap across the four groups is ",
-                      round(100 * max_gap, 2), " percentage points"),
+    subtitle = "Predicted callback rates track the observed rates in all four groups",
     x = "Name ethnicity / City",
     y = "Callback rate",
     fill = NULL
@@ -653,12 +632,6 @@ Create a visualization of the average predictions by ethnicity using `plot_predi
 #| label: prediction-plot
 #| echo: true
 
-avg_preds <- avg_predictions(fit_resumes, type = "prob", by = "ethnicity") |>
-  as_tibble() |>
-  filter(group == "yes")
-
-prob_gap <- round(100 * diff(range(avg_preds$estimate)), 1)
-
 plot_predictions(fit_resumes, condition = "ethnicity", type = "prob", draw = FALSE) |>
   filter(group == "yes") |>
   ggplot(aes(x = ethnicity, y = estimate)) +
@@ -666,8 +639,7 @@ plot_predictions(fit_resumes, condition = "ethnicity", type = "prob", draw = FAL
   scale_y_continuous(labels = scales::percent_format(accuracy = 1)) +
   labs(
     title = "Predicted Callback Probability by Name Ethnicity",
-    subtitle = paste0("White-sounding names are predicted to receive callbacks about ",
-                      prob_gap, " percentage points more often"),
+    subtitle = "White-sounding names are predicted to receive callbacks about 3 percentage points more often",
     x = "Name ethnicity (afam = African-American-sounding, cauc = White-sounding)",
     y = "Predicted callback probability",
     caption = "Source: Bertrand & Mullainathan (2004) resume experiment, 4,870 resumes"

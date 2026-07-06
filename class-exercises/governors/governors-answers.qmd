@@ -103,6 +103,7 @@ ins_pre_html <- gt::gt(ins_pre_tibble, id = "preceptor_insurer_tbl") |>
   gt::tab_spanner(label = "Outcome", id = "outcome_span", columns = c(`Years Lived After Election`)) |>
   gt::tab_spanner(label = "Covariates", id = "covariates_span",
                   columns = c(`Election Result`, `Age at Election`, `Party`)) |>
+  gt::cols_width(`Candidate` ~ gt::px(160), `Years Lived After Election` ~ gt::px(130), `Election Result` ~ gt::px(110), `Age at Election` ~ gt::px(110), `Party` ~ gt::px(110)) |>
   gt::cols_align(align = "left", columns = c(`Candidate`, `Election Result`, `Party`)) |>
   gt::cols_align(align = "right", columns = c(`Years Lived After Election`, `Age at Election`)) |>
   gt::fmt_markdown(columns = gt::everything()) |>
@@ -163,6 +164,7 @@ res_pre_html <- gt::gt(res_pre_tibble, id = "preceptor_researcher_tbl") |>
   gt::tab_spanner(label = "Potential Outcomes", id = "outcome_span",
                   columns = c(`Years Lived if Win`, `Years Lived if Lose`)) |>
   gt::tab_spanner(label = "Treatment", id = "treatment_span", columns = c(`Election Outcome`)) |>
+  gt::cols_width(`Candidate` ~ gt::px(160), `Years Lived if Win` ~ gt::px(120), `Years Lived if Lose` ~ gt::px(120), `Election Outcome` ~ gt::px(130)) |>
   gt::cols_align(align = "left", columns = c(`Candidate`, `Election Outcome`)) |>
   gt::cols_align(align = "right", columns = c(`Years Lived if Win`, `Years Lived if Lose`)) |>
   gt::fmt_markdown(columns = gt::everything()) |>
@@ -205,17 +207,13 @@ Create a plot that shows the distribution of `lived_after`.
 #| label: eda-lived-after-distribution
 #| echo: true
 
-med_lived <- median(governors$lived_after, na.rm = TRUE)
-n_negative <- sum(governors$lived_after < 0, na.rm = TRUE)
-
 governors |>
   ggplot(aes(x = lived_after)) +
   geom_histogram(bins = 40, fill = "steelblue", color = "white") +
   coord_cartesian(xlim = c(-10, 80)) +
   labs(
     title = "Years Lived After the Election",
-    subtitle = paste0("Median: ", round(med_lived, 1), " years; ", n_negative,
-                      " impossible negative values lurk in the oldest records"),
+    subtitle = "A few impossible negative values lurk in the oldest records",
     x = "Years lived after election",
     y = "Number of candidacies"
   ) +
@@ -223,30 +221,6 @@ governors |>
 ```
 
 The outcome is continuous and widely spread, from candidates who died shortly after their election to some who lived another seven decades. A handful of *negative* values — candidates recorded as dying before their own election — flag data-quality problems in the oldest records, one more reason to restrict attention to the post-1945 era.
-
-Create a plot that shows the relationship between `lived_after` and `election_age`.
-
-```{r}
-#| label: eda-lived-after-age
-#| echo: true
-
-age_slope <- coef(lm(lived_after ~ election_age, data = governors))[["election_age"]]
-
-governors |>
-  ggplot(aes(x = election_age, y = lived_after)) +
-  geom_point(alpha = 0.2, size = 1) +
-  geom_smooth(method = "lm", se = FALSE, color = "firebrick") +
-  labs(
-    title = "Years Lived After the Election vs. Age at Election",
-    subtitle = paste0("Each additional year of age at election is associated with ",
-                      abs(round(age_slope, 2)), " fewer years lived afterward"),
-    x = "Age at election",
-    y = "Years lived after election"
-  ) +
-  theme_minimal()
-```
-
-The strong negative relationship is close to mechanical: the older you are on election day, the fewer years you have left. Any model of `lived_after` that omits `election_age` will attribute this huge age effect to whatever covariates happen to correlate with age — so it must be in the model.
 
 Create a tibble, called `x`, which keeps only close elections (`win_margin` within 5 points) after 1945 and adds a variable `election_result` recording whether the candidate won or lost. How many candidates remain? Compare the average `lived_after`, and the average `election_age`, of winners and losers.
 
@@ -268,6 +242,27 @@ x |>
 ```
 
 254 candidacies remain — the price of the close-election restriction is discarding 93% of the data. Winners lived about 2.4 years longer than losers on average (29.6 vs. 27.2), a raw gap we should not yet call an effect. Just as important: winners and losers were almost exactly the same age at election (51.0 vs. 51.4), which is what we would expect if close elections really do assign winning as good as randomly. *Discussion question: what other pre-election characteristics would you want to check for balance?*
+
+Using `x`, create a plot that shows the relationship between `lived_after` and `election_age`.
+
+```{r}
+#| label: eda-lived-after-age
+#| echo: true
+
+x |>
+  ggplot(aes(x = election_age, y = lived_after)) +
+  geom_point(alpha = 0.2, size = 1) +
+  geom_smooth(method = "lm", se = FALSE, color = "firebrick") +
+  labs(
+    title = "Years Lived After the Election vs. Age at Election",
+    subtitle = "Older candidates have fewer years left to live",
+    x = "Age at election",
+    y = "Years lived after election"
+  ) +
+  theme_minimal()
+```
+
+The strong negative relationship is close to mechanical: the older you are on election day, the fewer years you have left. Any model of `lived_after` that omits `election_age` will attribute this huge age effect to whatever covariates happen to correlate with age — so it must be in the model. (Plotted on the raw data instead, this scatter would also expose a few dozen impossible values — negative ages at election — hiding in the pre-1945 records; our filter removes every one of them.)
 
 ------------------------------------------------------------------------
 
@@ -312,6 +307,7 @@ ins_pop_html <- gt::gt(ins_pop_tibble, id = "population_insurer_tbl") |>
   gt::tab_spanner(label = "Outcome", id = "outcome_span", columns = c(`Years Lived After Election`)) |>
   gt::tab_spanner(label = "Covariates", id = "covariates_span",
                   columns = c(`Election Result`, `Age at Election`, `Party`)) |>
+  gt::cols_width(`Source` ~ gt::px(110), `Candidate` ~ gt::px(160), `Year` ~ gt::px(80), `Years Lived After Election` ~ gt::px(130), `Election Result` ~ gt::px(110), `Age at Election` ~ gt::px(110), `Party` ~ gt::px(110)) |>
   gt::cols_align(align = "left", columns = c(`Source`, `Candidate`, `Election Result`, `Party`)) |>
   gt::cols_align(align = "right", columns = c(`Year`, `Years Lived After Election`, `Age at Election`)) |>
   gt::fmt_markdown(columns = gt::everything()) |>
@@ -369,6 +365,7 @@ res_pop_html <- gt::gt(res_pop_tibble, id = "population_researcher_tbl") |>
   gt::tab_spanner(label = "Potential Outcomes", id = "outcome_span",
                   columns = c(`Years Lived if Win`, `Years Lived if Lose`)) |>
   gt::tab_spanner(label = "Treatment", id = "treatment_span", columns = c(`Election Outcome`)) |>
+  gt::cols_width(`Source` ~ gt::px(110), `Candidate` ~ gt::px(160), `Year` ~ gt::px(80), `Years Lived if Win` ~ gt::px(120), `Years Lived if Lose` ~ gt::px(120), `Election Outcome` ~ gt::px(130)) |>
   gt::cols_align(align = "left", columns = c(`Source`, `Candidate`, `Election Outcome`)) |>
   gt::cols_align(align = "right", columns = c(`Year`, `Years Lived if Win`, `Years Lived if Lose`)) |>
   gt::fmt_markdown(columns = gt::everything()) |>
@@ -637,17 +634,12 @@ Create a visualization of the average predictions by election result using `plot
 #| label: prediction-plot
 #| echo: true
 
-cond_preds <- plot_predictions(fit_governors, condition = "election_result", draw = FALSE)
-
-cond_gap <- round(diff(range(cond_preds$estimate)), 1)
-
-cond_preds |>
+plot_predictions(fit_governors, condition = "election_result", draw = FALSE) |>
   ggplot(aes(x = election_result, y = estimate)) +
   geom_pointrange(aes(ymin = conf.low, ymax = conf.high), linewidth = 0.7) +
   labs(
     title = "Predicted Years Lived After the Election, by Election Result",
-    subtitle = paste0("Holding margin, age, and party fixed, winners are predicted to live about ",
-                      cond_gap, " more years"),
+    subtitle = "Holding margin, age, and party fixed, winners are predicted to live about 8.6 more years",
     x = "Election result",
     y = "Predicted years lived after election",
     caption = "Source: Barfort et al. (2021), 254 close gubernatorial elections, 1946-2003"
@@ -667,11 +659,6 @@ Create a plot showing predicted years lived after the election as a function of 
 #| label: prediction-plot-age
 #| echo: true
 
-win_effect <- avg_comparisons(fit_governors, variables = "election_result") |>
-  as_tibble() |>
-  pull(estimate) |>
-  round(1)
-
 plot_predictions(fit_governors,
                  condition = c("election_age", "election_result"),
                  draw = FALSE) |>
@@ -681,8 +668,7 @@ plot_predictions(fit_governors,
   geom_line(linewidth = 1) +
   labs(
     title = "Predicted Years Lived After the Election, by Age and Result",
-    subtitle = paste0("The two lines run parallel, separated by the ", win_effect,
-                      "-year winning effect at every age"),
+    subtitle = "The two lines run parallel, separated by the winning effect at every age",
     x = "Age at election",
     y = "Predicted years lived after election",
     color = "Election result",

@@ -114,6 +114,7 @@ prin_pre_html <- gt::gt(prin_pre_tibble, id = "preceptor_principal_tbl") |>
   gt::tab_spanner(label = "Unit", id = "unit_span", columns = c(`Student`)) |>
   gt::tab_spanner(label = "Outcome", id = "outcome_span", columns = c(`Math Score`)) |>
   gt::tab_spanner(label = "Covariates", id = "covariates_span", columns = c(`Class Type`, `Race`)) |>
+  gt::cols_width(`Student` ~ gt::px(160), `Math Score` ~ gt::px(110), `Class Type` ~ gt::px(150), `Race` ~ gt::px(100)) |>
   gt::cols_align(align = "left", columns = c(`Student`, `Class Type`, `Race`)) |>
   gt::cols_align(align = "right", columns = c(`Math Score`)) |>
   gt::fmt_markdown(columns = gt::everything()) |>
@@ -174,6 +175,7 @@ doe_pre_html <- gt::gt(doe_pre_tibble, id = "preceptor_doe_tbl") |>
   gt::tab_spanner(label = "Potential Outcomes", id = "outcome_span",
                   columns = c(`Score if Small`, `Score if Regular`, `Score if Regular with Aide`)) |>
   gt::tab_spanner(label = "Treatment", id = "treatment_span", columns = c(`Class Assignment`)) |>
+  gt::cols_width(`Student` ~ gt::px(160), `Score if Small` ~ gt::px(110), `Score if Regular` ~ gt::px(110), `Score if Regular with Aide` ~ gt::px(140), `Class Assignment` ~ gt::px(150)) |>
   gt::cols_align(align = "left", columns = c(`Student`, `Class Assignment`)) |>
   gt::cols_align(align = "right", columns = c(`Score if Small`, `Score if Regular`, `Score if Regular with Aide`)) |>
   gt::fmt_markdown(columns = gt::everything()) |>
@@ -222,14 +224,12 @@ Create a plot that shows the distribution of `g4math`.
 
 scored <- star |> filter(!is.na(g4math))
 
-star |>
-  filter(!is.na(g4math)) |>
+scored |>
   ggplot(aes(x = g4math)) +
   geom_histogram(bins = 30, fill = "steelblue", color = "white") +
   labs(
     title = "Fourth-Grade Math Scores",
-    subtitle = paste0("Mean ", round(mean(scored$g4math), 0), ", sd ", round(sd(scored$g4math), 0),
-                      " -- and only ", nrow(scored), " of ", nrow(star), " students have a score at all"),
+    subtitle = "Scores cluster around 700 -- and most students have no score at all",
     x = "Fourth-grade math score",
     y = "Number of students"
   ) +
@@ -259,16 +259,12 @@ Create a plot that shows the relationship between `g4math` and class type.
 #| label: eda-g4math-kind-boxplot
 #| echo: true
 
-kind_medians <- scored |>
-  group_by(kind) |>
-  summarize(med = median(g4math))
-
 scored |>
   ggplot(aes(x = kind, y = g4math, fill = kind)) +
   geom_boxplot(width = 0.5, alpha = 0.7, show.legend = FALSE) +
   labs(
     title = "Math Scores by Class Type: Boxplot",
-    subtitle = paste0("Medians: ", paste(kind_medians$kind, kind_medians$med, collapse = ", ")),
+    subtitle = "The three class types look almost identical",
     x = "Class type",
     y = "Fourth-grade math score"
   ) +
@@ -336,6 +332,7 @@ prin_pop_html <- gt::gt(prin_pop_tibble, id = "population_principal_tbl") |>
   gt::tab_spanner(label = "Unit/Time", id = "unit_span", columns = c(`Student`, `Year`)) |>
   gt::tab_spanner(label = "Outcome", id = "outcome_span", columns = c(`Math Score`)) |>
   gt::tab_spanner(label = "Covariates", id = "covariates_span", columns = c(`Class Type`, `Race`)) |>
+  gt::cols_width(`Source` ~ gt::px(110), `Student` ~ gt::px(160), `Year` ~ gt::px(80), `Math Score` ~ gt::px(110), `Class Type` ~ gt::px(150), `Race` ~ gt::px(100)) |>
   gt::cols_align(align = "left", columns = c(`Source`, `Student`, `Class Type`, `Race`)) |>
   gt::cols_align(align = "right", columns = c(`Year`, `Math Score`)) |>
   gt::fmt_markdown(columns = gt::everything()) |>
@@ -393,6 +390,7 @@ doe_pop_html <- gt::gt(doe_pop_tibble, id = "population_doe_tbl") |>
   gt::tab_spanner(label = "Potential Outcomes", id = "outcome_span",
                   columns = c(`Score if Small`, `Score if Regular`, `Score if Regular with Aide`)) |>
   gt::tab_spanner(label = "Treatment", id = "treatment_span", columns = c(`Class Assignment`)) |>
+  gt::cols_width(`Source` ~ gt::px(110), `Student` ~ gt::px(160), `Year` ~ gt::px(80), `Score if Small` ~ gt::px(110), `Score if Regular` ~ gt::px(110), `Score if Regular with Aide` ~ gt::px(140), `Class Assignment` ~ gt::px(150)) |>
   gt::cols_align(align = "left", columns = c(`Source`, `Student`, `Class Assignment`)) |>
   gt::cols_align(align = "right", columns = c(`Year`, `Score if Small`, `Score if Regular`, `Score if Regular with Aide`)) |>
   gt::fmt_markdown(columns = gt::everything()) |>
