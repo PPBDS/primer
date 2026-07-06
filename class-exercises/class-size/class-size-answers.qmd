@@ -1,0 +1,738 @@
+---
+title: "Class Size Answer Guideline"
+format:
+  html: default
+  pdf: default
+execute:
+  echo: false
+---
+
+```{r}
+#| label: setup
+#| message: false
+
+library(tidyverse)
+library(tidymodels)
+library(marginaleffects)
+library(gt)
+library(broom)
+
+star <- read_csv("data/class-size.csv", show_col_types = FALSE) |>
+  mutate(kind = recode(classtype,
+                       `1` = "small",
+                       `2` = "regular",
+                       `3` = "regular with aid")) |>
+  mutate(race = recode(race,
+                       `1` = "White",
+                       `2` = "Black",
+                       `3` = "Others",
+                       `4` = "Others",
+                       `5` = "Others",
+                       `6` = "Others")) |>
+  select(g4math, kind, race, yearssmall)
+```
+
+## The Question
+
+The Tennessee STAR experiment (Mosteller 1995) randomly assigned more than 6,000 students in about 80 Tennessee schools to small classes (13–17 students), regular classes (22–25), or regular classes with a teacher's aide, from kindergarten through third grade. Our data records each student's class type, race, years spent in small classes, and fourth-grade math score.
+
+There are two scenarios. Focus on just one of them:
+
+- Imagine that you are an elementary school principal in Chicago. You want to predict student performance. Fortunately, you have data today for your current students like the data available in the STAR project.
+
+- Imagine you work for the Texas Department of Education. You want to understand student performance in small classes, relative to big classes, in Dallas. In Texas, there is data available like the data in the STAR project.
+
+The principal asks: What will be the average fourth-grade math score of the students in my school next year, given their class type and background?
+
+The Texas Department of Education asks: What is the average causal effect of assigning a Dallas student to a small class, rather than a regular class, on their fourth-grade math score?
+
+Note that we use the same data, and the same fitted model, to help both people.
+
+## Wisdom
+
+### Units, Outcomes, and Covariates
+
+**What are the units, outcome, and covariates for your scenario's question?**
+
+- Units:
+
+**Principal:** each row is one student enrolled in her Chicago elementary school next year — a few hundred students. **Texas Department of Education:** each row is one elementary student in Dallas today — tens of thousands of students.
+
+- Outcomes:
+
+**Principal:** `g4math` — the student's fourth-grade standardized math score. One observed (eventually) outcome per row. **Texas Department of Education:** three *potential* outcomes per row — the math score if assigned to a small class, if assigned to a regular class, and if assigned to a regular class with an aide.
+
+- Covariates:
+
+**Principal:** class type, race, and years already spent in small classes — all observable today and all predictive. **Texas Department of Education:** none are forced by the question, though race and years in small classes will earn their way into the model.
+
+- Treatment (if any):
+
+**Principal:** none. This is a predictive model; class type is just another covariate. **Texas Department of Education:** the class-type assignment — small versus regular versus regular with aide. With three levels, each student has three potential outcomes, and each pairwise contrast is a causal effect.
+
+- Quantity of interest:
+
+**Principal:** the expected math score for each of her students, given their covariates. **Texas Department of Education:** the average difference between potential outcomes under small and regular assignment.
+
+### Preceptor Table
+
+Describe the key components of a Preceptor Table for your scenario; Use words like "units," "outcomes," and "covariates."
+
+  **Principal:** The Preceptor Table should have one row per student in her school next year. In this exercise, the columns are Student, Math Score, and the covariates Class Type and Race.
+
+  **Texas Department of Education:** The Preceptor Table should have one row per Dallas elementary student. The columns are Student, the three potential outcomes (Score if Small, Score if Regular, Score if Regular with Aide), and the Treatment (Class Assignment).
+
+```{r}
+#| label: preceptor-table-principal
+#| echo: false
+#| results: asis
+
+prin_pre_tibble <- tibble::tribble(
+  ~`Student`,       ~`Math Score`, ~`Class Type`,        ~`Race`,
+  "Maya Johnson",   "715",         "Small",              "Black",
+  "Liam O'Brien",   "692",         "Regular",            "White",
+  "...",            "...",         "...",                "...",
+  "Sofia Ramirez",  "704",         "Regular with aide",  "Others"
+)
+
+prin_pre_title_footnote <- "If all the information in this table were available, we could answer the question: What will be the average fourth-grade math score of the students in my school next year, given their class type and background?"
+prin_pre_units_footnote <- "Each row represents one student enrolled in the principal's Chicago elementary school in the 2027 school year — a few hundred students."
+prin_pre_outcome_footnote <- "Fourth-grade standardized math score, on the Stanford Achievement Test scale used by STAR (scores cluster around 700). For students who have not yet taken the test, the cell holds the true future value, because the Preceptor Table shows the unobservable truth."
+prin_pre_covariate_footnote <- "Class Type takes three values: Small, Regular, or Regular with aide — a covariate here, not a treatment, since the principal is forecasting rather than intervening. Race uses the data's three categories: White, Black, and Others."
+
+prin_pre_html <- gt::gt(prin_pre_tibble, id = "preceptor_principal_tbl") |>
+  gt::tab_header(title = "Preceptor Table") |>
+  gt::tab_spanner(label = "Unit", id = "unit_span", columns = c(`Student`)) |>
+  gt::tab_spanner(label = "Outcome", id = "outcome_span", columns = c(`Math Score`)) |>
+  gt::tab_spanner(label = "Covariates", id = "covariates_span", columns = c(`Class Type`, `Race`)) |>
+  gt::cols_align(align = "left", columns = c(`Student`, `Class Type`, `Race`)) |>
+  gt::cols_align(align = "right", columns = c(`Math Score`)) |>
+  gt::fmt_markdown(columns = gt::everything()) |>
+  gt::tab_options(
+    heading.title.font.size = "1.5em",
+    heading.title.font.weight = "bolder",
+    column_labels.font.weight = "normal"
+  ) |>
+  gt::tab_style(style = gt::cell_text(weight = "bold"),
+                locations = gt::cells_column_spanners()) |>
+  gt::tab_style(style = gt::cell_text(align = "left"),
+                locations = gt::cells_column_spanners(spanners = c("unit_span", "covariates_span"))) |>
+  gt::tab_style(style = gt::cell_text(align = "right"),
+                locations = gt::cells_column_spanners(spanners = "outcome_span")) |>
+  gt::tab_footnote(footnote = prin_pre_title_footnote, locations = gt::cells_title()) |>
+  gt::tab_footnote(footnote = prin_pre_units_footnote, locations = gt::cells_column_spanners(spanners = "unit_span")) |>
+  gt::tab_footnote(footnote = prin_pre_outcome_footnote, locations = gt::cells_column_spanners(spanners = "outcome_span")) |>
+  gt::tab_footnote(footnote = prin_pre_covariate_footnote, locations = gt::cells_column_spanners(spanners = "covariates_span")) |>
+  gt::opt_css(css = "#preceptor_principal_tbl .gt_footnote { max-width: 1px; word-break: break-word; }") |>
+  gt::as_raw_html()
+
+cat("```{=html}\n",
+    '<div style="display: inline-block; width: auto; max-width: 100%;">',
+    prin_pre_html, "</div>\n```\n", sep = "")
+```
+
+```{r}
+#| label: preceptor-table-doe
+#| echo: false
+#| results: asis
+
+hatch <- function(x) {
+  paste0(
+    '<span style="background-image: repeating-linear-gradient(',
+    '45deg, rgba(0,0,0,0.12) 0 1px, transparent 1px 6px);',
+    ' padding: 6px 10px; margin: -6px -10px; display: block;">',
+    x,
+    '</span>'
+  )
+}
+
+doe_pre_tibble <- tibble::tribble(
+  ~`Student`,        ~`Score if Small`, ~`Score if Regular`, ~`Score if Regular with Aide`, ~`Class Assignment`,
+  "Ethan Williams",  "712",             "705",               "707",                         "Small",
+  "Ava Martinez",    "703",             "698",               "700",                         "Regular",
+  "...",             "...",             "...",               "...",                         "...",
+  "Noah Thompson",   "721",             "716",               "718",                         "Regular with aide"
+)
+
+doe_pre_title_footnote <- "If all the information in this table were available, we could answer the question: What is the average causal effect of assigning a Dallas student to a small class, rather than a regular class, on their fourth-grade math score?"
+doe_pre_units_footnote <- "Each row represents one elementary student in Dallas today — tens of thousands of students."
+doe_pre_outcome_footnote <- "The three potential outcomes: the student's fourth-grade math score under each possible class assignment. With a three-level treatment, each student has two unobservable potential outcomes — the cross-hatched cells — because the student actually experienced only one assignment."
+doe_pre_treatment_footnote <- "The class-type assignment: Small (13-17 students), Regular (22-25), or Regular with aide. This is the variable whose causal effect the question is about."
+
+doe_pre_html <- gt::gt(doe_pre_tibble, id = "preceptor_doe_tbl") |>
+  gt::tab_header(title = "Preceptor Table") |>
+  gt::tab_spanner(label = "Unit", id = "unit_span", columns = c(`Student`)) |>
+  gt::tab_spanner(label = "Potential Outcomes", id = "outcome_span",
+                  columns = c(`Score if Small`, `Score if Regular`, `Score if Regular with Aide`)) |>
+  gt::tab_spanner(label = "Treatment", id = "treatment_span", columns = c(`Class Assignment`)) |>
+  gt::cols_align(align = "left", columns = c(`Student`, `Class Assignment`)) |>
+  gt::cols_align(align = "right", columns = c(`Score if Small`, `Score if Regular`, `Score if Regular with Aide`)) |>
+  gt::fmt_markdown(columns = gt::everything()) |>
+  gt::tab_options(
+    heading.title.font.size = "1.5em",
+    heading.title.font.weight = "bolder",
+    column_labels.font.weight = "normal"
+  ) |>
+  gt::tab_style(style = gt::cell_text(weight = "bold"),
+                locations = gt::cells_column_spanners()) |>
+  gt::tab_style(style = gt::cell_text(align = "left"),
+                locations = gt::cells_column_spanners(spanners = c("unit_span", "treatment_span"))) |>
+  gt::tab_style(style = gt::cell_text(align = "right"),
+                locations = gt::cells_column_spanners(spanners = "outcome_span")) |>
+  gt::text_transform(
+    locations = gt::cells_body(columns = `Score if Small`, rows = c(2, 4)),
+    fn = function(x) hatch(x)
+  ) |>
+  gt::text_transform(
+    locations = gt::cells_body(columns = `Score if Regular`, rows = c(1, 4)),
+    fn = function(x) hatch(x)
+  ) |>
+  gt::text_transform(
+    locations = gt::cells_body(columns = `Score if Regular with Aide`, rows = c(1, 2)),
+    fn = function(x) hatch(x)
+  ) |>
+  gt::tab_footnote(footnote = doe_pre_title_footnote, locations = gt::cells_title()) |>
+  gt::tab_footnote(footnote = doe_pre_units_footnote, locations = gt::cells_column_spanners(spanners = "unit_span")) |>
+  gt::tab_footnote(footnote = doe_pre_outcome_footnote, locations = gt::cells_column_spanners(spanners = "outcome_span")) |>
+  gt::tab_footnote(footnote = doe_pre_treatment_footnote, locations = gt::cells_column_spanners(spanners = "treatment_span")) |>
+  gt::opt_css(css = "#preceptor_doe_tbl .gt_footnote { max-width: 1px; word-break: break-word; }") |>
+  gt::as_raw_html()
+
+cat("```{=html}\n",
+    '<div style="display: inline-block; width: auto; max-width: 100%;">',
+    doe_pre_html, "</div>\n```\n", sep = "")
+```
+
+### Exploratory Data Analysis
+
+Create a plot that shows the distribution of `g4math`.
+
+```{r}
+#| label: eda-g4math-distribution
+#| echo: true
+
+scored <- star |> filter(!is.na(g4math))
+
+star |>
+  filter(!is.na(g4math)) |>
+  ggplot(aes(x = g4math)) +
+  geom_histogram(bins = 30, fill = "steelblue", color = "white") +
+  labs(
+    title = "Fourth-Grade Math Scores",
+    subtitle = paste0("Mean ", round(mean(scored$g4math), 0), ", sd ", round(sd(scored$g4math), 0),
+                      " -- and only ", nrow(scored), " of ", nrow(star), " students have a score at all"),
+    x = "Fourth-grade math score",
+    y = "Number of students"
+  ) +
+  theme_minimal()
+```
+
+Scores are roughly bell-shaped around 709 — but the subtitle carries the real news: fewer than 40% of the students in the experiment have a fourth-grade math score recorded. Before trusting any model, we need to know whether that missingness is related to anything we care about.
+
+Create a calculation that shows, for each class type, the number of students, the share missing a `g4math` score, and the average `g4math`.
+
+```{r}
+#| label: eda-missingness-by-kind
+#| echo: true
+
+star |>
+  group_by(kind) |>
+  summarize(n = n(),
+            share_missing = mean(is.na(g4math)),
+            mean_math = mean(g4math, na.rm = TRUE))
+```
+
+About 62% of scores are missing in every arm — 61.1% in small classes, 61.6% in regular, 63.6% in regular-with-aide. The balance is reassuring (missingness does not track treatment), though it cannot rule out bias if the *kinds* of students who go missing differ. Among students with scores, the three group means — 710, 708, 709 — are nearly identical. The most famous class-size experiment ever run shows essentially nothing in the raw group means. *Discussion question: where might the students without scores have gone?*
+
+Create a plot that shows the relationship between `g4math` and class type.
+
+```{r}
+#| label: eda-g4math-kind-boxplot
+#| echo: true
+
+kind_medians <- scored |>
+  group_by(kind) |>
+  summarize(med = median(g4math))
+
+scored |>
+  ggplot(aes(x = kind, y = g4math, fill = kind)) +
+  geom_boxplot(width = 0.5, alpha = 0.7, show.legend = FALSE) +
+  labs(
+    title = "Math Scores by Class Type: Boxplot",
+    subtitle = paste0("Medians: ", paste(kind_medians$kind, kind_medians$med, collapse = ", ")),
+    x = "Class type",
+    y = "Fourth-grade math score"
+  ) +
+  theme_minimal()
+```
+
+```{r}
+#| label: eda-g4math-kind-density
+#| echo: true
+
+scored |>
+  ggplot(aes(x = g4math, color = kind)) +
+  geom_density(linewidth = 1) +
+  labs(
+    title = "Math Score Distributions by Class Type",
+    subtitle = "The three distributions sit almost exactly on top of one another",
+    x = "Fourth-grade math score",
+    y = "Density",
+    color = "Class type"
+  ) +
+  theme_minimal()
+```
+
+Whether we compare medians and spread (boxplot) or full distributional shape (density), the three class types are visually indistinguishable. If small classes help fourth-grade math, the effect is too small to see with the naked eye — a useful calibration before the modeling in Courage.
+
+------------------------------------------------------------------------
+
+## Justice
+
+### Population Table
+
+Describe the key components of a Population Table for your scenario.
+
+  **Principal:** One row per student per school year, drawn from the population of US elementary students from roughly 1985 to 2030. The Data rows are Tennessee STAR students from 1985; the Preceptor rows are her Chicago students in 2027. The columns are Source, Student, Year, Math Score, Class Type, and Race.
+
+  **Texas Department of Education:** One row per student per school year, drawn from the same population, with the causal structure explicit. The columns are Source, Student, Year, the three potential outcomes, and the Treatment.
+
+```{r}
+#| label: population-table-principal
+#| echo: false
+#| results: asis
+
+prin_pop_tibble <- tibble::tribble(
+  ~Source,     ~`Student`,         ~`Year`, ~`Math Score`, ~`Class Type`,       ~`Race`,
+  "...",       "...",              "...",   "...",         "...",               "...",
+  "Data",      "Dorothy Baker",    "1985",  "704",         "Small",             "White",
+  "Data",      "James Whitfield",  "1985",  "691",         "Regular",           "Black",
+  "Data",      "...",              "...",   "...",         "...",               "...",
+  "Data",      "Angela Foster",    "1985",  "715",         "Regular with aide", "White",
+  "...",       "...",              "...",   "...",         "...",               "...",
+  "Preceptor", "Maya Johnson",     "2027",  "715",         "Small",             "Black",
+  "Preceptor", "Liam O'Brien",     "2027",  "692",         "Regular",           "White",
+  "Preceptor", "...",              "...",   "...",         "...",               "...",
+  "Preceptor", "Sofia Ramirez",    "2027",  "704",         "Regular with aide", "Others",
+  "...",       "...",              "...",   "...",         "...",               "..."
+)
+
+prin_pop_title_footnote <- "This table combines the Tennessee STAR data with the principal's 2027 Chicago students, both drawn from the population of US elementary students from roughly 1985 to 2030."
+prin_pop_units_footnote <- "Data rows are 6,325 students who entered the STAR experiment in Tennessee schools in 1985. Preceptor rows are the principal's Chicago students in the 2027 school year. The four-decade and geographic gaps are what the assumptions must bridge."
+prin_pop_outcome_footnote <- "Fourth-grade math score on the Stanford Achievement Test. In the data, about 62% of students are missing this score — a first-order concern, since the model can learn only from students who were tested."
+prin_pop_covariate_footnote <- "Class Type in the data was randomly assigned at school entry; in the Preceptor rows it is whatever class the school gives each student. Race uses the data's coding: White, Black, and Others (a small category combining all other groups)."
+
+prin_pop_html <- gt::gt(prin_pop_tibble, id = "population_principal_tbl") |>
+  gt::tab_header(title = "Population Table") |>
+  gt::tab_spanner(label = "Unit/Time", id = "unit_span", columns = c(`Student`, `Year`)) |>
+  gt::tab_spanner(label = "Outcome", id = "outcome_span", columns = c(`Math Score`)) |>
+  gt::tab_spanner(label = "Covariates", id = "covariates_span", columns = c(`Class Type`, `Race`)) |>
+  gt::cols_align(align = "left", columns = c(`Source`, `Student`, `Class Type`, `Race`)) |>
+  gt::cols_align(align = "right", columns = c(`Year`, `Math Score`)) |>
+  gt::fmt_markdown(columns = gt::everything()) |>
+  gt::tab_options(
+    heading.title.font.size = "1.5em",
+    heading.title.font.weight = "bolder",
+    column_labels.font.weight = "normal"
+  ) |>
+  gt::tab_style(style = gt::cell_text(weight = "bold"),
+                locations = gt::cells_column_spanners()) |>
+  gt::tab_style(style = gt::cell_text(align = "left"),
+                locations = gt::cells_column_spanners(spanners = c("unit_span", "covariates_span"))) |>
+  gt::tab_style(style = gt::cell_text(align = "right"),
+                locations = gt::cells_column_spanners(spanners = "outcome_span")) |>
+  gt::tab_footnote(footnote = prin_pop_title_footnote, locations = gt::cells_title()) |>
+  gt::tab_footnote(footnote = prin_pop_units_footnote, locations = gt::cells_column_spanners(spanners = "unit_span")) |>
+  gt::tab_footnote(footnote = prin_pop_outcome_footnote, locations = gt::cells_column_spanners(spanners = "outcome_span")) |>
+  gt::tab_footnote(footnote = prin_pop_covariate_footnote, locations = gt::cells_column_spanners(spanners = "covariates_span")) |>
+  gt::opt_css(css = "#population_principal_tbl .gt_footnote { max-width: 1px; word-break: break-word; }") |>
+  gt::as_raw_html()
+
+cat("```{=html}\n",
+    '<div style="display: inline-block; width: auto; max-width: 100%;">',
+    prin_pop_html, "</div>\n```\n", sep = "")
+```
+
+```{r}
+#| label: population-table-doe
+#| echo: false
+#| results: asis
+
+doe_pop_tibble <- tibble::tribble(
+  ~Source,     ~`Student`,         ~`Year`, ~`Score if Small`, ~`Score if Regular`, ~`Score if Regular with Aide`, ~`Class Assignment`,
+  "...",       "...",              "...",   "...",             "...",               "...",                         "...",
+  "Data",      "Dorothy Baker",    "1985",  "704",             "...",               "...",                         "Small",
+  "Data",      "James Whitfield",  "1985",  "...",             "691",               "...",                         "Regular",
+  "Data",      "...",              "...",   "...",             "...",               "...",                         "...",
+  "Data",      "Angela Foster",    "1985",  "...",             "...",               "715",                         "Regular with aide",
+  "...",       "...",              "...",   "...",             "...",               "...",                         "...",
+  "Preceptor", "Ethan Williams",   "2026",  "712",             "705",               "707",                         "Small",
+  "Preceptor", "Ava Martinez",     "2026",  "703",             "698",               "700",                         "Regular",
+  "Preceptor", "...",              "...",   "...",             "...",               "...",                         "...",
+  "Preceptor", "Noah Thompson",    "2026",  "721",             "716",               "718",                         "Regular with aide",
+  "...",       "...",              "...",   "...",             "...",               "...",                         "..."
+)
+
+doe_pop_title_footnote <- "This table combines the Tennessee STAR data with the Texas Department of Education's Dallas students today, both drawn from the population of US elementary students from roughly 1985 to 2030."
+doe_pop_units_footnote <- "Data rows are STAR students in Tennessee, 1985. Preceptor rows are Dallas elementary students in 2026. The gaps of four decades and two states are the stability and representativeness concerns."
+doe_pop_outcome_footnote <- "In Data rows, only the potential outcome matching the student's actual assignment was observed; the other two are shown as '...' because no one measured them. In Preceptor rows, all three potential outcomes are filled in with the truth, and the two unobservable ones are cross-hatched."
+doe_pop_treatment_footnote <- "In Data rows, class assignment was randomized by the experimenters at school entry — the basis for unconfoundedness. In Preceptor rows, it is whatever assignment Dallas schools would give, which nothing guarantees to be random."
+
+doe_pop_html <- gt::gt(doe_pop_tibble, id = "population_doe_tbl") |>
+  gt::tab_header(title = "Population Table") |>
+  gt::tab_spanner(label = "Unit/Time", id = "unit_span", columns = c(`Student`, `Year`)) |>
+  gt::tab_spanner(label = "Potential Outcomes", id = "outcome_span",
+                  columns = c(`Score if Small`, `Score if Regular`, `Score if Regular with Aide`)) |>
+  gt::tab_spanner(label = "Treatment", id = "treatment_span", columns = c(`Class Assignment`)) |>
+  gt::cols_align(align = "left", columns = c(`Source`, `Student`, `Class Assignment`)) |>
+  gt::cols_align(align = "right", columns = c(`Year`, `Score if Small`, `Score if Regular`, `Score if Regular with Aide`)) |>
+  gt::fmt_markdown(columns = gt::everything()) |>
+  gt::tab_options(
+    heading.title.font.size = "1.5em",
+    heading.title.font.weight = "bolder",
+    column_labels.font.weight = "normal"
+  ) |>
+  gt::tab_style(style = gt::cell_text(weight = "bold"),
+                locations = gt::cells_column_spanners()) |>
+  gt::tab_style(style = gt::cell_text(align = "left"),
+                locations = gt::cells_column_spanners(spanners = c("unit_span", "treatment_span"))) |>
+  gt::tab_style(style = gt::cell_text(align = "right"),
+                locations = gt::cells_column_spanners(spanners = "outcome_span")) |>
+  gt::text_transform(
+    locations = gt::cells_body(columns = `Score if Small`, rows = c(8, 10)),
+    fn = function(x) hatch(x)
+  ) |>
+  gt::text_transform(
+    locations = gt::cells_body(columns = `Score if Regular`, rows = c(7, 10)),
+    fn = function(x) hatch(x)
+  ) |>
+  gt::text_transform(
+    locations = gt::cells_body(columns = `Score if Regular with Aide`, rows = c(7, 8)),
+    fn = function(x) hatch(x)
+  ) |>
+  gt::tab_footnote(footnote = doe_pop_title_footnote, locations = gt::cells_title()) |>
+  gt::tab_footnote(footnote = doe_pop_units_footnote, locations = gt::cells_column_spanners(spanners = "unit_span")) |>
+  gt::tab_footnote(footnote = doe_pop_outcome_footnote, locations = gt::cells_column_spanners(spanners = "outcome_span")) |>
+  gt::tab_footnote(footnote = doe_pop_treatment_footnote, locations = gt::cells_column_spanners(spanners = "treatment_span")) |>
+  gt::opt_css(css = "#population_doe_tbl .gt_footnote { max-width: 1px; word-break: break-word; }") |>
+  gt::as_raw_html()
+
+cat("```{=html}\n",
+    '<div style="display: inline-block; width: auto; max-width: 100%;">',
+    doe_pop_html, "</div>\n```\n", sep = "")
+```
+
+### Assumptions
+
+Counter-example to the assumption of validity:
+
+> The data's `g4math` column is a 1980s Stanford Achievement Test score; a Chicago or Dallas student today takes a different test with different content and scaling. Likewise "small class" meant 13–17 students in STAR — if Dallas's version of "small" is 20, the treatment column in the data and the treatment column in the Preceptor Table share a name but not a meaning.
+
+Counter-example to the assumption of stability:
+
+> Students' lives have changed since 1985 — screens, curricula, teacher training, post-pandemic learning loss. If small classes helped in 1985 mainly by increasing teacher attention per student, and today's classrooms distribute attention differently (aides, technology, tutoring software), the coefficient estimated on 1985 data is not the coefficient for 2026-27.
+
+Counter-example to the assumption of representativeness:
+
+> Tennessee schools that volunteered for STAR in 1985 are not a random draw from anything — and neither are today's Chicago or Dallas students, whose demographics, funding, and family backgrounds differ sharply from 1980s Tennessee. If small classes help disadvantaged students more (as the original study suggested), differences in student mix between Tennessee then and Dallas now change the answer.
+
+Counter-example to the assumption of unconfoundedness:
+
+> **Principal:** none needed. Unconfoundedness applies only to causal questions; the principal's model is predictive.
+
+> **Texas Department of Education:** class type was randomly assigned, so unconfoundedness should hold by design. The honest worries are execution and erosion: administrators may have quietly moved favored children into small classes, and over four years students did move between class types — so the *initial* assignment is random, but the class a student actually sat in by fourth grade is not guaranteed to be.
+
+### Probability Family and Link Function
+
+What probability family should we use?
+
+> Normal Distribution
+
+Why should we use that probability family?
+
+> The Normal distribution is the standard choice for continuous outcomes, and a math score is continuous.
+
+What is the link function for our outcome?
+
+> The identity link. Our model will be a linear regression.
+
+------------------------------------------------------------------------
+
+## Courage
+
+The abstract data generating mechanism coming out of Justice is:
+
+$$Y = \beta_0 + \beta_1 X_1 + \cdots + \beta_n X_n + \epsilon, \quad \epsilon \sim N(0, \sigma^2)$$
+
+### Candidate Models
+
+Create a candidate model, modeling the outcome `g4math` as a linear function of the class type `kind`. Call it `fit_kind`.
+
+```{r}
+#| label: candidate-model-kind
+#| echo: true
+
+fit_kind <- linear_reg() |>
+  fit(g4math ~ kind, data = star)
+
+fit_kind |>
+  tidy(conf.int = TRUE) |>
+  select(term, estimate, conf.low, conf.high) |>
+  mutate(across(where(is.numeric), \(x) round(x, 2)))
+```
+
+Both class-type coefficients have confidence intervals comfortably including zero — class type alone tells us essentially nothing about fourth-grade math scores, matching what the EDA showed. Perhaps class type matters once we account for who is in each class, so we add `race`.
+
+Create a candidate model, modeling `g4math` as a linear function of both `kind` and `race`. Call it `fit_kind_race`.
+
+```{r}
+#| label: candidate-model-kind-race
+#| echo: true
+
+fit_kind_race <- linear_reg() |>
+  fit(g4math ~ kind + race, data = star)
+
+fit_kind_race |>
+  tidy(conf.int = TRUE) |>
+  select(term, estimate, conf.low, conf.high) |>
+  mutate(across(where(is.numeric), \(x) round(x, 2)))
+```
+
+Race carries real signal — White students score about 16 points higher than Black students, with an interval far from zero — but the class-type coefficients barely move and still include zero. One more candidate: class type records only where a student sat in one year, while `yearssmall` records the *dose* — how many years (0–4) the student spent in small classes.
+
+Create a candidate model which adds `yearssmall` to `fit_kind_race`. Call it `fit_kind_race_years`.
+
+```{r}
+#| label: candidate-model-kind-race-years
+#| echo: true
+
+fit_kind_race_years <- linear_reg() |>
+  fit(g4math ~ kind + race + yearssmall, data = star)
+
+fit_kind_race_years |>
+  tidy(conf.int = TRUE) |>
+  select(term, estimate, conf.low, conf.high) |>
+  mutate(across(where(is.numeric), \(x) round(x, 2)))
+```
+
+Now something interesting appears: each additional year spent in a small class is worth about 2.2 points, with an interval excluding zero. The snapshot (`kind`) shows nothing; the dose (`yearssmall`) shows a small but real association. Note that `kindsmall` turns negative (−7.66) once `yearssmall` enters — the two variables are entangled, since students assigned to small classes accumulate more years in them; a student assigned small who stays all four years nets −7.66 + 4 × 2.18 ≈ +1 point relative to a regular-class student.
+
+### The Data Generating Mechanism
+
+Which model should we choose, and why? Define `fit_classsize` as your chosen model and write out the fitted equation.
+
+```{r}
+#| label: chosen-model
+#| echo: true
+
+fit_classsize <- linear_reg() |>
+  fit(g4math ~ kind + race + yearssmall, data = star)
+
+fit_classsize |>
+  tidy(conf.int = TRUE) |>
+  select(term, estimate, conf.low, conf.high) |>
+  mutate(across(where(is.numeric), \(x) round(x, 2)))
+```
+
+We choose the full model. `race` and `yearssmall` earn their places with intervals excluding zero. The `kind` coefficients do not — but `kind` is the treatment the causal question is about, so the question, not the data, forces it into the model. Reporting "we cannot distinguish the assignment effect from zero" requires keeping the variable whose effect we cannot distinguish.
+
+$$
+\widehat{\text{g4math}} = 695 - 1.95 \cdot \text{regular\_with\_aid} - 7.66 \cdot \text{small} + 38.7 \cdot \text{Others} + 16.2 \cdot \text{White} + 2.18 \cdot \text{yearssmall}
+$$
+
+The intercept describes a Black student in a regular class with zero years in small classes. **This is our data generating mechanism.**
+
+### Model Checking
+
+Create a plot or table that checks whether your chosen model's fitted values are reasonable compared to the actual data.
+
+```{r}
+#| label: model-check-fitted-vs-actual
+#| echo: true
+
+fitted_df <- augment(fit_classsize, new_data = star |> drop_na())
+
+fitted_df |>
+  select(g4math, .pred) |>
+  pivot_longer(everything(), names_to = "source", values_to = "value") |>
+  mutate(source = if_else(source == ".pred", "Fitted", "Actual")) |>
+  ggplot(aes(x = value, fill = source)) +
+  geom_density(alpha = 0.5) +
+  labs(
+    title = "Actual vs. Fitted Math Scores",
+    subtitle = "The fitted distribution matches the center but is far narrower than the actual scores",
+    x = "Fourth-grade math score",
+    y = NULL,
+    fill = "Source"
+  ) +
+  theme_minimal() +
+  theme(axis.text.y = element_blank(), axis.ticks.y = element_blank())
+```
+
+```{r}
+#| label: model-check-residuals
+#| echo: true
+
+fitted_df |>
+  mutate(.resid = g4math - .pred) |>
+  ggplot(aes(x = kind, y = .resid)) +
+  geom_jitter(width = 0.15, alpha = 0.3, size = 1) +
+  geom_hline(yintercept = 0, linetype = "dashed", color = "grey40") +
+  labs(
+    title = "Residuals by Class Type",
+    subtitle = "Residuals scatter evenly around zero in all three class types -- no obvious misfit",
+    x = "Class type",
+    y = "Residual (points)"
+  ) +
+  theme_minimal()
+```
+
+The fitted values center correctly and the residuals show no systematic pattern by class type. The narrowness of the fitted distribution is expected — our few covariates explain only a sliver of the person-to-person variation in test scores — and is itself a Temperance lesson about how much the model does not know.
+
+------------------------------------------------------------------------
+
+## Temperance
+
+### Predictions
+
+Use `predictions(fit_classsize)` to estimate the math score for individual students in the sample.
+
+```{r}
+#| label: predictions-raw
+#| echo: true
+
+predictions(fit_classsize) |>
+  as_tibble() |>
+  select(kind, race, yearssmall, estimate, conf.low, conf.high) |>
+  head(6)
+```
+
+One prediction per tested student, built from that student's own covariates — the stepping stone that shows what the model produces before we average.
+
+Use `avg_predictions(fit_classsize, by = "kind")` to estimate the average math score for each class type.
+
+```{r}
+#| label: average-predictions
+#| echo: true
+
+avg_predictions(fit_classsize, by = "kind")
+```
+
+What is the expected math score for a student in a small class (with 95% CI)?
+
+> About 709, with a 95% CI of roughly [706, 712].
+
+What is the expected math score for a student in a regular class (with 95% CI)?
+
+> About 710, with a 95% CI of roughly [707, 712].
+
+### Comparisons
+
+Use `avg_comparisons(fit_classsize, variables = "kind")` to estimate the effect of each class type, relative to a regular class, on math scores.
+
+```{r}
+#| label: avg-comparison-kind
+#| echo: true
+
+avg_comparisons(fit_classsize, variables = "kind")
+```
+
+Both contrasts include zero: small − regular is −7.66 [−15.9, 0.6] (holding `yearssmall` fixed — the snapshot comparison) and regular-with-aide − regular is −1.95 [−6.1, 2.2]. We cannot distinguish either assignment effect from nothing.
+
+Use `avg_comparisons(fit_classsize, variables = "yearssmall")` to estimate the effect of one additional year spent in a small class.
+
+```{r}
+#| label: avg-comparison-yearssmall
+#| echo: true
+
+avg_comparisons(fit_classsize, variables = "yearssmall")
+```
+
+Each additional year in a small class is associated with about 2.2 more points, 95% CI roughly [0.1, 4.3]. This is the one number in the exercise that survives a confidence interval — and note the practical size: even four full years is only ~9 points on a scale where scores vary by 43 points around the mean. Statistically detectable is not the same as educationally transformative.
+
+### Visualizations
+
+Create a visualization of the average predictions by class type using `plot_predictions()`.
+
+```{r}
+#| label: prediction-plot
+#| echo: true
+
+avg_preds_kind <- avg_predictions(fit_classsize, by = "kind") |>
+  as_tibble()
+
+kind_gap <- round(diff(range(avg_preds_kind$estimate)), 1)
+
+avg_preds_kind |>
+  ggplot(aes(x = kind, y = estimate)) +
+  geom_pointrange(aes(ymin = conf.low, ymax = conf.high), linewidth = 0.7) +
+  labs(
+    title = "Predicted Fourth-Grade Math Score by Class Type",
+    subtitle = paste0("The three class-type averages span only ", kind_gap,
+                      " points, and every interval overlaps the others"),
+    x = "Class type",
+    y = "Predicted math score",
+    caption = "Source: Tennessee STAR experiment (Mosteller 1995), 2,395 tested students"
+  ) +
+  theme_minimal(base_size = 13)
+```
+
+What measure of uncertainty is shown in this plot?
+
+> The vertical bars are 95% confidence intervals around each class type's predicted average score.
+
+Create a plot showing predicted math scores by class type and race.
+
+```{r}
+#| label: prediction-plot-kind-race
+#| echo: true
+
+preds_kind_race <- avg_predictions(fit_classsize, by = c("kind", "race")) |>
+  as_tibble()
+
+race_gap <- preds_kind_race |>
+  group_by(race) |>
+  summarize(mean_est = mean(estimate)) |>
+  summarize(gap = round(diff(range(mean_est)), 0)) |>
+  pull(gap)
+
+preds_kind_race |>
+  ggplot(aes(x = kind, y = estimate, color = race)) +
+  geom_pointrange(aes(ymin = conf.low, ymax = conf.high),
+                  position = position_dodge(width = 0.4), linewidth = 0.7) +
+  labs(
+    title = "Predicted Math Score by Class Type and Race",
+    subtitle = paste0("Race gaps (up to ~", race_gap,
+                      " points across group averages) dwarf every class-type difference"),
+    x = "Class type",
+    y = "Predicted math score",
+    color = "Race"
+  ) +
+  theme_minimal()
+```
+
+The vertical separation between race groups is many times larger than any horizontal movement across class types — a visual summary of the whole exercise: in this data, who the students are matters far more for fourth-grade math scores than what kind of class they sat in.
+
+### Interpretation
+
+How does the principal interpret these estimates? How does the Texas Department of Education interpret the same numbers differently?
+
+> **Principal:** the predictions are forecasts *across rows*. She plugs each student's class type, race, and years-in-small-classes into the model and gets an expected score for planning — which students may need support, what the school-wide average will look like. Whether class size *causes* any of it is irrelevant to the forecast.
+
+> **Texas Department of Education:** the class-type contrasts are estimates of *within-row* causal effects, and they earn that reading only because STAR randomized assignment. The result is sobering: the assignment effect cannot be distinguished from zero, and the one significant number — 2.2 points per year of small-class dose — is also the *least* protected by randomization, because which students stayed in small classes for multiple years was not random.
+
+### Humility
+
+Besides the average math scores, identify two additional quantities of interest the person in your scenario might care about.
+
+> **Principal:** predicted *reading* scores (the data has `g4reading` too), and the full distribution of predicted scores — percentiles, not just means — for deciding how many students will need intervention services.
+
+> **Texas Department of Education:** the dose-response effect of four full years versus one (roughly 4 × 2.2 ≈ 9 points), and the cost side: small classes require more teachers and classrooms, so the real quantity of interest is points gained per dollar spent, which our model informs but cannot answer alone.
+
+Why might these estimates be a poor answer to your scenario's question? Identify at least two possible sources of bias.
+
+> 1) Sixty-two percent of students are missing the outcome. The missingness is balanced across class types, but if the students who left the study (movers, dropouts) differ from those who stayed — and they almost surely do — every estimate is built on a selected 38% of the experiment.
+
+> 2) The dose is not randomized. Initial class assignment was random, but staying in a small class for two, three, or four years was not — so the 2.2-points-per-year coefficient, our only significant finding, may reflect which families kept their children in the program rather than what small classes do.
+
+> 3) Tennessee 1985 is not Chicago or Dallas 2026: different tests, different students, different schools (the validity, stability, and representativeness gaps from Justice). And the world is always more uncertain than our models would have us believe — the reported intervals are only the *Preceptor's Posterior*, the best posterior achievable under our assumptions, not the truth.

@@ -1,0 +1,223 @@
+---
+title: "Class Size"
+format:
+  html: default
+  pdf: default
+execute:
+  echo: false
+---
+
+```{r}
+#| label: setup
+#| message: false
+
+library(tidyverse)
+library(tidymodels)
+library(marginaleffects)
+
+star <- read_csv("data/class-size.csv", show_col_types = FALSE) |>
+  mutate(kind = recode(classtype,
+                       `1` = "small",
+                       `2` = "regular",
+                       `3` = "regular with aid")) |>
+  mutate(race = recode(race,
+                       `1` = "White",
+                       `2` = "Black",
+                       `3` = "Others",
+                       `4` = "Others",
+                       `5` = "Others",
+                       `6` = "Others")) |>
+  select(g4math, kind, race, yearssmall)
+```
+
+## The Question
+
+There are two scenarios. Focus on just one of them:
+
+- Imagine that you are an elementary school principal in Chicago. You want to predict student performance. Fortunately, you have data today for your current students like the data available in the STAR project.
+
+- Imagine you work for the Texas Department of Education. You want to understand student performance in small classes, relative to big classes, in Dallas. In Texas, there is data available like the data in the STAR project.
+
+The principal asks: What will be the average fourth-grade math score of the students in my school next year, given their class type and background?
+
+The Texas Department of Education asks: What is the average causal effect of assigning a Dallas student to a small class, rather than a regular class, on their fourth-grade math score?
+
+## Wisdom
+
+### Units, Outcomes, and Covariates
+
+**What are the units, outcome, and covariates for your scenario's question?**
+
+- Units:
+
+
+
+- Outcomes:
+
+
+
+- Covariates:
+
+
+
+- Treatment (if any):
+
+
+
+- Quantity of interest:
+
+
+
+### Preceptor Table
+
+Describe the key components of a Preceptor Table for your scenario; Use words like "units," "outcomes," and "covariates."
+
+
+
+### Exploratory Data Analysis
+
+Create a plot that shows the distribution of `g4math`.
+
+
+
+Create a calculation that shows, for each class type, the number of students, the share missing a `g4math` score, and the average `g4math`.
+
+
+
+Create a plot that shows the relationship between `g4math` and class type.
+
+
+
+------------------------------------------------------------------------
+
+## Justice
+
+### Population Table
+
+Describe the key components of a Population Table for your scenario.
+
+
+
+### Assumptions
+
+Counter-example to the assumption of validity:
+
+
+
+Counter-example to the assumption of stability:
+
+
+
+Counter-example to the assumption of representativeness:
+
+
+
+Counter-example to the assumption of unconfoundedness:
+
+
+
+### Probability Family and Link Function
+
+What probability family should we use?
+
+
+
+Why should we use that probability family?
+
+
+
+What is the link function for our outcome?
+
+
+
+------------------------------------------------------------------------
+
+## Courage
+
+### Candidate Models
+
+Create a candidate model, modeling the outcome `g4math` as a linear function of the class type `kind`. Call it `fit_kind`.
+
+
+
+Create a candidate model, modeling `g4math` as a linear function of both `kind` and `race`. Call it `fit_kind_race`.
+
+
+
+Create a candidate model which adds `yearssmall` to `fit_kind_race`. Call it `fit_kind_race_years`.
+
+
+
+### The Data Generating Mechanism
+
+Which model should we choose, and why? Define `fit_classsize` as your chosen model and write out the fitted equation.
+
+
+
+### Model Checking
+
+Create a plot or table that checks whether your chosen model's fitted values are reasonable compared to the actual data.
+
+
+
+------------------------------------------------------------------------
+
+## Temperance
+
+### Predictions
+
+Use `predictions(fit_classsize)` to estimate the math score for individual students in the sample.
+
+
+
+Use `avg_predictions(fit_classsize, by = "kind")` to estimate the average math score for each class type.
+
+
+
+What is the expected math score for a student in a small class (with 95% CI)?
+
+
+
+What is the expected math score for a student in a regular class (with 95% CI)?
+
+
+
+### Comparisons
+
+Use `avg_comparisons(fit_classsize, variables = "kind")` to estimate the effect of each class type, relative to a regular class, on math scores.
+
+
+
+Use `avg_comparisons(fit_classsize, variables = "yearssmall")` to estimate the effect of one additional year spent in a small class.
+
+
+
+### Visualizations
+
+Create a visualization of the average predictions by class type using `plot_predictions()`.
+
+
+
+What measure of uncertainty is shown in this plot?
+
+
+
+Create a plot showing predicted math scores by class type and race.
+
+
+
+### Interpretation
+
+How does the principal interpret these estimates? How does the Texas Department of Education interpret the same numbers differently?
+
+
+
+### Humility
+
+Besides the average math scores, identify two additional quantities of interest the person in your scenario might care about.
+
+
+
+Why might these estimates be a poor answer to your scenario's question? Identify at least two possible sources of bias.
+
+

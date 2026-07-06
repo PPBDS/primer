@@ -3,7 +3,7 @@
 ### 05 — Recruits  *(Position 1, Easy predictive)*
 
 - **Type:** example
-- **Renderings:** chapter ✓ · tutorial ✓ · class exercise ✓ (`class-exercises/recruits/`)
+- **Renderings:** chapter ✓ · tutorial ✓ · class exercise — (an earlier class exercise was built and then retired in July 2026; per current policy, problems with a built chapter and tutorial do not get one)
 - **"Imagine":** You are in charge of ordering uniforms for next year's Marine Corps bootcamp recruits.
 - **Dataset:** `recruits` (`primer.tutorials`) — a 50-row teaching cut of NHANES, 40 male and 10 female young adults aged 18–27, columns `height`, `sex`, `age`. Built by `data-raw/recruits.R`; documented in `R/recruits.R`. The 40/10 split is deliberate so the two group means have visibly different standard errors — a feature the Temperance section asks students to notice and explain.
 - **Outcome:** `height` (continuous, cm)

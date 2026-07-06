@@ -11,6 +11,7 @@ This repo has everything you need for this week's class exercise:
 - `resumes.qmd` — the exercise handout. Type your answers directly into this document.
 - `resumes-answers.qmd` — the answer guideline.
 - `data/resumes.csv` — the data.
+- `resumes-paper.pdf` — the original Bertrand and Mullainathan (2004) paper.
 
 ## Get your own copy
 
@@ -21,14 +22,14 @@ This repo has everything you need for this week's class exercise:
    git clone https://github.com/<your-username>/resumes.git
    ```
 
-3. Open the `resumes` folder in RStudio or Positron.
+3. Open the `resumes` folder in your IDE. Most of our students use VS Code.
 
 ## What you need installed
 
 [R](https://cran.r-project.org/), [Quarto](https://quarto.org/docs/get-started/), and these packages:
 
 ```r
-install.packages(c("tidyverse", "tidymodels", "marginaleffects", "gt", "broom"))
+install.packages(c("tidyverse", "tidymodels", "marginaleffects", "broom"))
 ```
 
 ## Work the exercise

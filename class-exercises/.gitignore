@@ -4,6 +4,9 @@
 *.pdf
 /.quarto/
 
+# The underlying paper for each exercise IS tracked (see CLAUDE.md)
+!*-paper.pdf
+
 # LaTeX intermediates (Quarto PDF generation)
 *.tex
 *.log

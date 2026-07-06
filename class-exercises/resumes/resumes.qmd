@@ -19,9 +19,9 @@ resumes <- read_csv("data/resumes.csv", show_col_types = FALSE) |>
   mutate(call = as.factor(call))
 ```
 
-## Wisdom
+## The Question
 
-Your breakout room will be assigned one of these two scenarios:
+There are two scenarios. Focus on just one of them:
 
 - Imagine that you are a contemporary historian studying US employment in the year 2000 in Baltimore. You want to understand the process by which some people got jobs and some did not.
 
@@ -31,9 +31,9 @@ The historian asks: What proportion of job applicants in Baltimore in the year 2
 
 The civil rights organization asks: What is the average causal effect of having a black-sounding name, rather than a white-sounding name, on the probability that a job applicant in Chicago today receives a callback?
 
-Is your scenario's question causal or predictive? How do you know?
+## Wisdom
 
-
+### Units, Outcomes, and Covariates
 
 **What are the units, outcome, and covariates for your scenario's question?**
 
@@ -57,19 +57,23 @@ Is your scenario's question causal or predictive? How do you know?
 
 
 
+### Preceptor Table
+
 Describe the key components of a Preceptor Table for your scenario; Use words like "units," "outcomes," and "covariates."
 
 
 
-Create a calculation that shows the overall callback rate, and the callback rate for each ethnicity. Briefly describe what you find.
+### Exploratory Data Analysis
+
+Create a calculation that shows the overall callback rate, and the callback rate for each ethnicity.
 
 
 
-Create a plot that shows the relationship between callbacks and ethnicity. Briefly describe what it shows.
+Create a plot that shows the relationship between callbacks and ethnicity.
 
 
 
-Create a plot that shows the relationship between callbacks and resume quality, separately by ethnicity. Briefly describe what it shows.
+Create a plot that shows the relationship between callbacks and resume quality, separately by ethnicity.
 
 
 
@@ -77,9 +81,13 @@ Create a plot that shows the relationship between callbacks and resume quality, 
 
 ## Justice
 
+### Population Table
+
 Describe the key components of a Population Table for your scenario.
 
 
+
+### Assumptions
 
 Counter-example to the assumption of validity:
 
@@ -97,6 +105,8 @@ Counter-example to the assumption of unconfoundedness:
 
 
 
+### Probability Family and Link Function
+
 What probability family should we use?
 
 
@@ -113,6 +123,8 @@ What is the link function for our outcome?
 
 ## Courage
 
+### Candidate Models
+
 Create a candidate model, modeling the outcome `call` as a function of the covariate `city`. Call it `fit_city`.
 
 
@@ -125,9 +137,13 @@ Create a candidate model which adds `quality`, and its interaction with `ethnici
 
 
 
+### The Data Generating Mechanism
+
 Which model should we choose, and why? Define `fit_resumes` as your chosen model and write out the fitted equation.
 
 
+
+### Model Checking
 
 Create a plot or table that checks whether your chosen model's predicted callback probabilities are reasonable compared to the actual callback rates.
 
@@ -136,6 +152,8 @@ Create a plot or table that checks whether your chosen model's predicted callbac
 ------------------------------------------------------------------------
 
 ## Temperance
+
+### Predictions
 
 Use `predictions(fit_resumes, type = "prob")` to estimate the callback probability for individual resumes in the sample.
 
@@ -153,9 +171,13 @@ What is the expected callback probability for an applicant with a white-sounding
 
 
 
+### Comparisons
+
 Use `avg_comparisons(fit_resumes, variables = "ethnicity", type = "prob")` to estimate the difference in callback probability between white-sounding and black-sounding names.
 
 
+
+### Visualizations
 
 Create a visualization of the average predictions by ethnicity using `plot_predictions()`.
 
@@ -165,9 +187,13 @@ What measure of uncertainty is shown in this plot?
 
 
 
+### Interpretation
+
 How does the historian interpret the difference in callback probabilities? How does the civil rights organization interpret the same number differently?
 
 
+
+### Humility
 
 Besides the average callback probabilities, identify two additional quantities of interest the person in your scenario might care about.
 

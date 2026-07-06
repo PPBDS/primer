@@ -1,0 +1,709 @@
+---
+title: "Governors Answer Guideline"
+format:
+  html: default
+  pdf: default
+execute:
+  echo: false
+---
+
+```{r}
+#| label: setup
+#| message: false
+
+library(tidyverse)
+library(tidymodels)
+library(marginaleffects)
+library(gt)
+library(broom)
+
+governors <- read_csv("data/governors.csv", show_col_types = FALSE)
+```
+
+## The Question
+
+Barfort, Klemmensen, and Larsen (2021) collected the lifespans of 3,587 candidates for US gubernatorial office going back to the 1800s, in order to estimate the causal effect of winning office on longevity. By comparing winners and losers of *close* elections — near coin flips — they argue the treatment is as good as randomly assigned. (See Gelman's commentary on the paper, and the authors' response, for a running argument about whether the headline estimate is believable.)
+
+There are two scenarios. Focus on just one of them:
+
+- Imagine you work for a life insurer, and want to forecast how long candidates for the US Senate might live based on their age, party, election result, and other variables.
+
+- Imagine you are a researcher. You want to know if winning candidates live longer.
+
+The life insurer asks: How many years, on average, will this year's US Senate candidates live after their election, given their age, party, and election result?
+
+The researcher asks: What is the average causal effect of winning an election, rather than losing it, on the number of years a candidate lives afterward?
+
+Note that we use the same data, and the same fitted model, to help both people.
+
+## Wisdom
+
+### Units, Outcomes, and Covariates
+
+**What are the units, outcome, and covariates for your scenario's question?**
+
+- Units:
+
+**Life insurer:** each row is one candidate for the US Senate in this year's elections — roughly a hundred people. **Researcher:** each row is one candidate in a US election this year; the question is not restricted to any one office, so the units number in the tens of thousands.
+
+- Outcomes:
+
+**Life insurer:** `lived_after` — the number of years the candidate lives after election day. One observed (eventually) outcome per row. **Researcher:** two *potential* outcomes per row — years lived after the election if the candidate wins, and years lived if the candidate loses.
+
+- Covariates:
+
+**Life insurer:** age at election, party, and election result — the question names all three — plus anything else predictive (sex, region). Note that for the insurer, the election result is just another covariate. **Researcher:** none are forced by the question, though age at election and win margin will earn their way into the model.
+
+- Treatment (if any):
+
+**Life insurer:** none. This is a predictive model; nothing is manipulated. **Researcher:** the election outcome — winning versus losing. This is the variable whose causal effect the question is about.
+
+- Quantity of interest:
+
+**Life insurer:** the expected years lived after the election for each candidate, given their covariates. **Researcher:** the average difference between the two potential outcomes — the average causal effect of winning on years lived.
+
+### Preceptor Table
+
+Describe the key components of a Preceptor Table for your scenario; Use words like "units," "outcomes," and "covariates."
+
+  **Life insurer:** The Preceptor Table should have one row per US Senate candidate this year. In this exercise, the columns are Candidate, Years Lived After Election, and the covariates Election Result, Age at Election, and Party.
+
+  **Researcher:** The Preceptor Table should have one row per candidate in this year's elections. The columns are Candidate, the two potential outcomes (Years Lived if Win, Years Lived if Lose), and the Treatment (Election Outcome).
+
+```{r}
+#| label: preceptor-table-insurer
+#| echo: false
+#| results: asis
+
+ins_pre_tibble <- tibble::tribble(
+  ~`Candidate`,        ~`Years Lived After Election`, ~`Election Result`, ~`Age at Election`, ~`Party`,
+  "Elizabeth Warren",  "21",                          "Win",              "77",               "Democrat",
+  "Mitch McConnell",   "9",                           "Win",              "84",               "Republican",
+  "...",               "...",                         "...",              "...",              "...",
+  "Rick Scott",        "18",                          "Lose",             "73",               "Republican"
+)
+
+ins_pre_title_footnote <- "If all the information in this table were available, we could answer the question: How many years, on average, will this year's US Senate candidates live after their election, given their age, party, and election result?"
+ins_pre_units_footnote <- "Each row represents one candidate for the US Senate in the 2026 election cycle — roughly a hundred people across the contested seats."
+ins_pre_outcome_footnote <- "Years lived after election day. For candidates still alive, the cell holds the true (future) value, because the Preceptor Table shows the unobservable truth."
+ins_pre_covariate_footnote <- "Election Result (Win or Lose) is a covariate here, not a treatment — the insurer is not asking what winning does to anyone, only using it to forecast. Age at Election is in years. Party is as listed on the ballot."
+
+ins_pre_html <- gt::gt(ins_pre_tibble, id = "preceptor_insurer_tbl") |>
+  gt::tab_header(title = "Preceptor Table") |>
+  gt::tab_spanner(label = "Unit", id = "unit_span", columns = c(`Candidate`)) |>
+  gt::tab_spanner(label = "Outcome", id = "outcome_span", columns = c(`Years Lived After Election`)) |>
+  gt::tab_spanner(label = "Covariates", id = "covariates_span",
+                  columns = c(`Election Result`, `Age at Election`, `Party`)) |>
+  gt::cols_align(align = "left", columns = c(`Candidate`, `Election Result`, `Party`)) |>
+  gt::cols_align(align = "right", columns = c(`Years Lived After Election`, `Age at Election`)) |>
+  gt::fmt_markdown(columns = gt::everything()) |>
+  gt::tab_options(
+    heading.title.font.size = "1.5em",
+    heading.title.font.weight = "bolder",
+    column_labels.font.weight = "normal"
+  ) |>
+  gt::tab_style(style = gt::cell_text(weight = "bold"),
+                locations = gt::cells_column_spanners()) |>
+  gt::tab_style(style = gt::cell_text(align = "left"),
+                locations = gt::cells_column_spanners(spanners = c("unit_span", "covariates_span"))) |>
+  gt::tab_style(style = gt::cell_text(align = "right"),
+                locations = gt::cells_column_spanners(spanners = "outcome_span")) |>
+  gt::tab_footnote(footnote = ins_pre_title_footnote, locations = gt::cells_title()) |>
+  gt::tab_footnote(footnote = ins_pre_units_footnote, locations = gt::cells_column_spanners(spanners = "unit_span")) |>
+  gt::tab_footnote(footnote = ins_pre_outcome_footnote, locations = gt::cells_column_spanners(spanners = "outcome_span")) |>
+  gt::tab_footnote(footnote = ins_pre_covariate_footnote, locations = gt::cells_column_spanners(spanners = "covariates_span")) |>
+  gt::opt_css(css = "#preceptor_insurer_tbl .gt_footnote { max-width: 1px; word-break: break-word; }") |>
+  gt::as_raw_html()
+
+cat("```{=html}\n",
+    '<div style="display: inline-block; width: auto; max-width: 100%;">',
+    ins_pre_html, "</div>\n```\n", sep = "")
+```
+
+```{r}
+#| label: preceptor-table-researcher
+#| echo: false
+#| results: asis
+
+hatch <- function(x) {
+  paste0(
+    '<span style="background-image: repeating-linear-gradient(',
+    '45deg, rgba(0,0,0,0.12) 0 1px, transparent 1px 6px);',
+    ' padding: 6px 10px; margin: -6px -10px; display: block;">',
+    x,
+    '</span>'
+  )
+}
+
+res_pre_tibble <- tibble::tribble(
+  ~`Candidate`,   ~`Years Lived if Win`, ~`Years Lived if Lose`, ~`Election Outcome`,
+  "Joe Smith",    "23",                  "18",                   "Won",
+  "David Jones",  "28",                  "22",                   "Lost",
+  "...",          "...",                 "...",                  "...",
+  "Susan Chen",   "19",                  "17",                   "Won"
+)
+
+res_pre_title_footnote <- "If all the information in this table were available, we could answer the question: What is the average causal effect of winning an election, rather than losing it, on the number of years a candidate lives afterward?"
+res_pre_units_footnote <- "Each row represents one candidate in a US election this year. The researcher's question is not restricted to any one office, so there are tens of thousands of such candidates."
+res_pre_outcome_footnote <- "The two potential outcomes: years lived after the election if the candidate wins, and if the candidate loses. The cross-hatched cells mark each candidate's unobservable potential outcome — the one we could never see, because the candidate actually experienced the other election result."
+res_pre_treatment_footnote <- "The candidate's election outcome, taking values 'Won' or 'Lost'."
+
+res_pre_html <- gt::gt(res_pre_tibble, id = "preceptor_researcher_tbl") |>
+  gt::tab_header(title = "Preceptor Table") |>
+  gt::tab_spanner(label = "Unit", id = "unit_span", columns = c(`Candidate`)) |>
+  gt::tab_spanner(label = "Potential Outcomes", id = "outcome_span",
+                  columns = c(`Years Lived if Win`, `Years Lived if Lose`)) |>
+  gt::tab_spanner(label = "Treatment", id = "treatment_span", columns = c(`Election Outcome`)) |>
+  gt::cols_align(align = "left", columns = c(`Candidate`, `Election Outcome`)) |>
+  gt::cols_align(align = "right", columns = c(`Years Lived if Win`, `Years Lived if Lose`)) |>
+  gt::fmt_markdown(columns = gt::everything()) |>
+  gt::tab_options(
+    heading.title.font.size = "1.5em",
+    heading.title.font.weight = "bolder",
+    column_labels.font.weight = "normal"
+  ) |>
+  gt::tab_style(style = gt::cell_text(weight = "bold"),
+                locations = gt::cells_column_spanners()) |>
+  gt::tab_style(style = gt::cell_text(align = "left"),
+                locations = gt::cells_column_spanners(spanners = c("unit_span", "treatment_span"))) |>
+  gt::tab_style(style = gt::cell_text(align = "right"),
+                locations = gt::cells_column_spanners(spanners = "outcome_span")) |>
+  gt::text_transform(
+    locations = gt::cells_body(columns = `Years Lived if Lose`, rows = c(1, 4)),
+    fn = function(x) hatch(x)
+  ) |>
+  gt::text_transform(
+    locations = gt::cells_body(columns = `Years Lived if Win`, rows = 2),
+    fn = function(x) hatch(x)
+  ) |>
+  gt::tab_footnote(footnote = res_pre_title_footnote, locations = gt::cells_title()) |>
+  gt::tab_footnote(footnote = res_pre_units_footnote, locations = gt::cells_column_spanners(spanners = "unit_span")) |>
+  gt::tab_footnote(footnote = res_pre_outcome_footnote, locations = gt::cells_column_spanners(spanners = "outcome_span")) |>
+  gt::tab_footnote(footnote = res_pre_treatment_footnote, locations = gt::cells_column_spanners(spanners = "treatment_span")) |>
+  gt::opt_css(css = "#preceptor_researcher_tbl .gt_footnote { max-width: 1px; word-break: break-word; }") |>
+  gt::as_raw_html()
+
+cat("```{=html}\n",
+    '<div style="display: inline-block; width: auto; max-width: 100%;">',
+    res_pre_html, "</div>\n```\n", sep = "")
+```
+
+### Exploratory Data Analysis
+
+Create a plot that shows the distribution of `lived_after`.
+
+```{r}
+#| label: eda-lived-after-distribution
+#| echo: true
+
+med_lived <- median(governors$lived_after, na.rm = TRUE)
+n_negative <- sum(governors$lived_after < 0, na.rm = TRUE)
+
+governors |>
+  ggplot(aes(x = lived_after)) +
+  geom_histogram(bins = 40, fill = "steelblue", color = "white") +
+  coord_cartesian(xlim = c(-10, 80)) +
+  labs(
+    title = "Years Lived After the Election",
+    subtitle = paste0("Median: ", round(med_lived, 1), " years; ", n_negative,
+                      " impossible negative values lurk in the oldest records"),
+    x = "Years lived after election",
+    y = "Number of candidacies"
+  ) +
+  theme_minimal()
+```
+
+The outcome is continuous and widely spread, from candidates who died shortly after their election to some who lived another seven decades. A handful of *negative* values — candidates recorded as dying before their own election — flag data-quality problems in the oldest records, one more reason to restrict attention to the post-1945 era.
+
+Create a plot that shows the relationship between `lived_after` and `election_age`.
+
+```{r}
+#| label: eda-lived-after-age
+#| echo: true
+
+age_slope <- coef(lm(lived_after ~ election_age, data = governors))[["election_age"]]
+
+governors |>
+  ggplot(aes(x = election_age, y = lived_after)) +
+  geom_point(alpha = 0.2, size = 1) +
+  geom_smooth(method = "lm", se = FALSE, color = "firebrick") +
+  labs(
+    title = "Years Lived After the Election vs. Age at Election",
+    subtitle = paste0("Each additional year of age at election is associated with ",
+                      abs(round(age_slope, 2)), " fewer years lived afterward"),
+    x = "Age at election",
+    y = "Years lived after election"
+  ) +
+  theme_minimal()
+```
+
+The strong negative relationship is close to mechanical: the older you are on election day, the fewer years you have left. Any model of `lived_after` that omits `election_age` will attribute this huge age effect to whatever covariates happen to correlate with age — so it must be in the model.
+
+Create a tibble, called `x`, which keeps only close elections (`win_margin` within 5 points) after 1945 and adds a variable `election_result` recording whether the candidate won or lost. How many candidates remain? Compare the average `lived_after`, and the average `election_age`, of winners and losers.
+
+```{r}
+#| label: eda-build-analysis-tibble
+#| echo: true
+
+x <- governors |>
+  filter(abs(win_margin) <= 5, year > 1945) |>
+  mutate(election_result = if_else(win_margin > 0, "Win", "Lose"))
+
+nrow(x)
+
+x |>
+  group_by(election_result) |>
+  summarize(mean_lived_after = mean(lived_after),
+            mean_election_age = mean(election_age),
+            n = n())
+```
+
+254 candidacies remain — the price of the close-election restriction is discarding 93% of the data. Winners lived about 2.4 years longer than losers on average (29.6 vs. 27.2), a raw gap we should not yet call an effect. Just as important: winners and losers were almost exactly the same age at election (51.0 vs. 51.4), which is what we would expect if close elections really do assign winning as good as randomly. *Discussion question: what other pre-election characteristics would you want to check for balance?*
+
+------------------------------------------------------------------------
+
+## Justice
+
+### Population Table
+
+Describe the key components of a Population Table for your scenario.
+
+  **Life insurer:** One row per candidate per election year, drawn from the population of candidates for major US statewide offices from roughly 1945 to 2030. The Data rows are gubernatorial candidacies from the Barfort et al. data; the Preceptor rows are this year's Senate candidates. The columns are Source, Candidate, Year, Years Lived After Election, Election Result, Age at Election, and Party.
+
+  **Researcher:** One row per candidate per election year, drawn from the same population but with the causal structure made explicit. The columns are Source, Candidate, Year, the two potential outcomes, and the Treatment.
+
+```{r}
+#| label: population-table-insurer
+#| echo: false
+#| results: asis
+
+ins_pop_tibble <- tibble::tribble(
+  ~Source,     ~`Candidate`,        ~`Year`, ~`Years Lived After Election`, ~`Election Result`, ~`Age at Election`, ~`Party`,
+  "...",       "...",               "...",   "...",                         "...",              "...",              "...",
+  "Data",      "Earl Warren",       "1946",  "28",                          "Win",              "55",               "Republican",
+  "Data",      "George Wallace",    "1962",  "36",                          "Win",              "43",               "Democrat",
+  "Data",      "...",               "...",   "...",                         "...",              "...",              "...",
+  "Data",      "Pat Brown",         "1966",  "30",                          "Lose",             "61",               "Democrat",
+  "...",       "...",               "...",   "...",                         "...",              "...",              "...",
+  "Preceptor", "Elizabeth Warren",  "2026",  "21",                          "Win",              "77",               "Democrat",
+  "Preceptor", "Mitch McConnell",   "2026",  "9",                           "Win",              "84",               "Republican",
+  "Preceptor", "...",               "...",   "...",                         "...",              "...",              "...",
+  "Preceptor", "Rick Scott",        "2026",  "18",                          "Lose",             "73",               "Republican",
+  "...",       "...",               "...",   "...",                         "...",              "...",              "..."
+)
+
+ins_pop_title_footnote <- "This table combines the Barfort et al. (2021) gubernatorial data with the insurer's 2026 Senate candidates, both drawn from the population of candidates for major US statewide offices from roughly 1945 to 2030."
+ins_pop_units_footnote <- "Data rows are 3,587 gubernatorial candidacies from 1851 to 2012 (our analysis keeps the 254 close elections after 1945). Preceptor rows are candidates for the US Senate in 2026. The gap in office and in era is what the assumptions must bridge."
+ins_pop_outcome_footnote <- "Years between election day and death, computed from recorded dates. Where a candidate's exact birth or death date is unknown, the sources impute July 1 — so some values are approximations rather than measurements."
+ins_pop_covariate_footnote <- "Election Result is recorded from official vote totals. Age at Election is in years. Party is as recorded on the ballot; almost all candidates are Democrats or Republicans."
+
+ins_pop_html <- gt::gt(ins_pop_tibble, id = "population_insurer_tbl") |>
+  gt::tab_header(title = "Population Table") |>
+  gt::tab_spanner(label = "Unit/Time", id = "unit_span", columns = c(`Candidate`, `Year`)) |>
+  gt::tab_spanner(label = "Outcome", id = "outcome_span", columns = c(`Years Lived After Election`)) |>
+  gt::tab_spanner(label = "Covariates", id = "covariates_span",
+                  columns = c(`Election Result`, `Age at Election`, `Party`)) |>
+  gt::cols_align(align = "left", columns = c(`Source`, `Candidate`, `Election Result`, `Party`)) |>
+  gt::cols_align(align = "right", columns = c(`Year`, `Years Lived After Election`, `Age at Election`)) |>
+  gt::fmt_markdown(columns = gt::everything()) |>
+  gt::tab_options(
+    heading.title.font.size = "1.5em",
+    heading.title.font.weight = "bolder",
+    column_labels.font.weight = "normal"
+  ) |>
+  gt::tab_style(style = gt::cell_text(weight = "bold"),
+                locations = gt::cells_column_spanners()) |>
+  gt::tab_style(style = gt::cell_text(align = "left"),
+                locations = gt::cells_column_spanners(spanners = c("unit_span", "covariates_span"))) |>
+  gt::tab_style(style = gt::cell_text(align = "right"),
+                locations = gt::cells_column_spanners(spanners = "outcome_span")) |>
+  gt::tab_footnote(footnote = ins_pop_title_footnote, locations = gt::cells_title()) |>
+  gt::tab_footnote(footnote = ins_pop_units_footnote, locations = gt::cells_column_spanners(spanners = "unit_span")) |>
+  gt::tab_footnote(footnote = ins_pop_outcome_footnote, locations = gt::cells_column_spanners(spanners = "outcome_span")) |>
+  gt::tab_footnote(footnote = ins_pop_covariate_footnote, locations = gt::cells_column_spanners(spanners = "covariates_span")) |>
+  gt::opt_css(css = "#population_insurer_tbl .gt_footnote { max-width: 1px; word-break: break-word; }") |>
+  gt::as_raw_html()
+
+cat("```{=html}\n",
+    '<div style="display: inline-block; width: auto; max-width: 100%;">',
+    ins_pop_html, "</div>\n```\n", sep = "")
+```
+
+```{r}
+#| label: population-table-researcher
+#| echo: false
+#| results: asis
+
+res_pop_tibble <- tibble::tribble(
+  ~Source,     ~`Candidate`,      ~`Year`, ~`Years Lived if Win`, ~`Years Lived if Lose`, ~`Election Outcome`,
+  "...",       "...",             "...",   "...",                 "...",                  "...",
+  "Data",      "Earl Warren",     "1946",  "28",                  "...",                  "Won",
+  "Data",      "Pat Brown",       "1966",  "...",                 "30",                   "Lost",
+  "Data",      "...",             "...",   "...",                 "...",                  "...",
+  "Data",      "George Wallace",  "1962",  "36",                  "...",                  "Won",
+  "...",       "...",             "...",   "...",                 "...",                  "...",
+  "Preceptor", "Joe Smith",       "2026",  "23",                  "18",                   "Won",
+  "Preceptor", "David Jones",     "2026",  "28",                  "22",                   "Lost",
+  "Preceptor", "...",             "...",   "...",                 "...",                  "...",
+  "Preceptor", "Susan Chen",      "2026",  "19",                  "17",                   "Won",
+  "...",       "...",             "...",   "...",                 "...",                  "..."
+)
+
+res_pop_title_footnote <- "This table combines the Barfort et al. (2021) gubernatorial data with the researcher's candidates in this year's elections, both drawn from the population of candidates for US elective office from roughly 1945 to 2030."
+res_pop_units_footnote <- "Data rows are gubernatorial candidacies from 1946 to 2003 (close elections only in our analysis). Preceptor rows are candidates in 2026 races for any office. The gaps of decades, and of office, are the stability and representativeness concerns."
+res_pop_outcome_footnote <- "In Data rows, only the potential outcome matching the actual election result was observed; the other is shown as '...' because no one measured it. In Preceptor rows, both potential outcomes are filled in with the truth, and the unobservable one is cross-hatched."
+res_pop_treatment_footnote <- "In Data rows, the treatment is winning or losing an actual gubernatorial race; in close races, the result is nearly a coin flip, which is what makes as-if-random assignment credible. In Preceptor rows, it is winning or losing whatever race the candidate is running this year."
+
+res_pop_html <- gt::gt(res_pop_tibble, id = "population_researcher_tbl") |>
+  gt::tab_header(title = "Population Table") |>
+  gt::tab_spanner(label = "Unit/Time", id = "unit_span", columns = c(`Candidate`, `Year`)) |>
+  gt::tab_spanner(label = "Potential Outcomes", id = "outcome_span",
+                  columns = c(`Years Lived if Win`, `Years Lived if Lose`)) |>
+  gt::tab_spanner(label = "Treatment", id = "treatment_span", columns = c(`Election Outcome`)) |>
+  gt::cols_align(align = "left", columns = c(`Source`, `Candidate`, `Election Outcome`)) |>
+  gt::cols_align(align = "right", columns = c(`Year`, `Years Lived if Win`, `Years Lived if Lose`)) |>
+  gt::fmt_markdown(columns = gt::everything()) |>
+  gt::tab_options(
+    heading.title.font.size = "1.5em",
+    heading.title.font.weight = "bolder",
+    column_labels.font.weight = "normal"
+  ) |>
+  gt::tab_style(style = gt::cell_text(weight = "bold"),
+                locations = gt::cells_column_spanners()) |>
+  gt::tab_style(style = gt::cell_text(align = "left"),
+                locations = gt::cells_column_spanners(spanners = c("unit_span", "treatment_span"))) |>
+  gt::tab_style(style = gt::cell_text(align = "right"),
+                locations = gt::cells_column_spanners(spanners = "outcome_span")) |>
+  gt::text_transform(
+    locations = gt::cells_body(columns = `Years Lived if Lose`, rows = c(7, 10)),
+    fn = function(x) hatch(x)
+  ) |>
+  gt::text_transform(
+    locations = gt::cells_body(columns = `Years Lived if Win`, rows = 8),
+    fn = function(x) hatch(x)
+  ) |>
+  gt::tab_footnote(footnote = res_pop_title_footnote, locations = gt::cells_title()) |>
+  gt::tab_footnote(footnote = res_pop_units_footnote, locations = gt::cells_column_spanners(spanners = "unit_span")) |>
+  gt::tab_footnote(footnote = res_pop_outcome_footnote, locations = gt::cells_column_spanners(spanners = "outcome_span")) |>
+  gt::tab_footnote(footnote = res_pop_treatment_footnote, locations = gt::cells_column_spanners(spanners = "treatment_span")) |>
+  gt::opt_css(css = "#population_researcher_tbl .gt_footnote { max-width: 1px; word-break: break-word; }") |>
+  gt::as_raw_html()
+
+cat("```{=html}\n",
+    '<div style="display: inline-block; width: auto; max-width: 100%;">',
+    res_pop_html, "</div>\n```\n", sep = "")
+```
+
+### Assumptions
+
+Why did we restrict our data to close elections?
+
+> To make unconfoundedness plausible. A race decided by one point is close to a coin flip: which side of the threshold a candidate lands on is nearly unrelated to their health, wealth, or anything else that also affects lifespan. This is the core of a *regression discontinuity design*: near the margin-of-victory cutoff, treatment assignment is as good as random. The price is steep — we discard 93% of the data — and it changes what we estimate: an effect *for close elections*, which may not describe landslides.
+
+Counter-example to the assumption of validity:
+
+> The treatment column in the data records winning a *gubernatorial* election. The insurer's table records the result of a *Senate* race, and the researcher's covers any office. Those columns share a name, but winning a governorship (running a state) is a different experience — different stress, income, and post-office life — from winning a Senate seat. There is also an outcome-measurement crack: where exact birth or death dates were unknown, the sources impute July 1, so some `lived_after` values are approximations.
+
+Counter-example to the assumption of stability:
+
+> Most of our close elections come from the 1940s–1980s, when holding office carried different medical care, security, income, and stress than it does today. If winning office extended life in 1955 mainly through income and access to doctors — channels that matter less for wealthy modern candidates — the coefficient estimated on old data is not the coefficient for 2026.
+
+Counter-example to the assumption of representativeness:
+
+> Two leaps, both shaky. Data → population: close gubernatorial elections are not representative of all elections — candidates who end up in coin-flip races may differ systematically (more competitive states, weaker incumbents) from candidates generally. Population → Preceptor Table: Senate candidates (insurer) or candidates for any office (researcher) differ from gubernatorial candidates in age, wealth, and career paths.
+
+Counter-example to the assumption of unconfoundedness:
+
+> **Life insurer:** none needed. Unconfoundedness applies only to causal questions; the insurer's model is predictive.
+
+> **Researcher:** wealthier and healthier candidates both win more often and live longer, so in the full data, winning is badly confounded — that is exactly why we restricted to close elections. Within close races, the residual worry is subtler: if the candidate who wins a squeaker differs from the one who loses it (better campaign funding, stronger party machine — both wealth proxies), the coin-flip story breaks down.
+
+### Probability Family and Link Function
+
+What probability family should we use?
+
+> Normal Distribution
+
+Why should we use that probability family?
+
+> The Normal distribution is the standard choice for continuous outcomes, and years lived after the election is continuous.
+
+What is the link function for our outcome?
+
+> The identity link. Our model will be a linear regression.
+
+------------------------------------------------------------------------
+
+## Courage
+
+The abstract data generating mechanism coming out of Justice is:
+
+$$Y = \beta_0 + \beta_1 X_1 + \cdots + \beta_n X_n + \epsilon, \quad \epsilon \sim N(0, \sigma^2)$$
+
+### Candidate Models
+
+Create a candidate model, modeling the outcome `lived_after` as a linear function of `election_result`. Call it `fit_result`.
+
+```{r}
+#| label: candidate-model-result
+#| echo: true
+
+fit_result <- linear_reg() |>
+  fit(lived_after ~ election_result, data = x)
+
+fit_result |>
+  tidy(conf.int = TRUE) |>
+  select(term, estimate, conf.low, conf.high) |>
+  mutate(across(where(is.numeric), \(x) round(x, 2)))
+```
+
+The raw win effect is about 2.4 years, but its confidence interval includes zero — comparing group averages alone, we cannot distinguish the effect from nothing. Age is the elephant in the room from the EDA, so we adjust for it next.
+
+Create a candidate model, modeling `lived_after` as a linear function of both `election_result` and `election_age`. Call it `fit_result_age`.
+
+```{r}
+#| label: candidate-model-result-age
+#| echo: true
+
+fit_result_age <- linear_reg() |>
+  fit(lived_after ~ election_result + election_age, data = x)
+
+fit_result_age |>
+  tidy(conf.int = TRUE) |>
+  select(term, estimate, conf.low, conf.high) |>
+  mutate(across(where(is.numeric), \(x) round(x, 2)))
+```
+
+Age at election is enormously informative (about −0.9 years of remaining life per year of age, interval far from zero), but the win coefficient barely moves and still cannot be distinguished from zero — consistent with the balance check in Wisdom, where winners and losers had nearly identical ages. The missing ingredient is `win_margin`: even inside the close window, winners sit above zero and losers below, so the running variable is entangled with the treatment. We control for it, and add `party`, next.
+
+Create a candidate model which adds `win_margin` and `party` to `fit_result_age`. Call it `fit_margin_party`.
+
+```{r}
+#| label: candidate-model-margin-party
+#| echo: true
+
+fit_margin_party <- linear_reg() |>
+  fit(lived_after ~ election_result + win_margin + election_age + party, data = x)
+
+fit_margin_party |>
+  tidy(conf.int = TRUE) |>
+  select(term, estimate, conf.low, conf.high) |>
+  mutate(across(where(is.numeric), \(x) round(x, 2)))
+```
+
+Controlling for the running variable changes everything: the win coefficient jumps to about 8.6 years with an interval excluding zero. Comparing candidates *at the same margin*, on opposite sides of the win/lose threshold, is the regression-discontinuity comparison the design intends — and it is only visible once `win_margin` is in the model.
+
+### The Data Generating Mechanism
+
+Which model should we choose, and why? Define `fit_governors` as your chosen model and write out the fitted equation.
+
+```{r}
+#| label: chosen-model
+#| echo: true
+
+fit_governors <- linear_reg() |>
+  fit(lived_after ~ election_result + win_margin + election_age + party, data = x)
+
+fit_governors |>
+  tidy(conf.int = TRUE) |>
+  select(term, estimate, conf.low, conf.high) |>
+  mutate(across(where(is.numeric), \(x) round(x, 2)))
+```
+
+We choose the full model. `win_margin` must stay because it is the running variable that identifies the design; `election_age` because it dominates the outcome; and `party` because `partyRepublican` is distinguishable from zero (Republicans in this sample live about 4 years longer after election). The interval for `partyThird party` easily includes zero, but with a categorical variable we keep the whole variable as long as at least one of its dummies earns its place — dropping only the Third-party level is not an option.
+
+$$
+\widehat{\text{lived\_after}} = 67.6 + 8.63 \cdot \text{Win} - 1.46 \cdot \text{win\_margin} - 0.89 \cdot \text{election\_age} + 4.04 \cdot \text{Republican} - 9.50 \cdot \text{Third}
+$$
+
+**This is our data generating mechanism.**
+
+### Model Checking
+
+Create a plot or table that checks whether your chosen model's fitted values are reasonable compared to the actual data.
+
+```{r}
+#| label: model-check-fitted-vs-actual
+#| echo: true
+
+fitted_df <- augment(fit_governors, new_data = x)
+
+fitted_df |>
+  select(lived_after, .pred) |>
+  pivot_longer(everything(), names_to = "source", values_to = "value") |>
+  mutate(source = if_else(source == ".pred", "Fitted", "Actual")) |>
+  ggplot(aes(x = value, fill = source)) +
+  geom_density(alpha = 0.5) +
+  labs(
+    title = "Actual vs. Fitted Years Lived After the Election",
+    subtitle = "The fitted distribution matches the center but is narrower than the actual data",
+    x = "Years lived after election",
+    y = NULL,
+    fill = "Source"
+  ) +
+  theme_minimal() +
+  theme(axis.text.y = element_blank(), axis.ticks.y = element_blank())
+```
+
+```{r}
+#| label: model-check-residuals
+#| echo: true
+
+fitted_df |>
+  mutate(.resid = lived_after - .pred) |>
+  ggplot(aes(x = election_age, y = .resid, color = election_result)) +
+  geom_point(alpha = 0.5) +
+  geom_hline(yintercept = 0, linetype = "dashed", color = "grey40") +
+  labs(
+    title = "Residuals vs. Age at Election",
+    subtitle = "Residuals scatter around zero with no clear pattern for winners or losers",
+    x = "Age at election",
+    y = "Residual (years)",
+    color = "Election result"
+  ) +
+  theme_minimal()
+```
+
+The fitted values center where the actual data center, and residuals show no systematic pattern across age or between winners and losers — the model is not obviously misfitting the groups our questions care about.
+
+------------------------------------------------------------------------
+
+## Temperance
+
+### Predictions
+
+Use `predictions(fit_governors)` to estimate the years lived after the election for individual candidates in the sample.
+
+```{r}
+#| label: predictions-raw
+#| echo: true
+
+predictions(fit_governors) |>
+  as_tibble() |>
+  select(election_result, election_age, party, estimate, conf.low, conf.high) |>
+  head(6)
+```
+
+One prediction per candidacy, each built from that candidate's own covariates — the stepping stone that shows what the model produces before we start averaging.
+
+Use `avg_predictions(fit_governors, by = "election_result")` to estimate the average years lived after the election for winners and losers.
+
+```{r}
+#| label: average-predictions
+#| echo: true
+
+avg_predictions(fit_governors, by = "election_result")
+```
+
+What is the expected number of years lived after the election for a losing candidate (with 95% CI)?
+
+> About 27.2 years, with a 95% CI of roughly [25.2, 29.2].
+
+What is the expected number of years lived after the election for a winning candidate (with 95% CI)?
+
+> About 29.6 years, with a 95% CI of roughly [27.7, 31.5].
+
+### Comparisons
+
+Use `avg_comparisons(fit_governors, variables = "election_result")` to estimate the effect of winning on years lived after the election.
+
+```{r}
+#| label: avg-comparison-result
+#| echo: true
+
+avg_comparisons(fit_governors, variables = "election_result")
+```
+
+The estimate is about 8.6 additional years of life from winning, 95% CI roughly [3.3, 14.0]. Practically, that is an enormous number — a decade of life is more than most medical interventions deliver — which should already make us a little suspicious (see the bias discussion below).
+
+Why is the estimate from `avg_comparisons()` so much larger than the difference between the two group averages from `avg_predictions()`?
+
+> The group averages (29.6 vs. 27.2, a gap of 2.4) average each group over *its own* win margins: winners all have positive margins and losers negative ones, and the margin coefficient (−1.46 per point) drags the winners' average down and pushes the losers' up. `avg_comparisons()` instead flips `election_result` *within each row* while holding `win_margin` and everything else fixed — the counterfactual, within-row comparison the causal question actually asks — and recovers the 8.6-year coefficient. The across-row and within-row quantities differ precisely because treatment and running variable are entangled; this is the whole reason `win_margin` had to be in the model.
+
+### Visualizations
+
+Create a visualization of the average predictions by election result using `plot_predictions()`.
+
+```{r}
+#| label: prediction-plot
+#| echo: true
+
+cond_preds <- plot_predictions(fit_governors, condition = "election_result", draw = FALSE)
+
+cond_gap <- round(diff(range(cond_preds$estimate)), 1)
+
+cond_preds |>
+  ggplot(aes(x = election_result, y = estimate)) +
+  geom_pointrange(aes(ymin = conf.low, ymax = conf.high), linewidth = 0.7) +
+  labs(
+    title = "Predicted Years Lived After the Election, by Election Result",
+    subtitle = paste0("Holding margin, age, and party fixed, winners are predicted to live about ",
+                      cond_gap, " more years"),
+    x = "Election result",
+    y = "Predicted years lived after election",
+    caption = "Source: Barfort et al. (2021), 254 close gubernatorial elections, 1946-2003"
+  ) +
+  theme_minimal(base_size = 13)
+```
+
+Note that this plot shows *conditional* predictions — `plot_predictions()` with `condition` holds the other covariates fixed at typical values — so the gap it displays is the 8.6-year within-row effect, not the 2.4-year across-group gap.
+
+What measure of uncertainty is shown in this plot?
+
+> The vertical bars are 95% confidence intervals around each predicted average.
+
+Create a plot showing predicted years lived after the election as a function of `election_age`, separately for winners and losers.
+
+```{r}
+#| label: prediction-plot-age
+#| echo: true
+
+win_effect <- avg_comparisons(fit_governors, variables = "election_result") |>
+  as_tibble() |>
+  pull(estimate) |>
+  round(1)
+
+plot_predictions(fit_governors,
+                 condition = c("election_age", "election_result"),
+                 draw = FALSE) |>
+  ggplot(aes(x = election_age, y = estimate,
+             color = election_result, fill = election_result)) +
+  geom_ribbon(aes(ymin = conf.low, ymax = conf.high), alpha = 0.2, color = NA) +
+  geom_line(linewidth = 1) +
+  labs(
+    title = "Predicted Years Lived After the Election, by Age and Result",
+    subtitle = paste0("The two lines run parallel, separated by the ", win_effect,
+                      "-year winning effect at every age"),
+    x = "Age at election",
+    y = "Predicted years lived after election",
+    color = "Election result",
+    fill = "Election result"
+  ) +
+  theme_minimal()
+```
+
+Age does most of the predictive work — the lines fall steeply — while winning shifts the whole line upward by a constant amount, because our model has no interaction between age and the treatment.
+
+### Interpretation
+
+How does the life insurer interpret the estimated effect of winning? How does the researcher interpret the same number differently?
+
+> **Life insurer:** election result is just another rating factor. The insurer plugs each Senate candidate's age, party, and (once known) election result into the model and reads off an expected remaining lifespan for pricing — an *across-row* use. Whether winning causes longevity or merely marks healthier candidates is irrelevant to the premium.
+
+> **Researcher:** the 8.6 years is an estimate of the *within-row* causal effect — how much longer the same candidate would live having won rather than lost — and it deserves that interpretation only because close elections make treatment assignment as-if random. If the coin-flip argument fails, the researcher's number loses its meaning while the insurer's forecasts remain perfectly usable.
+
+### Humility
+
+Besides the average years lived, identify two additional quantities of interest the person in your scenario might care about.
+
+> **Life insurer:** the full predicted distribution of lifespans for a specific candidate profile (pricing depends on tail risk, not just the mean), and predictions for particular covariate combinations — say, a 77-year-old Democratic winner versus an 84-year-old Republican winner — built from a grid of the model's covariates.
+
+> **Researcher:** whether the effect differs by party (the model permits six predictions: two results × three parties) or by era, and the effect near the threshold specifically — the estimate at `win_margin = 0`, which is the purest version of the regression-discontinuity comparison.
+
+Why might these estimates be a poor answer to your scenario's question? Identify at least two possible sources of bias.
+
+> 1) The estimate is implausibly large, and the sample is small. Gelman's commentary on this paper argues that with only 254 close elections, noisy data plus the incentive to publish significant results can inflate estimates — a winner's-curse for effect sizes. An honest best guess for the true effect is far smaller than 8.6 years, with a range that plausibly includes zero or even negative values.
+
+> 2) Validity and representativeness gaps: our treatment is winning a *gubernatorial* race in 1946–2003, not a Senate race (insurer) or any race (researcher) in 2026 — and close elections are not representative of elections generally. Both leaps could shift the answer in either direction.
+
+> 3) The world is always more uncertain than our models would have us believe: even with every assumption exactly right, the reported intervals are only the *Preceptor's Posterior* — the best posterior achievable under our assumptions — not the truth.
