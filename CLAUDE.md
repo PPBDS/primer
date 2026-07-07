@@ -6,10 +6,10 @@ This file is the working reference for creating data science education artifacts
 
 ## Repo layout — where guidance loads
 
-This is the `primer` repo. Its two artifact directories each carry their own `CLAUDE.md`, so the right guidance auto-loads from wherever you are working:
+This is the `primer` repo. Guidance loads from wherever you are working:
 
 - **`book/`** — the textbook chapters (`.qmd`). Working there loads [`book/CLAUDE.md`](book/CLAUDE.md).
-- **`primer.tutorials/`** — the learnr tutorials (an R package, `inst/tutorials/<NN-name>/`). Working there loads [`primer.tutorials/CLAUDE.md`](primer.tutorials/CLAUDE.md).
+- **The learnr tutorials live in their own repo, [PPBDS/primer.tutorials](https://github.com/PPBDS/primer.tutorials)** (split out 2026-07 so package installs stop downloading this whole repo — do not re-add the package here). Its `CLAUDE.md` routes back into this repo's `guide/`, expecting a sibling checkout (`../primer/`).
 - **`guide/`** — the detailed authoring guide, split into parts and **read on demand** (the map below). Both routers above point into it.
 
 This index (auto-loaded everywhere in the repo) carries the base-guide relationship, the curriculum at a glance, and the collaboration protocol.
@@ -40,12 +40,12 @@ The detailed guide lives under [`guide/`](guide/). **Read only the parts your cu
 | [`guide/concepts-and-drops.md`](guide/concepts-and-drops.md) | §11 Canonical definitions, §12 Knowledge-drop library | both — definition answers, knowledge drops |
 | [`guide/guidance.md`](guide/guidance.md) | §14 cross-cutting author guidance (rounding, visualization house style, LaTeX, package-name formatting, …) | both |
 | [`guide/chapters.md`](guide/chapters.md) | §4 Chapter structure | **chapters** (`book/`) |
-| [`guide/authoring.md`](guide/authoring.md) | §3 file conventions, §5 tutorial structure, §6 question flow, §7 exercise types, §9 AI-mediated exercises, §15 R tooling | **tutorials** (`primer.tutorials/`) |
+| [`guide/authoring.md`](guide/authoring.md) | §3 file conventions, §5 tutorial structure, §6 question flow, §7 exercise types, §9 AI-mediated exercises, §15 R tooling | **tutorials** (the [PPBDS/primer.tutorials](https://github.com/PPBDS/primer.tutorials) repo) |
 | [`guide/exercise-list.md`](guide/exercise-list.md) | §13 Master exercise list | **tutorials** — the per-virtue exercise sequence |
 | [`guide/per-problem/<id>.md`](guide/per-problem/) | §17 seed spec for one problem | **tutorials** — read only the one you're building (e.g. `guide/per-problem/08-seguro-popular.md`) |
 | [`guide/open-items.md`](guide/open-items.md) | §16 Open items | checking pending TODOs |
 
-**Authoring a tutorial:** base guide → this index → [`primer.tutorials/CLAUDE.md`](primer.tutorials/CLAUDE.md) (which routes you to `guide/authoring.md` + `guide/exercise-list.md` + `guide/per-problem/<id>.md`), pulling in `guide/curriculum.md`, `guide/tables.md`, `guide/concepts-and-drops.md`, `guide/guidance.md` as needed. **Writing a chapter:** base guide → this index → [`book/CLAUDE.md`](book/CLAUDE.md) (which routes you to `guide/chapters.md` + the shared parts).
+**Authoring a tutorial:** base guide → this index → [CLAUDE.md in PPBDS/primer.tutorials](https://github.com/PPBDS/primer.tutorials/blob/main/CLAUDE.md) (work in that repo, with this one checked out as a sibling `../primer/`; it routes you back to `guide/authoring.md` + `guide/exercise-list.md` + `guide/per-problem/<id>.md` here), pulling in `guide/curriculum.md`, `guide/tables.md`, `guide/concepts-and-drops.md`, `guide/guidance.md` as needed. **Writing a chapter:** base guide → this index → [`book/CLAUDE.md`](book/CLAUDE.md) (which routes you to `guide/chapters.md` + the shared parts).
 
 ## Curriculum at a glance
 

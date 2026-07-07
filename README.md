@@ -1,20 +1,21 @@
 # Preceptor's Primer for Bayesian Data Science
 
-Source for the book *Preceptor's Primer for Bayesian Data Science: Using the Cardinal Virtues for Inference* by David Kane, together with the `primer.tutorials` R package that accompanies it.
+Source for the book *Preceptor's Primer for Bayesian Data Science: Using the Cardinal Virtues for Inference* by David Kane. The accompanying `primer.tutorials` R package lives in its own repo: [PPBDS/primer.tutorials](https://github.com/PPBDS/primer.tutorials) (split out 2026-07 so that installing the package no longer downloads this entire repo).
 
 - **Book:** <https://ppbds.github.io/primer/>
-- **Tutorials site:** <https://ppbds.github.io/primer/tutorials/>
+- **Tutorials package:** <https://github.com/PPBDS/primer.tutorials> (site: <https://ppbds.github.io/primer.tutorials/>)
 
 ## Repository layout
 
 - `book/` — Quarto book source (`*.qmd` chapters, `_quarto.yml`, supporting images and data)
-- `primer.tutorials/` — R package providing the learnr tutorials
-- `.github/workflows/` — CI: R CMD check for the package, combined render and deploy for the book + pkgdown site
+- `guide/` — the authoring guide, shared by book chapters and the tutorials (the tutorials repo links back here)
+- `class-exercises/` — in-class exercise materials
+- `.github/workflows/` — CI: render and deploy the book
 
-## Installing the R package
+## Installing the tutorials package
 
 ```r
-remotes::install_github("PPBDS/primer", subdir = "primer.tutorials")
+remotes::install_github("PPBDS/primer.tutorials")
 ```
 
 ## Building locally
@@ -23,11 +24,4 @@ Render the book:
 
 ```bash
 quarto render book
-```
-
-Check the R package (from the repo root):
-
-```r
-setwd("primer.tutorials")
-devtools::check()
 ```

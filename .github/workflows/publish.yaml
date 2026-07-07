@@ -44,30 +44,15 @@ jobs:
           working-directory: book
           cache-version: 1
 
-      - name: Install tutorial package dependencies
-        uses: r-lib/actions/setup-r-dependencies@v2
-        with:
-          working-directory: primer.tutorials
-          extra-packages: any::pkgdown, local::.
-          needs: website
-          cache-version: 1
-
+      # The primer.tutorials pkgdown steps that used to run here moved to
+      # the PPBDS/primer.tutorials repo (package split, 2026-07); its site
+      # now publishes to ppbds.github.io/primer.tutorials/ instead of
+      # nesting under the book at /primer/tutorials/.
       - name: Render book
         uses: quarto-dev/quarto-actions/render@v2
         with:
           to: html
           path: book
-
-      - name: Build pkgdown site into book/docs/tutorials
-        run: |
-          pkgdown::build_site_github_pages(
-            pkg        = ".",
-            dest_dir   = "../book/docs/tutorials",
-            new_process = FALSE,
-            install     = FALSE
-          )
-        shell: Rscript {0}
-        working-directory: primer.tutorials
 
       - name: Deploy to GitHub Pages
         if: github.event_name == 'push' && github.ref == 'refs/heads/main'
