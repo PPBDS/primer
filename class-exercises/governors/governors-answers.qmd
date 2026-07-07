@@ -17,6 +17,7 @@ library(tidymodels)
 library(marginaleffects)
 library(gt)
 library(broom)
+library(easystats)
 
 governors <- read_csv("data/governors.csv", show_col_types = FALSE)
 ```
@@ -29,11 +30,11 @@ There are two scenarios. Focus on just one of them:
 
 - Imagine you work for a life insurer, and want to forecast how long candidates for the US Senate might live based on their age, party, election result, and other variables.
 
-- Imagine you are a researcher. You want to know if winning candidates live longer.
+- Imagine you are a researcher. You want to know if winning candidates live longer. You are interested in candidates for any elected office --- senate, governor, mayor, et cetera.
 
 The life insurer asks: How many years, on average, will this year's US Senate candidates live after their election, given their age, party, and election result?
 
-The researcher asks: What is the average causal effect of winning an election, rather than losing it, on the number of years a candidate lives afterward?
+The researcher asks: What is the average causal effect of winning an election --- for any elected office, from senator to governor to mayor --- rather than losing it, on the number of years a candidate lives afterward?
 
 Note that we use the same data, and the same fitted model, to help both people.
 
@@ -47,7 +48,7 @@ Note that we use the same data, and the same fitted model, to help both people.
 
 **Life insurer:** each row is one candidate for the US Senate in this year's elections — roughly a hundred people.
 
-**Researcher:** each row is one candidate in a US election this year; the question is not restricted to any one office, so the units number in the tens of thousands.
+**Researcher:** each row is one candidate for any elected office --- senate, governor, mayor, school board, et cetera --- in a US election this year, so the units number in the tens of thousands.
 
 - Outcomes:
 
@@ -71,13 +72,13 @@ Note that we use the same data, and the same fitted model, to help both people.
 
 **Life insurer:** the expected years lived after the election for each candidate, given their covariates.
 
-**Researcher:** the average difference between the two potential outcomes — the average causal effect of winning on years lived.
+**Researcher:** the average difference between the two potential outcomes — the average causal effect of winning, across candidates for every kind of elected office, on years lived.
 
 Describe the key components of a Preceptor Table for your scenario; Use words like "units," "outcomes," and "covariates."
 
   **Life insurer:** The Preceptor Table should have one row per US Senate candidate this year. In this exercise, the columns are Candidate, Years Lived After Election, and the covariates Election Result, Age at Election, and Party.
 
-  **Researcher:** The Preceptor Table should have one row per candidate in this year's elections. The columns are Candidate, the two potential outcomes (Years Lived if Win, Years Lived if Lose), and the Treatment (Election Outcome).
+  **Researcher:** The Preceptor Table should have one row per candidate, for any elected office, in this year's elections. The columns are Candidate, the two potential outcomes (Years Lived if Win, Years Lived if Lose), and the Treatment (Election Outcome).
 
 ```{r}
 #| label: preceptor-table-insurer
@@ -98,12 +99,22 @@ ins_pre_outcome_footnote <- "Years lived after election day. For candidates stil
 ins_pre_covariate_footnote <- "Election Result (Win or Lose) is a covariate here, not a treatment — the insurer is not asking what winning does to anyone, only using it to forecast. Age at Election is in years. Party is as listed on the ballot."
 
 ins_pre_html <- gt::gt(ins_pre_tibble, id = "preceptor_insurer_tbl") |>
-  gt::tab_header(title = "Preceptor Table") |>
+  gt::tab_header(title = "Preceptor Table --- Life insurer (predictive)") |>
   gt::tab_spanner(label = "Unit", id = "unit_span", columns = c(`Candidate`)) |>
   gt::tab_spanner(label = "Outcome", id = "outcome_span", columns = c(`Years Lived After Election`)) |>
   gt::tab_spanner(label = "Covariates", id = "covariates_span",
                   columns = c(`Election Result`, `Age at Election`, `Party`)) |>
   gt::cols_width(`Candidate` ~ gt::px(160), `Years Lived After Election` ~ gt::px(130), `Election Result` ~ gt::px(110), `Age at Election` ~ gt::px(110), `Party` ~ gt::px(110)) |>
+  gt::tab_style(style = gt::css(min_width = gt::px(160)),
+                locations = gt::cells_column_labels(columns = c(`Candidate`))) |>
+  gt::tab_style(style = gt::css(min_width = gt::px(130)),
+                locations = gt::cells_column_labels(columns = c(`Years Lived After Election`))) |>
+  gt::tab_style(style = gt::css(min_width = gt::px(110)),
+                locations = gt::cells_column_labels(columns = c(`Election Result`))) |>
+  gt::tab_style(style = gt::css(min_width = gt::px(110)),
+                locations = gt::cells_column_labels(columns = c(`Age at Election`))) |>
+  gt::tab_style(style = gt::css(min_width = gt::px(110)),
+                locations = gt::cells_column_labels(columns = c(`Party`))) |>
   gt::cols_align(align = "left", columns = c(`Candidate`, `Election Result`, `Party`)) |>
   gt::cols_align(align = "right", columns = c(`Years Lived After Election`, `Age at Election`)) |>
   gt::fmt_markdown(columns = gt::everything()) |>
@@ -154,17 +165,25 @@ res_pre_tibble <- tibble::tribble(
 )
 
 res_pre_title_footnote <- "If all the information in this table were available, we could answer the question: What is the average causal effect of winning an election, rather than losing it, on the number of years a candidate lives afterward?"
-res_pre_units_footnote <- "Each row represents one candidate in a US election this year. The researcher's question is not restricted to any one office, so there are tens of thousands of such candidates."
+res_pre_units_footnote <- "Each row represents one candidate for any elected office --- senate, governor, mayor, et cetera --- in a US election this year, so there are tens of thousands of such candidates."
 res_pre_outcome_footnote <- "The two potential outcomes: years lived after the election if the candidate wins, and if the candidate loses. The cross-hatched cells mark each candidate's unobservable potential outcome — the one we could never see, because the candidate actually experienced the other election result."
 res_pre_treatment_footnote <- "The candidate's election outcome, taking values 'Won' or 'Lost'."
 
 res_pre_html <- gt::gt(res_pre_tibble, id = "preceptor_researcher_tbl") |>
-  gt::tab_header(title = "Preceptor Table") |>
+  gt::tab_header(title = "Preceptor Table --- Researcher (causal)") |>
   gt::tab_spanner(label = "Unit", id = "unit_span", columns = c(`Candidate`)) |>
   gt::tab_spanner(label = "Potential Outcomes", id = "outcome_span",
                   columns = c(`Years Lived if Win`, `Years Lived if Lose`)) |>
   gt::tab_spanner(label = "Treatment", id = "treatment_span", columns = c(`Election Outcome`)) |>
   gt::cols_width(`Candidate` ~ gt::px(160), `Years Lived if Win` ~ gt::px(120), `Years Lived if Lose` ~ gt::px(120), `Election Outcome` ~ gt::px(130)) |>
+  gt::tab_style(style = gt::css(min_width = gt::px(160)),
+                locations = gt::cells_column_labels(columns = c(`Candidate`))) |>
+  gt::tab_style(style = gt::css(min_width = gt::px(120)),
+                locations = gt::cells_column_labels(columns = c(`Years Lived if Win`))) |>
+  gt::tab_style(style = gt::css(min_width = gt::px(120)),
+                locations = gt::cells_column_labels(columns = c(`Years Lived if Lose`))) |>
+  gt::tab_style(style = gt::css(min_width = gt::px(130)),
+                locations = gt::cells_column_labels(columns = c(`Election Outcome`))) |>
   gt::cols_align(align = "left", columns = c(`Candidate`, `Election Outcome`)) |>
   gt::cols_align(align = "right", columns = c(`Years Lived if Win`, `Years Lived if Lose`)) |>
   gt::fmt_markdown(columns = gt::everything()) |>
@@ -302,12 +321,26 @@ ins_pop_outcome_footnote <- "Years between election day and death, computed from
 ins_pop_covariate_footnote <- "Election Result is recorded from official vote totals. Age at Election is in years. Party is as recorded on the ballot; almost all candidates are Democrats or Republicans."
 
 ins_pop_html <- gt::gt(ins_pop_tibble, id = "population_insurer_tbl") |>
-  gt::tab_header(title = "Population Table") |>
+  gt::tab_header(title = "Population Table --- Life insurer (predictive)") |>
   gt::tab_spanner(label = "Unit/Time", id = "unit_span", columns = c(`Candidate`, `Year`)) |>
   gt::tab_spanner(label = "Outcome", id = "outcome_span", columns = c(`Years Lived After Election`)) |>
   gt::tab_spanner(label = "Covariates", id = "covariates_span",
                   columns = c(`Election Result`, `Age at Election`, `Party`)) |>
   gt::cols_width(`Source` ~ gt::px(110), `Candidate` ~ gt::px(160), `Year` ~ gt::px(80), `Years Lived After Election` ~ gt::px(130), `Election Result` ~ gt::px(110), `Age at Election` ~ gt::px(110), `Party` ~ gt::px(110)) |>
+  gt::tab_style(style = gt::css(min_width = gt::px(110)),
+                locations = gt::cells_column_labels(columns = c(`Source`))) |>
+  gt::tab_style(style = gt::css(min_width = gt::px(160)),
+                locations = gt::cells_column_labels(columns = c(`Candidate`))) |>
+  gt::tab_style(style = gt::css(min_width = gt::px(80)),
+                locations = gt::cells_column_labels(columns = c(`Year`))) |>
+  gt::tab_style(style = gt::css(min_width = gt::px(130)),
+                locations = gt::cells_column_labels(columns = c(`Years Lived After Election`))) |>
+  gt::tab_style(style = gt::css(min_width = gt::px(110)),
+                locations = gt::cells_column_labels(columns = c(`Election Result`))) |>
+  gt::tab_style(style = gt::css(min_width = gt::px(110)),
+                locations = gt::cells_column_labels(columns = c(`Age at Election`))) |>
+  gt::tab_style(style = gt::css(min_width = gt::px(110)),
+                locations = gt::cells_column_labels(columns = c(`Party`))) |>
   gt::cols_align(align = "left", columns = c(`Source`, `Candidate`, `Election Result`, `Party`)) |>
   gt::cols_align(align = "right", columns = c(`Year`, `Years Lived After Election`, `Age at Election`)) |>
   gt::fmt_markdown(columns = gt::everything()) |>
@@ -360,12 +393,24 @@ res_pop_outcome_footnote <- "In Data rows, only the potential outcome matching t
 res_pop_treatment_footnote <- "In Data rows, the treatment is winning or losing an actual gubernatorial race; in close races, the result is nearly a coin flip, which is what makes as-if-random assignment credible. In Preceptor rows, it is winning or losing whatever race the candidate is running this year."
 
 res_pop_html <- gt::gt(res_pop_tibble, id = "population_researcher_tbl") |>
-  gt::tab_header(title = "Population Table") |>
+  gt::tab_header(title = "Population Table --- Researcher (causal)") |>
   gt::tab_spanner(label = "Unit/Time", id = "unit_span", columns = c(`Candidate`, `Year`)) |>
   gt::tab_spanner(label = "Potential Outcomes", id = "outcome_span",
                   columns = c(`Years Lived if Win`, `Years Lived if Lose`)) |>
   gt::tab_spanner(label = "Treatment", id = "treatment_span", columns = c(`Election Outcome`)) |>
   gt::cols_width(`Source` ~ gt::px(110), `Candidate` ~ gt::px(160), `Year` ~ gt::px(80), `Years Lived if Win` ~ gt::px(120), `Years Lived if Lose` ~ gt::px(120), `Election Outcome` ~ gt::px(130)) |>
+  gt::tab_style(style = gt::css(min_width = gt::px(110)),
+                locations = gt::cells_column_labels(columns = c(`Source`))) |>
+  gt::tab_style(style = gt::css(min_width = gt::px(160)),
+                locations = gt::cells_column_labels(columns = c(`Candidate`))) |>
+  gt::tab_style(style = gt::css(min_width = gt::px(80)),
+                locations = gt::cells_column_labels(columns = c(`Year`))) |>
+  gt::tab_style(style = gt::css(min_width = gt::px(120)),
+                locations = gt::cells_column_labels(columns = c(`Years Lived if Win`))) |>
+  gt::tab_style(style = gt::css(min_width = gt::px(120)),
+                locations = gt::cells_column_labels(columns = c(`Years Lived if Lose`))) |>
+  gt::tab_style(style = gt::css(min_width = gt::px(130)),
+                locations = gt::cells_column_labels(columns = c(`Election Outcome`))) |>
   gt::cols_align(align = "left", columns = c(`Source`, `Candidate`, `Election Outcome`)) |>
   gt::cols_align(align = "right", columns = c(`Year`, `Years Lived if Win`, `Years Lived if Lose`)) |>
   gt::fmt_markdown(columns = gt::everything()) |>
@@ -408,7 +453,7 @@ Why did we restrict our data to close elections?
 
 Counter-example to the assumption of validity:
 
-> The treatment column in the data records winning a *gubernatorial* election. The insurer's table records the result of a *Senate* race, and the researcher's covers any office. Those columns share a name, but winning a governorship (running a state) is a different experience — different stress, income, and post-office life — from winning a Senate seat. There is also an outcome-measurement crack: where exact birth or death dates were unknown, the sources impute July 1, so some `lived_after` values are approximations.
+> The treatment column in the data records winning a *gubernatorial* election. The insurer's table records the result of a *Senate* race, and the researcher's covers every elected office from senator to mayor. Those columns share a name, but winning a governorship (running a state) is a different experience — different stress, income, and post-office life — from winning a Senate seat. There is also an outcome-measurement crack: where exact birth or death dates were unknown, the sources impute July 1, so some `lived_after` values are approximations.
 
 Counter-example to the assumption of stability:
 
@@ -526,51 +571,16 @@ $$
 
 ### Model Checking
 
-Create a plot or table that checks whether your chosen model's fitted values are reasonable compared to the actual data.
+Use `check_predictions(extract_fit_engine(fit_governors))` to perform a posterior predictive check of your chosen model.
 
 ```{r}
-#| label: model-check-fitted-vs-actual
+#| label: posterior-predictive-check
 #| echo: true
 
-fitted_df <- augment(fit_governors, new_data = x)
-
-fitted_df |>
-  select(lived_after, .pred) |>
-  pivot_longer(everything(), names_to = "source", values_to = "value") |>
-  mutate(source = if_else(source == ".pred", "Fitted", "Actual")) |>
-  ggplot(aes(x = value, fill = source)) +
-  geom_density(alpha = 0.5) +
-  labs(
-    title = "Actual vs. Fitted Years Lived After the Election",
-    subtitle = "The fitted distribution matches the center but is narrower than the actual data",
-    x = "Years lived after election",
-    y = NULL,
-    fill = "Source"
-  ) +
-  theme_minimal() +
-  theme(axis.text.y = element_blank(), axis.ticks.y = element_blank())
+check_predictions(extract_fit_engine(fit_governors))
 ```
 
-```{r}
-#| label: model-check-residuals
-#| echo: true
-
-fitted_df |>
-  mutate(.resid = lived_after - .pred) |>
-  ggplot(aes(x = election_age, y = .resid, color = election_result)) +
-  geom_point(alpha = 0.5) +
-  geom_hline(yintercept = 0, linetype = "dashed", color = "grey40") +
-  labs(
-    title = "Residuals vs. Age at Election",
-    subtitle = "Residuals scatter around zero with no clear pattern for winners or losers",
-    x = "Age at election",
-    y = "Residual (years)",
-    color = "Election result"
-  ) +
-  theme_minimal()
-```
-
-The fitted values center where the actual data center, and residuals show no systematic pattern across age or between winners and losers — the model is not obviously misfitting the groups our questions care about.
+`check_predictions()` simulates new lifespans from the fitted model and overlays them on the observed distribution. The simulated curves track the observed density reasonably well, so the model is not obviously misdescribing the outcome — the check we want to pass before trusting the predictions in Temperance.
 
 ------------------------------------------------------------------------
 

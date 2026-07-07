@@ -15,6 +15,7 @@ library(tidymodels)
 library(marginaleffects)
 library(gt)
 library(broom)
+library(easystats)
 
 star <- read_csv("data/class-size.csv", show_col_types = FALSE) |>
   mutate(kind = recode(classtype,
@@ -110,11 +111,19 @@ prin_pre_outcome_footnote <- "Fourth-grade standardized math score, on the Stanf
 prin_pre_covariate_footnote <- "Class Type takes three values: Small, Regular, or Regular with aide — a covariate here, not a treatment, since the principal is forecasting rather than intervening. Race uses the data's three categories: White, Black, and Others."
 
 prin_pre_html <- gt::gt(prin_pre_tibble, id = "preceptor_principal_tbl") |>
-  gt::tab_header(title = "Preceptor Table") |>
+  gt::tab_header(title = "Preceptor Table --- Principal (predictive)") |>
   gt::tab_spanner(label = "Unit", id = "unit_span", columns = c(`Student`)) |>
   gt::tab_spanner(label = "Outcome", id = "outcome_span", columns = c(`Math Score`)) |>
   gt::tab_spanner(label = "Covariates", id = "covariates_span", columns = c(`Class Type`, `Race`)) |>
   gt::cols_width(`Student` ~ gt::px(160), `Math Score` ~ gt::px(110), `Class Type` ~ gt::px(150), `Race` ~ gt::px(100)) |>
+  gt::tab_style(style = gt::css(min_width = gt::px(160)),
+                locations = gt::cells_column_labels(columns = c(`Student`))) |>
+  gt::tab_style(style = gt::css(min_width = gt::px(110)),
+                locations = gt::cells_column_labels(columns = c(`Math Score`))) |>
+  gt::tab_style(style = gt::css(min_width = gt::px(150)),
+                locations = gt::cells_column_labels(columns = c(`Class Type`))) |>
+  gt::tab_style(style = gt::css(min_width = gt::px(100)),
+                locations = gt::cells_column_labels(columns = c(`Race`))) |>
   gt::cols_align(align = "left", columns = c(`Student`, `Class Type`, `Race`)) |>
   gt::cols_align(align = "right", columns = c(`Math Score`)) |>
   gt::fmt_markdown(columns = gt::everything()) |>
@@ -170,12 +179,22 @@ doe_pre_outcome_footnote <- "The three potential outcomes: the student's fourth-
 doe_pre_treatment_footnote <- "The class-type assignment: Small (13-17 students), Regular (22-25), or Regular with aide. This is the variable whose causal effect the question is about."
 
 doe_pre_html <- gt::gt(doe_pre_tibble, id = "preceptor_doe_tbl") |>
-  gt::tab_header(title = "Preceptor Table") |>
+  gt::tab_header(title = "Preceptor Table --- Texas Department of Education (causal)") |>
   gt::tab_spanner(label = "Unit", id = "unit_span", columns = c(`Student`)) |>
   gt::tab_spanner(label = "Potential Outcomes", id = "outcome_span",
                   columns = c(`Score if Small`, `Score if Regular`, `Score if Regular with Aide`)) |>
   gt::tab_spanner(label = "Treatment", id = "treatment_span", columns = c(`Class Assignment`)) |>
   gt::cols_width(`Student` ~ gt::px(160), `Score if Small` ~ gt::px(110), `Score if Regular` ~ gt::px(110), `Score if Regular with Aide` ~ gt::px(140), `Class Assignment` ~ gt::px(150)) |>
+  gt::tab_style(style = gt::css(min_width = gt::px(160)),
+                locations = gt::cells_column_labels(columns = c(`Student`))) |>
+  gt::tab_style(style = gt::css(min_width = gt::px(110)),
+                locations = gt::cells_column_labels(columns = c(`Score if Small`))) |>
+  gt::tab_style(style = gt::css(min_width = gt::px(110)),
+                locations = gt::cells_column_labels(columns = c(`Score if Regular`))) |>
+  gt::tab_style(style = gt::css(min_width = gt::px(140)),
+                locations = gt::cells_column_labels(columns = c(`Score if Regular with Aide`))) |>
+  gt::tab_style(style = gt::css(min_width = gt::px(150)),
+                locations = gt::cells_column_labels(columns = c(`Class Assignment`))) |>
   gt::cols_align(align = "left", columns = c(`Student`, `Class Assignment`)) |>
   gt::cols_align(align = "right", columns = c(`Score if Small`, `Score if Regular`, `Score if Regular with Aide`)) |>
   gt::fmt_markdown(columns = gt::everything()) |>
@@ -328,11 +347,23 @@ prin_pop_outcome_footnote <- "Fourth-grade math score on the Stanford Achievemen
 prin_pop_covariate_footnote <- "Class Type in the data was randomly assigned at school entry; in the Preceptor rows it is whatever class the school gives each student. Race uses the data's coding: White, Black, and Others (a small category combining all other groups)."
 
 prin_pop_html <- gt::gt(prin_pop_tibble, id = "population_principal_tbl") |>
-  gt::tab_header(title = "Population Table") |>
+  gt::tab_header(title = "Population Table --- Principal (predictive)") |>
   gt::tab_spanner(label = "Unit/Time", id = "unit_span", columns = c(`Student`, `Year`)) |>
   gt::tab_spanner(label = "Outcome", id = "outcome_span", columns = c(`Math Score`)) |>
   gt::tab_spanner(label = "Covariates", id = "covariates_span", columns = c(`Class Type`, `Race`)) |>
   gt::cols_width(`Source` ~ gt::px(110), `Student` ~ gt::px(160), `Year` ~ gt::px(80), `Math Score` ~ gt::px(110), `Class Type` ~ gt::px(150), `Race` ~ gt::px(100)) |>
+  gt::tab_style(style = gt::css(min_width = gt::px(110)),
+                locations = gt::cells_column_labels(columns = c(`Source`))) |>
+  gt::tab_style(style = gt::css(min_width = gt::px(160)),
+                locations = gt::cells_column_labels(columns = c(`Student`))) |>
+  gt::tab_style(style = gt::css(min_width = gt::px(80)),
+                locations = gt::cells_column_labels(columns = c(`Year`))) |>
+  gt::tab_style(style = gt::css(min_width = gt::px(110)),
+                locations = gt::cells_column_labels(columns = c(`Math Score`))) |>
+  gt::tab_style(style = gt::css(min_width = gt::px(150)),
+                locations = gt::cells_column_labels(columns = c(`Class Type`))) |>
+  gt::tab_style(style = gt::css(min_width = gt::px(100)),
+                locations = gt::cells_column_labels(columns = c(`Race`))) |>
   gt::cols_align(align = "left", columns = c(`Source`, `Student`, `Class Type`, `Race`)) |>
   gt::cols_align(align = "right", columns = c(`Year`, `Math Score`)) |>
   gt::fmt_markdown(columns = gt::everything()) |>
@@ -385,12 +416,26 @@ doe_pop_outcome_footnote <- "In Data rows, only the potential outcome matching t
 doe_pop_treatment_footnote <- "In Data rows, class assignment was randomized by the experimenters at school entry — the basis for unconfoundedness. In Preceptor rows, it is whatever assignment Dallas schools would give, which nothing guarantees to be random."
 
 doe_pop_html <- gt::gt(doe_pop_tibble, id = "population_doe_tbl") |>
-  gt::tab_header(title = "Population Table") |>
+  gt::tab_header(title = "Population Table --- Texas Department of Education (causal)") |>
   gt::tab_spanner(label = "Unit/Time", id = "unit_span", columns = c(`Student`, `Year`)) |>
   gt::tab_spanner(label = "Potential Outcomes", id = "outcome_span",
                   columns = c(`Score if Small`, `Score if Regular`, `Score if Regular with Aide`)) |>
   gt::tab_spanner(label = "Treatment", id = "treatment_span", columns = c(`Class Assignment`)) |>
   gt::cols_width(`Source` ~ gt::px(110), `Student` ~ gt::px(160), `Year` ~ gt::px(80), `Score if Small` ~ gt::px(110), `Score if Regular` ~ gt::px(110), `Score if Regular with Aide` ~ gt::px(140), `Class Assignment` ~ gt::px(150)) |>
+  gt::tab_style(style = gt::css(min_width = gt::px(110)),
+                locations = gt::cells_column_labels(columns = c(`Source`))) |>
+  gt::tab_style(style = gt::css(min_width = gt::px(160)),
+                locations = gt::cells_column_labels(columns = c(`Student`))) |>
+  gt::tab_style(style = gt::css(min_width = gt::px(80)),
+                locations = gt::cells_column_labels(columns = c(`Year`))) |>
+  gt::tab_style(style = gt::css(min_width = gt::px(110)),
+                locations = gt::cells_column_labels(columns = c(`Score if Small`))) |>
+  gt::tab_style(style = gt::css(min_width = gt::px(110)),
+                locations = gt::cells_column_labels(columns = c(`Score if Regular`))) |>
+  gt::tab_style(style = gt::css(min_width = gt::px(140)),
+                locations = gt::cells_column_labels(columns = c(`Score if Regular with Aide`))) |>
+  gt::tab_style(style = gt::css(min_width = gt::px(150)),
+                locations = gt::cells_column_labels(columns = c(`Class Assignment`))) |>
   gt::cols_align(align = "left", columns = c(`Source`, `Student`, `Class Assignment`)) |>
   gt::cols_align(align = "right", columns = c(`Year`, `Score if Small`, `Score if Regular`, `Score if Regular with Aide`)) |>
   gt::fmt_markdown(columns = gt::everything()) |>
@@ -489,7 +534,7 @@ Which model should we choose, and why? Define `fit_classsize` as your chosen mod
 
 ### Model Checking
 
-Create a plot or table that checks whether your chosen model's fitted values are reasonable compared to the actual data.
+Use `check_predictions(extract_fit_engine(fit_classsize))` to perform a posterior predictive check of your chosen model.
 
 
 

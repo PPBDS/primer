@@ -4,7 +4,7 @@ Barfort, Klemmensen, and Larsen (2021) collected the lifespans of 3,587 candidat
 
 - Imagine you work for a life insurer, and want to forecast how long candidates for the US Senate might live based on their age, party, election result, and other variables.
 
-- Imagine you are a researcher. You want to know if winning candidates live longer.
+- Imagine you are a researcher. You want to know if winning candidates live longer. You are interested in candidates for any elected office --- senate, governor, mayor, et cetera.
 
 Each class meeting this week has its own repo, which you will fork that day:
 
@@ -25,7 +25,7 @@ This repo holds one meeting's exercise document (the `.qmd` file), the data (`da
 [R](https://cran.r-project.org/), [Quarto](https://quarto.org/docs/get-started/), and these packages:
 
 ```r
-install.packages(c("tidyverse", "tidymodels", "marginaleffects", "broom", "gt"))
+install.packages(c("tidyverse", "tidymodels", "marginaleffects", "broom", "gt", "easystats"))
 ```
 
 ## Work the exercise

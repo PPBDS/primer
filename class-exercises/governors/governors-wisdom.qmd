@@ -23,11 +23,11 @@ There are two scenarios. Focus on just one of them:
 
 - Imagine you work for a life insurer, and want to forecast how long candidates for the US Senate might live based on their age, party, election result, and other variables.
 
-- Imagine you are a researcher. You want to know if winning candidates live longer.
+- Imagine you are a researcher. You want to know if winning candidates live longer. You are interested in candidates for any elected office --- senate, governor, mayor, et cetera.
 
 The life insurer asks: How many years, on average, will this year's US Senate candidates live after their election, given their age, party, and election result?
 
-The researcher asks: What is the average causal effect of winning an election, rather than losing it, on the number of years a candidate lives afterward?
+The researcher asks: What is the average causal effect of winning an election --- for any elected office, from senator to governor to mayor --- rather than losing it, on the number of years a candidate lives afterward?
 
 ## Wisdom
 

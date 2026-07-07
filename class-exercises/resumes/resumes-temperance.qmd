@@ -15,6 +15,7 @@ library(tidymodels)
 library(marginaleffects)
 library(gt)
 library(broom)
+library(easystats)
 
 resumes <- read_csv("data/resumes.csv", show_col_types = FALSE) |>
   mutate(call = as.factor(call))
@@ -99,11 +100,19 @@ hist_pre_outcome_footnote <- "Callback: whether the employer contacted the appli
 hist_pre_covariate_footnote <- "Race is the applicant's actual race; Sex is the applicant's actual sex. Both are shown because the question asks how callback rates differed across them."
 
 hist_pre_html <- gt::gt(hist_pre_tibble, id = "preceptor_hist_tbl") |>
-  gt::tab_header(title = "Preceptor Table") |>
+  gt::tab_header(title = "Preceptor Table --- Historian (predictive)") |>
   gt::tab_spanner(label = "Unit", id = "unit_span", columns = c(`Applicant`)) |>
   gt::tab_spanner(label = "Outcome", id = "outcome_span", columns = c(`Callback`)) |>
   gt::tab_spanner(label = "Covariates", id = "covariates_span", columns = c(`Race`, `Sex`)) |>
   gt::cols_width(`Applicant` ~ gt::px(170), `Callback` ~ gt::px(100), `Race` ~ gt::px(100), `Sex` ~ gt::px(100)) |>
+  gt::tab_style(style = gt::css(min_width = gt::px(170)),
+                locations = gt::cells_column_labels(columns = c(`Applicant`))) |>
+  gt::tab_style(style = gt::css(min_width = gt::px(100)),
+                locations = gt::cells_column_labels(columns = c(`Callback`))) |>
+  gt::tab_style(style = gt::css(min_width = gt::px(100)),
+                locations = gt::cells_column_labels(columns = c(`Race`))) |>
+  gt::tab_style(style = gt::css(min_width = gt::px(100)),
+                locations = gt::cells_column_labels(columns = c(`Sex`))) |>
   gt::cols_align(align = "left", columns = c(`Applicant`, `Callback`, `Race`, `Sex`)) |>
   gt::fmt_markdown(columns = gt::everything()) |>
   gt::tab_options(
@@ -156,12 +165,20 @@ civil_pre_outcome_footnote <- "The two potential outcomes: whether this applicat
 civil_pre_treatment_footnote <- "The racial connotation of the name at the top of the resume: black-sounding or white-sounding. The treatment is the name, which can be manipulated, not the applicant's race, which cannot."
 
 civil_pre_html <- gt::gt(civil_pre_tibble, id = "preceptor_civil_tbl") |>
-  gt::tab_header(title = "Preceptor Table") |>
+  gt::tab_header(title = "Preceptor Table --- Civil rights organization (causal)") |>
   gt::tab_spanner(label = "Unit", id = "unit_span", columns = c(`Applicant`)) |>
   gt::tab_spanner(label = "Potential Outcomes", id = "outcome_span",
                   columns = c(`Callback if Black Name`, `Callback if White Name`)) |>
   gt::tab_spanner(label = "Treatment", id = "treatment_span", columns = c(`Name on Resume`)) |>
   gt::cols_width(`Applicant` ~ gt::px(170), `Callback if Black Name` ~ gt::px(130), `Callback if White Name` ~ gt::px(130), `Name on Resume` ~ gt::px(140)) |>
+  gt::tab_style(style = gt::css(min_width = gt::px(170)),
+                locations = gt::cells_column_labels(columns = c(`Applicant`))) |>
+  gt::tab_style(style = gt::css(min_width = gt::px(130)),
+                locations = gt::cells_column_labels(columns = c(`Callback if Black Name`))) |>
+  gt::tab_style(style = gt::css(min_width = gt::px(130)),
+                locations = gt::cells_column_labels(columns = c(`Callback if White Name`))) |>
+  gt::tab_style(style = gt::css(min_width = gt::px(140)),
+                locations = gt::cells_column_labels(columns = c(`Name on Resume`))) |>
   gt::cols_align(align = "left", columns = gt::everything()) |>
   gt::fmt_markdown(columns = gt::everything()) |>
   gt::tab_options(
@@ -320,11 +337,23 @@ hist_pop_outcome_footnote <- "In Data rows, a callback is a phone or email respo
 hist_pop_covariate_footnote <- "In Data rows, Race is the race signaled by the randomly assigned name, not any person's actual race. In Preceptor rows, Race is the applicant's actual race. Treating these two columns as the same thing is the validity assumption."
 
 hist_pop_html <- gt::gt(hist_pop_tibble, id = "population_hist_tbl") |>
-  gt::tab_header(title = "Population Table") |>
+  gt::tab_header(title = "Population Table --- Historian (predictive)") |>
   gt::tab_spanner(label = "Unit/Time", id = "unit_span", columns = c(`Applicant`, `Year`)) |>
   gt::tab_spanner(label = "Outcome", id = "outcome_span", columns = c(`Callback`)) |>
   gt::tab_spanner(label = "Covariates", id = "covariates_span", columns = c(`Race`, `Sex`)) |>
   gt::cols_width(`Source` ~ gt::px(110), `Applicant` ~ gt::px(170), `Year` ~ gt::px(80), `Callback` ~ gt::px(100), `Race` ~ gt::px(100), `Sex` ~ gt::px(100)) |>
+  gt::tab_style(style = gt::css(min_width = gt::px(110)),
+                locations = gt::cells_column_labels(columns = c(`Source`))) |>
+  gt::tab_style(style = gt::css(min_width = gt::px(170)),
+                locations = gt::cells_column_labels(columns = c(`Applicant`))) |>
+  gt::tab_style(style = gt::css(min_width = gt::px(80)),
+                locations = gt::cells_column_labels(columns = c(`Year`))) |>
+  gt::tab_style(style = gt::css(min_width = gt::px(100)),
+                locations = gt::cells_column_labels(columns = c(`Callback`))) |>
+  gt::tab_style(style = gt::css(min_width = gt::px(100)),
+                locations = gt::cells_column_labels(columns = c(`Race`))) |>
+  gt::tab_style(style = gt::css(min_width = gt::px(100)),
+                locations = gt::cells_column_labels(columns = c(`Sex`))) |>
   gt::cols_align(align = "left", columns = c(`Source`, `Applicant`, `Callback`, `Race`, `Sex`)) |>
   gt::cols_align(align = "right", columns = c(`Year`)) |>
   gt::fmt_markdown(columns = gt::everything()) |>
@@ -375,12 +404,24 @@ civil_pop_outcome_footnote <- "In Data rows, only the potential outcome matching
 civil_pop_treatment_footnote <- "In Data rows, the name was randomly assigned to the resume by the experimenters. In Preceptor rows, the name is whatever the applicant actually uses. Random assignment is what makes unconfoundedness credible in the data; nothing guarantees it in the Preceptor rows."
 
 civil_pop_html <- gt::gt(civil_pop_tibble, id = "population_civil_tbl") |>
-  gt::tab_header(title = "Population Table") |>
+  gt::tab_header(title = "Population Table --- Civil rights organization (causal)") |>
   gt::tab_spanner(label = "Unit/Time", id = "unit_span", columns = c(`Applicant`, `Year`)) |>
   gt::tab_spanner(label = "Potential Outcomes", id = "outcome_span",
                   columns = c(`Callback if Black Name`, `Callback if White Name`)) |>
   gt::tab_spanner(label = "Treatment", id = "treatment_span", columns = c(`Name on Resume`)) |>
   gt::cols_width(`Source` ~ gt::px(110), `Applicant` ~ gt::px(170), `Year` ~ gt::px(80), `Callback if Black Name` ~ gt::px(130), `Callback if White Name` ~ gt::px(130), `Name on Resume` ~ gt::px(140)) |>
+  gt::tab_style(style = gt::css(min_width = gt::px(110)),
+                locations = gt::cells_column_labels(columns = c(`Source`))) |>
+  gt::tab_style(style = gt::css(min_width = gt::px(170)),
+                locations = gt::cells_column_labels(columns = c(`Applicant`))) |>
+  gt::tab_style(style = gt::css(min_width = gt::px(80)),
+                locations = gt::cells_column_labels(columns = c(`Year`))) |>
+  gt::tab_style(style = gt::css(min_width = gt::px(130)),
+                locations = gt::cells_column_labels(columns = c(`Callback if Black Name`))) |>
+  gt::tab_style(style = gt::css(min_width = gt::px(130)),
+                locations = gt::cells_column_labels(columns = c(`Callback if White Name`))) |>
+  gt::tab_style(style = gt::css(min_width = gt::px(140)),
+                locations = gt::cells_column_labels(columns = c(`Name on Resume`))) |>
   gt::cols_align(align = "left", columns = c(`Source`, `Applicant`, `Callback if Black Name`, `Callback if White Name`, `Name on Resume`)) |>
   gt::cols_align(align = "right", columns = c(`Year`)) |>
   gt::fmt_markdown(columns = gt::everything()) |>
@@ -535,41 +576,16 @@ Each indicator is 0/1. The intercept describes a female applicant in Boston with
 
 ### Model Checking
 
-Create a plot or table that checks whether your chosen model's predicted callback probabilities are reasonable compared to the actual callback rates.
+Use `check_predictions(extract_fit_engine(fit_resumes))` to perform a posterior predictive check of your chosen model.
 
 ```{r}
-#| label: model-check-calibration
+#| label: posterior-predictive-check
 #| echo: true
 
-observed <- resumes |>
-  group_by(ethnicity, city) |>
-  summarize(rate = mean(call == "yes"), .groups = "drop") |>
-  mutate(source = "Observed")
-
-predicted <- avg_predictions(fit_resumes, type = "prob",
-                             by = c("ethnicity", "city")) |>
-  as_tibble() |>
-  filter(group == "yes") |>
-  select(ethnicity, city, rate = estimate) |>
-  mutate(source = "Predicted")
-
-calibration <- bind_rows(observed, predicted)
-
-calibration |>
-  ggplot(aes(x = interaction(ethnicity, city, sep = " / "), y = rate, fill = source)) +
-  geom_col(position = "dodge", width = 0.6) +
-  scale_y_continuous(labels = scales::percent_format(accuracy = 1)) +
-  labs(
-    title = "Observed vs. Predicted Callback Rates by Ethnicity and City",
-    subtitle = "Predicted callback rates track the observed rates in all four groups",
-    x = "Name ethnicity / City",
-    y = "Callback rate",
-    fill = NULL
-  ) +
-  theme_minimal()
+check_predictions(extract_fit_engine(fit_resumes))
 ```
 
-The model's average predicted callback probability tracks the observed callback rate closely in all four ethnicity-by-city groups. That is the main check we need before trusting the model's predictions in Temperance: it is not systematically over- or under-predicting any group we care about.
+`check_predictions()` simulates new callback data from the fitted model and compares it to the data we observed. The simulated replicates bracket the observed share of callbacks, so the model is not obviously misdescribing the outcome — the check we want to pass before trusting the predictions in Temperance.
 
 ------------------------------------------------------------------------
 

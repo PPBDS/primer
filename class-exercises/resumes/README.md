@@ -25,7 +25,7 @@ This repo holds one meeting's exercise document (the `.qmd` file), the data (`da
 [R](https://cran.r-project.org/), [Quarto](https://quarto.org/docs/get-started/), and these packages:
 
 ```r
-install.packages(c("tidyverse", "tidymodels", "marginaleffects", "broom", "gt"))
+install.packages(c("tidyverse", "tidymodels", "marginaleffects", "broom", "gt", "easystats"))
 ```
 
 ## Work the exercise
