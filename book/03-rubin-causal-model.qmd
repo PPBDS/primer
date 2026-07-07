@@ -113,6 +113,10 @@ pt_height_html <- gt::gt(pt_height_tibble, id = "pt_height_simple") |>
   gt::tab_header(title = "Preceptor Table") |>
   gt::tab_spanner(label = "Unit",    id = "unit_span",    columns = c(`Student`)) |>
   gt::tab_spanner(label = "Outcome", id = "outcome_span", columns = c(`Height (cm)`)) |>
+  gt::tab_style(style = gt::css(min_width = gt::px(180)),
+                locations = gt::cells_column_labels(columns = c(`Student`))) |>
+  gt::tab_style(style = gt::css(min_width = gt::px(140)),
+                locations = gt::cells_column_labels(columns = c(`Height (cm)`))) |>
   gt::cols_align(align = "left",  columns = c(`Student`)) |>
   gt::cols_align(align = "right", columns = c(`Height (cm)`)) |>
   gt::fmt_markdown(columns = gt::everything()) |>
@@ -183,6 +187,12 @@ pt_height_sex_html <- gt::gt(pt_height_sex_tibble, id = "pt_height_sex") |>
   gt::tab_spanner(label = "Unit",      id = "unit_span",       columns = c(`Student`)) |>
   gt::tab_spanner(label = "Outcome",   id = "outcome_span",    columns = c(`Height (cm)`)) |>
   gt::tab_spanner(label = "Covariate", id = "covariates_span", columns = c(`Sex`)) |>
+  gt::tab_style(style = gt::css(min_width = gt::px(180)),
+                locations = gt::cells_column_labels(columns = c(`Student`))) |>
+  gt::tab_style(style = gt::css(min_width = gt::px(140)),
+                locations = gt::cells_column_labels(columns = c(`Height (cm)`))) |>
+  gt::tab_style(style = gt::css(min_width = gt::px(120)),
+                locations = gt::cells_column_labels(columns = c(`Sex`))) |>
   gt::cols_align(align = "left",  columns = c(`Student`, `Sex`)) |>
   gt::cols_align(align = "right", columns = c(`Height (cm)`)) |>
   gt::fmt_markdown(columns = gt::everything()) |>
@@ -280,6 +290,14 @@ pop_height_html <- gt::gt(pop_height_tibble, id = "pop_height") |>
   gt::tab_header(title = "Population Table") |>
   gt::tab_spanner(label = "Unit/Time", id = "unit_span",    columns = c(`Student`, `Year`)) |>
   gt::tab_spanner(label = "Outcome",   id = "outcome_span", columns = c(`Height (cm)`)) |>
+  gt::tab_style(style = gt::css(min_width = gt::px(110)),
+                locations = gt::cells_column_labels(columns = c(`Source`))) |>
+  gt::tab_style(style = gt::css(min_width = gt::px(180)),
+                locations = gt::cells_column_labels(columns = c(`Student`))) |>
+  gt::tab_style(style = gt::css(min_width = gt::px(90)),
+                locations = gt::cells_column_labels(columns = c(`Year`))) |>
+  gt::tab_style(style = gt::css(min_width = gt::px(140)),
+                locations = gt::cells_column_labels(columns = c(`Height (cm)`))) |>
   gt::cols_align(align = "left",  columns = c(`Source`, `Student`)) |>
   gt::cols_align(align = "right", columns = c(`Year`, `Height (cm)`)) |>
   gt::fmt_markdown(columns = gt::everything()) |>
@@ -375,6 +393,12 @@ pt_commuter_html <- gt::gt(pt_commuter_tibble, id = "pt_commuter") |>
   gt::tab_spanner(label = "Unit",      id = "unit_span",       columns = c(`Commuter`)) |>
   gt::tab_spanner(label = "Outcome",   id = "outcome_span",    columns = c(`Attitude`)) |>
   gt::tab_spanner(label = "Covariate", id = "covariates_span", columns = c(`Treatment`)) |>
+  gt::tab_style(style = gt::css(min_width = gt::px(180)),
+                locations = gt::cells_column_labels(columns = c(`Commuter`))) |>
+  gt::tab_style(style = gt::css(min_width = gt::px(120)),
+                locations = gt::cells_column_labels(columns = c(`Attitude`))) |>
+  gt::tab_style(style = gt::css(min_width = gt::px(130)),
+                locations = gt::cells_column_labels(columns = c(`Treatment`))) |>
   gt::cols_align(align = "left",  columns = c(`Commuter`, `Treatment`)) |>
   gt::cols_align(align = "right", columns = c(`Attitude`)) |>
   gt::fmt_markdown(columns = gt::everything()) |>

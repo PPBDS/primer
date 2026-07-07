@@ -61,6 +61,8 @@ This is a *predictive* question --- the kind of question that calls for a predic
 A note on language. *Average height* and *expected height* are not the same thing. The *average* height of next year's recruits is a real physical fact: line up everyone who shows up, measure each one, divide by the count, and you have a number. We will not have those measurements (those recruits have not shown up yet), so we cannot compute the average directly. What our model will produce is an *expected* height --- the model's best guess of what the average should be, given our data and our assumptions. *Expected* and *average* are not the same; we will return to that distinction in later chapters. For now, the Preceptor Table is about averages we cannot directly observe; the model is about expected values that approximate them.
 
 ```{r}
+#| echo: false
+#| results: asis
 pt_primary_tibble <- tibble::tribble(
   ~`Recruit`,        ~`Height (cm)`, ~`Sex`,
   "Emma Rodriguez",  "166",          "Female",
@@ -199,6 +201,8 @@ The reason we ask the absurd question anyway is to make a point. The same fitted
 The predictive reading is honest. The causal reading is mostly pedagogical: it shows that the predictive/causal distinction is *something the analyst commits to*, not something the data forces. With sex and height, the causal reading is absurd; with the *exact same fit*, a different problem might support a defensible causal reading. The point of writing both Preceptor Tables for this chapter is to make that visible.
 
 ```{r}
+#| echo: false
+#| results: asis
 hatch <- function(x) {
   paste0(
     '<span style="background-image: repeating-linear-gradient(',
@@ -289,6 +293,8 @@ The bridge runs in one direction: *data → population → Preceptor Table*. The
 ### The Population Table for the primary question
 
 ```{r}
+#| echo: false
+#| results: asis
 pop_primary_tibble <- tibble::tribble(
   ~Source,     ~`Recruit`,       ~`Year`, ~`Height (cm)`, ~`Sex`,
   "...",       "...",            "...",   "...",          "...",
@@ -385,6 +391,8 @@ This is the substantive reason the paired causal question is absurd, not just rh
 The paired Population Table has the same row structure as the primary --- 50 NHANES Data rows and 25,000-to-30,000 Preceptor rows --- but two outcome columns instead of one (`Height if Female`, `Height if Male`). In Data rows, the unobserved counterfactual is `...`. In Preceptor rows, both potential outcomes are filled in, with the unobservable one hatched.
 
 ```{r}
+#| echo: false
+#| results: asis
 hatch <- function(x) {
   paste0(
     '<span style="background-image: repeating-linear-gradient(',
