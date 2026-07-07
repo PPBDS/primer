@@ -21,6 +21,26 @@ library(easystats)
 
 resumes <- read_csv("data/resumes.csv", show_col_types = FALSE) |>
   mutate(call = as.factor(call))
+
+# Render a gt table: live HTML table in HTML output; in PDF output, a
+# high-resolution snapshot, because LaTeX conversion loses gt's styling
+# (bold spanners, the counterfactual cross-hatch, spacing).
+show_gt <- function(gt_tbl) {
+  if (knitr::is_html_output()) {
+    cat("```{=html}\n",
+        '<div style="display: inline-block; width: auto; max-width: 100%;">',
+        gt::as_raw_html(gt_tbl),
+        "</div>\n```\n", sep = "")
+  } else {
+    f <- knitr::fig_path("png")
+    dir.create(dirname(f), recursive = TRUE, showWarnings = FALSE)
+    invisible(capture.output(suppressMessages(gt::gtsave(gt_tbl, f, zoom = 2))))
+    w <- min(6.5, dim(png::readPNG(f))[2] / 2 / 96)
+    cat("\\begin{center}\\includegraphics[width=", w,
+        "in]{", f, "}\\end{center}\n", sep = "")
+  }
+}
+
 ```
 
 ## The Question
@@ -128,12 +148,9 @@ hist_pre_html <- gt::gt(hist_pre_tibble, id = "preceptor_hist_tbl") |>
   gt::tab_footnote(footnote = hist_pre_units_footnote, locations = gt::cells_column_spanners(spanners = "unit_span")) |>
   gt::tab_footnote(footnote = hist_pre_outcome_footnote, locations = gt::cells_column_spanners(spanners = "outcome_span")) |>
   gt::tab_footnote(footnote = hist_pre_covariate_footnote, locations = gt::cells_column_spanners(spanners = "covariates_span")) |>
-  gt::opt_css(css = "#preceptor_hist_tbl .gt_footnote { max-width: 1px; word-break: break-word; }") |>
-  gt::as_raw_html()
+  gt::opt_css(css = "#preceptor_hist_tbl .gt_footnote { max-width: 1px; word-break: break-word; }")
 
-cat("```{=html}\n",
-    '<div style="display: inline-block; width: auto; max-width: 100%;">',
-    hist_pre_html, "</div>\n```\n", sep = "")
+show_gt(hist_pre_html)
 ```
 
 ```{r}
@@ -202,12 +219,9 @@ civil_pre_html <- gt::gt(civil_pre_tibble, id = "preceptor_civil_tbl") |>
   gt::tab_footnote(footnote = civil_pre_units_footnote, locations = gt::cells_column_spanners(spanners = "unit_span")) |>
   gt::tab_footnote(footnote = civil_pre_outcome_footnote, locations = gt::cells_column_spanners(spanners = "outcome_span")) |>
   gt::tab_footnote(footnote = civil_pre_treatment_footnote, locations = gt::cells_column_spanners(spanners = "treatment_span")) |>
-  gt::opt_css(css = "#preceptor_civil_tbl .gt_footnote { max-width: 1px; word-break: break-word; }") |>
-  gt::as_raw_html()
+  gt::opt_css(css = "#preceptor_civil_tbl .gt_footnote { max-width: 1px; word-break: break-word; }")
 
-cat("```{=html}\n",
-    '<div style="display: inline-block; width: auto; max-width: 100%;">',
-    civil_pre_html, "</div>\n```\n", sep = "")
+show_gt(civil_pre_html)
 ```
 
 ### Exploratory Data Analysis
@@ -370,12 +384,9 @@ hist_pop_html <- gt::gt(hist_pop_tibble, id = "population_hist_tbl") |>
   gt::tab_footnote(footnote = hist_pop_units_footnote, locations = gt::cells_column_spanners(spanners = "unit_span")) |>
   gt::tab_footnote(footnote = hist_pop_outcome_footnote, locations = gt::cells_column_spanners(spanners = "outcome_span")) |>
   gt::tab_footnote(footnote = hist_pop_covariate_footnote, locations = gt::cells_column_spanners(spanners = "covariates_span")) |>
-  gt::opt_css(css = "#population_hist_tbl .gt_footnote { max-width: 1px; word-break: break-word; }") |>
-  gt::as_raw_html()
+  gt::opt_css(css = "#population_hist_tbl .gt_footnote { max-width: 1px; word-break: break-word; }")
 
-cat("```{=html}\n",
-    '<div style="display: inline-block; width: auto; max-width: 100%;">',
-    hist_pop_html, "</div>\n```\n", sep = "")
+show_gt(hist_pop_html)
 ```
 
 ```{r}
@@ -446,12 +457,9 @@ civil_pop_html <- gt::gt(civil_pop_tibble, id = "population_civil_tbl") |>
   gt::tab_footnote(footnote = civil_pop_units_footnote, locations = gt::cells_column_spanners(spanners = "unit_span")) |>
   gt::tab_footnote(footnote = civil_pop_outcome_footnote, locations = gt::cells_column_spanners(spanners = "outcome_span")) |>
   gt::tab_footnote(footnote = civil_pop_treatment_footnote, locations = gt::cells_column_spanners(spanners = "treatment_span")) |>
-  gt::opt_css(css = "#population_civil_tbl .gt_footnote { max-width: 1px; word-break: break-word; }") |>
-  gt::as_raw_html()
+  gt::opt_css(css = "#population_civil_tbl .gt_footnote { max-width: 1px; word-break: break-word; }")
 
-cat("```{=html}\n",
-    '<div style="display: inline-block; width: auto; max-width: 100%;">',
-    civil_pop_html, "</div>\n```\n", sep = "")
+show_gt(civil_pop_html)
 ```
 
 ### Assumptions

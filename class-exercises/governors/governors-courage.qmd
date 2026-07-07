@@ -18,6 +18,26 @@ library(broom)
 library(easystats)
 
 governors <- read_csv("data/governors.csv", show_col_types = FALSE)
+
+# Render a gt table: live HTML table in HTML output; in PDF output, a
+# high-resolution snapshot, because LaTeX conversion loses gt's styling
+# (bold spanners, the counterfactual cross-hatch, spacing).
+show_gt <- function(gt_tbl) {
+  if (knitr::is_html_output()) {
+    cat("```{=html}\n",
+        '<div style="display: inline-block; width: auto; max-width: 100%;">',
+        gt::as_raw_html(gt_tbl),
+        "</div>\n```\n", sep = "")
+  } else {
+    f <- knitr::fig_path("png")
+    dir.create(dirname(f), recursive = TRUE, showWarnings = FALSE)
+    invisible(capture.output(suppressMessages(gt::gtsave(gt_tbl, f, zoom = 2))))
+    w <- min(6.5, dim(png::readPNG(f))[2] / 2 / 96)
+    cat("\\begin{center}\\includegraphics[width=", w,
+        "in]{", f, "}\\end{center}\n", sep = "")
+  }
+}
+
 ```
 
 ## The Question
@@ -46,7 +66,7 @@ The Wisdom and Justice sections below are filled in with our answers, so you beg
 
 - Units:
 
-**Life insurer:** each row is one candidate for the US Senate in this year's elections — roughly a hundred people.
+**Life insurer:** each row is one candidate for the US Senate in this year's elections. Only a third of the Senate's 100 seats is up for election in any cycle, so with two major-party candidates per race, that is roughly 70 people.
 
 **Researcher:** each row is one candidate for any elected office --- senate, governor, mayor, school board, et cetera --- in a US election this year, so the units number in the tens of thousands.
 
@@ -94,7 +114,7 @@ ins_pre_tibble <- tibble::tribble(
 )
 
 ins_pre_title_footnote <- "If all the information in this table were available, we could answer the question: How many years, on average, will this year's US Senate candidates live after their election, given their age, party, and election result?"
-ins_pre_units_footnote <- "Each row represents one candidate for the US Senate in the 2026 election cycle — roughly a hundred people across the contested seats."
+ins_pre_units_footnote <- "Each row represents one candidate for the US Senate in the 2026 election cycle. Only a third of the Senate's 100 seats is up for election in any cycle, so with two major-party candidates per race, that is roughly 70 people."
 ins_pre_outcome_footnote <- "Years lived after election day. For candidates still alive, the cell holds the true (future) value, because the Preceptor Table shows the unobservable truth."
 ins_pre_covariate_footnote <- "Election Result (Win or Lose) is a covariate here, not a treatment — the insurer is not asking what winning does to anyone, only using it to forecast. Age at Election is in years. Party is as listed on the ballot."
 
@@ -133,12 +153,9 @@ ins_pre_html <- gt::gt(ins_pre_tibble, id = "preceptor_insurer_tbl") |>
   gt::tab_footnote(footnote = ins_pre_units_footnote, locations = gt::cells_column_spanners(spanners = "unit_span")) |>
   gt::tab_footnote(footnote = ins_pre_outcome_footnote, locations = gt::cells_column_spanners(spanners = "outcome_span")) |>
   gt::tab_footnote(footnote = ins_pre_covariate_footnote, locations = gt::cells_column_spanners(spanners = "covariates_span")) |>
-  gt::opt_css(css = "#preceptor_insurer_tbl .gt_footnote { max-width: 1px; word-break: break-word; }") |>
-  gt::as_raw_html()
+  gt::opt_css(css = "#preceptor_insurer_tbl .gt_footnote { max-width: 1px; word-break: break-word; }")
 
-cat("```{=html}\n",
-    '<div style="display: inline-block; width: auto; max-width: 100%;">',
-    ins_pre_html, "</div>\n```\n", sep = "")
+show_gt(ins_pre_html)
 ```
 
 ```{r}
@@ -210,12 +227,9 @@ res_pre_html <- gt::gt(res_pre_tibble, id = "preceptor_researcher_tbl") |>
   gt::tab_footnote(footnote = res_pre_units_footnote, locations = gt::cells_column_spanners(spanners = "unit_span")) |>
   gt::tab_footnote(footnote = res_pre_outcome_footnote, locations = gt::cells_column_spanners(spanners = "outcome_span")) |>
   gt::tab_footnote(footnote = res_pre_treatment_footnote, locations = gt::cells_column_spanners(spanners = "treatment_span")) |>
-  gt::opt_css(css = "#preceptor_researcher_tbl .gt_footnote { max-width: 1px; word-break: break-word; }") |>
-  gt::as_raw_html()
+  gt::opt_css(css = "#preceptor_researcher_tbl .gt_footnote { max-width: 1px; word-break: break-word; }")
 
-cat("```{=html}\n",
-    '<div style="display: inline-block; width: auto; max-width: 100%;">',
-    res_pre_html, "</div>\n```\n", sep = "")
+show_gt(res_pre_html)
 ```
 
 ### Exploratory Data Analysis
@@ -359,12 +373,9 @@ ins_pop_html <- gt::gt(ins_pop_tibble, id = "population_insurer_tbl") |>
   gt::tab_footnote(footnote = ins_pop_units_footnote, locations = gt::cells_column_spanners(spanners = "unit_span")) |>
   gt::tab_footnote(footnote = ins_pop_outcome_footnote, locations = gt::cells_column_spanners(spanners = "outcome_span")) |>
   gt::tab_footnote(footnote = ins_pop_covariate_footnote, locations = gt::cells_column_spanners(spanners = "covariates_span")) |>
-  gt::opt_css(css = "#population_insurer_tbl .gt_footnote { max-width: 1px; word-break: break-word; }") |>
-  gt::as_raw_html()
+  gt::opt_css(css = "#population_insurer_tbl .gt_footnote { max-width: 1px; word-break: break-word; }")
 
-cat("```{=html}\n",
-    '<div style="display: inline-block; width: auto; max-width: 100%;">',
-    ins_pop_html, "</div>\n```\n", sep = "")
+show_gt(ins_pop_html)
 ```
 
 ```{r}
@@ -437,12 +448,9 @@ res_pop_html <- gt::gt(res_pop_tibble, id = "population_researcher_tbl") |>
   gt::tab_footnote(footnote = res_pop_units_footnote, locations = gt::cells_column_spanners(spanners = "unit_span")) |>
   gt::tab_footnote(footnote = res_pop_outcome_footnote, locations = gt::cells_column_spanners(spanners = "outcome_span")) |>
   gt::tab_footnote(footnote = res_pop_treatment_footnote, locations = gt::cells_column_spanners(spanners = "treatment_span")) |>
-  gt::opt_css(css = "#population_researcher_tbl .gt_footnote { max-width: 1px; word-break: break-word; }") |>
-  gt::as_raw_html()
+  gt::opt_css(css = "#population_researcher_tbl .gt_footnote { max-width: 1px; word-break: break-word; }")
 
-cat("```{=html}\n",
-    '<div style="display: inline-block; width: auto; max-width: 100%;">',
-    res_pop_html, "</div>\n```\n", sep = "")
+show_gt(res_pop_html)
 ```
 
 ### Assumptions

@@ -76,6 +76,31 @@ These apply to both tables, and the same `gt` pipeline + chunk-output wrapping i
 
   This pattern replaced earlier attempts that all failed: `tab_options(table.width = "auto")`, `opt_css` with various width/display rules, and `htmltools::div()` returned from a chunk. See §16 for the gotchas in detail.
 
+- **Dual-format ending — the `show_gt()` helper (required in any document that also renders to PDF; safe everywhere).** Tables must look as good in rendered PDF as in HTML. Quarto's HTML-table processing converts the raw-HTML table to a plain LaTeX table for PDF, losing everything CSS-based — bold spanners, the counterfactual cross-hatch, column widths, spacing. The fix: end the pipeline at `opt_css()` (do **not** call `as_raw_html()`), assign the gt object to a variable, and hand it to `show_gt()`, defined once in the document's setup chunk:
+
+  ```r
+  # Render a gt table: live HTML table in HTML output; in PDF output, a
+  # high-resolution snapshot, because LaTeX conversion loses gt's styling
+  # (bold spanners, the counterfactual cross-hatch, spacing).
+  show_gt <- function(gt_tbl) {
+    if (knitr::is_html_output()) {
+      cat("```{=html}\n",
+          '<div style="display: inline-block; width: auto; max-width: 100%;">',
+          gt::as_raw_html(gt_tbl),
+          "</div>\n```\n", sep = "")
+    } else {
+      f <- knitr::fig_path("png")
+      dir.create(dirname(f), recursive = TRUE, showWarnings = FALSE)
+      invisible(capture.output(suppressMessages(gt::gtsave(gt_tbl, f, zoom = 2))))
+      w <- min(6.5, dim(png::readPNG(f))[2] / 2 / 96)
+      cat("\\begin{center}\\includegraphics[width=", w,
+          "in]{", f, "}\\end{center}\n", sep = "")
+    }
+  }
+  ```
+
+  The HTML branch is exactly parts 3–5 of the five-part pattern above, unchanged. The PDF branch snapshots the fully-styled table via `gt::gtsave()` (needs **webshot2** installed, which drives headless Chrome) at 2× zoom, so the PDF table is pixel-identical to the HTML one, and sizes it to its natural width (capped at the 6.5-inch text block). Three hard-won details: the PNG must go to `knitr::fig_path()`, not `tempfile()` — R's tempdir is deleted before LaTeX compiles, producing a "file not found" at the `\includegraphics`; the `gtsave()` call must be wrapped in `invisible(capture.output(suppressMessages(...)))` or webshot2's progress line leaks into the `asis` output as literal text; and the calling chunk still needs `#| results: asis`. In HTML-only artifacts (book chapters, tutorials) `show_gt()` behaves identically to the old ending, so it is safe to adopt everywhere.
+
 - **Spanner styling: bold + alignment mirroring columns.** After `tab_options`, bold all spanners generically and then align each spanner group to match the column(s) it covers. Three `tab_style` calls:
   ```r
   gt::tab_style(

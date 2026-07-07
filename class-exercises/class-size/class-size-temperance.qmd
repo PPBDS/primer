@@ -30,6 +30,26 @@ star <- read_csv("data/class-size.csv", show_col_types = FALSE) |>
                        `5` = "Others",
                        `6` = "Others")) |>
   select(g4math, kind, race, yearssmall)
+
+# Render a gt table: live HTML table in HTML output; in PDF output, a
+# high-resolution snapshot, because LaTeX conversion loses gt's styling
+# (bold spanners, the counterfactual cross-hatch, spacing).
+show_gt <- function(gt_tbl) {
+  if (knitr::is_html_output()) {
+    cat("```{=html}\n",
+        '<div style="display: inline-block; width: auto; max-width: 100%;">',
+        gt::as_raw_html(gt_tbl),
+        "</div>\n```\n", sep = "")
+  } else {
+    f <- knitr::fig_path("png")
+    dir.create(dirname(f), recursive = TRUE, showWarnings = FALSE)
+    invisible(capture.output(suppressMessages(gt::gtsave(gt_tbl, f, zoom = 2))))
+    w <- min(6.5, dim(png::readPNG(f))[2] / 2 / 96)
+    cat("\\begin{center}\\includegraphics[width=", w,
+        "in]{", f, "}\\end{center}\n", sep = "")
+  }
+}
+
 ```
 
 ## The Question
@@ -142,12 +162,9 @@ prin_pre_html <- gt::gt(prin_pre_tibble, id = "preceptor_principal_tbl") |>
   gt::tab_footnote(footnote = prin_pre_units_footnote, locations = gt::cells_column_spanners(spanners = "unit_span")) |>
   gt::tab_footnote(footnote = prin_pre_outcome_footnote, locations = gt::cells_column_spanners(spanners = "outcome_span")) |>
   gt::tab_footnote(footnote = prin_pre_covariate_footnote, locations = gt::cells_column_spanners(spanners = "covariates_span")) |>
-  gt::opt_css(css = "#preceptor_principal_tbl .gt_footnote { max-width: 1px; word-break: break-word; }") |>
-  gt::as_raw_html()
+  gt::opt_css(css = "#preceptor_principal_tbl .gt_footnote { max-width: 1px; word-break: break-word; }")
 
-cat("```{=html}\n",
-    '<div style="display: inline-block; width: auto; max-width: 100%;">',
-    prin_pre_html, "</div>\n```\n", sep = "")
+show_gt(prin_pre_html)
 ```
 
 ```{r}
@@ -225,12 +242,9 @@ doe_pre_html <- gt::gt(doe_pre_tibble, id = "preceptor_doe_tbl") |>
   gt::tab_footnote(footnote = doe_pre_units_footnote, locations = gt::cells_column_spanners(spanners = "unit_span")) |>
   gt::tab_footnote(footnote = doe_pre_outcome_footnote, locations = gt::cells_column_spanners(spanners = "outcome_span")) |>
   gt::tab_footnote(footnote = doe_pre_treatment_footnote, locations = gt::cells_column_spanners(spanners = "treatment_span")) |>
-  gt::opt_css(css = "#preceptor_doe_tbl .gt_footnote { max-width: 1px; word-break: break-word; }") |>
-  gt::as_raw_html()
+  gt::opt_css(css = "#preceptor_doe_tbl .gt_footnote { max-width: 1px; word-break: break-word; }")
 
-cat("```{=html}\n",
-    '<div style="display: inline-block; width: auto; max-width: 100%;">',
-    doe_pre_html, "</div>\n```\n", sep = "")
+show_gt(doe_pre_html)
 ```
 
 ### Exploratory Data Analysis
@@ -382,12 +396,9 @@ prin_pop_html <- gt::gt(prin_pop_tibble, id = "population_principal_tbl") |>
   gt::tab_footnote(footnote = prin_pop_units_footnote, locations = gt::cells_column_spanners(spanners = "unit_span")) |>
   gt::tab_footnote(footnote = prin_pop_outcome_footnote, locations = gt::cells_column_spanners(spanners = "outcome_span")) |>
   gt::tab_footnote(footnote = prin_pop_covariate_footnote, locations = gt::cells_column_spanners(spanners = "covariates_span")) |>
-  gt::opt_css(css = "#population_principal_tbl .gt_footnote { max-width: 1px; word-break: break-word; }") |>
-  gt::as_raw_html()
+  gt::opt_css(css = "#population_principal_tbl .gt_footnote { max-width: 1px; word-break: break-word; }")
 
-cat("```{=html}\n",
-    '<div style="display: inline-block; width: auto; max-width: 100%;">',
-    prin_pop_html, "</div>\n```\n", sep = "")
+show_gt(prin_pop_html)
 ```
 
 ```{r}
@@ -466,12 +477,9 @@ doe_pop_html <- gt::gt(doe_pop_tibble, id = "population_doe_tbl") |>
   gt::tab_footnote(footnote = doe_pop_units_footnote, locations = gt::cells_column_spanners(spanners = "unit_span")) |>
   gt::tab_footnote(footnote = doe_pop_outcome_footnote, locations = gt::cells_column_spanners(spanners = "outcome_span")) |>
   gt::tab_footnote(footnote = doe_pop_treatment_footnote, locations = gt::cells_column_spanners(spanners = "treatment_span")) |>
-  gt::opt_css(css = "#population_doe_tbl .gt_footnote { max-width: 1px; word-break: break-word; }") |>
-  gt::as_raw_html()
+  gt::opt_css(css = "#population_doe_tbl .gt_footnote { max-width: 1px; word-break: break-word; }")
 
-cat("```{=html}\n",
-    '<div style="display: inline-block; width: auto; max-width: 100%;">',
-    doe_pop_html, "</div>\n```\n", sep = "")
+show_gt(doe_pop_html)
 ```
 
 ### Assumptions

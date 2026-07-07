@@ -1,8 +1,10 @@
 ## Priorities
 
-Move these teaching chapters to an Appendix.
+Update "Set Up for Working on PPBDS Projects" so that it works for Codespaces as well. Should we include things like devtools in base? Should we create a codebase-starter for dev? Should we not have students and dev as separate things in devcontainers?
 
-Switching Getting Started to Using Codebases. Also runs getting started tutorial and submit answers.
+Move these teaching chapters, like Git and GitHub, to an Appendix.
+
+
 
 Add Using AI chapter which starts students using AI early. Also runs 01-introduction tutorial and submit answers.
 
