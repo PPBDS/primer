@@ -61,6 +61,8 @@ This is a *predictive* question --- the kind of question that calls for a predic
 A note on the binary-outcome model and what its parameters mean. A logistic regression is not a linear regression of the binary outcome on the covariates --- it is a linear regression of *the log-odds of the outcome being 1* on the covariates. The log-odds scale is not the scale a public-health analyst or a state Commissioner thinks in; they think in *probabilities*, and so do we. The chapter will read the model two ways: through the raw coefficient table (which is on the log-odds scale and not interpretable by inspection) and through the predicted probabilities that **[marginaleffects](https://marginaleffects.com/)** delivers on the outcome scale. The Temperance section commits us to the outcome-scale reading; the coefficient table is a tool for Courage, not an answer to a Commissioner.
 
 ```{r}
+#| echo: false
+#| results: asis
 pt_primary_tibble <- tibble::tribble(
   ~`Adult`,           ~`Ever-Smoker`, ~`Age`, ~`Sex`,
   "Maria Gonzalez",   "No",           "30",   "Female",
@@ -210,6 +212,8 @@ The same fitted model serves both framings. The same coefficient on `sexMale` (a
 The predictive reading is honest. The causal reading is not. The same point will recur each time the curriculum's covariates are biological or developmental rather than experimentally manipulable.
 
 ```{r}
+#| echo: false
+#| results: asis
 hatch <- function(x) {
   paste0(
     '<span style="background-image: repeating-linear-gradient(',
@@ -296,6 +300,8 @@ The bridge runs *data → population → Preceptor Table*. Justice's job is to m
 ### The Population Table for the primary question
 
 ```{r}
+#| echo: false
+#| results: asis
 pop_primary_tibble <- tibble::tribble(
   ~Source,     ~`Adult`,          ~`Year`, ~`Ever-Smoker`, ~`Age`, ~`Sex`,
   "...",       "...",             "...",   "...",          "...",  "...",
@@ -394,6 +400,8 @@ This is the substantive reason the paired causal question is absurd, not just rh
 The paired Population Table has the same row structure as the primary --- 2009--2012 NHANES data rows, 2026 Preceptor rows --- but two potential-outcome columns instead of one, with the unobservable counterfactual hatched in the Preceptor rows and `...` in the Data rows.
 
 ```{r}
+#| echo: false
+#| results: asis
 hatch <- function(x) {
   paste0(
     '<span style="background-image: repeating-linear-gradient(',
