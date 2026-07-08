@@ -489,15 +489,39 @@ What is the link function for our outcome?
 
 ### Candidate Models
 
-Estimate a model in which `lived_after` is the outcome and `election_result` is the only covariate. Display the coefficients and their confidence intervals.
+Estimate a model in which `lived_after` is the outcome and `election_result` is the only covariate.
 
 
 
-Estimate a model in which `lived_after` is the outcome and `election_result` and `election_age` are the covariates. Display the coefficients and their confidence intervals.
+Display the coefficients and their confidence intervals.
 
 
 
-Add `win_margin` and `party` to the previous model. Display the coefficients and their confidence intervals.
+Interpret the estimate for `election_resultWin`.
+
+
+
+Estimate a model in which `lived_after` is the outcome and `election_result` and `election_age` are the covariates.
+
+
+
+Display the coefficients and their confidence intervals.
+
+
+
+Interpret the estimate for `election_age`.
+
+
+
+Add `win_margin` and `party` to the previous model.
+
+
+
+Display the coefficients and their confidence intervals.
+
+
+
+Interpret the estimate for `partyRepublican`.
 
 
 

@@ -493,10 +493,22 @@ $$Y = \beta_0 + \beta_1 X_1 + \cdots + \beta_n X_n + \epsilon, \quad \epsilon \s
 
 ### Candidate Models
 
-Estimate a model in which `lived_after` is the outcome and `election_result` is the only covariate. Display the coefficients and their confidence intervals.
+Estimate a model in which `lived_after` is the outcome and `election_result` is the only covariate.
 
 ```{r}
 #| label: candidate-model-result
+#| echo: true
+
+linear_reg() |>
+  fit(lived_after ~ election_result, data = x)
+```
+
+Printing the fitted model shows the estimated coefficients, but nothing about their uncertainty.
+
+Display the coefficients and their confidence intervals.
+
+```{r}
+#| label: candidate-model-result-tidy
 #| echo: true
 
 linear_reg() |>
@@ -504,12 +516,26 @@ linear_reg() |>
   tidy(conf.int = TRUE)
 ```
 
-The raw win effect is about 2.4 years, but its confidence interval includes zero — comparing group averages alone, we cannot distinguish the effect from nothing. Age is the elephant in the room from the EDA, so we adjust for it next.
+The same pipe, extended with `tidy(conf.int = TRUE)`, turns the fit into a tidy table with 95% intervals. Age is the elephant in the room from the EDA, so we adjust for it in the next candidate.
 
-Estimate a model in which `lived_after` is the outcome and `election_result` and `election_age` are the covariates. Display the coefficients and their confidence intervals.
+Interpret the estimate for `election_resultWin`.
+
+> Comparing winners and losers of these close elections, winners lived about 2.4 more years after the election, on average. The 95% confidence interval (about -1.0 to 5.8 years) includes zero, so this raw comparison cannot distinguish the effect of winning from nothing.
+
+Estimate a model in which `lived_after` is the outcome and `election_result` and `election_age` are the covariates.
 
 ```{r}
 #| label: candidate-model-result-age
+#| echo: true
+
+linear_reg() |>
+  fit(lived_after ~ election_result + election_age, data = x)
+```
+
+Display the coefficients and their confidence intervals.
+
+```{r}
+#| label: candidate-model-result-age-tidy
 #| echo: true
 
 linear_reg() |>
@@ -517,12 +543,26 @@ linear_reg() |>
   tidy(conf.int = TRUE)
 ```
 
-Age at election is enormously informative (about −0.9 years of remaining life per year of age, interval far from zero), but the win coefficient barely moves and still cannot be distinguished from zero — consistent with the balance check in Wisdom, where winners and losers had nearly identical ages. The missing ingredient is `win_margin`: even inside the close window, winners sit above zero and losers below, so the running variable is entangled with the treatment. We control for it, and add `party`, next.
+The win coefficient barely moves and still cannot be distinguished from zero — consistent with the balance check in Wisdom, where winners and losers had nearly identical ages. The missing ingredient is `win_margin`: even inside the close window, winners sit above zero and losers below, so the running variable is entangled with the treatment. We control for it, and add `party`, in the final candidate.
 
-Add `win_margin` and `party` to the previous model. Display the coefficients and their confidence intervals.
+Interpret the estimate for `election_age`.
+
+> Comparing two candidates who differ by one year of age at election, the older candidate lived about 0.9 fewer years after the election, adjusting for the election result. The 95% confidence interval (about -1.1 to -0.7) is far from zero — this is the strongest signal in the model, and it is close to mechanical: the older you are on election day, the fewer years you have left.
+
+Add `win_margin` and `party` to the previous model.
 
 ```{r}
 #| label: candidate-model-margin-party
+#| echo: true
+
+linear_reg() |>
+  fit(lived_after ~ election_result + win_margin + election_age + party, data = x)
+```
+
+Display the coefficients and their confidence intervals.
+
+```{r}
+#| label: candidate-model-margin-party-tidy
 #| echo: true
 
 linear_reg() |>
@@ -531,6 +571,10 @@ linear_reg() |>
 ```
 
 Controlling for the running variable changes everything: the win coefficient jumps to about 8.6 years with an interval excluding zero. Comparing candidates *at the same margin*, on opposite sides of the win/lose threshold, is the regression-discontinuity comparison the design intends — and it is only visible once `win_margin` is in the model.
+
+Interpret the estimate for `partyRepublican`.
+
+> Compared to Democrats — the reference level — Republican candidates lived about 4.0 more years after their elections, adjusting for the election result, the win margin, and age at election. The 95% confidence interval (about 1.2 to 6.9) excludes zero. With a categorical covariate, every coefficient is read against the reference level; the `partyThird party` interval is enormous because only two candidacies in our close-election data are third party.
 
 ### The Data Generating Mechanism
 
