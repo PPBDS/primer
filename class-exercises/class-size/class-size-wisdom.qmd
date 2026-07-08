@@ -77,10 +77,6 @@ Create a plot that shows the distribution of `g4math`.
 
 
 
-Create a calculation that shows, for each class type, the number of students, the share missing a `g4math` score, and the average `g4math`.
-
-
-
 Create a plot that shows the relationship between `g4math` and class type.
 
 

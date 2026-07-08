@@ -29,6 +29,8 @@ book:
     - 08-seguro-popular.qmd
     - 09-smokes.qmd
     - 10-shaming.qmd
+    - 11-nes.qmd
+    - 12-mail.qmd
     - key-concepts.qmd
   appendices:
     - set-up.qmd

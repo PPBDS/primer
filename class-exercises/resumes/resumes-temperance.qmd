@@ -226,35 +226,36 @@ show_gt(civil_pre_html)
 
 ### Exploratory Data Analysis
 
-Create a calculation that shows the overall callback rate, and the callback rate for each ethnicity.
+Create a plot that shows the distribution of `call`.
 
 ```{r}
-#| label: eda-callback-rates
+#| label: eda-call-distribution
 #| echo: true
 
 resumes |>
-  summarize(overall_callback_rate = mean(call == "yes"))
-
-resumes |>
-  group_by(ethnicity) |>
-  summarize(callback_rate = mean(call == "yes"),
-            n = n())
+  ggplot(aes(x = call)) +
+  geom_bar(fill = "steelblue") +
+  labs(
+    title = "Callbacks Across All 4,870 Resumes",
+    subtitle = "Callbacks are rare",
+    x = "Received a callback",
+    y = "Number of resumes"
+  ) +
+  theme_minimal()
 ```
 
-Callbacks are rare: only about 8% of all resumes got one. Resumes with white-sounding names (`cauc`) were called back about 9.7% of the time, against 6.5% for black-sounding names (`afam`) — roughly 50% more callbacks for the white-sounding names, on a perfectly balanced design of 2,435 resumes per group.
+Callbacks are rare: only about 8% of all resumes got one. Rare binary outcomes are exactly where a Bernoulli model (Justice) is needed and where intuitions based on averages of continuous outcomes can mislead.
 
-Create a plot that shows the relationship between callbacks and ethnicity.
+Create a plot that shows the relationship between `call` and `ethnicity`.
 
 ```{r}
-#| label: eda-callback-ethnicity-rate
+#| label: eda-call-ethnicity
 #| echo: true
 
-eth_rates <- resumes |>
+resumes |>
   group_by(ethnicity) |>
-  summarize(rate = mean(call == "yes"))
-
-eth_rates |>
-  ggplot(aes(x = ethnicity, y = rate, fill = ethnicity)) +
+  summarize(callback_rate = mean(call == "yes")) |>
+  ggplot(aes(x = ethnicity, y = callback_rate, fill = ethnicity)) +
   geom_col(width = 0.5, show.legend = FALSE) +
   scale_y_continuous(labels = scales::percent_format(accuracy = 1)) +
   labs(
@@ -266,52 +267,7 @@ eth_rates |>
   theme_minimal()
 ```
 
-The rate comparison is the headline: white-sounding names are called back half again as often as black-sounding names, even though the resumes were otherwise constructed identically.
-
-```{r}
-#| label: eda-callback-ethnicity-counts
-#| echo: true
-
-resumes |>
-  ggplot(aes(x = ethnicity, fill = call)) +
-  geom_bar(position = "stack") +
-  labs(
-    title = "Callback Counts by Name Ethnicity",
-    subtitle = "Most resumes of either kind get no callback at all",
-    x = "Name ethnicity",
-    y = "Number of resumes",
-    fill = "Callback"
-  ) +
-  theme_minimal()
-```
-
-The counts view adds what the rate plot hides: the outcome is heavily imbalanced — the vast majority of resumes of either kind got no callback at all. Rare binary outcomes are exactly where a Bernoulli model (Justice) is needed and where intuitions based on averages of continuous outcomes can mislead.
-
-Create a plot that shows the relationship between callbacks and resume quality, separately by ethnicity.
-
-```{r}
-#| label: eda-callback-quality-ethnicity
-#| echo: true
-
-quality_rates <- resumes |>
-  group_by(ethnicity, quality) |>
-  summarize(rate = mean(call == "yes"), .groups = "drop")
-
-quality_rates |>
-  ggplot(aes(x = ethnicity, y = rate, fill = quality)) +
-  geom_col(position = "dodge", width = 0.6) +
-  scale_y_continuous(labels = scales::percent_format(accuracy = 1)) +
-  labs(
-    title = "Callback Rate by Resume Quality and Name Ethnicity",
-    subtitle = "A better resume helps white-sounding names much more",
-    x = "Name ethnicity",
-    y = "Callback rate",
-    fill = "Resume quality"
-  ) +
-  theme_minimal()
-```
-
-A better resume pays off much more for white-sounding names than for black-sounding ones — the paper's second headline finding. *Discussion question: if improving her resume barely raises a black-named applicant's callback rate, what does that imply about advice like "just build a stronger resume"?* We will see in Courage whether this visual difference survives a confidence interval.
+Resumes with white-sounding names were called back about 9.7% of the time, against 6.5% for black-sounding names — roughly 50% more callbacks, on a perfectly balanced design of 2,435 resumes per group.
 
 ------------------------------------------------------------------------
 
@@ -506,56 +462,44 @@ $$\text{logit}\left(\Pr(Y = 1)\right) = \beta_0 + \beta_1 X_1 + \cdots + \beta_n
 
 ### Candidate Models
 
-Create a candidate model, modeling the outcome `call` as a function of the covariate `city`. Call it `fit_city`.
+Estimate a model in which `call` is the outcome and `city` is the only covariate. Display the coefficients and their confidence intervals.
 
 ```{r}
 #| label: candidate-model-city
 #| echo: true
 
-fit_city <- logistic_reg() |>
-  fit(call ~ city, data = resumes)
-
-fit_city |>
-  tidy(conf.int = TRUE) |>
-  select(term, estimate, conf.low, conf.high) |>
-  mutate(across(where(is.numeric), \(x) round(x, 2)))
+logistic_reg() |>
+  fit(call ~ city, data = resumes) |>
+  tidy(conf.int = TRUE)
 ```
 
 The coefficient on `citychicago` is about −0.40 with a 95% confidence interval excluding zero: callbacks are less likely in Chicago than in Boston. Location matters, but it says nothing yet about the question both scenarios actually care about — so we add the name's ethnicity next.
 
-Create a candidate model, modeling `call` as a function of both `city` and `ethnicity`. Call it `fit_city_ethnicity`.
+Estimate a model in which `call` is the outcome and `city` and `ethnicity` are the covariates. Display the coefficients and their confidence intervals.
 
 ```{r}
 #| label: candidate-model-city-ethnicity
 #| echo: true
 
-fit_city_ethnicity <- logistic_reg() |>
-  fit(call ~ city + ethnicity, data = resumes)
-
-fit_city_ethnicity |>
-  tidy(conf.int = TRUE) |>
-  select(term, estimate, conf.low, conf.high) |>
-  mutate(across(where(is.numeric), \(x) round(x, 2)))
+logistic_reg() |>
+  fit(call ~ city + ethnicity, data = resumes) |>
+  tidy(conf.int = TRUE)
 ```
 
-The coefficient on `ethnicitycauc` is about 0.44 with a confidence interval excluding zero — a white-sounding name raises the log-odds of a callback, and the city coefficient barely moves, which is what randomized name assignment should produce. The EDA suggested resume quality might matter differently by ethnicity, so we test that next.
+The coefficient on `ethnicitycauc` is about 0.44 with a confidence interval excluding zero — a white-sounding name raises the log-odds of a callback, and the city coefficient barely moves, which is what randomized name assignment should produce. The paper's second headline finding is that resume quality pays off more for white-sounding names, so we test that next.
 
-Create a candidate model which adds `quality`, and its interaction with `ethnicity`, to `fit_city_ethnicity`. Call it `fit_quality`.
+Add `quality`, and its interaction with `ethnicity`, to the previous model. Display the coefficients and their confidence intervals.
 
 ```{r}
 #| label: candidate-model-quality
 #| echo: true
 
-fit_quality <- logistic_reg() |>
-  fit(call ~ city + ethnicity + quality + ethnicity * quality, data = resumes)
-
-fit_quality |>
-  tidy(conf.int = TRUE) |>
-  select(term, estimate, conf.low, conf.high) |>
-  mutate(across(where(is.numeric), \(x) round(x, 2)))
+logistic_reg() |>
+  fit(call ~ city + ethnicity + quality + ethnicity * quality, data = resumes) |>
+  tidy(conf.int = TRUE)
 ```
 
-Both the `quality` main effect and its interaction with `ethnicity` have confidence intervals that comfortably include zero. The visual pattern from the EDA does not survive this simple model, so we drop `quality` and instead keep covariates whose intervals exclude zero — plus `sex`, which the historian's question forces us to include.
+Both the `quality` main effect and its interaction with `ethnicity` have confidence intervals that comfortably include zero. The paper's pattern does not show up in this simple model, so we drop `quality` and instead keep covariates whose intervals exclude zero — plus `sex`, which the historian's question forces us to include.
 
 ### The Data Generating Mechanism
 
@@ -569,12 +513,10 @@ fit_resumes <- logistic_reg() |>
   fit(call ~ sex + city + ethnicity + special, data = resumes)
 
 fit_resumes |>
-  tidy(conf.int = TRUE) |>
-  select(term, estimate, conf.low, conf.high) |>
-  mutate(across(where(is.numeric), \(x) round(x, 2)))
+  tidy(conf.int = TRUE)
 ```
 
-We choose `call ~ sex + city + ethnicity + special`. The `city`, `ethnicity`, and `special` (special skills) coefficients all have confidence intervals excluding zero. The `sex` coefficient's interval includes zero, but the historian's question explicitly asks about differences by sex, so the question — not the data — forces it into the model. Quality stays out, per `fit_quality` above.
+We choose `call ~ sex + city + ethnicity + special`. The `city`, `ethnicity`, and `special` (special skills) coefficients all have confidence intervals excluding zero. The `sex` coefficient's interval includes zero, but the historian's question explicitly asks about differences by sex, so the question — not the data — forces it into the model. Quality stays out, per the previous model.
 
 $$
 \text{logit}\left(\Pr(\text{call} = \text{yes})\right) = -2.75 - 0.13 \cdot \text{male} - 0.46 \cdot \text{chicago} + 0.45 \cdot \text{caucasian} + 0.82 \cdot \text{special}

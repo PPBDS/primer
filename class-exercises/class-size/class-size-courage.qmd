@@ -269,22 +269,7 @@ scored |>
   theme_minimal()
 ```
 
-Scores are roughly bell-shaped around 709 — but the subtitle carries the real news: fewer than 40% of the students in the experiment have a fourth-grade math score recorded. Before trusting any model, we need to know whether that missingness is related to anything we care about.
-
-Create a calculation that shows, for each class type, the number of students, the share missing a `g4math` score, and the average `g4math`.
-
-```{r}
-#| label: eda-missingness-by-kind
-#| echo: true
-
-star |>
-  group_by(kind) |>
-  summarize(n = n(),
-            share_missing = mean(is.na(g4math)),
-            mean_math = mean(g4math, na.rm = TRUE))
-```
-
-About 62% of scores are missing in every arm — 61.1% in small classes, 61.6% in regular, 63.6% in regular-with-aide. The balance is reassuring (missingness does not track treatment), though it cannot rule out bias if the *kinds* of students who go missing differ. Among students with scores, the three group means — 710, 708, 709 — are nearly identical. The most famous class-size experiment ever run shows essentially nothing in the raw group means. *Discussion question: where might the students without scores have gone?*
+Scores are roughly bell-shaped around 709 — but the subtitle carries the real news: fewer than 40% of the students in the experiment have a fourth-grade math score recorded. Before trusting any model, we need to know whether that missingness is related to anything we care about; reassuringly, the share missing is nearly identical — about 62% — in all three class types, though balance cannot rule out bias if the *kinds* of students who go missing differ.
 
 Create a plot that shows the relationship between `g4math` and class type.
 
@@ -304,24 +289,7 @@ scored |>
   theme_minimal()
 ```
 
-```{r}
-#| label: eda-g4math-kind-density
-#| echo: true
-
-scored |>
-  ggplot(aes(x = g4math, color = kind)) +
-  geom_density(linewidth = 1) +
-  labs(
-    title = "Math Score Distributions by Class Type",
-    subtitle = "The three distributions sit almost exactly on top of one another",
-    x = "Fourth-grade math score",
-    y = "Density",
-    color = "Class type"
-  ) +
-  theme_minimal()
-```
-
-Whether we compare medians and spread (boxplot) or full distributional shape (density), the three class types are visually indistinguishable. If small classes help fourth-grade math, the effect is too small to see with the naked eye — a useful calibration before the modeling in Courage.
+The three class types are visually indistinguishable. If small classes help fourth-grade math, the effect is too small to see with the naked eye — a useful calibration before the modeling in Courage.
 
 ------------------------------------------------------------------------
 
@@ -522,15 +490,15 @@ What is the link function for our outcome?
 
 ### Candidate Models
 
-Create a candidate model, modeling the outcome `g4math` as a linear function of the class type `kind`. Call it `fit_kind`.
+Estimate a model in which `g4math` is the outcome and `kind` is the only covariate. Display the coefficients and their confidence intervals.
 
 
 
-Create a candidate model, modeling `g4math` as a linear function of both `kind` and `race`. Call it `fit_kind_race`.
+Estimate a model in which `g4math` is the outcome and `kind` and `race` are the covariates. Display the coefficients and their confidence intervals.
 
 
 
-Create a candidate model which adds `yearssmall` to `fit_kind_race`. Call it `fit_kind_race_years`.
+Add `yearssmall` to the previous model. Display the coefficients and their confidence intervals.
 
 
 

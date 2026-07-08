@@ -62,15 +62,11 @@ Describe the key components of a Preceptor Table for your scenario; Use words li
 
 ### Exploratory Data Analysis
 
-Create a calculation that shows the overall callback rate, and the callback rate for each ethnicity.
+Create a plot that shows the distribution of `call`.
 
 
 
-Create a plot that shows the relationship between callbacks and ethnicity.
-
-
-
-Create a plot that shows the relationship between callbacks and resume quality, separately by ethnicity.
+Create a plot that shows the relationship between `call` and `ethnicity`.
 
 
 

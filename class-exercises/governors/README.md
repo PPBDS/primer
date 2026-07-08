@@ -12,7 +12,7 @@ Each class meeting this week has its own repo, which you will fork that day:
 - `governors-courage` — day 2: Courage. Its document begins with our answers to Wisdom and Justice.
 - `governors-temperance` — day 3: Temperance. Its document begins with our answers to Wisdom, Justice, and Courage.
 
-This repo holds one meeting's exercise document (the `.qmd` file), the data (`data/governors.csv`), the original Barfort, Klemmensen, and Larsen (2021) paper (`governors-paper.pdf`), and this README.
+This repo holds one meeting's exercise document (the `.qmd` file), a rendered HTML version of it (open it in your browser to check things out), the data (`data/governors.csv`), the original Barfort, Klemmensen, and Larsen (2021) paper (`governors-paper.pdf`), and this README.
 
 ## Get your own copy
 

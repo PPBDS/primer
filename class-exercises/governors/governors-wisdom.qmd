@@ -65,7 +65,7 @@ Create a plot that shows the distribution of `lived_after`.
 
 
 
-Create a tibble, called `x`, which keeps only close elections (`win_margin` within 5 points) after 1945 and adds a variable `election_result` recording whether the candidate won or lost. How many candidates remain? Compare the average `lived_after`, and the average `election_age`, of winners and losers.
+Create a tibble, called `x`, which keeps only close elections (`win_margin` within 5 points) after 1945 and adds a variable `election_result` recording whether the candidate won or lost.
 
 
 

@@ -255,7 +255,7 @@ governors |>
 
 The outcome is continuous and widely spread, from candidates who died shortly after their election to some who lived another seven decades. A handful of *negative* values — candidates recorded as dying before their own election — flag data-quality problems in the oldest records, one more reason to restrict attention to the post-1945 era.
 
-Create a tibble, called `x`, which keeps only close elections (`win_margin` within 5 points) after 1945 and adds a variable `election_result` recording whether the candidate won or lost. How many candidates remain? Compare the average `lived_after`, and the average `election_age`, of winners and losers.
+Create a tibble, called `x`, which keeps only close elections (`win_margin` within 5 points) after 1945 and adds a variable `election_result` recording whether the candidate won or lost.
 
 ```{r}
 #| label: eda-build-analysis-tibble
@@ -264,17 +264,9 @@ Create a tibble, called `x`, which keeps only close elections (`win_margin` with
 x <- governors |>
   filter(abs(win_margin) <= 5, year > 1945) |>
   mutate(election_result = if_else(win_margin > 0, "Win", "Lose"))
-
-nrow(x)
-
-x |>
-  group_by(election_result) |>
-  summarize(mean_lived_after = mean(lived_after),
-            mean_election_age = mean(election_age),
-            n = n())
 ```
 
-254 candidacies remain — the price of the close-election restriction is discarding 93% of the data. Winners lived about 2.4 years longer than losers on average (29.6 vs. 27.2), a raw gap we should not yet call an effect. Just as important: winners and losers were almost exactly the same age at election (51.0 vs. 51.4), which is what we would expect if close elections really do assign winning as good as randomly. *Discussion question: what other pre-election characteristics would you want to check for balance?*
+254 candidacies remain — the price of the close-election restriction is discarding 93% of the data. Reassuringly, winners and losers of these close races are almost exactly the same age at election (51.0 vs. 51.4), which is what we would expect if close elections really do assign winning as good as randomly.
 
 Using `x`, create a plot that shows the relationship between `lived_after` and `election_age`.
 
@@ -501,53 +493,41 @@ $$Y = \beta_0 + \beta_1 X_1 + \cdots + \beta_n X_n + \epsilon, \quad \epsilon \s
 
 ### Candidate Models
 
-Create a candidate model, modeling the outcome `lived_after` as a linear function of `election_result`. Call it `fit_result`.
+Estimate a model in which `lived_after` is the outcome and `election_result` is the only covariate. Display the coefficients and their confidence intervals.
 
 ```{r}
 #| label: candidate-model-result
 #| echo: true
 
-fit_result <- linear_reg() |>
-  fit(lived_after ~ election_result, data = x)
-
-fit_result |>
-  tidy(conf.int = TRUE) |>
-  select(term, estimate, conf.low, conf.high) |>
-  mutate(across(where(is.numeric), \(x) round(x, 2)))
+linear_reg() |>
+  fit(lived_after ~ election_result, data = x) |>
+  tidy(conf.int = TRUE)
 ```
 
 The raw win effect is about 2.4 years, but its confidence interval includes zero — comparing group averages alone, we cannot distinguish the effect from nothing. Age is the elephant in the room from the EDA, so we adjust for it next.
 
-Create a candidate model, modeling `lived_after` as a linear function of both `election_result` and `election_age`. Call it `fit_result_age`.
+Estimate a model in which `lived_after` is the outcome and `election_result` and `election_age` are the covariates. Display the coefficients and their confidence intervals.
 
 ```{r}
 #| label: candidate-model-result-age
 #| echo: true
 
-fit_result_age <- linear_reg() |>
-  fit(lived_after ~ election_result + election_age, data = x)
-
-fit_result_age |>
-  tidy(conf.int = TRUE) |>
-  select(term, estimate, conf.low, conf.high) |>
-  mutate(across(where(is.numeric), \(x) round(x, 2)))
+linear_reg() |>
+  fit(lived_after ~ election_result + election_age, data = x) |>
+  tidy(conf.int = TRUE)
 ```
 
 Age at election is enormously informative (about −0.9 years of remaining life per year of age, interval far from zero), but the win coefficient barely moves and still cannot be distinguished from zero — consistent with the balance check in Wisdom, where winners and losers had nearly identical ages. The missing ingredient is `win_margin`: even inside the close window, winners sit above zero and losers below, so the running variable is entangled with the treatment. We control for it, and add `party`, next.
 
-Create a candidate model which adds `win_margin` and `party` to `fit_result_age`. Call it `fit_margin_party`.
+Add `win_margin` and `party` to the previous model. Display the coefficients and their confidence intervals.
 
 ```{r}
 #| label: candidate-model-margin-party
 #| echo: true
 
-fit_margin_party <- linear_reg() |>
-  fit(lived_after ~ election_result + win_margin + election_age + party, data = x)
-
-fit_margin_party |>
-  tidy(conf.int = TRUE) |>
-  select(term, estimate, conf.low, conf.high) |>
-  mutate(across(where(is.numeric), \(x) round(x, 2)))
+linear_reg() |>
+  fit(lived_after ~ election_result + win_margin + election_age + party, data = x) |>
+  tidy(conf.int = TRUE)
 ```
 
 Controlling for the running variable changes everything: the win coefficient jumps to about 8.6 years with an interval excluding zero. Comparing candidates *at the same margin*, on opposite sides of the win/lose threshold, is the regression-discontinuity comparison the design intends — and it is only visible once `win_margin` is in the model.
@@ -564,9 +544,7 @@ fit_governors <- linear_reg() |>
   fit(lived_after ~ election_result + win_margin + election_age + party, data = x)
 
 fit_governors |>
-  tidy(conf.int = TRUE) |>
-  select(term, estimate, conf.low, conf.high) |>
-  mutate(across(where(is.numeric), \(x) round(x, 2)))
+  tidy(conf.int = TRUE)
 ```
 
 We choose the full model. `win_margin` must stay because it is the running variable that identifies the design; `election_age` because it dominates the outcome; and `party` because `partyRepublican` is distinguishable from zero (Republicans in this sample live about 4 years longer after election). The interval for `partyThird party` easily includes zero, but with a categorical variable we keep the whole variable as long as at least one of its dummies earns its place — dropping only the Third-party level is not an option.

@@ -185,9 +185,9 @@ The 12 example tutorials are arranged under three rules that operate together:
 
    | Tutorial number | Position | Tier |
    |---|---|---|
-   | 06, 07, 08, 09 | 1–4 | **Easy** |
-   | 10, 11, 12, 13 | 5–8 | **Medium** |
-   | 14, 15, 16, 17 | 9–12 | **Hard** |
+   | 05, 06, 07, 08 | 1–4 | **Easy** |
+   | 09, 10, 11, 12 | 5–8 | **Medium** |
+   | 13, 14, 15, 16 | 9–12 | **Hard** |
 
    This is a hard rule, not a suggestion. When an author is asked to (re)write a specific tutorial — e.g. "redo tutorial 11" — the tier is given by the number: tutorial 11 is Medium, full stop. Do not look up §17 to decide; the number is sufficient. The split is an *artifact* of twelve. At 14 tutorials the split becomes 5/5/4 or 4/5/5 with judgment on where the boundaries fall; at 16, 6/5/5 or 5/6/5. The boundary-smoothing principle from §1.3 (*"the last Easy tutorial should be just slightly simpler than the first Medium tutorial"*) is the thing that actually governs sequencing; EMH is the label we put on it for discussion.
 

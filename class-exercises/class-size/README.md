@@ -12,7 +12,7 @@ Each class meeting this week has its own repo, which you will fork that day:
 - `class-size-courage` — day 2: Courage. Its document begins with our answers to Wisdom and Justice.
 - `class-size-temperance` — day 3: Temperance. Its document begins with our answers to Wisdom, Justice, and Courage.
 
-This repo holds one meeting's exercise document (the `.qmd` file), the data (`data/class-size.csv`), the original Mosteller (1995) paper (`class-size-paper.pdf`), and this README.
+This repo holds one meeting's exercise document (the `.qmd` file), a rendered HTML version of it (open it in your browser to check things out), the data (`data/class-size.csv`), the original Mosteller (1995) paper (`class-size-paper.pdf`), and this README.
 
 ## Get your own copy
 
