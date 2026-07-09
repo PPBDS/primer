@@ -13,7 +13,7 @@
   //
   // Pinned to a semver tag (David's call, 2026-07 — this used to float
   // on dev:latest). Bump deliberately when a new release lands.
-  "image": "ghcr.io/ppbds/devcontainer:1.0.0",
+  "image": "ghcr.io/ppbds/devcontainer:1.0.2",
 
   "customizations": {
     "vscode": {
