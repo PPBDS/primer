@@ -1,9 +1,9 @@
-> Seed spec — a **standalone class-exercise problem** (unnumbered; not part of the 16-slot curriculum). To author, read [`../../class-exercises/CLAUDE.md`](../../class-exercises/CLAUDE.md) and this file. Source material: `bootcamp/_internal/week-5/`.
+> Seed spec — a **standalone class-exercise problem** (unnumbered; not part of the 16-slot curriculum). To author, read the [CLAUDE.md in PPBDS/primer.exercises](https://github.com/PPBDS/primer.exercises/blob/main/CLAUDE.md) (sibling checkout: `../primer.exercises/`) and this file. Source material: `bootcamp/_internal/week-5/`.
 
 ### Resumes  *(standalone · Medium · two scenarios: one predictive, one causal)*
 
 - **Type:** example (class exercise only)
-- **Renderings:** chapter — · tutorial — · class exercise ✓ (`class-exercises/resumes/`)
+- **Renderings:** chapter — · tutorial — · class exercise ✓ (`primer.exercises` repo, `resumes/`)
 - **"Imagine" (two, given to students verbatim; groups are assigned one):**
   1. *Predictive:* "Imagine that you are a contemporary historian studying US employment in the year 2000 in Baltimore. You want to understand the process by which some people got jobs and some did not."
   2. *Causal:* "Imagine that you work for a civil rights organization in Chicago. You want to understand the process by which black US citizens are discriminated against in hiring today."

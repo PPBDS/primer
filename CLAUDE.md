@@ -10,6 +10,7 @@ This is the `primer` repo. Guidance loads from wherever you are working:
 
 - **`book/`** — the textbook chapters (`.qmd`). Working there loads [`book/CLAUDE.md`](book/CLAUDE.md).
 - **The learnr tutorials live in their own repo, [PPBDS/primer.tutorials](https://github.com/PPBDS/primer.tutorials)** (split out 2026-07 so package installs stop downloading this whole repo — do not re-add the package here). Its `CLAUDE.md` routes back into this repo's `guide/`, expecting a sibling checkout (`../primer/`).
+- **The class exercises live in their own repo, [PPBDS/primer.exercises](https://github.com/PPBDS/primer.exercises)** (split out 2026-07; one folder per exercise at its top level — do not re-add a `class-exercises/` directory here). Its `CLAUDE.md` likewise routes back into this repo's `guide/` via a sibling checkout.
 - **`guide/`** — the detailed authoring guide, split into parts and **read on demand** (the map below). Both routers above point into it.
 
 This index (auto-loaded everywhere in the repo) carries the base-guide relationship, the curriculum at a glance, and the collaboration protocol.
@@ -72,4 +73,4 @@ This protocol is a default; deviate when it makes sense. Where a decision is sma
 
 When you pause to ask, make it easy for David to answer: short list of options, your recommendation, your reasoning. Do not ask open-ended questions when a multiple-choice question will do.
 
-**Record corrections.** Whenever David corrects you, write the lesson down in the relevant `CLAUDE.md` (the most specific one — e.g. `class-exercises/CLAUDE.md` for a class-exercise correction) *and* fix the instance that prompted it. The point is that the same correction never has to be given twice.
+**Record corrections.** Whenever David corrects you, write the lesson down in the relevant `CLAUDE.md` (the most specific one — e.g. the `CLAUDE.md` in PPBDS/primer.exercises for a class-exercise correction) *and* fix the instance that prompted it. The point is that the same correction never has to be given twice.

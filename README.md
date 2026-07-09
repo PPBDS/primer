@@ -9,7 +9,7 @@ Source for the book *Preceptor's Primer for Bayesian Data Science: Using the Car
 
 - `book/` — Quarto book source (`*.qmd` chapters, `_quarto.yml`, supporting images and data)
 - `guide/` — the authoring guide, shared by book chapters and the tutorials (the tutorials repo links back here)
-- `class-exercises/` — in-class exercise materials
+- Class exercises live in their own repo: [PPBDS/primer.exercises](https://github.com/PPBDS/primer.exercises)
 - `.github/workflows/` — CI: render and deploy the book
 
 ## Installing the tutorials package

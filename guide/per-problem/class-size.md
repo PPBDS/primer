@@ -1,9 +1,9 @@
-> Seed spec — a **standalone class-exercise problem** (unnumbered; not part of the 16-slot curriculum). To author, read [`../../class-exercises/CLAUDE.md`](../../class-exercises/CLAUDE.md) and this file. Source material: `bootcamp/_internal/week-6/`.
+> Seed spec — a **standalone class-exercise problem** (unnumbered; not part of the 16-slot curriculum). To author, read the [CLAUDE.md in PPBDS/primer.exercises](https://github.com/PPBDS/primer.exercises/blob/main/CLAUDE.md) (sibling checkout: `../primer.exercises/`) and this file. Source material: `bootcamp/_internal/week-6/`.
 
 ### Class Size  *(standalone · Medium · two scenarios: one predictive, one causal)*
 
 - **Type:** example (class exercise only)
-- **Renderings:** chapter — · tutorial — · class exercise ✓ (`class-exercises/class-size/`)
+- **Renderings:** chapter — · tutorial — · class exercise ✓ (`primer.exercises` repo, `class-size/`)
 - **"Imagine" (two, given to students verbatim; groups are assigned one):**
   1. *Predictive:* "Imagine that you are an elementary school principal in Chicago. You want to predict student performance. Fortunately, you have data today for your current students like the data available in the STAR project."
   2. *Causal:* "Imagine you work for the Texas Department of Education. You want to understand student performance in small classes, relative to big classes, in Dallas. In Texas, there is data available like the data in the STAR project."
