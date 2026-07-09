@@ -112,7 +112,6 @@ The Preceptor Table here has one outcome column (`Ever-Smoker`) and two covariat
 Before fitting a model, look at the data. *You can never look too closely at your data* --- the hour spent on a careful EDA almost always saves a day downstream.
 
 ```{r}
-#| echo: false
 #| message: false
 #| warning: false
 smokes |>
@@ -139,7 +138,6 @@ smokes |>
 Among the 1,000 adults in our sample, 36% of women and 50% of men are ever-smokers --- a 14-percentage-point gap. This is consistent with the historical-cohort story: today's adult population skews older than 30, and the older cohorts contained substantially more male than female smokers. The gap will narrow as younger cohorts age into the population, but in our 2009--2012 NHANES window it is large.
 
 ```{r}
-#| echo: false
 #| message: false
 #| warning: false
 smokes |>
@@ -167,7 +165,6 @@ smokes |>
 Binning the ages into ten-year groups makes the age pattern visible: both sexes show rising ever-smoker prevalence from the 20s up through the 60s, with the male-female gap of roughly 14--15 percentage points roughly constant across the age range. The 70-and-up bin shows some flattening, possibly reflecting survivor-bias effects or simply small sample size in that bin. The chapter's logistic model will capture the level shift (Men > Women) and the age slope (older adults more likely to be ever-smokers), but it will not, by itself, capture any *interaction* between age and sex --- a richer specification would.
 
 ```{r}
-#| echo: false
 #| message: false
 #| warning: false
 smokes |>
@@ -504,7 +501,6 @@ We try a handful of plausible specifications, see what each says, and commit to 
 #### Candidate 1: `smoke ~ sex`
 
 ```{r}
-#| echo: false
 logistic_reg(engine = "glm") |>
   fit(smoke ~ sex, data = smokes) |>
   tidy(conf.int = TRUE) |>
@@ -520,7 +516,6 @@ A note on the log-odds scale: it is *not* the scale the chapter or any practitio
 #### Candidate 2: `smoke ~ age`
 
 ```{r}
-#| echo: false
 logistic_reg(engine = "glm") |>
   fit(smoke ~ age, data = smokes) |>
   tidy(conf.int = TRUE) |>
@@ -536,7 +531,6 @@ This is informative as a diagnostic. Age by itself has weak signal in this 1,000
 #### Candidate 3: `smoke ~ age + sex`
 
 ```{r}
-#| echo: false
 logistic_reg(engine = "glm") |>
   fit(smoke ~ age + sex, data = smokes) |>
   tidy(conf.int = TRUE) |>
@@ -577,7 +571,6 @@ $$\widehat{\rho} = \frac{1}{1 + \exp(-(-0.875 + 0.007 \cdot \text{Age} + 0.545 \
 The standard plot-of-fitted-values-versus-actual works less cleanly for a binary outcome than for a continuous one --- both fitted and actual values cluster at 0 and 1, with the fitted values being smooth probabilities and the actuals being just 0s and 1s. A more useful check for a logistic-regression model compares the *predicted probability* of `smoke == Yes` against the *observed proportion* of `smoke == Yes`, binned by predicted probability.
 
 ```{r}
-#| echo: false
 #| message: false
 #| warning: false
 fit_eng <- extract_fit_engine(fit_smokes)
@@ -624,7 +617,6 @@ knitr::include_graphics("other/images/Temperance.jpg")
 ### The primary (predictive) reading
 
 ```{r}
-#| echo: false
 #| message: false
 #| warning: false
 fit_eng <- extract_fit_engine(fit_smokes)
@@ -693,7 +685,6 @@ Third, *the world is always more uncertain than our models would have us believe
 ## Summary
 
 ```{r}
-#| echo: false
 #| message: false
 #| warning: false
 fit_eng <- extract_fit_engine(fit_smokes)

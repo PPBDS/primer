@@ -147,7 +147,6 @@ cat("```{=html}\n",
 Before fitting a model, look at the data. *You can never look too closely at your data* --- the hour spent on a careful EDA almost always saves a day downstream.
 
 ```{r}
-#| echo: false
 #| message: false
 #| warning: false
 x |>
@@ -171,7 +170,6 @@ x |>
 Both density curves spike near zero --- the typical household, enrolled or not, reports almost no spending over a three-month window. The Enrolled and Not-enrolled distributions overlap almost completely in the visible range. The plot uses an x-axis cap at 4,000 pesos because the long right tail extends well beyond what is informative for the central comparison.
 
 ```{r}
-#| echo: false
 #| message: false
 #| warning: false
 x |>
@@ -193,7 +191,6 @@ x |>
 The jitter view --- with the y-axis capped at 3,000 pesos to hide the right tail without dropping it from the model --- shows individual households as points. The mass of both groups sits near zero. The blue dots, marking the sample means, sit so close together that the difference between them is invisible at this scale. With 27,569 households the standard error on a between-group difference of 63 pesos is small enough to be statistically detectable, but the magnitude of the effect itself is genuinely small: a typical Enrolled household spends about 731 pesos over three months while a typical Not-enrolled household spends about 794 --- a real difference that disappears against the variation within each arm.
 
 ```{r}
-#| echo: false
 #| message: false
 #| warning: false
 x |>
@@ -511,7 +508,6 @@ We try a handful of plausible specifications, see what each says, and commit to 
 #### Candidate 1: `t2_health_exp_3m ~ treatment`
 
 ```{r}
-#| echo: false
 linear_reg() |>
   set_engine("lm") |>
   fit(t2_health_exp_3m ~ treatment, data = x) |>
@@ -528,7 +524,6 @@ This estimate matches King et al.'s reported full-sample finding (-63 pesos with
 #### Candidate 2: `t2_health_exp_3m ~ treatment + age + sex`
 
 ```{r}
-#| echo: false
 linear_reg() |>
   set_engine("lm") |>
   fit(t2_health_exp_3m ~ treatment + age + sex, data = x) |>
@@ -543,7 +538,6 @@ Adding `age` and `sex` to the model leaves the coefficient on `treatmentEnrolled
 #### Candidate 3: `t2_health_exp_3m ~ treatment + age + sex + education`
 
 ```{r}
-#| echo: false
 linear_reg() |>
   set_engine("lm") |>
   fit(t2_health_exp_3m ~ treatment + age + sex + education, data = x) |>
@@ -584,7 +578,6 @@ Three differences from the abstract form. First, the parameters are replaced by 
 A sanity check: the distribution of fitted values should look broadly like the distribution of actual `t2_health_exp_3m`. We do not expect a good match --- the model fits a two-point distribution to a heavy-tailed continuous outcome --- but the comparison makes the misspecification visible.
 
 ```{r}
-#| echo: false
 #| message: false
 #| warning: false
 fitted_df <- tibble(
@@ -628,7 +621,6 @@ knitr::include_graphics("other/images/Temperance.jpg")
 ### The primary (causal) reading
 
 ```{r}
-#| echo: false
 plot_predictions(fit_sp, condition = "treatment", draw = FALSE) |>
   ggplot(aes(x = treatment, y = estimate)) +
   geom_pointrange(aes(ymin = conf.low, ymax = conf.high),
@@ -686,7 +678,6 @@ Third, *the world is always more uncertain than our models would have us believe
 ## Summary
 
 ```{r}
-#| echo: false
 #| message: false
 #| warning: false
 plot_predictions(fit_sp, condition = "treatment", draw = FALSE) |>

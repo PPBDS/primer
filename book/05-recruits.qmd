@@ -114,7 +114,6 @@ The Preceptor Table is *imaginary* in the sense that we will never have its full
 Before fitting a model, look at the data. *You can never look too closely at your data* --- the hour spent on a careful EDA almost always saves a day downstream.
 
 ```{r}
-#| echo: false
 #| message: false
 #| warning: false
 recruits |>
@@ -135,7 +134,6 @@ recruits |>
 The marginal distribution of height has a left shoulder near 162 cm and a main mass near 175 cm. The shoulder is hinting that the sample is not unimodal; splitting by sex confirms it.
 
 ```{r}
-#| echo: false
 #| message: false
 #| warning: false
 recruits |>
@@ -157,7 +155,6 @@ recruits |>
 The female distribution sits visibly to the left of the male distribution, with the female mode near 162 cm and the male mode near 175 cm --- about a 13 cm offset at the modes, with substantial overlap in the tails. The female density also looks rougher because we have only 10 female rows; a density estimator with 10 observations is wobbly.
 
 ```{r}
-#| echo: false
 #| message: false
 #| warning: false
 recruits |>
@@ -503,7 +500,6 @@ Courage almost never settles on its first guess. We try a handful of plausible s
 #### Candidate 1: `height ~ sex`
 
 ```{r}
-#| echo: false
 linear_reg() |>
   set_engine("lm") |>
   fit(height ~ sex, data = recruits) |>
@@ -520,7 +516,6 @@ Notice the language: *"when we compare two recruits differing only in sex"*. For
 #### Candidate 2: `height ~ age`
 
 ```{r}
-#| echo: false
 linear_reg() |>
   set_engine("lm") |>
   fit(height ~ age, data = recruits) |>
@@ -535,7 +530,6 @@ The slope on `age` is essentially zero, with a 95% confidence interval that cros
 #### Candidate 3: `height ~ sex + age`
 
 ```{r}
-#| echo: false
 linear_reg() |>
   set_engine("lm") |>
   fit(height ~ sex + age, data = recruits) |>
@@ -574,7 +568,6 @@ Three differences from the abstract form. First, the parameters $\beta_0$ and $\
 A simple sanity check: the distribution of the fitted values should look like the distribution of the actual `height`. They will not match exactly --- the model has only two predicted values (one for female, one for male) while the actual data has continuous variation --- but the gross shape and central tendency should be close.
 
 ```{r}
-#| echo: false
 #| message: false
 #| warning: false
 fitted_df <- tibble(
@@ -616,7 +609,6 @@ knitr::include_graphics("other/images/Temperance.jpg")
 ### The primary (predictive) reading
 
 ```{r}
-#| echo: false
 plot_predictions(fit_recruits, condition = "sex", draw = FALSE) |>
   ggplot(aes(x = sex, y = estimate)) +
   geom_pointrange(aes(ymin = conf.low, ymax = conf.high),
@@ -674,7 +666,6 @@ Third, *the world is always more uncertain than our models would have us believe
 ## Summary
 
 ```{r}
-#| echo: false
 #| message: false
 #| warning: false
 plot_predictions(fit_recruits, condition = "sex", draw = FALSE) |>

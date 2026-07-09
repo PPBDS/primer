@@ -139,7 +139,6 @@ This is the first Preceptor Table in the book whose Potential Outcomes spanner s
 Before fitting a model, look at the data. *You can never look too closely at your data* --- the hour spent on a careful EDA almost always saves a day downstream.
 
 ```{r}
-#| echo: false
 #| message: false
 #| warning: false
 x |>
@@ -165,7 +164,6 @@ x |>
 The headline comparison, raw: 16.8% of control-group voters applied, against 17.2% in each treatment arm. Randomization means this simple comparison is already an unbiased causal estimate --- and it is tiny. Whatever these postcards did, they did not do much of it.
 
 ```{r}
-#| echo: false
 #| message: false
 #| warning: false
 x |>
@@ -191,7 +189,6 @@ x |>
 Party, by contrast, moves the application rate enormously. By the spring of 2020, willingness to vote by mail had already polarized: Democratic messaging embraced it, Republican messaging disparaged it, and the application rates show the result. This is a *covariate* difference, not a causal effect of party --- but its sheer size, next to the postcards' half-point nudge, frames the whole problem.
 
 ```{r}
-#| echo: false
 #| message: false
 #| warning: false
 x |>
@@ -505,7 +502,6 @@ We try three specifications: treatment alone, treatment with one adjustment cova
 #### Candidate 1: `applied_mail ~ treatment`
 
 ```{r}
-#| echo: false
 logistic_reg(engine = "glm") |>
   fit(applied_mail ~ treatment, data = x) |>
   tidy(conf.int = TRUE) |>
@@ -519,7 +515,6 @@ Because the treatment was randomized, this unadjusted model already delivers leg
 #### Candidate 2: `applied_mail ~ treatment + party`
 
 ```{r}
-#| echo: false
 logistic_reg(engine = "glm") |>
   fit(applied_mail ~ treatment + party, data = x) |>
   tidy(conf.int = TRUE) |>
@@ -533,7 +528,6 @@ Adding party does two things. It confirms the randomization: the treatment coeff
 #### Candidate 3: `applied_mail ~ treatment + party + age + sex`
 
 ```{r}
-#| echo: false
 logistic_reg(engine = "glm") |>
   fit(applied_mail ~ treatment + party + age + sex, data = x) |>
   tidy(conf.int = TRUE) |>
@@ -576,7 +570,6 @@ Every term is a 0/1 dummy. The intercept (-1.75) is the log-odds of applying for
 To check whether the model is reasonable, we compare the actual outcome distribution against draws simulated from the fitted model --- a posterior predictive check, run with `check_predictions()` from **[easystats](https://easystats.github.io/easystats/)**:
 
 ```{r}
-#| echo: false
 #| message: false
 #| warning: false
 check_predictions(extract_fit_engine(fit_mail))
@@ -600,7 +593,6 @@ knitr::include_graphics("other/images/Temperance.jpg")
 ### The primary (causal) reading
 
 ```{r}
-#| echo: false
 #| message: false
 #| warning: false
 avg_comparisons(extract_fit_engine(fit_mail),
@@ -663,7 +655,6 @@ Third, *the world is always more uncertain than our models would have us believe
 ## Summary
 
 ```{r}
-#| echo: false
 #| message: false
 #| warning: false
 avg_comparisons(extract_fit_engine(fit_mail),

@@ -84,6 +84,7 @@ It works by copying `codespace-starter` into a repository you own. (The screensh
 Go back to [`https://github.com/PPBDS/codespace-starter`](https://github.com/PPBDS/codespace-starter). Click the green **"Use this template"** button at the top right and select **"Create a new repository."**
 
 ```{r}
+#| echo: false
 knitr::include_graphics("git-and-github/images/new-2.png")
 ```
 
@@ -91,6 +92,7 @@ In the **Repository name** field, type the tutorial id (its title in lowercase, 
 
 
 ```{r}
+#| echo: false
 knitr::include_graphics("git-and-github/images/new-3.png")
 ```
 
@@ -101,6 +103,7 @@ You now own a repository at `https://github.com/<your-username>/<tutorial-id>`. 
 From your new repository's page, click the green **Code** button, switch to the **Codespaces** tab, and click **"Create codespace on main."**
 
 ```{r}
+#| echo: false
 knitr::include_graphics("git-and-github/images/new-4.png")
 ```
 

@@ -122,7 +122,6 @@ The only package we need in this chapter is **tidyverse**.
 #| code-fold: false
 #| message: false
 #| warning: false
-#| echo: true
 library(tidyverse)
 ```
 
@@ -138,7 +137,6 @@ A variable in a tibble is a column, a vector of values. We sometimes refer to th
 Consider the vector which is the result of rolling one die 10 times.
 
 ```{r}
-#| echo: true
 #| code-fold: false
 ten_rolls <- c(5, 5, 1, 5, 4, 2, 6, 2, 1, 5)
 ```
@@ -183,7 +181,6 @@ Instead of keeping around a vector of length 1,000, we can just keep 12 values -
 Two distributions can be identical even if they are of very different lengths. Let's compare our original distribution of 10 rolls of the dice with another distribution which just features 100 copies of those 10 rolls.
 
 ```{r}
-#| echo: true
 #| code-fold: false
 more_rolls <- rep(ten_rolls, 100)
 ```
@@ -262,6 +259,7 @@ Again, people (including us!) will often be sloppy and use the same word, "distr
 ## Probability distributions
 
 ```{r}
+#| echo: false
 #| out.width: 60%
 #| fig.align: center
 #| fig.cap: Bruno de Finetti, an Italian statistician who wrote a famous treatise on
@@ -406,7 +404,6 @@ The full terminology is mathematical (or empirical or posterior) *probability* d
 Recall the question with which we started this section: *What are the chances of getting three heads in a row when flipping a fair coin?* To answer this question, we need to use a probability distribution as our *data generating mechanism*. Fortunately, the `rbinom()` function allows us to generate the results for coin flips. For example:
 
 ```{r}
-#| echo: true
 rbinom(n = 10, size = 1, prob = 0.5)
 ```
 generates the results of 10 coin flips, where a result of heads is presented as `1` and tails as `0`. With this tool, we can generate 1,000 draws from our experiment:
@@ -703,6 +700,7 @@ read_csv("./probability/data/election-forecasts-2020/prez_1.csv",
 Below is a posterior probability distribution from the FiveThirtyEight website for August 13, 2020. This was created using the same data as the above distribution, but is displayed differently. For each electoral result, the height of the bar represents the probability that a given event will occur. However, there are no labels on the y-axis telling us what the specific probability of each outcome is. And that is OK! The specific values are not that useful. If we removed the labels on our own y-axes, would it matter? Probably not. Anytime there are many possible outcomes --- over 500 in this case --- we stop looking at specific outcomes and, instead, look at where most of the "mass" of the distribution lies.
 
 ```{r}
+#| echo: false
 #| caption: FiveThirtyEight Posterior from August 13, 2020
 knitr::include_graphics("probability/images/fivethirtyeight.png")
 ```
@@ -710,6 +708,7 @@ knitr::include_graphics("probability/images/fivethirtyeight.png")
 Below is the posterior probability distribution from *The Economist*, also from August 13, 2020. This looks confusing at first because they chose to combine the axes for Republican and Democratic electoral votes. *The Economist* was less optimistic, relative to *FiveThirtyEight*, about Trump's chances in the election.
 
 ```{r}
+#| echo: false
 #| caption: Economist Posterior from August 13, 2020
 knitr::include_graphics("probability/images/economist_aug13.png")
 ```
@@ -717,6 +716,7 @@ knitr::include_graphics("probability/images/economist_aug13.png")
 These two models, built by smart people using similar data sources, have reached fairly different conclusions. Data science is difficult! There is not one "right" answer. Real life is not a problem set. 
 
 ```{r}
+#| echo: false
 #| out.width: 100%
 
 #| fig.cap: Watch the makers of these two models throw shade at each other on Twitter!
@@ -891,6 +891,7 @@ rgl::close3d()
 ```
 
 ```{r}
+#| echo: false
 knitr::include_graphics("probability/images/die.png")
 ```
 
@@ -902,6 +903,7 @@ Imagine that 60% of people in a community have a disease. A doctor develops a te
 The probability of a random person having the disease is 0.6. Since each person either has the disease or doesn't (those are the only two possibilities), the probability that a person does not have the disease is $1 - 0.6 =  0.4$.
 
 ```{r}
+#| echo: false
 knitr::include_graphics("probability/images/tree-2.png")
 ```
 
@@ -1048,6 +1050,7 @@ rgl::close3d()
 ```
 
 ```{r}
+#| echo: false
 knitr::include_graphics("probability/images/disease.png")
 ```
 
@@ -1166,6 +1169,7 @@ tibble(test = 1:100000) |>
 <!-- DK: Should this be in terms of p or number of white marbles or both? -->
 
 ```{r}
+#| echo: false
 knitr::include_graphics("probability/images/marble.jpg")
 ```
 
@@ -1278,6 +1282,7 @@ rgl::close3d()
 ```
 
 ```{r}
+#| echo: false
 knitr::include_graphics("probability/images/marbles.png")
 ```
 
@@ -1348,6 +1353,7 @@ Answer:
 <!-- DK: Should we cut out p = 0 and p = 1 as too annoying to deal with? -->
 
 ```{r}
+#| echo: false
 knitr::include_graphics("probability/images/heads.jpg")
 ```
 
@@ -1467,6 +1473,7 @@ rgl::close3d()
 ```
 
 ```{r}
+#| echo: false
 knitr::include_graphics("probability/images/coin.png")
 ```
 

@@ -43,6 +43,7 @@ We always use the Cardinal Virtues. Wisdom helps us to clarify the questions wit
 The urn below has a certain number of red and a certain number of white beads all of equal size, mixed well together. What proportion, $\rho$, of this urn's beads are red? 
 
 ```{r}
+#| echo: false
 #| fig.cap: An urn with red and white beads.
 knitr::include_graphics("sampling/images/sampling_bowl_1.jpg")
 ```
@@ -64,12 +65,14 @@ library(tidyverse)
 Instead of performing an exhaustive count, let's insert a shovel into the urn and remove $5 \cdot 10 = 50$ beads. We are taking a *sample* of the total population of beads. 
 
 ```{r}
+#| echo: false
 #| fig.cap: Inserting a shovel into the urn.
 knitr::include_graphics("sampling/images/sampling_bowl_2.jpg")
 ```
 
 
 ```{r}
+#| echo: false
 #| fig.cap: Removing 50 beads from the urn.
 knitr::include_graphics("sampling/images/sampling_bowl_3_cropped.jpg")
 ```
@@ -96,6 +99,7 @@ Each of our 33 groups of friends will do the following:
 Each of our 33 groups of friends make note of their proportion of red beads from their sample collected. Each group then marks their proportion of their 50 beads that were red in the appropriate bin in a hand-drawn histogram as seen below.
 
 ```{r}
+#| echo: false
 #| fig.cap: Constructing a histogram of proportions.
 knitr::include_graphics("sampling/images/tactile_3_a.jpg")
 ```
@@ -103,6 +107,7 @@ knitr::include_graphics("sampling/images/tactile_3_a.jpg")
 Histograms allow us to visualize the *distribution* of a numerical variable. In particular, where the center of the values falls and how the values vary. A partially completed histogram of the first 10 out of 33 groups of friends' results can be seen in the figure below.
 
 ```{r}
+#| echo: false
 #| fig.cap: Hand-drawn histogram of first 10 out of 33 proportions.
 knitr::include_graphics("sampling/images/tactile_3_c.jpg")
 ```
@@ -372,6 +377,7 @@ This visualization allows us to see how our results differed between our tactile
 ### Using the virtual shovel 10,000 times {#shovel-1000-times}
 
 ```{r}
+#| echo: false
 #| fig.cap: So much sampling, so little time.
 knitr::include_graphics("sampling/images/sample_bernie.png")
 ```
@@ -412,6 +418,7 @@ Now that we have a good understanding of virtual sampling, we can apply our know
 ### The effect of different shovel sizes {#different-shovels}
 
 ```{r}
+#| echo: false
 #| fig.cap: What happens if we use different sized shovels to sample?
 knitr::include_graphics("sampling/images/three_shovels.png")
 ```
@@ -583,6 +590,7 @@ comparing_n_table  |>
 As the sample size increases, the sample-to-sample variation decreases, and our guesses at the true proportion of the urn's beads that are red get more precise. The larger the shovel, the more precise the result. 
 
 ```{r}
+#| echo: false
 #| fig.cap: Variance appears everywhere in data science.
 knitr::include_graphics("sampling/images/variance_everywhere_meme.jpeg")
 ```
@@ -664,6 +672,7 @@ shovels_100 |>
 The red line here represents an important statistical concept: standard error (SE). As the shovel size increases, and thus our sample size increases, we find that the standard error decreases.
 
 ```{r}
+#| echo: false
 #| fig.cap: 'To any poets and philosophers confused about this: don''t worry! It won''t
 #|   be on a problem set.'
 knitr::include_graphics("sampling/images/meme_math.png")
@@ -674,6 +683,7 @@ This is the power of running many analyses at once using map functions and list 
 ## Standard error {#sec-standard-errors}
 
 ```{r}
+#| echo: false
 #| fig.cap: Standard errors are just the way old people talk about confidence intervals.
 #| fig.align: center
 knitr::include_graphics("sampling/images/old_man_SE.png")
@@ -688,6 +698,7 @@ The relationship between the standard error and the standard deviation is that, 
 ### Terminology and notation {#sec-terminology-and-notation}
 
 ```{r}
+#| echo: false
 #| fig.cap: Let Yoda's wisdom dull the pain of this terminology section.
 knitr::include_graphics("sampling/images/yoda.png")
 ```
@@ -711,6 +722,7 @@ A sample is **generalizable** if any results based on the sample can generalize 
 A sampling procedure is *random* if we sample randomly from the population in an unbiased fashion. With random sampling, each unit has an equal chance of being selected into the sample. This condition entails, among other things, sufficiently mixing the urn before each use of the shovel. 
 
 ```{r}
+#| echo: false
 #| fig.align: center
 #| fig.cap: Fear not if you look like Spongebob after reading this section. We will re-cap
 #|   right now!
@@ -815,6 +827,7 @@ As the sample size $n$ goes up, the "typical" error of your point estimate will 
 Standard error is just a fancy term for your uncertainty about something you don't know. Standard error is the precision of our (uncertain) beliefs. 
 
 ```{r}
+#| echo: false
 #| fig.cap: If you are wondering how much you need to know, follow this helpful guide
 #|   of the information we have learned this chapter!
 #| fig.align: center
@@ -834,6 +847,7 @@ You must understand what the standard error of $\hat{\rho}$ means. You do not ne
 
 
 ```{r}
+#| echo: false
 knitr::include_graphics("sampling/images/posterior_effie.png")
 ```
 

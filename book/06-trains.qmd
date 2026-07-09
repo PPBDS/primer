@@ -143,7 +143,6 @@ The Preceptor Table is *imaginary* in the standard sense: we will never have its
 Before fitting a model, look at the data. *You can never look too closely at your data* --- the hour spent on a careful EDA almost always saves a day downstream.
 
 ```{r}
-#| echo: false
 #| message: false
 #| warning: false
 trains |>
@@ -165,7 +164,6 @@ trains |>
 The Treated density sits visibly to the right of the Control density, with the two modes offset by a point or two. The shift is real but not enormous; substantial overlap remains. With only 51 Treated and 64 Control commuters, the densities are wobbly --- a density estimator with that few observations smooths heavily, hiding bumps and exaggerating others.
 
 ```{r}
-#| echo: false
 #| message: false
 #| warning: false
 set.seed(7)
@@ -186,7 +184,6 @@ trains |>
 The jitter view shows the individual values without the smoothing the density imposes. The two group means, marked in blue, sit roughly 1.5 points apart on the 3--15 scale --- close to a 10% shift in the scale's full range. Individual scores range from the floor (3) to the ceiling (15) in both groups; the means are nudged apart by a population of treated commuters bunched a bit further up the scale.
 
 ```{r}
-#| echo: false
 #| message: false
 #| warning: false
 trains |>
@@ -497,7 +494,6 @@ Courage rarely settles on its first guess. We try a handful of plausible specifi
 #### Candidate 1: `att_end ~ treatment`
 
 ```{r}
-#| echo: false
 linear_reg() |>
   set_engine("lm") |>
   fit(att_end ~ treatment, data = trains) |>
@@ -514,7 +510,6 @@ The language matters. *"When we compare two commuters differing only in treatmen
 #### Candidate 2: `att_end ~ party`
 
 ```{r}
-#| echo: false
 linear_reg() |>
   set_engine("lm") |>
   fit(att_end ~ party, data = trains) |>
@@ -531,7 +526,6 @@ This is a useful diagnostic but not our model. Party affiliation is not what the
 #### Candidate 3: `att_end ~ treatment + party`
 
 ```{r}
-#| echo: false
 linear_reg() |>
   set_engine("lm") |>
   fit(att_end ~ treatment + party, data = trains) |>
@@ -572,7 +566,6 @@ Three differences from the abstract form. First, the parameters $\beta_0$ and $\
 A sanity check: the distribution of the fitted values should look like the distribution of the actual `att_end`. The two won't match exactly --- the model has only two predicted values (one for each treatment level) while the data has continuous variation --- but the gross shape and central tendency should be close.
 
 ```{r}
-#| echo: false
 #| message: false
 #| warning: false
 fitted_df <- tibble(
@@ -614,7 +607,6 @@ knitr::include_graphics("other/images/Temperance.jpg")
 ### The primary (causal) reading
 
 ```{r}
-#| echo: false
 plot_predictions(fit_att, condition = "treatment", draw = FALSE) |>
   ggplot(aes(x = treatment, y = estimate)) +
   geom_pointrange(aes(ymin = conf.low, ymax = conf.high),
@@ -671,7 +663,6 @@ Third, *the world is always more uncertain than our models would have us believe
 ## Summary
 
 ```{r}
-#| echo: false
 #| message: false
 #| warning: false
 plot_predictions(fit_att, condition = "treatment", draw = FALSE) |>

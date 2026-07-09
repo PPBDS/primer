@@ -116,7 +116,6 @@ The Preceptor Table here is as small as they come: one unit column, one three-va
 Before fitting a model, look at the data. *You can never look too closely at your data* --- the hour spent on a careful EDA almost always saves a day downstream.
 
 ```{r}
-#| echo: false
 #| message: false
 #| warning: false
 nes_92 |>
@@ -141,7 +140,6 @@ nes_92 |>
 The sample's three-way split — 48% Clinton, 34% Bush, 18% Perot — sits noticeably to Clinton's advantage relative to the certified popular vote (43.0 / 37.4 / 18.9). Part of that gap is sampling noise; part of it is the winner-drift in recalled vote that the ANES background section described. The Perot share, interestingly, survives almost intact: whatever social pressures push recalled votes around, admitting a Perot vote seems not to have embarrassed anyone.
 
 ```{r}
-#| echo: false
 #| message: false
 #| warning: false
 nes_92 |>
@@ -165,7 +163,6 @@ nes_92 |>
 The raw shares already sketch the answer to our question. Women split 52.5% Clinton / 33.3% Bush / 14.2% Perot; men split 42.5% / 34.8% / 22.6%. The 1992 gender gap, in this data, barely runs through the two major parties' relative standing --- the Bush share differs by little more than a point --- and instead runs through *Perot versus Clinton*: men reported voting for Perot at half again the rate women did, and those Perot votes came, arithmetically, out of the Clinton column.
 
 ```{r}
-#| echo: false
 #| message: false
 #| warning: false
 nes_92 |>
@@ -491,7 +488,6 @@ With a single covariate available, the candidate set is short: the intercept-onl
 #### Candidate 1: `pres_vote ~ 1`
 
 ```{r}
-#| echo: false
 #| message: false
 #| warning: false
 multinom_reg(engine = "nnet") |>
@@ -507,7 +503,6 @@ Even the intercept-only multinomial model has two parameters, because everything
 #### Candidate 2: `pres_vote ~ sex`
 
 ```{r}
-#| echo: false
 #| message: false
 #| warning: false
 multinom_reg(engine = "nnet") |>
@@ -548,7 +543,6 @@ $$\log\!\left[\frac{P(\text{Clinton})}{P(\text{Bush})}\right] = 0.455 - 0.255 \c
 For most models in this book we run a posterior predictive check with `easystats::check_predictions()`, comparing outcomes simulated from the fitted model against the outcomes we observed. That function does not support `nnet` multinomial fits (there is no `simulate()` method for them), so we make the comparison by hand: the model's predicted vote shares against the observed shares, by sex.
 
 ```{r}
-#| echo: false
 #| message: false
 #| warning: false
 observed <- nes_92 |>
@@ -600,7 +594,6 @@ knitr::include_graphics("other/images/Temperance.jpg")
 ### The primary (predictive) reading
 
 ```{r}
-#| echo: false
 #| message: false
 #| warning: false
 predictions(extract_fit_engine(fit_nes),
@@ -666,7 +659,6 @@ Third, *the world is always more uncertain than our models would have us believe
 ## Summary
 
 ```{r}
-#| echo: false
 #| message: false
 #| warning: false
 predictions(extract_fit_engine(fit_nes),

@@ -138,7 +138,6 @@ The Preceptor Table commits us to *exactly one* covariate column (`Tuition`) bey
 Before fitting a model, look at the data. *You can never look too closely at your data* --- the hour spent on a careful EDA almost always saves a day downstream.
 
 ```{r}
-#| echo: false
 #| message: false
 #| warning: false
 colleges |>
@@ -162,7 +161,6 @@ colleges |>
 Graduation rates span essentially the full range from about 10% to 98%, with a long lower tail and a softer right-side concentration around 60--80%. The distribution is plainly not normal --- it has a left skew and the bounded support shows up as boundary effects --- but with several hundred observations the linear-regression machinery is robust enough to be useful, and the headline question is about a difference of means rather than about extreme percentiles.
 
 ```{r}
-#| echo: false
 #| message: false
 #| warning: false
 colleges |>
@@ -186,7 +184,6 @@ colleges |>
 Graduation rate slopes upward with tuition --- the unconditional bivariate relationship the headline question concerns. A linear smooth fit through the cloud of points has slope of roughly 16 percentage points per $10,000 of tuition. The cloud is noisy, with substantial spread around the line; many high-tuition colleges have modest graduation rates and many moderate-tuition colleges have high ones. The relationship is real, but tuition explains only a portion of the across-college variation.
 
 ```{r}
-#| echo: false
 #| message: false
 #| warning: false
 colleges |>
@@ -513,7 +510,6 @@ Courage rarely settles on its first guess. We try a handful of plausible specifi
 #### Candidate 1: `grad_rate ~ tuition`
 
 ```{r}
-#| echo: false
 linear_reg() |>
   set_engine("lm") |>
   fit(grad_rate ~ tuition, data = x) |>
@@ -530,7 +526,6 @@ The slope is large because it absorbs all the confounding between tuition and se
 #### Candidate 2: `grad_rate ~ selectivity`
 
 ```{r}
-#| echo: false
 linear_reg() |>
   set_engine("lm") |>
   fit(grad_rate ~ selectivity, data = x) |>
@@ -547,7 +542,6 @@ This is useful as a diagnostic --- selectivity is doing most of the work --- but
 #### Candidate 3: `grad_rate ~ tuition + selectivity`
 
 ```{r}
-#| echo: false
 linear_reg() |>
   set_engine("lm") |>
   fit(grad_rate ~ tuition + selectivity, data = x) |>
@@ -598,7 +592,6 @@ Each of `Highly Selective`, `Moderately Selective`, `Lowly Selective`, and `Non-
 A sanity check: the distribution of fitted values should look broadly like the distribution of actual `grad_rate`. We do not expect a perfect match --- the model is parametric and the actual distribution has a long left tail and floor/ceiling effects --- but the gross shape should be close.
 
 ```{r}
-#| echo: false
 #| message: false
 #| warning: false
 fitted_df <- tibble(
@@ -641,7 +634,6 @@ knitr::include_graphics("other/images/Temperance.jpg")
 ### The primary (predictive) reading
 
 ```{r}
-#| echo: false
 #| message: false
 #| warning: false
 plot_predictions(fit_colleges,
@@ -708,7 +700,6 @@ Third, *the world is always more uncertain than our models would have us believe
 ## Summary
 
 ```{r}
-#| echo: false
 #| message: false
 #| warning: false
 plot_predictions(fit_colleges,

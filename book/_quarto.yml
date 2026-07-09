@@ -36,10 +36,8 @@ book:
     - set-up.qmd
 format:
   html:
-    code-fold: false
+    code-fold: true
     code-summary: "Show the code"
     theme: cosmo
     code-link: true
     code-overflow: wrap
-execute:
-  echo: false

@@ -163,7 +163,6 @@ cat("```{=html}\n",
 Before fitting a model, look at the data. *You can never look too closely at your data* --- the hour spent on a careful EDA almost always saves a day downstream.
 
 ```{r}
-#| echo: false
 #| message: false
 #| warning: false
 x |>
@@ -188,7 +187,6 @@ x |>
 The raw turnout shares by treatment, computed across all 344,000 voters and ignoring voter class: No Postcard 29.7%, Civic Duty 31.5%, Hawthorne 32.2%, Self 34.5%, Neighbors 37.8%. The monotonic pattern --- escalating social-pressure intensity produces escalating turnout --- is visible directly in the raw data; no model is needed to see the basic shape. Neighbors is about 8 percentage points above No Postcard; Self is about 5; Hawthorne and Civic Duty are 2--3. The model's job is to refine these estimates, hold demographic covariates constant, and produce confidence intervals --- not to discover the headline pattern.
 
 ```{r}
-#| echo: false
 #| message: false
 #| warning: false
 x |>
@@ -213,7 +211,6 @@ x |>
 Faceting by voter class reveals the heterogeneity that motivates the chapter's interaction structure. *Always Vote* voters have a baseline turnout near 46% in the control arm and rise toward 55% with Neighbors --- a 9-percentage-point lift. *Sometimes Vote* voters rise from 28% to 36% with Neighbors --- an 8-percentage-point lift. *Rarely Vote* voters rise from 12% to 17% with Neighbors --- about a 5-percentage-point lift (and a much smaller share of them are reached, in absolute terms). The lift is largest for voters who already had a habit of voting; the postcard is, in essence, an extra nudge that pushes a near-decided voter over the line. For voters who rarely show up, the postcard helps but cannot manufacture a habit on its own.
 
 ```{r}
-#| echo: false
 #| message: false
 #| warning: false
 x |>
@@ -400,7 +397,6 @@ We try a handful of plausible specifications, see what each says, and commit to 
 #### Candidate 1: `voted ~ treatment`
 
 ```{r}
-#| echo: false
 logistic_reg(engine = "glm") |>
   fit(voted ~ treatment, data = x) |>
   tidy(conf.int = TRUE) |>
@@ -416,7 +412,6 @@ The treatment-only model is good enough for the headline number but misses the h
 #### Candidate 2: `voted ~ age + sex + treatment`
 
 ```{r}
-#| echo: false
 logistic_reg(engine = "glm") |>
   fit(voted ~ age + sex + treatment, data = x) |>
   tidy(conf.int = TRUE) |>
@@ -432,7 +427,6 @@ This is the right adjustment for *precision* (the standard errors of the treatme
 #### Candidate 3: `voted ~ age + sex + treatment*voter_class`
 
 ```{r}
-#| echo: false
 logistic_reg(engine = "glm") |>
   fit(voted ~ age + sex + treatment*voter_class, data = x) |>
   tidy(conf.int = TRUE) |>
@@ -467,7 +461,6 @@ with the sums running over the four non-reference treatment arms and the two non
 For a binary outcome model with multi-arm treatment and an interaction, the simplest sanity check is to compare the model's predicted turnout by (treatment, voter_class) to the *raw* turnout by the same cells. The model imposes a logistic functional form on the relationship; if it fits, predicted and observed should agree.
 
 ```{r}
-#| echo: false
 #| message: false
 #| warning: false
 fit_eng <- extract_fit_engine(fit_shaming)
@@ -515,7 +508,6 @@ knitr::include_graphics("other/images/Temperance.jpg")
 ### The primary (causal) reading
 
 ```{r}
-#| echo: false
 #| message: false
 #| warning: false
 fit_eng <- extract_fit_engine(fit_shaming)
@@ -585,7 +577,6 @@ Third, *the world is always more uncertain than our models would have us believe
 ## Summary
 
 ```{r}
-#| echo: false
 #| message: false
 #| warning: false
 fit_eng <- extract_fit_engine(fit_shaming)

@@ -231,6 +231,7 @@ Sadly, in the real world, we almost never have a complete Preceptor Table with n
 
 
 ```{r}
+#| echo: false
 tibble(ID = c("Student 11", "Student 32", "Student 47", "Student 68",
               "Student 425", "Student 436", "Student 570"),
        Heights = c("160", "189",  "172", "170",  "175", "162",  "188")) |>
@@ -358,6 +359,7 @@ We started with some questions about the height of New College students. We crea
 Predictive models are flexible enough to cover a wide range of questions. For example, @enos2014 measured attitudes toward immigration among Boston commuters. Individuals were exposed to one of two possible conditions, and then their attitudes towards immigrants were recorded. One condition was waiting on a train platform near individuals speaking Spanish. The other was being on a train platform without Spanish-speakers. 
 
 ```{r}
+#| echo: false
 #| fig.cap: This study, which shows the impact of exposure to Spanish-speaking individuals
 #|   on attitudes towards immigration, was conducted by Ryan Enos.
 knitr::include_graphics("rubin-causal-model/images/enos_seal.png")
@@ -572,6 +574,7 @@ cat("```{=html}\n",
 Remember that, in the real world, we will have a bunch of missing data! We can not use simple arithmetic to calculate the causal effect on Yao's attitude toward immigration. Instead, we will be required to estimate it. An **estimand** is some unknown variable in the real world that we are trying to measure. In this case, it is $Y_{t}-Y_{c}$, not $+4$. An estimand is not the *value* you calculated, but is rather the *unknown variable* you want to estimate.
 
 ```{r}
+#| echo: false
 #| fig.cap: Don Rubin was a Professor of Statistics at Harvard.
 knitr::include_graphics("rubin-causal-model/images/don_rubin.jpg")
 ```
@@ -679,6 +682,7 @@ From this Preceptor Table, there are many possible estimands we might be interes
 Similar concepts can also be applied to the Population Table:
 
 ```{r}
+#| echo: false
 #| results: asis
 rcm_pop_yao_tibble <- tibble::tribble(
   ~Source           , ~ID       , ~Year , ~`$Y_t(u)$`, ~`$Y_c(u)$`, ~`$Y_t(u) - Y_c(u)$`,
@@ -747,6 +751,7 @@ See: https://stackoverflow.com/questions/65835639/arrange-gt-tables-side-by-side
 
 
 ```{r}
+#| echo: false
 #| results: asis
 
 rcm_pt_causal_yao_tibble <- tibble::tribble(
@@ -795,6 +800,7 @@ cat("```{=html}\n",
 ```
 
 ```{r}
+#| echo: false
 #| results: asis
 
 rcm_pt_pred_yao_tibble <- tibble::tribble(
@@ -851,6 +857,7 @@ Recall that the Population Table is constructed from three sources: the Precepto
 <!-- Seems like we should add ID and time columns, place them toward the left and then put year there. Year is *not* just another covariate. -->
 
 ```{r}
+#| echo: false
 #| results: asis
 
 rcm_pop_assumptions_tibble <- tibble::tribble(
@@ -958,6 +965,7 @@ Consider the "Perfect Doctor" as an example of the problems caused by confounded
 <!-- DK: Blood pressue numbers be changes so that, in the range of these numbers, lower is better. Some of them are too low, I think. -->
 
 ```{r}
+#| echo: false
 #| results: asis
 
 rcm_holy_grail_tibble <- tibble::tribble(
@@ -1011,6 +1019,7 @@ The Perfect Doctor would assign the treatment to Emma, Cassidy and Tahmid. She w
 We, the non-Perfect Doctors, do not have access to the entire Preceptor Table. We can only see this:
 
 ```{r}
+#| echo: false
 #| results: asis
 
 rcm_skewed_grail_tibble <- tibble::tribble(
@@ -1076,6 +1085,7 @@ One model might be that the causal effect is the same for everyone. There is a s
 Remember what our Preceptor Table looks like with all of the missing data:
 
 ```{r}
+#| echo: false
 # First, we create a tibble with the values we want for the table
 
 tibble(subject = c("Yao", "Emma", "Cassidy", "Tahmid", "Diego"),
@@ -1108,6 +1118,7 @@ If we assume $\tau$ is the treatment effect for everyone, how do we fill in the 
 Assuming there is a constant treatment effect, $\tau$, for everyone, filling in the missing values would look like this:
 
 ```{r}
+#| echo: false
 # First, we create a tibble with the values we want for the table
 
 tibble(subject = c("Yao", "Emma", "Cassidy", "Tahmid", "Diego"),
@@ -1146,6 +1157,7 @@ $\Sigma$ represents the sum of the outcomes under treatment or control, with $n_
 Continuing with the example, calculating the ATE or the causal effect, gives us an estimate of $+1$ for $\tau$. Let's fill in our missing values by adding $\tau$ to the observed values under control and by subtracting $\tau$ from the observed value under treatment like so:
 
 ```{r}
+#| echo: false
 # First, we create a tibble with the values we want for the table
 
 tibble(subject = c("Yao", "Emma", "Cassidy", "Tahmid", "Diego"),
@@ -1176,6 +1188,7 @@ tibble(subject = c("Yao", "Emma", "Cassidy", "Tahmid", "Diego"),
 Which gives us:
 
 ```{r}
+#| echo: false
 # First, we create a tibble with the values we want for the table
 
 tibble(subject = c("Yao", "Emma", "Cassidy", "Tahmid", "Diego"),
@@ -1216,6 +1229,7 @@ A covariate is any variable outside of the (potential) outcomes. In this case, p
 <!-- Not sure that I like this table. Also, maybe introduce the notion of covariates in a predictive context first. Knowing sex helps to predict Yao's attitude toward immigration, regardless of causal effects. -->
 
 ```{r}
+#| echo: false
 # First, we create a tibble with the values we want for the table
 
 tibble(subject = c("Yao", "Emma", "Cassidy", "Tahmid", "Diego"),
@@ -1250,6 +1264,7 @@ Our estimate for $\tau_M$ would be $$(13+3)/2 - 12 = -4$$ while that for $\tau_F
 Using those values, we would fill out our new table like this:
 
 ```{r}
+#| echo: false
 # First, we create a tibble with the values we want for the table
 
 tibble(subject = c("Yao", "Emma", "Cassidy", "Tahmid", "Diego"),
@@ -1282,6 +1297,7 @@ Which gives us:
 <!-- Y_c for Yao can't be 17! Biggest value is 15. Change it or discuss it. -->
 
 ```{r}
+#| echo: false
 # First, we create a tibble with the values we want for the table
 
 tibble(subject = c("Yao", "Emma", "Cassidy", "Tahmid", "Diego"),
@@ -1318,6 +1334,7 @@ Is the assumption of a constant treatment effect, $\tau$, usually true? No! It i
 Reality looks like this:
 
 ```{r}
+#| echo: false
 # First, we create a tibble with the values we want for the table
 
 tibble(subject = c("Yao", "Emma", "Cassidy", "Tahmid", "Diego"),
@@ -1372,6 +1389,7 @@ Consider point #3. For example, let's say the treatment effect does vary depende
 Estimating the average treatment effect, by calculating $\widehat{ATE}$, is easy. But is our $\widehat{ATE}$ a good estimate of the actual ATE? After all, if we knew all the missing values in the Preceptor Table, we could calculate the ATE perfectly. But those missing values may be wildly different from the observed values. Consider this Preceptor Table:
 
 ```{r}
+#| echo: false
 # First, we create a tibble with the values we want for the table
 
 tibble(subject = c("Yao", "Emma", "Cassidy", "Tahmid", "Diego"),
