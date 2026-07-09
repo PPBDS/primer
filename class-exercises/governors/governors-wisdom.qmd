@@ -11,8 +11,6 @@ execute:
 #| message: false
 
 library(tidyverse)
-library(tidymodels)
-library(marginaleffects)
 
 governors <- read_csv("data/governors.csv", show_col_types = FALSE)
 ```

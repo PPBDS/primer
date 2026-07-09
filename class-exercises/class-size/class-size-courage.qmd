@@ -12,8 +12,6 @@ execute:
 
 library(tidyverse)
 library(tidymodels)
-library(marginaleffects)
-library(gt)
 library(broom)
 library(easystats)
 
@@ -30,26 +28,6 @@ star <- read_csv("data/class-size.csv", show_col_types = FALSE) |>
                        `5` = "Others",
                        `6` = "Others")) |>
   select(g4math, kind, race, yearssmall)
-
-# Render a gt table: live HTML table in HTML output; in PDF output, a
-# high-resolution snapshot, because LaTeX conversion loses gt's styling
-# (bold spanners, the counterfactual cross-hatch, spacing).
-show_gt <- function(gt_tbl) {
-  if (knitr::is_html_output()) {
-    cat("```{=html}\n",
-        '<div style="display: inline-block; width: auto; max-width: 100%;">',
-        gt::as_raw_html(gt_tbl),
-        "</div>\n```\n", sep = "")
-  } else {
-    f <- knitr::fig_path("png")
-    dir.create(dirname(f), recursive = TRUE, showWarnings = FALSE)
-    invisible(capture.output(suppressMessages(gt::gtsave(gt_tbl, f, zoom = 2))))
-    w <- min(6.5, dim(png::readPNG(f))[2] / 2 / 96)
-    cat("\\begin{center}\\includegraphics[width=", w,
-        "in]{", f, "}\\end{center}\n", sep = "")
-  }
-}
-
 ```
 
 ## The Question
@@ -68,437 +46,45 @@ The Texas Department of Education asks: What is the average causal effect of ass
 
 Note that we use the same data, and the same fitted model, to help both people.
 
-The Wisdom and Justice sections below are filled in with our answers, so you begin today with correct answers to everything that has gone before. Today's work is the Courage section.
-
-## Wisdom
-
-### Preceptor Table
-
-**What are the units, outcome, and covariates for your scenario's question?**
-
-- Units:
-
-**Principal:** each row is one student enrolled in her Chicago elementary school next year — a few hundred students.
-
-**Texas Department of Education:** each row is one elementary student in Dallas today — tens of thousands of students.
-
-- Outcomes:
-
-**Principal:** `g4math` — the student's fourth-grade standardized math score. One observed (eventually) outcome per row.
-
-**Texas Department of Education:** three *potential* outcomes per row — the math score if assigned to a small class, if assigned to a regular class, and if assigned to a regular class with an aide.
-
-- Covariates:
-
-**Principal:** class type, race, and years already spent in small classes — all observable today and all predictive.
-
-**Texas Department of Education:** none are forced by the question, though race and years in small classes will earn their way into the model.
-
-- Treatment (if any):
-
-**Principal:** none. This is a predictive model; class type is just another covariate.
-
-**Texas Department of Education:** the class-type assignment — small versus regular versus regular with aide. With three levels, each student has three potential outcomes, and each pairwise contrast is a causal effect.
-
-- Quantity of interest:
-
-**Principal:** the expected math score for each of her students, given their covariates.
-
-**Texas Department of Education:** the average difference between potential outcomes under small and regular assignment.
-
-Describe the key components of a Preceptor Table for your scenario; Use words like "units," "outcomes," and "covariates."
-
-  **Principal:** The Preceptor Table should have one row per student in her school next year. In this exercise, the columns are Student, Math Score, and the covariates Class Type and Race.
-
-  **Texas Department of Education:** The Preceptor Table should have one row per Dallas elementary student. The columns are Student, the three potential outcomes (Score if Small, Score if Regular, Score if Regular with Aide), and the Treatment (Class Assignment).
-
-```{r}
-#| label: preceptor-table-principal
-#| echo: false
-#| results: asis
-
-prin_pre_tibble <- tibble::tribble(
-  ~`Student`,       ~`Math Score`, ~`Class Type`,        ~`Race`,
-  "Maya Johnson",   "715",         "Small",              "Black",
-  "Liam O'Brien",   "692",         "Regular",            "White",
-  "...",            "...",         "...",                "...",
-  "Sofia Ramirez",  "704",         "Regular with aide",  "Others"
-)
-
-prin_pre_title_footnote <- "If all the information in this table were available, we could answer the question: What will be the average fourth-grade math score of the students in my school next year, given their class type and background?"
-prin_pre_units_footnote <- "Each row represents one student enrolled in the principal's Chicago elementary school in the 2027 school year — a few hundred students."
-prin_pre_outcome_footnote <- "Fourth-grade standardized math score, on the Stanford Achievement Test scale used by STAR (scores cluster around 700). For students who have not yet taken the test, the cell holds the true future value, because the Preceptor Table shows the unobservable truth."
-prin_pre_covariate_footnote <- "Class Type takes three values: Small, Regular, or Regular with aide — a covariate here, not a treatment, since the principal is forecasting rather than intervening. Race uses the data's three categories: White, Black, and Others."
-
-prin_pre_html <- gt::gt(prin_pre_tibble, id = "preceptor_principal_tbl") |>
-  gt::tab_header(title = "Preceptor Table --- Principal (predictive)") |>
-  gt::tab_spanner(label = "Unit", id = "unit_span", columns = c(`Student`)) |>
-  gt::tab_spanner(label = "Outcome", id = "outcome_span", columns = c(`Math Score`)) |>
-  gt::tab_spanner(label = "Covariates", id = "covariates_span", columns = c(`Class Type`, `Race`)) |>
-  gt::cols_width(`Student` ~ gt::px(160), `Math Score` ~ gt::px(110), `Class Type` ~ gt::px(150), `Race` ~ gt::px(100)) |>
-  gt::tab_style(style = gt::css(min_width = gt::px(160)),
-                locations = gt::cells_column_labels(columns = c(`Student`))) |>
-  gt::tab_style(style = gt::css(min_width = gt::px(110)),
-                locations = gt::cells_column_labels(columns = c(`Math Score`))) |>
-  gt::tab_style(style = gt::css(min_width = gt::px(150)),
-                locations = gt::cells_column_labels(columns = c(`Class Type`))) |>
-  gt::tab_style(style = gt::css(min_width = gt::px(100)),
-                locations = gt::cells_column_labels(columns = c(`Race`))) |>
-  gt::cols_align(align = "left", columns = c(`Student`, `Class Type`, `Race`)) |>
-  gt::cols_align(align = "right", columns = c(`Math Score`)) |>
-  gt::fmt_markdown(columns = gt::everything()) |>
-  gt::tab_options(
-    heading.title.font.size = "1.5em",
-    heading.title.font.weight = "bolder",
-    column_labels.font.weight = "normal"
-  ) |>
-  gt::tab_style(style = gt::cell_text(weight = "bold"),
-                locations = gt::cells_column_spanners()) |>
-  gt::tab_style(style = gt::cell_text(align = "left"),
-                locations = gt::cells_column_spanners(spanners = c("unit_span", "covariates_span"))) |>
-  gt::tab_style(style = gt::cell_text(align = "right"),
-                locations = gt::cells_column_spanners(spanners = "outcome_span")) |>
-  gt::tab_footnote(footnote = prin_pre_title_footnote, locations = gt::cells_title()) |>
-  gt::tab_footnote(footnote = prin_pre_units_footnote, locations = gt::cells_column_spanners(spanners = "unit_span")) |>
-  gt::tab_footnote(footnote = prin_pre_outcome_footnote, locations = gt::cells_column_spanners(spanners = "outcome_span")) |>
-  gt::tab_footnote(footnote = prin_pre_covariate_footnote, locations = gt::cells_column_spanners(spanners = "covariates_span")) |>
-  gt::opt_css(css = "#preceptor_principal_tbl .gt_footnote { max-width: 1px; word-break: break-word; }")
-
-show_gt(prin_pre_html)
-```
-
-```{r}
-#| label: preceptor-table-doe
-#| echo: false
-#| results: asis
-
-hatch <- function(x) {
-  paste0(
-    '<span style="background-image: repeating-linear-gradient(',
-    '45deg, rgba(0,0,0,0.12) 0 1px, transparent 1px 6px);',
-    ' padding: 6px 10px; margin: -6px -10px; display: block;">',
-    x,
-    '</span>'
-  )
-}
-
-doe_pre_tibble <- tibble::tribble(
-  ~`Student`,        ~`Score if Small`, ~`Score if Regular`, ~`Score if Regular with Aide`, ~`Class Assignment`,
-  "Ethan Williams",  "712",             "705",               "707",                         "Small",
-  "Ava Martinez",    "703",             "698",               "700",                         "Regular",
-  "...",             "...",             "...",               "...",                         "...",
-  "Noah Thompson",   "721",             "716",               "718",                         "Regular with aide"
-)
-
-doe_pre_title_footnote <- "If all the information in this table were available, we could answer the question: What is the average causal effect of assigning a Dallas student to a small class, rather than a regular class, on their fourth-grade math score?"
-doe_pre_units_footnote <- "Each row represents one elementary student in Dallas today — tens of thousands of students."
-doe_pre_outcome_footnote <- "The three potential outcomes: the student's fourth-grade math score under each possible class assignment. With a three-level treatment, each student has two unobservable potential outcomes — the cross-hatched cells — because the student actually experienced only one assignment."
-doe_pre_treatment_footnote <- "The class-type assignment: Small (13-17 students), Regular (22-25), or Regular with aide. This is the variable whose causal effect the question is about."
-
-doe_pre_html <- gt::gt(doe_pre_tibble, id = "preceptor_doe_tbl") |>
-  gt::tab_header(title = "Preceptor Table --- Texas Department of Education (causal)") |>
-  gt::tab_spanner(label = "Unit", id = "unit_span", columns = c(`Student`)) |>
-  gt::tab_spanner(label = "Potential Outcomes", id = "outcome_span",
-                  columns = c(`Score if Small`, `Score if Regular`, `Score if Regular with Aide`)) |>
-  gt::tab_spanner(label = "Treatment", id = "treatment_span", columns = c(`Class Assignment`)) |>
-  gt::cols_width(`Student` ~ gt::px(160), `Score if Small` ~ gt::px(110), `Score if Regular` ~ gt::px(110), `Score if Regular with Aide` ~ gt::px(140), `Class Assignment` ~ gt::px(150)) |>
-  gt::tab_style(style = gt::css(min_width = gt::px(160)),
-                locations = gt::cells_column_labels(columns = c(`Student`))) |>
-  gt::tab_style(style = gt::css(min_width = gt::px(110)),
-                locations = gt::cells_column_labels(columns = c(`Score if Small`))) |>
-  gt::tab_style(style = gt::css(min_width = gt::px(110)),
-                locations = gt::cells_column_labels(columns = c(`Score if Regular`))) |>
-  gt::tab_style(style = gt::css(min_width = gt::px(140)),
-                locations = gt::cells_column_labels(columns = c(`Score if Regular with Aide`))) |>
-  gt::tab_style(style = gt::css(min_width = gt::px(150)),
-                locations = gt::cells_column_labels(columns = c(`Class Assignment`))) |>
-  gt::cols_align(align = "left", columns = c(`Student`, `Class Assignment`)) |>
-  gt::cols_align(align = "right", columns = c(`Score if Small`, `Score if Regular`, `Score if Regular with Aide`)) |>
-  gt::fmt_markdown(columns = gt::everything()) |>
-  gt::tab_options(
-    heading.title.font.size = "1.5em",
-    heading.title.font.weight = "bolder",
-    column_labels.font.weight = "normal"
-  ) |>
-  gt::tab_style(style = gt::cell_text(weight = "bold"),
-                locations = gt::cells_column_spanners()) |>
-  gt::tab_style(style = gt::cell_text(align = "left"),
-                locations = gt::cells_column_spanners(spanners = c("unit_span", "treatment_span"))) |>
-  gt::tab_style(style = gt::cell_text(align = "right"),
-                locations = gt::cells_column_spanners(spanners = "outcome_span")) |>
-  gt::text_transform(
-    locations = gt::cells_body(columns = `Score if Small`, rows = c(2, 4)),
-    fn = function(x) hatch(x)
-  ) |>
-  gt::text_transform(
-    locations = gt::cells_body(columns = `Score if Regular`, rows = c(1, 4)),
-    fn = function(x) hatch(x)
-  ) |>
-  gt::text_transform(
-    locations = gt::cells_body(columns = `Score if Regular with Aide`, rows = c(1, 2)),
-    fn = function(x) hatch(x)
-  ) |>
-  gt::tab_footnote(footnote = doe_pre_title_footnote, locations = gt::cells_title()) |>
-  gt::tab_footnote(footnote = doe_pre_units_footnote, locations = gt::cells_column_spanners(spanners = "unit_span")) |>
-  gt::tab_footnote(footnote = doe_pre_outcome_footnote, locations = gt::cells_column_spanners(spanners = "outcome_span")) |>
-  gt::tab_footnote(footnote = doe_pre_treatment_footnote, locations = gt::cells_column_spanners(spanners = "treatment_span")) |>
-  gt::opt_css(css = "#preceptor_doe_tbl .gt_footnote { max-width: 1px; word-break: break-word; }")
-
-show_gt(doe_pre_html)
-```
-
-### Exploratory Data Analysis
-
-Create a plot that shows the distribution of `g4math`.
-
-```{r}
-#| label: eda-g4math-distribution
-#| echo: true
-
-scored <- star |> filter(!is.na(g4math))
-
-scored |>
-  ggplot(aes(x = g4math)) +
-  geom_histogram(bins = 30, fill = "steelblue", color = "white") +
-  labs(
-    title = "Fourth-Grade Math Scores",
-    subtitle = "Scores cluster around 700 -- and most students have no score at all",
-    x = "Fourth-grade math score",
-    y = "Number of students"
-  ) +
-  theme_minimal()
-```
-
-Scores are roughly bell-shaped around 709 — but the subtitle carries the real news: fewer than 40% of the students in the experiment have a fourth-grade math score recorded. Before trusting any model, we need to know whether that missingness is related to anything we care about; reassuringly, the share missing is nearly identical — about 62% — in all three class types, though balance cannot rule out bias if the *kinds* of students who go missing differ.
-
-Create a plot that shows the relationship between `g4math` and class type.
-
-```{r}
-#| label: eda-g4math-kind-boxplot
-#| echo: true
-
-scored |>
-  ggplot(aes(x = kind, y = g4math, fill = kind)) +
-  geom_boxplot(width = 0.5, alpha = 0.7, show.legend = FALSE) +
-  labs(
-    title = "Math Scores by Class Type: Boxplot",
-    subtitle = "The three class types look almost identical",
-    x = "Class type",
-    y = "Fourth-grade math score"
-  ) +
-  theme_minimal()
-```
-
-The three class types are visually indistinguishable. If small classes help fourth-grade math, the effect is too small to see with the naked eye — a useful calibration before the modeling in Courage.
-
-------------------------------------------------------------------------
-
-## Justice
-
-### Population Table
-
-Describe the key components of a Population Table for your scenario.
-
-  **Principal:** One row per student per school year, drawn from the population of US elementary students from roughly 1985 to 2030. The Data rows are Tennessee STAR students from 1985; the Preceptor rows are her Chicago students in 2027. The columns are Source, Student, Year, Math Score, Class Type, and Race.
-
-  **Texas Department of Education:** One row per student per school year, drawn from the same population, with the causal structure explicit. The columns are Source, Student, Year, the three potential outcomes, and the Treatment.
-
-```{r}
-#| label: population-table-principal
-#| echo: false
-#| results: asis
-
-prin_pop_tibble <- tibble::tribble(
-  ~Source,     ~`Student`,         ~`Year`, ~`Math Score`, ~`Class Type`,       ~`Race`,
-  "...",       "...",              "...",   "...",         "...",               "...",
-  "Data",      "Dorothy Baker",    "1985",  "704",         "Small",             "White",
-  "Data",      "James Whitfield",  "1985",  "691",         "Regular",           "Black",
-  "Data",      "...",              "...",   "...",         "...",               "...",
-  "Data",      "Angela Foster",    "1985",  "715",         "Regular with aide", "White",
-  "...",       "...",              "...",   "...",         "...",               "...",
-  "Preceptor", "Maya Johnson",     "2027",  "715",         "Small",             "Black",
-  "Preceptor", "Liam O'Brien",     "2027",  "692",         "Regular",           "White",
-  "Preceptor", "...",              "...",   "...",         "...",               "...",
-  "Preceptor", "Sofia Ramirez",    "2027",  "704",         "Regular with aide", "Others",
-  "...",       "...",              "...",   "...",         "...",               "..."
-)
-
-prin_pop_title_footnote <- "This table combines the Tennessee STAR data with the principal's 2027 Chicago students, both drawn from the population of US elementary students from roughly 1985 to 2030."
-prin_pop_units_footnote <- "Data rows are 6,325 students who entered the STAR experiment in Tennessee schools in 1985. Preceptor rows are the principal's Chicago students in the 2027 school year. The four-decade and geographic gaps are what the assumptions must bridge."
-prin_pop_outcome_footnote <- "Fourth-grade math score on the Stanford Achievement Test. In the data, about 62% of students are missing this score — a first-order concern, since the model can learn only from students who were tested."
-prin_pop_covariate_footnote <- "Class Type in the data was randomly assigned at school entry; in the Preceptor rows it is whatever class the school gives each student. Race uses the data's coding: White, Black, and Others (a small category combining all other groups)."
-
-prin_pop_html <- gt::gt(prin_pop_tibble, id = "population_principal_tbl") |>
-  gt::tab_header(title = "Population Table --- Principal (predictive)") |>
-  gt::tab_spanner(label = "Unit/Time", id = "unit_span", columns = c(`Student`, `Year`)) |>
-  gt::tab_spanner(label = "Outcome", id = "outcome_span", columns = c(`Math Score`)) |>
-  gt::tab_spanner(label = "Covariates", id = "covariates_span", columns = c(`Class Type`, `Race`)) |>
-  gt::cols_width(`Source` ~ gt::px(110), `Student` ~ gt::px(160), `Year` ~ gt::px(80), `Math Score` ~ gt::px(110), `Class Type` ~ gt::px(150), `Race` ~ gt::px(100)) |>
-  gt::tab_style(style = gt::css(min_width = gt::px(110)),
-                locations = gt::cells_column_labels(columns = c(`Source`))) |>
-  gt::tab_style(style = gt::css(min_width = gt::px(160)),
-                locations = gt::cells_column_labels(columns = c(`Student`))) |>
-  gt::tab_style(style = gt::css(min_width = gt::px(80)),
-                locations = gt::cells_column_labels(columns = c(`Year`))) |>
-  gt::tab_style(style = gt::css(min_width = gt::px(110)),
-                locations = gt::cells_column_labels(columns = c(`Math Score`))) |>
-  gt::tab_style(style = gt::css(min_width = gt::px(150)),
-                locations = gt::cells_column_labels(columns = c(`Class Type`))) |>
-  gt::tab_style(style = gt::css(min_width = gt::px(100)),
-                locations = gt::cells_column_labels(columns = c(`Race`))) |>
-  gt::cols_align(align = "left", columns = c(`Source`, `Student`, `Class Type`, `Race`)) |>
-  gt::cols_align(align = "right", columns = c(`Year`, `Math Score`)) |>
-  gt::fmt_markdown(columns = gt::everything()) |>
-  gt::tab_options(
-    heading.title.font.size = "1.5em",
-    heading.title.font.weight = "bolder",
-    column_labels.font.weight = "normal"
-  ) |>
-  gt::tab_style(style = gt::cell_text(weight = "bold"),
-                locations = gt::cells_column_spanners()) |>
-  gt::tab_style(style = gt::cell_text(align = "left"),
-                locations = gt::cells_column_spanners(spanners = c("unit_span", "covariates_span"))) |>
-  gt::tab_style(style = gt::cell_text(align = "right"),
-                locations = gt::cells_column_spanners(spanners = "outcome_span")) |>
-  gt::tab_footnote(footnote = prin_pop_title_footnote, locations = gt::cells_title()) |>
-  gt::tab_footnote(footnote = prin_pop_units_footnote, locations = gt::cells_column_spanners(spanners = "unit_span")) |>
-  gt::tab_footnote(footnote = prin_pop_outcome_footnote, locations = gt::cells_column_spanners(spanners = "outcome_span")) |>
-  gt::tab_footnote(footnote = prin_pop_covariate_footnote, locations = gt::cells_column_spanners(spanners = "covariates_span")) |>
-  gt::opt_css(css = "#population_principal_tbl .gt_footnote { max-width: 1px; word-break: break-word; }")
-
-show_gt(prin_pop_html)
-```
-
-```{r}
-#| label: population-table-doe
-#| echo: false
-#| results: asis
-
-doe_pop_tibble <- tibble::tribble(
-  ~Source,     ~`Student`,         ~`Year`, ~`Score if Small`, ~`Score if Regular`, ~`Score if Regular with Aide`, ~`Class Assignment`,
-  "...",       "...",              "...",   "...",             "...",               "...",                         "...",
-  "Data",      "Dorothy Baker",    "1985",  "704",             "...",               "...",                         "Small",
-  "Data",      "James Whitfield",  "1985",  "...",             "691",               "...",                         "Regular",
-  "Data",      "...",              "...",   "...",             "...",               "...",                         "...",
-  "Data",      "Angela Foster",    "1985",  "...",             "...",               "715",                         "Regular with aide",
-  "...",       "...",              "...",   "...",             "...",               "...",                         "...",
-  "Preceptor", "Ethan Williams",   "2026",  "712",             "705",               "707",                         "Small",
-  "Preceptor", "Ava Martinez",     "2026",  "703",             "698",               "700",                         "Regular",
-  "Preceptor", "...",              "...",   "...",             "...",               "...",                         "...",
-  "Preceptor", "Noah Thompson",    "2026",  "721",             "716",               "718",                         "Regular with aide",
-  "...",       "...",              "...",   "...",             "...",               "...",                         "..."
-)
-
-doe_pop_title_footnote <- "This table combines the Tennessee STAR data with the Texas Department of Education's Dallas students today, both drawn from the population of US elementary students from roughly 1985 to 2030."
-doe_pop_units_footnote <- "Data rows are STAR students in Tennessee, 1985. Preceptor rows are Dallas elementary students in 2026. The gaps of four decades and two states are the stability and representativeness concerns."
-doe_pop_outcome_footnote <- "In Data rows, only the potential outcome matching the student's actual assignment was observed; the other two are shown as '...' because no one measured them. In Preceptor rows, all three potential outcomes are filled in with the truth, and the two unobservable ones are cross-hatched."
-doe_pop_treatment_footnote <- "In Data rows, class assignment was randomized by the experimenters at school entry — the basis for unconfoundedness. In Preceptor rows, it is whatever assignment Dallas schools would give, which nothing guarantees to be random."
-
-doe_pop_html <- gt::gt(doe_pop_tibble, id = "population_doe_tbl") |>
-  gt::tab_header(title = "Population Table --- Texas Department of Education (causal)") |>
-  gt::tab_spanner(label = "Unit/Time", id = "unit_span", columns = c(`Student`, `Year`)) |>
-  gt::tab_spanner(label = "Potential Outcomes", id = "outcome_span",
-                  columns = c(`Score if Small`, `Score if Regular`, `Score if Regular with Aide`)) |>
-  gt::tab_spanner(label = "Treatment", id = "treatment_span", columns = c(`Class Assignment`)) |>
-  gt::cols_width(`Source` ~ gt::px(110), `Student` ~ gt::px(160), `Year` ~ gt::px(80), `Score if Small` ~ gt::px(110), `Score if Regular` ~ gt::px(110), `Score if Regular with Aide` ~ gt::px(140), `Class Assignment` ~ gt::px(150)) |>
-  gt::tab_style(style = gt::css(min_width = gt::px(110)),
-                locations = gt::cells_column_labels(columns = c(`Source`))) |>
-  gt::tab_style(style = gt::css(min_width = gt::px(160)),
-                locations = gt::cells_column_labels(columns = c(`Student`))) |>
-  gt::tab_style(style = gt::css(min_width = gt::px(80)),
-                locations = gt::cells_column_labels(columns = c(`Year`))) |>
-  gt::tab_style(style = gt::css(min_width = gt::px(110)),
-                locations = gt::cells_column_labels(columns = c(`Score if Small`))) |>
-  gt::tab_style(style = gt::css(min_width = gt::px(110)),
-                locations = gt::cells_column_labels(columns = c(`Score if Regular`))) |>
-  gt::tab_style(style = gt::css(min_width = gt::px(140)),
-                locations = gt::cells_column_labels(columns = c(`Score if Regular with Aide`))) |>
-  gt::tab_style(style = gt::css(min_width = gt::px(150)),
-                locations = gt::cells_column_labels(columns = c(`Class Assignment`))) |>
-  gt::cols_align(align = "left", columns = c(`Source`, `Student`, `Class Assignment`)) |>
-  gt::cols_align(align = "right", columns = c(`Year`, `Score if Small`, `Score if Regular`, `Score if Regular with Aide`)) |>
-  gt::fmt_markdown(columns = gt::everything()) |>
-  gt::tab_options(
-    heading.title.font.size = "1.5em",
-    heading.title.font.weight = "bolder",
-    column_labels.font.weight = "normal"
-  ) |>
-  gt::tab_style(style = gt::cell_text(weight = "bold"),
-                locations = gt::cells_column_spanners()) |>
-  gt::tab_style(style = gt::cell_text(align = "left"),
-                locations = gt::cells_column_spanners(spanners = c("unit_span", "treatment_span"))) |>
-  gt::tab_style(style = gt::cell_text(align = "right"),
-                locations = gt::cells_column_spanners(spanners = "outcome_span")) |>
-  gt::text_transform(
-    locations = gt::cells_body(columns = `Score if Small`, rows = c(8, 10)),
-    fn = function(x) hatch(x)
-  ) |>
-  gt::text_transform(
-    locations = gt::cells_body(columns = `Score if Regular`, rows = c(7, 10)),
-    fn = function(x) hatch(x)
-  ) |>
-  gt::text_transform(
-    locations = gt::cells_body(columns = `Score if Regular with Aide`, rows = c(7, 8)),
-    fn = function(x) hatch(x)
-  ) |>
-  gt::tab_footnote(footnote = doe_pop_title_footnote, locations = gt::cells_title()) |>
-  gt::tab_footnote(footnote = doe_pop_units_footnote, locations = gt::cells_column_spanners(spanners = "unit_span")) |>
-  gt::tab_footnote(footnote = doe_pop_outcome_footnote, locations = gt::cells_column_spanners(spanners = "outcome_span")) |>
-  gt::tab_footnote(footnote = doe_pop_treatment_footnote, locations = gt::cells_column_spanners(spanners = "treatment_span")) |>
-  gt::opt_css(css = "#population_doe_tbl .gt_footnote { max-width: 1px; word-break: break-word; }")
-
-show_gt(doe_pop_html)
-```
-
-### Assumptions
-
-Counter-example to the assumption of validity:
-
-> The data's `g4math` column is a 1980s Stanford Achievement Test score; a Chicago or Dallas student today takes a different test with different content and scaling. Likewise "small class" meant 13–17 students in STAR — if Dallas's version of "small" is 20, the treatment column in the data and the treatment column in the Preceptor Table share a name but not a meaning.
-
-Counter-example to the assumption of stability:
-
-> Students' lives have changed since 1985 — screens, curricula, teacher training, post-pandemic learning loss. If small classes helped in 1985 mainly by increasing teacher attention per student, and today's classrooms distribute attention differently (aides, technology, tutoring software), the coefficient estimated on 1985 data is not the coefficient for 2026-27.
-
-Counter-example to the assumption of representativeness:
-
-> Tennessee schools that volunteered for STAR in 1985 are not a random draw from anything — and neither are today's Chicago or Dallas students, whose demographics, funding, and family backgrounds differ sharply from 1980s Tennessee. If small classes help disadvantaged students more (as the original study suggested), differences in student mix between Tennessee then and Dallas now change the answer.
-
-Counter-example to the assumption of unconfoundedness:
-
-> **Principal:** none needed. Unconfoundedness applies only to causal questions; the principal's model is predictive.
-
-> **Texas Department of Education:** class type was randomly assigned, so unconfoundedness should hold by design. The honest worries are execution and erosion: administrators may have quietly moved favored children into small classes, and over four years students did move between class types — so the *initial* assignment is random, but the class a student actually sat in by fourth grade is not guaranteed to be.
-
-### Probability Family and Link Function
-
-What probability family should we use?
-
-> Normal Distribution
-
-Why should we use that probability family?
-
-> The Normal distribution is the standard choice for continuous outcomes, and a math score is continuous.
-
-What is the link function for our outcome?
-
-> The identity link. Our model will be a linear regression.
-
-------------------------------------------------------------------------
+The setup chunk of this document loads the packages and the data, so today starts at the modeling.
 
 ## Courage
 
 ### Candidate Models
 
-Estimate a model in which `g4math` is the outcome and `kind` is the only covariate. Display the coefficients and their confidence intervals.
+Estimate a model in which `g4math` is the outcome and `kind` is the only covariate.
 
 
 
-Estimate a model in which `g4math` is the outcome and `kind` and `race` are the covariates. Display the coefficients and their confidence intervals.
+Display the coefficients and their confidence intervals.
 
 
 
-Add `yearssmall` to the previous model. Display the coefficients and their confidence intervals.
+Interpret the estimate for `kindsmall`.
+
+
+
+Estimate a model in which `g4math` is the outcome and `kind` and `race` are the covariates.
+
+
+
+Display the coefficients and their confidence intervals.
+
+
+
+Interpret the estimate for `raceWhite`.
+
+
+
+Add `yearssmall` to the previous model.
+
+
+
+Display the coefficients and their confidence intervals.
+
+
+
+Interpret the estimate for `yearssmall`.
 
 
 

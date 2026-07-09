@@ -9,10 +9,10 @@ Bertrand and Mullainathan (2004) sent 4,870 fictitious resumes to help-wanted ad
 Each class meeting this week has its own repo, which you will fork that day:
 
 - `resumes-wisdom` — day 1: Wisdom and Justice.
-- `resumes-courage` — day 2: Courage. Its document begins with our answers to Wisdom and Justice.
-- `resumes-temperance` — day 3: Temperance. Its document begins with our answers to Wisdom, Justice, and Courage.
+- `resumes-courage` — day 2: Courage.
+- `resumes-temperance` — day 3: Temperance. Its setup chunk provides the fitted model `fit_resumes` from day 2.
 
-This repo holds one meeting's exercise document (the `.qmd` file), a rendered HTML version of it (open it in your browser to check things out), the data (`data/resumes.csv`), the original Bertrand and Mullainathan (2004) paper (`resumes-paper.pdf`), and this README.
+Each day's document holds just that day's questions; the setup chunk at the top carries forward whatever earlier work the day depends on, and our answers to each day's questions arrive by email after class. This repo holds one meeting's exercise document (the `.qmd` file), a rendered HTML version of it (open it in your browser to check things out), the data (`data/resumes.csv`), the original Bertrand and Mullainathan (2004) paper (`resumes-paper.pdf`), and this README.
 
 ## Get your own copy
 
@@ -25,12 +25,12 @@ This repo holds one meeting's exercise document (the `.qmd` file), a rendered HT
 [R](https://cran.r-project.org/), [Quarto](https://quarto.org/docs/get-started/), and these packages:
 
 ```r
-install.packages(c("tidyverse", "tidymodels", "marginaleffects", "broom", "gt", "easystats"))
+install.packages(c("tidyverse", "tidymodels", "marginaleffects", "broom", "easystats"))
 ```
 
 ## Work the exercise
 
-Open the `.qmd` file and type your answers into the blank space below each question. Each day's document starts with the same background and data loading, and the later documents begin with our answers to everything that came before — so you always work from correct foundations. Render as you go:
+Open the `.qmd` file and type your answers into the blank space below each question, then render as you go:
 
 ```bash
 quarto render resumes-wisdom.qmd   # use the name of this repo's .qmd file

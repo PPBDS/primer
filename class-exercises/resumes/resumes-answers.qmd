@@ -462,10 +462,22 @@ $$\text{logit}\left(\Pr(Y = 1)\right) = \beta_0 + \beta_1 X_1 + \cdots + \beta_n
 
 ### Candidate Models
 
-Estimate a model in which `call` is the outcome and `city` is the only covariate. Display the coefficients and their confidence intervals.
+Estimate a model in which `call` is the outcome and `city` is the only covariate.
 
 ```{r}
 #| label: candidate-model-city
+#| echo: true
+
+logistic_reg() |>
+  fit(call ~ city, data = resumes)
+```
+
+Printing the fitted model shows the estimated coefficients, but nothing about their uncertainty.
+
+Display the coefficients and their confidence intervals.
+
+```{r}
+#| label: candidate-model-city-tidy
 #| echo: true
 
 logistic_reg() |>
@@ -473,12 +485,26 @@ logistic_reg() |>
   tidy(conf.int = TRUE)
 ```
 
-The coefficient on `citychicago` is about −0.40 with a 95% confidence interval excluding zero: callbacks are less likely in Chicago than in Boston. Location matters, but it says nothing yet about the question both scenarios actually care about — so we add the name's ethnicity next.
+The same pipe, extended with `tidy(conf.int = TRUE)`, turns the fit into a tidy table with 95% intervals. Location matters, but it says nothing yet about the question both scenarios actually care about — so we add the name's ethnicity next.
 
-Estimate a model in which `call` is the outcome and `city` and `ethnicity` are the covariates. Display the coefficients and their confidence intervals.
+Interpret the estimate for `citychicago`.
+
+> Comparing resumes sent to Chicago with resumes sent to Boston, the Chicago resumes were less likely to get a callback: the coefficient is about −0.40 on the log-odds scale, with a 95% confidence interval (about −0.61 to −0.19) that excludes zero. Logistic coefficients are hard to read as raw numbers — the sign and the interval carry the message here, and outcome-scale answers wait for Temperance.
+
+Estimate a model in which `call` is the outcome and `city` and `ethnicity` are the covariates.
 
 ```{r}
 #| label: candidate-model-city-ethnicity
+#| echo: true
+
+logistic_reg() |>
+  fit(call ~ city + ethnicity, data = resumes)
+```
+
+Display the coefficients and their confidence intervals.
+
+```{r}
+#| label: candidate-model-city-ethnicity-tidy
 #| echo: true
 
 logistic_reg() |>
@@ -486,12 +512,26 @@ logistic_reg() |>
   tidy(conf.int = TRUE)
 ```
 
-The coefficient on `ethnicitycauc` is about 0.44 with a confidence interval excluding zero — a white-sounding name raises the log-odds of a callback, and the city coefficient barely moves, which is what randomized name assignment should produce. The paper's second headline finding is that resume quality pays off more for white-sounding names, so we test that next.
+The coefficient on `ethnicitycauc` excludes zero, and the city coefficient barely moves when ethnicity enters — which is what randomized name assignment should produce. The paper's second headline finding is that resume quality pays off more for white-sounding names, so we test that next.
 
-Add `quality`, and its interaction with `ethnicity`, to the previous model. Display the coefficients and their confidence intervals.
+Interpret the estimate for `ethnicitycauc`.
+
+> Comparing two resumes sent to the same city, the one with a white-sounding name was more likely to get a callback: about 0.44 on the log-odds scale, with a 95% confidence interval (about 0.23 to 0.65) that excludes zero, adjusting for city. Because names were randomly assigned to resumes, adding or removing other covariates barely moves this estimate.
+
+Add `quality`, and its interaction with `ethnicity`, to the previous model.
 
 ```{r}
 #| label: candidate-model-quality
+#| echo: true
+
+logistic_reg() |>
+  fit(call ~ city + ethnicity + quality + ethnicity * quality, data = resumes)
+```
+
+Display the coefficients and their confidence intervals.
+
+```{r}
+#| label: candidate-model-quality-tidy
 #| echo: true
 
 logistic_reg() |>
@@ -500,6 +540,10 @@ logistic_reg() |>
 ```
 
 Both the `quality` main effect and its interaction with `ethnicity` have confidence intervals that comfortably include zero. The paper's pattern does not show up in this simple model, so we drop `quality` and instead keep covariates whose intervals exclude zero — plus `sex`, which the historian's question forces us to include.
+
+Interpret the estimate for the interaction `ethnicitycauc:qualitylow`.
+
+> The interaction asks whether the white-name advantage differs between high-quality and low-quality resumes. The estimate is about −0.18 with a 95% confidence interval (about −0.60 to 0.24) that comfortably includes zero: in this simple model, we cannot distinguish the advantage on low-quality resumes from the advantage on high-quality ones.
 
 ### The Data Generating Mechanism
 

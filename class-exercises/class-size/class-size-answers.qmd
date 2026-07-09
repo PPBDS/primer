@@ -494,10 +494,22 @@ $$Y = \beta_0 + \beta_1 X_1 + \cdots + \beta_n X_n + \epsilon, \quad \epsilon \s
 
 ### Candidate Models
 
-Estimate a model in which `g4math` is the outcome and `kind` is the only covariate. Display the coefficients and their confidence intervals.
+Estimate a model in which `g4math` is the outcome and `kind` is the only covariate.
 
 ```{r}
 #| label: candidate-model-kind
+#| echo: true
+
+linear_reg() |>
+  fit(g4math ~ kind, data = star)
+```
+
+Printing the fitted model shows the estimated coefficients, but nothing about their uncertainty.
+
+Display the coefficients and their confidence intervals.
+
+```{r}
+#| label: candidate-model-kind-tidy
 #| echo: true
 
 linear_reg() |>
@@ -505,12 +517,26 @@ linear_reg() |>
   tidy(conf.int = TRUE)
 ```
 
-Both class-type coefficients have confidence intervals comfortably including zero — class type alone tells us essentially nothing about fourth-grade math scores, matching what the EDA showed. Perhaps class type matters once we account for who is in each class, so we add `race`.
+The same pipe, extended with `tidy(conf.int = TRUE)`, turns the fit into a tidy table with 95% intervals. Class type alone tells us essentially nothing about fourth-grade math scores, matching what the EDA showed. Perhaps class type matters once we account for who is in each class, so we add `race`.
 
-Estimate a model in which `g4math` is the outcome and `kind` and `race` are the covariates. Display the coefficients and their confidence intervals.
+Interpret the estimate for `kindsmall`.
+
+> With a categorical covariate, every coefficient is read against the reference level — here, a regular class. Comparing students in small classes with students in regular classes, the difference in average math score is about −0.3 points, and the 95% confidence interval (about −4.6 to +3.9) is centered almost exactly on zero. The same is true of `kindregular with aid`: neither class type can be distinguished from a regular class.
+
+Estimate a model in which `g4math` is the outcome and `kind` and `race` are the covariates.
 
 ```{r}
 #| label: candidate-model-kind-race
+#| echo: true
+
+linear_reg() |>
+  fit(g4math ~ kind + race, data = star)
+```
+
+Display the coefficients and their confidence intervals.
+
+```{r}
+#| label: candidate-model-kind-race-tidy
 #| echo: true
 
 linear_reg() |>
@@ -518,12 +544,26 @@ linear_reg() |>
   tidy(conf.int = TRUE)
 ```
 
-Race carries real signal — White students score about 16 points higher than Black students, with an interval far from zero — but the class-type coefficients barely move and still include zero. One more candidate: class type records only where a student sat in one year, while `yearssmall` records the *dose* — how many years (0–4) the student spent in small classes.
+Race carries real signal, but the class-type coefficients barely move and still include zero. One more candidate: class type records only where a student sat in one year, while `yearssmall` records the *dose* — how many years (0–4) the student spent in small classes.
 
-Add `yearssmall` to the previous model. Display the coefficients and their confidence intervals.
+Interpret the estimate for `raceWhite`.
+
+> Compared to Black students — the reference level — White students scored about 16 points higher on average, adjusting for class type. The 95% confidence interval (about 11 to 21) is far from zero. The `raceOthers` estimate is even larger, but its interval is enormous because the Others category is tiny in this sample.
+
+Add `yearssmall` to the previous model.
 
 ```{r}
 #| label: candidate-model-kind-race-years
+#| echo: true
+
+linear_reg() |>
+  fit(g4math ~ kind + race + yearssmall, data = star)
+```
+
+Display the coefficients and their confidence intervals.
+
+```{r}
+#| label: candidate-model-kind-race-years-tidy
 #| echo: true
 
 linear_reg() |>
@@ -531,7 +571,11 @@ linear_reg() |>
   tidy(conf.int = TRUE)
 ```
 
-Now something interesting appears: each additional year spent in a small class is worth about 2.2 points, with an interval excluding zero. The snapshot (`kind`) shows nothing; the dose (`yearssmall`) shows a small but real association. Note that `kindsmall` turns negative (−7.66) once `yearssmall` enters — the two variables are entangled, since students assigned to small classes accumulate more years in them; a student assigned small who stays all four years nets −7.66 + 4 × 2.18 ≈ +1 point relative to a regular-class student.
+Now something interesting appears: the snapshot (`kind`) still shows nothing, but the dose (`yearssmall`) does. Note that `kindsmall` turns negative (−7.66) once `yearssmall` enters — the two variables are entangled, since students assigned to small classes accumulate more years in them; a student assigned small who stays all four years nets −7.66 + 4 × 2.18 ≈ +1 point relative to a regular-class student.
+
+Interpret the estimate for `yearssmall`.
+
+> Comparing two students who differ by one year spent in small classes, the student with the extra year scored about 2.2 points higher on average, adjusting for class type and race. The 95% confidence interval (about 0.1 to 4.3) excludes zero — barely. This is the only class-size coefficient in the exercise whose interval stays away from zero.
 
 ### The Data Generating Mechanism
 

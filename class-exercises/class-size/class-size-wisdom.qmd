@@ -11,8 +11,6 @@ execute:
 #| message: false
 
 library(tidyverse)
-library(tidymodels)
-library(marginaleffects)
 
 star <- read_csv("data/class-size.csv", show_col_types = FALSE) |>
   mutate(kind = recode(classtype,

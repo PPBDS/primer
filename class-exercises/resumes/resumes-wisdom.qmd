@@ -11,8 +11,6 @@ execute:
 #| message: false
 
 library(tidyverse)
-library(tidymodels)
-library(marginaleffects)
 
 resumes <- read_csv("data/resumes.csv", show_col_types = FALSE) |>
   mutate(call = as.factor(call))
