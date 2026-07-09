@@ -9,3 +9,5 @@ Chapters are **prose Quarto, not learnr tutorials**, so the base tutorial guide 
 - The matching seed spec: [`../guide/per-problem/<id>.md`](../guide/per-problem/) — same primary question, Preceptor/Population Tables, and fitted model the chapter shares.
 
 Filename convention: `NN-name.qmd` (two-digit chapter number; dataset or descriptive slug). `_quarto.yml` orders the chapters.
+
+**Code visibility (settled 2026-07-09).** `_quarto.yml` sets `code-fold: true` with no global `echo` option, so every chunk's code renders behind a collapsed "Show the code" button by default. Analysis code — setup/data loading, EDA plots, candidate models, the DGM fit, `marginaleffects` calls — is deliberately shown this way; readers should be able to open any figure's or model's code. Presentation machinery stays hidden: every gt Preceptor/Population Table chunk (whether it prints the table directly or emits raw HTML via `results: asis`) and every `knitr::include_graphics()` chunk must carry an explicit `#| echo: false`. Helper-function definitions belong in a hidden chunk, not the visible setup chunk.
