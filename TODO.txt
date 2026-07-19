@@ -2,6 +2,8 @@
 
 Update "Set Up for Working on PPBDS Projects" so that it works for Codespaces as well. I think it does right now, but please confirm.
 
+In Easy artifacts, we need to focus on just preductions and plot_predictions. Anything else is too hard. The first question should be preidctions() with a fake data set of one row, thereby explaining in the simplest possible context what a prediction is. Then, we do a second prediction, but with data which matches the first unit in the data. 
+
 Get rid of easystats.
 
 Move these teaching chapters, like Git and GitHub, to an Appendix.
