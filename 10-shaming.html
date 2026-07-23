@@ -1,0 +1,1608 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.9.38">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+<title>10&nbsp; Shaming – Preceptor's Primer for Bayesian Data Science: Using the Cardinal Virtues for Inference</title>
+<style>
+/* Default styles provided by pandoc.
+** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
+*/
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+html { -webkit-text-size-adjust: 100%; }
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+</style>
+
+<script src="site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="site_libs/quarto-nav/headroom.min.js"></script>
+<script src="site_libs/clipboard/clipboard.min.js"></script>
+<script src="site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="site_libs/quarto-search/fuse.min.js"></script>
+<script src="site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="./">
+<link href="./11-nes.html" rel="next">
+<link href="./09-smokes.html" rel="prev">
+<script src="site_libs/quarto-html/quarto.js" type="module"></script>
+<script src="site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
+<script src="site_libs/quarto-html/popper.min.js"></script>
+<script src="site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="site_libs/quarto-html/anchor.min.js"></script>
+<link href="site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting-15634bcf2e68342d4ad2dfa704d543f6.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="site_libs/bootstrap/bootstrap-ef0804dfd63109409dd9c6c206846cae.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light"><script id="quarto-search-options" type="application/json">{
+  "location": "sidebar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "start",
+  "type": "textbox",
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "show-item-context": false,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-text-placeholder": "",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit",
+    "search-label": "Search"
+  }
+}</script><script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script><script defer="" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script><script type="text/javascript">
+const typesetMath = (el) => {
+  if (window.MathJax) {
+    // MathJax Typeset
+    window.MathJax.typeset([el]);
+  } else if (window.katex) {
+    // KaTeX Render
+    var mathElements = el.getElementsByClassName("math");
+    var macros = [];
+    for (var i = 0; i < mathElements.length; i++) {
+      var texText = mathElements[i].firstChild;
+      if (mathElements[i].tagName == "SPAN" && texText && texText.data) {
+        window.katex.render(texText.data, mathElements[i], {
+          displayMode: mathElements[i].classList.contains('display'),
+          throwOnError: false,
+          macros: macros,
+          fleqn: false
+        });
+      }
+    }
+  }
+}
+window.Quarto = {
+  typesetMath
+};
+</script>
+</head>
+<body class="nav-sidebar floating quarto-light">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top"><nav class="quarto-secondary-nav"><div class="container-fluid d-flex">
+      <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+        <i class="bi bi-layout-text-sidebar-reverse"></i>
+      </button>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./10-shaming.html"><span class="chapter-number">10</span>&nbsp; <span class="chapter-title">Shaming</span></a></li></ol></nav>
+        <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
+        </a>
+      <button type="button" class="btn quarto-search-button" aria-label="Search" onclick="window.quartoOpenSearch();">
+        <i class="bi bi-search"></i>
+      </button>
+    </div>
+  </nav></header><!-- content --><div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article">
+<!-- sidebar -->
+  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal quarto-sidebar-collapse-item sidebar-navigation floating overflow-auto"><div class="pt-lg-2 mt-2 text-left sidebar-header">
+    <div class="sidebar-title mb-0 py-0">
+      <a href="./">Preceptor’s Primer for Bayesian Data Science: Using the Cardinal Virtues for Inference</a> 
+        <div class="sidebar-tools-main">
+    <a href="https://github.com/PPBDS/primer/tree/main/book/" title="Source Code" class="quarto-navigation-tool px-1" aria-label="Source Code"><i class="bi bi-github"></i></a>
+</div>
+    </div>
+      </div>
+        <div class="mt-2 flex-shrink-0 align-items-center">
+        <div class="sidebar-search">
+        <div id="quarto-search" class="" title="Search"></div>
+        </div>
+        </div>
+    <div class="sidebar-menu-container"> 
+    <ul class="list-unstyled mt-1">
+<li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Welcome</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./preamble.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Preamble</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./getting-started.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Getting Started</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./git-and-github.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Git and GitHub</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./01-probability.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">Probability</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./02-sampling.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">Sampling</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./03-rubin-causal-model.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">Rubin Causal Model</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./04-cardinal-virtues.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">Cardinal Virtues</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./05-recruits.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">Recruits</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./06-trains.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">6</span>&nbsp; <span class="chapter-title">Trains</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./07-colleges.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">7</span>&nbsp; <span class="chapter-title">Colleges</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./08-seguro-popular.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">8</span>&nbsp; <span class="chapter-title">Seguro Popular</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./09-smokes.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">9</span>&nbsp; <span class="chapter-title">Smokes</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./10-shaming.html" class="sidebar-item-text sidebar-link active">
+ <span class="menu-text"><span class="chapter-number">10</span>&nbsp; <span class="chapter-title">Shaming</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./11-nes.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">11</span>&nbsp; <span class="chapter-title">NES</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./12-mail.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">12</span>&nbsp; <span class="chapter-title">Mail</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./key-concepts.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Key Concepts</span></a>
+  </div>
+</li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" role="navigation" aria-expanded="true">
+ <span class="menu-text">Appendices</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-1" class="collapse list-unstyled sidebar-section depth1 show">
+<li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./set-up.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Set Up for Working on PPBDS Projects</span></a>
+  </div>
+</li>
+      </ul>
+</li>
+    </ul>
+</div>
+</nav><div id="quarto-sidebar-glass" class="quarto-sidebar-collapse-item" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item"></div>
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active"><h2 id="toc-title">Table of contents</h2>
+   
+  <ul>
+<li>
+<a href="#wisdom" id="toc-wisdom" class="nav-link active" data-scroll-target="#wisdom"><span class="header-section-number">10.1</span> Wisdom</a>
+  <ul class="collapse">
+<li><a href="#get-out-the-vote-and-the-2006-michigan-field-experiment" id="toc-get-out-the-vote-and-the-2006-michigan-field-experiment" class="nav-link" data-scroll-target="#get-out-the-vote-and-the-2006-michigan-field-experiment"><span class="header-section-number">10.1.1</span> Get-out-the-vote and the 2006 Michigan field experiment</a></li>
+  <li><a href="#what-the-data-records-and-what-it-doesnt" id="toc-what-the-data-records-and-what-it-doesnt" class="nav-link" data-scroll-target="#what-the-data-records-and-what-it-doesnt"><span class="header-section-number">10.1.2</span> What the data records and what it doesn’t</a></li>
+  <li><a href="#the-primary-question" id="toc-the-primary-question" class="nav-link" data-scroll-target="#the-primary-question"><span class="header-section-number">10.1.3</span> The primary question</a></li>
+  <li><a href="#exploring-the-data" id="toc-exploring-the-data" class="nav-link" data-scroll-target="#exploring-the-data"><span class="header-section-number">10.1.4</span> Exploring the data</a></li>
+  <li><a href="#the-paired-question" id="toc-the-paired-question" class="nav-link" data-scroll-target="#the-paired-question"><span class="header-section-number">10.1.5</span> The paired question</a></li>
+  </ul>
+</li>
+  <li>
+<a href="#justice" id="toc-justice" class="nav-link" data-scroll-target="#justice"><span class="header-section-number">10.2</span> Justice</a>
+  <ul class="collapse">
+<li><a href="#validity" id="toc-validity" class="nav-link" data-scroll-target="#validity"><span class="header-section-number">10.2.1</span> Validity</a></li>
+  <li><a href="#stability" id="toc-stability" class="nav-link" data-scroll-target="#stability"><span class="header-section-number">10.2.2</span> Stability</a></li>
+  <li><a href="#representativeness" id="toc-representativeness" class="nav-link" data-scroll-target="#representativeness"><span class="header-section-number">10.2.3</span> Representativeness</a></li>
+  <li><a href="#unconfoundedness-primary-causal-question-only" id="toc-unconfoundedness-primary-causal-question-only" class="nav-link" data-scroll-target="#unconfoundedness-primary-causal-question-only"><span class="header-section-number">10.2.4</span> Unconfoundedness (primary causal question only)</a></li>
+  <li><a href="#probability-family-and-link-function" id="toc-probability-family-and-link-function" class="nav-link" data-scroll-target="#probability-family-and-link-function"><span class="header-section-number">10.2.5</span> Probability family and link function</a></li>
+  </ul>
+</li>
+  <li>
+<a href="#courage" id="toc-courage" class="nav-link" data-scroll-target="#courage"><span class="header-section-number">10.3</span> Courage</a>
+  <ul class="collapse">
+<li><a href="#candidate-models" id="toc-candidate-models" class="nav-link" data-scroll-target="#candidate-models"><span class="header-section-number">10.3.1</span> Candidate models</a></li>
+  <li><a href="#the-chosen-dgm" id="toc-the-chosen-dgm" class="nav-link" data-scroll-target="#the-chosen-dgm"><span class="header-section-number">10.3.2</span> The chosen DGM</a></li>
+  <li><a href="#model-checking" id="toc-model-checking" class="nav-link" data-scroll-target="#model-checking"><span class="header-section-number">10.3.3</span> Model checking</a></li>
+  </ul>
+</li>
+  <li>
+<a href="#temperance" id="toc-temperance" class="nav-link" data-scroll-target="#temperance"><span class="header-section-number">10.4</span> Temperance</a>
+  <ul class="collapse">
+<li><a href="#the-primary-causal-reading" id="toc-the-primary-causal-reading" class="nav-link" data-scroll-target="#the-primary-causal-reading"><span class="header-section-number">10.4.1</span> The primary (causal) reading</a></li>
+  <li><a href="#the-paired-predictive-reading" id="toc-the-paired-predictive-reading" class="nav-link" data-scroll-target="#the-paired-predictive-reading"><span class="header-section-number">10.4.2</span> The paired (predictive) reading</a></li>
+  <li><a href="#qoi-variety" id="toc-qoi-variety" class="nav-link" data-scroll-target="#qoi-variety"><span class="header-section-number">10.4.3</span> QoI variety</a></li>
+  <li><a href="#why-the-answer-is-wrong" id="toc-why-the-answer-is-wrong" class="nav-link" data-scroll-target="#why-the-answer-is-wrong"><span class="header-section-number">10.4.4</span> Why the answer is wrong</a></li>
+  </ul>
+</li>
+  <li><a href="#summary" id="toc-summary" class="nav-link" data-scroll-target="#summary"><span class="header-section-number">10.5</span> Summary</a></li>
+  </ul><div class="toc-actions"><ul><li><a href="https://github.com/PPBDS/primer/edit/main/book/10-shaming.qmd" class="toc-action"><i class="bi bi-github"></i>Edit this page</a></li></ul></div></nav>
+    </div>
+<!-- main -->
+<main class="content" id="quarto-document-content"><header id="title-block-header" class="quarto-title-block default"><div class="quarto-title">
+<h1 class="title">
+<span class="chapter-number">10</span>&nbsp; <span class="chapter-title">Shaming</span>
+</h1>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    
+  
+    
+  </div>
+  
+
+
+</header><div class="cell">
+<details class="code-fold"><summary>Show the code</summary><div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb1"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://tidyverse.tidyverse.org">tidyverse</a></span><span class="op">)</span></span>
+<span><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://tidymodels.tidymodels.org">tidymodels</a></span><span class="op">)</span></span>
+<span><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va">primer.data</span><span class="op">)</span></span>
+<span><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://broom.tidymodels.org/">broom</a></span><span class="op">)</span></span>
+<span><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://marginaleffects.com/">marginaleffects</a></span><span class="op">)</span></span>
+<span><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://gt.rstudio.com">gt</a></span><span class="op">)</span></span>
+<span><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://yihui.org/knitr/">knitr</a></span><span class="op">)</span></span>
+<span></span>
+<span><span class="va">x</span> <span class="op">&lt;-</span> <span class="va">shaming</span> <span class="op">|&gt;</span></span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html">mutate</a></span><span class="op">(</span>civ_engage <span class="op">=</span> <span class="va">primary_00</span> <span class="op">+</span> <span class="va">primary_02</span> <span class="op">+</span> <span class="va">primary_04</span> <span class="op">+</span></span>
+<span>                     <span class="va">general_00</span> <span class="op">+</span> <span class="va">general_02</span> <span class="op">+</span> <span class="va">general_04</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html">select</a></span><span class="op">(</span><span class="va">primary_06</span>, <span class="va">treatment</span>, <span class="va">sex</span>, <span class="va">age</span>, <span class="va">civ_engage</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>  <span class="fu"><a href="https://tidyr.tidyverse.org/reference/drop_na.html">drop_na</a></span><span class="op">(</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html">mutate</a></span><span class="op">(</span>voter_class <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/factor.html">factor</a></span><span class="op">(</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/case-and-replace-when.html">case_when</a></span><span class="op">(</span></span>
+<span>    <span class="va">civ_engage</span> <span class="op"><a href="https://rdrr.io/r/base/match.html">%in%</a></span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">5</span>, <span class="fl">6</span><span class="op">)</span> <span class="op">~</span> <span class="st">"Always Vote"</span>,</span>
+<span>    <span class="va">civ_engage</span> <span class="op"><a href="https://rdrr.io/r/base/match.html">%in%</a></span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">3</span>, <span class="fl">4</span><span class="op">)</span> <span class="op">~</span> <span class="st">"Sometimes Vote"</span>,</span>
+<span>    <span class="va">civ_engage</span> <span class="op"><a href="https://rdrr.io/r/base/match.html">%in%</a></span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fl">2</span><span class="op">)</span> <span class="op">~</span> <span class="st">"Rarely Vote"</span><span class="op">)</span>,</span>
+<span>    levels <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"Rarely Vote"</span>, <span class="st">"Sometimes Vote"</span>, <span class="st">"Always Vote"</span><span class="op">)</span><span class="op">)</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html">mutate</a></span><span class="op">(</span>voted <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/factor.html">as.factor</a></span><span class="op">(</span><span class="va">primary_06</span><span class="op">)</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>  <span class="fu"><a href="https://tidyr.tidyverse.org/reference/drop_na.html">drop_na</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+</div>
+<p>The four <a href="https://en.wikipedia.org/wiki/Cardinal_virtues">Cardinal Virtues</a> for working through a data science problem are <em>Wisdom</em>, <em>Justice</em>, <em>Courage</em>, and <em>Temperance</em>. This chapter — the sixth example chapter in the <em>Primer</em>, the second at the <em>Medium</em> tier, and the third causal chapter — works through a logistic regression of a binary outcome on a multi-arm randomized treatment, with a <em>heterogeneous-effects</em> interaction structure. The matching tutorial is <code>10-shaming</code> in the <strong><a href="https://ppbds.github.io/primer/tutorials/">primer.tutorials</a></strong> package; almost every line of code in that tutorial appears here, surrounded by more prose, more exploration, and a paired predictive version of the same question.</p>
+<p>Imagine that you are the data scientist for a campaign for Governor of Texas. The candidate has a big-picture goal — win the November election — and trusts you to figure out where the campaign’s limited budget should go. Many causal and predictive models would inform that allocation: which voters are persuadable, which postcards or robocalls or door-knocks actually move turnout, which media markets are the most cost-effective, how late in the cycle each tactic still works. This chapter builds just one of them: a causal model of how five different get-out-the-vote postcards — including the famous “social-pressure” ones from the Gerber, Green, and Larimer 2008 field experiment — shift turnout, with the effect allowed to vary by the voter’s prior turnout history. The estimate alone won’t determine where the campaign spends, but the postcard-effectiveness piece is one good input. There are many decisions to make.</p>
+<p>The data we will work from is <code>shaming</code>, available in the <strong><a href="https://github.com/PPBDS/primer.data">primer.data</a></strong> package. It is the household-level dataset from the GGL 2008 field experiment in Michigan, with 344,084 registered voters across 191,243 households randomized to one of five mail conditions ahead of the August 2006 Michigan primary. Each row is one registered voter; key columns are <code>treatment</code> (a five-level factor: <code>No Postcard</code>, <code>Civic Duty</code>, <code>Hawthorne</code>, <code>Self</code>, <code>Neighbors</code>), <code>primary_06</code> (whether the voter cast a ballot in the August 2006 primary, 0 or 1), plus past-election turnout columns for 2000, 2002, and 2004 (separately for primaries and general elections) and basic demographics (<code>age</code>, <code>sex</code>, <code>hh_size</code>, <code>neighbors</code>). The chapter’s data prep summarizes the six past-turnout columns into a <code>civ_engage</code> score (the count of past elections the voter showed up to, from 1 to 6) and bins that into a three-level <code>voter_class</code> factor: <code>Rarely Vote</code>, <code>Sometimes Vote</code>, <code>Always Vote</code>. The reference level is <code>Rarely Vote</code>, the lowest-engagement category, set explicitly to override R’s default alphabetical ordering. The outcome <code>voted</code> is the same primary-06 turnout, recoded as a factor for <code>tidymodels</code>’ logistic-regression engine.</p>
+<section id="wisdom" class="level2" data-number="10.1"><h2 data-number="10.1" class="anchored" data-anchor-id="wisdom">
+<span class="header-section-number">10.1</span> Wisdom</h2>
+<div class="cell">
+<div class="cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure"><p><img src="other/images/Wisdom.jpg" class="img-fluid figure-img"></p>
+<figcaption>Wisdom.</figcaption></figure>
+</div>
+</div>
+</div>
+<blockquote class="blockquote">
+<p><em>Wisdom begins with a question and then moves on to the creation of a Preceptor Table and an examination of our data.</em></p>
+</blockquote>
+<p>Wisdom commits us to a question precise enough to be answered. The Preceptor Table makes the commitment concrete: it is the smallest table that, <em>if every cell were filled in with the truth</em>, would make the question’s answer easy to read off.</p>
+<blockquote class="blockquote">
+<p><em>The combination of some data and an aching desire for an answer does not ensure that a reasonable answer can be extracted from a given body of data.</em> — John W. Tukey</p>
+</blockquote>
+<section id="get-out-the-vote-and-the-2006-michigan-field-experiment" class="level3" data-number="10.1.1"><h3 data-number="10.1.1" class="anchored" data-anchor-id="get-out-the-vote-and-the-2006-michigan-field-experiment">
+<span class="header-section-number">10.1.1</span> Get-out-the-vote and the 2006 Michigan field experiment</h3>
+<p>For a century, get-out-the-vote (GOTV) campaigns have been a staple of American electoral politics. Parties, campaigns, and non-partisan civic groups spend hundreds of millions of dollars per election cycle on door-knocks, mailers, robocalls, and (more recently) digital ads aimed at one specific question: <em>do whatever it takes to get the people who agree with us to actually show up at the polls.</em> For most of the twentieth century the evidence on which GOTV tactics work, and how well, was anecdotal. That changed in the early 2000s, when Donald Green, Alan Gerber, and a generation of younger political scientists started running randomized field experiments on GOTV at scale — treating real voters in real elections with real ballots, randomly assigning who received what message, and measuring turnout from administrative voter files.</p>
+<p>The Gerber, Green, and Larimer 2008 paper (<em>“Social pressure and voter turnout: Evidence from a large-scale field experiment,”</em> American Political Science Review 102(1)) is the most-cited paper to emerge from that line of work. Ahead of the August 2006 primary in Michigan — a low-salience election in which turnout typically runs around 20–25% — the authors mailed one of four postcards to randomly selected households of registered voters who had voted in at least one recent election. The five-arm randomization, in escalating social-pressure intensity:</p>
+<ol type="1">
+<li>
+<strong>No Postcard</strong> (control). About 191,000 households received nothing.</li>
+<li>
+<strong>Civic Duty.</strong> A short message reminding the recipient that voting is a civic duty.</li>
+<li>
+<strong>Hawthorne.</strong> The Civic Duty message plus a line informing the recipient that <em>“YOU ARE BEING STUDIED”</em> — the academic name reflects the famous Hawthorne effect.</li>
+<li>
+<strong>Self.</strong> The Hawthorne message plus a printed table showing the recipient’s own past-election turnout (with the implicit message that the authors know whether you voted) and a promise to send a follow-up after the election.</li>
+<li>
+<strong>Neighbors.</strong> The Self message plus the past-election turnout of the recipient’s <em>neighbors</em> by name, with the same promise of a follow-up.</li>
+</ol>
+<p>The four postcard arms together cover about 153,000 households; the control arm covers about 191,000. The Neighbors postcard, in particular, is the strongest social-pressure intervention any field experiment has ever tested. It works on a very simple principle: most people don’t like being publicly observed making a civic decision they’d rather skip, and the Neighbors postcard makes the observation explicit. The paper found that the Neighbors arm raised turnout by about 8 percentage points relative to control — a <em>massive</em> effect by GOTV standards. Civic Duty and Hawthorne added 2–3 pp; Self added 5 pp.&nbsp;The pattern is clean: more explicit social pressure produces more turnout, and the relationship is roughly monotonic in the intensity of the pressure.</p>
+<p>The paper’s findings have been replicated dozens of times since 2006, with some adjustments. The Neighbors message has been used by real campaigns and non-partisan groups; some recipients have reacted strongly (the postcards generate complaints to election officials and occasional press coverage of “voter shaming”); academic researchers continue to debate the ethics of using social pressure at scale. For our chapter the data is a teaching dataset, but the underlying experiment is a touchstone of modern political science.</p>
+</section><section id="what-the-data-records-and-what-it-doesnt" class="level3" data-number="10.1.2"><h3 data-number="10.1.2" class="anchored" data-anchor-id="what-the-data-records-and-what-it-doesnt">
+<span class="header-section-number">10.1.2</span> What the data records and what it doesn’t</h3>
+<p>The <code>shaming</code> tibble has 344,084 rows. Each row is one registered voter from one of the four states GGL’s full study covered (Michigan, the data subset we use). The treatment column is the <em>household-level</em> mail assignment — two voters in the same household receive the same postcard, so the treatment is technically clustered at the household level (about 191,000 households for 344,000 voters). The outcome column <code>primary_06</code> is 1 if the voter cast a ballot in the August 2006 primary and 0 if not, taken from the Michigan voter file. Past-turnout columns record the same fact for the 2000, 2002, and 2004 primaries and general elections.</p>
+<p>A few features of the data matter for what follows. First, the dataset <em>excludes</em> people who had never voted in any of the six recorded prior elections. GGL deliberately restricted to voters with at least one recent participation, because the marginal cost of reaching never-voters with a postcard is the same as reaching habitual voters but the expected return is much lower. The <code>voter_class = Rarely Vote</code> category in our <code>civ_engage</code> recoding captures voters with one or two prior turnouts, <em>not</em> zero. A real GOTV program would have to make its own choice about whether to include never-voters in the target list.</p>
+<p>Second, the outcome is <em>primary</em> turnout, not general-election turnout. Primaries are systematically different from generals: lower-turnout, more partisan-engaged, more candidate-specific. A Neighbors postcard sent ahead of the November 2008 general election — when turnout was already high because of the Presidential race — would not produce the same 8 percentage-point lift as it produced ahead of the August 2006 primary, because the marginal voter is more easily moved in the lower-baseline-turnout environment of a primary. A real Texas gubernatorial campaign would care about this generalization gap.</p>
+<p>Third, the dataset <em>does not</em> directly record who voted <em>for whom</em>. The treatment effect on <em>turnout</em> is real and clean; the treatment effect on <em>vote choice</em> — the question a real campaign cares about — is not directly measurable from this data. A campaign would assume turnout effects flow through to vote-share effects in proportion to its baseline support among each subgroup; that is an additional assumption the chapter does not pursue.</p>
+</section><section id="the-primary-question" class="level3" data-number="10.1.3"><h3 data-number="10.1.3" class="anchored" data-anchor-id="the-primary-question">
+<span class="header-section-number">10.1.3</span> The primary question</h3>
+<p>The primary question for this chapter is <em>causal</em>:</p>
+<blockquote class="blockquote">
+<p>What is the average causal effect of each social-pressure postcard, relative to no postcard, on the probability that a registered voter casts a ballot in the August 2006 Michigan primary?</p>
+</blockquote>
+<p>This is a <em>causal</em> question, with a five-arm treatment (one control plus four postcard conditions). The Preceptor Table has <em>six</em> columns: one identifying each voter, <em>five</em> potential-outcome columns (one for each treatment arm), and one treatment column recording the actual assignment. Each row has its five potential outcomes and its one observed assignment; the four counterfactuals are unobservable. The average causal effect of a specific postcard is the average across rows of the difference between the row’s potential outcome under that postcard and its potential outcome under no postcard.</p>
+<p>A note on the structure. With five treatment arms and an interaction with three voter-engagement classes, the answer to the question is not a single number; it is a <em>grid</em> of effects — four postcard contrasts (Civic Duty, Hawthorne, Self, Neighbors, each vs.&nbsp;No Postcard) by three voter classes (Rarely, Sometimes, Always) = 12 separate causal estimates. We can also collapse to four overall estimates (one per postcard, averaging over voter classes) or to a single headline number (the Neighbors-vs-No Postcard effect, the largest and the famous one). The chapter’s Temperance reads all three.</p>
+<div style="display: inline-block; width: auto; max-width: 100%;"><div id="pt_primary" style="padding-left:0px;padding-right:0px;padding-top:10px;padding-bottom:10px;overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
+  
+  
+<table class="gt_table caption-top table" data-quarto-bootstrap="false" data-bgcolor="#FFFFFF">
+<colgroup>
+<col style="width: 14%">
+<col style="width: 14%">
+<col style="width: 14%">
+<col style="width: 14%">
+<col style="width: 14%">
+<col style="width: 14%">
+<col style="width: 14%">
+</colgroup>
+<thead style="border-style: none;">
+<tr class="gt_heading header" style="border-style: none; background-color: #FFFFFF; text-align: center; border-bottom-color: #FFFFFF; border-left-style: none; border-left-width: 1px; border-left-color: #D3D3D3; border-right-style: none; border-right-width: 1px; border-right-color: #D3D3D3;" data-bgcolor="#FFFFFF" data-align="center">
+<td colspan="7" class="gt_heading gt_title gt_font_normal gt_bottom_border" style="text-align: center; border-style: none; color: #333333; font-size: 1.5em; padding-top: 4px; padding-bottom: 4px; padding-left: 5px; padding-right: 5px; background-color: #FFFFFF; border-left-style: none; border-left-width: 1px; border-left-color: #D3D3D3; border-right-style: none; border-right-width: 1px; border-right-color: #D3D3D3; border-bottom-style: solid; border-bottom-width: 2px; border-bottom-color: #D3D3D3; font-weight: normal;" data-bgcolor="#FFFFFF">Preceptor Table --- Primary (causal) question<span class="gt_footnote_marks" style="font-size: 75%; vertical-align: 0.4em; position: initial; white-space: nowrap; font-style: italic; font-weight: normal; line-height: 0;"><sup>1</sup></span>
+</td>
+</tr>
+<tr class="gt_col_headings gt_spanner_row even" style="border-style: none; border-top-style: solid; border-top-width: 2px; border-top-color: #D3D3D3; border-bottom-width: 2px; border-bottom-color: #D3D3D3; border-left-style: none; border-left-width: 1px; border-left-color: #D3D3D3; border-right-style: none; border-right-width: 1px; border-right-color: #D3D3D3; border-bottom-style: hidden;">
+<th id="unit_span" class="gt_center gt_columns_top_border gt_column_spanner_outer" data-quarto-table-cell-role="th" style="text-align: left; border-style: none; color: #333333; background-color: #FFFFFF; font-size: 100%; text-transform: inherit; padding-top: 0; padding-bottom: 0; padding-right: 4px; padding-left: 0; font-weight: bold;" scope="col" data-bgcolor="#FFFFFF"><div class="gt_column_spanner" style="border-bottom-style: solid; border-bottom-width: 2px; border-bottom-color: #D3D3D3; vertical-align: bottom; padding-top: 5px; padding-bottom: 5px; overflow-x: hidden; display: inline-block; width: 100%;">
+Unit<span class="gt_footnote_marks" style="font-size: 75%; vertical-align: 0.4em; position: initial; white-space: nowrap; font-style: italic; font-weight: normal; line-height: 0;"><sup>2</sup></span>
+</div></th>
+<th colspan="5" id="outcome_span" class="gt_center gt_columns_top_border gt_column_spanner_outer" data-quarto-table-cell-role="th" style="text-align: left; border-style: none; color: #333333; background-color: #FFFFFF; font-size: 100%; text-transform: inherit; padding-top: 0; padding-bottom: 0; padding-left: 4px; padding-right: 4px; font-weight: bold;" scope="colgroup" data-bgcolor="#FFFFFF"><div class="gt_column_spanner" style="border-bottom-style: solid; border-bottom-width: 2px; border-bottom-color: #D3D3D3; vertical-align: bottom; padding-top: 5px; padding-bottom: 5px; overflow-x: hidden; display: inline-block; width: 100%;">
+Potential Outcomes<span class="gt_footnote_marks" style="font-size: 75%; vertical-align: 0.4em; position: initial; white-space: nowrap; font-style: italic; font-weight: normal; line-height: 0;"><sup>3</sup></span>
+</div></th>
+<th id="treatment_span" class="gt_center gt_columns_top_border gt_column_spanner_outer" data-quarto-table-cell-role="th" style="text-align: left; border-style: none; color: #333333; background-color: #FFFFFF; font-size: 100%; text-transform: inherit; padding-top: 0; padding-bottom: 0; padding-left: 4px; padding-right: 0; font-weight: bold;" scope="col" data-bgcolor="#FFFFFF"><div class="gt_column_spanner" style="border-bottom-style: solid; border-bottom-width: 2px; border-bottom-color: #D3D3D3; vertical-align: bottom; padding-top: 5px; padding-bottom: 5px; overflow-x: hidden; display: inline-block; width: 100%;">
+Treatment<span class="gt_footnote_marks" style="font-size: 75%; vertical-align: 0.4em; position: initial; white-space: nowrap; font-style: italic; font-weight: normal; line-height: 0;"><sup>4</sup></span>
+</div></th>
+</tr>
+<tr class="gt_col_headings header" style="border-style: none; border-top-style: solid; border-top-width: 2px; border-top-color: #D3D3D3; border-bottom-style: solid; border-bottom-width: 2px; border-bottom-color: #D3D3D3; border-left-style: none; border-left-width: 1px; border-left-color: #D3D3D3; border-right-style: none; border-right-width: 1px; border-right-color: #D3D3D3;">
+<th id="Voter" class="gt_col_heading gt_columns_bottom_border gt_left" data-quarto-table-cell-role="th" scope="col" style="text-align: left; border-style: none; color: #333333; background-color: #FFFFFF; font-size: 100%; font-weight: normal; text-transform: inherit; border-left-style: none; border-left-width: 1px; border-left-color: #D3D3D3; border-right-style: none; border-right-width: 1px; border-right-color: #D3D3D3; vertical-align: bottom; padding-top: 5px; padding-bottom: 6px; padding-left: 5px; padding-right: 5px; overflow-x: hidden;" data-bgcolor="#FFFFFF" data-valign="bottom">Voter</th>
+<th id="Voted-if-No-Postcard" class="gt_col_heading gt_columns_bottom_border gt_left" data-quarto-table-cell-role="th" scope="col" style="text-align: left; border-style: none; color: #333333; background-color: #FFFFFF; font-size: 100%; font-weight: normal; text-transform: inherit; border-left-style: none; border-left-width: 1px; border-left-color: #D3D3D3; border-right-style: none; border-right-width: 1px; border-right-color: #D3D3D3; vertical-align: bottom; padding-top: 5px; padding-bottom: 6px; padding-left: 5px; padding-right: 5px; overflow-x: hidden;" data-bgcolor="#FFFFFF" data-valign="bottom">Voted if No Postcard</th>
+<th id="Voted-if-Civic-Duty" class="gt_col_heading gt_columns_bottom_border gt_left" data-quarto-table-cell-role="th" scope="col" style="text-align: left; border-style: none; color: #333333; background-color: #FFFFFF; font-size: 100%; font-weight: normal; text-transform: inherit; border-left-style: none; border-left-width: 1px; border-left-color: #D3D3D3; border-right-style: none; border-right-width: 1px; border-right-color: #D3D3D3; vertical-align: bottom; padding-top: 5px; padding-bottom: 6px; padding-left: 5px; padding-right: 5px; overflow-x: hidden;" data-bgcolor="#FFFFFF" data-valign="bottom">Voted if Civic Duty</th>
+<th id="Voted-if-Hawthorne" class="gt_col_heading gt_columns_bottom_border gt_left" data-quarto-table-cell-role="th" scope="col" style="text-align: left; border-style: none; color: #333333; background-color: #FFFFFF; font-size: 100%; font-weight: normal; text-transform: inherit; border-left-style: none; border-left-width: 1px; border-left-color: #D3D3D3; border-right-style: none; border-right-width: 1px; border-right-color: #D3D3D3; vertical-align: bottom; padding-top: 5px; padding-bottom: 6px; padding-left: 5px; padding-right: 5px; overflow-x: hidden;" data-bgcolor="#FFFFFF" data-valign="bottom">Voted if Hawthorne</th>
+<th id="Voted-if-Self" class="gt_col_heading gt_columns_bottom_border gt_left" data-quarto-table-cell-role="th" scope="col" style="text-align: left; border-style: none; color: #333333; background-color: #FFFFFF; font-size: 100%; font-weight: normal; text-transform: inherit; border-left-style: none; border-left-width: 1px; border-left-color: #D3D3D3; border-right-style: none; border-right-width: 1px; border-right-color: #D3D3D3; vertical-align: bottom; padding-top: 5px; padding-bottom: 6px; padding-left: 5px; padding-right: 5px; overflow-x: hidden;" data-bgcolor="#FFFFFF" data-valign="bottom">Voted if Self</th>
+<th id="Voted-if-Neighbors" class="gt_col_heading gt_columns_bottom_border gt_left" data-quarto-table-cell-role="th" scope="col" style="text-align: left; border-style: none; color: #333333; background-color: #FFFFFF; font-size: 100%; font-weight: normal; text-transform: inherit; border-left-style: none; border-left-width: 1px; border-left-color: #D3D3D3; border-right-style: none; border-right-width: 1px; border-right-color: #D3D3D3; vertical-align: bottom; padding-top: 5px; padding-bottom: 6px; padding-left: 5px; padding-right: 5px; overflow-x: hidden;" data-bgcolor="#FFFFFF" data-valign="bottom">Voted if Neighbors</th>
+<th id="Postcard" class="gt_col_heading gt_columns_bottom_border gt_left" data-quarto-table-cell-role="th" scope="col" style="text-align: left; border-style: none; color: #333333; background-color: #FFFFFF; font-size: 100%; font-weight: normal; text-transform: inherit; border-left-style: none; border-left-width: 1px; border-left-color: #D3D3D3; border-right-style: none; border-right-width: 1px; border-right-color: #D3D3D3; vertical-align: bottom; padding-top: 5px; padding-bottom: 6px; padding-left: 5px; padding-right: 5px; overflow-x: hidden;" data-bgcolor="#FFFFFF" data-valign="bottom">Postcard</th>
+</tr>
+</thead>
+<tbody class="gt_table_body" style="border-style: none; border-top-style: solid; border-top-width: 2px; border-top-color: #D3D3D3; border-bottom-style: solid; border-bottom-width: 2px; border-bottom-color: #D3D3D3;">
+<tr class="odd" style="border-style: none;">
+<td class="gt_row gt_left" headers="Voter" style="text-align: left; border-style: none; padding-top: 8px; padding-bottom: 8px; padding-left: 5px; padding-right: 5px; margin: 10px; border-top-style: solid; border-top-width: 1px; border-top-color: #D3D3D3; border-left-style: none; border-left-width: 1px; border-left-color: #D3D3D3; border-right-style: none; border-right-width: 1px; border-right-color: #D3D3D3; vertical-align: middle; overflow-x: hidden;" data-valign="middle">Voter 1</td>
+<td class="gt_row gt_left" headers="Voted if No Postcard" style="text-align: left; border-style: none; padding-top: 8px; padding-bottom: 8px; padding-left: 5px; padding-right: 5px; margin: 10px; border-top-style: solid; border-top-width: 1px; border-top-color: #D3D3D3; border-left-style: none; border-left-width: 1px; border-left-color: #D3D3D3; border-right-style: none; border-right-width: 1px; border-right-color: #D3D3D3; vertical-align: middle; overflow-x: hidden;" data-valign="middle"><span style="background-image: repeating-linear-gradient(45deg, rgba(0,0,0,0.12) 0 1px, transparent 1px 6px); padding: 6px 10px; margin: -6px -10px; display: block;">No</span></td>
+<td class="gt_row gt_left" headers="Voted if Civic Duty" style="text-align: left; border-style: none; padding-top: 8px; padding-bottom: 8px; padding-left: 5px; padding-right: 5px; margin: 10px; border-top-style: solid; border-top-width: 1px; border-top-color: #D3D3D3; border-left-style: none; border-left-width: 1px; border-left-color: #D3D3D3; border-right-style: none; border-right-width: 1px; border-right-color: #D3D3D3; vertical-align: middle; overflow-x: hidden;" data-valign="middle"><span style="background-image: repeating-linear-gradient(45deg, rgba(0,0,0,0.12) 0 1px, transparent 1px 6px); padding: 6px 10px; margin: -6px -10px; display: block;">No</span></td>
+<td class="gt_row gt_left" headers="Voted if Hawthorne" style="text-align: left; border-style: none; padding-top: 8px; padding-bottom: 8px; padding-left: 5px; padding-right: 5px; margin: 10px; border-top-style: solid; border-top-width: 1px; border-top-color: #D3D3D3; border-left-style: none; border-left-width: 1px; border-left-color: #D3D3D3; border-right-style: none; border-right-width: 1px; border-right-color: #D3D3D3; vertical-align: middle; overflow-x: hidden;" data-valign="middle"><span style="background-image: repeating-linear-gradient(45deg, rgba(0,0,0,0.12) 0 1px, transparent 1px 6px); padding: 6px 10px; margin: -6px -10px; display: block;">No</span></td>
+<td class="gt_row gt_left" headers="Voted if Self" style="text-align: left; border-style: none; padding-top: 8px; padding-bottom: 8px; padding-left: 5px; padding-right: 5px; margin: 10px; border-top-style: solid; border-top-width: 1px; border-top-color: #D3D3D3; border-left-style: none; border-left-width: 1px; border-left-color: #D3D3D3; border-right-style: none; border-right-width: 1px; border-right-color: #D3D3D3; vertical-align: middle; overflow-x: hidden;" data-valign="middle">Yes</td>
+<td class="gt_row gt_left" headers="Voted if Neighbors" style="text-align: left; border-style: none; padding-top: 8px; padding-bottom: 8px; padding-left: 5px; padding-right: 5px; margin: 10px; border-top-style: solid; border-top-width: 1px; border-top-color: #D3D3D3; border-left-style: none; border-left-width: 1px; border-left-color: #D3D3D3; border-right-style: none; border-right-width: 1px; border-right-color: #D3D3D3; vertical-align: middle; overflow-x: hidden;" data-valign="middle"><span style="background-image: repeating-linear-gradient(45deg, rgba(0,0,0,0.12) 0 1px, transparent 1px 6px); padding: 6px 10px; margin: -6px -10px; display: block;">Yes</span></td>
+<td class="gt_row gt_left" headers="Postcard" style="text-align: left; border-style: none; padding-top: 8px; padding-bottom: 8px; padding-left: 5px; padding-right: 5px; margin: 10px; border-top-style: solid; border-top-width: 1px; border-top-color: #D3D3D3; border-left-style: none; border-left-width: 1px; border-left-color: #D3D3D3; border-right-style: none; border-right-width: 1px; border-right-color: #D3D3D3; vertical-align: middle; overflow-x: hidden;" data-valign="middle">Self</td>
+</tr>
+<tr class="even" style="border-style: none;">
+<td class="gt_row gt_left" headers="Voter" style="text-align: left; border-style: none; padding-top: 8px; padding-bottom: 8px; padding-left: 5px; padding-right: 5px; margin: 10px; border-top-style: solid; border-top-width: 1px; border-top-color: #D3D3D3; border-left-style: none; border-left-width: 1px; border-left-color: #D3D3D3; border-right-style: none; border-right-width: 1px; border-right-color: #D3D3D3; vertical-align: middle; overflow-x: hidden;" data-valign="middle">Voter 2</td>
+<td class="gt_row gt_left" headers="Voted if No Postcard" style="text-align: left; border-style: none; padding-top: 8px; padding-bottom: 8px; padding-left: 5px; padding-right: 5px; margin: 10px; border-top-style: solid; border-top-width: 1px; border-top-color: #D3D3D3; border-left-style: none; border-left-width: 1px; border-left-color: #D3D3D3; border-right-style: none; border-right-width: 1px; border-right-color: #D3D3D3; vertical-align: middle; overflow-x: hidden;" data-valign="middle"><span style="background-image: repeating-linear-gradient(45deg, rgba(0,0,0,0.12) 0 1px, transparent 1px 6px); padding: 6px 10px; margin: -6px -10px; display: block;">No</span></td>
+<td class="gt_row gt_left" headers="Voted if Civic Duty" style="text-align: left; border-style: none; padding-top: 8px; padding-bottom: 8px; padding-left: 5px; padding-right: 5px; margin: 10px; border-top-style: solid; border-top-width: 1px; border-top-color: #D3D3D3; border-left-style: none; border-left-width: 1px; border-left-color: #D3D3D3; border-right-style: none; border-right-width: 1px; border-right-color: #D3D3D3; vertical-align: middle; overflow-x: hidden;" data-valign="middle"><span style="background-image: repeating-linear-gradient(45deg, rgba(0,0,0,0.12) 0 1px, transparent 1px 6px); padding: 6px 10px; margin: -6px -10px; display: block;">No</span></td>
+<td class="gt_row gt_left" headers="Voted if Hawthorne" style="text-align: left; border-style: none; padding-top: 8px; padding-bottom: 8px; padding-left: 5px; padding-right: 5px; margin: 10px; border-top-style: solid; border-top-width: 1px; border-top-color: #D3D3D3; border-left-style: none; border-left-width: 1px; border-left-color: #D3D3D3; border-right-style: none; border-right-width: 1px; border-right-color: #D3D3D3; vertical-align: middle; overflow-x: hidden;" data-valign="middle"><span style="background-image: repeating-linear-gradient(45deg, rgba(0,0,0,0.12) 0 1px, transparent 1px 6px); padding: 6px 10px; margin: -6px -10px; display: block;">No</span></td>
+<td class="gt_row gt_left" headers="Voted if Self" style="text-align: left; border-style: none; padding-top: 8px; padding-bottom: 8px; padding-left: 5px; padding-right: 5px; margin: 10px; border-top-style: solid; border-top-width: 1px; border-top-color: #D3D3D3; border-left-style: none; border-left-width: 1px; border-left-color: #D3D3D3; border-right-style: none; border-right-width: 1px; border-right-color: #D3D3D3; vertical-align: middle; overflow-x: hidden;" data-valign="middle"><span style="background-image: repeating-linear-gradient(45deg, rgba(0,0,0,0.12) 0 1px, transparent 1px 6px); padding: 6px 10px; margin: -6px -10px; display: block;">No</span></td>
+<td class="gt_row gt_left" headers="Voted if Neighbors" style="text-align: left; border-style: none; padding-top: 8px; padding-bottom: 8px; padding-left: 5px; padding-right: 5px; margin: 10px; border-top-style: solid; border-top-width: 1px; border-top-color: #D3D3D3; border-left-style: none; border-left-width: 1px; border-left-color: #D3D3D3; border-right-style: none; border-right-width: 1px; border-right-color: #D3D3D3; vertical-align: middle; overflow-x: hidden;" data-valign="middle">Yes</td>
+<td class="gt_row gt_left" headers="Postcard" style="text-align: left; border-style: none; padding-top: 8px; padding-bottom: 8px; padding-left: 5px; padding-right: 5px; margin: 10px; border-top-style: solid; border-top-width: 1px; border-top-color: #D3D3D3; border-left-style: none; border-left-width: 1px; border-left-color: #D3D3D3; border-right-style: none; border-right-width: 1px; border-right-color: #D3D3D3; vertical-align: middle; overflow-x: hidden;" data-valign="middle">Neighbors</td>
+</tr>
+<tr class="odd" style="border-style: none;">
+<td class="gt_row gt_left" headers="Voter" style="text-align: left; border-style: none; padding-top: 8px; padding-bottom: 8px; padding-left: 5px; padding-right: 5px; margin: 10px; border-top-style: solid; border-top-width: 1px; border-top-color: #D3D3D3; border-left-style: none; border-left-width: 1px; border-left-color: #D3D3D3; border-right-style: none; border-right-width: 1px; border-right-color: #D3D3D3; vertical-align: middle; overflow-x: hidden;" data-valign="middle">…</td>
+<td class="gt_row gt_left" headers="Voted if No Postcard" style="text-align: left; border-style: none; padding-top: 8px; padding-bottom: 8px; padding-left: 5px; padding-right: 5px; margin: 10px; border-top-style: solid; border-top-width: 1px; border-top-color: #D3D3D3; border-left-style: none; border-left-width: 1px; border-left-color: #D3D3D3; border-right-style: none; border-right-width: 1px; border-right-color: #D3D3D3; vertical-align: middle; overflow-x: hidden;" data-valign="middle">…</td>
+<td class="gt_row gt_left" headers="Voted if Civic Duty" style="text-align: left; border-style: none; padding-top: 8px; padding-bottom: 8px; padding-left: 5px; padding-right: 5px; margin: 10px; border-top-style: solid; border-top-width: 1px; border-top-color: #D3D3D3; border-left-style: none; border-left-width: 1px; border-left-color: #D3D3D3; border-right-style: none; border-right-width: 1px; border-right-color: #D3D3D3; vertical-align: middle; overflow-x: hidden;" data-valign="middle">…</td>
+<td class="gt_row gt_left" headers="Voted if Hawthorne" style="text-align: left; border-style: none; padding-top: 8px; padding-bottom: 8px; padding-left: 5px; padding-right: 5px; margin: 10px; border-top-style: solid; border-top-width: 1px; border-top-color: #D3D3D3; border-left-style: none; border-left-width: 1px; border-left-color: #D3D3D3; border-right-style: none; border-right-width: 1px; border-right-color: #D3D3D3; vertical-align: middle; overflow-x: hidden;" data-valign="middle">…</td>
+<td class="gt_row gt_left" headers="Voted if Self" style="text-align: left; border-style: none; padding-top: 8px; padding-bottom: 8px; padding-left: 5px; padding-right: 5px; margin: 10px; border-top-style: solid; border-top-width: 1px; border-top-color: #D3D3D3; border-left-style: none; border-left-width: 1px; border-left-color: #D3D3D3; border-right-style: none; border-right-width: 1px; border-right-color: #D3D3D3; vertical-align: middle; overflow-x: hidden;" data-valign="middle">…</td>
+<td class="gt_row gt_left" headers="Voted if Neighbors" style="text-align: left; border-style: none; padding-top: 8px; padding-bottom: 8px; padding-left: 5px; padding-right: 5px; margin: 10px; border-top-style: solid; border-top-width: 1px; border-top-color: #D3D3D3; border-left-style: none; border-left-width: 1px; border-left-color: #D3D3D3; border-right-style: none; border-right-width: 1px; border-right-color: #D3D3D3; vertical-align: middle; overflow-x: hidden;" data-valign="middle">…</td>
+<td class="gt_row gt_left" headers="Postcard" style="text-align: left; border-style: none; padding-top: 8px; padding-bottom: 8px; padding-left: 5px; padding-right: 5px; margin: 10px; border-top-style: solid; border-top-width: 1px; border-top-color: #D3D3D3; border-left-style: none; border-left-width: 1px; border-left-color: #D3D3D3; border-right-style: none; border-right-width: 1px; border-right-color: #D3D3D3; vertical-align: middle; overflow-x: hidden;" data-valign="middle">…</td>
+</tr>
+<tr class="even" style="border-style: none;">
+<td class="gt_row gt_left" headers="Voter" style="text-align: left; border-style: none; padding-top: 8px; padding-bottom: 8px; padding-left: 5px; padding-right: 5px; margin: 10px; border-top-style: solid; border-top-width: 1px; border-top-color: #D3D3D3; border-left-style: none; border-left-width: 1px; border-left-color: #D3D3D3; border-right-style: none; border-right-width: 1px; border-right-color: #D3D3D3; vertical-align: middle; overflow-x: hidden;" data-valign="middle">Voter N</td>
+<td class="gt_row gt_left" headers="Voted if No Postcard" style="text-align: left; border-style: none; padding-top: 8px; padding-bottom: 8px; padding-left: 5px; padding-right: 5px; margin: 10px; border-top-style: solid; border-top-width: 1px; border-top-color: #D3D3D3; border-left-style: none; border-left-width: 1px; border-left-color: #D3D3D3; border-right-style: none; border-right-width: 1px; border-right-color: #D3D3D3; vertical-align: middle; overflow-x: hidden;" data-valign="middle">Yes</td>
+<td class="gt_row gt_left" headers="Voted if Civic Duty" style="text-align: left; border-style: none; padding-top: 8px; padding-bottom: 8px; padding-left: 5px; padding-right: 5px; margin: 10px; border-top-style: solid; border-top-width: 1px; border-top-color: #D3D3D3; border-left-style: none; border-left-width: 1px; border-left-color: #D3D3D3; border-right-style: none; border-right-width: 1px; border-right-color: #D3D3D3; vertical-align: middle; overflow-x: hidden;" data-valign="middle"><span style="background-image: repeating-linear-gradient(45deg, rgba(0,0,0,0.12) 0 1px, transparent 1px 6px); padding: 6px 10px; margin: -6px -10px; display: block;">Yes</span></td>
+<td class="gt_row gt_left" headers="Voted if Hawthorne" style="text-align: left; border-style: none; padding-top: 8px; padding-bottom: 8px; padding-left: 5px; padding-right: 5px; margin: 10px; border-top-style: solid; border-top-width: 1px; border-top-color: #D3D3D3; border-left-style: none; border-left-width: 1px; border-left-color: #D3D3D3; border-right-style: none; border-right-width: 1px; border-right-color: #D3D3D3; vertical-align: middle; overflow-x: hidden;" data-valign="middle"><span style="background-image: repeating-linear-gradient(45deg, rgba(0,0,0,0.12) 0 1px, transparent 1px 6px); padding: 6px 10px; margin: -6px -10px; display: block;">Yes</span></td>
+<td class="gt_row gt_left" headers="Voted if Self" style="text-align: left; border-style: none; padding-top: 8px; padding-bottom: 8px; padding-left: 5px; padding-right: 5px; margin: 10px; border-top-style: solid; border-top-width: 1px; border-top-color: #D3D3D3; border-left-style: none; border-left-width: 1px; border-left-color: #D3D3D3; border-right-style: none; border-right-width: 1px; border-right-color: #D3D3D3; vertical-align: middle; overflow-x: hidden;" data-valign="middle"><span style="background-image: repeating-linear-gradient(45deg, rgba(0,0,0,0.12) 0 1px, transparent 1px 6px); padding: 6px 10px; margin: -6px -10px; display: block;">Yes</span></td>
+<td class="gt_row gt_left" headers="Voted if Neighbors" style="text-align: left; border-style: none; padding-top: 8px; padding-bottom: 8px; padding-left: 5px; padding-right: 5px; margin: 10px; border-top-style: solid; border-top-width: 1px; border-top-color: #D3D3D3; border-left-style: none; border-left-width: 1px; border-left-color: #D3D3D3; border-right-style: none; border-right-width: 1px; border-right-color: #D3D3D3; vertical-align: middle; overflow-x: hidden;" data-valign="middle"><span style="background-image: repeating-linear-gradient(45deg, rgba(0,0,0,0.12) 0 1px, transparent 1px 6px); padding: 6px 10px; margin: -6px -10px; display: block;">Yes</span></td>
+<td class="gt_row gt_left" headers="Postcard" style="text-align: left; border-style: none; padding-top: 8px; padding-bottom: 8px; padding-left: 5px; padding-right: 5px; margin: 10px; border-top-style: solid; border-top-width: 1px; border-top-color: #D3D3D3; border-left-style: none; border-left-width: 1px; border-left-color: #D3D3D3; border-right-style: none; border-right-width: 1px; border-right-color: #D3D3D3; vertical-align: middle; overflow-x: hidden;" data-valign="middle">No Postcard</td>
+</tr>
+</tbody>
+<tfoot style="border-style: none;">
+<tr class="gt_footnotes odd" style="border-style: none; color: #333333; background-color: #FFFFFF; border-bottom-style: none; border-bottom-width: 2px; border-bottom-color: #D3D3D3; border-left-style: none; border-left-width: 2px; border-left-color: #D3D3D3; border-right-style: none; border-right-width: 2px; border-right-color: #D3D3D3;" data-bgcolor="#FFFFFF">
+<td colspan="7" class="gt_footnote" style="text-align: left; border-style: none; margin: 0px; font-size: 90%; padding-top: 4px; padding-bottom: 4px; padding-left: 5px; padding-right: 5px; max-width: 1px; word-break: break-word;">
+<span class="gt_footnote_marks" style="font-size: 75%; vertical-align: 0.4em; position: initial; white-space: nowrap; font-style: italic; font-weight: normal; line-height: 0;"><sup>1</sup></span> If all the information in this table were available, we could answer the question: What is the average causal effect of each social-pressure postcard, relative to no postcard, on the probability that a registered voter casts a ballot in the August 2006 Michigan primary?</td>
+</tr>
+<tr class="gt_footnotes even" style="border-style: none; color: #333333; background-color: #FFFFFF; border-bottom-style: none; border-bottom-width: 2px; border-bottom-color: #D3D3D3; border-left-style: none; border-left-width: 2px; border-left-color: #D3D3D3; border-right-style: none; border-right-width: 2px; border-right-color: #D3D3D3;" data-bgcolor="#FFFFFF">
+<td colspan="7" class="gt_footnote" style="text-align: left; border-style: none; margin: 0px; font-size: 90%; padding-top: 4px; padding-bottom: 4px; padding-left: 5px; padding-right: 5px; max-width: 1px; word-break: break-word;">
+<span class="gt_footnote_marks" style="font-size: 75%; vertical-align: 0.4em; position: initial; white-space: nowrap; font-style: italic; font-weight: normal; line-height: 0;"><sup>2</sup></span> Each row is one registered Michigan voter in the GGL trial population (excluding voters who had never participated in any of the six recorded prior elections). The trial covered 344,084 such voters across 191,243 households.</td>
+</tr>
+<tr class="gt_footnotes odd" style="border-style: none; color: #333333; background-color: #FFFFFF; border-bottom-style: none; border-bottom-width: 2px; border-bottom-color: #D3D3D3; border-left-style: none; border-left-width: 2px; border-left-color: #D3D3D3; border-right-style: none; border-right-width: 2px; border-right-color: #D3D3D3;" data-bgcolor="#FFFFFF">
+<td colspan="7" class="gt_footnote" style="text-align: left; border-style: none; margin: 0px; font-size: 90%; padding-top: 4px; padding-bottom: 4px; padding-left: 5px; padding-right: 5px; max-width: 1px; word-break: break-word;">
+<span class="gt_footnote_marks" style="font-size: 75%; vertical-align: 0.4em; position: initial; white-space: nowrap; font-style: italic; font-weight: normal; line-height: 0;"><sup>3</sup></span> Five potential outcomes per row: the voter's turnout under each of the five treatment arms. Four of the five are cross-hatched as unobservable counterfactuals --- the voter only experienced one of the five arms in reality. The five-arm structure of the treatment is what makes the Potential Outcomes spanner this wide.</td>
+</tr>
+<tr class="gt_footnotes even" style="border-style: none; color: #333333; background-color: #FFFFFF; border-bottom-style: none; border-bottom-width: 2px; border-bottom-color: #D3D3D3; border-left-style: none; border-left-width: 2px; border-left-color: #D3D3D3; border-right-style: none; border-right-width: 2px; border-right-color: #D3D3D3;" data-bgcolor="#FFFFFF">
+<td colspan="7" class="gt_footnote" style="text-align: left; border-style: none; margin: 0px; font-size: 90%; padding-top: 4px; padding-bottom: 4px; padding-left: 5px; padding-right: 5px; max-width: 1px; word-break: break-word;">
+<span class="gt_footnote_marks" style="font-size: 75%; vertical-align: 0.4em; position: initial; white-space: nowrap; font-style: italic; font-weight: normal; line-height: 0;"><sup>4</sup></span> The voter's actual treatment assignment: one of No Postcard, Civic Duty, Hawthorne, Self, or Neighbors. Assignment was randomized at the household level (two voters in the same household share the same treatment), not at the individual level.</td>
+</tr>
+</tfoot>
+</table>
+</div></div>
+</section><section id="exploring-the-data" class="level3" data-number="10.1.4"><h3 data-number="10.1.4" class="anchored" data-anchor-id="exploring-the-data">
+<span class="header-section-number">10.1.4</span> Exploring the data</h3>
+<p>Before fitting a model, look at the data. <em>You can never look too closely at your data</em> — the hour spent on a careful EDA almost always saves a day downstream.</p>
+<div class="cell">
+<details class="code-fold"><summary>Show the code</summary><div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb2"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">x</span> <span class="op">|&gt;</span></span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/group_by.html">group_by</a></span><span class="op">(</span><span class="va">treatment</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/summarise.html">summarise</a></span><span class="op">(</span>turnout <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/mean.html">mean</a></span><span class="op">(</span><span class="va">primary_06</span><span class="op">)</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html">mutate</a></span><span class="op">(</span>treatment <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/factor.html">factor</a></span><span class="op">(</span><span class="va">treatment</span>, levels <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"No Postcard"</span>, <span class="st">"Civic Duty"</span>, <span class="st">"Hawthorne"</span>, <span class="st">"Self"</span>, <span class="st">"Neighbors"</span><span class="op">)</span><span class="op">)</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html">ggplot</a></span><span class="op">(</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html">aes</a></span><span class="op">(</span>x <span class="op">=</span> <span class="va">treatment</span>, y <span class="op">=</span> <span class="va">turnout</span>, fill <span class="op">=</span> <span class="va">treatment</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_bar.html">geom_col</a></span><span class="op">(</span>width <span class="op">=</span> <span class="fl">0.6</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_text.html">geom_text</a></span><span class="op">(</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html">aes</a></span><span class="op">(</span>label <span class="op">=</span> <span class="fu">scales</span><span class="fu">::</span><span class="fu"><a href="https://scales.r-lib.org/reference/label_percent.html">label_percent</a></span><span class="op">(</span>accuracy <span class="op">=</span> <span class="fl">0.1</span><span class="op">)</span><span class="op">(</span><span class="va">turnout</span><span class="op">)</span><span class="op">)</span>, vjust <span class="op">=</span> <span class="op">-</span><span class="fl">0.4</span>, size <span class="op">=</span> <span class="fl">4</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/scale_continuous.html">scale_y_continuous</a></span><span class="op">(</span>labels <span class="op">=</span> <span class="fu">scales</span><span class="fu">::</span><span class="fu"><a href="https://scales.r-lib.org/reference/label_percent.html">label_percent</a></span><span class="op">(</span><span class="op">)</span>, limits <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">0.45</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html">labs</a></span><span class="op">(</span></span>
+<span>    title    <span class="op">=</span> <span class="st">"August 2006 Primary Turnout by Treatment Arm"</span>,</span>
+<span>    subtitle <span class="op">=</span> <span class="st">"Neighbors raises turnout by about 8 percentage points relative to No Postcard"</span>,</span>
+<span>    x        <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>    y        <span class="op">=</span> <span class="st">"Share who voted"</span>,</span>
+<span>    caption  <span class="op">=</span> <span class="st">"Source: Gerber, Green, Larimer (2008) via primer.data::shaming"</span></span>
+<span>  <span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggtheme.html">theme_minimal</a></span><span class="op">(</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/theme.html">theme</a></span><span class="op">(</span>legend.position <span class="op">=</span> <span class="st">"none"</span><span class="op">)</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details><div class="cell-output-display">
+<div>
+<figure class="figure"><p><img src="10-shaming_files/figure-html/unnamed-chunk-3-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>The raw turnout shares by treatment, computed across all 344,000 voters and ignoring voter class: No Postcard 29.7%, Civic Duty 31.5%, Hawthorne 32.2%, Self 34.5%, Neighbors 37.8%. The monotonic pattern — escalating social-pressure intensity produces escalating turnout — is visible directly in the raw data; no model is needed to see the basic shape. Neighbors is about 8 percentage points above No Postcard; Self is about 5; Hawthorne and Civic Duty are 2–3. The model’s job is to refine these estimates, hold demographic covariates constant, and produce confidence intervals — not to discover the headline pattern.</p>
+<div class="cell">
+<details class="code-fold"><summary>Show the code</summary><div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb3"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">x</span> <span class="op">|&gt;</span></span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/group_by.html">group_by</a></span><span class="op">(</span><span class="va">treatment</span>, <span class="va">voter_class</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/summarise.html">summarize</a></span><span class="op">(</span>turnout <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/mean.html">mean</a></span><span class="op">(</span><span class="va">primary_06</span><span class="op">)</span>, .groups <span class="op">=</span> <span class="st">"drop"</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html">mutate</a></span><span class="op">(</span>treatment <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/factor.html">factor</a></span><span class="op">(</span><span class="va">treatment</span>, levels <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"No Postcard"</span>, <span class="st">"Civic Duty"</span>, <span class="st">"Hawthorne"</span>, <span class="st">"Self"</span>, <span class="st">"Neighbors"</span><span class="op">)</span><span class="op">)</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html">ggplot</a></span><span class="op">(</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html">aes</a></span><span class="op">(</span>x <span class="op">=</span> <span class="va">treatment</span>, y <span class="op">=</span> <span class="va">turnout</span>, fill <span class="op">=</span> <span class="va">treatment</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_bar.html">geom_col</a></span><span class="op">(</span>width <span class="op">=</span> <span class="fl">0.7</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/scale_continuous.html">scale_y_continuous</a></span><span class="op">(</span>labels <span class="op">=</span> <span class="fu">scales</span><span class="fu">::</span><span class="fu"><a href="https://scales.r-lib.org/reference/label_percent.html">label_percent</a></span><span class="op">(</span><span class="op">)</span>, limits <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">0.65</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/facet_wrap.html">facet_wrap</a></span><span class="op">(</span><span class="op">~</span> <span class="va">voter_class</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html">labs</a></span><span class="op">(</span></span>
+<span>    title    <span class="op">=</span> <span class="st">"Turnout by Treatment, Faceted by Voter Class"</span>,</span>
+<span>    subtitle <span class="op">=</span> <span class="st">"Neighbors lifts every group; the absolute gap is largest for Sometimes/Always voters"</span>,</span>
+<span>    x        <span class="op">=</span> <span class="cn">NULL</span>, y        <span class="op">=</span> <span class="st">"Share who voted"</span>,</span>
+<span>    caption  <span class="op">=</span> <span class="st">"Source: Gerber, Green, Larimer (2008) via primer.data::shaming"</span></span>
+<span>  <span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggtheme.html">theme_minimal</a></span><span class="op">(</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/theme.html">theme</a></span><span class="op">(</span>legend.position <span class="op">=</span> <span class="st">"none"</span>,</span>
+<span>        axis.text.x <span class="op">=</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/element.html">element_text</a></span><span class="op">(</span>angle <span class="op">=</span> <span class="fl">30</span>, hjust <span class="op">=</span> <span class="fl">1</span><span class="op">)</span><span class="op">)</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details><div class="cell-output-display">
+<div>
+<figure class="figure"><p><img src="10-shaming_files/figure-html/unnamed-chunk-4-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>Faceting by voter class reveals the heterogeneity that motivates the chapter’s interaction structure. <em>Always Vote</em> voters have a baseline turnout near 46% in the control arm and rise toward 55% with Neighbors — a 9-percentage-point lift. <em>Sometimes Vote</em> voters rise from 28% to 36% with Neighbors — an 8-percentage-point lift. <em>Rarely Vote</em> voters rise from 12% to 17% with Neighbors — about a 5-percentage-point lift (and a much smaller share of them are reached, in absolute terms). The lift is largest for voters who already had a habit of voting; the postcard is, in essence, an extra nudge that pushes a near-decided voter over the line. For voters who rarely show up, the postcard helps but cannot manufacture a habit on its own.</p>
+<div class="cell">
+<details class="code-fold"><summary>Show the code</summary><div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb4"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">x</span> <span class="op">|&gt;</span></span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/count.html">count</a></span><span class="op">(</span><span class="va">treatment</span>, <span class="va">voter_class</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html">mutate</a></span><span class="op">(</span>treatment <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/factor.html">factor</a></span><span class="op">(</span><span class="va">treatment</span>, levels <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"No Postcard"</span>, <span class="st">"Civic Duty"</span>, <span class="st">"Hawthorne"</span>, <span class="st">"Self"</span>, <span class="st">"Neighbors"</span><span class="op">)</span><span class="op">)</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html">ggplot</a></span><span class="op">(</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html">aes</a></span><span class="op">(</span>x <span class="op">=</span> <span class="va">treatment</span>, y <span class="op">=</span> <span class="va">n</span>, fill <span class="op">=</span> <span class="va">voter_class</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_bar.html">geom_col</a></span><span class="op">(</span>position <span class="op">=</span> <span class="st">"fill"</span>, width <span class="op">=</span> <span class="fl">0.6</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/scale_continuous.html">scale_y_continuous</a></span><span class="op">(</span>labels <span class="op">=</span> <span class="fu">scales</span><span class="fu">::</span><span class="fu"><a href="https://scales.r-lib.org/reference/label_percent.html">label_percent</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html">labs</a></span><span class="op">(</span></span>
+<span>    title    <span class="op">=</span> <span class="st">"Voter Class Share Within Each Treatment Arm"</span>,</span>
+<span>    subtitle <span class="op">=</span> <span class="st">"Randomization produced balanced voter-class shares across treatments"</span>,</span>
+<span>    x        <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>    y        <span class="op">=</span> <span class="st">"Share within arm"</span>,</span>
+<span>    fill     <span class="op">=</span> <span class="st">"Voter class"</span>,</span>
+<span>    caption  <span class="op">=</span> <span class="st">"Source: Gerber, Green, Larimer (2008) via primer.data::shaming"</span></span>
+<span>  <span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggtheme.html">theme_minimal</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details><div class="cell-output-display">
+<div>
+<figure class="figure"><p><img src="10-shaming_files/figure-html/unnamed-chunk-5-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>The voter-class composition within each treatment arm is essentially identical — <em>Rarely Vote</em> is a small share (about 15%), <em>Sometimes Vote</em> is the largest (about 50%), and <em>Always Vote</em> is about 35%, in every arm. This is what we expect from a properly randomized experiment: the household-level randomization should produce balanced demographic composition across treatment groups. The balance is what licenses the causal interpretation of the contrasts in the next two plots.</p>
+<p>A few specifics worth flagging from the EDA:</p>
+<ul>
+<li>
+<strong>The full dataset is large</strong>: 344,084 voters. The full-data fit is the chapter’s reference fit, no slice-sampling required (unlike SPS). Standard errors will be tight; small effects are detectable.</li>
+<li>
+<strong>The treatment-arm sample sizes are not equal.</strong> No Postcard has about 191,000 voters; each postcard arm has about 38,000. The control was deliberately larger to give a precise baseline; the four postcard arms are smaller to keep the mail budget manageable.</li>
+<li>
+<strong>The household-clustered standard errors issue</strong> raised in the SPS chapter applies here too: two voters in the same household share a treatment assignment and may share unobserved correlates. The model below treats voters as independent, which slightly under-states standard errors. With 344,000 voters and 191,000 households the under-statement is mild; a serious analysis would use cluster-robust standard errors at the household level.</li>
+</ul></section><section id="the-paired-question" class="level3" data-number="10.1.5"><h3 data-number="10.1.5" class="anchored" data-anchor-id="the-paired-question">
+<span class="header-section-number">10.1.5</span> The paired question</h3>
+<blockquote class="blockquote">
+<p><em>The difference between predictive models and causal models is that the former have one column for the outcome variable and the latter have more than one column.</em></p>
+</blockquote>
+<p>Every chapter pairs its primary question with one in the opposite framing. Since our primary question is causal, the paired question is predictive:</p>
+<blockquote class="blockquote">
+<p>What is the difference in expected turnout across the five postcard arms, separately for voters with different prior engagement histories?</p>
+</blockquote>
+<p>This is the predictive twin of the causal primary. The same fitted model serves both, but the readings differ:</p>
+<ul>
+<li>The causal reading says: <em>sending a Neighbors postcard, instead of no postcard, raises a registered voter’s probability of voting by about 8 percentage points on average.</em> That is a claim about what would happen under a counterfactual mail intervention.</li>
+<li>The predictive reading says: <em>registered voters who received the Neighbors postcard had a turnout share about 8 percentage points higher than registered voters who received no postcard.</em> That is a between-group comparison.</li>
+</ul>
+<p>Both readings are honest, as in Trains and SPS. The causal reading is defensible because the treatment was randomized at the household level. The predictive reading is defensible because comparing two existing groups requires no intervention claim. The chapter will read the same number through both lenses.</p>
+<div style="display: inline-block; width: auto; max-width: 100%;"><div id="pt_paired" style="padding-left:0px;padding-right:0px;padding-top:10px;padding-bottom:10px;overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
+  
+  
+<table class="gt_table caption-top table" data-quarto-bootstrap="false" data-bgcolor="#FFFFFF">
+<colgroup>
+<col style="width: 33%">
+<col style="width: 33%">
+<col style="width: 33%">
+</colgroup>
+<thead style="border-style: none;">
+<tr class="gt_heading header" style="border-style: none; background-color: #FFFFFF; text-align: center; border-bottom-color: #FFFFFF; border-left-style: none; border-left-width: 1px; border-left-color: #D3D3D3; border-right-style: none; border-right-width: 1px; border-right-color: #D3D3D3;" data-bgcolor="#FFFFFF" data-align="center">
+<td colspan="3" class="gt_heading gt_title gt_font_normal gt_bottom_border" style="text-align: center; border-style: none; color: #333333; font-size: 1.5em; padding-top: 4px; padding-bottom: 4px; padding-left: 5px; padding-right: 5px; background-color: #FFFFFF; border-left-style: none; border-left-width: 1px; border-left-color: #D3D3D3; border-right-style: none; border-right-width: 1px; border-right-color: #D3D3D3; border-bottom-style: solid; border-bottom-width: 2px; border-bottom-color: #D3D3D3; font-weight: normal;" data-bgcolor="#FFFFFF">Preceptor Table --- Paired (predictive) question<span class="gt_footnote_marks" style="font-size: 75%; vertical-align: 0.4em; position: initial; white-space: nowrap; font-style: italic; font-weight: normal; line-height: 0;"><sup>1</sup></span>
+</td>
+</tr>
+<tr class="gt_col_headings gt_spanner_row even" style="border-style: none; border-top-style: solid; border-top-width: 2px; border-top-color: #D3D3D3; border-bottom-width: 2px; border-bottom-color: #D3D3D3; border-left-style: none; border-left-width: 1px; border-left-color: #D3D3D3; border-right-style: none; border-right-width: 1px; border-right-color: #D3D3D3; border-bottom-style: hidden;">
+<th id="unit_span" class="gt_center gt_columns_top_border gt_column_spanner_outer" data-quarto-table-cell-role="th" style="text-align: left; border-style: none; color: #333333; background-color: #FFFFFF; font-size: 100%; text-transform: inherit; padding-top: 0; padding-bottom: 0; padding-right: 4px; padding-left: 0; font-weight: bold;" scope="col" data-bgcolor="#FFFFFF"><div class="gt_column_spanner" style="border-bottom-style: solid; border-bottom-width: 2px; border-bottom-color: #D3D3D3; vertical-align: bottom; padding-top: 5px; padding-bottom: 5px; overflow-x: hidden; display: inline-block; width: 100%;">
+Unit<span class="gt_footnote_marks" style="font-size: 75%; vertical-align: 0.4em; position: initial; white-space: nowrap; font-style: italic; font-weight: normal; line-height: 0;"><sup>2</sup></span>
+</div></th>
+<th id="outcome_span" class="gt_center gt_columns_top_border gt_column_spanner_outer" data-quarto-table-cell-role="th" style="text-align: left; border-style: none; color: #333333; background-color: #FFFFFF; font-size: 100%; text-transform: inherit; padding-top: 0; padding-bottom: 0; padding-left: 4px; padding-right: 4px; font-weight: bold;" scope="col" data-bgcolor="#FFFFFF"><div class="gt_column_spanner" style="border-bottom-style: solid; border-bottom-width: 2px; border-bottom-color: #D3D3D3; vertical-align: bottom; padding-top: 5px; padding-bottom: 5px; overflow-x: hidden; display: inline-block; width: 100%;">
+Outcome<span class="gt_footnote_marks" style="font-size: 75%; vertical-align: 0.4em; position: initial; white-space: nowrap; font-style: italic; font-weight: normal; line-height: 0;"><sup>3</sup></span>
+</div></th>
+<th id="covariates_span" class="gt_center gt_columns_top_border gt_column_spanner_outer" data-quarto-table-cell-role="th" style="text-align: left; border-style: none; color: #333333; background-color: #FFFFFF; font-size: 100%; text-transform: inherit; padding-top: 0; padding-bottom: 0; padding-left: 4px; padding-right: 0; font-weight: bold;" scope="col" data-bgcolor="#FFFFFF"><div class="gt_column_spanner" style="border-bottom-style: solid; border-bottom-width: 2px; border-bottom-color: #D3D3D3; vertical-align: bottom; padding-top: 5px; padding-bottom: 5px; overflow-x: hidden; display: inline-block; width: 100%;">
+Covariate<span class="gt_footnote_marks" style="font-size: 75%; vertical-align: 0.4em; position: initial; white-space: nowrap; font-style: italic; font-weight: normal; line-height: 0;"><sup>4</sup></span>
+</div></th>
+</tr>
+<tr class="gt_col_headings header" style="border-style: none; border-top-style: solid; border-top-width: 2px; border-top-color: #D3D3D3; border-bottom-style: solid; border-bottom-width: 2px; border-bottom-color: #D3D3D3; border-left-style: none; border-left-width: 1px; border-left-color: #D3D3D3; border-right-style: none; border-right-width: 1px; border-right-color: #D3D3D3;">
+<th id="Voter" class="gt_col_heading gt_columns_bottom_border gt_left" data-quarto-table-cell-role="th" scope="col" style="text-align: left; border-style: none; color: #333333; background-color: #FFFFFF; font-size: 100%; font-weight: normal; text-transform: inherit; border-left-style: none; border-left-width: 1px; border-left-color: #D3D3D3; border-right-style: none; border-right-width: 1px; border-right-color: #D3D3D3; vertical-align: bottom; padding-top: 5px; padding-bottom: 6px; padding-left: 5px; padding-right: 5px; overflow-x: hidden;" data-bgcolor="#FFFFFF" data-valign="bottom">Voter</th>
+<th id="Voted" class="gt_col_heading gt_columns_bottom_border gt_left" data-quarto-table-cell-role="th" scope="col" style="text-align: left; border-style: none; color: #333333; background-color: #FFFFFF; font-size: 100%; font-weight: normal; text-transform: inherit; border-left-style: none; border-left-width: 1px; border-left-color: #D3D3D3; border-right-style: none; border-right-width: 1px; border-right-color: #D3D3D3; vertical-align: bottom; padding-top: 5px; padding-bottom: 6px; padding-left: 5px; padding-right: 5px; overflow-x: hidden;" data-bgcolor="#FFFFFF" data-valign="bottom">Voted</th>
+<th id="Postcard" class="gt_col_heading gt_columns_bottom_border gt_left" data-quarto-table-cell-role="th" scope="col" style="text-align: left; border-style: none; color: #333333; background-color: #FFFFFF; font-size: 100%; font-weight: normal; text-transform: inherit; border-left-style: none; border-left-width: 1px; border-left-color: #D3D3D3; border-right-style: none; border-right-width: 1px; border-right-color: #D3D3D3; vertical-align: bottom; padding-top: 5px; padding-bottom: 6px; padding-left: 5px; padding-right: 5px; overflow-x: hidden;" data-bgcolor="#FFFFFF" data-valign="bottom">Postcard</th>
+</tr>
+</thead>
+<tbody class="gt_table_body" style="border-style: none; border-top-style: solid; border-top-width: 2px; border-top-color: #D3D3D3; border-bottom-style: solid; border-bottom-width: 2px; border-bottom-color: #D3D3D3;">
+<tr class="odd" style="border-style: none;">
+<td class="gt_row gt_left" headers="Voter" style="text-align: left; border-style: none; padding-top: 8px; padding-bottom: 8px; padding-left: 5px; padding-right: 5px; margin: 10px; border-top-style: solid; border-top-width: 1px; border-top-color: #D3D3D3; border-left-style: none; border-left-width: 1px; border-left-color: #D3D3D3; border-right-style: none; border-right-width: 1px; border-right-color: #D3D3D3; vertical-align: middle; overflow-x: hidden;" data-valign="middle">Voter 1</td>
+<td class="gt_row gt_left" headers="Voted" style="text-align: left; border-style: none; padding-top: 8px; padding-bottom: 8px; padding-left: 5px; padding-right: 5px; margin: 10px; border-top-style: solid; border-top-width: 1px; border-top-color: #D3D3D3; border-left-style: none; border-left-width: 1px; border-left-color: #D3D3D3; border-right-style: none; border-right-width: 1px; border-right-color: #D3D3D3; vertical-align: middle; overflow-x: hidden;" data-valign="middle">Yes</td>
+<td class="gt_row gt_left" headers="Postcard" style="text-align: left; border-style: none; padding-top: 8px; padding-bottom: 8px; padding-left: 5px; padding-right: 5px; margin: 10px; border-top-style: solid; border-top-width: 1px; border-top-color: #D3D3D3; border-left-style: none; border-left-width: 1px; border-left-color: #D3D3D3; border-right-style: none; border-right-width: 1px; border-right-color: #D3D3D3; vertical-align: middle; overflow-x: hidden;" data-valign="middle">Self</td>
+</tr>
+<tr class="even" style="border-style: none;">
+<td class="gt_row gt_left" headers="Voter" style="text-align: left; border-style: none; padding-top: 8px; padding-bottom: 8px; padding-left: 5px; padding-right: 5px; margin: 10px; border-top-style: solid; border-top-width: 1px; border-top-color: #D3D3D3; border-left-style: none; border-left-width: 1px; border-left-color: #D3D3D3; border-right-style: none; border-right-width: 1px; border-right-color: #D3D3D3; vertical-align: middle; overflow-x: hidden;" data-valign="middle">Voter 2</td>
+<td class="gt_row gt_left" headers="Voted" style="text-align: left; border-style: none; padding-top: 8px; padding-bottom: 8px; padding-left: 5px; padding-right: 5px; margin: 10px; border-top-style: solid; border-top-width: 1px; border-top-color: #D3D3D3; border-left-style: none; border-left-width: 1px; border-left-color: #D3D3D3; border-right-style: none; border-right-width: 1px; border-right-color: #D3D3D3; vertical-align: middle; overflow-x: hidden;" data-valign="middle">Yes</td>
+<td class="gt_row gt_left" headers="Postcard" style="text-align: left; border-style: none; padding-top: 8px; padding-bottom: 8px; padding-left: 5px; padding-right: 5px; margin: 10px; border-top-style: solid; border-top-width: 1px; border-top-color: #D3D3D3; border-left-style: none; border-left-width: 1px; border-left-color: #D3D3D3; border-right-style: none; border-right-width: 1px; border-right-color: #D3D3D3; vertical-align: middle; overflow-x: hidden;" data-valign="middle">Neighbors</td>
+</tr>
+<tr class="odd" style="border-style: none;">
+<td class="gt_row gt_left" headers="Voter" style="text-align: left; border-style: none; padding-top: 8px; padding-bottom: 8px; padding-left: 5px; padding-right: 5px; margin: 10px; border-top-style: solid; border-top-width: 1px; border-top-color: #D3D3D3; border-left-style: none; border-left-width: 1px; border-left-color: #D3D3D3; border-right-style: none; border-right-width: 1px; border-right-color: #D3D3D3; vertical-align: middle; overflow-x: hidden;" data-valign="middle">…</td>
+<td class="gt_row gt_left" headers="Voted" style="text-align: left; border-style: none; padding-top: 8px; padding-bottom: 8px; padding-left: 5px; padding-right: 5px; margin: 10px; border-top-style: solid; border-top-width: 1px; border-top-color: #D3D3D3; border-left-style: none; border-left-width: 1px; border-left-color: #D3D3D3; border-right-style: none; border-right-width: 1px; border-right-color: #D3D3D3; vertical-align: middle; overflow-x: hidden;" data-valign="middle">…</td>
+<td class="gt_row gt_left" headers="Postcard" style="text-align: left; border-style: none; padding-top: 8px; padding-bottom: 8px; padding-left: 5px; padding-right: 5px; margin: 10px; border-top-style: solid; border-top-width: 1px; border-top-color: #D3D3D3; border-left-style: none; border-left-width: 1px; border-left-color: #D3D3D3; border-right-style: none; border-right-width: 1px; border-right-color: #D3D3D3; vertical-align: middle; overflow-x: hidden;" data-valign="middle">…</td>
+</tr>
+<tr class="even" style="border-style: none;">
+<td class="gt_row gt_left" headers="Voter" style="text-align: left; border-style: none; padding-top: 8px; padding-bottom: 8px; padding-left: 5px; padding-right: 5px; margin: 10px; border-top-style: solid; border-top-width: 1px; border-top-color: #D3D3D3; border-left-style: none; border-left-width: 1px; border-left-color: #D3D3D3; border-right-style: none; border-right-width: 1px; border-right-color: #D3D3D3; vertical-align: middle; overflow-x: hidden;" data-valign="middle">Voter N</td>
+<td class="gt_row gt_left" headers="Voted" style="text-align: left; border-style: none; padding-top: 8px; padding-bottom: 8px; padding-left: 5px; padding-right: 5px; margin: 10px; border-top-style: solid; border-top-width: 1px; border-top-color: #D3D3D3; border-left-style: none; border-left-width: 1px; border-left-color: #D3D3D3; border-right-style: none; border-right-width: 1px; border-right-color: #D3D3D3; vertical-align: middle; overflow-x: hidden;" data-valign="middle">Yes</td>
+<td class="gt_row gt_left" headers="Postcard" style="text-align: left; border-style: none; padding-top: 8px; padding-bottom: 8px; padding-left: 5px; padding-right: 5px; margin: 10px; border-top-style: solid; border-top-width: 1px; border-top-color: #D3D3D3; border-left-style: none; border-left-width: 1px; border-left-color: #D3D3D3; border-right-style: none; border-right-width: 1px; border-right-color: #D3D3D3; vertical-align: middle; overflow-x: hidden;" data-valign="middle">No Postcard</td>
+</tr>
+</tbody>
+<tfoot style="border-style: none;">
+<tr class="gt_footnotes odd" style="border-style: none; color: #333333; background-color: #FFFFFF; border-bottom-style: none; border-bottom-width: 2px; border-bottom-color: #D3D3D3; border-left-style: none; border-left-width: 2px; border-left-color: #D3D3D3; border-right-style: none; border-right-width: 2px; border-right-color: #D3D3D3;" data-bgcolor="#FFFFFF">
+<td colspan="3" class="gt_footnote" style="text-align: left; border-style: none; margin: 0px; font-size: 90%; padding-top: 4px; padding-bottom: 4px; padding-left: 5px; padding-right: 5px; max-width: 1px; word-break: break-word;">
+<span class="gt_footnote_marks" style="font-size: 75%; vertical-align: 0.4em; position: initial; white-space: nowrap; font-style: italic; font-weight: normal; line-height: 0;"><sup>1</sup></span> If all the information in this table were available, we could answer the question: What is the difference in expected turnout across the five postcard arms, separately for voters with different prior engagement histories?</td>
+</tr>
+<tr class="gt_footnotes even" style="border-style: none; color: #333333; background-color: #FFFFFF; border-bottom-style: none; border-bottom-width: 2px; border-bottom-color: #D3D3D3; border-left-style: none; border-left-width: 2px; border-left-color: #D3D3D3; border-right-style: none; border-right-width: 2px; border-right-color: #D3D3D3;" data-bgcolor="#FFFFFF">
+<td colspan="3" class="gt_footnote" style="text-align: left; border-style: none; margin: 0px; font-size: 90%; padding-top: 4px; padding-bottom: 4px; padding-left: 5px; padding-right: 5px; max-width: 1px; word-break: break-word;">
+<span class="gt_footnote_marks" style="font-size: 75%; vertical-align: 0.4em; position: initial; white-space: nowrap; font-style: italic; font-weight: normal; line-height: 0;"><sup>2</sup></span> Same units as the primary Preceptor Table --- one row per registered Michigan voter.</td>
+</tr>
+<tr class="gt_footnotes odd" style="border-style: none; color: #333333; background-color: #FFFFFF; border-bottom-style: none; border-bottom-width: 2px; border-bottom-color: #D3D3D3; border-left-style: none; border-left-width: 2px; border-left-color: #D3D3D3; border-right-style: none; border-right-width: 2px; border-right-color: #D3D3D3;" data-bgcolor="#FFFFFF">
+<td colspan="3" class="gt_footnote" style="text-align: left; border-style: none; margin: 0px; font-size: 90%; padding-top: 4px; padding-bottom: 4px; padding-left: 5px; padding-right: 5px; max-width: 1px; word-break: break-word;">
+<span class="gt_footnote_marks" style="font-size: 75%; vertical-align: 0.4em; position: initial; white-space: nowrap; font-style: italic; font-weight: normal; line-height: 0;"><sup>3</sup></span> One observed turnout outcome per voter (no potential outcomes). The predictive framing requires no counterfactual.</td>
+</tr>
+<tr class="gt_footnotes even" style="border-style: none; color: #333333; background-color: #FFFFFF; border-bottom-style: none; border-bottom-width: 2px; border-bottom-color: #D3D3D3; border-left-style: none; border-left-width: 2px; border-left-color: #D3D3D3; border-right-style: none; border-right-width: 2px; border-right-color: #D3D3D3;" data-bgcolor="#FFFFFF">
+<td colspan="3" class="gt_footnote" style="text-align: left; border-style: none; margin: 0px; font-size: 90%; padding-top: 4px; padding-bottom: 4px; padding-left: 5px; padding-right: 5px; max-width: 1px; word-break: break-word;">
+<span class="gt_footnote_marks" style="font-size: 75%; vertical-align: 0.4em; position: initial; white-space: nowrap; font-style: italic; font-weight: normal; line-height: 0;"><sup>4</sup></span> The same column that sat under a Treatment spanner in the primary Preceptor Table sits here under a Covariate spanner. The column itself is identical. Only the analyst's commitment changed.</td>
+</tr>
+</tfoot>
+</table>
+</div></div>
+</section></section><section id="justice" class="level2" data-number="10.2"><h2 data-number="10.2" class="anchored" data-anchor-id="justice">
+<span class="header-section-number">10.2</span> Justice</h2>
+<div class="cell">
+<div class="cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure"><p><img src="other/images/Justice.jpg" class="img-fluid figure-img"></p>
+<figcaption>Justice.</figcaption></figure>
+</div>
+</div>
+</div>
+<blockquote class="blockquote">
+<p><em>Justice concerns the Population Table, the four key assumptions which underlie it (validity, stability, representativeness, and unconfoundedness), and the choice of probability family and link function for the data generating mechanism.</em></p>
+</blockquote>
+<p>Justice is where you (or your critics) raise concerns about whether the model will do what you want it to do. The four assumptions are the named families of concerns; they are choices the analyst makes and defends.</p>
+<p>The bridge runs <em>data → population → Preceptor Table</em>. Justice’s job is to make sure both arrows are defensible.</p>
+<blockquote class="blockquote">
+<p><em>There are known knowns. There are things we know we know. We also know there are known unknowns. That is to say, we know there are some things we do not know. But there are also unknown unknowns, the ones we do not know we do not know.</em> — Donald Rumsfeld</p>
+</blockquote>
+<section id="validity" class="level3" data-number="10.2.1"><h3 data-number="10.2.1" class="anchored" data-anchor-id="validity">
+<span class="header-section-number">10.2.1</span> Validity</h3>
+<blockquote class="blockquote">
+<p><em>Validity is the consistency, or lack thereof, in the columns of the data set and the corresponding columns in the Preceptor Table.</em></p>
+</blockquote>
+<p>Validity is about <em>columns</em>. Two columns can have the same name and measure different things; two columns can have different names and measure the same thing.</p>
+<p>The outcome column <code>primary_06</code> is the <em>administrative record</em> of whether each voter cast a ballot in the August 2006 Michigan primary, taken from the Michigan voter file. This is unusually clean: turnout is observed without recall, without survey-response bias, without self-reporting; the voter file records who showed up and who didn’t. The Preceptor Table’s outcome column is meant to capture the same thing for the trial population, and it does. There is a small validity wrinkle — voter files mis-record about 1–2% of turnout decisions in either direction, partly because of paperwork lag and partly because of address errors — but the noise is small relative to the treatment effects we care about.</p>
+<p>The treatment column has a sharper issue. In the data, <code>treatment</code> records the <em>postcard the household was assigned to receive</em>. It does not record whether the postcard was actually delivered, opened, or read. A Neighbors postcard that ended up in the recycling bin without being read counts as “Neighbors” in the data, and the estimated causal effect is therefore the <em>intent-to-treat</em> effect: the effect of being assigned to receive a postcard, averaged over recipients who actually engaged with it and those who didn’t. For a real Texas campaign considering whether to send a Neighbors postcard the intent-to-treat number is the relevant one (the campaign chooses who to mail, not who reads). For a different kind of question — <em>“how much does reading the postcard move the reader?”</em> — the intent-to-treat number under-states the effect on the actual readers; the <em>complier average causal effect</em> would be the right thing to estimate, and it would require additional assumptions or data.</p>
+<p>The covariate columns (<code>age</code>, <code>sex</code>, <code>voter_class</code>) are administrative records from the voter file and clean.</p>
+</section><section id="stability" class="level3" data-number="10.2.2"><h3 data-number="10.2.2" class="anchored" data-anchor-id="stability">
+<span class="header-section-number">10.2.2</span> Stability</h3>
+<blockquote class="blockquote">
+<p><em>Stability means that the relationship between the columns in the Population Table is the same for three categories of rows: the data, the Preceptor Table, and the larger population from which both are drawn.</em></p>
+</blockquote>
+<p>Stability is a statement about <em>parameters</em>, not distributions. The stability concern for this chapter is <em>prospective</em>: would the treatment effect estimated in the August 2006 Michigan primary still apply to a 2026 Texas gubernatorial election?</p>
+<p>The two contexts differ on several dimensions. Michigan 2006 was a low-salience primary with a baseline turnout near 30%; the Texas race the campaign cares about will probably be a higher-salience general election with a higher baseline (Texas gubernatorial turnout typically runs 40–50%). The marginal voter — the kind of voter most movable by a postcard — is different at 30% baseline than at 50% baseline; the effect of a Neighbors postcard on someone who is already 70% likely to vote is mechanically smaller than its effect on someone who is 30% likely. The data we have, fit to a 30%-baseline population, may not extrapolate cleanly to a 50%-baseline population.</p>
+<p>Twenty years have also passed. Voter file accuracy has improved, mail filtering and reading patterns have changed, social-pressure tactics are more widely known (and possibly less novel), and the political polarization context is very different. The coefficient on the Neighbors postcard <em>might</em> still be 8 percentage points in 2026; it might be 3 or 12. The model does not tell us; only a contemporary replication would.</p>
+<p>A common confusion is to point at any change between 2006 and 2026 and call it a stability violation. It isn’t. The mean turnout has shifted; the demographic composition has shifted; the political environment has shifted. None of that, by itself, is a stability violation. What hurts us is a change in the <em>parameter</em> — the average treatment effect of a specific postcard on the probability of voting — and the chapter has no way of measuring whether that parameter has shifted.</p>
+</section><section id="representativeness" class="level3" data-number="10.2.3"><h3 data-number="10.2.3" class="anchored" data-anchor-id="representativeness">
+<span class="header-section-number">10.2.3</span> Representativeness</h3>
+<blockquote class="blockquote">
+<p><em>Representativeness, or the lack thereof, concerns two relationships among the rows in the Population Table. The first is between the data and the other rows. The second is between the other rows and the Preceptor Table.</em></p>
+</blockquote>
+<p>Two links to defend.</p>
+<p><em>Data → population.</em> The 344,000 voters in the data are the GGL trial population: Michigan registered voters with at least one prior election turnout in the six recorded elections. Within Michigan that is a large, fairly representative slice of the active voter pool. Across states the picture is different: Michigan in 2006 was a swing-state-ish electorate with specific demographic and political patterns that do not match every other state. Texas in 2026 is meaningfully different on every relevant dimension — ethnic composition, urban-rural mix, partisan baseline, electoral institutions. The model’s coefficients, fit to Michigan 2006 voters, are a starting point for inference about Texas 2026 voters, not a direct answer.</p>
+<p><em>Population → Preceptor Table.</em> For the question as stated — <em>the average causal effect on the trial population</em> — the link is essentially the identity. For the larger campaign question — <em>what would happen if we sent these postcards to Texas voters in 2026</em> — the link is the same as the data-to-population link, with the same caveats.</p>
+</section><section id="unconfoundedness-primary-causal-question-only" class="level3" data-number="10.2.4"><h3 data-number="10.2.4" class="anchored" data-anchor-id="unconfoundedness-primary-causal-question-only">
+<span class="header-section-number">10.2.4</span> Unconfoundedness (primary causal question only)</h3>
+<blockquote class="blockquote">
+<p><em>Unconfoundedness means that the treatment assignment is independent of the potential outcomes, when we condition on pre-treatment covariates.</em></p>
+</blockquote>
+<p>Unconfoundedness applies only to the primary causal question. The paired predictive question does not require it.</p>
+<p>For the primary question, the GGL trial was designed to satisfy unconfoundedness through randomization. The authors randomly assigned each <em>household</em> to one of the five treatment arms, with the four postcard arms sized to about 38,000 households each and the control arm to about 191,000 households. The household-level randomization guarantees, in expectation, that all five treatment groups have the same distribution of pre-treatment covariates — the same average age, the same male-female split, the same voter-class composition. The voter-class shares-by-arm plot above confirms this balance held in practice.</p>
+<p>The one wrinkle, raised in the EDA, is the household-clustering of treatment. Two voters in the same household get the same postcard; their turnout decisions are not statistically independent. The model below treats them as independent, which under-states the standard errors slightly. The under-statement matters less here than in SPS (where the clustering was at the community level with hundreds of households per cluster) because the household clusters here are tiny (1–3 voters typically) and there are many of them. A serious analyst would use cluster-robust SEs at the household level; ours are slightly too tight.</p>
+</section><section id="probability-family-and-link-function" class="level3" data-number="10.2.5"><h3 data-number="10.2.5" class="anchored" data-anchor-id="probability-family-and-link-function">
+<span class="header-section-number">10.2.5</span> Probability family and link function</h3>
+<p>The outcome <code>voted</code> is a binary variable. The probability family is Bernoulli:</p>
+<p><span class="math display">\[Y \sim \text{Bernoulli}(\rho)\]</span></p>
+<p>The link function is the logit:</p>
+<p><span class="math display">\[\log \left( \frac{\rho}{1-\rho} \right) = \beta_0 + \beta_1 X_1 + \cdots + \beta_n X_n\]</span></p>
+<p>Our model will be a logistic regression with an interaction between <code>treatment</code> and <code>voter_class</code>. The covariates we use are settled in Courage.</p>
+</section></section><section id="courage" class="level2" data-number="10.3"><h2 data-number="10.3" class="anchored" data-anchor-id="courage">
+<span class="header-section-number">10.3</span> Courage</h2>
+<div class="cell">
+<div class="cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure"><p><img src="other/images/Courage.jpg" class="img-fluid figure-img"></p>
+<figcaption>Courage.</figcaption></figure>
+</div>
+</div>
+</div>
+<blockquote class="blockquote">
+<p><em>Courage creates the data generating mechanism.</em></p>
+</blockquote>
+<p><em>The three languages of data science are words, math, and code, and the most important of these is code.</em> Justice settled the structural choices — binary outcome, Bernoulli family, logit link. Courage picks specific covariates and estimates parameters.</p>
+<section id="candidate-models" class="level3" data-number="10.3.1"><h3 data-number="10.3.1" class="anchored" data-anchor-id="candidate-models">
+<span class="header-section-number">10.3.1</span> Candidate models</h3>
+<p>We try a handful of plausible specifications, see what each says, and commit to the one that matches the question.</p>
+<section id="candidate-1-voted-treatment" class="level4" data-number="10.3.1.1"><h4 data-number="10.3.1.1" class="anchored" data-anchor-id="candidate-1-voted-treatment">
+<span class="header-section-number">10.3.1.1</span> Candidate 1: <code>voted ~ treatment</code>
+</h4>
+<div class="cell">
+<details class="code-fold"><summary>Show the code</summary><div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb5"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu">logistic_reg</span><span class="op">(</span>engine <span class="op">=</span> <span class="st">"glm"</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>  <span class="fu">fit</span><span class="op">(</span><span class="va">voted</span> <span class="op">~</span> <span class="va">treatment</span>, data <span class="op">=</span> <span class="va">x</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>  <span class="fu"><a href="https://generics.r-lib.org/reference/tidy.html">tidy</a></span><span class="op">(</span>conf.int <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html">select</a></span><span class="op">(</span><span class="va">term</span>, <span class="va">estimate</span>, <span class="va">conf.low</span>, <span class="va">conf.high</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html">mutate</a></span><span class="op">(</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/across.html">across</a></span><span class="op">(</span><span class="fu"><a href="https://tidyselect.r-lib.org/reference/where.html">where</a></span><span class="op">(</span><span class="va">is.numeric</span><span class="op">)</span>, \<span class="op">(</span><span class="va">v</span><span class="op">)</span> <span class="fu"><a href="https://rdrr.io/r/base/Round.html">round</a></span><span class="op">(</span><span class="va">v</span>, <span class="fl">3</span><span class="op">)</span><span class="op">)</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>  <span class="fu"><a href="https://rdrr.io/pkg/knitr/man/kable.html">kable</a></span><span class="op">(</span>caption <span class="op">=</span> <span class="st">"Candidate model: voted ~ treatment. Coefficients on the log-odds scale. Source: Gerber, Green, Larimer (2008) via primer.data::shaming."</span><span class="op">)</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details><div class="cell-output-display">
+<table class="caption-top table table-sm table-striped small">
+<caption>Candidate model: voted ~ treatment. Coefficients on the log-odds scale. Source: Gerber, Green, Larimer (2008) via primer.data::shaming.</caption>
+<thead><tr class="header">
+<th style="text-align: left;">term</th>
+<th style="text-align: right;">estimate</th>
+<th style="text-align: right;">conf.low</th>
+<th style="text-align: right;">conf.high</th>
+</tr></thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">(Intercept)</td>
+<td style="text-align: right;">-0.863</td>
+<td style="text-align: right;">-0.873</td>
+<td style="text-align: right;">-0.854</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">treatmentCivic Duty</td>
+<td style="text-align: right;">0.084</td>
+<td style="text-align: right;">0.061</td>
+<td style="text-align: right;">0.108</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">treatmentHawthorne</td>
+<td style="text-align: right;">0.120</td>
+<td style="text-align: right;">0.097</td>
+<td style="text-align: right;">0.144</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">treatmentSelf</td>
+<td style="text-align: right;">0.223</td>
+<td style="text-align: right;">0.200</td>
+<td style="text-align: right;">0.246</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">treatmentNeighbors</td>
+<td style="text-align: right;">0.365</td>
+<td style="text-align: right;">0.342</td>
+<td style="text-align: right;">0.388</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<p>The intercept (-0.86 log-odds) is the baseline turnout log-odds for the reference treatment, <code>No Postcard</code>: translated to probability, <span class="math inline">\(1/(1+\exp(0.86)) \approx 0.30\)</span>, or 30%. Each treatment coefficient is the log-odds shift relative to No Postcard. Civic Duty adds 0.08 log-odds, Hawthorne 0.12, Self 0.21, and Neighbors 0.37. Translated to probabilities, those correspond to roughly 2, 2.5, 5, and 8 percentage points of additional turnout, matching the raw turnout shares from the EDA.</p>
+<p>The treatment-only model is good enough for the headline number but misses the heterogeneity the EDA showed. Different voter classes respond differently; the model that ignores voter class collapses all that variation into a single average.</p>
+</section><section id="candidate-2-voted-age-sex-treatment" class="level4" data-number="10.3.1.2"><h4 data-number="10.3.1.2" class="anchored" data-anchor-id="candidate-2-voted-age-sex-treatment">
+<span class="header-section-number">10.3.1.2</span> Candidate 2: <code>voted ~ age + sex + treatment</code>
+</h4>
+<div class="cell">
+<details class="code-fold"><summary>Show the code</summary><div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb6"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu">logistic_reg</span><span class="op">(</span>engine <span class="op">=</span> <span class="st">"glm"</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>  <span class="fu">fit</span><span class="op">(</span><span class="va">voted</span> <span class="op">~</span> <span class="va">age</span> <span class="op">+</span> <span class="va">sex</span> <span class="op">+</span> <span class="va">treatment</span>, data <span class="op">=</span> <span class="va">x</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>  <span class="fu"><a href="https://generics.r-lib.org/reference/tidy.html">tidy</a></span><span class="op">(</span>conf.int <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html">select</a></span><span class="op">(</span><span class="va">term</span>, <span class="va">estimate</span>, <span class="va">conf.low</span>, <span class="va">conf.high</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html">mutate</a></span><span class="op">(</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/across.html">across</a></span><span class="op">(</span><span class="fu"><a href="https://tidyselect.r-lib.org/reference/where.html">where</a></span><span class="op">(</span><span class="va">is.numeric</span><span class="op">)</span>, \<span class="op">(</span><span class="va">v</span><span class="op">)</span> <span class="fu"><a href="https://rdrr.io/r/base/Round.html">round</a></span><span class="op">(</span><span class="va">v</span>, <span class="fl">3</span><span class="op">)</span><span class="op">)</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>  <span class="fu"><a href="https://rdrr.io/pkg/knitr/man/kable.html">kable</a></span><span class="op">(</span>caption <span class="op">=</span> <span class="st">"Candidate model: voted ~ age + sex + treatment. Coefficients on the log-odds scale. Source: Gerber, Green, Larimer (2008) via primer.data::shaming."</span><span class="op">)</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details><div class="cell-output-display">
+<table class="caption-top table table-sm table-striped small">
+<caption>Candidate model: voted ~ age + sex + treatment. Coefficients on the log-odds scale. Source: Gerber, Green, Larimer (2008) via primer.data::shaming.</caption>
+<thead><tr class="header">
+<th style="text-align: left;">term</th>
+<th style="text-align: right;">estimate</th>
+<th style="text-align: right;">conf.low</th>
+<th style="text-align: right;">conf.high</th>
+</tr></thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">(Intercept)</td>
+<td style="text-align: right;">-1.886</td>
+<td style="text-align: right;">-1.915</td>
+<td style="text-align: right;">-1.858</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">age</td>
+<td style="text-align: right;">0.020</td>
+<td style="text-align: right;">0.019</td>
+<td style="text-align: right;">0.020</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">sexMale</td>
+<td style="text-align: right;">0.037</td>
+<td style="text-align: right;">0.023</td>
+<td style="text-align: right;">0.052</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">treatmentCivic Duty</td>
+<td style="text-align: right;">0.089</td>
+<td style="text-align: right;">0.065</td>
+<td style="text-align: right;">0.113</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">treatmentHawthorne</td>
+<td style="text-align: right;">0.125</td>
+<td style="text-align: right;">0.101</td>
+<td style="text-align: right;">0.149</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">treatmentSelf</td>
+<td style="text-align: right;">0.227</td>
+<td style="text-align: right;">0.204</td>
+<td style="text-align: right;">0.251</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">treatmentNeighbors</td>
+<td style="text-align: right;">0.371</td>
+<td style="text-align: right;">0.348</td>
+<td style="text-align: right;">0.394</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<p>Adding <code>age</code> and <code>sex</code> to the model leaves the treatment coefficients essentially unchanged — another diagnostic that randomization is doing its job. The age coefficient is positive and meaningful (older voters are more likely to vote, about 0.04 log-odds per year, which translates to roughly 1 percentage point per year of age in the central region of the probability range). The sex coefficient (<code>Male</code> vs <code>Female</code>) is small. Neither covariate moves the treatment estimates because they are uncorrelated with treatment by randomization.</p>
+<p>This is the right adjustment for <em>precision</em> (the standard errors of the treatment coefficients shrink because age explains residual variance), but it does not capture heterogeneous treatment effects.</p>
+</section><section id="candidate-3-voted-age-sex-treatmentvoter_class" class="level4" data-number="10.3.1.3"><h4 data-number="10.3.1.3" class="anchored" data-anchor-id="candidate-3-voted-age-sex-treatmentvoter_class">
+<span class="header-section-number">10.3.1.3</span> Candidate 3: <code>voted ~ age + sex + treatment*voter_class</code>
+</h4>
+<div class="cell">
+<details class="code-fold"><summary>Show the code</summary><div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb7"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu">logistic_reg</span><span class="op">(</span>engine <span class="op">=</span> <span class="st">"glm"</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>  <span class="fu">fit</span><span class="op">(</span><span class="va">voted</span> <span class="op">~</span> <span class="va">age</span> <span class="op">+</span> <span class="va">sex</span> <span class="op">+</span> <span class="va">treatment</span><span class="op">*</span><span class="va">voter_class</span>, data <span class="op">=</span> <span class="va">x</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>  <span class="fu"><a href="https://generics.r-lib.org/reference/tidy.html">tidy</a></span><span class="op">(</span>conf.int <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html">select</a></span><span class="op">(</span><span class="va">term</span>, <span class="va">estimate</span>, <span class="va">conf.low</span>, <span class="va">conf.high</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html">mutate</a></span><span class="op">(</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/across.html">across</a></span><span class="op">(</span><span class="fu"><a href="https://tidyselect.r-lib.org/reference/where.html">where</a></span><span class="op">(</span><span class="va">is.numeric</span><span class="op">)</span>, \<span class="op">(</span><span class="va">v</span><span class="op">)</span> <span class="fu"><a href="https://rdrr.io/r/base/Round.html">round</a></span><span class="op">(</span><span class="va">v</span>, <span class="fl">3</span><span class="op">)</span><span class="op">)</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>  <span class="fu"><a href="https://rdrr.io/pkg/knitr/man/kable.html">kable</a></span><span class="op">(</span>caption <span class="op">=</span> <span class="st">"Candidate model (chosen): voted ~ age + sex + treatment*voter_class. Coefficients on the log-odds scale. Source: Gerber, Green, Larimer (2008) via primer.data::shaming."</span><span class="op">)</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details><div class="cell-output-display">
+<table class="caption-top table table-sm table-striped small">
+<caption>Candidate model (chosen): voted ~ age + sex + treatment*voter_class. Coefficients on the log-odds scale. Source: Gerber, Green, Larimer (2008) via primer.data::shaming.</caption>
+<colgroup>
+<col style="width: 62%">
+<col style="width: 12%">
+<col style="width: 12%">
+<col style="width: 13%">
+</colgroup>
+<thead><tr class="header">
+<th style="text-align: left;">term</th>
+<th style="text-align: right;">estimate</th>
+<th style="text-align: right;">conf.low</th>
+<th style="text-align: right;">conf.high</th>
+</tr></thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">(Intercept)</td>
+<td style="text-align: right;">-2.434</td>
+<td style="text-align: right;">-2.478</td>
+<td style="text-align: right;">-2.391</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">age</td>
+<td style="text-align: right;">0.012</td>
+<td style="text-align: right;">0.012</td>
+<td style="text-align: right;">0.013</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">sexMale</td>
+<td style="text-align: right;">0.036</td>
+<td style="text-align: right;">0.021</td>
+<td style="text-align: right;">0.050</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">treatmentCivic Duty</td>
+<td style="text-align: right;">0.086</td>
+<td style="text-align: right;">-0.002</td>
+<td style="text-align: right;">0.173</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">treatmentHawthorne</td>
+<td style="text-align: right;">0.071</td>
+<td style="text-align: right;">-0.019</td>
+<td style="text-align: right;">0.159</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">treatmentSelf</td>
+<td style="text-align: right;">0.202</td>
+<td style="text-align: right;">0.118</td>
+<td style="text-align: right;">0.286</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">treatmentNeighbors</td>
+<td style="text-align: right;">0.359</td>
+<td style="text-align: right;">0.277</td>
+<td style="text-align: right;">0.440</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">voter_classSometimes Vote</td>
+<td style="text-align: right;">0.820</td>
+<td style="text-align: right;">0.780</td>
+<td style="text-align: right;">0.860</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">voter_classAlways Vote</td>
+<td style="text-align: right;">1.609</td>
+<td style="text-align: right;">1.567</td>
+<td style="text-align: right;">1.651</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">treatmentCivic Duty:voter_classSometimes Vote</td>
+<td style="text-align: right;">0.031</td>
+<td style="text-align: right;">-0.061</td>
+<td style="text-align: right;">0.124</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">treatmentHawthorne:voter_classSometimes Vote</td>
+<td style="text-align: right;">0.059</td>
+<td style="text-align: right;">-0.034</td>
+<td style="text-align: right;">0.153</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">treatmentSelf:voter_classSometimes Vote</td>
+<td style="text-align: right;">0.053</td>
+<td style="text-align: right;">-0.036</td>
+<td style="text-align: right;">0.143</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">treatmentNeighbors:voter_classSometimes Vote</td>
+<td style="text-align: right;">0.041</td>
+<td style="text-align: right;">-0.046</td>
+<td style="text-align: right;">0.128</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">treatmentCivic Duty:voter_classAlways Vote</td>
+<td style="text-align: right;">-0.051</td>
+<td style="text-align: right;">-0.149</td>
+<td style="text-align: right;">0.048</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">treatmentHawthorne:voter_classAlways Vote</td>
+<td style="text-align: right;">0.063</td>
+<td style="text-align: right;">-0.037</td>
+<td style="text-align: right;">0.163</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">treatmentSelf:voter_classAlways Vote</td>
+<td style="text-align: right;">-0.006</td>
+<td style="text-align: right;">-0.101</td>
+<td style="text-align: right;">0.090</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">treatmentNeighbors:voter_classAlways Vote</td>
+<td style="text-align: right;">0.006</td>
+<td style="text-align: right;">-0.087</td>
+<td style="text-align: right;">0.100</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<p>This is the chapter’s chosen model. The <code>treatment*voter_class</code> interaction expands to <code>treatment + voter_class + treatment:voter_class</code> — main effects for each plus cross-terms for each (treatment, voter_class) combination. The coefficient table has many rows; reading individual coefficients on the log-odds scale is not what we are after. The right reading lives in Temperance, on the probability scale, via marginaleffects. What this candidate buys us, relative to candidate 2, is the ability to estimate a <em>different</em> treatment effect for each voter class — which is what a real campaign needs.</p>
+</section></section><section id="the-chosen-dgm" class="level3" data-number="10.3.2"><h3 data-number="10.3.2" class="anchored" data-anchor-id="the-chosen-dgm">
+<span class="header-section-number">10.3.2</span> The chosen DGM</h3>
+<p>The interaction-with-voter-class model:</p>
+<div class="cell">
+<details class="code-fold"><summary>Show the code</summary><div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb8"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">fit_shaming</span> <span class="op">&lt;-</span> <span class="fu">logistic_reg</span><span class="op">(</span>engine <span class="op">=</span> <span class="st">"glm"</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>  <span class="fu">fit</span><span class="op">(</span><span class="va">voted</span> <span class="op">~</span> <span class="va">age</span> <span class="op">+</span> <span class="va">sex</span> <span class="op">+</span> <span class="va">treatment</span><span class="op">*</span><span class="va">voter_class</span>, data <span class="op">=</span> <span class="va">x</span><span class="op">)</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+</div>
+<p>The fitted DGM on the log-odds scale, in compact form:</p>
+<p><span class="math display">\[\log \left( \frac{\widehat{\rho}}{1-\widehat{\rho}} \right) = \beta_0 + \beta_{\text{age}} \cdot \text{Age} + \beta_{\text{sex}} \cdot \text{sexMale} + \sum_t \beta_t \cdot \text{treatment}_t + \sum_c \gamma_c \cdot \text{voter\_class}_c + \sum_{t,c} \delta_{t,c} \cdot \text{treatment}_t \cdot \text{voter\_class}_c\]</span></p>
+<p>with the sums running over the four non-reference treatment arms and the two non-reference voter classes. Translating to probability requires the inverse-logit. Twelve (treatment, voter_class) combinations each produce a different expected turnout probability. The Temperance section computes all twelve via <code>marginaleffects</code> and reads them off.</p>
+<p><strong>This is our data generating mechanism.</strong> It serves both the primary causal question and the paired predictive question.</p>
+</section><section id="model-checking" class="level3" data-number="10.3.3"><h3 data-number="10.3.3" class="anchored" data-anchor-id="model-checking">
+<span class="header-section-number">10.3.3</span> Model checking</h3>
+<p>For a binary outcome model with multi-arm treatment and an interaction, the simplest sanity check is to compare the model’s predicted turnout by (treatment, voter_class) to the <em>raw</em> turnout by the same cells. The model imposes a logistic functional form on the relationship; if it fits, predicted and observed should agree.</p>
+<div class="cell">
+<details class="code-fold"><summary>Show the code</summary><div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb9"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">fit_eng</span> <span class="op">&lt;-</span> <span class="fu">extract_fit_engine</span><span class="op">(</span><span class="va">fit_shaming</span><span class="op">)</span></span>
+<span><span class="va">raw_df</span> <span class="op">&lt;-</span> <span class="va">x</span> <span class="op">|&gt;</span></span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/group_by.html">group_by</a></span><span class="op">(</span><span class="va">treatment</span>, <span class="va">voter_class</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/summarise.html">summarise</a></span><span class="op">(</span>observed <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/mean.html">mean</a></span><span class="op">(</span><span class="va">primary_06</span><span class="op">)</span>, n <span class="op">=</span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/context.html">n</a></span><span class="op">(</span><span class="op">)</span>, .groups <span class="op">=</span> <span class="st">"drop"</span><span class="op">)</span></span>
+<span><span class="va">pred_df</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/marginaleffects/man/predictions.html">avg_predictions</a></span><span class="op">(</span><span class="va">fit_eng</span>, by <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"treatment"</span>, <span class="st">"voter_class"</span><span class="op">)</span>, type <span class="op">=</span> <span class="st">"response"</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>  <span class="fu"><a href="https://tibble.tidyverse.org/reference/as_tibble.html">as_tibble</a></span><span class="op">(</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html">select</a></span><span class="op">(</span><span class="va">treatment</span>, <span class="va">voter_class</span>, predicted <span class="op">=</span> <span class="va">estimate</span><span class="op">)</span></span>
+<span><span class="va">check_df</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate-joins.html">left_join</a></span><span class="op">(</span><span class="va">raw_df</span>, <span class="va">pred_df</span>, by <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"treatment"</span>, <span class="st">"voter_class"</span><span class="op">)</span><span class="op">)</span></span>
+<span></span>
+<span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html">ggplot</a></span><span class="op">(</span><span class="va">check_df</span>, <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html">aes</a></span><span class="op">(</span>x <span class="op">=</span> <span class="va">predicted</span>, y <span class="op">=</span> <span class="va">observed</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_abline.html">geom_abline</a></span><span class="op">(</span>slope <span class="op">=</span> <span class="fl">1</span>, intercept <span class="op">=</span> <span class="fl">0</span>, color <span class="op">=</span> <span class="st">"grey60"</span>, linetype <span class="op">=</span> <span class="st">"dashed"</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_point.html">geom_point</a></span><span class="op">(</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html">aes</a></span><span class="op">(</span>color <span class="op">=</span> <span class="va">voter_class</span>, size <span class="op">=</span> <span class="va">n</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/scale_continuous.html">scale_x_continuous</a></span><span class="op">(</span>labels <span class="op">=</span> <span class="fu">scales</span><span class="fu">::</span><span class="fu"><a href="https://scales.r-lib.org/reference/label_percent.html">label_percent</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/scale_continuous.html">scale_y_continuous</a></span><span class="op">(</span>labels <span class="op">=</span> <span class="fu">scales</span><span class="fu">::</span><span class="fu"><a href="https://scales.r-lib.org/reference/label_percent.html">label_percent</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/scale_size.html">scale_size_continuous</a></span><span class="op">(</span>range <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">2</span>, <span class="fl">8</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html">labs</a></span><span class="op">(</span></span>
+<span>    title    <span class="op">=</span> <span class="st">"Predicted vs. Observed Turnout, by Treatment x Voter Class Cell"</span>,</span>
+<span>    subtitle <span class="op">=</span> <span class="st">"All 15 cells sit on the diagonal --- the logistic functional form fits the cell means exactly"</span>,</span>
+<span>    x        <span class="op">=</span> <span class="st">"Predicted turnout (from fit)"</span>,</span>
+<span>    y        <span class="op">=</span> <span class="st">"Observed turnout (raw cell mean)"</span>,</span>
+<span>    color    <span class="op">=</span> <span class="st">"Voter class"</span>,</span>
+<span>    size     <span class="op">=</span> <span class="st">"Voters in cell"</span>,</span>
+<span>    caption  <span class="op">=</span> <span class="st">"Source: Gerber, Green, Larimer (2008) via primer.data::shaming"</span></span>
+<span>  <span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggtheme.html">theme_minimal</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details><div class="cell-output-display">
+<div>
+<figure class="figure"><p><img src="10-shaming_files/figure-html/unnamed-chunk-12-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>All 15 (treatment, voter_class) cells sit essentially on the diagonal, by construction — a saturated treatment-by-voter-class interaction in a logistic regression <em>exactly recovers</em> each cell’s observed turnout share. (<code>age</code> and <code>sex</code> add small adjustments, but they are uncorrelated with treatment by randomization, so the cell-level fit is essentially the cell-level mean.) The model’s good calibration here is therefore not surprising; the chapter’s interesting work is in reading the implications of the cell-level estimates, not in establishing that the model fits.</p>
+</section></section><section id="temperance" class="level2" data-number="10.4"><h2 data-number="10.4" class="anchored" data-anchor-id="temperance">
+<span class="header-section-number">10.4</span> Temperance</h2>
+<div class="cell">
+<div class="cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure"><p><img src="other/images/Temperance.jpg" class="img-fluid figure-img"></p>
+<figcaption>Temperance.</figcaption></figure>
+</div>
+</div>
+</div>
+<blockquote class="blockquote">
+<p><em>Temperance interprets the data generating mechanism and then uses it to answer, with the help of graphics, the question(s) with which we began. Humility reminds us that this answer is always false.</em></p>
+</blockquote>
+<p><em>In the modern world, all parameters are nuisance parameters.</em> What we care about is what the model says on the <em>outcome scale</em>: predicted turnout probabilities, predicted differences in probabilities. The tool is <strong><a href="https://marginaleffects.com/">marginaleffects</a></strong>, with companion book <em><a href="https://marginaleffects.com/">Model to Meaning</a></em> by Vincent Arel-Bundock.</p>
+<section id="the-primary-causal-reading" class="level3" data-number="10.4.1"><h3 data-number="10.4.1" class="anchored" data-anchor-id="the-primary-causal-reading">
+<span class="header-section-number">10.4.1</span> The primary (causal) reading</h3>
+<div class="cell">
+<details class="code-fold"><summary>Show the code</summary><div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb10"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">fit_eng</span> <span class="op">&lt;-</span> <span class="fu">extract_fit_engine</span><span class="op">(</span><span class="va">fit_shaming</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/pkg/marginaleffects/man/predictions.html">avg_predictions</a></span><span class="op">(</span><span class="va">fit_eng</span>, by <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"treatment"</span>, <span class="st">"voter_class"</span><span class="op">)</span>, type <span class="op">=</span> <span class="st">"response"</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>  <span class="fu"><a href="https://tibble.tidyverse.org/reference/as_tibble.html">as_tibble</a></span><span class="op">(</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html">mutate</a></span><span class="op">(</span>treatment <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/factor.html">factor</a></span><span class="op">(</span><span class="va">treatment</span>, levels <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"No Postcard"</span>, <span class="st">"Civic Duty"</span>, <span class="st">"Hawthorne"</span>, <span class="st">"Self"</span>, <span class="st">"Neighbors"</span><span class="op">)</span><span class="op">)</span>,</span>
+<span>         voter_class <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/factor.html">factor</a></span><span class="op">(</span><span class="va">voter_class</span>, levels <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"Rarely Vote"</span>, <span class="st">"Sometimes Vote"</span>, <span class="st">"Always Vote"</span><span class="op">)</span><span class="op">)</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html">ggplot</a></span><span class="op">(</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html">aes</a></span><span class="op">(</span>x <span class="op">=</span> <span class="va">treatment</span>, y <span class="op">=</span> <span class="va">estimate</span>, color <span class="op">=</span> <span class="va">voter_class</span>, group <span class="op">=</span> <span class="va">voter_class</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_point.html">geom_point</a></span><span class="op">(</span>size <span class="op">=</span> <span class="fl">3</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_path.html">geom_line</a></span><span class="op">(</span>linewidth <span class="op">=</span> <span class="fl">1</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_linerange.html">geom_errorbar</a></span><span class="op">(</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html">aes</a></span><span class="op">(</span>ymin <span class="op">=</span> <span class="va">conf.low</span>, ymax <span class="op">=</span> <span class="va">conf.high</span><span class="op">)</span>, width <span class="op">=</span> <span class="fl">0.15</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/scale_continuous.html">scale_y_continuous</a></span><span class="op">(</span>labels <span class="op">=</span> <span class="fu">scales</span><span class="fu">::</span><span class="fu"><a href="https://scales.r-lib.org/reference/label_percent.html">label_percent</a></span><span class="op">(</span><span class="op">)</span>, limits <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">0.65</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html">labs</a></span><span class="op">(</span></span>
+<span>    title    <span class="op">=</span> <span class="st">"Predicted Turnout by Treatment, Separately by Voter Class"</span>,</span>
+<span>    subtitle <span class="op">=</span> <span class="st">"Neighbors lifts every class; the absolute lift is largest for Sometimes/Always Vote"</span>,</span>
+<span>    x        <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>    y        <span class="op">=</span> <span class="st">"Predicted turnout probability"</span>,</span>
+<span>    color    <span class="op">=</span> <span class="st">"Voter class"</span>,</span>
+<span>    caption  <span class="op">=</span> <span class="st">"Source: Gerber, Green, Larimer (2008) via primer.data::shaming"</span></span>
+<span>  <span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggtheme.html">theme_minimal</a></span><span class="op">(</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/theme.html">theme</a></span><span class="op">(</span>axis.text.x <span class="op">=</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/element.html">element_text</a></span><span class="op">(</span>angle <span class="op">=</span> <span class="fl">30</span>, hjust <span class="op">=</span> <span class="fl">1</span><span class="op">)</span><span class="op">)</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details><div class="cell-output-display">
+<div>
+<figure class="figure"><p><img src="10-shaming_files/figure-html/unnamed-chunk-14-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>The model’s predicted turnout for all 15 (treatment, voter_class) combinations, on the probability scale, with 95% confidence intervals. The pattern is exactly the EDA pattern from Wisdom, now with confidence intervals attached. The headline answers:</p>
+<ul>
+<li>
+<strong>The Neighbors postcard, averaged across voter classes, raises turnout by about 8.1 percentage points relative to no postcard (95% CI [7.6, 8.6]).</strong> This is the famous GGL 2008 number.</li>
+<li>
+<strong>By voter class, the Neighbors effect is +4.4 pp for <em>Rarely Vote</em> voters [3.3, 5.4], +8.6 pp for <em>Sometimes Vote</em> [7.9, 9.2], and +9.0 pp for <em>Always Vote</em> [7.9, 10.2].</strong> The Neighbors postcard is most effective on voters who already had a habit; the marginal <em>Rarely Vote</em> voter is harder to reach with a single postcard.</li>
+<li>
+<strong>The Self postcard, averaged across classes, raises turnout by about 4.8 pp [4.3, 5.3].</strong> Roughly half the Neighbors effect, consistent with the idea that explicit social pressure (Neighbors) does more than implicit self-reflection (Self).</li>
+<li>
+<strong>Hawthorne and Civic Duty contribute roughly 2–2.5 pp each, averaged across classes.</strong> Small but statistically clear.</li>
+</ul>
+<p>The causal reading is available throughout because the trial was randomized. <em>Sending a registered Michigan voter a Neighbors postcard ahead of a low-salience primary causes their probability of voting to increase by about 8 percentage points on average, with the increase concentrated among voters who already had a habit of showing up.</em></p>
+<p>The language is causal language, used carefully. <em>Cause</em>, <em>raise</em>, <em>increase</em> — the words are appropriate here because randomization defends the unconfoundedness assumption. With a different problem (an observational study, say) the same arithmetic would not support the same words.</p>
+</section><section id="the-paired-predictive-reading" class="level3" data-number="10.4.2"><h3 data-number="10.4.2" class="anchored" data-anchor-id="the-paired-predictive-reading">
+<span class="header-section-number">10.4.2</span> The paired (predictive) reading</h3>
+<p>The paired question was <em>“What is the difference in expected turnout across the five postcard arms, separately for voters with different prior engagement histories?”</em> The same fitted model gives the same numbers.</p>
+<p>The predictive reading would say: <em>registered voters who received the Neighbors postcard had a turnout share about 8 percentage points higher than registered voters who received no postcard.</em> That is a between-group comparison with no commitment to a counterfactual — just a description of what happened in the trial.</p>
+<p>Both readings are honest here, as in Trains and SPS. The causal reading is defensible because the trial was randomized; the predictive reading is defensible because it is just a between-group comparison. Same fit, same number, two valid readings. The substantively interesting one for a Texas campaign is the causal one — the campaign is choosing what to mail, not describing past mailings — but both are available.</p>
+</section><section id="qoi-variety" class="level3" data-number="10.4.3"><h3 data-number="10.4.3" class="anchored" data-anchor-id="qoi-variety">
+<span class="header-section-number">10.4.3</span> QoI variety</h3>
+<p>The chapter has answered the question we asked: <em>the average causal effect of each postcard by voter class</em>. That is twelve numbers in a family. A campaign-analyst-quality answer would also want:</p>
+<ul>
+<li>
+<strong>Cost-per-additional-vote.</strong> A Neighbors postcard costs (roughly) $0.50 to print and mail; the 8-percentage-point lift on a 30%-baseline population means about 1 additional vote per 13 voters mailed, or about $6.50 per additional vote. By voter class the cost ranges from $11 (Rarely Vote) to about $5.50 (Always Vote). Compared to door-knocks (typically $20–$50 per additional vote in the GOTV literature) this is cheap. The same data and the same model directly supports this calculation; the chapter does not do it in detail because it requires a cost assumption the data does not contain.</li>
+<li>
+<strong>Effect heterogeneity beyond voter class.</strong> Does the effect differ by age? By gender? By household size? By neighborhood density (which the data records but the chapter does not use)? A richer specification of the interaction structure would give a much finer-grained answer; the chapter chose voter class as the single heterogeneity dimension because it is the most operationally relevant and because, with 344,000 voters, the model can support that complexity but no more.</li>
+<li>
+<strong>Effect on vote share, not just turnout.</strong> A Texas gubernatorial campaign cares about its candidate’s vote share, not turnout per se. Translating a turnout effect to a vote-share effect requires assumptions about who the marginal mobilized voters support; if the campaign’s baseline support is balanced across the marginal mobilization (i.e., the campaign is equally appealing to Always-Vote and Rarely-Vote voters), then turnout and vote share are proportional. If the marginal mobilized voters are systematically the opposing candidate’s base, the campaign’s “successful” Neighbors mail actively helps the opponent.</li>
+</ul>
+<p>The point is that <em>“average treatment effect on turnout”</em> is one quantity in a family. The DGM supports many more questions with the right additional inputs.</p>
+</section><section id="why-the-answer-is-wrong" class="level3" data-number="10.4.4"><h3 data-number="10.4.4" class="anchored" data-anchor-id="why-the-answer-is-wrong">
+<span class="header-section-number">10.4.4</span> Why the answer is wrong</h3>
+<blockquote class="blockquote">
+<p><em>We can never know the truth.</em></p>
+</blockquote>
+<p>Three things are likely wrong with our answer.</p>
+<p>First, the stability gap. The trial ran in August 2006 in Michigan, ahead of a low-salience primary. The campaign cares about a 2026 Texas general election. The 8-percentage-point Neighbors number from 2006 Michigan may not replicate in 2026 Texas; the campaign’s mail strategy should not commit to that number as a hard estimate. Existing replications of GGL 2008 (there are many) suggest the effect is real but variable across context; planning around 4–6 pp would be more honest than planning around 8.</p>
+<p>Second, the household-clustering issue. The model treats 344,000 voters as independent; they are actually 191,000 households. The reported confidence intervals are slightly too narrow as a result. With this much data the practical effect is small, but for a smaller campaign-specific replication the issue would matter more.</p>
+<p>Third, <em>the world is always more uncertain than our models would have us believe.</em> Even if every assumption about validity, stability, and representativeness were exactly right — which they aren’t — the reported confidence interval would still capture only sampling uncertainty under the model. Cohort drift, political-context drift, voter response to repeated social-pressure mail over time — none of these are in the model’s confidence interval.</p>
+</section></section><section id="summary" class="level2" data-number="10.5"><h2 data-number="10.5" class="anchored" data-anchor-id="summary">
+<span class="header-section-number">10.5</span> Summary</h2>
+<div class="cell">
+<details class="code-fold"><summary>Show the code</summary><div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb11"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">fit_eng</span> <span class="op">&lt;-</span> <span class="fu">extract_fit_engine</span><span class="op">(</span><span class="va">fit_shaming</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/pkg/marginaleffects/man/predictions.html">avg_predictions</a></span><span class="op">(</span><span class="va">fit_eng</span>, by <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"treatment"</span>, <span class="st">"voter_class"</span><span class="op">)</span>, type <span class="op">=</span> <span class="st">"response"</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>  <span class="fu"><a href="https://tibble.tidyverse.org/reference/as_tibble.html">as_tibble</a></span><span class="op">(</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html">mutate</a></span><span class="op">(</span>treatment <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/factor.html">factor</a></span><span class="op">(</span><span class="va">treatment</span>, levels <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"No Postcard"</span>, <span class="st">"Civic Duty"</span>, <span class="st">"Hawthorne"</span>, <span class="st">"Self"</span>, <span class="st">"Neighbors"</span><span class="op">)</span><span class="op">)</span>,</span>
+<span>         voter_class <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/factor.html">factor</a></span><span class="op">(</span><span class="va">voter_class</span>, levels <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"Rarely Vote"</span>, <span class="st">"Sometimes Vote"</span>, <span class="st">"Always Vote"</span><span class="op">)</span><span class="op">)</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html">ggplot</a></span><span class="op">(</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html">aes</a></span><span class="op">(</span>x <span class="op">=</span> <span class="va">treatment</span>, y <span class="op">=</span> <span class="va">estimate</span>, color <span class="op">=</span> <span class="va">voter_class</span>, group <span class="op">=</span> <span class="va">voter_class</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_point.html">geom_point</a></span><span class="op">(</span>size <span class="op">=</span> <span class="fl">3</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_path.html">geom_line</a></span><span class="op">(</span>linewidth <span class="op">=</span> <span class="fl">1</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_linerange.html">geom_errorbar</a></span><span class="op">(</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html">aes</a></span><span class="op">(</span>ymin <span class="op">=</span> <span class="va">conf.low</span>, ymax <span class="op">=</span> <span class="va">conf.high</span><span class="op">)</span>, width <span class="op">=</span> <span class="fl">0.15</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/scale_continuous.html">scale_y_continuous</a></span><span class="op">(</span>labels <span class="op">=</span> <span class="fu">scales</span><span class="fu">::</span><span class="fu"><a href="https://scales.r-lib.org/reference/label_percent.html">label_percent</a></span><span class="op">(</span><span class="op">)</span>, limits <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">0.65</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html">labs</a></span><span class="op">(</span></span>
+<span>    title    <span class="op">=</span> <span class="st">"Predicted Turnout by Treatment, Separately by Voter Class"</span>,</span>
+<span>    subtitle <span class="op">=</span> <span class="st">"Neighbors lifts every class; absolute lift largest for Sometimes/Always Vote"</span>,</span>
+<span>    x        <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>    y        <span class="op">=</span> <span class="st">"Predicted turnout probability"</span>,</span>
+<span>    color    <span class="op">=</span> <span class="st">"Voter class"</span>,</span>
+<span>    caption  <span class="op">=</span> <span class="st">"Source: Gerber, Green, Larimer (2008) via primer.data::shaming"</span></span>
+<span>  <span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggtheme.html">theme_minimal</a></span><span class="op">(</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/theme.html">theme</a></span><span class="op">(</span>axis.text.x <span class="op">=</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/element.html">element_text</a></span><span class="op">(</span>angle <span class="op">=</span> <span class="fl">30</span>, hjust <span class="op">=</span> <span class="fl">1</span><span class="op">)</span><span class="op">)</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details><div class="cell-output-display">
+<div>
+<figure class="figure"><p><img src="10-shaming_files/figure-html/unnamed-chunk-15-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>Social-pressure get-out-the-vote postcards work, by a substantial margin, in the right environment. Using the full 344,084-voter Gerber-Green-Larimer (2008) field experiment in Michigan’s August 2006 primary, with five randomized treatment arms (No Postcard, Civic Duty, Hawthorne, Self, Neighbors) and a derived three-level voter-class covariate from prior turnout, we modeled the binary turnout outcome <code>voted</code> as a Bernoulli variable with a logistic link, allowing the treatment effect to vary by voter class via an interaction. The fit reads two ways: a causal reading defended by household-level randomization, and a paired predictive reading interpreting the same numbers as between-arm comparisons. Both readings are honest. The headline estimate: the Neighbors postcard raises turnout by about <strong>8.1 percentage points</strong> (95% CI [7.6, 8.6]) relative to no postcard, averaged across voter classes; the lift is +4.4 pp for <em>Rarely Vote</em> voters, +8.6 pp for <em>Sometimes</em>, and +9.0 pp for <em>Always</em>. The Self postcard is about half as effective; Hawthorne and Civic Duty add 2–3 pp each. Stability across the 2006 Michigan vs.&nbsp;2026 Texas gap is the chapter’s largest uncertainty; household clustering of standard errors is a smaller, technical one.</p>
+<p>A Texas campaign manager would treat the 8-percentage-point number as the best available estimate of the maximum Neighbors-style effect, while planning around something more conservative in light of the contextual differences. Per-additional-vote cost calculations, finer heterogeneity by demographic and geographic axes, and vote-share (not just turnout) translation are all available from the same DGM with the appropriate additional inputs.</p>
+<p>The world is always more uncertain than our models would have us believe.</p>
+
+
+</section></main><!-- /main --><script id="quarto-html-after-body" type="application/javascript">
+  window.document.addEventListener("DOMContentLoaded", function (event) {
+    const icon = "";
+    const anchorJS = new window.AnchorJS();
+    anchorJS.options = {
+      placement: 'right',
+      icon: icon
+    };
+    anchorJS.add('.anchored');
+    const isCodeAnnotation = (el) => {
+      for (const clz of el.classList) {
+        if (clz.startsWith('code-annotation-')) {                     
+          return true;
+        }
+      }
+      return false;
+    }
+    const onCopySuccess = function(e) {
+      // button target
+      const button = e.trigger;
+      // don't keep focus
+      button.blur();
+      // flash "checked"
+      button.classList.add('code-copy-button-checked');
+      var currentTitle = button.getAttribute("title");
+      button.setAttribute("title", "Copied!");
+      let tooltip;
+      if (window.bootstrap) {
+        button.setAttribute("data-bs-toggle", "tooltip");
+        button.setAttribute("data-bs-placement", "left");
+        button.setAttribute("data-bs-title", "Copied!");
+        tooltip = new bootstrap.Tooltip(button, 
+          { trigger: "manual", 
+            customClass: "code-copy-button-tooltip",
+            offset: [0, -8]});
+        tooltip.show();    
+      }
+      setTimeout(function() {
+        if (tooltip) {
+          tooltip.hide();
+          button.removeAttribute("data-bs-title");
+          button.removeAttribute("data-bs-toggle");
+          button.removeAttribute("data-bs-placement");
+        }
+        button.setAttribute("title", currentTitle);
+        button.classList.remove('code-copy-button-checked');
+      }, 1000);
+      // clear code selection
+      e.clearSelection();
+    }
+    const getTextToCopy = function(trigger) {
+      const outerScaffold = trigger.parentElement.cloneNode(true);
+      const codeEl = outerScaffold.querySelector('code');
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+    }
+    const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+      text: getTextToCopy
+    });
+    clipboard.on('success', onCopySuccess);
+    if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+      const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+        text: getTextToCopy,
+        container: window.document.getElementById('quarto-embedded-source-code-modal')
+      });
+      clipboardModal.on('success', onCopySuccess);
+    }
+      var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+      var mailtoRegex = new RegExp(/^mailto:/);
+        var filterRegex = new RegExp('/' + window.location.host + '/');
+      var isInternal = (href) => {
+          return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+      }
+      // Inspect non-navigation links and adorn them if external
+     var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+      for (var i=0; i<links.length; i++) {
+        const link = links[i];
+        if (!isInternal(link.href)) {
+          // undo the damage that might have been done by quarto-nav.js in the case of
+          // links that we want to consider external
+          if (link.dataset.originalHref !== undefined) {
+            link.href = link.dataset.originalHref;
+          }
+        }
+      }
+    function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+      const config = {
+        allowHTML: true,
+        maxWidth: 500,
+        delay: 100,
+        arrow: false,
+        appendTo: function(el) {
+            return el.parentElement;
+        },
+        interactive: true,
+        interactiveBorder: 10,
+        theme: 'quarto',
+        placement: 'bottom-start',
+      };
+      if (contentFn) {
+        config.content = contentFn;
+      }
+      if (onTriggerFn) {
+        config.onTrigger = onTriggerFn;
+      }
+      if (onUntriggerFn) {
+        config.onUntrigger = onUntriggerFn;
+      }
+      window.tippy(el, config); 
+    }
+    const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+    for (var i=0; i<noterefs.length; i++) {
+      const ref = noterefs[i];
+      tippyHover(ref, function() {
+        // use id or data attribute instead here
+        let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+        try { href = new URL(href).hash; } catch {}
+        const id = href.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note) {
+          return note.innerHTML;
+        } else {
+          return "";
+        }
+      });
+    }
+    const xrefs = window.document.querySelectorAll('a.quarto-xref');
+    const processXRef = (id, note) => {
+      // Strip column container classes
+      const stripColumnClz = (el) => {
+        el.classList.remove("page-full", "page-columns");
+        if (el.children) {
+          for (const child of el.children) {
+            stripColumnClz(child);
+          }
+        }
+      }
+      stripColumnClz(note)
+      if (id === null || id.startsWith('sec-')) {
+        // Special case sections, only their first couple elements
+        const container = document.createElement("div");
+        if (note.children && note.children.length > 2) {
+          container.appendChild(note.children[0].cloneNode(true));
+          for (let i = 1; i < note.children.length; i++) {
+            const child = note.children[i];
+            if (child.tagName === "P" && child.innerText === "") {
+              continue;
+            } else {
+              container.appendChild(child.cloneNode(true));
+              break;
+            }
+          }
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(container);
+          }
+          return container.innerHTML
+        } else {
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(note);
+          }
+          return note.innerHTML;
+        }
+      } else {
+        // Remove any anchor links if they are present
+        const anchorLink = note.querySelector('a.anchorjs-link');
+        if (anchorLink) {
+          anchorLink.remove();
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        if (note.classList.contains("callout")) {
+          return note.outerHTML;
+        } else {
+          return note.innerHTML;
+        }
+      }
+    }
+    for (var i=0; i<xrefs.length; i++) {
+      const xref = xrefs[i];
+      tippyHover(xref, undefined, function(instance) {
+        instance.disable();
+        let url = xref.getAttribute('href');
+        let hash = undefined; 
+        if (url.startsWith('#')) {
+          hash = url;
+        } else {
+          try { hash = new URL(url).hash; } catch {}
+        }
+        if (hash) {
+          const id = hash.replace(/^#\/?/, "");
+          const note = window.document.getElementById(id);
+          if (note !== null) {
+            try {
+              const html = processXRef(id, note.cloneNode(true));
+              instance.setContent(html);
+            } finally {
+              instance.enable();
+              instance.show();
+            }
+          } else {
+            // See if we can fetch this
+            fetch(url.split('#')[0])
+            .then(res => res.text())
+            .then(html => {
+              const parser = new DOMParser();
+              const htmlDoc = parser.parseFromString(html, "text/html");
+              const note = htmlDoc.getElementById(id);
+              if (note !== null) {
+                const html = processXRef(id, note);
+                instance.setContent(html);
+              } 
+            }).finally(() => {
+              instance.enable();
+              instance.show();
+            });
+          }
+        } else {
+          // See if we can fetch a full url (with no hash to target)
+          // This is a special case and we should probably do some content thinning / targeting
+          fetch(url)
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.querySelector('main.content');
+            if (note !== null) {
+              // This should only happen for chapter cross references
+              // (since there is no id in the URL)
+              // remove the first header
+              if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+                note.children[0].remove();
+              }
+              const html = processXRef(null, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      }, function(instance) {
+      });
+    }
+        let selectedAnnoteEl;
+        const selectorForAnnotation = ( cell, annotation) => {
+          let cellAttr = 'data-code-cell="' + cell + '"';
+          let lineAttr = 'data-code-annotation="' +  annotation + '"';
+          const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+          return selector;
+        }
+        const selectCodeLines = (annoteEl) => {
+          const doc = window.document;
+          const targetCell = annoteEl.getAttribute("data-target-cell");
+          const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+          const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+          const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+          const lineIds = lines.map((line) => {
+            return targetCell + "-" + line;
+          })
+          let top = null;
+          let height = null;
+          let parent = null;
+          if (lineIds.length > 0) {
+              //compute the position of the single el (top and bottom and make a div)
+              const el = window.document.getElementById(lineIds[0]);
+              top = el.offsetTop;
+              height = el.offsetHeight;
+              parent = el.parentElement.parentElement;
+            if (lineIds.length > 1) {
+              const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+              const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+              height = bottom - top;
+            }
+            if (top !== null && height !== null && parent !== null) {
+              // cook up a div (if necessary) and position it 
+              let div = window.document.getElementById("code-annotation-line-highlight");
+              if (div === null) {
+                div = window.document.createElement("div");
+                div.setAttribute("id", "code-annotation-line-highlight");
+                div.style.position = 'absolute';
+                parent.appendChild(div);
+              }
+              div.style.top = top - 2 + "px";
+              div.style.height = height + 4 + "px";
+              div.style.left = 0;
+              let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+              if (gutterDiv === null) {
+                gutterDiv = window.document.createElement("div");
+                gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+                gutterDiv.style.position = 'absolute';
+                const codeCell = window.document.getElementById(targetCell);
+                const gutter = codeCell.querySelector('.code-annotation-gutter');
+                gutter.appendChild(gutterDiv);
+              }
+              gutterDiv.style.top = top - 2 + "px";
+              gutterDiv.style.height = height + 4 + "px";
+            }
+            selectedAnnoteEl = annoteEl;
+          }
+        };
+        const unselectCodeLines = () => {
+          const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+          elementsIds.forEach((elId) => {
+            const div = window.document.getElementById(elId);
+            if (div) {
+              div.remove();
+            }
+          });
+          selectedAnnoteEl = undefined;
+        };
+          // Handle positioning of the toggle
+      window.addEventListener(
+        "resize",
+        throttle(() => {
+          elRect = undefined;
+          if (selectedAnnoteEl) {
+            selectCodeLines(selectedAnnoteEl);
+          }
+        }, 10)
+      );
+      function throttle(fn, ms) {
+      let throttle = false;
+      let timer;
+        return (...args) => {
+          if(!throttle) { // first call gets through
+              fn.apply(this, args);
+              throttle = true;
+          } else { // all the others get throttled
+              if(timer) clearTimeout(timer); // cancel #2
+              timer = setTimeout(() => {
+                fn.apply(this, args);
+                timer = throttle = false;
+              }, ms);
+          }
+        };
+      }
+        // Attach click handler to the DT
+        const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+        for (const annoteDlNode of annoteDls) {
+          annoteDlNode.addEventListener('click', (event) => {
+            const clickedEl = event.target;
+            if (clickedEl !== selectedAnnoteEl) {
+              unselectCodeLines();
+              const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+              if (activeEl) {
+                activeEl.classList.remove('code-annotation-active');
+              }
+              selectCodeLines(clickedEl);
+              clickedEl.classList.add('code-annotation-active');
+            } else {
+              // Unselect the line
+              unselectCodeLines();
+              clickedEl.classList.remove('code-annotation-active');
+            }
+          });
+        }
+    const findCites = (el) => {
+      const parentEl = el.parentElement;
+      if (parentEl) {
+        const cites = parentEl.dataset.cites;
+        if (cites) {
+          return {
+            el,
+            cites: cites.split(' ')
+          };
+        } else {
+          return findCites(el.parentElement)
+        }
+      } else {
+        return undefined;
+      }
+    };
+    var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+    for (var i=0; i<bibliorefs.length; i++) {
+      const ref = bibliorefs[i];
+      const citeInfo = findCites(ref);
+      if (citeInfo) {
+        tippyHover(citeInfo.el, function() {
+          var popup = window.document.createElement('div');
+          citeInfo.cites.forEach(function(cite) {
+            var citeDiv = window.document.createElement('div');
+            citeDiv.classList.add('hanging-indent');
+            citeDiv.classList.add('csl-entry');
+            var biblioDiv = window.document.getElementById('ref-' + cite);
+            if (biblioDiv) {
+              citeDiv.innerHTML = biblioDiv.innerHTML;
+            }
+            popup.appendChild(citeDiv);
+          });
+          return popup.innerHTML;
+        });
+      }
+    }
+  });
+  </script><nav class="page-navigation"><div class="nav-page nav-page-previous">
+      <a href="./09-smokes.html" class="pagination-link" aria-label="Smokes">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-number">9</span>&nbsp; <span class="chapter-title">Smokes</span></span>
+      </a>          
+  </div>
+  <div class="nav-page nav-page-next">
+      <a href="./11-nes.html" class="pagination-link" aria-label="NES">
+        <span class="nav-page-text"><span class="chapter-number">11</span>&nbsp; <span class="chapter-title">NES</span></span> <i class="bi bi-arrow-right-short"></i>
+      </a>
+  </div>
+</nav>
+</div> <!-- /content -->
+
+
+
+<footer class="footer"><div class="nav-footer"><div class="nav-footer-center"><div class="toc-actions d-sm-block d-md-none"><ul><li><a href="https://github.com/PPBDS/primer/edit/main/book/10-shaming.qmd" class="toc-action"><i class="bi bi-github"></i>Edit this page</a></li></ul></div></div></div></footer></body></html>
