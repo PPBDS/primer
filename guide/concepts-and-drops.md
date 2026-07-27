@@ -157,6 +157,12 @@ Knowledge drops are deliberately short. Students won't read more than two senten
 **On difference ≠ subtraction.**
 > *A causal effect is defined as the difference between two potential outcomes. "Difference" does not necessarily mean "subtraction" — many potential outcomes are not numbers.*
 
+**On probabilities not being outcomes.**
+> *Probabilities are not outcomes. You either vote or you do not vote. If you get the postcard, you either vote or you don't; if you don't get the postcard, the same. The causal effect for any individual is the difference between two determinate potential outcomes. Probability plays no role.*
+
+**On the average causal effect as a change in chances.**
+> *The average causal effect is a different matter. Because we code voting as 1 and not-voting as 0, the average outcome in a group is just the proportion who vote — and since we know nothing that distinguishes one individual from another, that proportion is also the "chance" we assign to a randomly chosen member of the group. If 30 of 100 people vote without the postcard and 40 of 100 vote with it, we can say the postcard raises a person's chance of voting from 30% to 40% — even though this claim is not true of any specific individual. It is only true in expectation, as an average.*
+
 **On predictive models having no treatment.**
 > *With a predictive model, each individual unit has only one observed outcome. There are not two potential outcomes because none of the covariates are treated as treatment variables. Instead, all covariates are assumed to be "fixed." Predictive models have no "treatments" — only covariates.*
 

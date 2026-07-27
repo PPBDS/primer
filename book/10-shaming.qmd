@@ -77,7 +77,7 @@ Third, the dataset *does not* directly record who voted *for whom*. The treatmen
 
 The primary question for this chapter is *causal*:
 
-> What is the average causal effect of each social-pressure postcard, relative to no postcard, on the probability that a registered voter casts a ballot in the August 2006 Michigan primary?
+> What is the average causal effect of each social-pressure postcard, relative to no postcard, on the share of registered voters who cast a ballot in the August 2006 Michigan primary?
 
 This is a *causal* question, with a five-arm treatment (one control plus four postcard conditions). The Preceptor Table has *six* columns: one identifying each voter, *five* potential-outcome columns (one for each treatment arm), and one treatment column recording the actual assignment. Each row has its five potential outcomes and its one observed assignment; the four counterfactuals are unobservable. The average causal effect of a specific postcard is the average across rows of the difference between the row's potential outcome under that postcard and its potential outcome under no postcard.
 
@@ -135,7 +135,7 @@ pt_primary_html <- gt::gt(pt_primary_tibble, id = "pt_primary") |>
     fn = function(x) hatch(x)
   ) |>
   gt::tab_footnote(
-    footnote = "If all the information in this table were available, we could answer the question: What is the average causal effect of each social-pressure postcard, relative to no postcard, on the probability that a registered voter casts a ballot in the August 2006 Michigan primary?",
+    footnote = "If all the information in this table were available, we could answer the question: What is the average causal effect of each social-pressure postcard, relative to no postcard, on the share of registered voters who cast a ballot in the August 2006 Michigan primary?",
     locations = gt::cells_title()
   ) |>
   gt::tab_footnote(
@@ -248,7 +248,7 @@ Every chapter pairs its primary question with one in the opposite framing. Since
 
 This is the predictive twin of the causal primary. The same fitted model serves both, but the readings differ:
 
-* The causal reading says: *sending a Neighbors postcard, instead of no postcard, raises a registered voter's probability of voting by about 8 percentage points on average.* That is a claim about what would happen under a counterfactual mail intervention.
+* The causal reading says: *sending a Neighbors postcard, instead of no postcard, raises the share of registered voters who cast a ballot by about 8 percentage points.* That is a claim about what would happen under a counterfactual mail intervention.
 * The predictive reading says: *registered voters who received the Neighbors postcard had a turnout share about 8 percentage points higher than registered voters who received no postcard.* That is a between-group comparison.
 
 Both readings are honest, as in Trains and SPS. The causal reading is defensible because the treatment was randomized at the household level. The predictive reading is defensible because comparing two existing groups requires no intervention claim. The chapter will read the same number through both lenses.
@@ -502,7 +502,7 @@ The model's predicted turnout for all 15 (treatment, voter_class) combinations, 
 * **The Self postcard, averaged across classes, raises turnout by about 4.8 pp [4.3, 5.3].** Roughly half the Neighbors effect, consistent with the idea that explicit social pressure (Neighbors) does more than implicit self-reflection (Self).
 * **Hawthorne and Civic Duty contribute roughly 2--2.5 pp each, averaged across classes.** Small but statistically clear.
 
-The causal reading is available throughout because the trial was randomized. *Sending a registered Michigan voter a Neighbors postcard ahead of a low-salience primary causes their probability of voting to increase by about 8 percentage points on average, with the increase concentrated among voters who already had a habit of showing up.*
+The causal reading is available throughout because the trial was randomized. *Sending registered Michigan voters a Neighbors postcard ahead of a low-salience primary raises the share who cast a ballot by about 8 percentage points, with the increase concentrated among voters who already had a habit of showing up.*
 
 The language is causal language, used carefully. *Cause*, *raise*, *increase* --- the words are appropriate here because randomization defends the unconfoundedness assumption. With a different problem (an observational study, say) the same arithmetic would not support the same words.
 
