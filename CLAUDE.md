@@ -30,6 +30,8 @@ This guide covers only what is **specific to the Primer**: the Cardinal Virtues 
 
 **Precedence.** On workflow and shared conventions, the base guide wins. On Primer-specific pedagogy, this guide wins. Anywhere the Primer departs from the base guide, that departure must be an **explicit, on-the-record override** — called out as such at the point it occurs — never a silent difference.
 
+**On-the-record override — the example tutorials are *modeling* tutorials.** In the base guide's normal-vs-modeling split (its §1), the example tutorials (05–16) are **modeling** tutorials, unlike the output-focused "normal" tutorials of `misc.tutorials`. Especially in the first five or so, we want students to see — perhaps even type — the modeling code itself (`reg_linear()`, `plot_predictions()`), not just its output. Questions there deliberately use `Cmd/Ctrl + Enter` and `Cmd/Ctrl + Shift + K` so students slow down and **look** at which code produces which result. This inverts the base guide's output-over-code emphasis for normal tutorials, and is recorded here as the deliberate departure. Knowledge drops in these tutorials may likewise name the key modeling functions — an exception the base guide records in its §5 knowledge-drop rules.
+
 ## The guide, in parts — read on demand
 
 The detailed guide lives under [`guide/`](guide/). **Read only the parts your current task needs** — you rarely need more than two or three. **Section numbers (`§1`…`§17`) are unchanged**, so every `§N.M` cross-reference inside the parts still resolves: use this map to find which file a `§` lives in.

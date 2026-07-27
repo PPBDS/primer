@@ -157,6 +157,12 @@ Knowledge drops are deliberately short. Students won't read more than two senten
 **On difference ≠ subtraction.**
 > *A causal effect is defined as the difference between two potential outcomes. "Difference" does not necessarily mean "subtraction" — many potential outcomes are not numbers.*
 
+**On probabilities not being outcomes.**
+> *Probabilities are not outcomes. You either vote or you do not vote. If you get the postcard, you either vote or you don't; if you don't get the postcard, the same. The causal effect for any individual is the difference between two determinate potential outcomes. Probability plays no role.*
+
+**On the average causal effect as a change in chances.**
+> *The average causal effect is a different matter. Because we code voting as 1 and not-voting as 0, the average outcome in a group is just the proportion who vote — and since we know nothing that distinguishes one individual from another, that proportion is also the "chance" we assign to a randomly chosen member of the group. If 30 of 100 people vote without the postcard and 40 of 100 vote with it, we can say the postcard raises a person's chance of voting from 30% to 40% — even though this claim is not true of any specific individual. It is only true in expectation, as an average.*
+
 **On predictive models having no treatment.**
 > *With a predictive model, each individual unit has only one observed outcome. There are not two potential outcomes because none of the covariates are treated as treatment variables. Instead, all covariates are assumed to be "fixed." Predictive models have no "treatments" — only covariates.*
 
@@ -278,12 +284,6 @@ Canonical definitions appropriate here (see Key Concepts): Courage, Data Generat
 
 **On workspace awareness.**
 > *Just because something exists in the tutorial (or in the QMD) does not mean that it is in your R Terminal. You should be aware of what exists in R World, which is generally called your "workspace."*
-
-**On easystats.**
-> *`check_predictions()` comes from the [easystats ecosystem](https://easystats.github.io/easystats/), which has a variety of interesting functions and packages worth exploring. We add `library(easystats)` to the setup chunk so the check renders in the document like the rest of the analysis.*
-
-**On `check_predictions()`.**
-> *The purpose of `check_predictions()` is to compare your actual data (in green) with data that has been simulated from your fitted model — your data generating mechanism. If your DGM is reasonable, data simulated from it should not look too dissimilar from your actual data. Of course, it won't look exactly the same because of randomness. The actual data should be within the range of outcomes that your DGM simulates.*
 
 **On the hat and the error term.**
 > *First, we have replaced the parameters with our best estimates. Second, the left-hand side variable has a hat because this formula generates our estimated outcome. A hat indicates an estimated value.*

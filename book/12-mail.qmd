@@ -9,7 +9,6 @@ library(tidymodels)
 library(primer.data)
 library(broom)
 library(marginaleffects)
-library(easystats)
 library(gt)
 library(knitr)
 
@@ -22,7 +21,7 @@ x <- mail |>
 
 The four [Cardinal Virtues](https://en.wikipedia.org/wiki/Cardinal_virtues) for working through a data science problem are *Wisdom*, *Justice*, *Courage*, and *Temperance*. The problem this time is a randomized experiment on nearly a million people — the largest dataset in this book — asking whether a piece of mail can change what a voter does.
 
-Imagine that you are on the staff of the Philadelphia City Commissioners' office ahead of the next general election. The Commissioners have a big-picture goal --- make voting work smoothly for every registered Philadelphian --- and a budget that does not stretch to every idea. They must decide how many postcards to print, which voters to mail them to, when to drop them, and what the postcards should say: is a mail ballot "safer for you," or "safer for your neighborhood"? Each choice is worth a question you could ask out loud in the Commissioners' meeting: Does a postcard move anyone to apply for a mail ballot at all? Does one wording work better than the other? Are older voters or younger voters more responsive? This chapter focuses on one estimate: the causal effect of each postcard wording on the probability that a registered voter applies for a mail ballot, with its associated uncertainty. The estimate alone won't set the budget, but it is one good input. There are many decisions to make.
+Imagine that you are on the staff of the Philadelphia City Commissioners' office ahead of the next general election. The Commissioners have a big-picture goal --- make voting work smoothly for every registered Philadelphian --- and a budget that does not stretch to every idea. They must decide how many postcards to print, which voters to mail them to, when to drop them, and what the postcards should say: is a mail ballot "safer for you," or "safer for your neighborhood"? Each choice is worth a question you could ask out loud in the Commissioners' meeting: Does a postcard move anyone to apply for a mail ballot at all? Does one wording work better than the other? Are older voters or younger voters more responsive? This chapter focuses on one estimate: the causal effect of each postcard wording on the share of registered voters who apply for a mail ballot, with its associated uncertainty. The estimate alone won't set the budget, but it is one good input. There are many decisions to make.
 
 The data we will work from is `mail`, available in the **[primer.data](https://ppbds.github.io/primer.data/)** package: 935,707 registered Philadelphia voters from a 2020 field experiment, described in a paper entitled *Results from a 2020 field experiment encouraging voting by mail*. Each voter was randomly assigned to receive no postcard (888,750 voters), a postcard saying a mail ballot was "safer for you" (the `Self` arm, 23,472 voters), or a postcard saying it was "safer for your neighborhood" (the `Neighborhood` arm, 23,485 voters). The outcome column `applied_mail` records whether the county logged a mail-ballot application from the voter by Pennsylvania's May 26, 2020 deadline. Covariates from the registration file include `party`, `age` (in bands), and `sex`. Our analysis tibble `x` keeps the 696,638 voters with a recorded sex.
 
@@ -59,7 +58,7 @@ One vocabulary note that matters for everything downstream: `treatment` records 
 
 The primary question for this chapter is *causal*:
 
-> What is the average causal effect of each postcard wording --- Self or Neighborhood, relative to no postcard --- on the probability that a registered Philadelphia voter applies for a mail ballot?
+> What is the average causal effect of each postcard wording --- Self or Neighborhood, relative to no postcard --- on the share of registered Philadelphia voters who apply for a mail ballot?
 
 This is a *causal* question --- the kind of question that calls for a causal model. It asks for two numbers, each a difference between potential outcomes: the application probability if sent a given postcard minus the application probability if sent nothing, averaged over voters. With a three-arm treatment, every voter has *three* potential outcomes — whether they would apply under no postcard, under Self, and under Neighborhood — and we observe exactly one of the three. That is the fundamental problem of causal inference, scaled up one arm.
 
@@ -83,7 +82,7 @@ pt_primary_tibble <- tibble::tribble(
   "Alice Ferraro",   "Yes",                     "Yes",              "Yes",                      "Self",           "Democrat",    "65-121",  "Female"
 )
 
-pre_title_footnote     <- "If all the information in this table were available, we could answer the question: What is the average causal effect of each postcard wording --- Self or Neighborhood, relative to no postcard --- on the probability that a registered Philadelphia voter applies for a mail ballot?"
+pre_title_footnote     <- "If all the information in this table were available, we could answer the question: What is the average causal effect of each postcard wording --- Self or Neighborhood, relative to no postcard --- on the share of registered Philadelphia voters who apply for a mail ballot?"
 pre_units_footnote     <- "Each row is one registered Philadelphia voter at the next general election --- roughly one million people. The example rows use plausible names; missing rows represent the rest of the rolls."
 pre_outcome_footnote   <- "Three potential outcomes per voter: whether they would apply for a mail ballot under each postcard condition. The cross-hatched cells mark each voter's two unobservable potential outcomes --- the ones we could never see, because the voter was actually sent something else."
 pre_treatment_footnote <- "The postcard the voter is sent: No Postcard, Self ('safer for you'), or Neighborhood ('safer for your neighborhood')."
@@ -565,19 +564,6 @@ Every term is a 0/1 dummy. The intercept (-1.75) is the log-odds of applying for
 
 **This is our data generating mechanism.** It serves both the primary causal question and the paired predictive question.
 
-### Model checking
-
-To check whether the model is reasonable, we compare the actual outcome distribution against draws simulated from the fitted model --- a posterior predictive check, run with `check_predictions()` from **[easystats](https://easystats.github.io/easystats/)**:
-
-```{r}
-#| message: false
-#| warning: false
-check_predictions(extract_fit_engine(fit_mail))
-```
-
-For a binary outcome the check is simple: does the share of `Yes` in data simulated from the model bracket the share we observed? It does, and with 696,638 rows the simulated shares barely wobble. This is the floor of model checking, not the ceiling --- a model can pass this check and still be wrong in every subgroup --- but a model that failed it would be misdescribing the outcome at the coarsest level.
-
-
 ## Temperance
 
 ```{r}
@@ -613,12 +599,12 @@ avg_comparisons(extract_fit_engine(fit_mail),
   theme_minimal()
 ```
 
-The primary question was *"What is the average causal effect of each postcard wording on the probability that a registered voter applies for a mail ballot?"* The model's answer, computed with `avg_comparisons()`:
+The primary question was *"What is the average causal effect of each postcard wording on the share of registered voters who apply for a mail ballot?"* The model's answer, computed with `avg_comparisons()`:
 
 * Neighborhood postcard: about **+0.48 percentage points**, 95% CI roughly [-0.1, +1.0].
 * Self postcard: about **+0.41 percentage points**, 95% CI roughly [-0.2, +1.0].
 
-Causal language is earned here --- randomization did the earning. *Being sent the Neighborhood postcard caused an increase in the probability of applying of about half a percentage point* is a legitimate sentence, with the one honest hedge that the interval includes zero. Two further readings of the same numbers:
+Causal language is earned here --- randomization did the earning. *Being sent the Neighborhood postcard raised the share of voters who apply by about half a percentage point* is a legitimate sentence, with the one honest hedge that the interval includes zero. Two further readings of the same numbers:
 
 * **The wordings are indistinguishable from each other.** The 0.07-point difference between Neighborhood and Self is far inside either interval. Whatever prosocial framing did for the Shaming chapter's social-pressure mailers, the "neighborhood" frame bought nothing detectable here.
 * **Precision is not effect size.** These are among the most precisely estimated numbers in this book --- intervals barely a percentage point wide --- and they still cannot exclude zero, because the true effect is tiny. A large sample buys narrow intervals; it cannot buy a bigger effect.
@@ -675,7 +661,7 @@ avg_comparisons(extract_fit_engine(fit_mail),
   theme_minimal()
 ```
 
-Election offices spend real money encouraging voters to use mail ballots, usually without evidence about whether the encouragement works. Using a randomized field experiment covering nearly a million registered Philadelphia voters in the spring of 2020 --- the first election season under Pennsylvania's new no-excuse mail-voting law, and the first under a pandemic --- we estimated the causal effect of two postcard wordings, "safer for you" and "safer for your neighborhood," on the probability that a voter applies for a mail ballot. We modeled the binary application outcome as a Bernoulli variable which is a logistic function of treatment assignment, party, age, and sex, and read the fit two ways: as the causal intent-to-treat effect the randomized design licenses, and as the paired predictive comparison between groups --- two readings that randomization welds into one. The estimate: the Neighborhood wording raised applications by about 0.5 percentage points (95% confidence interval roughly [-0.1, +1.0]) and the Self wording by about 0.4 percentage points (roughly [-0.2, +1.0]) --- effects too small to distinguish from zero, or from each other, even with 696,638 voters. Stability (a pandemic-era treatment at its lifetime-maximum salience), representativeness (a quarter of the file dropped for missing sex; churning rolls), and the application-to-ballot gap all push the honest forecast for an ordinary election lower still.
+Election offices spend real money encouraging voters to use mail ballots, usually without evidence about whether the encouragement works. Using a randomized field experiment covering nearly a million registered Philadelphia voters in the spring of 2020 --- the first election season under Pennsylvania's new no-excuse mail-voting law, and the first under a pandemic --- we estimated the causal effect of two postcard wordings, "safer for you" and "safer for your neighborhood," on the share of voters who apply for a mail ballot. We modeled the binary application outcome as a Bernoulli variable which is a logistic function of treatment assignment, party, age, and sex, and read the fit two ways: as the causal intent-to-treat effect the randomized design licenses, and as the paired predictive comparison between groups --- two readings that randomization welds into one. The estimate: the Neighborhood wording raised applications by about 0.5 percentage points (95% confidence interval roughly [-0.1, +1.0]) and the Self wording by about 0.4 percentage points (roughly [-0.2, +1.0]) --- effects too small to distinguish from zero, or from each other, even with 696,638 voters. Stability (a pandemic-era treatment at its lifetime-maximum salience), representativeness (a quarter of the file dropped for missing sex; churning rolls), and the application-to-ballot gap all push the honest forecast for an ordinary election lower still.
 
 For the Commissioners, the practical reading is blunt: informational safety-framed postcards, in the one setting most favorable to them, bought about half a percentage point of applications --- while the Shaming chapter's social-pressure mailers moved turnout by several whole points. If the office mails anything, the evidence says the wording between "you" and "your neighborhood" does not matter; whether to mail at all is a cost-per-application calculation the chapter's numbers make possible but do not settle.
 

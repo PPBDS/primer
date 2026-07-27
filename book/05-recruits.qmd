@@ -563,37 +563,6 @@ Three differences from the abstract form. First, the parameters $\beta_0$ and $\
 
 **This is our data generating mechanism.** We will use it for both the primary and the paired questions in Temperance. The fit object is the same; what differs is how we read it.
 
-### Model checking
-
-A simple sanity check: the distribution of the fitted values should look like the distribution of the actual `height`. They will not match exactly --- the model has only two predicted values (one for female, one for male) while the actual data has continuous variation --- but the gross shape and central tendency should be close.
-
-```{r}
-#| message: false
-#| warning: false
-fitted_df <- tibble(
-  value  = c(recruits$height, predict(extract_fit_engine(fit_recruits))),
-  source = c(rep("Actual", nrow(recruits)),
-             rep("Fitted", nrow(recruits)))
-)
-
-ggplot(fitted_df, aes(x = value, fill = source)) +
-  geom_density(alpha = 0.5) +
-  labs(
-    title    = "Actual vs. Fitted Heights",
-    subtitle = "The fitted distribution is a two-point mass; the actual distribution is wider",
-    x        = "Height (cm)",
-    y        = NULL,
-    fill     = "Source",
-    caption  = "Source: 50-row sample from NHANES via primer.tutorials::recruits"
-  ) +
-  theme_minimal() +
-  theme(axis.text.y  = element_blank(),
-        axis.ticks.y = element_blank())
-```
-
-The fitted distribution has two narrow spikes (one near 165.9 cm, one near 174.8 cm) corresponding to the two predicted values. The actual distribution has continuous spread within and between the two groups. The two distributions agree on central tendency and rough shape but differ on spread --- which is what we expect from a model that uses only one binary covariate. Adding more covariates (or using a richer functional form) would let the model recover more of the actual spread; for our question, two predicted values is all we need.
-
-
 ## Temperance
 
 ```{r}
