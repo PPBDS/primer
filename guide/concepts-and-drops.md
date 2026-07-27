@@ -182,8 +182,11 @@ Canonical definitions appropriate here (see Key Concepts): Wisdom, Preceptor Tab
 **The Tukey walk-away.**
 > *The combination of some data and an aching desire for an answer does not ensure that a reasonable answer can be extracted from a given body of data.* — John W. Tukey
 
-**On the Preceptor Table not being exhaustive.**
-> *The Preceptor Table does not include all the covariates which you will eventually include in your model. It only includes, along with the outcome(s), covariates which are mentioned in your question.*
+**On which covariates the Preceptor Table includes.**
+> *The Preceptor Table always includes the treatment variable, if it is a causal model. And it always includes any covariate mentioned in the question: if we want to forecast voting behavior for men and women, then we must have sex included among the covariates in the Preceptor Table. (Any covariate in a Preceptor Table belongs in the Population Table as well.)*
+
+**On covariates used in the DGM but not mentioned in the question.**
+> *The tricky issue involves covariates which we end up using in the data generating mechanism but which are not included in the question. Until we decide on a model, we can't know which variables those will be — which argues for not including them in the Preceptor Table. Moreover, the precise definition of the Preceptor Table means that we don't need those variables to answer our question, if no data is missing. Students sometimes find this confusing: in the real world, we need all the variables we use in the model, both for creating the DGM and for using the DGM, and that makes those variables feel like they belong in the Preceptor Table, since we "need" them to answer the question. But we only "need" them because the Preceptor Table has so much missing data. If it didn't, we wouldn't need them.*
 
 **On the Preceptor Table forcing clarity.**
 > *Specifying the Preceptor Table forces us to think clearly about the units and outcomes implied by the question. The resulting discussion sometimes leads us to modify the question with which we started. No data science project follows a single direction. We always backtrack. There is always dialogue.*
@@ -221,6 +224,9 @@ Canonical definitions appropriate here (see Key Concepts): Justice, Population T
 
 **On the Population Table being bigger.**
 > *The Population Table is almost always much bigger than the combination of the Preceptor Table and the data, because if we can really assume that both are part of the same population, then that population must cover a broad universe of time and units.*
+
+**On which covariates the Population Table includes.**
+> *Any column in the Preceptor Table belongs in the Population Table. But the reverse is not true! There will be columns in the Population Table which are not in the Preceptor Table. Those covariates are used for model estimation (when considering Data rows in the Population Table) and for prediction (when considering Preceptor Table rows in the Population Table). Strictly speaking, we usually begin the Population Table with all possible covariates, meaning anything for which we have data (from the data) and which we can or will gather data for (in the Preceptor rows). There is no reason to consider a covariate which is either missing all data for Data rows or missing all data for Preceptor rows. If the former, you can't estimate parameters for that covariate. If the latter, you can't use that covariate in your DGM to answer questions.*
 
 **On the arbitrary time unit.**
 > *The exact time period used — whether hour, day, month, year, or whatever — is relatively arbitrary. The important thing to note is that the Population Table, unlike the Preceptor Table, covers a period of time over which things may change.*

@@ -219,7 +219,7 @@ Per §14.6, the preamble does **not** describe what Wisdom does; Exercise 1 belo
 **Exercise 2.** [canonical] Define a Preceptor Table.
 - Prompt: *Define a Preceptor Table.*
 - Message: `"A Preceptor Table is the smallest possible table of data with rows and columns such that, if there is no missing data, we can easily calculate the quantity of interest."`
-- End: *The Preceptor Table does not include all the covariates which you will eventually include in your model. It only includes, along with the outcome(s), covariates which are mentioned in your question.*
+- End: *The Preceptor Table always includes the treatment variable, if it is a causal model, and any covariate mentioned in the question. Covariates which end up in the data generating mechanism but are not mentioned in the question stay out: until we decide on a model we can't know which variables those will be, and — by the definition of the Preceptor Table — we don't need them to answer our question, if no data is missing. We only "need" model covariates because the Preceptor Table has so much missing data.*
 
 Between Exercises 2 and 3, insert at least one problem-specific EDA exercise (AI-prompted code, §9) that **shows the outcome variable in relation to a key covariate** (the treatment for causal tutorials, the covariate of interest for predictive tutorials). Provide a knowledge drop that highlights what the plot reveals.
 
@@ -379,7 +379,7 @@ Parts 1 and 2 are deliberately repetitive with Wisdom — same Preceptor Table, 
 **Exercise 4.** [canonical] Define a Population Table.
 - Prompt: *In your own words, define a Population Table.*
 - Message: `"The Population Table includes a row for each unit/time combination in the underlying population from which both the Preceptor Table and the data are drawn."`
-- End: the Population Table is bigger knowledge drop (§12.3).
+- End: the Population Table is bigger knowledge drop (§12.3). Optionally also: the which-covariates-the-Population-Table-includes drop (§12.3), when the tutorial's Population Table carries covariates its Preceptor Table lacks.
 
 **Exercise 5.** [per-tutorial, written-with-answer] The unit/time combination.
 - Prompt: *Specify the unit/time combinations which define each row in this Population Table.*
