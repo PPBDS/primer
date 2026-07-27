@@ -1,17 +1,6 @@
 ## Sophie
 
-Read: https://ppbds.github.io/primer/getting-started.html
-
-Complete getting-started tutorial from tutorial.helpers package. Email me the answers.
-
-Complete 01-probability and 02-sampling, 03-rubin-causal-model and 04-cardinal-virtues tutorials. Email me your HTML answers.
-
-Read ai-rules CLAUDE.md. Are the tutorials consistent?
-
-Read the chapters, but only if you want to!
-
-Submit a PR for each tutorial which fixes typos and asks questions/comments.
-
+Do tutorials 5 through 9. Send me HTML answers. Submit PRs.
 
 ## Priorities
 
