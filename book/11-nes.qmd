@@ -538,47 +538,6 @@ $$\log\!\left[\frac{P(\text{Clinton})}{P(\text{Bush})}\right] = 0.455 - 0.255 \c
 
 **This is our data generating mechanism.** It serves both the primary predictive question and the paired causal question.
 
-### Model checking
-
-For most models in this book we run a posterior predictive check with `easystats::check_predictions()`, comparing outcomes simulated from the fitted model against the outcomes we observed. That function does not support `nnet` multinomial fits (there is no `simulate()` method for them), so we make the comparison by hand: the model's predicted vote shares against the observed shares, by sex.
-
-```{r}
-#| message: false
-#| warning: false
-observed <- nes_92 |>
-  count(sex, pres_vote) |>
-  group_by(sex) |>
-  mutate(share = n / sum(n)) |>
-  ungroup() |>
-  select(sex, candidate = pres_vote, share) |>
-  mutate(source = "Observed")
-
-predicted <- predictions(extract_fit_engine(fit_nes),
-                         newdata = data.frame(sex = c("Female", "Male"))) |>
-  as_tibble() |>
-  select(sex, candidate = group, share = estimate) |>
-  mutate(source = "Predicted")
-
-bind_rows(observed, predicted) |>
-  mutate(candidate = factor(candidate, levels = c("Clinton", "Bush", "Perot"))) |>
-  ggplot(aes(x = candidate, y = share, fill = source)) +
-  geom_col(position = "dodge", width = 0.7) +
-  facet_wrap(~ sex) +
-  scale_y_continuous(labels = scales::label_percent()) +
-  labs(
-    title    = "Observed vs. Model-Predicted Vote Shares, by Sex",
-    subtitle = "The saturated model reproduces the observed shares exactly --- the bars match by construction",
-    x        = NULL,
-    y        = "Share Within Sex",
-    fill     = NULL,
-    caption  = "Source: ANES 1992 via primer.data::nes"
-  ) +
-  theme_minimal()
-```
-
-The bars match exactly, and they must: a saturated model has enough parameters to reproduce every group share it was fit on. That makes this particular check trivial rather than reassuring --- the model cannot fail it. The check would grow teeth the moment the model had fewer parameters than group shares (add an age covariate, or drop an interaction, and predicted shares can diverge from observed ones). We show it anyway because the habit --- *compare what the model generates against what you saw* --- is the point, and because recognizing *why* the check is trivial here is itself a lesson in what saturation means.
-
-
 ## Temperance
 
 ```{r}

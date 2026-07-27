@@ -9,7 +9,6 @@ library(tidymodels)
 library(primer.data)
 library(broom)
 library(marginaleffects)
-library(easystats)
 library(gt)
 library(knitr)
 
@@ -564,19 +563,6 @@ $$
 Every term is a 0/1 dummy. The intercept (-1.75) is the log-odds of applying for the reference voter: sent no postcard, registered Democrat, aged 18-29, female --- a probability of about 15%. Each coefficient shifts that log-odds when its dummy switches on.
 
 **This is our data generating mechanism.** It serves both the primary causal question and the paired predictive question.
-
-### Model checking
-
-To check whether the model is reasonable, we compare the actual outcome distribution against draws simulated from the fitted model --- a posterior predictive check, run with `check_predictions()` from **[easystats](https://easystats.github.io/easystats/)**:
-
-```{r}
-#| message: false
-#| warning: false
-check_predictions(extract_fit_engine(fit_mail))
-```
-
-For a binary outcome the check is simple: does the share of `Yes` in data simulated from the model bracket the share we observed? It does, and with 696,638 rows the simulated shares barely wobble. This is the floor of model checking, not the ceiling --- a model can pass this check and still be wrong in every subgroup --- but a model that failed it would be misdescribing the outcome at the coarsest level.
-
 
 ## Temperance
 

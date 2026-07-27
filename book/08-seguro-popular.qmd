@@ -573,39 +573,6 @@ Three differences from the abstract form. First, the parameters are replaced by 
 
 **This is our data generating mechanism.** It serves both the primary causal question and the paired predictive question. The residual standard deviation (about 1,790 pesos) dwarfs the treatment coefficient, but with 27,569 observations the standard error on the difference is small enough that the effect is statistically detectable.
 
-### Model checking
-
-A sanity check: the distribution of fitted values should look broadly like the distribution of actual `t2_health_exp_3m`. We do not expect a good match --- the model fits a two-point distribution to a heavy-tailed continuous outcome --- but the comparison makes the misspecification visible.
-
-```{r}
-#| message: false
-#| warning: false
-fitted_df <- tibble(
-  value  = c(x$t2_health_exp_3m, predict(extract_fit_engine(fit_sp))),
-  source = c(rep("Actual", nrow(x)),
-             rep("Fitted", nrow(x)))
-)
-
-ggplot(fitted_df, aes(x = value, fill = source)) +
-  geom_density(alpha = 0.5) +
-  coord_cartesian(xlim = c(0, 3000)) +
-  scale_x_continuous(labels = scales::label_dollar(prefix = "", suffix = " pesos")) +
-  labs(
-    title    = "Actual vs. Fitted Spending",
-    subtitle = "Fitted distribution is two narrow spikes; actual distribution has a huge zero pile and a long right tail",
-    x        = "3-month spending (pesos, x-axis capped at 3,000)",
-    y        = NULL,
-    fill     = "Source",
-    caption  = "Source: King et al. (2009) Seguro Popular rollout, full follow-up sample via primer.data"
-  ) +
-  theme_minimal() +
-  theme(axis.text.y  = element_blank(),
-        axis.ticks.y = element_blank())
-```
-
-The fitted distribution has two narrow spikes near 721 and 783 pesos --- the two predicted values. The actual distribution has a massive pile at zero and a smooth right tail extending well past the plot's 3,000-peso cap. The model captures the *means* of the two groups (the spikes sit at the right locations); it captures nothing about the *shape* of the spending distribution. For our question, which is about the *difference* between the two group means, the model's failure to capture the shape doesn't bias our headline answer. But for any question about the right tail --- *which is exactly the question Seguro Popular's catastrophic-coverage purpose is about* --- a richer model is required.
-
-
 ## Temperance
 
 ```{r}

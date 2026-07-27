@@ -279,12 +279,6 @@ Canonical definitions appropriate here (see Key Concepts): Courage, Data Generat
 **On workspace awareness.**
 > *Just because something exists in the tutorial (or in the QMD) does not mean that it is in your R Terminal. You should be aware of what exists in R World, which is generally called your "workspace."*
 
-**On easystats.**
-> *`check_predictions()` comes from the [easystats ecosystem](https://easystats.github.io/easystats/), which has a variety of interesting functions and packages worth exploring. We add `library(easystats)` to the setup chunk so the check renders in the document like the rest of the analysis.*
-
-**On `check_predictions()`.**
-> *The purpose of `check_predictions()` is to compare your actual data (in green) with data that has been simulated from your fitted model — your data generating mechanism. If your DGM is reasonable, data simulated from it should not look too dissimilar from your actual data. Of course, it won't look exactly the same because of randomness. The actual data should be within the range of outcomes that your DGM simulates.*
-
 **On the hat and the error term.**
 > *First, we have replaced the parameters with our best estimates. Second, the left-hand side variable has a hat because this formula generates our estimated outcome. A hat indicates an estimated value.*
 

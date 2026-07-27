@@ -115,7 +115,6 @@ library(tidyverse)
 library(tidymodels)       # or ordinal, or another modeling package
 library(broom)            # or broom.mixed
 library(marginaleffects)
-library(easystats)        # used for check_predictions()
 
 knitr::opts_chunk$set(echo = FALSE)
 options(tutorial.exercise.timelimit = 600,
@@ -391,7 +390,6 @@ The tutorial setup chunk (§5.2) loads the full package stack. For chapters, set
 - `tidymodels` — for most models. Replace with `ordinal` or another package if that model framework doesn't fit.
 - `broom` — for tidying model output. `broom.mixed` for mixed models.
 - `marginaleffects` — for `predictions()`, `plot_predictions()`, `plot_comparisons()`.
-- `easystats` — for `check_predictions()`. Added to the QMD setup chunk; the check runs in a rendered chunk like the rest of the analysis.
 
 **Data package**: whichever one holds the tutorial's dataset (`primer.data` most of the time).
 

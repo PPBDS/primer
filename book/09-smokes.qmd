@@ -566,42 +566,6 @@ $$\widehat{\rho} = \frac{1}{1 + \exp(-(-0.875 + 0.007 \cdot \text{Age} + 0.545 \
 
 **This is our data generating mechanism.** It serves both the primary predictive question and the paired causal question.
 
-### Model checking
-
-The standard plot-of-fitted-values-versus-actual works less cleanly for a binary outcome than for a continuous one --- both fitted and actual values cluster at 0 and 1, with the fitted values being smooth probabilities and the actuals being just 0s and 1s. A more useful check for a logistic-regression model compares the *predicted probability* of `smoke == Yes` against the *observed proportion* of `smoke == Yes`, binned by predicted probability.
-
-```{r}
-#| message: false
-#| warning: false
-fit_eng <- extract_fit_engine(fit_smokes)
-calib_df <- smokes |>
-  mutate(predicted = predict(fit_eng, type = "response"),
-         actual    = if_else(smoke == "Yes", 1L, 0L),
-         bin = cut(predicted, breaks = seq(0.2, 0.7, by = 0.05), include.lowest = TRUE)) |>
-  group_by(bin) |>
-  summarise(mid = mean(predicted), obs = mean(actual), n = n(), .groups = "drop") |>
-  filter(!is.na(bin))
-
-ggplot(calib_df, aes(x = mid, y = obs)) +
-  geom_abline(slope = 1, intercept = 0, color = "grey60", linetype = "dashed") +
-  geom_point(aes(size = n), color = "steelblue") +
-  scale_x_continuous(labels = scales::label_percent(), limits = c(0.2, 0.7)) +
-  scale_y_continuous(labels = scales::label_percent(), limits = c(0.2, 0.7)) +
-  scale_size_continuous(range = c(2, 8)) +
-  labs(
-    title    = "Calibration: Predicted vs. Observed Ever-Smoker Share",
-    subtitle = "Points on the diagonal mean the model's probabilities match observed rates",
-    x        = "Predicted Probability (bin midpoint)",
-    y        = "Observed Ever-Smoker Share",
-    size     = "Adults in bin",
-    caption  = "Source: 1,000-adult NHANES 2009-2012 cut via primer.tutorials::smokes"
-  ) +
-  theme_minimal()
-```
-
-Points near the diagonal mean the model is well-calibrated: when it predicts a 40% probability, the observed share is close to 40%. The plot shows the points tracking the diagonal reasonably well, with the expected wobble from binning and finite sample sizes. The model is not perfectly calibrated but is close enough that the headline predictions can be trusted as probabilities, not just as log-odds-to-probability translations.
-
-
 ## Temperance
 
 ```{r}

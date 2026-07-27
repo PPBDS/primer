@@ -19,7 +19,6 @@
 - **Authoring notes (from the 2026-07-08 tutorial build):**
   - **Specific question (Intro Ex 15):** "What is the difference in the probability of voting for Perot between men and women in the 1992 presidential election?" — the multinomial Ex 15 template requires picking one category; Perot is the one with the sharp, significant gap.
   - **Key numbers:** 1,658 voters (Clinton 793 / Bush 564 / Perot 301). Predicted: women 52.5/33.3/14.2%, men 42.5/34.8/22.6% (Clinton/Bush/Perot). `avg_comparisons` (Male − Female): Perot +8.4pp [4.7, 12.2]; Clinton −10.0pp [−14.7, −5.2]; Bush +1.5pp [−3.0, 6.1]. Reference outcome level is Bush (alphabetical).
-  - **`check_predictions()` does not support `nnet::multinom`** (no `simulate()` method). The Medium model-check is adapted: the student computes observed vote shares by sex and the knowledge drop notes that this saturated model reproduces them exactly.
   - **`plot_predictions()` is unreliable for `nnet` fits** (the documented §13.5 multinomial caveat): Temperance builds the final plot manually from `predictions(...) |> as_tibble()`.
   - **Rotation (position 7):** Wisdom and Courage definitions asked; Justice and Temperance definitions appear as preamble reminders.
 

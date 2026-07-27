@@ -456,43 +456,6 @@ with the sums running over the four non-reference treatment arms and the two non
 
 **This is our data generating mechanism.** It serves both the primary causal question and the paired predictive question.
 
-### Model checking
-
-For a binary outcome model with multi-arm treatment and an interaction, the simplest sanity check is to compare the model's predicted turnout by (treatment, voter_class) to the *raw* turnout by the same cells. The model imposes a logistic functional form on the relationship; if it fits, predicted and observed should agree.
-
-```{r}
-#| message: false
-#| warning: false
-fit_eng <- extract_fit_engine(fit_shaming)
-raw_df <- x |>
-  group_by(treatment, voter_class) |>
-  summarise(observed = mean(primary_06), n = n(), .groups = "drop")
-pred_df <- avg_predictions(fit_eng, by = c("treatment", "voter_class"), type = "response") |>
-  as_tibble() |>
-  select(treatment, voter_class, predicted = estimate)
-check_df <- left_join(raw_df, pred_df, by = c("treatment", "voter_class"))
-
-ggplot(check_df, aes(x = predicted, y = observed)) +
-  geom_abline(slope = 1, intercept = 0, color = "grey60", linetype = "dashed") +
-  geom_point(aes(color = voter_class, size = n)) +
-  scale_x_continuous(labels = scales::label_percent()) +
-  scale_y_continuous(labels = scales::label_percent()) +
-  scale_size_continuous(range = c(2, 8)) +
-  labs(
-    title    = "Predicted vs. Observed Turnout, by Treatment x Voter Class Cell",
-    subtitle = "All 15 cells sit on the diagonal --- the logistic functional form fits the cell means exactly",
-    x        = "Predicted turnout (from fit)",
-    y        = "Observed turnout (raw cell mean)",
-    color    = "Voter class",
-    size     = "Voters in cell",
-    caption  = "Source: Gerber, Green, Larimer (2008) via primer.data::shaming"
-  ) +
-  theme_minimal()
-```
-
-All 15 (treatment, voter_class) cells sit essentially on the diagonal, by construction --- a saturated treatment-by-voter-class interaction in a logistic regression *exactly recovers* each cell's observed turnout share. (`age` and `sex` add small adjustments, but they are uncorrelated with treatment by randomization, so the cell-level fit is essentially the cell-level mean.) The model's good calibration here is therefore not surprising; the chapter's interesting work is in reading the implications of the cell-level estimates, not in establishing that the model fits.
-
-
 ## Temperance
 
 ```{r}

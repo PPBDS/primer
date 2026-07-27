@@ -108,7 +108,6 @@ Canonical homepages the tutorials and chapters reference most often:
 | tidymodels | `https://www.tidymodels.org/` |
 | broom | `https://broom.tidymodels.org/` |
 | marginaleffects | `https://marginaleffects.com/` |
-| easystats | `https://easystats.github.io/easystats/` |
 | learnr | `https://rstudio.github.io/learnr/` |
 | knitr | `https://yihui.org/knitr/` |
 | gt | `https://gt.rstudio.com/` |
@@ -143,7 +142,7 @@ Legend labels follow the axis rule (human-readable, units where relevant). When 
 
 `ggplot2::theme_minimal()` or `theme_classic()` is the default — tutorials should not ship custom themes. Color scales inherit from ggplot defaults unless a specific palette is pedagogically necessary (e.g. a red-blue political scale for voter-behavior plots).
 
-**Show the plot, not the code.** For any author-rendered plot (EDA in Wisdom, the model-checking plot in Courage, the final plot in the Summary), use `#| echo: false` so the student sees the output but not the code. Author-rendered plots are deliverables, not lessons in ggplot — the lesson lives in the student-facing exercise that *generates* the plot via AI prompting.
+**Show the plot, not the code.** For any author-rendered plot (EDA in Wisdom, the final plot in the Summary), use `#| echo: false` so the student sees the output but not the code. Author-rendered plots are deliverables, not lessons in ggplot — the lesson lives in the student-facing exercise that *generates* the plot via AI prompting.
 
 **AI-assisted plotting.** Most tutorials ask students to prompt AI for the plot code (§9) rather than build up ggplot layer-by-layer. When the author shows "our version" of the plot after the student exercise, that reference plot should obey the four-slot rule above so students see what "good" looks like.
 
@@ -165,7 +164,7 @@ recruits |>
         axis.ticks.y = element_blank())
 ```
 
-This applies to every `geom_density()` plot the curriculum produces — EDA plots, by-group overlays, model-checking comparisons of actual-vs-fitted distributions, etc. Do **not** label the y-axis "Density" — the word means nothing to students at this stage of the curriculum, and having a numeric y-axis present invites readers to try to read values off of it that cannot be meaningfully interpreted. Histograms (`geom_histogram()` with raw counts) keep the y-axis because counts *are* meaningful; the rule above is density-specific.
+This applies to every `geom_density()` plot the curriculum produces — EDA plots, by-group overlays, etc. Do **not** label the y-axis "Density" — the word means nothing to students at this stage of the curriculum, and having a numeric y-axis present invites readers to try to read values off of it that cannot be meaningfully interpreted. Histograms (`geom_histogram()` with raw counts) keep the y-axis because counts *are* meaningful; the rule above is density-specific.
 
 **Format proportions and rates as percentages on axes.** When a variable is a proportion (graduation rate, probability, share), display its axis labels as percentages, not decimals:
 
@@ -184,7 +183,7 @@ scale_x_continuous(labels = scales::label_dollar(scale = 10000))
 
 When the formatter handles the units, the axis title can drop the parenthetical unit annotation: prefer `x = "Tuition"` over `x = "Tuition ($10,000)"`. The dollar amounts appear in the tick labels themselves; restating the unit in the title is redundant. The general rule: **the axis labels should read the way a person would say the value out loud** — `$30,000`, `50%`, `175 cm`, `2014` — not the way the variable happens to be encoded in the tibble. Useful `scales::label_*()` helpers: `label_dollar()`, `label_percent()`, `label_comma()`, `label_number(suffix = " cm")`, `label_date()`.
 
-**Do not write a knowledge drop after a plot.** The plot's title and subtitle carry the takeaway; the EDA exercise ends when the student has seen the plot. Don't append a paragraph that re-narrates the plot ("the distribution is broad, with a peak around …", "the jitter plot shows N individual scores, the means confirm…"). If the plot's message isn't visible in the picture itself, fix the plot — usually by sharpening the subtitle. Save prose for places where it does pedagogical work that the picture cannot. This rule applies uniformly: EDA plots in the Introduction and in Wisdom, model-checking plots in Courage, and the final plot in Temperance / Summary all stand on their own.
+**Do not write a knowledge drop after a plot.** The plot's title and subtitle carry the takeaway; the EDA exercise ends when the student has seen the plot. Don't append a paragraph that re-narrates the plot ("the distribution is broad, with a peak around …", "the jitter plot shows N individual scores, the means confirm…"). If the plot's message isn't visible in the picture itself, fix the plot — usually by sharpening the subtitle. Save prose for places where it does pedagogical work that the picture cannot. This rule applies uniformly: EDA plots in the Introduction and in Wisdom, and the final plot in Temperance / Summary all stand on their own.
 
 What this rule **does not** prohibit:
 - A short *lead-in* before the plot that orients the student ("One way to check the model is to compare actual and fitted distributions"). The rule is about post-plot prose, not pre-plot prose.

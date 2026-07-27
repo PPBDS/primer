@@ -18,7 +18,6 @@ Within a section, keep exercises in the order given. Not every tutorial includes
 
 **Pre-flight before drafting a tutorial.** The tier is fixed by the tutorial number per §1.5: **05–08 Easy, 09–12 Medium, 13–16 Hard**. Do not guess — read the number and use it. Then look up the tutorial's content spec in §17. Some exercises are **tier-dependent** — they are written here in their Medium form but must be dropped, replaced, or extended depending on tier. Tier-dependent exercises are flagged inline with a `**Tier:**` line; read it before including them. Current tier-dependent items:
 
-- **Model checking** (§13.4 Exercises 11–12 in the three-fit pattern): skipped in the first two example tutorials (positions 1–2, target tutorials 05 Recruits and 06 Trains); replaced by an author-rendered side-by-side outcome/fitted-value plot in the remaining Easy tutorials (positions 3–4, target tutorials 07 Colleges and 08 Seguro Popular); Medium form (`check_predictions()`) in positions 5–8 (target tutorials 09–12); Hard form (posterior-predictive-check terminology + model revision driven by the check) in positions 9–10 (target tutorials 13–14); omitted entirely for positions 11–12 per §14.8 (random forests skip parameter and fit-diagnostic blocks in favor of `marginaleffects`-native outputs). Full progression in §1.3 *Worked example: model checking across three levels*.
 - **Concrete DGM math** (§13.4 Exercise 11): author-shipped in Easy and Medium; possibly a student exercise (via AI) in Difficult tutorials with simple models; author-shipped when the model is complex. Details in §13.4.
 - **Parameter-table formatting** (§13.5 Temperance preamble): Easy = raw `tidy()`, Medium = nicer (`kable`/`gt`), Difficult = near-publication quality. Always author-shipped.
 - **`marginaleffects` coverage** (§13.5 Temperance): Easy = `predictions()` family only; Medium adds `comparisons()`; Difficult adds the five-decisions framework and grid types. Slopes are never introduced.
@@ -470,8 +469,6 @@ Parts 1 and 2 are deliberately repetitive with Justice — they show the same Po
 
 **Abstract-math block moves here.** The author-shown abstract mathematical structure that used to live at the end of Justice (§13.3 Exercise 15 in the original draft) now lives in the Courage preamble only — one place, not two.
 
-**Model-checking staging.** Exercises 11 and 12 below (add `easystats` to the setup chunk, run `check_predictions()` in a QMD chunk) are **Medium-tier** as written. In **Easy-tier** tutorials, replace them with a single exercise that shows an author-produced side-by-side plot of outcome distribution vs. fitted-value distribution (no student code; bare `###` Continue button per §6.5) — or in the first two example tutorials, omit model checking entirely. In **Difficult-tier** tutorials, add a follow-up exercise that uses the check to drive a model revision and then re-runs the check on the improved model. The full progression is in §1.3 (Worked example: model checking across three levels).
-
 **Exercise 1.** [canonical, tier-dependent presence] Components of Courage.
 - **Tier:** See §13 pre-flight list for the rotation. When *not* asked, the Courage preamble (§13.4) includes a *"Remember that …"* reminder with the canonical definition verbatim.
 - Prompt: *In your own words, describe the components of the virtue of Courage for analyzing data.*
@@ -562,17 +559,11 @@ The interpretation questions are concentrated in Courage so the parameter-table-
 - Prompt: *The final model from the previous exercise lives in a code chunk in your `analysis.qmd`, assigned to `fit_<n>`. Render and confirm it is there.*
 - End: the code-being-primary knowledge drop (§12.4).
 
-**Exercise 10.** *(Removed — obsolete under the `analysis.qmd` model.)* The old step brought `fit_<n>` into the R Terminal so interactive checks could run; now the fit lives in a QMD chunk and the checks below (`check_predictions()`, `tidy()`) run in QMD chunks too. The number is kept so later `§13.4 Exercise N` cross-references resolve; skip this slot when authoring.
+**Exercise 10.** *(Removed — obsolete under the `analysis.qmd` model.)* The old step brought `fit_<n>` into the R Terminal so interactive checks could run; now the fit lives in a QMD chunk and the checks below (`tidy()`) run in QMD chunks too. The number is kept so later `§13.4 Exercise N` cross-references resolve; skip this slot when authoring.
 
-**Exercise 11.** [operational] Add easystats to the setup chunk.
-- **Tier:** Medium only. **Omit entirely** in positions 1–2 (target tutorials 05 Recruits, 06 Trains). In the remaining Easy positions 3–4 (target tutorials 07 Colleges, 08 Seguro Popular), replace both Exercises 11 and 12 with a single author-rendered side-by-side plot of outcome distribution vs. fitted-value distribution — the student views it and hits Continue (a bare `###`, no question chunk per §6.5); no package loaded, no terminology introduced. In Hard positions 9–10 (target tutorials 13 CES, 14 Governors), keep Exercises 11–12 and add a follow-up exercise that uses the check to drive a model revision. In Hard positions 11–12 (random forest tutorials), drop the model-checking block entirely per §14.8. Full progression in §1.3 *Worked example: model checking across three levels*.
-- Prompt: *Add `library([easystats](https://easystats.github.io/easystats/))` to the setup chunk in `analysis.qmd` and render — we need it for `check_predictions()` in the next exercise, which runs in the QMD. In the R Terminal, run `show_file("XX.qmd", chunk = "setup")`. CP/CR.*
-- End: a key chapter point on *why* we check the model — a good DGM should generate data that looks like the real data; the next exercise makes that comparison.
+**Exercise 11.** *(Removed — model checking was dropped from the curriculum.)* The number is kept so later `§13.4 Exercise N` cross-references resolve; skip this slot when authoring.
 
-**Exercise 12.** [operational] Run `check_predictions()` in the QMD.
-- **Tier:** Medium only. See Exercise 11's tier note above — same rules.
-- Prompt: *Add a chunk (with `#| echo: false`) that runs `check_predictions(extract_fit_engine(fit_<n>))`. Render, and look at the comparison plot in `analysis.html`. Describe in one sentence what you see.*
-- End: the `check_predictions()` knowledge drop (§12.4). Add a sentence noting whether the simulated data looks like the actual data for this problem.
+**Exercise 12.** *(Removed — model checking was dropped from the curriculum.)* Same as Exercise 11: number kept for cross-reference stability; skip this slot when authoring.
 
 **Exercise 13.** [author-shown block in Easy and Medium; optional student exercise in Difficult tutorials with simple models only] Concrete LaTeX DGM.
 - **Tier:** Easy and Medium → author-shipped (no student exercise). Difficult with simple models → may be a student exercise (AI-assisted). Difficult with complex models → author-shipped. Never purely abstract LaTeX at this position — that form lives in the Courage preamble only.

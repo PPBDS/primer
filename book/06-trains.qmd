@@ -561,37 +561,6 @@ Three differences from the abstract form. First, the parameters $\beta_0$ and $\
 
 **This is our data generating mechanism.** It serves both the primary causal question and the paired predictive question. The fit object is the same; what differs is how we read it.
 
-### Model checking
-
-A sanity check: the distribution of the fitted values should look like the distribution of the actual `att_end`. The two won't match exactly --- the model has only two predicted values (one for each treatment level) while the data has continuous variation --- but the gross shape and central tendency should be close.
-
-```{r}
-#| message: false
-#| warning: false
-fitted_df <- tibble(
-  value  = c(trains$att_end, predict(extract_fit_engine(fit_att))),
-  source = c(rep("Actual", nrow(trains)),
-             rep("Fitted", nrow(trains)))
-)
-
-ggplot(fitted_df, aes(x = value, fill = source)) +
-  geom_density(alpha = 0.5) +
-  labs(
-    title    = "Actual vs. Fitted Attitudes",
-    subtitle = "Fitted distribution is two narrow spikes; actual distribution is wider",
-    x        = "Attitude (3-15)",
-    y        = NULL,
-    fill     = "Source",
-    caption  = "Source: Enos (2014) via primer.data"
-  ) +
-  theme_minimal() +
-  theme(axis.text.y  = element_blank(),
-        axis.ticks.y = element_blank())
-```
-
-The fitted distribution has two narrow spikes (one near 8.45 for Control, one near 10.0 for Treated). The actual distribution is wider --- the model is using only one binary covariate, so the within-group spread of attitudes goes into the residual variance. For our question (the average effect of treatment) this is fine. Adding more covariates would let the model recover more of the within-group spread but would not change the headline answer.
-
-
 ## Temperance
 
 ```{r}
