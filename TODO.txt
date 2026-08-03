@@ -1,6 +1,6 @@
 ## Sophie
 
-Do tutorials 5 through 9. Send me HTML answers. Submit PRs.
+Do tutorials 5 through 9. Send me HTML answers. Submit PRs. - Done
 
 ## Priorities
 
