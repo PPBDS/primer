@@ -113,16 +113,16 @@ knitr::include_graphics("getting-started/images/cs-4b.png")
 
 * The "Editor" is the large central area where you edit files.
 
-* The "Panel" is the horizontal area below the Editor, containing the Problems, Output, Debug Console, Terminal, and Ports tabs. Our main focus is the Terminal tab. This is where we "talk" to both the (cloud) computer itself and to the R program that it provides.
+* The "Panel" is the horizontal area below the Editor, containing the Problems, Output, Debug Console, Terminal, and Ports views. Our main focus is the Terminal view. This is where we "talk" to both the (cloud) computer itself and to the R program that it provides.
 
-* The Terminal currently shows a "bash" shell. We will learn more about shells later. Click on the `+` sign to the right of the "Ports" tab. This will start a second bash shell. Your Panel should now look like this:
+* The Terminal currently shows a "bash" shell. We will learn more about shells later. Click on the `+` sign to the right of the "Ports" view. This will start a second bash shell. Your Panel should now look like this:
 
 ```{r}
 #| echo: false
 knitr::include_graphics("getting-started/images/cs-5.png")
 ```
 
-* Note the two bash shells on the right side of the Panel. We can click on each to move back and forth between them.
+* Note the tabs for the two bash shells on the right side of the Panel. We can click on each tab to move back and forth between them.
 
 * In addition to shells, we can also start an R session under the Terminal. Instead of clicking the `+` sign, click the small downward pointing arrow next to it. This will show a variety of options.
 
@@ -133,7 +133,7 @@ knitr::include_graphics("getting-started/images/cs-6.png")
 
 * Select "R Terminal." This will start an R session that lets you "talk" to R in the same way that a bash shell allows you to talk to the computer.
 
-* Click on the "R Interactive" option which should appear beneath the two bash lines on the right side of the Panel.
+* Click on the "R Interactive" tab which should appear beneath the two bash tabs on the right side of the Panel.
 
 * Type in `2 + 2` at the R prompt and hit `enter` (Windows) or `return` (Mac). (Going forward we will just use `Enter` to refer to this action. Mac users should hit `return`.)
 
@@ -144,7 +144,7 @@ knitr::include_graphics("getting-started/images/cs-6.png")
 knitr::include_graphics("getting-started/images/cs-7.png")
 ```
 
-An IDE like VS Code is designed to organize all the different work we do as data scientists. We need to talk to the computer via the bash Terminal (often referred to as the "shell"), talk to R, view plots, and so on.
+An IDE like VS Code is designed to organize all the different work we do as data scientists. We need to talk to the computer via the bash Terminal (a terminal running the bash shell), talk to R, view plots, and so on.
 
 ### Running the Getting Started tutorial {.unnumbered}
 
@@ -162,7 +162,7 @@ Doing so shows all the R tutorials which are in the **[tutorial.helpers](https:/
 knitr::include_graphics("getting-started/images/cs-9.png")
 ```
 
-Clicking the tutorial arrow starts a new R session, labeled "R Tutorial" on the right side of the panel. We now have four different terminals: two bash and two R. In this case, a "terminal" is any connection to the (cloud) computer itself or to a program running on it, like R. In fact, the [bash shell](https://opensource.com/resources/what-bash) is just another program which runs in the computer.
+Clicking the tutorial arrow starts a new R session, labeled "R Tutorial" on the right side of the Panel. We now have four different terminals: two bash and two R. In this case, a "terminal" is any connection to the (cloud) computer itself or to a program running on it, like R. In fact, the [bash shell](https://opensource.com/resources/what-bash) is just another program which runs in the computer.
 
 The R Tutorial session shows the tutorial being built and its current state, which is "listening," i.e., waiting for you to complete the tutorial. While the tutorial is running, this R session is unavailable for other work.
 
