@@ -109,9 +109,29 @@ The Preceptor Table here has one outcome column (`Ever-Smoker`) and two covariat
 
 ### Exploring the data
 
-Before fitting a model, look at the data. *You can never look too closely at your data* --- the hour spent on a careful EDA almost always saves a day downstream.
+Before fitting a model, look at the data. *You can never look too closely at your data* --- the hour spent on a careful EDA almost always saves a day downstream. Start with the outcome itself.
 
 ```{r}
+#| label: eda-outcome-distribution
+#| message: false
+#| warning: false
+smokes |>
+  ggplot(aes(x = smoke)) +
+  geom_bar(fill = "grey50", width = 0.6) +
+  labs(
+    title    = "Ever-Smoker Status Among 1,000 NHANES Adults",
+    subtitle = "432 of the 1,000 adults --- 43% --- are ever-smokers",
+    x        = "Ever-Smoker",
+    y        = "Number of Adults",
+    caption  = "Source: 1,000-adult NHANES 2009-2012 cut via primer.tutorials::smokes"
+  ) +
+  theme_minimal()
+```
+
+A binary outcome's entire distribution is a single split: 568 never-smokers against 432 ever-smokers. Both categories are well populated, so the logistic regression will have plenty of information about each level of the outcome.
+
+```{r}
+#| label: eda-smoke-by-sex
 #| message: false
 #| warning: false
 smokes |>
@@ -127,7 +147,7 @@ smokes |>
   scale_y_continuous(labels = scales::label_percent(), limits = c(0, 0.65)) +
   labs(
     title    = "Ever-Smoker Prevalence by Sex",
-    subtitle = "Men are about 14 percentage points more likely to be ever-smokers",
+    subtitle = "Men are about 13 percentage points more likely to be ever-smokers (50% vs. 37%)",
     x        = "Sex",
     y        = "Share of Ever-Smokers",
     caption  = "Source: 1,000-adult NHANES 2009-2012 cut via primer.tutorials::smokes"
@@ -135,9 +155,10 @@ smokes |>
   theme_minimal()
 ```
 
-Among the 1,000 adults in our sample, 36% of women and 50% of men are ever-smokers --- a 14-percentage-point gap. This is consistent with the historical-cohort story: today's adult population skews older than 30, and the older cohorts contained substantially more male than female smokers. The gap will narrow as younger cohorts age into the population, but in our 2009--2012 NHANES window it is large.
+Among the 1,000 adults in our sample, 37% of women and 50% of men are ever-smokers --- a 13-percentage-point gap. This is consistent with the historical-cohort story: today's adult population skews older than 30, and the older cohorts contained substantially more male than female smokers. The gap will narrow as younger cohorts age into the population, but in our 2009--2012 NHANES window it is large.
 
 ```{r}
+#| label: eda-smoke-by-age-sex
 #| message: false
 #| warning: false
 smokes |>
@@ -164,7 +185,29 @@ smokes |>
 
 Binning the ages into ten-year groups makes the age pattern visible: both sexes show rising ever-smoker prevalence from the 20s up through the 60s, with the male-female gap of roughly 14--15 percentage points roughly constant across the age range. The 70-and-up bin shows some flattening, possibly reflecting survivor-bias effects or simply small sample size in that bin. The chapter's logistic model will capture the level shift (Men > Women) and the age slope (older adults more likely to be ever-smokers), but it will not, by itself, capture any *interaction* between age and sex --- a richer specification would.
 
+The candidate models in Courage use two covariates: `sex` and `age`. Look at each one's distribution before asking either to do any modeling work.
+
 ```{r}
+#| label: eda-sex-distribution
+#| message: false
+#| warning: false
+smokes |>
+  ggplot(aes(x = sex)) +
+  geom_bar(fill = "grey50", width = 0.6) +
+  labs(
+    title    = "Sex Composition of the Sample",
+    subtitle = "The sample is nearly balanced: 521 women and 479 men",
+    x        = "Sex",
+    y        = "Number of Adults",
+    caption  = "Source: 1,000-adult NHANES 2009-2012 cut via primer.tutorials::smokes"
+  ) +
+  theme_minimal()
+```
+
+The near-even split means the model's `sex` coefficient rests on hundreds of adults in each group; neither category is so thin that its estimate would wobble.
+
+```{r}
+#| label: eda-age-distribution
 #| message: false
 #| warning: false
 smokes |>

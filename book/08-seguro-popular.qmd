@@ -147,6 +147,7 @@ cat("```{=html}\n",
 Before fitting a model, look at the data. *You can never look too closely at your data* --- the hour spent on a careful EDA almost always saves a day downstream.
 
 ```{r}
+#| label: eda-spending-density
 #| message: false
 #| warning: false
 x |>
@@ -170,6 +171,7 @@ x |>
 Both density curves spike near zero --- the typical household, enrolled or not, reports almost no spending over a three-month window. The Enrolled and Not-enrolled distributions overlap almost completely in the visible range. The plot uses an x-axis cap at 4,000 pesos because the long right tail extends well beyond what is informative for the central comparison.
 
 ```{r}
+#| label: eda-treatment-jitter
 #| message: false
 #| warning: false
 x |>
@@ -190,32 +192,97 @@ x |>
 
 The jitter view --- with the y-axis capped at 3,000 pesos to hide the right tail without dropping it from the model --- shows individual households as points. The mass of both groups sits near zero. The blue dots, marking the sample means, sit so close together that the difference between them is invisible at this scale. With 27,569 households the standard error on a between-group difference of 63 pesos is small enough to be statistically detectable, but the magnitude of the effect itself is genuinely small: a typical Enrolled household spends about 731 pesos over three months while a typical Not-enrolled household spends about 794 --- a real difference that disappears against the variation within each arm.
 
+The candidate models in Courage will draw on four covariates --- `treatment`, `age`, `sex`, and `education` --- so we should look at each one's own distribution before modeling with it. Only `treatment` survives into the final data generating mechanism; the other three appear in candidate models and are then dropped.
+
 ```{r}
+#| label: eda-treatment-bar
 #| message: false
 #| warning: false
 x |>
-  ggplot(aes(x = t2_health_exp_3m + 1)) +
-  geom_histogram(aes(fill = treatment), bins = 40, alpha = 0.6, position = "identity") +
-  scale_x_log10(labels = scales::label_dollar(prefix = "", suffix = " pesos"),
-                breaks = c(1, 10, 100, 1000, 10000)) +
+  ggplot(aes(x = treatment)) +
+  geom_bar(fill = "grey70", color = "grey30") +
+  scale_y_continuous(labels = scales::label_comma()) +
   labs(
-    title    = "Distribution of Spending on a Log Scale",
-    subtitle = "Massive zero-spike, then a smooth right tail; not a Normal distribution",
-    x        = "3-month spending (pesos, log scale; 1 peso added before logging)",
+    title    = "Households by Treatment Assignment",
+    subtitle = "The arms are nearly balanced: 13,871 Enrolled and 13,698 Not enrolled",
+    x        = "Treatment",
     y        = "Households",
-    fill     = "Treatment",
     caption  = "Source: King et al. (2009) Seguro Popular rollout via primer.data"
   ) +
   theme_minimal()
 ```
 
-Putting the outcome on a log scale (with one peso added to handle the zeros) makes the structure visible: a large pile of zeros and near-zeros on the left, then a continuous distribution stretching out across two orders of magnitude. The Enrolled and Not-enrolled bars overlap closely at each level. A more sophisticated chapter would model this as a two-part process (a logistic model for whether spending is positive, then a continuous model for the level given that it is positive); ours uses a single Normal-family linear regression, which is the wrong model for the underlying data but the right model for what we are trying to estimate (an average treatment effect).
+Treatment is the one covariate kept in the final model, and its distribution is exactly what the cluster-level randomization was designed to deliver: two arms of nearly equal size, 13,871 Enrolled households against 13,698 Not enrolled. That balance is what lets the simple two-group comparison in Courage carry the causal weight.
+
+```{r}
+#| label: eda-age-hist
+#| message: false
+#| warning: false
+x |>
+  ggplot(aes(x = age)) +
+  geom_histogram(bins = 40, fill = "grey70", color = "grey30") +
+  labs(
+    title    = "Age of Surveyed Household Members",
+    subtitle = "Ages run from 18 to 98, with half between 29 and 53",
+    x        = "Age (years)",
+    y        = "Households",
+    caption  = "Source: King et al. (2009) Seguro Popular rollout via primer.data"
+  ) +
+  theme_minimal()
+```
+
+Age has a smooth adult distribution with a median of 39 and a thin elderly tail. It enters two of the candidate models in Courage; because the randomization makes it roughly orthogonal to treatment, adjusting for it barely moves the treatment coefficient, and it is dropped from the final model.
+
+```{r}
+#| label: eda-sex-bar
+#| message: false
+#| warning: false
+x |>
+  mutate(sex = str_to_title(sex)) |>
+  ggplot(aes(x = sex)) +
+  geom_bar(fill = "grey70", color = "grey30") +
+  scale_y_continuous(labels = scales::label_comma()) +
+  labs(
+    title    = "Sex of Surveyed Household Members",
+    subtitle = "About 63% of surveyed household members are male",
+    x        = "Sex",
+    y        = "Households",
+    caption  = "Source: King et al. (2009) Seguro Popular rollout via primer.data"
+  ) +
+  theme_minimal()
+```
+
+The surveyed household members skew male, about 63% to 37% --- a feature of who answered the survey, not of the Mexican population. Like age, `sex` appears in two candidate models, does not move the treatment coefficient, and is dropped from the final model.
+
+```{r}
+#| label: eda-education-bar
+#| message: false
+#| warning: false
+x |>
+  mutate(education = factor(education,
+                            levels = c("preschool", "primary", "secondary",
+                                       "high school", "techinical", "college"),
+                            labels = c("Preschool", "Primary", "Secondary",
+                                       "High School", "Technical", "College"))) |>
+  ggplot(aes(y = fct_rev(education))) +
+  geom_bar(fill = "grey70", color = "grey30") +
+  scale_x_continuous(labels = scales::label_comma()) +
+  labs(
+    title    = "Education of Surveyed Household Members",
+    subtitle = "Primary school is the most common level; under 5% report college",
+    x        = "Households",
+    y        = "Education",
+    caption  = "Source: King et al. (2009) Seguro Popular rollout via primer.data"
+  ) +
+  theme_minimal()
+```
+
+Education is concentrated at the low end --- primary school is the most common level, and under 5% of surveyed household members report college --- consistent with a trial that deliberately sampled poor, high-uninsurance communities. It appears in one candidate model in Courage and, like age and sex, leaves the treatment coefficient essentially unchanged, so it too is dropped from the final model. (The raw data spells one level `techinical`; the plot relabels it `Technical`.)
 
 A few specifics worth flagging from the EDA:
 
-- **The outcome distribution is heavy-tailed.** Almost half the households report zero spending; a small fraction account for most of the mean. The Normal-family model the chapter uses ignores this and pretends the outcome is symmetric around its mean. For the average treatment effect this is OK; for any question about extreme values it is wrong.
-- **The arms are naturally balanced.** Randomization happened at the community level, and the 27,569-row analysis sample inherits that balance: about 13,700 Enrolled households and 13,900 Not enrolled. No stratified slicing is needed; the design itself does the work.
-- **The outcome is heavy-tailed.** Three-month spending has a mean of about 762 pesos but a maximum past 37,000 pesos, with a long thin right tail. The chapter does not log-transform or trim; we model the raw pesos and accept that the residual standard deviation will be on the order of 1,800. With ~27,500 observations the standard error on the treatment coefficient lands near 21 pesos, small enough for an effect of -63 pesos to be statistically detectable.
+- **The outcome distribution is heavy-tailed.** About 39% of households report zero spending and the median is only 150 pesos, yet the mean is about 762 pesos and the maximum is past 37,000 --- a small fraction of households accounts for most of the mean. A more sophisticated analysis would model this as a two-part process (a logistic model for whether spending is positive, then a continuous model for the level given that it is); ours uses a single Normal-family linear regression, which is the wrong model for the underlying data but the right model for what we are trying to estimate (an average treatment effect). For any question about extreme values it is wrong.
+- **The within-arm noise dwarfs the between-arm signal.** The chapter does not log-transform or trim; we model the raw pesos and accept that the residual standard deviation will be on the order of 1,800. With ~27,500 observations the standard error on the treatment coefficient lands near 21 pesos, small enough for an effect of -63 pesos to be statistically detectable.
 
 ### The paired question
 
@@ -638,6 +705,8 @@ The point is that *"average effect on average spending"* is one question in a fa
 Three things are likely wrong with our answer.
 
 First, the model ignores the cluster structure. King et al.'s randomization was at the community level; standard errors should reflect that. Our naive standard error treats the 27,569 households as independent observations when they are really 100 paired communities of correlated households. The cluster-robust 95% interval is somewhat wider than our reported [-105, -22]; the point estimate is essentially the same.
+
+Second, *the trial population is not the decision population.* The estimate comes from 100 matched health clusters in seven states, selected because Seguro Popular was arriving there first --- disproportionately poor, rural communities surveyed in 2005--06. The Minister's decision applies to today's uninsured households across all of Mexico, nearly two decades and one program redesign later. This is the representativeness gap from Justice: nothing in our confidence interval measures how far the trial communities sit from the households the decision would actually touch.
 
 Third, *the world is always more uncertain than our models would have us believe.* Even if every assumption about validity, stability, and representativeness were exactly right --- which they aren't --- the reported confidence interval would still capture only sampling uncertainty under the model, not uncertainty about whether the model itself is correct. Self-report measurement error in the outcome is unmodeled. Intent-to-treat versus actual enrollment is unmodeled. Cluster correlation is unmodeled. The right confidence interval for the average treatment effect of Seguro Popular on out-of-pocket spending, in the population the Ministry cares about today, is much wider than any of these numbers suggest.
 

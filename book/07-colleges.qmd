@@ -138,6 +138,7 @@ The Preceptor Table commits us to *exactly one* covariate column (`Tuition`) bey
 Before fitting a model, look at the data. *You can never look too closely at your data* --- the hour spent on a careful EDA almost always saves a day downstream.
 
 ```{r}
+#| label: eda-grad-rate-density
 #| message: false
 #| warning: false
 colleges |>
@@ -161,6 +162,7 @@ colleges |>
 Graduation rates span essentially the full range from about 10% to 98%, with a long lower tail and a softer right-side concentration around 60--80%. The distribution is plainly not normal --- it has a left skew and the bounded support shows up as boundary effects --- but with several hundred observations the linear-regression machinery is robust enough to be useful, and the headline question is about a difference of means rather than about extreme percentiles.
 
 ```{r}
+#| label: eda-tuition-grad-rate-scatter
 #| message: false
 #| warning: false
 colleges |>
@@ -184,6 +186,7 @@ colleges |>
 Graduation rate slopes upward with tuition --- the unconditional bivariate relationship the headline question concerns. A linear smooth fit through the cloud of points has slope of roughly 16 percentage points per $10,000 of tuition. The cloud is noisy, with substantial spread around the line; many high-tuition colleges have modest graduation rates and many moderate-tuition colleges have high ones. The relationship is real, but tuition explains only a portion of the across-college variation.
 
 ```{r}
+#| label: eda-scatter-by-selectivity
 #| message: false
 #| warning: false
 colleges |>
@@ -206,10 +209,50 @@ colleges |>
 
 Coloring the same scatter by selectivity tier sorts the cloud into horizontal bands: Elite colleges (in the top-right corner) cluster near 90% graduation; Lowly Selective colleges (the largest group) sit broadly around 50%. Within each band, the tuition slope is flatter than the unconditional slope --- which is the central confounding lesson of the chapter. Tuition correlates with graduation rate partly because high-tuition colleges *are* high-tuition partly because they are more selective, and the selectivity itself is the main driver of graduation rate. The model in Courage will sort this out.
 
+The candidate models in Courage will use two covariates --- `tuition` and `selectivity` --- and both survive into the final data generating mechanism, so we should look at each one's own distribution before modeling with it.
+
+```{r}
+#| label: eda-tuition-hist
+#| message: false
+#| warning: false
+x |>
+  ggplot(aes(x = tuition)) +
+  geom_histogram(bins = 30, fill = "grey70", color = "grey30") +
+  scale_x_continuous(labels = scales::label_dollar(scale = 10000)) +
+  labs(
+    title    = "Tuition Across Colleges with Tuition Above $20K",
+    subtitle = "Half of these colleges charge between about $26,000 and $37,000",
+    x        = "Tuition",
+    y        = "Colleges",
+    caption  = "Source: IPEDS 2013 via primer.data"
+  ) +
+  theme_minimal()
+```
+
+Tuition runs from just above the $20,000 filter cutoff to a single college past $50,000, with a secondary bump in the high-$40,000s where many Elite institutions cluster. The $30,000 college in our question sits in the thick of the data, while the $20,000 college sits at the lower edge --- a direct consequence of the tuition filter --- so the model leans harder on nearby observations there.
+
+```{r}
+#| label: eda-selectivity-bar
+#| message: false
+#| warning: false
+x |>
+  ggplot(aes(y = fct_rev(selectivity))) +
+  geom_bar(fill = "grey70", color = "grey30") +
+  labs(
+    title    = "Selectivity Across Colleges with Tuition Above $20K",
+    subtitle = "Lowly Selective colleges dominate; only 11 Non-selective colleges remain",
+    x        = "Colleges",
+    y        = "Selectivity",
+    caption  = "Source: IPEDS 2013 via primer.data"
+  ) +
+  theme_minimal()
+```
+
+Selectivity, the other covariate kept in the final model, is heavily unbalanced: 296 of the 542 colleges are Lowly Selective, while the tuition filter dropped most of the unselective tail, leaving only 11 Non-selective institutions. The thin tiers --- Non-selective above all --- will have the least precisely estimated coefficients in Courage.
+
 A few specifics worth flagging from the EDA:
 
 - **The tuition variable is recorded in units of $10,000**, so a value of `3` means $30,000/year, not $3. Easy to miss in the raw output; easy to misinterpret downstream.
-- **Selectivity is unbalanced after the tuition filter**: the 542 colleges with tuition above $20,000 break down as roughly 296 Lowly Selective, 130 Moderately Selective, 63 Elite, 42 Highly Selective, and 11 Non-selective. Most of the unselective and non-selective tail dropped out with the tuition filter.
 - **The graduation-rate column is on the 0--1 proportion scale**, but for human-readable axes the chapter renders it as percentages (`scales::label_percent()`).
 
 ### The paired question

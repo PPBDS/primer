@@ -160,9 +160,31 @@ cat("```{=html}\n",
 
 ### Exploring the data
 
-Before fitting a model, look at the data. *You can never look too closely at your data* --- the hour spent on a careful EDA almost always saves a day downstream.
+Before fitting a model, look at the data. *You can never look too closely at your data* --- the hour spent on a careful EDA almost always saves a day downstream. Start with the outcome itself.
 
 ```{r}
+#| label: eda-outcome-distribution
+#| message: false
+#| warning: false
+x |>
+  mutate(voted_label = if_else(primary_06 == 1, "Voted", "Did Not Vote")) |>
+  ggplot(aes(x = voted_label)) +
+  geom_bar(fill = "grey50", width = 0.6) +
+  scale_y_continuous(labels = scales::label_comma()) +
+  labs(
+    title    = "Turnout in the August 2006 Michigan Primary",
+    subtitle = "108,696 of the 344,084 voters --- about 32% --- cast a ballot",
+    x        = NULL,
+    y        = "Number of Voters",
+    caption  = "Source: Gerber, Green, Larimer (2008) via primer.data::shaming"
+  ) +
+  theme_minimal()
+```
+
+About one voter in three showed up --- the low baseline typical of a low-salience August primary. A low baseline is exactly the environment where a postcard has headroom to move the marginal voter over the line.
+
+```{r}
+#| label: eda-turnout-by-treatment
 #| message: false
 #| warning: false
 x |>
@@ -187,6 +209,7 @@ x |>
 The raw turnout shares by treatment, computed across all 344,000 voters and ignoring voter class: No Postcard 29.7%, Civic Duty 31.5%, Hawthorne 32.2%, Self 34.5%, Neighbors 37.8%. The monotonic pattern --- escalating social-pressure intensity produces escalating turnout --- is visible directly in the raw data; no model is needed to see the basic shape. Neighbors is about 8 percentage points above No Postcard; Self is about 5; Hawthorne and Civic Duty are 2--3. The model's job is to refine these estimates, hold demographic covariates constant, and produce confidence intervals --- not to discover the headline pattern.
 
 ```{r}
+#| label: eda-turnout-by-class
 #| message: false
 #| warning: false
 x |>
@@ -211,6 +234,7 @@ x |>
 Faceting by voter class reveals the heterogeneity that motivates the chapter's interaction structure. *Always Vote* voters have a baseline turnout near 46% in the control arm and rise toward 55% with Neighbors --- a 9-percentage-point lift. *Sometimes Vote* voters rise from 28% to 36% with Neighbors --- an 8-percentage-point lift. *Rarely Vote* voters rise from 12% to 17% with Neighbors --- about a 5-percentage-point lift (and a much smaller share of them are reached, in absolute terms). The lift is largest for voters who already had a habit of voting; the postcard is, in essence, an extra nudge that pushes a near-decided voter over the line. For voters who rarely show up, the postcard helps but cannot manufacture a habit on its own.
 
 ```{r}
+#| label: eda-class-balance
 #| message: false
 #| warning: false
 x |>
@@ -230,12 +254,95 @@ x |>
   theme_minimal()
 ```
 
-The voter-class composition within each treatment arm is essentially identical --- *Rarely Vote* is a small share (about 15%), *Sometimes Vote* is the largest (about 50%), and *Always Vote* is about 35%, in every arm. This is what we expect from a properly randomized experiment: the household-level randomization should produce balanced demographic composition across treatment groups. The balance is what licenses the causal interpretation of the contrasts in the next two plots.
+The voter-class composition within each treatment arm is essentially identical --- *Rarely Vote* is a small share (about 14%), *Sometimes Vote* is the largest (about 63%), and *Always Vote* is about 23%, in every arm. This is what we expect from a properly randomized experiment: the household-level randomization should produce balanced demographic composition across treatment groups. The balance is what licenses the causal interpretation of the contrasts in the next two plots.
+
+The candidate models in Courage draw on four covariates: `treatment`, `age`, `sex`, and `voter_class`. Look at each one's distribution before asking any of them to do modeling work.
+
+```{r}
+#| label: eda-treatment-distribution
+#| message: false
+#| warning: false
+x |>
+  count(treatment) |>
+  ggplot(aes(x = treatment, y = n)) +
+  geom_col(fill = "grey50", width = 0.6) +
+  geom_text(aes(label = scales::label_comma()(n)), vjust = -0.4, size = 3.5) +
+  scale_y_continuous(labels = scales::label_comma(), limits = c(0, 210000)) +
+  labs(
+    title    = "Number of Voters in Each Treatment Arm",
+    subtitle = "The No Postcard control holds 191,243 voters; each postcard arm about 38,200",
+    x        = NULL,
+    y        = "Number of Voters",
+    caption  = "Source: Gerber, Green, Larimer (2008) via primer.data::shaming"
+  ) +
+  theme_minimal()
+```
+
+The imbalance across arms is by design, not accident: a large control arm pins down the baseline turnout precisely, while the four postcard arms stay small enough to keep the experiment's mail budget manageable. Every treatment contrast in the candidate models compares one ~38,000-voter arm against the 191,243-voter control.
+
+```{r}
+#| label: eda-age-distribution
+#| message: false
+#| warning: false
+x |>
+  ggplot(aes(x = age)) +
+  geom_histogram(binwidth = 5, boundary = 20, fill = "grey50", color = "white") +
+  scale_y_continuous(labels = scales::label_comma()) +
+  labs(
+    title    = "Age Distribution of Voters in the Sample",
+    subtitle = "Half the voters are between 41 and 59; the median age is 50",
+    x        = "Age (years)",
+    y        = "Number of Voters",
+    caption  = "Source: Gerber, Green, Larimer (2008) via primer.data::shaming"
+  ) +
+  theme_minimal()
+```
+
+The distribution is centered in middle age with a long right tail: 26 voters are recorded as age 100 or older, topping out at 106. Ages that extreme are more likely voter-file record errors than living voters --- a small coding quirk that every candidate model including `age` inherits.
+
+```{r}
+#| label: eda-sex-distribution
+#| message: false
+#| warning: false
+x |>
+  ggplot(aes(x = sex)) +
+  geom_bar(fill = "grey50", width = 0.6) +
+  scale_y_continuous(labels = scales::label_comma()) +
+  labs(
+    title    = "Sex Composition of the Sample",
+    subtitle = "An almost exact even split: 171,795 women and 172,289 men",
+    x        = "Sex",
+    y        = "Number of Voters",
+    caption  = "Source: Gerber, Green, Larimer (2008) via primer.data::shaming"
+  ) +
+  theme_minimal()
+```
+
+The even split gives the `sex` coefficient in the candidate models equally deep pools of both groups to draw on; sex will matter little to the fit, but not for lack of data.
+
+```{r}
+#| label: eda-voter-class-distribution
+#| message: false
+#| warning: false
+x |>
+  ggplot(aes(x = voter_class)) +
+  geom_bar(fill = "grey50", width = 0.6) +
+  scale_y_continuous(labels = scales::label_comma()) +
+  labs(
+    title    = "Voter Class Distribution",
+    subtitle = "About 63% of voters Sometimes Vote; 23% Always Vote; 14% Rarely Vote",
+    x        = NULL,
+    y        = "Number of Voters",
+    caption  = "Source: Gerber, Green, Larimer (2008) via primer.data::shaming"
+  ) +
+  theme_minimal()
+```
+
+*Sometimes Vote* dominates the sample, so any effect averaged across voter classes is driven mostly by that class. This is worth remembering in Temperance, where the final model --- the one that interacts `treatment` with `voter_class` --- reports both class-specific and averaged-across-classes effects.
 
 A few specifics worth flagging from the EDA:
 
 - **The full dataset is large**: 344,084 voters. The full-data fit is the chapter's reference fit, no slice-sampling required (unlike SPS). Standard errors will be tight; small effects are detectable.
-- **The treatment-arm sample sizes are not equal.** No Postcard has about 191,000 voters; each postcard arm has about 38,000. The control was deliberately larger to give a precise baseline; the four postcard arms are smaller to keep the mail budget manageable.
 - **The household-clustered standard errors issue** raised in the SPS chapter applies here too: two voters in the same household share a treatment assignment and may share unobserved correlates. The model below treats voters as independent, which slightly under-states standard errors. With 344,000 voters and 191,000 households the under-statement is mild; a serious analysis would use cluster-robust standard errors at the household level.
 
 ### The paired question

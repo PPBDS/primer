@@ -116,6 +116,7 @@ The Preceptor Table here is as small as they come: one unit column, one three-va
 Before fitting a model, look at the data. *You can never look too closely at your data* --- the hour spent on a careful EDA almost always saves a day downstream.
 
 ```{r}
+#| label: eda-outcome-distribution
 #| message: false
 #| warning: false
 nes_92 |>
@@ -140,13 +141,15 @@ nes_92 |>
 The sample's three-way split — 48% Clinton, 34% Bush, 18% Perot — sits noticeably to Clinton's advantage relative to the certified popular vote (43.0 / 37.4 / 18.9). Part of that gap is sampling noise; part of it is the winner-drift in recalled vote that the ANES background section described. The Perot share, interestingly, survives almost intact: whatever social pressures push recalled votes around, admitting a Perot vote seems not to have embarrassed anyone.
 
 ```{r}
+#| label: eda-vote-by-sex
 #| message: false
 #| warning: false
 nes_92 |>
   count(sex, pres_vote) |>
   group_by(sex) |>
-  mutate(share = n / sum(n)) |>
-  ggplot(aes(x = pres_vote, y = share, fill = sex)) +
+  mutate(share = n / sum(n),
+         pres_vote = fct_relevel(pres_vote, "Clinton", "Bush", "Perot")) |>
+  ggplot(aes(x = sex, y = share, fill = pres_vote)) +
   geom_col(position = "dodge", width = 0.7) +
   scale_y_continuous(labels = scales::label_percent()) +
   labs(
@@ -154,7 +157,7 @@ nes_92 |>
     subtitle = "Women lean Clinton; men give Perot a visibly larger share; Bush barely differs",
     x        = NULL,
     y        = "Share Within Sex",
-    fill     = "Sex",
+    fill     = "Candidate",
     caption  = "Source: American National Election Studies 1992 via primer.data::nes"
   ) +
   theme_minimal()
@@ -163,6 +166,7 @@ nes_92 |>
 The raw shares already sketch the answer to our question. Women split 52.5% Clinton / 33.3% Bush / 14.2% Perot; men split 42.5% / 34.8% / 22.6%. The 1992 gender gap, in this data, barely runs through the two major parties' relative standing --- the Bush share differs by little more than a point --- and instead runs through *Perot versus Clinton*: men reported voting for Perot at half again the rate women did, and those Perot votes came, arithmetically, out of the Clinton column.
 
 ```{r}
+#| label: eda-female-share-by-candidate
 #| message: false
 #| warning: false
 nes_92 |>
@@ -187,6 +191,30 @@ nes_92 |>
 ```
 
 Flipping the conditioning shows the same fact from the candidates' side: women make up 53% of the sample but only about 42% of Perot's reported voters, against 58% of Clinton's. The two views --- vote shares within sex, sex shares within vote --- are arithmetic transformations of one another, but audiences read them very differently, and a careful analyst reports whichever one matches the question. Ours (the vote-share gap between sexes) is the first.
+
+The last look is at the covariate itself --- the one variable, besides the outcome, that any of our candidate models will use:
+
+```{r}
+#| label: eda-sex-distribution
+#| message: false
+#| warning: false
+nes_92 |>
+  count(sex) |>
+  ggplot(aes(x = sex, y = n)) +
+  geom_col(fill = "grey50", width = 0.6) +
+  geom_text(aes(label = scales::label_comma()(n)), vjust = -0.4, size = 4.5) +
+  scale_y_continuous(labels = scales::label_comma(), limits = c(0, 1000)) +
+  labs(
+    title    = "Sex of the 1,658 Three-Candidate Voters in the ANES Sample",
+    subtitle = "Women outnumber men, 880 to 778, or 53% of the sample",
+    x        = NULL,
+    y        = "Number of Respondents",
+    caption  = "Source: American National Election Studies 1992 via primer.data::nes"
+  ) +
+  theme_minimal()
+```
+
+Sex is the covariate our chosen model will condition on, and its distribution holds no surprises: two well-filled groups, 880 women and 778 men, so the model estimates each sex's vote probabilities from hundreds of respondents rather than a handful.
 
 A few specifics worth flagging from the EDA:
 

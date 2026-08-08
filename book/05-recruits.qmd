@@ -114,6 +114,7 @@ The Preceptor Table is *imaginary* in the sense that we will never have its full
 Before fitting a model, look at the data. *You can never look too closely at your data* --- the hour spent on a careful EDA almost always saves a day downstream.
 
 ```{r}
+#| label: eda-height-density
 #| message: false
 #| warning: false
 recruits |>
@@ -134,27 +135,68 @@ recruits |>
 The marginal distribution of height has a left shoulder near 162 cm and a main mass near 175 cm. The shoulder is hinting that the sample is not unimodal; splitting by sex confirms it.
 
 ```{r}
+#| label: eda-height-by-sex
+#| message: false
+#| warning: false
+set.seed(9)
+recruits |>
+  ggplot(aes(x = sex, y = height)) +
+  geom_jitter(width = 0.15, alpha = 0.5) +
+  stat_summary(fun = mean, geom = "point", size = 4, color = "steelblue") +
+  labs(
+    title    = "Height by Sex in Our 50-Recruit Sample",
+    subtitle = "Blue dot = group mean; male recruits average about 9 cm taller",
+    x        = "Sex",
+    y        = "Height (cm)",
+    caption  = "Source: 50-row sample from NHANES via primer.tutorials::recruits"
+  ) +
+  theme_minimal()
+```
+
+This is the key covariate plotted against the outcome, and it previews the model Courage will fit: the two group means (blue) sit about 9 cm apart --- 165.9 cm for female recruits, 174.8 cm for male --- with plenty of overlap between the individual points. Notice also how sparse the female column is: 10 points against the male column's 40, a gap that will reappear as a wider confidence interval.
+
+Next, the distribution of each covariate the candidate models in Courage will consider, starting with `sex`.
+
+```{r}
+#| label: eda-sex-dist
 #| message: false
 #| warning: false
 recruits |>
-  ggplot(aes(x = height, fill = sex)) +
-  geom_density(alpha = 0.5) +
+  ggplot(aes(x = sex)) +
+  geom_bar(fill = "grey70", color = "grey30") +
   labs(
-    title    = "Height by Sex in Our 50-Recruit Sample",
-    subtitle = "Male and female distributions are offset by about 9 cm",
-    x        = "Height (cm)",
-    y        = NULL,
-    fill     = "Sex",
+    title    = "Sex in Our 50-Recruit Sample",
+    subtitle = "40 male and 10 female rows --- a deliberate 80/20 imbalance",
+    x        = "Sex",
+    y        = "Count",
     caption  = "Source: 50-row sample from NHANES via primer.tutorials::recruits"
   ) +
-  theme_minimal() +
-  theme(axis.text.y  = element_blank(),
-        axis.ticks.y = element_blank())
+  theme_minimal()
 ```
 
-The female distribution sits visibly to the left of the male distribution, with the female mode near 162 cm and the male mode near 175 cm --- about a 13 cm offset at the modes, with substantial overlap in the tails. The female density also looks rougher because we have only 10 female rows; a density estimator with 10 observations is wobbly.
+`sex` is the covariate our final model will keep, so its distribution matters most: the 40/10 imbalance means the female group mean rests on a quarter as much data as the male group mean, and its estimate will be correspondingly less precise.
 
 ```{r}
+#| label: eda-age-dist
+#| message: false
+#| warning: false
+recruits |>
+  ggplot(aes(x = age)) +
+  geom_histogram(binwidth = 1, center = 20, fill = "grey70", color = "grey30") +
+  labs(
+    title    = "Age in Our 50-Recruit Sample",
+    subtitle = "Every age from 18 to 27 appears, with a tilt toward the youngest years",
+    x        = "Age (years)",
+    y        = "Count",
+    caption  = "Source: 50-row sample from NHANES via primer.tutorials::recruits"
+  ) +
+  theme_minimal()
+```
+
+`age` is the other covariate the candidate models will try. Its spread across the 18--27 window is wide enough that an age slope, if one existed, would be detectable --- which makes the next plot a fair test.
+
+```{r}
+#| label: eda-height-age
 #| message: false
 #| warning: false
 recruits |>

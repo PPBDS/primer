@@ -135,9 +135,34 @@ This is the first Preceptor Table in the book whose Potential Outcomes spanner s
 
 ### Exploring the data
 
-Before fitting a model, look at the data. *You can never look too closely at your data* --- the hour spent on a careful EDA almost always saves a day downstream.
+Before fitting a model, look at the data. *You can never look too closely at your data* --- the hour spent on a careful EDA almost always saves a day downstream. Start with the outcome itself:
 
 ```{r}
+#| label: eda-outcome-distribution
+#| message: false
+#| warning: false
+x |>
+  count(applied_mail) |>
+  mutate(share = n / sum(n)) |>
+  ggplot(aes(x = applied_mail, y = n)) +
+  geom_col(fill = "grey50", width = 0.6) +
+  geom_text(aes(label = scales::label_percent(accuracy = 0.1)(share)),
+            vjust = -0.4, size = 4.5) +
+  scale_y_continuous(labels = scales::label_comma(), limits = c(0, 650000)) +
+  labs(
+    title    = "Did the Voter Apply for a Mail Ballot?",
+    subtitle = "One voter in six (16.8%) applied by the May 26 deadline",
+    x        = NULL,
+    y        = "Number of Voters",
+    caption  = "Source: 2020 Philadelphia mail-ballot experiment via primer.data::mail"
+  ) +
+  theme_minimal()
+```
+
+The outcome is binary and lopsided but nowhere near rare: 116,972 of our 696,638 voters applied. With six-figure counts in both bars, the baseline application rate is pinned down almost exactly, and any postcard effect will have to be read against that 16.8% floor.
+
+```{r}
+#| label: eda-rate-by-treatment
 #| message: false
 #| warning: false
 x |>
@@ -162,7 +187,32 @@ x |>
 
 The headline comparison, raw: 16.8% of control-group voters applied, against 17.2% in each treatment arm. Randomization means this simple comparison is already an unbiased causal estimate --- and it is tiny. Whatever these postcards did, they did not do much of it.
 
+The treatment variable's own distribution shows the design those rates sit on:
+
 ```{r}
+#| label: eda-treatment-distribution
+#| message: false
+#| warning: false
+x |>
+  count(treatment) |>
+  ggplot(aes(x = treatment, y = n)) +
+  geom_col(fill = "grey50", width = 0.6) +
+  geom_text(aes(label = scales::label_comma()(n)), vjust = -0.4, size = 4.5) +
+  scale_y_continuous(labels = scales::label_comma(), limits = c(0, 730000)) +
+  labs(
+    title    = "Number of Voters in Each Treatment Arm",
+    subtitle = "95% of voters were sent nothing; each postcard wording went to about 17,500",
+    x        = NULL,
+    y        = "Number of Voters",
+    caption  = "Source: 2020 Philadelphia mail-ballot experiment via primer.data::mail"
+  ) +
+  theme_minimal()
+```
+
+This is the deliberate imbalance described above, made visible: 661,672 control voters against 17,531 Neighborhood and 17,435 Self. The precision of every causal estimate downstream is set by the two small bars, not the big one.
+
+```{r}
+#| label: eda-rate-by-party
 #| message: false
 #| warning: false
 x |>
@@ -188,6 +238,32 @@ x |>
 Party, by contrast, moves the application rate enormously. By the spring of 2020, willingness to vote by mail had already polarized: Democratic messaging embraced it, Republican messaging disparaged it, and the application rates show the result. This is a *covariate* difference, not a causal effect of party --- but its sheer size, next to the postcards' half-point nudge, frames the whole problem.
 
 ```{r}
+#| label: eda-party-distribution
+#| message: false
+#| warning: false
+x |>
+  count(party) |>
+  mutate(party = fct_reorder(party, -n),
+         share = n / sum(n)) |>
+  ggplot(aes(x = party, y = n)) +
+  geom_col(fill = "grey50", width = 0.6) +
+  geom_text(aes(label = scales::label_percent(accuracy = 1)(share)),
+            vjust = -0.4, size = 4.5) +
+  scale_y_continuous(labels = scales::label_comma(), limits = c(0, 600000)) +
+  labs(
+    title    = "Party Registration of the Voters in the Experiment",
+    subtitle = "Philadelphia is a Democratic city: 77% of these voters are registered Democrats",
+    x        = NULL,
+    y        = "Number of Voters",
+    caption  = "Source: 2020 Philadelphia mail-ballot experiment via primer.data::mail"
+  ) +
+  theme_minimal()
+```
+
+Party's own distribution is as lopsided as its rates: registered Democrats outnumber Republicans nearly seven to one, and the file carries four party values, with unaffiliated voters ("None") their own category alongside Third Party. The model's party coefficients for the three smaller groups rest on tens of thousands of voters each --- still plenty --- but the sample is overwhelmingly a sample of Democrats.
+
+```{r}
+#| label: eda-rate-by-age
 #| message: false
 #| warning: false
 x |>
@@ -211,6 +287,54 @@ x |>
 ```
 
 Age is the other big axis. Older voters --- more exposed to pandemic risk, more habitual about voting --- applied at much higher rates. Note that `age` in this file is *banded* (18-29 through 65-121), not a number: the model will treat it as a five-level categorical variable with four dummies, not a slope.
+
+```{r}
+#| label: eda-age-distribution
+#| message: false
+#| warning: false
+x |>
+  count(age) |>
+  mutate(share = n / sum(n)) |>
+  ggplot(aes(x = age, y = n)) +
+  geom_col(fill = "grey50", width = 0.6) +
+  geom_text(aes(label = scales::label_percent(accuracy = 1)(share)),
+            vjust = -0.4, size = 4) +
+  scale_y_continuous(labels = scales::label_comma(), limits = c(0, 200000)) +
+  labs(
+    title    = "Age Bands of the Voters in the Experiment",
+    subtitle = "Every band holds at least 15% of the file; the youngest, 18-29, is the largest",
+    x        = "Age Band",
+    y        = "Number of Voters",
+    caption  = "Source: 2020 Philadelphia mail-ballot experiment via primer.data::mail"
+  ) +
+  theme_minimal()
+```
+
+Unlike party, age is comfortably spread: every band holds between 105,263 and 165,614 voters, so each of the model's four age dummies is estimated from a six-figure group.
+
+```{r}
+#| label: eda-sex-distribution
+#| message: false
+#| warning: false
+x |>
+  count(sex) |>
+  mutate(share = n / sum(n)) |>
+  ggplot(aes(x = sex, y = n)) +
+  geom_col(fill = "grey50", width = 0.6) +
+  geom_text(aes(label = scales::label_percent(accuracy = 1)(share)),
+            vjust = -0.4, size = 4.5) +
+  scale_y_continuous(labels = scales::label_comma(), limits = c(0, 450000)) +
+  labs(
+    title    = "Sex of the Voters in the Experiment",
+    subtitle = "Women are 55% of the voters who remain after dropping those with no recorded sex",
+    x        = NULL,
+    y        = "Number of Voters",
+    caption  = "Source: 2020 Philadelphia mail-ballot experiment via primer.data::mail"
+  ) +
+  theme_minimal()
+```
+
+Sex, the last covariate in the model, splits 382,332 women to 314,306 men --- but remember that this plot shows only the voters who *have* a recorded sex. The 239,069 voters dropped for missing sex are the EDA's biggest red flag, taken up in the first bullet below and again in Justice.
 
 A few specifics worth flagging from the EDA:
 

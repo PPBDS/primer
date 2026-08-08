@@ -143,27 +143,26 @@ The Preceptor Table is *imaginary* in the standard sense: we will never have its
 Before fitting a model, look at the data. *You can never look too closely at your data* --- the hour spent on a careful EDA almost always saves a day downstream.
 
 ```{r}
+#| label: eda-att-end-dist
 #| message: false
 #| warning: false
 trains |>
-  ggplot(aes(x = att_end, fill = treatment)) +
-  geom_density(alpha = 0.5) +
+  ggplot(aes(x = att_end)) +
+  geom_histogram(binwidth = 1, center = 9, fill = "grey70", color = "grey30") +
   labs(
-    title    = "Post-Experiment Immigration Attitudes by Treatment",
-    subtitle = "Treated distribution sits to the right of Control",
+    title    = "Post-Experiment Immigration Attitudes",
+    subtitle = "Scores use the full 3-15 range, with about two-thirds falling between 7 and 12",
     x        = "Attitude Score (3-15; higher = more anti-immigration)",
-    y        = NULL,
-    fill     = "Treatment",
+    y        = "Count",
     caption  = "Source: Enos (2014) via primer.data"
   ) +
-  theme_minimal() +
-  theme(axis.text.y  = element_blank(),
-        axis.ticks.y = element_blank())
+  theme_minimal()
 ```
 
-The Treated density sits visibly to the right of the Control density, with the two modes offset by a point or two. The shift is real but not enormous; substantial overlap remains. With only 51 Treated and 64 Control commuters, the densities are wobbly --- a density estimator with that few observations smooths heavily, hiding bumps and exaggerating others.
+The outcome spreads across its entire 3--15 range, mounded in the middle with thin tails at both ends --- no single dominant value, and only a few commuters pinned at the scale's floor or ceiling. A bounded scale with occupied endpoints is worth remembering: it can clip an effect for respondents who are already at an edge.
 
 ```{r}
+#| label: eda-att-by-treatment
 #| message: false
 #| warning: false
 set.seed(7)
@@ -181,9 +180,50 @@ trains |>
   theme_minimal()
 ```
 
-The jitter view shows the individual values without the smoothing the density imposes. The two group means, marked in blue, sit roughly 1.5 points apart on the 3--15 scale --- close to a 10% shift in the scale's full range. Individual scores range from the floor (3) to the ceiling (15) in both groups; the means are nudged apart by a population of treated commuters bunched a bit further up the scale.
+This is the key covariate --- the treatment --- plotted against the outcome, and it previews the model Courage will fit. The two group means, marked in blue, sit about 1.5 points apart (8.45 for Control, 10.0 for Treated) --- close to a 10% shift in the scale's full range. Individual scores span nearly the whole scale in both groups; the means are nudged apart by a population of treated commuters bunched a bit further up the scale.
+
+Next, the distribution of each covariate the candidate models in Courage will consider, starting with `treatment` itself.
 
 ```{r}
+#| label: eda-treatment-dist
+#| message: false
+#| warning: false
+trains |>
+  ggplot(aes(x = treatment)) +
+  geom_bar(fill = "grey70", color = "grey30") +
+  labs(
+    title    = "Treatment Assignment Among Surveyed Commuters",
+    subtitle = "64 Control and 51 Treated commuters --- randomization at the platform level",
+    x        = "Treatment Assignment",
+    y        = "Count",
+    caption  = "Source: Enos (2014) via primer.data"
+  ) +
+  theme_minimal()
+```
+
+`treatment` is the variable our final model will keep. The two groups are close enough in size that the model will estimate both group means with similar precision --- neither confidence interval will dwarf the other.
+
+```{r}
+#| label: eda-party-dist
+#| message: false
+#| warning: false
+trains |>
+  ggplot(aes(x = party)) +
+  geom_bar(fill = "grey70", color = "grey30") +
+  labs(
+    title    = "Party Affiliation Among Surveyed Commuters",
+    subtitle = "96 Democrats and 19 Republicans --- a heavily Democratic sample",
+    x        = "Party Affiliation",
+    y        = "Count",
+    caption  = "Source: Enos (2014) via primer.data"
+  ) +
+  theme_minimal()
+```
+
+`party` will appear in the Courage candidate models as a check on the randomization, and its lopsided split matters there: with only 19 Republicans, any party-specific estimate rests on thin data. The Democratic tilt is no surprise for suburban Boston, but it is one more way this sample differs from the Georgia electorate the campaign cares about.
+
+```{r}
+#| label: eda-att-end-vs-start
 #| message: false
 #| warning: false
 trains |>
@@ -207,7 +247,7 @@ A few specifics worth flagging from the EDA:
 
 - **The platform-level randomization shows up in the demographics.** Treated and Control commuters are not perfectly balanced on observable characteristics --- the Treated group skews a bit older and a bit more conservative in the raw data. That imbalance is plausibly chance with only 115 units; we will revisit it when we discuss unconfoundedness.
 - **No missing values in the columns we use.** Some demographic columns have a few `NA`s, but `att_end`, `att_start`, and `treatment` are complete.
-- **Ceiling and floor effects.** A handful of commuters report scores of 15 (the ceiling); a smaller number report 3 (the floor). If treatment pushed an already-high responder's "true" attitude higher than 15, the ceiling would clip the effect, and the estimate would understate the true causal impact. With only a handful of ceiling rows the bias is modest.
+- **Ceiling and floor effects.** Three commuters report scores of 15 (the ceiling) and three report 3 (the floor). If treatment pushed an already-high responder's "true" attitude higher than 15, the ceiling would clip the effect, and the estimate would understate the true causal impact. With only a handful of ceiling rows the bias is modest.
 
 ### The paired question
 
@@ -519,7 +559,7 @@ linear_reg() |>
   kable(caption = "Candidate model: att_end ~ party. Source: Enos (2014) via primer.data.")
 ```
 
-`party` is a three-level factor (Democrat, Republican, Independent). The intercept is the expected attitude of the reference category (Democrat). The coefficient on `partyRepublican` is large and positive: Republicans in this sample report attitudes about 4 points higher than Democrats on the 3--15 scale. The coefficient on `partyIndependent` is small and noisy. This is exactly what we would expect about immigration attitudes by party affiliation in the early-2010s U.S. context --- party predicts immigration attitudes strongly, even within a Boston suburban commuter sample.
+`party` is a two-level factor in these data (Democrat, Republican). The intercept is the expected attitude of the reference category (Democrat): about 8.78. The coefficient on `partyRepublican` is positive and substantial: Republicans in this sample report attitudes about 2.2 points higher than Democrats on the 3--15 scale, with a 95% confidence interval of roughly [0.8, 3.5]. This is exactly what we would expect about immigration attitudes by party affiliation in the early-2010s U.S. context --- party predicts immigration attitudes strongly, even within a heavily Democratic Boston suburban commuter sample.
 
 This is a useful diagnostic but not our model. Party affiliation is not what the campaign is trying to change; the treatment is. We fit `party` here to see that the covariate has real signal --- which it does --- not to use it.
 
@@ -535,7 +575,7 @@ linear_reg() |>
   kable(caption = "Candidate model: att_end ~ treatment + party. Source: Enos (2014) via primer.data.")
 ```
 
-Adding `party` to the treatment-only model leaves the coefficient on `treatmentTreated` essentially unchanged (still about 1.55, perhaps drifted to 1.4 or 1.6 depending on the random imbalance in the realized sample). This is exactly what we would expect from a properly randomized experiment: the treatment assignment should be roughly orthogonal to pre-treatment covariates like party, so adjusting for them should not move the treatment coefficient by much. Adjusting for party *does* tighten the residual variance --- the model fits the within-party variation better --- but the *answer to the question we are asking* does not change.
+Adding `party` to the treatment-only model leaves the coefficient on `treatmentTreated` essentially unchanged (about 1.50, down a hair from 1.55). This is exactly what we would expect from a properly randomized experiment: the treatment assignment should be roughly orthogonal to pre-treatment covariates like party, so adjusting for them should not move the treatment coefficient by much. Adjusting for party *does* tighten the residual variance --- the model fits the within-party variation better --- but the *answer to the question we are asking* does not change.
 
 ### The chosen DGM
 
