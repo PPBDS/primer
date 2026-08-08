@@ -135,7 +135,7 @@ Predictive tutorials (positions 1, 3, 5, 7, 9, 11) skip both Exercise 7 and Exer
 **Exercise 9.** [per-tutorial, written-with-answer] The outcome variable.
 - Prompt: *XX is the broad topic of this tutorial. Given that topic, which variable in `<tibble>` should we use as our outcome variable?*
 - Message: a sentence about the outcome variable used.
-- End: *We will use `XX` as our outcome variable.* Follow with a simple AI-generated plot of the outcome (univariate or bivariate; bivariate should use a non-key covariate). Subtitle highlights an aspect of the data. No code chunk label.
+- End: *We will use `XX` as our outcome variable.* At **Medium and Hard**, follow with our histogram or density plot of the outcome — the first of the two key EDA plots (§13.2); subtitle highlights an aspect of the data; no code chunk label. At **Easy**, no plot here: the student builds the outcome plot themselves in Wisdom, and the Introduction must not pre-empt it.
 
 **Exercises 10–14 are split by tutorial type AND by EMH tier.** Each tutorial includes *either* the causal block (Ex 10–12) *or* the predictive block (Ex 13–14), never both. Ex 15 (state the question) is shared by both and always appears. Mixing them — asking a predictive tutorial's student to also reason about potential outcomes for an imagined treatment, or asking a causal tutorial's student to also reason about two predictive groups — makes this section too long and muddles the framing the tutorial is actually using.
 
@@ -221,16 +221,18 @@ Per §14.6, the preamble does **not** describe what Wisdom does; Exercise 1 belo
 - Message: `"A Preceptor Table is the smallest possible table of data with rows and columns such that, if there is no missing data, we can easily calculate the quantity of interest."`
 - End: *The Preceptor Table always includes the treatment variable, if it is a causal model, and any covariate mentioned in the question. Covariates which end up in the data generating mechanism but are not mentioned in the question stay out: until we decide on a model we can't know which variables those will be, and — by the definition of the Preceptor Table — we don't need them to answer our question, if no data is missing. We only "need" model covariates because the Preceptor Table has so much missing data.*
 
-Between Exercises 2 and 3, insert at least one problem-specific EDA exercise (AI-prompted code, §9) that **shows the outcome variable in relation to a key covariate** (the treatment for causal tutorials, the covariate of interest for predictive tutorials). Provide a knowledge drop that highlights what the plot reveals.
+**The two key EDA plots (tier-dependent).** Every rendering of a seed — class exercise, tutorial, chapter — works with the same two plots:
 
-**Do not duplicate the Introduction's outcome plot here.** §13.1 Exercise 9 already ships an author-rendered plot of the outcome variable — usually a univariate density of the outcome alone, sometimes the outcome already split by the key covariate. Wisdom must move past that view, not repeat it. Concretely:
+1. A **histogram or density plot of the outcome variable**.
+2. A **scatter plot with the key covariate on the x-axis and the outcome variable on the y-axis** (the key covariate is usually the treatment variable in a causal tutorial, the covariate of interest in a predictive one).
 
-- If the Intro plot is the outcome alone (05-recruits, 07-colleges), Wisdom's first EDA exercise asks for outcome × covariate.
-- If the Intro plot is already outcome × covariate (06-trains shows `att_end` density colored by `treatment`), Wisdom's first EDA exercise asks for the *same data from a different angle* — a jitter of individual values with overlaid means, a boxplot, a scatter against a continuous covariate, a faceted view, etc.
+In tutorials, who makes each plot depends on tier:
 
-The exercise opener should explicitly acknowledge the Intro plot — *"We saw the distribution of [outcome] on its own in the Introduction. Now look at how [outcome] varies with [covariate]…"* — so the student understands why the new view is different from what they have already seen.
+- **Easy.** Between Exercises 2 and 3, the student makes **both plots**, each as its own AI-prompted code exercise (§9) — the outcome distribution first, then the scatter. As always, we then show our code and our plot as well.
+- **Medium.** We show the outcome distribution ourselves, in a knowledge drop (default home: the End of §13.1 Exercise 9, the outcome-variable question). Between Exercises 2 and 3, the student makes only the **scatter plot**.
+- **Hard.** The student makes **neither plot** — Hard tutorials are too busy with other questions. Both plots still appear, in **different** knowledge drops: the outcome distribution at §13.1 Exercise 9's End, the scatter in a later drop of the author's choosing (a Wisdom exercise near the data-prep step is the natural spot).
 
-Two EDA exercises (one outcome-only, one outcome × covariate) is fine when neither duplicates the Intro plot, but with the Intro plot in place this is rare. Default to one Wisdom EDA exercise; add a second (e.g. a faceted or ridge view) only when the problem genuinely needs it.
+Never show the same plot twice: when the student builds a plot (both at Easy; the scatter at Medium), the Introduction must not pre-empt it with an author-rendered version. Each student-made plot's exercise gets a knowledge drop highlighting what the plot reveals.
 
 **Exercise 3.** [canonical] Components of a Preceptor Table.
 - Prompt: *Describe the key components of Preceptor Tables in general, without worrying about this specific problem. Use words like "units," "outcomes," and "covariates."*
