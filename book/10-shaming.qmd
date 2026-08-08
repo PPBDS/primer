@@ -561,6 +561,8 @@ $$\log \left( \frac{\widehat{\rho}}{1-\widehat{\rho}} \right) = \beta_0 + \beta_
 
 with the sums running over the four non-reference treatment arms and the two non-reference voter classes. Translating to probability requires the inverse-logit. Twelve (treatment, voter_class) combinations each produce a different expected turnout probability. The Temperance section computes all twelve via `marginaleffects` and reads them off.
 
+Those twelve numbers are expected-value quantities --- so are the log-odds they come from, and so is the class ("votes" / "does not vote") a highest-probability rule would assign. When a question needs an individual outcome, the randomness enters at the final step: each voter's turnout is a draw, $Y \sim \text{Bernoulli}(\widehat{\rho})$. Two voters with the same treatment, age, sex, and voting history share a probability, not a decision.
+
 **This is our data generating mechanism.** It serves both the primary causal question and the paired predictive question.
 
 ## Temperance

@@ -11,7 +11,7 @@ Every example chapter has six top-level sections under `#`:
 1. **Introduction** — `##`-level. Names the four Cardinal Virtues. Gives one "Imagine that you are…" paragraph motivating the problem. Names the dataset. Typically 2–6 paragraphs.
 2. **Wisdom** — primary question (matching the tutorial) and its Preceptor Table, then EDA, then the paired question and its Preceptor Table. The two questions use the same outcome and covariates; one is causal, the other predictive. Present the primary question first.
 3. **Justice** — two Population Tables, one per question. Validity, stability, and representativeness apply to both. Unconfoundedness applies only to the causal question (whether primary or paired).
-4. **Courage** — mathematical structure, candidate models, tests, the selected Data Generating Mechanism. One fitted model serves both questions, because both questions use the same outcome and covariates.
+4. **Courage** — mathematical structure, candidate models, tests, the selected Data Generating Mechanism. One fitted model serves both questions, because both questions use the same outcome and covariates. Present the concrete DGM per §14.14 of `guidance.md`: name the mode (the hatted equation is the expected-value mode), keep the randomness on the page (Normal: the residuals line; Bernoulli: the class-as-draw line), and use the canonical three-differences explanation.
 5. **Temperance** — two sets of interpretation and answers, one per question. Interpret the primary question first, then the paired question. Note carefully where causal language is and is not appropriate.
 6. **Summary** — one final graphic, one concluding paragraph, and the sentence "The world is always more uncertain than our models would have us believe."
 

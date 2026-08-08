@@ -291,8 +291,11 @@ Canonical definitions appropriate here (see Key Concepts): Courage, Data Generat
 **On workspace awareness.**
 > *Just because something exists in the tutorial (or in the QMD) does not mean that it is in your R Terminal. You should be aware of what exists in R World, which is generally called your "workspace."*
 
-**On the hat and the error term.**
-> *First, we have replaced the parameters with our best estimates. Second, the left-hand side variable has a hat because this formula generates our estimated outcome. A hat indicates an estimated value.*
+**On the hat and the error term.** (Canonical wording in §14.14 of `guidance.md` — the three-differences explanation; family-appropriate bracket chosen per artifact.)
+> *Three differences from the abstract form. First, the parameters are replaced by their best estimates. Second, the error term is gone — this version of the DGM answers an expected-value question, so the randomness sits to the side [in the draw mode below / in the Bernoulli draw] until a question needs it. Third, the left-hand side has a hat, because hats mark estimated values.*
+
+**On the modes of a DGM.** (See §14.14 of `guidance.md`; surface where a question first switches mode — e.g. from group averages to a single unit's outcome.)
+> *One DGM answers many questions. Ask it for an expected value and it is a deterministic formula: same covariates in, same number out. Ask it what will happen to a single unit and the randomness matters: individual outcomes have variance baked in, so the DGM must draw from its error term, and identical units can end up with different outcomes. A logistic DGM can even answer on three scales — log-odds, probability, or class. The question, not habit, picks the mode.*
 
 **On the DGM being a formula.**
 > *A data generating mechanism is just a formula, something which we can write down and implement with computer code. Of course, there is randomness built into the DGM, but we won't worry about that detail for now.*

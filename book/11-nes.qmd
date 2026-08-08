@@ -564,6 +564,8 @@ $$\log\!\left[\frac{P(\text{Clinton})}{P(\text{Bush})}\right] = 0.455 - 0.255 \c
 
 `sexMale` is a 0/1 dummy: 1 for male, 0 for female. The multinomial wrapper turns these two equations into three probabilities that sum to one for every voter. Because the model has one binary covariate and the outcome has three categories, it carries exactly as many parameters (four) as there are free group shares to match (two sexes × three candidates, minus the two sum-to-one constraints) --- the model is *saturated*, and its predicted probabilities will reproduce the observed group shares exactly.
 
+The two equations, their inverse-logit translation into three probabilities, and the class a highest-probability rule would pick are all expected-value readings of the same DGM. When a question needs an individual outcome, the randomness enters at the final step: a voter's choice is a single draw from their three probabilities, $Y \sim \text{Multinomial}(\widehat{\rho}_{\text{Clinton}}, \widehat{\rho}_{\text{Bush}}, \widehat{\rho}_{\text{Perot}})$. Two voters of the same sex share the three probabilities, not the vote.
+
 **This is our data generating mechanism.** It serves both the primary predictive question and the paired causal question.
 
 ## Temperance

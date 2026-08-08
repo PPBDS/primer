@@ -632,9 +632,11 @@ With the parameters estimated, we can write the fitted DGM as a concrete formula
 
 $$\widehat{\text{Spending}} = 783 - 62 \cdot \text{treatmentEnrolled}$$
 
-with residuals drawn from $N(0, 1{,}791)$ --- a residual standard deviation of about 1,790 pesos, far larger than the treatment effect we are trying to estimate.
+with residuals drawn from $N(0, 3{,}090{,}000)$ --- a residual standard deviation of about 1,760 pesos, far larger than the treatment effect we are trying to estimate.
 
-Three differences from the abstract form. First, the parameters are replaced by their best estimates. Second, the error term is gone from the right-hand side because this formula generates our *estimated* outcome, not its randomness. Third, the left-hand side has a hat ($\widehat{\text{Spending}}$).
+Three differences from the abstract form. First, the parameters are replaced by their best estimates. Second, the error term is gone from the right-hand side --- this version of the DGM answers an expected-value question, so the randomness sits to the side in the residuals line until a question needs it. Third, the left-hand side has a hat ($\widehat{\text{Spending}}$), because hats mark estimated values.
+
+The residuals line is what separates the DGM's two modes. In its *expected-value mode* --- the hatted equation --- the DGM is deterministic: enrollment status in, expected spending out. In its *draw mode*, the DGM generates an individual outcome: compute the expected value, then add a draw from $N(0, 3{,}090{,}000)$. A residual SD near 1,800 pesos against a 62-peso treatment effect is the whole story of this chapter in one line: household spending varies enormously for reasons the model does not capture, and any single household's outcome is dominated by that variation, not by the treatment. Expected values answer the Ministry's average-effect question; draws describe what an individual household might actually spend.
 
 `treatmentEnrolled` is a 0/1 dummy: 1 for Enrolled households, 0 for Not-enrolled. The intercept (794 pesos) is the expected spending of a Not-enrolled household; adding the slope (-63) gives the expected spending of an Enrolled household (about 731 pesos).
 

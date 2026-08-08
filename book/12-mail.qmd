@@ -686,6 +686,8 @@ $$
 
 Every term is a 0/1 dummy. The intercept (-1.75) is the log-odds of applying for the reference voter: sent no postcard, registered Democrat, aged 18-29, female --- a probability of about 15%. Each coefficient shifts that log-odds when its dummy switches on.
 
+The equation's $\eta$ (the log-odds), the probability it becomes, and the class a highest-probability rule would assign are all expected-value readings of the one DGM. When a question needs an individual outcome, the randomness enters at the final step: whether a given voter actually applies is a draw, $Y \sim \text{Bernoulli}(\widehat{\rho})$. Voters with identical covariates share a probability --- about one in six for the reference voter --- not a decision.
+
 **This is our data generating mechanism.** It serves both the primary causal question and the paired predictive question.
 
 ## Temperance

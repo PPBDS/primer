@@ -595,7 +595,9 @@ $$\widehat{\text{Attitude}} = 8.45 + 1.55 \cdot \text{treatmentTreated}$$
 
 with residuals drawn from $N(0, 7.7)$ --- a residual standard deviation of about 2.8 points on the 3--15 scale.
 
-Three differences from the abstract form. First, the parameters $\beta_0$ and $\beta_1$ are replaced by their best estimates. Second, the error term is gone from the right-hand side because this formula generates our *estimated* outcome, not the random variation around it (though the next line, $N(0, 7.7)$, captures the residual variance). Third, the left-hand side has a hat ($\widehat{\text{Attitude}}$) because the hat marks an estimated value.
+Three differences from the abstract form. First, the parameters $\beta_0$ and $\beta_1$ are replaced by their best estimates. Second, the error term is gone from the right-hand side --- this version of the DGM answers an expected-value question, so the randomness sits to the side in the residuals line until a question needs it. Third, the left-hand side has a hat ($\widehat{\text{Attitude}}$), because hats mark estimated values.
+
+The residuals line is what separates the DGM's two modes. In its *expected-value mode* --- the hatted equation --- the DGM is deterministic: treated or untreated in, expected attitude out, the same number every time. In its *draw mode*, the DGM generates an individual outcome: compute the expected value, then add a draw from $N(0, 7.7)$. A residual SD of 2.8 points on a 13-point scale means individual commuters vary a great deal around their group's expectation --- two commuters with the same treatment will generally not report the same attitude. Expected values answer questions about averages; draws answer questions about single commuters or the spread of outcomes.
 
 `treatmentTreated` is a 0/1 dummy: 1 for Treated commuters, 0 for Control. The intercept (8.45) is the expected attitude of a Control commuter; adding the slope (1.55) gives the expected attitude of a Treated commuter (about 10.0).
 

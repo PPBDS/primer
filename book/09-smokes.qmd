@@ -607,6 +607,12 @@ $$\widehat{\rho} = \frac{1}{1 + \exp(-(-0.875 + 0.007 \cdot \text{Age} + 0.545 \
 
 `sexMale` is a 0/1 dummy: 1 for male, 0 for female. The first form makes the model's structure visible: it is linear in the log-odds. The second form is what we read off as an answer: a probability between 0 and 1 for any combination of `Age` and `Sex`. The Temperance section computes these probabilities for the specific demographic profiles the question asks about.
 
+Notice that this one DGM already answers on two scales: the first equation returns log-odds (the model's native output), the second a probability. There is a third scale: apply a decision rule --- highest probability wins --- and the DGM emits a *class*, ever-smoker or not. All three are expected-value quantities. When a question needs an *individual* outcome, the randomness enters at exactly one place, the final draw:
+
+$$Y \sim \text{Bernoulli}(\widehat{\rho})$$
+
+Two adults with identical covariates share a $\widehat{\rho}$, not a smoking history. Which scale, and which mode --- expected value or draw --- depends entirely on the question being asked.
+
 **This is our data generating mechanism.** It serves both the primary predictive question and the paired causal question.
 
 ## Temperance
