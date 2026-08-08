@@ -1,6 +1,6 @@
 ## Sophie
 
-Do tutorials 10 through 12. Send me HTML answers. Submit PRs. 
+Explore animations and Claude.
 
 ## Priorities
 
