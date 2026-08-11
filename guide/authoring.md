@@ -303,7 +303,9 @@ Example: if the last exercise in Wisdom polishes a scatter plot, the topic-final
 
 ### 6.5 Continue buttons without a real question
 
-When you need a pause point in the flow — to display an author-shown table, formula, or plot, then let the student read it before moving on — use a **standalone `###`** (triple hash, no heading, no question). That alone produces a Continue button that advances the student. Do **not** create a fake `### Exercise N` with a placeholder `question_text()` containing *"(No command to run — this exercise is a pause to make sure you have read the table above.)"*. Those placeholders are noise: they pretend to be exercises, they bump the exercise count, and they ask the student to type/click for no reason.
+When you need a pause point in the flow — to display an author-shown table, formula, or plot, then let the student read it before moving on — use a **standalone `###`** (triple hash, no heading, no question). That alone produces a Continue button that advances the student.
+
+**Every `### Exercise N` heading must be followed by an actual `question_text()` chunk before the next `###` or `##` heading.** Two variants of the same mistake are both forbidden: a fake `### Exercise N` with a placeholder `question_text()` containing *"(No command to run — this exercise is a pause to make sure you have read the table above.)"*, and a `### Exercise N` heading with **no** `question_text()` chunk at all — just prose, a formula, or a plot, with nothing for the student to submit. The second form is easy to write by accident (an author-shown formula naturally looks like it deserves its own numbered step) but it is exactly as wrong as the first: both pretend to be exercises, both bump the exercise count, and both ask the student to click Continue for no reason. Before finishing a tutorial, scan every `### Exercise N` header and confirm a `question_text()` chunk appears before the next `###`; if one is missing, either write a real question or remove the heading and fold the content into the next exercise's preamble (see below).
 
 The pattern, when an author-shown chunk needs a pause:
 
