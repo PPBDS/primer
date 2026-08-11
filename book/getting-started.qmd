@@ -6,9 +6,9 @@ The world confronts us. Make decisions we must.
 
 We do all of our data science in the cloud, using GitHub Codespaces with Visual Studio Code (VS Code). 
 
-The quickest way to begin is a **throwaway Codespace** launched directly on [`PPBDS/codespace-starter`](https://github.com/PPBDS/codespace-starter), a public repository you do *not* own. The image is pre-built, so it starts in about a minute and needs no setup. Nothing you do *in the Codespace* persists once you delete it, but you can still complete tutorials and download your answers.
+The quickest way to begin is a **throwaway Codespace** launched directly on [`PPBDS/codespace-starter`](https://github.com/PPBDS/codespace-starter), a public repository you do *not* own. Nothing you do *in the Codespace* persists once you delete it, but you can still complete a tutorial and download your answers.
 
-In this chapter you will use it to run the "Getting Started" tutorial from the **tutorial.helpers** package.
+In this chapter you will use a Codespace  to run the "Getting Started" tutorial from the [**tutorial.helpers**](https://ppbds.github.io/tutorial.helpers/) package.
 
 
 ## GitHub {.unnumbered}
@@ -19,11 +19,11 @@ Use your school email address for this account, if you are a student. The [GitHu
 
 On GitHub, your projects are organized into "repositories," usually called "repos."
 
-GitHub gives every account 60 free Codespaces hours per month. Free hours are not infinite, however, so it is your responsibility to stop (and delete) Codespaces you are not using.
+GitHub gives every account 60 free Codespaces hours per month. Free hours are not infinite, however, so it is your responsibility to stop (and delete) Codespaces you are no longer using.
 
 ## A throwaway Codespace {.unnumbered}
 
-You will work inside a `codespace-starter` Codespace that you do not own. It is the fastest way to get going and perfect for trying things out or running a tutorial, but nothing you do persists once you delete the Codespace. We use it here to learn the platform and run the "Getting Started" tutorial.
+You will work inside a `codespace-starter` Codespace. We use it here to learn the platform and run the "Getting Started" tutorial.
 
 Go to [`https://github.com/PPBDS/codespace-starter`](https://github.com/PPBDS/codespace-starter).
 
@@ -45,37 +45,23 @@ knitr::include_graphics("getting-started/images/new-1.png")
 
 This will take a minute or so. Behind the scenes, GitHub is creating a virtual machine in the cloud with all the necessary tools for doing data science. That machine is called a "Codespace."
 
-You can tell that the Codespace is not ready by noticing the "Setting up remote connection: Building Codespace..." message in the lower right. GitHub is creating the Codespace following the instructions in the `devcontainer.json` file located in the `.devcontainer` directory.
+You may be asked: "Do you trust the authors of the files in this folder?"
 
 ```{r}
 #| echo: false
-knitr::include_graphics("getting-started/images/cs-2d.png")
+knitr::include_graphics("getting-started/images/trust.png")
 ```
 
-When that message disappears, the Codespace is built. You still need to connect to it, as indicated by the "Opening remote" message in the lower left.
+Click to agree. 
 
-```{r}
-#| echo: false
-knitr::include_graphics("getting-started/images/cs-2e.png")
-```
-
-Once that disappears, you are connected, but the Codespace usually still has a few things to install. You can tell that it is not finished by looking in the upper left.
-
-```{r}
-#| echo: false
-knitr::include_graphics("getting-started/images/cs-2f.png")
-```
-
-Note the blue dash moving above the repo name. That indicates the process is not complete. Only the five default "extensions" appear along the left edge. Our `devcontainer.json` file installs several more at the end. 
-
-The Codespace should now be displaying its GitHub-assigned name. The process is complete once a message appears informing you so.
+Once the process is done, a banner message appears announcing "✅  YOUR CODESPACE IS READY."
 
 ```{r}
 #| echo: false
 knitr::include_graphics("getting-started/images/ready-message.png")
 ```
 
-The blue dash has disappeared. Several more extensions have been installed. The GitHub name, `fictional winner`, now appears next to the repo name as well as in the quick access window above the editor. Your name will be different, as GitHub assigns a unique name to each Codespace.
+The GitHub name, `fictional winner`, now appears next to the repo name as well as in the quick access window above the editor. Your name will be different, as GitHub assigns a unique name to each Codespace.
 
 ### Touring the workspace {.unnumbered}
 
@@ -97,7 +83,7 @@ knitr::include_graphics("getting-started/images/chat-buttons-cs.png")
 knitr::include_graphics("getting-started/images/cs-4.png")
 ```
 
-Click on the `devcontainer.json` file. Doing so opens that file in the Editor window. Your screen should now look like this:
+Click on the `STUDENT_WORKFLOW.md` file. Doing so opens that file in the Editor window. Your screen should now look like this:
 
 ```{r}
 #| echo: false
@@ -130,12 +116,7 @@ knitr::include_graphics("getting-started/images/cs-6.png")
 
 * Type in `2 + 2` at the R prompt and hit `enter` (Windows) or `return` (Mac). (Going forward we will just use `Enter` to refer to this action. Mac users should hit `return`.)
 
-* Type in `plot(1:10)` at the R prompt. Hit `Enter`. Your screen should look like:
-
-```{r}
-#| echo: false
-knitr::include_graphics("getting-started/images/cs-7.png")
-```
+<!-- DK: What about plots? -->
 
 An IDE like VS Code is designed to organize all the different work we do as data scientists. We need to talk to the computer via the bash Terminal (a terminal running the bash shell), talk to R, view plots, and so on.
 
@@ -148,18 +129,27 @@ If you hover your cursor over the Activity Bar on the far left-hand side, you ca
 knitr::include_graphics("getting-started/images/cs-8.png")
 ```
 
-Doing so shows all the R tutorials which are in the **[tutorial.helpers](https://ppbds.github.io/tutorial.helpers/)** package. If you hover your cursor over a tutorial, a rightward pointing arrow appears. Clicking that arrow starts the tutorial. Start the `getting-started` tutorial from the **[tutorial.helpers](https://ppbds.github.io/tutorial.helpers/)** package. Do so now.
+Doing so shows the one tutorial in the **[tutorial.helpers](https://ppbds.github.io/tutorial.helpers/)** package. If you hover your cursor over a tutorial, a rightward pointing arrow appears. Clicking that arrow starts the tutorial. Start the `getting-started` tutorial from the **[tutorial.helpers](https://ppbds.github.io/tutorial.helpers/)** package. Do so now.
 
 ```{r}
 #| echo: false
 knitr::include_graphics("getting-started/images/cs-9.png")
 ```
 
-Clicking the tutorial arrow starts a new R session, labeled "R Tutorial" on the right side of the Panel. We now have four different terminals: two bash and two R. In this case, a "terminal" is any connection to the (cloud) computer itself or to a program running on it, like R. In fact, the [bash shell](https://opensource.com/resources/what-bash) is just another program which runs in the computer.
+<!-- DK: Image is wrong in terms of terminals. -->
+
+Clicking the tutorial arrow starts a new R session, labeled "R Tutorial" on the right side of the Panel. We now have several different terminals. In this case, a "terminal" is any connection to the (cloud) computer itself or to a program running on it, like R. In fact, the [bash shell](https://opensource.com/resources/what-bash) is just another program which runs in the computer.
 
 The R Tutorial session shows the tutorial being built and its current state, which is "listening," i.e., waiting for you to complete the tutorial. While the tutorial is running, this R session is unavailable for other work.
 
-You should also have been given an option to open the tutorial in the browser. You should take that option. If it does not appear, or if you missed it, you can also open the tutorial by hand:
+You should also have been given an option to open the tutorial in the browser. 
+
+```{r}
+#| echo: false
+knitr::include_graphics("getting-started/images/open-in-browser.png")
+```
+
+You should take that option. If it does not appear, or if you missed it, you can also open the tutorial by hand:
 
 ```{r}
 #| echo: false
