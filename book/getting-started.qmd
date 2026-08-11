@@ -8,7 +8,7 @@ We do all of our data science in the cloud, using GitHub Codespaces with Visual 
 
 The quickest way to begin is a **throwaway Codespace** launched directly on [`PPBDS/codespace-starter`](https://github.com/PPBDS/codespace-starter), a public repository you do *not* own. The image is pre-built, so it starts in about a minute and needs no setup. Nothing you do *in the Codespace* persists once you delete it, but you can still complete tutorials and download your answers.
 
-We call this approach **Start mode**. In this chapter you will use it to run the "Getting Started" tutorial from the **tutorial.helpers** package.
+In this chapter you will use it to run the "Getting Started" tutorial from the **tutorial.helpers** package.
 
 
 ## GitHub {.unnumbered}
@@ -21,9 +21,9 @@ On GitHub, your projects are organized into "repositories," usually called "repo
 
 GitHub gives every account 60 free Codespaces hours per month. Free hours are not infinite, however, so it is your responsibility to stop (and delete) Codespaces you are not using.
 
-## Start mode: a throwaway Codespace {.unnumbered}
+## A throwaway Codespace {.unnumbered}
 
-In **Start mode** you work inside a `codespace-starter` Codespace that you do not own. It is the fastest way to get going and perfect for trying things out or running a tutorial, but nothing you do persists once you delete the Codespace. We use it here to learn the platform and run the "Getting Started" tutorial.
+You will work inside a `codespace-starter` Codespace that you do not own. It is the fastest way to get going and perfect for trying things out or running a tutorial, but nothing you do persists once you delete the Codespace. We use it here to learn the platform and run the "Getting Started" tutorial.
 
 Go to [`https://github.com/PPBDS/codespace-starter`](https://github.com/PPBDS/codespace-starter).
 
@@ -268,9 +268,9 @@ But this should be enough to get you started, should you decide to go this route
 You should have done the following:
 
 - Signed up for a GitHub account.
-- Used **Start** mode --- a throwaway Codespace on [`PPBDS/codespace-starter`](https://github.com/PPBDS/codespace-starter) --- to complete the **Getting Started** and **Introduction to R** tutorials from **[tutorial.helpers](https://ppbds.github.io/tutorial.helpers/)**, downloaded your answers, then **deleted** the Codespace.
+- Used a throwaway Codespace on [`PPBDS/codespace-starter`](https://github.com/PPBDS/codespace-starter) to complete the **Getting Started** tutorial from **[tutorial.helpers](https://ppbds.github.io/tutorial.helpers/)**, downloaded your answers, then **deleted** the Codespace.
 
-For doing some tutorials, you can just use **Start** mode and download your answers --- no repository needed. When a later tutorial asks you to keep your work and build on it, the next chapter, [Git and GitHub](git-and-github.qmd), shows you how to create a repository you own.
+For doing some tutorials, a throwaway Codespace is all you need: complete the tutorial and download your answers --- no repository needed. When a later tutorial asks you to keep your work and build on it, the next chapter, [Git and GitHub](git-and-github.qmd), shows you how to create a repository you own.
 
 Let's get started!
 

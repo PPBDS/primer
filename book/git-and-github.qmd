@@ -1,6 +1,6 @@
 # Git and GitHub {.unnumbered}
 
-By now you have completed at least one tutorial in **Start mode**: the throwaway Codespace from the [Getting Started](getting-started.qmd) chapter. 
+By now you have completed at least one tutorial in a throwaway Codespace, as shown in the [Getting Started](getting-started.qmd) chapter. 
 
 A throwaway Codespace keeps nothing: the moment you delete it, everything you did inside is gone. As the tutorials get more involved, you will want to *keep* your work and build on it from one session to the next. That is what this chapter is about.
 
@@ -15,15 +15,15 @@ There are two ways to create that repository:
 
 For a given tutorial you use Launch *or* Template, not both.
 
-## Launch mode: your own repo, the fast way {.unnumbered}
+## Launch: your own repo, the fast way {.unnumbered}
 
-**This is the recommended method for tutorials that need their own repository**, which is almost all tutorials going forward. You launch the same fast, pre-built `codespace-starter` Codespace you used in Start mode, then run a single command that creates a repository you *own* and sets you up to work in it --- so you get the quick startup *and* a permanent home for your work.
+**This is the recommended method for tutorials that need their own repository**, which is almost all tutorials going forward. You launch the same fast, pre-built `codespace-starter` Codespace you used in the last chapter, then run a single command that creates a repository you *own* and sets you up to work in it --- so you get the quick startup *and* a permanent home for your work.
 
 The walkthrough below uses `my-tutorial` as a stand-in --- put the id of whatever tutorial you are on in its place.
 
 ### Launching the Codespace {.unnumbered}
 
-Exactly as in Start mode: from [`https://github.com/PPBDS/codespace-starter`](https://github.com/PPBDS/codespace-starter), click the green **Code** button, switch to the **Codespaces** tab, and click **"Create codespace on main."**
+Exactly as in the last chapter: from [`https://github.com/PPBDS/codespace-starter`](https://github.com/PPBDS/codespace-starter), click the green **Code** button, switch to the **Codespaces** tab, and click **"Create codespace on main."**
 
 When the Codespace finishes loading, the terminal greets you with a banner:
 
@@ -65,7 +65,7 @@ Look at the **Explorer** in the upper left --- it should now read `MY-TUTORIAL`.
 
 ### Running the tutorial {.unnumbered}
 
-Click the **R Tutorials** icon on the Activity Bar. Select and start your tutorial --- the same way you started "Getting Started" in Start mode. Read and follow the instructions, and download your answers at the end.
+Click the **R Tutorials** icon on the Activity Bar. Select and start your tutorial --- the same way you started "Getting Started" in the last chapter. Read and follow the instructions, and download your answers at the end.
 
 <!-- DK: Something about basic Git commands, using AI to create a file. Running that file. Committing and pushing it. -->
 
@@ -73,9 +73,9 @@ Click the **R Tutorials** icon on the Activity Bar. Select and start your tutori
 
 When you are done, **stop** the Codespace (Command Palette → "Codespaces: Stop Current Codespace," or from your [Codespaces page](https://github.com/codespaces)). Your work is safe in your `my-tutorial` repository, so it is fine to reopen this Codespace later or to delete it --- deleting discards only the Codespace, never your pushed work. Anything you have *not* committed and pushed is lost when a Codespace is deleted.
 
-## Template mode: your own repo, the slow way {.unnumbered}
+## Template: your own repo, the slow way {.unnumbered}
 
-**Launch mode (above) is the recommended way to create a tutorial repository.** Like Launch, this is only for the later tutorials that need their own repository. It produces the *same* kind of owned repository, but its first launch is **much slower**, so use it only as a fallback --- for a given tutorial you use Launch *or* Template, not both.
+**Launch (above) is the recommended way to create a tutorial repository.** Like Launch, this is only for the later tutorials that need their own repository. It produces the *same* kind of owned repository, but its first launch is **much slower**, so use it only as a fallback --- for a given tutorial you use Launch *or* Template, not both.
 
 It works by copying `codespace-starter` into a repository you own. (The screenshots below were captured with an example repo name; use your tutorial's id.)
 
@@ -88,7 +88,7 @@ Go back to [`https://github.com/PPBDS/codespace-starter`](https://github.com/PPB
 knitr::include_graphics("git-and-github/images/new-2.png")
 ```
 
-In the **Repository name** field, type the tutorial id (its title in lowercase, spaces replaced by dashes --- the same naming rule as Launch mode). Leave everything else at the defaults, then click **Create repository from template.**
+In the **Repository name** field, type the tutorial id (its title in lowercase, spaces replaced by dashes --- the same naming rule as Launch). Leave everything else at the defaults, then click **Create repository from template.**
 
 
 ```{r}
@@ -96,7 +96,7 @@ In the **Repository name** field, type the tutorial id (its title in lowercase, 
 knitr::include_graphics("git-and-github/images/new-3.png")
 ```
 
-You now own a repository at `https://github.com/<your-username>/<tutorial-id>`. It is identical to `PPBDS/codespace-starter` but yours --- anything you do here can be saved permanently, unlike in a Start-mode Codespace.
+You now own a repository at `https://github.com/<your-username>/<tutorial-id>`. It is identical to `PPBDS/codespace-starter` but yours --- anything you do here can be saved permanently, unlike in a throwaway Codespace.
 
 ### Launching a Codespace on your repo {.unnumbered}
 
@@ -107,7 +107,7 @@ From your new repository's page, click the green **Code** button, switch to the 
 knitr::include_graphics("git-and-github/images/new-4.png")
 ```
 
-This Codespace takes **several minutes longer** to launch than a Start- or Launch-mode one. The reason: `PPBDS/codespace-starter` has a pre-built container image, but your template copy does not, so the container builds from scratch the first time. (That slow build is exactly why we recommend Launch.) Subsequent launches of this *same* Codespace are fast.
+This Codespace takes **several minutes longer** to launch than one created on `PPBDS/codespace-starter`. The reason: `PPBDS/codespace-starter` has a pre-built container image, but your template copy does not, so the container builds from scratch the first time. (That slow build is exactly why we recommend Launch.) Subsequent launches of this *same* Codespace are fast.
 
 ### Stopping the Codespace {.unnumbered}
 
