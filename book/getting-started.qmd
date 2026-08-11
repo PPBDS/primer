@@ -129,7 +129,7 @@ If you hover your cursor over the Activity Bar on the far left-hand side, you ca
 knitr::include_graphics("getting-started/images/cs-8.png")
 ```
 
-Doing so shows the one tutorial in the **[tutorial.helpers](https://ppbds.github.io/tutorial.helpers/)** package. If you hover your cursor over a tutorial, a rightward pointing arrow appears. Clicking that arrow starts the tutorial. Start the `getting-started` tutorial from the **[tutorial.helpers](https://ppbds.github.io/tutorial.helpers/)** package. Do so now.
+Doing so shows the one tutorial in the **[tutorial.helpers](https://ppbds.github.io/tutorial.helpers/)** package. If you hover your cursor over a tutorial, a rightward pointing arrow appears. Clicking that arrow starts the tutorial. Start the `Getting Started` tutorial from the **[tutorial.helpers](https://ppbds.github.io/tutorial.helpers/)** package. Do so now.
 
 ```{r}
 #| echo: false
@@ -149,7 +149,7 @@ You should also have been given an option to open the tutorial in the browser.
 knitr::include_graphics("getting-started/images/open-in-browser.png")
 ```
 
-You should take that option. If it does not appear, or if you missed it, you can also open the tutorial by hand:
+You should take that option. If it does not appear, or if you missed it, you can also open the tutorial by hand by hovering over the URL and pressing `Cmd + Click` (on Mac) or `Ctrl + Click` (on Windows/Linux). Throughout this book, shortcuts are written like `Cmd/Ctrl + Click`, meaning the `command` key on Mac or the `control` key on Windows/Linux.
 
 ```{r}
 #| echo: false
@@ -173,9 +173,9 @@ There are three common ways to close a Codespace.
 
 First, just leave it alone. GitHub will close it on its own after 30 minutes of inactivity, though we recommend changing that default to 15 minutes in your [Codespaces settings](https://github.com/settings/codespaces).
 
-Second, type `Cmd + Shift + P` (on Mac) or `Ctrl + Shift + P` (on Windows/Linux) to bring up the Command Palette. (Throughout this book, shortcuts are written like `Cmd/Ctrl + Shift + P`, meaning the `command` key on Mac or the `control` key on Windows/Linux.) The Command Palette provides access to all VS Code commands. Type `stop` into the search bar.
+Second, type `Cmd/Ctrl + Shift + P`. The Command Palette provides access to all VS Code commands. Type `stop` into the search bar.
 
-On some browsers, the keyboard shortcut does not work. You can always access the Command Palette by clicking the search bar at the top of the window and typing `>` followed by the command you would like to use.
+On some browsers, the keyboard shortcut does not work. You can always access the Command Palette by clicking the search bar at the top of the window and typing `>` followed by key words from the command you would like to use.
 
 ```{r}
 #| echo: false
@@ -184,7 +184,9 @@ knitr::include_graphics("getting-started/images/command-palette.png")
 
 Select "Codespaces: Stop Current Codespace." 
 
-Third, you can go to your main Codespaces control panel at [`https://github.com/codespaces`](https://github.com/codespaces). You can also reach this page from any page on GitHub by clicking the menu icon in the upper left and selecting "Codespaces":
+Third, you can go to your personal Codespaces control panel at [`https://github.com/codespaces`](https://github.com/codespaces). You can also reach this page from any page on GitHub by clicking the menu icon in the upper left and selecting "Codespaces":
+
+<!-- DK: Get rid of dark images. -->
 
 ```{r}
 #| echo: false
