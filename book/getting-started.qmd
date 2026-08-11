@@ -6,9 +6,9 @@ The world confronts us. Make decisions we must.
 
 We do all of our data science in the cloud, using GitHub Codespaces with Visual Studio Code (VS Code). 
 
-The quickest way to begin is a **throwaway Codespace** launched directly on `PPBDS/codespace-starter`, a public repository you do *not* own. The image is pre-built, so it starts in about a minute and needs no setup. Nothing you do *in the Codespace* persists once you delete it, but you can still complete tutorials and download your answers.
+The quickest way to begin is a **throwaway Codespace** launched directly on [`PPBDS/codespace-starter`](https://github.com/PPBDS/codespace-starter), a public repository you do *not* own. The image is pre-built, so it starts in about a minute and needs no setup. Nothing you do *in the Codespace* persists once you delete it, but you can still complete tutorials and download your answers.
 
-We call this approach **Start mode**. In this chapter you will use it to run both the "Getting Started" tutorial from the **tutorial.helpers** package.
+We call this approach **Start mode**. In this chapter you will use it to run the "Getting Started" tutorial from the **tutorial.helpers** package.
 
 
 ## GitHub {.unnumbered}
@@ -66,14 +66,7 @@ Once that disappears, you are connected, but the Codespace usually still has a f
 knitr::include_graphics("getting-started/images/cs-2f.png")
 ```
 
-Note the blue dash moving above the repo name. That indicates the process is not complete. Only the five default "extensions" appear along the left edge. Our `devcontainer.json` file installs several more at the end. The last step in the process is the installation of the R packages we use for tutorials. You can see that occurring here:
-
-
-```{r}
-#| echo: false
-knitr::include_graphics("getting-started/images/post-command.png")
-```
-
+Note the blue dash moving above the repo name. That indicates the process is not complete. Only the five default "extensions" appear along the left edge. Our `devcontainer.json` file installs several more at the end. 
 
 The Codespace should now be displaying its GitHub-assigned name. The process is complete once a message appears informing you so.
 
@@ -236,7 +229,7 @@ knitr::include_graphics("getting-started/images/codespaces-3.png")
 
 Once you are done with a Codespace, you should **delete it.** To do so, go to your [Codespaces page](https://github.com/codespaces), click the `...` menu next to this Codespace and select **Delete**.
 
-This Codespace was a sandbox. You do not own `PPBDS/codespace-starter`, so there is nowhere for your work to go once you stop using the Codespace. That is fine — you have already downloaded your tutorial answers, which is the only thing here worth keeping.
+This Codespace was a sandbox. You do not own [`PPBDS/codespace-starter`](https://github.com/PPBDS/codespace-starter), so there is nowhere for your work to go once you stop using the Codespace. That is fine — you have already downloaded your tutorial answers, which is the only thing here worth keeping.
 
 ## Using your own machine
 
@@ -251,7 +244,7 @@ You can do all of this work on your own laptop, if you prefer. But, in that case
 "mechatroner.rainbow-csv"x
 ```
 
-This listing is from  the `.devcontainer/devcontainer.json` file from `PPBDS/codespace-starter`. You may also find it useful to use the same VS settings which are defined there. 
+This listing is from  the `.devcontainer/devcontainer.json` file from [`PPBDS/codespace-starter`](https://github.com/PPBDS/codespace-starter). You may also find it useful to use the same VS settings which are defined there. 
 
 You will also need to install, by hand, various R packages. From the R Terminal, you would run commands like:
 
@@ -268,14 +261,14 @@ pak::pak("PPBDS/vscode.tutorials")
 
 These steps are not enough to perfectly replicate what we show in the Codespace. See `PPBDS/devcontainers` for more details.
 
-But this should be enough to get you started, should you decide to go this route. If you have trouble, ask AI, pointing it toward this chapter and to the `PPBDS/codespace-starter` and `PPBDS/devcontainers` repos.
+But this should be enough to get you started, should you decide to go this route. If you have trouble, ask AI, pointing it toward this chapter and to the [`PPBDS/codespace-starter`](https://github.com/PPBDS/codespace-starter) and `PPBDS/devcontainers` repos.
 
 ## Summary {.unnumbered}
 
 You should have done the following:
 
 - Signed up for a GitHub account.
-- Used **Start** mode --- a throwaway Codespace on `PPBDS/codespace-starter` --- to complete the **Getting Started** and **Introduction to R** tutorials from **[tutorial.helpers](https://ppbds.github.io/tutorial.helpers/)**, downloaded your answers, then **deleted** the Codespace.
+- Used **Start** mode --- a throwaway Codespace on [`PPBDS/codespace-starter`](https://github.com/PPBDS/codespace-starter) --- to complete the **Getting Started** and **Introduction to R** tutorials from **[tutorial.helpers](https://ppbds.github.io/tutorial.helpers/)**, downloaded your answers, then **deleted** the Codespace.
 
 For doing some tutorials, you can just use **Start** mode and download your answers --- no repository needed. When a later tutorial asks you to keep your work and build on it, the next chapter, [Git and GitHub](git-and-github.qmd), shows you how to create a repository you own.
 
