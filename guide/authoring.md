@@ -112,7 +112,7 @@ library(gt)
 # for each.
 
 library(tidyverse)
-library(tidymodels)       # or ordinal, or another modeling package
+library(tidymodels)       # plus library(ordered) for ordinal outcomes
 library(broom)            # or broom.mixed
 library(marginaleffects)
 
@@ -389,7 +389,7 @@ The tutorial setup chunk (§5.2) loads the full package stack. For chapters, set
 
 **Packages students are expected to load themselves** (and appear in the setup chunk for the tutorial to work):
 - `tidyverse` — always.
-- `tidymodels` — for most models. Replace with `ordinal` or another package if that model framework doesn't fit.
+- `tidymodels` — for most models. Add `ordered` (for `ordinal_reg()`) when the outcome is ordinal.
 - `broom` — for tidying model output. `broom.mixed` for mixed models.
 - `marginaleffects` — for `predictions()`, `plot_predictions()`, `plot_comparisons()`.
 

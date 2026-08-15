@@ -46,6 +46,7 @@ The detailed guide lives under [`guide/`](guide/). **Read only the parts your cu
 | [`guide/authoring.md`](guide/authoring.md) | §3 file conventions, §5 tutorial structure, §6 question flow, §7 exercise types, §9 AI-mediated exercises, §15 R tooling | **tutorials** (the [PPBDS/primer.tutorials](https://github.com/PPBDS/primer.tutorials) repo) |
 | [`guide/exercise-list.md`](guide/exercise-list.md) | §13 Master exercise list | **tutorials** — the per-virtue exercise sequence |
 | [`guide/per-problem/<id>.md`](guide/per-problem/) | §17 seed spec for one problem | **tutorials** — read only the one you're building (e.g. `guide/per-problem/08-seguro-popular.md`) |
+| [`guide/dgm.md`](guide/dgm.md) | §18 DGM target understanding (two essays: Structure → Method → Fitting; Question → Units → Answer) | **tutorials** — the `dgm-*` tutorials in primer.tutorials |
 | [`guide/open-items.md`](guide/open-items.md) | §16 Open items | checking pending TODOs |
 
 **Authoring a tutorial:** base guide → this index → [CLAUDE.md in PPBDS/primer.tutorials](https://github.com/PPBDS/primer.tutorials/blob/main/CLAUDE.md) (work in that repo, with this one checked out as a sibling `../primer/`; it routes you back to `guide/authoring.md` + `guide/exercise-list.md` + `guide/per-problem/<id>.md` here), pulling in `guide/curriculum.md`, `guide/tables.md`, `guide/concepts-and-drops.md`, `guide/guidance.md` as needed. **Writing a chapter:** base guide → this index → [`book/CLAUDE.md`](book/CLAUDE.md) (which routes you to `guide/chapters.md` + the shared parts).

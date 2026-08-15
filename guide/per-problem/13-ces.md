@@ -9,11 +9,11 @@
 - **Outcome:** `approval` — presidential approval (ordinal, 5 categories)
 - **Treatment / Key covariate:** `ideology` (Very Liberal … Very Conservative)
 - **Quantity of Interest (QoI):** What is the average difference in Trump approval between Very Liberal and Very Conservative voters?
-- **Model:** Ordinal logistic regression (`MASS::polr`)
+- **Model:** Ordinal logistic regression (`ordered::ordinal_reg()`, engine `"polr"`)
 - **Causal / Predictive:** Predictive
 - **Student project:** `ces`
 - **Data prep:** `ces |> filter(year == 2020) |> select(approval, ideology, education) |> drop_na() |> filter(!ideology %in% "Not Sure") |> mutate(ideology = fct_drop(ideology))` → `x`
-- **Final model:** `polr(approval ~ ideology + education, data = x)` → `fit_approval`
+- **Final model:** `ordinal_reg() |> set_engine("polr", Hess = TRUE) |> fit(approval ~ ideology + education, data = x)` → `fit_approval`
 - **Preceptor Table:** Unit (Respondent) | Outcome (Presidential Approval) | Covariate (Political Ideology)
 - **Population Table:** Source | Unit/Time (Respondent, Year) | Outcome (Presidential Approval) | Covariate (Political Ideology)
 

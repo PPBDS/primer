@@ -477,27 +477,29 @@ Parts 1 and 2 are deliberately repetitive with Justice — they show the same Po
 - Message: `"Courage creates the data generating mechanism."`
 - End: *Having decided on the basic mathematical structure of the model at the end of Justice — a choice mostly driven by the distribution of our outcome variable — we now turn toward estimating the model.*
 
-**Model-family routing and engines.** Most tutorials use `tidymodels` directly — `linear_reg()`, `logistic_reg()`, `multinom_reg()`. The one exception is **ordinal outcomes**: `tidymodels` does not provide an ordinal-regression engine, so those tutorials (currently CES at position 9) call `MASS::polr()` directly rather than via `parsnip`. The pattern:
+**Model-family routing and engines.** Every model family now goes through `tidymodels` — `linear_reg()`, `logistic_reg()`, `multinom_reg()`, and, for **ordinal outcomes**, `ordinal_reg()` from the **[ordered](https://cran.r-project.org/package=ordered)** package (a tidymodels extension; on CRAN). Ordinal tutorials (currently CES at position 9; see also the `dgm-ordered` tutorial) add `library(ordered)` to the setup chunk. The pattern:
 
 ```r
-# setup chunk — NOTE load order
-library(MASS)       # load BEFORE tidyverse so select() is shadowed correctly
-library(tidyverse)  # tidyverse's select() wins; MASS's select() is hidden
+# setup chunk
+library(tidyverse)
 library(tidymodels)
+library(ordered)    # ordinal_reg(); drives MASS::polr() under the hood
 
 # fit
-fit_<n> <- polr(ordinal_outcome ~ covariates, data = x)
+fit_<n> <- ordinal_reg() |>
+  set_engine("polr", Hess = TRUE) |>
+  fit(ordinal_outcome ~ covariates, data = x)
 ```
 
-Loading `MASS` *after* `tidyverse` silently breaks `dplyr::select()` across the rest of the tutorial — every subsequent `select()` call resolves to `MASS::select()` and fails. Flag the load-order requirement in any ordinal tutorial's setup chunk with a comment. Do not call `conflicted` or `conflicts_prefer()` — the students aren't ready for package-conflict resolution at this tier; the load-order workaround is sufficient.
+`Hess = TRUE` is required — it keeps the numerical machinery `polr` needs to produce standard errors, so downstream `tidy(conf.int = TRUE)` works on the parsnip fit without adjustment. For `marginaleffects` calls, pass `extract_fit_engine(fit_<n>)` as with the other engine-backed families.
 
-`broom::tidy()` works on `polr()` objects, so downstream `tidy(fit_<n>, conf.int = TRUE)` exercises don't need adjustment.
+Do **not** `library(MASS)` directly. The `ordered` package reaches `MASS::polr()` without attaching `MASS`, which avoids a nasty trap the old direct-`polr()` approach forced on us: attaching `MASS` after `tidyverse` silently shadows `dplyr::select()` for the rest of the session.
 
 **Interaction terms.** Interactions appear across model families — `logistic_reg() |> fit(voted ~ treatment*voter_class, ...)` in Shaming (position 6), `linear_reg() |> fit(lived_after ~ election_age*sex, ...)` in Governors (position 10), `linear_reg() |> fit(arrested ~ race*zone, ...)` in Stops (position 11 recast). The `A*B` formula shorthand expands to `A + B + A:B` — the two main effects plus their interaction. Use it inside `fit()` the same way in every model family; the machinery is formula-side, not engine-side. Interpretation requires `marginaleffects::plot_predictions(..., condition = c("A", "B"))` to visualize the two-dimensional effect surface (§13.5).
 
 **Exercise 2.** [per-tutorial, code] Start the model.
-- Prompt: *Because our outcome variable is [binary/continuous/multinomial/ordinal], start to create the model by entering `<appropriate model function>`* — `linear_reg(engine = "lm")` for continuous, `logistic_reg(engine = "glm")` for binary, `multinom_reg(engine = "nnet")` for multinomial, `MASS::polr()` (no parsnip wrapper) for ordinal.
-- End: the tidymodels knowledge drop (§12.4); in ordinal tutorials, add a sentence explaining that ordinal regression is the one model family outside the tidymodels umbrella.
+- Prompt: *Because our outcome variable is [binary/continuous/multinomial/ordinal], start to create the model by entering `<appropriate model function>`* — `linear_reg(engine = "lm")` for continuous, `logistic_reg(engine = "glm")` for binary, `multinom_reg(engine = "nnet")` for multinomial, `ordinal_reg()` with `set_engine("polr", Hess = TRUE)` for ordinal.
+- End: the tidymodels knowledge drop (§12.4); in ordinal tutorials, add a sentence noting that `ordinal_reg()` comes from the **ordered** package, a tidymodels extension loaded separately in the setup chunk.
 
 **Factor-outcome gotcha for `logistic_reg()`.** `tidymodels`' `logistic_reg(engine = "glm") |> fit(y ~ x, data = d)` requires `y` to be a **factor**, not a raw 0/1 integer. If `y` is integer, the call fails with an opaque error. Fix in data-prep with `mutate(y = as.factor(y))`. Flag this in the relevant tutorial's Wisdom data-prep exercise; it is easy to miss and hard for students to debug on their own.
 
@@ -694,7 +696,7 @@ Insert additional `plot_predictions()` exercises as needed — different argumen
 
 **Multi-variable conditioning.** `plot_predictions(fit_<n>, condition = c("var1", "var2"))` visualizes the effect surface across two covariates — canonical when the model has an interaction term (`A*B` in the formula). This pattern appears in Shaming (`treatment` × `voter_class`), Governors (`election_age` × `sex`), and Stops (`race` × `zone`). The two-variable form renders as small multiples: one panel per level of `var2`, with `var1` on the x-axis.
 
-**Multinomial caveat.** `marginaleffects` does not fully support multinomial outcomes from `multinom_reg(engine = "nnet")`. `predictions()` works (returns one row per unit per outcome category), but `plot_predictions()` and `comparisons()` may need manual post-processing: extract the tibble with `draw = FALSE`, pivot to long form by outcome category, and build the final ggplot by hand. Note this in the NES tutorial's Temperance section; the same caveat applies to any future tutorial using a multinomial fit. The ordinal case (`MASS::polr`) does not have this problem — `marginaleffects` handles `polr` natively.
+**Multinomial caveat.** `marginaleffects` does not fully support multinomial outcomes from `multinom_reg(engine = "nnet")`. `predictions()` works (returns one row per unit per outcome category), but `plot_predictions()` and `comparisons()` may need manual post-processing: extract the tibble with `draw = FALSE`, pivot to long form by outcome category, and build the final ggplot by hand. Note this in the NES tutorial's Temperance section; the same caveat applies to any future tutorial using a multinomial fit. The ordinal case does not have this problem — `marginaleffects` handles the `polr` objects behind `ordinal_reg()` natively (pass `extract_fit_engine(fit_<n>)`).
 
 **Exercise 6.** [per-tutorial, written-without-answer] Final `plot_predictions()` call.
 - Prompt: the version whose output will be the basis for the final plot. CP/CR.
