@@ -12,6 +12,7 @@ This is the `primer` repo. Guidance loads from wherever you are working:
 - **The learnr tutorials live in their own repo, [PPBDS/primer.tutorials](https://github.com/PPBDS/primer.tutorials)** (split out 2026-07 so package installs stop downloading this whole repo — do not re-add the package here). Its `CLAUDE.md` routes back into this repo's `guide/`, expecting a sibling checkout (`../primer/`).
 - **The class exercises live in their own repo, [PPBDS/primer.exercises](https://github.com/PPBDS/primer.exercises)** (split out 2026-07; one folder per exercise at its top level — do not re-add a `class-exercises/` directory here). Its `CLAUDE.md` likewise routes back into this repo's `guide/` via a sibling checkout.
 - **`guide/`** — the detailed authoring guide, split into parts and **read on demand** (the map below). Both routers above point into it.
+- **`animations/`** — a self-contained toolkit for building the narrated Preceptor Table → DGM → graph video. Start at [`animations/animations.md`](animations/animations.md); it carries the design contract, the requirements, and the build gotchas. Read it before adding or re-rendering any animation.
 
 This index (auto-loaded everywhere in the repo) carries the base-guide relationship, the curriculum at a glance, and the collaboration protocol.
 
@@ -76,4 +77,11 @@ This protocol is a default; deviate when it makes sense. Where a decision is sma
 
 When you pause to ask, make it easy for David to answer: short list of options, your recommendation, your reasoning. Do not ask open-ended questions when a multiple-choice question will do.
 
-**Record corrections.** Whenever David corrects you, write the lesson down in the relevant `CLAUDE.md` (the most specific one — e.g. the `CLAUDE.md` in PPBDS/primer.exercises for a class-exercise correction) *and* fix the instance that prompted it. The point is that the same correction never has to be given twice.
+**Record corrections.** Whenever a reviewer corrects you, write the lesson down *and* fix the instance that prompted it, in the same turn. Applying the fix alone is incomplete work: the fix lives in one artifact, but the next authoring session starts cold and reads only the guidance files. The point is that the same correction never has to be given twice.
+
+Specifics, learned the hard way:
+
+- **Write it in the most specific file that covers the topic** — the file that owns the subject if one does (`animations/animations.md` for animation decisions), otherwise the most specific `CLAUDE.md` (e.g. the one in PPBDS/primer.exercises for a class-exercise correction).
+- **State the rule *and* the reasoning.** "Beats are 1.7s" is a number someone will shorten again next month; "pace to how long the caption takes to *read*, not to how long the change takes to *see*" survives being re-derived.
+- **Update the numbers you just invalidated.** Runtimes, file sizes, dimensions and frame counts quoted in a guide go stale the moment you re-render, and a guide that quotes the wrong numbers stops being trusted.
+- **A preference is a rule, not just this artifact's setting.** "Make the captions more descriptive" is guidance for every future animation, not a one-off edit to one script.
