@@ -32,6 +32,7 @@ book:
     - 11-nes.qmd
     - 12-mail.qmd
     - key-concepts.qmd
+    - set-up.qmd
   appendices:
     - set-up.qmd
 format:
