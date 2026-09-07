@@ -22,9 +22,10 @@ Imports:
     pak,
     patchwork,
     primer.data,
+    primer.tutorials,
     remotes,
     tidymodels,
     tidyverse,
     xml2
-Remotes: PPBDS/primer.data
+Remotes: PPBDS/primer.data, PPBDS/primer.tutorials
 Encoding: UTF-8

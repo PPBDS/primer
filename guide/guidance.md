@@ -101,7 +101,7 @@ Canonical homepages the tutorials and chapters reference most often:
 | Package | Homepage |
 |---|---|
 | primer.data | `https://github.com/PPBDS/primer.data` |
-| primer.tutorials | `https://ppbds.github.io/primer/tutorials/` |
+| primer.tutorials | `https://ppbds.github.io/primer.tutorials/` |
 | tutorial.helpers | `https://ppbds.github.io/tutorial.helpers/` |
 | vscode.tutorials | `https://ppbds.github.io/vscode.tutorials/` |
 | tidyverse | `https://www.tidyverse.org/` |
@@ -112,7 +112,7 @@ Canonical homepages the tutorials and chapters reference most often:
 | knitr | `https://yihui.org/knitr/` |
 | gt | `https://gt.rstudio.com/` |
 
-For prose mentions of `primer.tutorials`, the canonical URL is the package's web page at `https://ppbds.github.io/primer/tutorials/` (a subpath of the book's pkgdown site). The package's *source code* lives at `https://github.com/PPBDS/primer/tree/main/primer.tutorials` --- a subdirectory of the `primer` monorepo, not a separate repo --- but the source URL is for code references, not for the bold-and-link mention. Use the pkgdown URL in prose; use the GitHub subdirectory URL only when linking to the README or to a specific source file. Do not link to `github.com/PPBDS/primer.tutorials`; that URL does not exist.
+For prose mentions of `primer.tutorials`, the canonical URL is the package's pkgdown site at `https://ppbds.github.io/primer.tutorials/` (its own site since the 2026-07 package split — no longer a subpath of the book's site; the old `ppbds.github.io/primer/tutorials/` URL is dead). The package's *source code* lives in its own repo, `https://github.com/PPBDS/primer.tutorials`. Use the pkgdown URL in prose; use the GitHub repo URL only when linking to the README or to a specific source file.
 
 Exceptions: inside `library(packagename)` code, ggplot `caption = "Source: … via primer.data"` strings, and other literal-code contexts, the package name is plain (no bold, no link, no backticks beyond what the code syntax itself implies) because markdown does not render inside those contexts.
 
