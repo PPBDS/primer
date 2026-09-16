@@ -30,7 +30,7 @@ First, **propose a structure**. What kind of outcome does the mechanism produce?
 
 Second, **choose a method** for learning about the mechanism from data. Will you seek the single version of your proposed machine that best fits the data? Or will you keep an entire collection of plausible versions, each weighted by how consistent it is with what you observed? The structure of your story is the same either way; this step is about your philosophy of estimation.
 
-Third, **fit the DGM**. Your proposed structure is really a whole family of machines — regressions with every conceivable slope and intercept. Fitting means estimating the parameters: using the data to work out which settings of the machine are most plausible. Only once the parameters are estimated do you have a usable DGM — one you can use to predict new observations or to ask what would happen if you changed one part of the mechanism.
+Third, **fit the DGM**. Your proposed structure is really a whole family of machines — regressions with every conceivable slope and intercept, each paired with some amount of random noise around it. Fitting means estimating the parameters: using the data to work out which settings of the machine, noise included, are most plausible. Only once every parameter is estimated — the systematic part and the error term alike — do you have a usable DGM, one you can use to predict new observations or to ask what would happen if you changed one part of the mechanism. The fitted DGM keeps its randomness; asking it for a single expected number, rather than the full range of what it could produce, means setting that randomness aside, not deleting it.
 
 **Structure → Method → Fitting.** That three-word chain is the discipline of the whole enterprise.
 
@@ -42,7 +42,7 @@ Step one becomes the **model function**. If the outcome column in our spreadshee
 
 Step two becomes **`set_engine()`**. Writing `set_engine("lm")` asks R's classical least-squares machinery for the single best-fitting version of your mechanism. Writing `set_engine("stan")` asks for a Bayesian fit, which returns a whole distribution of plausible versions. This is exactly the estimation-philosophy decision from step two, made concrete — and tidymodels keeps it separate from the structure on purpose, because the DGM (the truth out there) and our procedure for estimating it (the tool in here) are separate things.
 
-Step three becomes **`fit()`**. You hand `fit()` a formula — `score ~ tutoring` — and the data, and the engine estimates the parameters: the numerical settings of your proposed mechanism that best explain the shadow you found on the park bench. The output of `fit()` is your fitted DGM, the object every later question — every prediction, every what-if — will be addressed to.
+Step three becomes **`fit()`**. You hand `fit()` a formula — `score ~ tutoring` — and the data, and the engine estimates the parameters: the numerical settings of your proposed mechanism that best explain the shadow you found on the park bench. The output of `fit()` is your fitted DGM — the full equation, error term included: something like `score = (intercept) + (slope) * tutoring + epsilon`, with `epsilon`'s spread around zero estimated from the data too. Most later questions want a single number rather than a distribution, so we set `epsilon` to its expected value of zero to get the DGM's expected value: `score-hat = (intercept) + (slope) * tutoring`. The hat marks an estimated expected value, not the mechanism itself — the randomness hasn't vanished, it's just set aside until a question needs it back. This fitted DGM, epsilon and all, is the object every later question — every prediction, every what-if — will be addressed to.
 
 #### Why beginners should care
 
@@ -60,7 +60,7 @@ Data does not speak for itself. Every dataset is the output of a machine — par
 
 Return to the spreadsheet from the park bench: 1,000 students, their tutoring status, and their algebra test scores. Suppose we have done everything the last essay described. We proposed a structure, chose a method, and fit the model: Structure → Method → Fitting. We now possess a fitted data generating mechanism.
 
-Here is the surprise. The fitted DGM is not the answer to anything. Nobody ever asked, "What are the parameters of a linear regression relating test scores to tutoring?" The questions people actually ask sound like this: What score should we expect for a student who gets tutoring? How much better would a particular student do with tutoring than without? The fitted DGM is not the destination. It is the machine we built so that we could answer questions like these. This essay is about how to run the machine.
+Here is the surprise. The expected value from our fitted DGM is not the answer to anything. Nobody ever asked, "What are the parameters of a linear regression relating test scores to tutoring?" The questions people actually ask sound like this: What score should we expect for a student who gets tutoring? How much better would a particular student do with tutoring than without? The fitted DGM is not the destination. It is the machine we built so that we could answer questions like these. This essay is about how to run the machine.
 
 #### Asking the machine, conceptually
 
