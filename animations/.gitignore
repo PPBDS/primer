@@ -1,0 +1,14 @@
+# Generated output. Everything here is reproducible from
+# preceptor_to_graph_video.R, so none of it belongs in the repo.
+
+# Synthesised narration cache (~25 MB). Each .wav sits beside a .txt
+# holding the sentence it was made from; a mismatch re-records that line.
+narration/
+
+# Rendered videos (~4 MB for the four). Rebuild with:
+#   BUILD_ANIMATIONS=true Rscript animations/preceptor_to_graph_video.R
+*.mp4
+
+# Quarto artifacts from previewing example-embed.qmd
+*.html
+*_files/

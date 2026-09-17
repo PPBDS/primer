@@ -1,0 +1,169 @@
+---
+title: "Example: embedding the Preceptor Table → DGM → graph video"
+---
+
+<!--
+  THIS IS NOT A CHAPTER. It is the copy-paste reference for embedding the
+  narrated animation. It lives in animations/, outside the Quarto book
+  project, so it can never be rendered into the book by accident.
+
+  Contract and gotchas: animations.md, beside this file.
+
+  Preview:  quarto render example-embed.qmd  (build the videos first)
+
+  What this file demonstrates, all of which the spec requires:
+    1. Placement — start of Temperance, after the DGM is fitted.
+    2. A back-reference to the Courage formula the video replays.
+    3. "What to watch for" prose immediately before the embed.
+    4. A heads-up that the video has narration.
+    5. The raw-HTML block, with controls and WITHOUT loop/muted.
+-->
+
+::: {.callout-important title="This is a reference page, not a chapter"}
+It exists to be copied from. The section below shows the finished pattern
+in place — Temperance opening, both framings, both embeds — with every path
+written exactly as a real chapter would write it. The rules behind each
+choice are in the Reference section at the bottom; that part is commentary
+and does **not** get copied into a chapter.
+
+Contract and gotchas: [`animations.md`](animations.md). Build script:
+[`preceptor_to_graph_video.R`](preceptor_to_graph_video.R).
+
+The `<video>` paths below are written as if this file were the chapter. In a
+real chapter they become `<chapter-slug>/animations/<file>.mp4`. To preview
+this page you must build the videos first — they are gitignored, being
+reproducible output.
+:::
+
+## Temperance
+
+> *Temperance interprets the data generating mechanism and then uses it to
+> answer, with the help of graphics, the question(s) with which we began.
+> Humility reminds us that this answer is always false.*
+
+Every example chapter carries two questions on the same outcome and the
+same covariates — a primary framing and its paired opposite. So there are
+**two videos here, not one**. The first shows the DGM producing an
+*outcome*; the second shows it producing a *causal effect*. Watching them
+back to back is the point: the machinery is identical, and only the column
+being filled changes.
+
+### The primary (predictive) question
+
+Courage left us with a fitted data generating mechanism:
+
+$$\text{Net Worth}_i = 0.50 + 0.50 \cdot \text{Years in Office}_i + \epsilon_i
+\qquad \epsilon_i \sim \text{Normal}(0, 3)$$
+
+That formula is not yet an answer. It is a *machine for producing* answers,
+and the difference matters more than any single number it emits. Before we
+read anything off it, watch it run.
+
+The video below has narration, so turn your sound on. **Watch the error
+column.** The formula is identical in every row — same intercept, same
+slope. The error is redrawn each time, and that redraw is the entire reason
+the last act produces a spread rather than a single number.
+
+```{=html}
+<video controls preload="metadata" playsinline width="100%">
+  <source src="preceptor_to_graph_easy.mp4" type="video/mp4">
+  Your browser cannot play this video.
+  <a href="preceptor_to_graph_easy.mp4">Download it instead.</a>
+</video>
+```
+
+The table and the graph in that video are the same object at two moments.
+Elizabeth Warren's row never stopped being one row of the Preceptor Table;
+we simply ran it 220 times and drew the results. The spread is what the
+model actually claims about her — not the 12.50 that the formula returns
+when you ignore $\epsilon$, and not any other single number.
+
+This is why the Preceptor Table stays faintly visible under the finished
+histogram rather than fading out. The graph did not replace the table. It
+is what the table becomes when you run it enough times.
+
+### The paired (causal) question
+
+The paired question asks what *another term in office* does to a senator's
+net worth. Same outcome, same covariate, same fitted machinery — but now
+the Preceptor Table needs two outcome columns instead of one, because each
+senator has a net worth if re-elected *and* a net worth if they retire.
+
+$$Y_i(1) = 0.50 + 0.50 \cdot \text{Years}_i + 3.0 + \epsilon_i
+\qquad Y_i(0) = 0.50 + 0.50 \cdot \text{Years}_i + \epsilon_i'$$
+
+The two errors are *independent draws*, not the same number reused, so
+each senator's individual causal effect $Y_i(1) - Y_i(0)$ varies rather
+than being a fixed 3.0. That choice is what gives the last act something
+to show; see the note in the build script's config block.
+
+**Watch the greyed-out column.** In every row one of the two potential
+outcomes is dimmed and italic. That is the branch the senator did not
+live, and no amount of data collection will ever fill it in — the
+fundamental problem of causal inference, sitting in a table cell. The
+quantity that flies down to the graph this time is the *difference*
+between the two columns, not either column on its own.
+
+```{=html}
+<video controls preload="metadata" playsinline width="100%">
+  <source src="preceptor_to_effect_easy.mp4" type="video/mp4">
+  Your browser cannot play this video.
+  <a href="preceptor_to_effect_easy.mp4">Download it instead.</a>
+</video>
+```
+
+Two things in that last act are worth pausing on. First, the effect has a
+*spread*, exactly as the outcome did — the causal effect is not a single
+number any more than the prediction was. Second, **the spread crosses
+zero**, which is why the dashed reference line is there. The model does not
+claim that another term always makes a senator richer; it claims a
+distribution of effects whose centre happens to be positive.
+
+That second point is the one students miss when a causal estimate is
+reported as a lone coefficient. The video makes it unavoidable.
+
+### Reading the answer
+
+With that in hand, the Quantity of Interest is a summary of the
+distribution the video just built, not a summary of the formula:
+
+```r
+# The QoI comes off the predictive distribution, not off the coefficients.
+# In the real chapter this is where marginaleffects does the work.
+```
+
+<!-- The chapter continues: QoI, uncertainty, humility about the model. -->
+
+## Reference: rules for the embed
+
+Commentary, not chapter prose. Do not copy this section into a chapter.
+
+**Use a ```` ```{=html} ```` code block, not a `::: {=html}` div.** Pandoc's
+raw-attribute syntax applies to fenced *code blocks*; there is no such thing
+as a raw fenced *div*. The div form fails quietly and badly: Quarto emits a
+literal `<div class="{=html}">` wrapper, drops the closing fence into the
+page as visible `:::` text, and terminates the raw HTML at the first bare
+text line, so a `</video>` can go missing. Everything still "renders", which
+is why this is easy to ship broken. The code-block form passes the block
+through verbatim, bare text lines included.
+
+`![](video.mp4)` does not work at all. The raw block is the only form, and
+it works unchanged inside a learnr tutorial too — which is the point, since
+the same video ships in both artifacts.
+
+`controls` is required. Nobody can replay the error-draw beat without a
+scrub bar, and that beat is the one carrying the argument.
+
+**No `loop` and no `muted`.** Both were correct when this animation was
+silent and are wrong now. `muted` starts the voiceover switched off, which
+is the whole feature disabled by default; `loop` restarts a 95-second
+narrated explanation on top of itself the moment it ends.
+
+Hard-tier chapters (13–16) swap in the shorter cuts
+(`preceptor_to_graph_hard.mp4`, `preceptor_to_effect_hard.mp4`), which
+assume the reader has already met the mechanism and are reinforcing
+aggregation rather than teaching the arithmetic. Only the filename changes.
+
+Both framings come out of one build script at four renders — predictive
+and causal, each at two paces. Do not fork the script to add a framing;
+see `animations.md`, section 3.
