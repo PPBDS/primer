@@ -1,7 +1,3 @@
-## Sophie
-
-Explore animations and Claude.
-
 ## Priorities
 
 Add error term to DGMs everywhere.
