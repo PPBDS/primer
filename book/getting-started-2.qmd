@@ -19,9 +19,29 @@ On GitHub, your projects are organized into "repositories," usually called "repo
 
 GitHub gives every account 60 free Codespaces hours per month. Free hours are not infinite, however, so it is your responsibility to stop (and delete) Codespaces you are no longer using.
 
+```{r}
+#| label: github-1
+#| echo: false
+learnr2::question(
+  "Paste a screenshot showing that you are signed in to your new GitHub account -- for example, your GitHub profile page, or the account menu in the upper right corner of github.com.",
+  type = "reflection",
+  allow_image = TRUE
+)
+```
+
 ## Use either Chrome or Edge {.unnumbered}
 
 In theory, the below instructions work in any browser. In practice, we have found that the best experience is with either Chrome or Edge. If you are using a different browser, you may find that some of the instructions do not work as expected.
+
+```{r}
+#| label: use-either-chrome-or-edge-1
+#| echo: false
+learnr2::question(
+  "Paste a screenshot showing that you are using Chrome or Edge -- for example, the browser's \"About\" page (from its menu), which names the browser and its version.",
+  type = "reflection",
+  allow_image = TRUE
+)
+```
 
 ## A throwaway Codespace {.unnumbered}
 
@@ -64,6 +84,16 @@ knitr::include_graphics("getting-started-2/images/ready-message.png")
 ```
 
 The GitHub name, `fictional winner`, now appears next to the repo name as well as in the quick access window above the editor. Your name will be different, as GitHub assigns a unique name to each Codespace.
+
+```{r}
+#| label: launching-the-codespace-1
+#| echo: false
+learnr2::question(
+  "Paste a screenshot of your own Codespace's ready message. It will look like the example above, but with your own randomly-assigned name instead of `fictional winner`.",
+  type = "reflection",
+  allow_image = TRUE
+)
+```
 
 ### Touring the workspace {.unnumbered}
 
@@ -145,6 +175,16 @@ knitr::include_graphics("getting-started-2/images/t4.png")
 ```
 
 You have created a plot in the "Plots" tab of the Panel.
+
+```{r}
+#| label: touring-the-workspace-1
+#| echo: false
+learnr2::question(
+  "Paste a screenshot of the plot you created with `plot(1:10)`.",
+  type = "reflection",
+  allow_image = TRUE
+)
+```
 
 ### Running the Getting Started tutorial {.unnumbered}
 
@@ -304,6 +344,16 @@ knitr::include_graphics("getting-started-2/images/codespaces-3.png")
 Once you are done with a Codespace, you should **delete it.** To do so, go to your [Codespaces page](https://github.com/codespaces), click the `...` menu next to this Codespace and select **Delete**.
 
 This Codespace was a sandbox. You do not own [`PPBDS/codespace-starter`](https://github.com/PPBDS/codespace-starter), so there is nowhere for your work to go once you stop using the Codespace. That is fine — you have already downloaded your tutorial answers, which is the only thing here worth keeping.
+
+```{r}
+#| label: stopping-restarting-and-deleting-the-codespace-1
+#| echo: false
+learnr2::question(
+  "Paste a screenshot of your Codespaces control panel (https://github.com/codespaces) showing this Codespace stopped, or already deleted.",
+  type = "reflection",
+  allow_image = TRUE
+)
+```
 
 ## Using your own machine
 
