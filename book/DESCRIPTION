@@ -18,6 +18,7 @@ Imports:
     easystats,
     gt,
     knitr,
+    learnr2,
     marginaleffects,
     pak,
     patchwork,
@@ -27,5 +28,5 @@ Imports:
     tidymodels,
     tidyverse,
     xml2
-Remotes: PPBDS/primer.data, PPBDS/primer.tutorials
+Remotes: PPBDS/primer.data, PPBDS/primer.tutorials, PPBDS/learnr2
 Encoding: UTF-8
