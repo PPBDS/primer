@@ -1,3 +1,28 @@
+## Minh
+
+Make sure it does not open a dozen windows. (I bet that this is something wrong with the HTML file itself, not something else that I was doing.)
+
+Make Getting Started 2 just one page, if possible.
+
+Show good answers for the screen shot questions. Like show your screenshot and then have the student take a similar screen shot and save it. Be precise in what you want students to show. Often, screenshots which include the current URL are good, because they help students to not get lost.
+
+Why doesn't the answer box disappear when you paste something? That is confusing!
+
+Update all the images.
+
+This is sloppy! "Paste a screenshot of your own Codespace's ready message. It will look like the example above, but with your own randomly-assigned name instead of `fictional winner`."
+
+Shouldn't these questions allow you to replace a screenshot answer? What do you do if you make a mistake?
+
+After "Try it now." Ask for a screen shot which shows the chat window hidden.
+
+Student doesn't need to prove that she did every step. Just prove that she did the last step.
+
+We are no longer running the  Getting Started tutorial! Major edits needed.
+
+This chapter is a tutorial! We should say this. And we should follow that rule more closely, perhaps beginning with the student information.
+
+
 ## Priorities
 
 Add error term to DGMs everywhere.
