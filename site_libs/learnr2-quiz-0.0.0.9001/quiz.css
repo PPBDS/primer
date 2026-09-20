@@ -1,0 +1,333 @@
+.learnr2-quiz {
+  margin: 1.5rem 0;
+}
+
+.learnr2-quiz-caption {
+  font-weight: 600;
+  font-size: 1.1rem;
+  margin-bottom: 0.75rem;
+}
+
+.learnr2-question {
+  border: 1px solid #d8dee4;
+  border-radius: 0.5rem;
+  padding: 1rem 1.25rem;
+  margin: 1rem 0;
+  background: #fafbfc;
+}
+
+.learnr2-question-text {
+  font-weight: 600;
+  margin-bottom: 0.75rem;
+}
+
+.learnr2-answers {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+  margin-bottom: 0.75rem;
+}
+
+.learnr2-answer-row {
+  display: flex;
+}
+
+.learnr2-answer {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  cursor: pointer;
+}
+
+.learnr2-text-input {
+  padding: 0.4rem 0.6rem;
+  border: 1px solid #ced4da;
+  border-radius: 0.3rem;
+  font-size: 1rem;
+  width: 100%;
+  max-width: 20rem;
+}
+
+.learnr2-textarea {
+  max-width: 100%;
+  font-family: inherit;
+  resize: vertical;
+}
+
+.learnr2-model-answer {
+  margin-top: 0.75rem;
+  padding: 0.5rem 0.75rem;
+  border-radius: 0.3rem;
+  font-size: 0.95rem;
+  background: #e7f1ff;
+  color: #052c65;
+  border: 1px solid #b6d4fe;
+}
+
+.learnr2-model-answer-label {
+  font-weight: 600;
+  margin-bottom: 0.25rem;
+}
+
+.learnr2-model-answer p {
+  margin: 0.25rem 0;
+}
+
+.learnr2-image-paste {
+  margin-top: 0.5rem;
+  padding: 1rem;
+  border: 1px dashed #adb5bd;
+  border-radius: 0.3rem;
+  cursor: text;
+  text-align: center;
+}
+
+.learnr2-image-paste:focus {
+  outline: none;
+  border-color: #0d6efd;
+  box-shadow: 0 0 0 0.2rem rgba(13, 110, 253, 0.25);
+}
+
+.learnr2-image-paste-placeholder {
+  color: #6c757d;
+  font-size: 0.9rem;
+}
+
+.learnr2-image-paste-preview {
+  max-width: 100%;
+  max-height: 20rem;
+  border-radius: 0.3rem;
+  display: block;
+  margin: 0 auto;
+}
+
+.learnr2-image-paste-remove {
+  margin-top: 0.5rem;
+  padding: 0.25rem 0.6rem;
+  border: 1px solid #dc3545;
+  border-radius: 0.3rem;
+  background: #fff;
+  color: #dc3545;
+  cursor: pointer;
+  font-size: 0.85rem;
+}
+
+.learnr2-image-paste-remove:hover {
+  background: #dc3545;
+  color: #fff;
+}
+
+.learnr2-image-paste-error {
+  margin-top: 0.5rem;
+  color: #b02a37;
+  font-size: 0.85rem;
+}
+
+.learnr2-image-paste-disabled {
+  cursor: default;
+  opacity: 0.7;
+  pointer-events: none;
+}
+
+.learnr2-info {
+  border: 1px solid #d8dee4;
+  border-radius: 0.5rem;
+  padding: 1rem 1.25rem;
+  margin: 1rem 0;
+  background: #fafbfc;
+}
+
+.learnr2-info-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.75rem;
+  margin-bottom: 0.6rem;
+}
+
+.learnr2-info-row:last-child {
+  margin-bottom: 0;
+}
+
+.learnr2-info-label {
+  min-width: 8rem;
+  font-weight: 600;
+}
+
+.learnr2-info-input {
+  flex: 1;
+  padding: 0.4rem 0.6rem;
+  border: 1px solid #ced4da;
+  border-radius: 0.3rem;
+  font-size: 1rem;
+  max-width: 20rem;
+}
+
+.learnr2-info-error {
+  flex-basis: 100%;
+  margin-left: calc(8rem + 0.75rem);
+  color: #b02a37;
+  font-size: 0.85rem;
+}
+
+.learnr2-download-answers-btn {
+  padding: 0.4rem 0.9rem;
+  border: 1px solid #198754;
+  border-radius: 0.3rem;
+  background: #198754;
+  color: #fff;
+  cursor: pointer;
+  font-size: 0.95rem;
+}
+
+.learnr2-download-answers-btn:hover {
+  background: #157347;
+}
+
+.learnr2-download-error {
+  margin-top: 0.5rem;
+  padding: 0.5rem 0.75rem;
+  border-radius: 0.3rem;
+  font-size: 0.9rem;
+  background: #f8d7da;
+  color: #58151c;
+  border: 1px solid #f1aeb5;
+}
+
+.learnr2-controls {
+  display: flex;
+  gap: 0.5rem;
+  margin-top: 0.75rem;
+}
+
+.learnr2-submit,
+.learnr2-try-again {
+  padding: 0.4rem 0.9rem;
+  border: 1px solid #0d6efd;
+  border-radius: 0.3rem;
+  background: #0d6efd;
+  color: #fff;
+  cursor: pointer;
+  font-size: 0.95rem;
+}
+
+.learnr2-submit:hover {
+  background: #0b5ed7;
+}
+
+.learnr2-try-again {
+  background: #6c757d;
+  border-color: #6c757d;
+}
+
+.learnr2-try-again:hover {
+  background: #5c636a;
+}
+
+.learnr2-feedback {
+  margin-top: 0.75rem;
+  padding: 0.5rem 0.75rem;
+  border-radius: 0.3rem;
+  font-size: 0.95rem;
+}
+
+.learnr2-feedback-correct {
+  background: #d1e7dd;
+  color: #0a3622;
+  border: 1px solid #a3cfbb;
+}
+
+.learnr2-feedback-incorrect {
+  background: #f8d7da;
+  color: #58151c;
+  border: 1px solid #f1aeb5;
+}
+
+/* Unscoped on purpose: info forms, download buttons, and quiz question
+   containers all use .d-none, and new widgets will too. Matches Bootstrap's
+   own .d-none exactly, so it's harmless if Bootstrap is also on the page. */
+.d-none {
+  display: none !important;
+}
+
+.learnr2-continue-container {
+  margin: 1.5rem 0;
+}
+
+.learnr2-continue {
+  padding: 0.5rem 1.1rem;
+  border: 1px solid #0d6efd;
+  border-radius: 0.3rem;
+  background: #0d6efd;
+  color: #fff;
+  cursor: pointer;
+  font-size: 0.95rem;
+}
+
+.learnr2-continue:hover {
+  background: #0b5ed7;
+}
+
+.learnr2-start-over-container {
+  margin-top: 1.5rem;
+  padding-top: 1rem;
+  border-top: 1px solid #dee2e6;
+  text-align: center;
+}
+
+.learnr2-start-over {
+  width: auto;
+  padding: 0.1rem 0.5rem;
+  border: none;
+  background: transparent;
+  color: #adb5bd;
+  cursor: pointer;
+  font-size: 0.75rem;
+}
+
+.learnr2-start-over:hover {
+  color: #6c757d;
+  text-decoration: underline;
+}
+
+.learnr2-confirm-dialog {
+  max-width: 24rem;
+  border: 1px solid #d8dee4;
+  border-radius: 0.5rem;
+  padding: 1.25rem;
+  box-shadow: 0 0.5rem 1.5rem rgba(0, 0, 0, 0.2);
+}
+
+.learnr2-confirm-dialog::backdrop {
+  background: rgba(0, 0, 0, 0.5);
+}
+
+.learnr2-confirm-dialog-message {
+  margin: 0 0 1rem 0;
+}
+
+.learnr2-confirm-dialog-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 0.5rem;
+}
+
+.learnr2-confirm-dialog-cancel,
+.learnr2-confirm-dialog-confirm {
+  padding: 0.4rem 0.9rem;
+  border-radius: 0.3rem;
+  cursor: pointer;
+  font-size: 0.9rem;
+}
+
+.learnr2-confirm-dialog-cancel {
+  border: 1px solid #ced4da;
+  background: #fff;
+  color: #212529;
+}
+
+.learnr2-confirm-dialog-confirm {
+  border: 1px solid #dc3545;
+  background: #dc3545;
+  color: #fff;
+}
