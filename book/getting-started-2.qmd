@@ -1,5 +1,21 @@
 # Getting Started 2 {.unnumbered}
 
+<!-- DK: Put name and email and id at the top. -->
+
+<!-- DK: Explain how to create a screenshot. -->
+
+<!-- DK: Get ion Chrome or Edge first. -->
+
+<!-- DK: Check that the images are correct. -->
+
+<!-- DK: Sign up for a second GitHub account at the end, using a different email address and named like `davidkane9tutorials`. And then show, with this account, how to start a tutorial. -->
+
+<!-- DK: Make them click on codespaces link by asking for a screenshot. -->
+
+<!-- DK: Never just say Try it now. They never will! Tell them to do it and prove they have done so with an image. -->
+
+<!-- DK: Show at the end how to start a tutorial. But that is all! The tutorial will ask for your info, help you download answers and so on. Using vscode.tutorials "Orientation." -->
+
 *You can never look at the data too much.* -- Mark Engerman
 
 The world confronts us. Make decisions we must.
