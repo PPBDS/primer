@@ -6,6 +6,26 @@ The world confronts us. Make decisions we must.
 
 We do all of our data science in the cloud, using GitHub Codespaces with Visual Studio Code (VS Code).
 
+```{=html}
+<style>
+/* learnr2's quiz.js auto-gates every ##/### heading (section.level2 /
+   section.level3) behind a "Continue" button, hiding later sections via
+   a shared .d-none class it also uses for unrelated widget state
+   (feedback boxes, image-paste previews, submit/try-again toggles).
+   Forcing *all* .d-none visible would break those. Scoping the override
+   to section.level2/.level3 specifically only cancels the section-reveal
+   gating, so this chapter reads as one continuous page, without touching
+   quiz.js itself -- other learnr2 tutorials still want progressive reveal. */
+section.level2.d-none,
+section.level3.d-none {
+  display: block !important;
+}
+.learnr2-continue-container {
+  display: none !important;
+}
+</style>
+```
+
 ## GitHub {.unnumbered}
 
 Click [here](https://github.com/) and sign up for a GitHub by using the green button. Use your school email address for this account, if you are a student. 
