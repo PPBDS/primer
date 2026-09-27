@@ -6,7 +6,7 @@
 
 ## 18. What the dgm* tutorials should teach
 
-This section records the target understanding for the four `dgm-*` tutorials in [PPBDS/primer.tutorials](https://github.com/PPBDS/primer.tutorials) (`dgm-linear`, `dgm-logistic`, `dgm-multinomial`, `dgm-ordered`). Two essays, recorded verbatim, are the answer to: *what should a student believe about the DGM, tidymodels, and marginaleffects after finishing these tutorials?* §18.1 covers building the DGM (Structure → Method → Fitting, via tidymodels); §18.2 covers using it to answer questions (Question → Units → Answer, via marginaleffects). When revisiting or drafting a dgm* tutorial, check its exercises and knowledge drops against this guidance (see the open item in [`open-items.md`](open-items.md)).
+This section records the target understanding for the four `dgm-*` tutorials in [PPBDS/primer.tutorials](https://github.com/PPBDS/primer.tutorials) (`dgm-linear`, `dgm-logistic`, `dgm-multinomial`, `dgm-ordered`). Two essays, recorded verbatim, are the answer to: *what should a student believe about the DGM, tidymodels, and marginaleffects after finishing these tutorials?* §18.1 covers building the DGM (Structure → Method → Fitting, via tidymodels); §18.2 covers using it to answer questions (Question → Units → Answer, via marginaleffects). §18.3 supplements both essays with the mechanics specific to non-linear families (logistic, multinomial, ordinal), where the randomness comes from a probability-family draw rather than an additive error term. When revisiting or drafting a dgm* tutorial, check its exercises and knowledge drops against this guidance (see the open item in [`open-items.md`](open-items.md)).
 
 ### 18.1 Essay 1: The Data Generating Mechanism (verbatim)
 
@@ -93,3 +93,20 @@ One warning belongs here. `plot_comparisons()` will happily draw the tutored-ver
 #### The takeaway
 
 A fitted DGM is a machine for generating answers, and using it well means asking well. Pose your question as a quantity — a prediction or a comparison. Specify the units — real or imaginary — whose outcomes you care about. Then run the machine and draw the picture: `predictions()`, `plot_predictions()`, `plot_comparisons()`. The first essay ended with the beginner's most powerful question: *How did this data come to be?* This one ends with its natural sequel: *What does my DGM imply?*
+
+### 18.3 Non-linear DGMs: where the randomness lives
+
+Essay 1 builds the linear DGM the ordinary way: `height = β0 + β1 · sexMale + ε`, with `ε ~ N(0, σ²)`. The randomness is additive — a separate term, tacked onto a deterministic linear predictor, estimated as its own parameter (the residual variance). It's tempting to assume every DGM looks like this — a formula plus `+ ε`. It doesn't. `logistic_reg()`, `multinom_reg()`, and `ordinal_reg()` all propose DGMs with no additive error term at all. They aren't missing their randomness; the randomness has moved.
+
+**The two-stage shape of a non-linear DGM.** A Bernoulli DGM (`logistic_reg()`) runs in two stages, not one:
+
+1. **The link function — deterministic.** `log(p / (1 - p)) = β0 + β1 · x1`. Nothing random happens here: plug in covariate values and out comes one number, the log-odds, which the inverse link turns into one number, `p`, a probability.
+2. **The draw — random.** `y ~ Bernoulli(p)`. This is where the outcome is actually generated. The same `p` can produce `y = 1` for one unit and `y = 0` for an identical unit next to it. This draw plays the same structural role `+ ε` plays in the linear DGM — it *is* the mechanism's randomness, just discrete rather than additive.
+
+Multinomial and ordinal DGMs generalize the same shape: a deterministic step (one linear predictor per category for multinomial; cutpoints on a latent scale for ordinal) produces a vector of category probabilities, followed by one categorical draw from that vector. Whatever the family: **compute probabilities deterministically, then draw.** The draw is always where the randomness lives.
+
+**Every DGM has randomness — it just doesn't always look like `ε`.** This is the same commitment Essay 1 makes for the linear case ("Only once every parameter is estimated — the systematic part and the error term alike — do you have a usable DGM"), restated for families where the "error term" is a family draw rather than a Normal residual. A fitted logistic DGM without its Bernoulli draw is exactly as incomplete as a fitted linear DGM without its `ε`.
+
+**Where the hat goes.** In the linear case, the hatted equation is the DGM's expected value, obtained by setting `ε = 0`. In the Bernoulli case there's no `ε` to zero out — the link-function equation already *is* the expected value, because `p` is `E[y]` for a Bernoulli outcome. So `p̂ = 1 / (1 + e^{-(β̂0 + β̂1 x1)})` is the hatted, expected-value quantity, exactly parallel to `ŷ = β̂0 + β̂1 x1` in the linear case — and `y ~ Bernoulli(p̂)` is the full DGM, randomness included, parallel to `y = β̂0 + β̂1 x1 + ε`. Both families put the hat in the same conceptual place; they just reach it by different routes (zeroing an additive term vs. taking the deterministic half of a two-stage process).
+
+This is the same expected-value-vs-draw distinction `guidance.md` §14.14 makes on the artifact side — this section is the DGM-construction-side version of it, for authors thinking through Courage rather than Temperance.
