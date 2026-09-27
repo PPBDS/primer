@@ -42,7 +42,7 @@ GitHub gives every account 60 free Codespaces hours per month. Free hours are no
 #| label: github-1
 #| echo: false
 learnr2::question(
-  "Paste a screenshot showing that you are signed in to your new GitHub account -- for example, your GitHub profile page, or the account menu in the upper right corner of github.com.",
+  "Go to github.com while signed in, and paste a screenshot of your GitHub dashboard below. The dashboard looks different when you are signed in than when you are not, so this shows that you actually signed in.",
   type = "reflection",
   allow_image = TRUE
 )
@@ -56,7 +56,7 @@ In theory, the below instructions work in any browser. In practice, we have foun
 #| label: use-either-chrome-or-edge-1
 #| echo: false
 learnr2::question(
-  "Paste a screenshot showing that you are using Chrome or Edge -- for example, the browser's \"About\" page (from its menu), which names the browser and its version.",
+  "Open a new tab in your browser and paste a screenshot of it below. Chrome's and Edge's default new-tab pages look distinct from other browsers', so this shows which browser you are using.",
   type = "reflection",
   allow_image = TRUE
 )
@@ -108,7 +108,7 @@ The GitHub name, `fictional winner`, now appears next to the repo name as well a
 #| label: launching-the-codespace-1
 #| echo: false
 learnr2::question(
-  "Paste a screenshot of your own Codespace's ready message. It will look like the example above, but with your own randomly-assigned name instead of `fictional winner`.",
+  "Paste a screenshot of the quick access window above the editor, or of a bash Terminal, showing your own randomly-assigned Codespace name.",
   type = "reflection",
   allow_image = TRUE
 )
