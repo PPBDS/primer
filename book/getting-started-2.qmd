@@ -6,8 +6,27 @@ The world confronts us. Make decisions we must.
 
 We do all of our data science in the cloud, using GitHub Codespaces with Visual Studio Code (VS Code).
 
-This chapter is a self-contained version of [Getting Started](getting-started.qmd). Instead of sending you off to run a separate tutorial from the **[tutorial.helpers](https://ppbds.github.io/tutorial.helpers/)** package, the "Getting Started" tutorial itself runs right here on this page, powered by **[learnr2](https://ppbds.github.io/learnr2/)** -- no Shiny app, no separate browser tab, nothing to install beyond the Codespace you are about to create.
+This chapter is a self-contained version of [Getting Started](getting-started.qmd). Instead of sending you off to run a separate tutorial from the **[tutorial.helpers](https://ppbds.github.io/tutorial.helpers/)** package, the "Getting Started" tutorial itself runs right here on this page, powered by **[learnr2](https://ppbds.github.io/learnr2/)** -- no Shiny app, no separate browser tab, nothing to install beyond the Codespace you are about to create. The whole chapter reads top to bottom in one go -- there is no "Continue" button gating one section behind the last.
 
+```{=html}
+<style>
+/* learnr2's quiz.js auto-gates every ##/### heading (section.level2 /
+   section.level3) behind a "Continue" button, hiding later sections via
+   a shared .d-none class it also uses for unrelated widget state
+   (feedback boxes, image-paste previews, submit/try-again toggles).
+   Forcing *all* .d-none visible would break those. Scoping the override
+   to section.level2/.level3 specifically only cancels the section-reveal
+   gating, so this chapter reads as one continuous page, without touching
+   quiz.js itself -- other learnr2 tutorials still want progressive reveal. */
+section.level2.d-none,
+section.level3.d-none {
+  display: block !important;
+}
+.learnr2-continue-container {
+  display: none !important;
+}
+</style>
+```
 
 ## GitHub {.unnumbered}
 
