@@ -1,10 +1,14 @@
-# Getting Started 2 {.unnumbered}
+# Getting Started {.unnumbered}
 
 <!-- DK: Check that the images are correct. -->
+
+<!-- DK: Show them our answer first. -->
 
 <!-- DK: Make them click on codespaces link by asking for a screenshot. -->
 
 <!-- DK: Never just say Try it now. They never will! Tell them to do it and prove they have done so with an image. -->
+
+<!-- DK: Delete the text which never appears, like line 71. -->
 
 *You can never look at the data too much.* -- Mark Engerman
 
@@ -12,11 +16,11 @@ The world confronts us. Make decisions we must.
 
 We do all of our data science in the cloud, using GitHub Codespaces with Visual Studio Code (VS Code).
 
-In this chapter you will sign up for GitHub, create a Codespace, and answer questions along the way, all right here on this page, powered by **[learnr2](https://ppbds.github.io/learnr2/)**. Everything runs in your browser -- there is nothing to install beyond the Codespace you are about to create. The whole chapter reads top to bottom in one go -- there is no "Continue" button gating one section behind the last.
+In this chapter you will sign up for GitHub, create a Codespace, and answer questions along the way, all right here on this page, powered by **[learnr2](https://ppbds.github.io/learnr2/)**. Everything runs in your browser. 
 
-Your answers to the questions on this page save automatically in your browser, so you can close the page and come back later without losing anything. If you ever want to wipe them all and begin again, click the **Start Over** button in the right-hand sidebar, below the table of contents. It asks you to confirm before clearing anything.
+Your answers to the questions on this page save automatically in your browser, so you can close the page and come back later without losing anything. If you ever want to wipe them all and begin again, click the **Start Over** button in the right-hand sidebar, below the table of contents. 
 
-Start by telling us who you are. Most tutorials begin by asking for your name and email. Your instructor might also ask you to fill in the "ID" field so that your work can be matched to a grading database. If not, leave the "ID" field blank. Fill in the fields below and click **Submit**. Don't worry about getting them exactly right the first time -- clicking back into a field and changing it updates what's saved, mistakes included. If you are completing this as part of a class, use the same email address for every tutorial.
+Start by telling us who you are. Your instructor might also ask you to fill in the "ID" field so that your work can be matched to a grading database. If not, leave the "ID" field blank. Fill in the fields below and click **Submit**. You can edit your answers. 
 
 ```{r}
 #| label: student-information-1
@@ -48,7 +52,7 @@ section.level3.d-none {
 
 Many questions in this chapter ask you to paste a screenshot as proof that you did something. Take the screenshot first, then click into the question's answer box and paste it with `Ctrl + V` (Windows, Chromebook) or `Cmd + V` (Mac). There is no upload button. A preview of your screenshot appears in the box when it has worked. Then click **Submit Answer**.
 
-The easiest way is to copy the screenshot to your clipboard, so that you can paste it right away:
+The easiest way to acccomplsh this is to copy the screenshot to your clipboard, so that you can paste it right away:
 
 * **Windows:** press `Windows + Shift + S`, then drag a box around what you want to capture. The screenshot is copied to your clipboard.
 
@@ -56,13 +60,13 @@ The easiest way is to copy the screenshot to your clipboard, so that you can pas
 
 * **Chromebook:** press `Ctrl + Shift + Show windows` (the key with a rectangle and two lines on it), drag a box around what you want to capture, and click **Copy to clipboard** in the notification that appears.
 
-Capture the whole window or page, not just a tiny piece of it, so that it is clear what you are showing.
+The screenshot should capture enough that we can confirm that you followed our instructions.
 
 ## Use either Chrome or Edge {.unnumbered}
 
-In theory, the below instructions work in any browser. In practice, we have found that the best experience is with either Chrome or Edge. If you are using a different browser, you may find that some of the instructions do not work as expected.
+In theory, the below instructions work in any browser. In practice, we have found that the best experience is with either Chrome or Edge. If you are not using either Chrome or Edge, then install one of them now. We recommend Chrome.
 
-Open a new tab in your browser and paste a screenshot of it below. Chrome's and Edge's default new-tab pages look distinct from other browsers', so this shows which browser you are using.
+Once you have Chrome (or Edge) installed, start it. Paste a screenshot of it below. Make sure that the screenshot includes the name of the browser, probably best captured from the menu.
 
 ```{r}
 #| label: use-either-chrome-or-edge-1
@@ -104,7 +108,7 @@ GitHub gives every account 60 free Codespaces hours per month. Free hours are no
 
 ## A throwaway Codespace {.unnumbered}
 
-You will work inside a `codespace-starter` Codespace. We use it here to learn the platform and work through this chapter.
+You create a new Codespace using the `https://github.com/PPBDS/codespace-starter` repository. We refer to this repo as `codespace-starter`.
 
 Go to [`https://github.com/PPBDS/codespace-starter`](https://github.com/PPBDS/codespace-starter).
 
