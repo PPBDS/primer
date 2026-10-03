@@ -6,7 +6,7 @@ The world confronts us. Make decisions we must.
 
 We do all of our data science in the cloud, using GitHub Codespaces with Visual Studio Code (VS Code).
 
-This chapter is a self-contained version of [Getting Started](getting-started.qmd). Instead of sending you off to run a separate tutorial from the **[tutorial.helpers](https://ppbds.github.io/tutorial.helpers/)** package, the "Getting Started" tutorial itself runs right here on this page, powered by **[learnr2](https://ppbds.github.io/learnr2/)** -- no Shiny app, no separate browser tab, nothing to install beyond the Codespace you are about to create. The whole chapter reads top to bottom in one go -- there is no "Continue" button gating one section behind the last.
+In this chapter you will sign up for GitHub, create a Codespace, and complete the "Getting Started" tutorial, which runs right here on this page, powered by **[learnr2](https://ppbds.github.io/learnr2/)**. Everything runs in your browser -- there is nothing to install beyond the Codespace you are about to create. The whole chapter reads top to bottom in one go -- there is no "Continue" button gating one section behind the last.
 
 Your answers to the questions on this page save automatically in your browser, so you can close the page and come back later without losing anything. If you ever want to wipe them all and begin again, click the **Start Over** button in the right-hand sidebar, below the table of contents. It asks you to confirm before clearing anything.
 
@@ -209,7 +209,7 @@ learnr2::question(
 
 ### Running the Getting Started tutorial {.unnumbered}
 
-Earlier editions of this book sent you to the "R Tutorials" panel in VS Code to launch the `Getting Started` tutorial from the **[tutorial.helpers](https://ppbds.github.io/tutorial.helpers/)** package, which ran as a separate Shiny app inside your Codespace. This chapter instead walks you through that same tutorial directly on this page, powered by **[learnr2](https://ppbds.github.io/learnr2/)**: a version of the tutorial system that runs entirely in your browser, with no Shiny server required. Keep your Codespace open in another window -- you will switch back to its bash Terminal for one of the exercises below.
+The `Getting Started` tutorial runs directly on this page, powered by **[learnr2](https://ppbds.github.io/learnr2/)**, so you do not need to launch anything inside your Codespace. Keep your Codespace open in another window -- you will switch back to its bash Terminal for one of the exercises below.
 
 #### Introduction {.unnumbered}
 
@@ -276,7 +276,7 @@ That is the usual process: run something in a terminal, copy the command and the
 
 Every answer on this page, including the one you just gave, is saved to your browser as you go -- not only once you finally download your work. Reload this page right now to see for yourself: your name, email, and the answer above should all still be there, exactly as you left them.
 
-This is one way the **[learnr2](https://ppbds.github.io/learnr2/)** version of this tutorial differs from the Shiny-based one: there, quitting the underlying R session (with `Ctrl + C` in the "R Tutorial" terminal) still preserved your answers, but you had to explicitly restart the tutorial to see it. Here there is no R session running in your Codespace at all -- your answers live in your browser, not on a server, so nothing about your Codespace needs to stay open for your progress to be safe. There is also a "Start Over" button at the bottom of the sidebar if you ever want to clear your answers and begin again, which only acts after you confirm.
+There is no R session running in your Codespace for this tutorial -- your answers live in your browser, not on a server, so nothing about your Codespace needs to stay open for your progress to be safe. There is also a "Start Over" button at the bottom of the sidebar if you ever want to clear your answers and begin again, which only acts after you confirm.
 
 #### Your answers {.unnumbered}
 
