@@ -2,13 +2,9 @@
 
 <!-- DK: Check that the images are correct. -->
 
-<!-- DK: Sign up for a second GitHub account at the end, using a different email address and named like `davidkane9tutorials`. And then show, with this account, how to start a tutorial. -->
-
 <!-- DK: Make them click on codespaces link by asking for a screenshot. -->
 
 <!-- DK: Never just say Try it now. They never will! Tell them to do it and prove they have done so with an image. -->
-
-<!-- DK: Show at the end how to start a tutorial. But that is all! The tutorial will ask for your info, help you download answers and so on. Using vscode.tutorials "Orientation." -->
 
 *You can never look at the data too much.* -- Mark Engerman
 
@@ -85,7 +81,6 @@ Click [here](https://github.com/) and sign up for a GitHub by using the green bu
 
 Useful [advice](https://happygitwithr.com/github-acct.html#username-advice) for choosing a username includes using your real name, so people know who they are dealing with and can guess or remember it easily; making sure it is something you would be comfortable showing a future boss; keeping it short, and making it as unique as possible in as few characters as you can. Finally, make it timeless by avoiding references to your current university, employer, or home town. 
 
-
 Go to github.com while signed in, and paste a screenshot of your GitHub dashboard below. The dashboard looks different when you are signed in than when you are not, so this shows that you actually signed in.
 
 ```{r}
@@ -99,7 +94,6 @@ learnr2::question(
 )
 ```
 
-
 The [GitHub Student Developer Pack](https://education.github.com/pack) provides all sorts of perks, but you must visit that page to turn on the benefits. It confirms your student status on the basis of you having an email account at your school. 
 
 <!-- DK: Need a question which confirm that this has been done. Probably a screen shot of how GitHub responded. -->
@@ -107,7 +101,6 @@ The [GitHub Student Developer Pack](https://education.github.com/pack) provides 
 On GitHub, your projects are organized into "repositories," usually called "repos."
 
 GitHub gives every account 60 free Codespaces hours per month. Free hours are not infinite, however, so it is your responsibility to stop (and delete) Codespaces you are no longer using.
-
 
 ## A throwaway Codespace {.unnumbered}
 
@@ -365,7 +358,6 @@ Select "Codespaces: Stop Current Codespace."
 
 Third, you can go to your personal Codespaces control panel at [`https://github.com/codespaces`](https://github.com/codespaces). You can also reach this page from any page on GitHub by clicking the menu icon in the upper left and selecting "Codespaces":
 
-
 ```{r}
 #| echo: false
 knitr::include_graphics("getting-started-2/images/t7.png")
@@ -471,12 +463,38 @@ learnr2::question(
 )
 ```
 
+## Start a tutorial {.unnumbered}
+
+You will do most of your work in tutorials like the one you are about to start. This section shows you how to start one. That is all you need to know: the tutorial itself asks for your name and email, helps you download your answers, and so on.
+
+Sign in to GitHub with your second account, the one ending in `-tutorials`. Go to [`https://github.com/PPBDS/codespace-starter`](https://github.com/PPBDS/codespace-starter) and create a Codespace, exactly as you did in the "Launching the Codespace" section above.
+
+Once your Codespace is ready, look at the Activity Bar, the narrow vertical strip of icons on the far left. Hover over the icons until you find the one labeled **R Tutorials**, near the bottom, and click it. This lists the R packages that have tutorials. Click the package named **[vscode.tutorials](https://ppbds.github.io/vscode.tutorials/)** to see its tutorials.
+
+Find the tutorial named **Orientation**. Hover over its name and click the rightward-pointing arrow that appears. Doing so starts the tutorial, which takes a minute or so. A new terminal named "R Tutorial" appears in the Panel, and the tutorial then offers to open in your browser. Accept that offer. If you miss it, hover over the web address in the "R Tutorial" terminal and press `Cmd + Click` (Mac) or `Ctrl + Click` (Windows, Chromebook).
+
+Open the Orientation tutorial in your browser and paste a screenshot of its first page below. Make sure the address bar is visible in the screenshot.
+
+```{r}
+#| label: start-a-tutorial-1
+#| echo: false
+learnr2::question(
+  "Open the Orientation tutorial in your browser and paste a screenshot of its first page below. Make sure the address bar is visible in the screenshot.",
+  type = "reflection",
+  allow_image = TRUE,
+  show_text = FALSE
+)
+```
+
+You do not need to finish the Orientation tutorial now. When you are done with this Codespace, stop it and delete it, as described in the "Stopping, restarting and deleting the Codespace" section above.
+
 ## Summary {.unnumbered}
 
 You should have done the following:
 
 - Signed up for a GitHub account.
 - Signed up for a second GitHub account, named like your first one with `-tutorials` added to the end.
+- Used your second account to start the **Orientation** tutorial from **[vscode.tutorials](https://ppbds.github.io/vscode.tutorials/)** in a Codespace.
 - Used a throwaway Codespace on [`PPBDS/codespace-starter`](https://github.com/PPBDS/codespace-starter) to complete the **Getting Started** exercises right here on this page, powered by **[learnr2](https://ppbds.github.io/learnr2/)**, downloaded your answers, then **deleted** the Codespace.
 
 For doing some tutorials, a throwaway Codespace is all you need: complete the tutorial and download your answers --- no repository needed. When a later tutorial asks you to keep your work and build on it, the next chapter, [Git and GitHub](git-and-github.qmd), shows you how to create a repository you own.
