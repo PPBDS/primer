@@ -17,7 +17,6 @@ book:
   chapters:
     - index.qmd
     - preamble.qmd
-    - getting-started.qmd
     - getting-started-2.qmd
     - git-and-github.qmd
     - 01-probability.qmd

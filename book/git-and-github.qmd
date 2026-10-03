@@ -1,10 +1,10 @@
 # Git and GitHub {.unnumbered}
 
-By now you have completed at least one tutorial in a throwaway Codespace, as shown in the [Getting Started](getting-started.qmd) chapter. 
+By now you have completed at least one tutorial in a throwaway Codespace, as shown in the [Getting Started 2](getting-started-2.qmd) chapter. 
 
 A throwaway Codespace keeps nothing: the moment you delete it, everything you did inside is gone. As the tutorials get more involved, you will want to *keep* your work and build on it from one session to the next. That is what this chapter is about.
 
-The tool for the job is a **repository** --- a "repo" --- a project that lives permanently in your own GitHub account. Recall from [Getting Started](getting-started.qmd) that GitHub organizes everything into repos. A repo you *own* is a permanent home for your work: anything you save to it stays there, available the next time you open a Codespace, and nothing is lost when a Codespace is deleted. Saving to a repo is done with **Git**, the version-control system built into VS Code's **Source Control** panel; GitHub is where those saved versions live online.
+The tool for the job is a **repository** --- a "repo" --- a project that lives permanently in your own GitHub account. Recall from [Getting Started 2](getting-started-2.qmd) that GitHub organizes everything into repos. A repo you *own* is a permanent home for your work: anything you save to it stays there, available the next time you open a Codespace, and nothing is lost when a Codespace is deleted. Saving to a repo is done with **Git**, the version-control system built into VS Code's **Source Control** panel; GitHub is where those saved versions live online.
 
 When a tutorial asks you to keep your work, you make a repository for it. The naming rule is simple: the repository name is the **tutorial id** --- the tutorial title in lowercase, with spaces replaced by dashes --- so "Probability" becomes `probability`, and so on.
 
@@ -65,7 +65,7 @@ Look at the **Explorer** in the upper left --- it should now read `MY-TUTORIAL`.
 
 ### Running the tutorial {.unnumbered}
 
-Click the **R Tutorials** icon on the Activity Bar. Select and start your tutorial --- the same way you started "Getting Started" in the last chapter. Read and follow the instructions, and download your answers at the end.
+Click the **R Tutorials** icon on the Activity Bar. Select and start your tutorial. Read and follow the instructions, and download your answers at the end.
 
 <!-- DK: Something about basic Git commands, using AI to create a file. Running that file. Committing and pushing it. -->
 
