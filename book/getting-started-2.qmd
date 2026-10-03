@@ -42,13 +42,16 @@ section.level3.d-none {
 
 In theory, the below instructions work in any browser. In practice, we have found that the best experience is with either Chrome or Edge. If you are using a different browser, you may find that some of the instructions do not work as expected.
 
+Open a new tab in your browser and paste a screenshot of it below. Chrome's and Edge's default new-tab pages look distinct from other browsers', so this shows which browser you are using.
+
 ```{r}
 #| label: use-either-chrome-or-edge-1
 #| echo: false
 learnr2::question(
   "Open a new tab in your browser and paste a screenshot of it below. Chrome's and Edge's default new-tab pages look distinct from other browsers', so this shows which browser you are using.",
   type = "reflection",
-  allow_image = TRUE
+  allow_image = TRUE,
+  show_text = FALSE
 )
 ```
 
@@ -62,13 +65,16 @@ On GitHub, your projects are organized into "repositories," usually called "repo
 
 GitHub gives every account 60 free Codespaces hours per month. Free hours are not infinite, however, so it is your responsibility to stop (and delete) Codespaces you are no longer using.
 
+Go to github.com while signed in, and paste a screenshot of your GitHub dashboard below. The dashboard looks different when you are signed in than when you are not, so this shows that you actually signed in.
+
 ```{r}
 #| label: github-1
 #| echo: false
 learnr2::question(
   "Go to github.com while signed in, and paste a screenshot of your GitHub dashboard below. The dashboard looks different when you are signed in than when you are not, so this shows that you actually signed in.",
   type = "reflection",
-  allow_image = TRUE
+  allow_image = TRUE,
+  show_text = FALSE
 )
 ```
 
@@ -114,13 +120,16 @@ knitr::include_graphics("getting-started-2/images/ready-message.png")
 
 The GitHub name, `fictional winner`, now appears next to the repo name as well as in the quick access window above the editor. Your name will be different, as GitHub assigns a unique name to each Codespace.
 
+Paste a screenshot of the quick access window above the editor, or of a bash Terminal, showing your own randomly-assigned Codespace name.
+
 ```{r}
 #| label: launching-the-codespace-1
 #| echo: false
 learnr2::question(
   "Paste a screenshot of the quick access window above the editor, or of a bash Terminal, showing your own randomly-assigned Codespace name.",
   type = "reflection",
-  allow_image = TRUE
+  allow_image = TRUE,
+  show_text = FALSE
 )
 ```
 
@@ -205,13 +214,16 @@ knitr::include_graphics("getting-started-2/images/t4.png")
 
 You have created a plot in the "Plots" tab of the Panel.
 
+Paste a screenshot of the plot you created with `plot(1:10)`.
+
 ```{r}
 #| label: touring-the-workspace-1
 #| echo: false
 learnr2::question(
   "Paste a screenshot of the plot you created with `plot(1:10)`.",
   type = "reflection",
-  allow_image = TRUE
+  allow_image = TRUE,
+  show_text = FALSE
 )
 ```
 
@@ -364,13 +376,16 @@ Once you are done with a Codespace, you should **delete it.** To do so, go to yo
 
 This Codespace was a sandbox. You do not own [`PPBDS/codespace-starter`](https://github.com/PPBDS/codespace-starter), so there is nowhere for your work to go once you stop using the Codespace. That is fine — you have already downloaded your answers, which is the only thing here worth keeping.
 
+Paste a screenshot of your Codespaces control panel (https://github.com/codespaces) showing this Codespace stopped, or already deleted.
+
 ```{r}
 #| label: stopping-restarting-and-deleting-the-codespace-1
 #| echo: false
 learnr2::question(
   "Paste a screenshot of your Codespaces control panel (https://github.com/codespaces) showing this Codespace stopped, or already deleted.",
   type = "reflection",
-  allow_image = TRUE
+  allow_image = TRUE,
+  show_text = FALSE
 )
 ```
 
@@ -412,13 +427,16 @@ Create a second GitHub account by following the same instructions as in the [Git
 
 GitHub requires a different email address for each account, so you cannot reuse the one you gave your first account.
 
+Go to your new account's profile page, github.com/ followed by your new username, and paste a screenshot of it below. Make sure the address bar is visible, so that the full username (ending in -tutorials) shows in the screenshot.
+
 ```{r}
 #| label: a-second-github-account-1
 #| echo: false
 learnr2::question(
   "Go to your new account's profile page, github.com/ followed by your new username, and paste a screenshot of it below. Make sure the address bar is visible, so that the full username (ending in -tutorials) shows in the screenshot.",
   type = "reflection",
-  allow_image = TRUE
+  allow_image = TRUE,
+  show_text = FALSE
 )
 ```
 
