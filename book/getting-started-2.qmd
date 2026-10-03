@@ -8,6 +8,8 @@ We do all of our data science in the cloud, using GitHub Codespaces with Visual 
 
 This chapter is a self-contained version of [Getting Started](getting-started.qmd). Instead of sending you off to run a separate tutorial from the **[tutorial.helpers](https://ppbds.github.io/tutorial.helpers/)** package, the "Getting Started" tutorial itself runs right here on this page, powered by **[learnr2](https://ppbds.github.io/learnr2/)** -- no Shiny app, no separate browser tab, nothing to install beyond the Codespace you are about to create. The whole chapter reads top to bottom in one go -- there is no "Continue" button gating one section behind the last.
 
+Your answers to the questions on this page save automatically in your browser, so you can close the page and come back later without losing anything. If you ever want to wipe them all and begin again, click the **Start Over** button in the right-hand sidebar, below the table of contents. It asks you to confirm before clearing anything.
+
 ```{=html}
 <style>
 /* learnr2's quiz.js auto-gates every ##/### heading (section.level2 /
