@@ -6,7 +6,7 @@ The world confronts us. Make decisions we must.
 
 We do all of our data science in the cloud, using GitHub Codespaces with Visual Studio Code (VS Code).
 
-In this chapter you will sign up for GitHub, create a Codespace, and complete the "Getting Started" tutorial, which runs right here on this page, powered by **[learnr2](https://ppbds.github.io/learnr2/)**. Everything runs in your browser -- there is nothing to install beyond the Codespace you are about to create. The whole chapter reads top to bottom in one go -- there is no "Continue" button gating one section behind the last.
+In this chapter you will sign up for GitHub, create a Codespace, and answer questions along the way, all right here on this page, powered by **[learnr2](https://ppbds.github.io/learnr2/)**. Everything runs in your browser -- there is nothing to install beyond the Codespace you are about to create. The whole chapter reads top to bottom in one go -- there is no "Continue" button gating one section behind the last.
 
 Your answers to the questions on this page save automatically in your browser, so you can close the page and come back later without losing anything. If you ever want to wipe them all and begin again, click the **Start Over** button in the right-hand sidebar, below the table of contents. It asks you to confirm before clearing anything.
 
@@ -74,7 +74,7 @@ learnr2::question(
 
 ## A throwaway Codespace {.unnumbered}
 
-You will work inside a `codespace-starter` Codespace. We use it here to learn the platform and run the "Getting Started" tutorial.
+You will work inside a `codespace-starter` Codespace. We use it here to learn the platform and work through this chapter.
 
 Go to [`https://github.com/PPBDS/codespace-starter`](https://github.com/PPBDS/codespace-starter).
 
@@ -215,13 +215,13 @@ learnr2::question(
 )
 ```
 
-### Running the Getting Started tutorial {.unnumbered}
+### The Getting Started exercises {.unnumbered}
 
-The `Getting Started` tutorial runs directly on this page, powered by **[learnr2](https://ppbds.github.io/learnr2/)**, so you do not need to launch anything inside your Codespace. Keep your Codespace open in another window -- you will switch back to its bash Terminal for one of the exercises below.
+The exercises below run directly on this page, powered by **[learnr2](https://ppbds.github.io/learnr2/)**, so you do not need to launch anything inside your Codespace. Keep your Codespace open in another window -- you will switch back to its bash Terminal for one of the exercises below.
 
 #### Introduction {.unnumbered}
 
-This tutorial teaches you how tutorials work. There are only three steps: tell us who you are (which you did at the top of this page), run a command in a Terminal and copy the result, and download a copy of your answers. It should take about five minutes. Every tutorial you complete after this one uses the same sequence.
+This chapter teaches you how tutorials work. There are only three steps: tell us who you are (which you did at the top of this page), run a command in a Terminal and copy the result, and download a copy of your answers. It should take about five minutes. Every tutorial you complete after this chapter uses the same sequence.
 
 #### The bash Terminal {.unnumbered}
 
@@ -250,7 +250,7 @@ knitr::include_graphics("getting-started-2/images/pwd.png")
 **C**opy and **P**aste both the **C**ommand *and* the **R**esponse from the bash Terminal into the box below. We abbreviate this instruction throughout the book as **CP**/**CR**.
 
 ```{r}
-#| label: running-the-getting-started-tutorial-2
+#| label: the-getting-started-exercises-1
 #| echo: false
 learnr2::question(
   "Paste, into the box below, both the command you ran and the response the Terminal printed.",
@@ -274,25 +274,25 @@ That is the usual process: run something in a terminal, copy the command and the
 
 Every answer on this page, including the one you just gave, is saved to your browser as you go -- not only once you finally download your work. Reload this page right now to see for yourself: your name, email, and the answer above should all still be there, exactly as you left them.
 
-There is no R session running in your Codespace for this tutorial -- your answers live in your browser, not on a server, so nothing about your Codespace needs to stay open for your progress to be safe. There is also a "Start Over" button at the bottom of the sidebar if you ever want to clear your answers and begin again, which only acts after you confirm.
+There is no R session running in your Codespace for this chapter -- your answers live in your browser, not on a server, so nothing about your Codespace needs to stay open for your progress to be safe. There is also a "Start Over" button at the bottom of the sidebar if you ever want to clear your answers and begin again, which only acts after you confirm.
 
 #### Your answers {.unnumbered}
 
-At the end of every tutorial, you download a copy of your answers. First, answer the question below about how many minutes you spent on the tutorial. Then click the button below that to gather every answer on this page into a single file and download it.
+At the end of every tutorial, you download a copy of your answers, and you do the same here. First, answer the question below about how many minutes you spent on this chapter. Then click the button below that to gather every answer on this page into a single file and download it.
 
 ```{r}
-#| label: running-the-getting-started-tutorial-3
+#| label: the-getting-started-exercises-2
 #| echo: false
 learnr2::question(
   "How many minutes, approximately, did it take you to complete this
-  tutorial? For example, an hour and a half would be 90 minutes.",
+  chapter? For example, an hour and a half would be 90 minutes.",
   type = "reflection_editable",
   validate = "integer"
 )
 ```
 
 ```{r}
-#| label: running-the-getting-started-tutorial-4
+#| label: the-getting-started-exercises-3
 #| echo: false
 learnr2::download_answers_button(filename_prefix = "getting-started-2")
 ```
@@ -362,7 +362,7 @@ knitr::include_graphics("getting-started-2/images/codespaces-3.png")
 
 Once you are done with a Codespace, you should **delete it.** To do so, go to your [Codespaces page](https://github.com/codespaces), click the `...` menu next to this Codespace and select **Delete**.
 
-This Codespace was a sandbox. You do not own [`PPBDS/codespace-starter`](https://github.com/PPBDS/codespace-starter), so there is nowhere for your work to go once you stop using the Codespace. That is fine — you have already downloaded your tutorial answers, which is the only thing here worth keeping.
+This Codespace was a sandbox. You do not own [`PPBDS/codespace-starter`](https://github.com/PPBDS/codespace-starter), so there is nowhere for your work to go once you stop using the Codespace. That is fine — you have already downloaded your answers, which is the only thing here worth keeping.
 
 ```{r}
 #| label: stopping-restarting-and-deleting-the-codespace-1
@@ -428,7 +428,7 @@ You should have done the following:
 
 - Signed up for a GitHub account.
 - Signed up for a second GitHub account, named like your first one with `-tutorials` added to the end.
-- Used a throwaway Codespace on [`PPBDS/codespace-starter`](https://github.com/PPBDS/codespace-starter) to complete the **Getting Started** tutorial right here on this page, powered by **[learnr2](https://ppbds.github.io/learnr2/)**, downloaded your answers, then **deleted** the Codespace.
+- Used a throwaway Codespace on [`PPBDS/codespace-starter`](https://github.com/PPBDS/codespace-starter) to complete the **Getting Started** exercises right here on this page, powered by **[learnr2](https://ppbds.github.io/learnr2/)**, downloaded your answers, then **deleted** the Codespace.
 
 For doing some tutorials, a throwaway Codespace is all you need: complete the tutorial and download your answers --- no repository needed. When a later tutorial asks you to keep your work and build on it, the next chapter, [Git and GitHub](git-and-github.qmd), shows you how to create a repository you own.
 
