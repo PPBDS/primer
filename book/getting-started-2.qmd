@@ -1,7 +1,5 @@
 # Getting Started 2 {.unnumbered}
 
-<!-- DK: Explain how to create a screenshot. -->
-
 <!-- DK: Check that the images are correct. -->
 
 <!-- DK: Sign up for a second GitHub account at the end, using a different email address and named like `davidkane9tutorials`. And then show, with this account, how to start a tutorial. -->
@@ -49,6 +47,20 @@ section.level3.d-none {
 }
 </style>
 ```
+
+## How to take a screenshot {.unnumbered}
+
+Many questions in this chapter ask you to paste a screenshot as proof that you did something. Take the screenshot first, then click into the question's answer box and paste it with `Ctrl + V` (Windows, Chromebook) or `Cmd + V` (Mac). There is no upload button. A preview of your screenshot appears in the box when it has worked. Then click **Submit Answer**.
+
+The easiest way is to copy the screenshot to your clipboard, so that you can paste it right away:
+
+* **Windows:** press `Windows + Shift + S`, then drag a box around what you want to capture. The screenshot is copied to your clipboard.
+
+* **Mac:** press `Cmd + Control + Shift + 4`, then drag a box around what you want to capture. Adding `Control` is what copies the screenshot to your clipboard. Without it, `Cmd + Shift + 4` saves a file to your Desktop instead, which you cannot paste.
+
+* **Chromebook:** press `Ctrl + Shift + Show windows` (the key with a rectangle and two lines on it), drag a box around what you want to capture, and click **Copy to clipboard** in the notification that appears.
+
+Capture the whole window or page, not just a tiny piece of it, so that it is clear what you are showing.
 
 ## Use either Chrome or Edge {.unnumbered}
 
