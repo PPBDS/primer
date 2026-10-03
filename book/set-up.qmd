@@ -4,7 +4,7 @@ This document is for **collaborators** editing the book, the **[primer.tutorials
 
 This document provides a guide to setting up R/VS Code/Git/GitHub to work on *[The Primer](https://ppbds.github.io/primer/)*. The book lives in [PPBDS/primer](https://github.com/PPBDS/primer), with chapter sources under `book/`. The tutorials package **[primer.tutorials](https://github.com/PPBDS/primer.tutorials)** and the class exercises ([PPBDS/primer.exercises](https://github.com/PPBDS/primer.exercises)) are each their own repo, as is the data package [PPBDS/primer.data](https://github.com/PPBDS/primer.data). Clone whichever repo you are working on. If you are working on **primer.tutorials** or **primer.exercises**, also clone `primer` as a sibling directory (so the checkouts sit side by side, e.g. `projects/primer/` next to `projects/primer.tutorials/`) — those repos read their authoring guide from `../primer/guide/`. These procedures also apply to other PPBDS packages like **[tutorial.helpers](https://ppbds.github.io/tutorial.helpers/)** and **[vscode.tutorials](https://ppbds.github.io/vscode.tutorials/)**. There are three steps:
 
-* The first part ensures that you have the knowledge and computer settings to be successful. With luck, you will only need to do this once. At the very least, you should upgrade your R version to the latest available and re-do the set up commands as specified in the [Getting Started](https://ppbds.github.io/primer/getting-started.html) chapter.
+* The first part ensures that you have the knowledge and computer settings to be successful. With luck, you will only need to do this once. At the very least, you should upgrade your R version to the latest available and re-do the set up commands as specified in the [Getting Started 2](https://ppbds.github.io/primer/getting-started-2.html) chapter.
 
 * The second part involves making a connection between the true repos at the [PPBDS Github organization](https://github.com/PPBDS/) and your Github account and your computer. You may end up doing this dozens of times since, whenever something gets messed up, the easiest solution is often to just [nuke it from orbit](https://www.urbandictionary.com/define.php?term=nuke%20it%20from%20orbit) and start again. But, most weeks, you won't do this at all.
 
@@ -23,7 +23,7 @@ The *test* which ensures that you have successfully completed this set up is to 
 pak::pak(c("devtools", "usethis")) 
 ```
 
-1) Read the [Getting Started](https://ppbds.github.io/primer/getting-started.html) chapter from [The Primer](https://ppbds.github.io/primer/). Complete at least the first four tutorials in the **[vscode.tutorials](https://ppbds.github.io/vscode.tutorials/)** package. The best reference for R/Git/Github issues is always [*Happy Git and GitHub for the useR*](https://happygitwithr.com/).
+1) Read the [Getting Started 2](https://ppbds.github.io/primer/getting-started-2.html) chapter from [The Primer](https://ppbds.github.io/primer/). Complete at least the first four tutorials in the **[vscode.tutorials](https://ppbds.github.io/vscode.tutorials/)** package. The best reference for R/Git/Github issues is always [*Happy Git and GitHub for the useR*](https://happygitwithr.com/).
 
 2) Make sure that your Git/Github connections are good. If you have gone through the key chapters in [Happy Git with R](https://happygitwithr.com/) --- as you should have --- then these may already be OK. If not (or, even if you have), then you need to run `usethis::git_sitrep()`.
 
