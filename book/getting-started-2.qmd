@@ -10,6 +10,14 @@ In this chapter you will sign up for GitHub, create a Codespace, and complete th
 
 Your answers to the questions on this page save automatically in your browser, so you can close the page and come back later without losing anything. If you ever want to wipe them all and begin again, click the **Start Over** button in the right-hand sidebar, below the table of contents. It asks you to confirm before clearing anything.
 
+Start by telling us who you are. Most tutorials begin by asking for your name and email. Your instructor might also ask you to fill in the "ID" field so that your work can be matched to a grading database. If not, leave the "ID" field blank. Fill in the fields below and click **Submit**. Don't worry about getting them exactly right the first time -- clicking back into a field and changing it updates what's saved, mistakes included. If you are completing this as part of a class, use the same email address for every tutorial.
+
+```{r}
+#| label: student-information-1
+#| echo: false
+learnr2::student_info()
+```
+
 ```{=html}
 <style>
 /* learnr2's quiz.js auto-gates every ##/### heading (section.level2 /
@@ -213,17 +221,7 @@ The `Getting Started` tutorial runs directly on this page, powered by **[learnr2
 
 #### Introduction {.unnumbered}
 
-This tutorial teaches you how tutorials work. There are only three steps: tell us who you are, run a command in a Terminal and copy the result, and download a copy of your answers. It should take about five minutes. Every tutorial you complete after this one uses the same sequence.
-
-Most tutorials begin by asking for your name and email. Your instructor might also ask you to fill in the "ID" field so that your work can be matched to a grading database. If not, leave the "ID" field blank. Fill in the fields below and click **Submit**. Your answers save automatically as you type, so don't worry about getting them exactly right the first time -- clicking back into a field and changing it updates what's saved, mistakes included.
-
-If you are completing this tutorial as part of a class, use the same email address for every tutorial.
-
-```{r}
-#| label: running-the-getting-started-tutorial-1
-#| echo: false
-learnr2::student_info()
-```
+This tutorial teaches you how tutorials work. There are only three steps: tell us who you are (which you did at the top of this page), run a command in a Terminal and copy the result, and download a copy of your answers. It should take about five minutes. Every tutorial you complete after this one uses the same sequence.
 
 #### The bash Terminal {.unnumbered}
 
