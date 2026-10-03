@@ -30,6 +30,20 @@ section.level3.d-none {
 </style>
 ```
 
+## Use either Chrome or Edge {.unnumbered}
+
+In theory, the below instructions work in any browser. In practice, we have found that the best experience is with either Chrome or Edge. If you are using a different browser, you may find that some of the instructions do not work as expected.
+
+```{r}
+#| label: use-either-chrome-or-edge-1
+#| echo: false
+learnr2::question(
+  "Open a new tab in your browser and paste a screenshot of it below. Chrome's and Edge's default new-tab pages look distinct from other browsers', so this shows which browser you are using.",
+  type = "reflection",
+  allow_image = TRUE
+)
+```
+
 ## GitHub {.unnumbered}
 
 Sign up for a GitHub account by following the instructions on the [GitHub homepage](https://github.com/). **Follow [this advice](https://happygitwithr.com/github-acct.html#username-advice) when choosing your username.**
@@ -45,20 +59,6 @@ GitHub gives every account 60 free Codespaces hours per month. Free hours are no
 #| echo: false
 learnr2::question(
   "Go to github.com while signed in, and paste a screenshot of your GitHub dashboard below. The dashboard looks different when you are signed in than when you are not, so this shows that you actually signed in.",
-  type = "reflection",
-  allow_image = TRUE
-)
-```
-
-## Use either Chrome or Edge {.unnumbered}
-
-In theory, the below instructions work in any browser. In practice, we have found that the best experience is with either Chrome or Edge. If you are using a different browser, you may find that some of the instructions do not work as expected.
-
-```{r}
-#| label: use-either-chrome-or-edge-1
-#| echo: false
-learnr2::question(
-  "Open a new tab in your browser and paste a screenshot of it below. Chrome's and Edge's default new-tab pages look distinct from other browsers', so this shows which browser you are using.",
   type = "reflection",
   allow_image = TRUE
 )
