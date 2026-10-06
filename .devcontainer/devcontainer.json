@@ -13,23 +13,32 @@
   //
   // Pinned to a semver tag (David's call, 2026-07 — this used to float
   // on dev:latest). Bump deliberately when a new release lands.
-  "image": "ghcr.io/ppbds/devcontainer:1.1.5",
+  "image": "ghcr.io/ppbds/devcontainer:1.1.9",
 
   "customizations": {
     "vscode": {
+      // Every extension here is BAKED into the image since v1.1.7 (vscode-R
+      // 3.x with its `sess` R package, quarto, …), so nothing installs at
+      // attach; the list stays so VS Code sees the pin. vscode-R is pinned to
+      // the version the image bakes — keep it in lockstep with VSCODE_R_VERSION
+      // in PPBDS/devcontainers. R Debugger was dropped (2026-10-06): with
+      // vscode-R 3.x present it only produces a "legacy r.rpath" warning.
       "extensions": [
-        "reditorsupport.r",
-        "rdebugger.r-debugger",
+        "reditorsupport.r@3.0.1",
         "quarto.quarto"
       ],
       "settings": {
         // arf is installed by base/Dockerfile and symlinked to
         // /usr/local/bin/arf so consumer configs don't depend on the
         // image's default-user home path.
-        "r.rterm.linux": "/usr/local/bin/arf",
+        // vscode-R 3.0 names (r.rterm.linux / r.plot.useHttpgd are deprecated);
+        // same values as codespace-starter.
+        "r.consolePath": "/usr/local/bin/arf",
         "r.bracketedPaste": true,
-        "r.plot.useHttpgd": true,
-        "terminal.integrated.environmentChangesRelaunch": false,
+        "r.plot.backend": "httpgd",
+        // environmentChangesRelaunch: false was removed (2026-10-06): turning
+        // auto-relaunch off is what CAUSES the "⚠ extensions want to relaunch
+        // the terminal" indicator, and nothing here needs it off.
         "workbench.startupEditor": "none"
       }
     }
