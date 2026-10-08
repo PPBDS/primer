@@ -555,15 +555,35 @@ fit_shaming <- logistic_reg(engine = "glm") |>
   fit(voted ~ age + sex + treatment*voter_class, data = x)
 ```
 
-The fitted DGM on the log-odds scale, in compact form:
+With the parameters estimated, we can write down the fitted DGM. A logistic DGM has no additive error term. Instead, it runs in two stages. The first stage is deterministic: the covariates fix the log-odds, and therefore the probability $\rho$, of voting. In compact form:
 
-$$\log \left( \frac{\widehat{\rho}}{1-\widehat{\rho}} \right) = \beta_0 + \beta_{\text{age}} \cdot \text{Age} + \beta_{\text{sex}} \cdot \text{sexMale} + \sum_t \beta_t \cdot \text{treatment}_t + \sum_c \gamma_c \cdot \text{voter\_class}_c + \sum_{t,c} \delta_{t,c} \cdot \text{treatment}_t \cdot \text{voter\_class}_c$$
+$$
+\begin{aligned}
+\log \left( \frac{\rho}{1-\rho} \right) =\ & \beta_0 + \beta_{\text{age}} \cdot \text{Age} + \beta_{\text{sex}} \cdot \text{sexMale} \\
+&{}+ \sum_t \beta_t \cdot \text{treatment}_t + \sum_c \gamma_c \cdot \text{voter\_class}_c \\
+&{}+ \sum_{t,c} \delta_{t,c} \cdot \text{treatment}_t \cdot \text{voter\_class}_c
+\end{aligned}
+$$
 
-with the sums running over the four non-reference treatment arms and the two non-reference voter classes. Translating to probability requires the inverse-logit. Twelve (treatment, voter_class) combinations each produce a different expected turnout probability. The Temperance section computes all twelve via `marginaleffects` and reads them off.
+with the sums running over the four non-reference treatment arms and the two non-reference voter classes, and each coefficient set to its estimate from the candidate 3 table. The second stage is random: each voter's turnout is a draw with that probability:
 
-Those twelve numbers are expected-value quantities --- so are the log-odds they come from, and so is the class ("votes" / "does not vote") a highest-probability rule would assign. When a question needs an individual outcome, the randomness enters at the final step: each voter's turnout is a draw, $Y \sim \text{Bernoulli}(\widehat{\rho})$. Two voters with the same treatment, age, sex, and voting history share a probability, not a decision.
+$$Y \sim \text{Bernoulli}(\rho)$$
 
-**This is our data generating mechanism.** It serves both the primary causal question and the paired predictive question.
+**This is our data generating mechanism** --- both stages together, the draw included. The draw is where the randomness lives; it plays the role that the error term $\epsilon$ plays in a linear DGM. Two voters with the same treatment, age, sex, and voting history share a $\rho$, not a decision. This DGM serves both the primary causal question and the paired predictive question.
+
+Most questions want a single number rather than a random draw. Setting the randomness aside gives the DGM's *expected value*, which we mark with a hat:
+
+$$
+\begin{aligned}
+\log \left( \frac{\widehat{\rho}}{1-\widehat{\rho}} \right) =\ & \beta_0 + \beta_{\text{age}} \cdot \text{Age} + \beta_{\text{sex}} \cdot \text{sexMale} \\
+&{}+ \sum_t \beta_t \cdot \text{treatment}_t + \sum_c \gamma_c \cdot \text{voter\_class}_c \\
+&{}+ \sum_{t,c} \delta_{t,c} \cdot \text{treatment}_t \cdot \text{voter\_class}_c
+\end{aligned}
+$$
+
+The hat marks an estimated expected value, not the mechanism itself: the randomness hasn't vanished, it is just set aside until a question needs it back. Translating to probability requires the inverse-logit. Twelve (treatment, voter_class) combinations each produce a different expected turnout probability $\widehat{\rho}$. The Temperance section computes all twelve via `marginaleffects` and reads them off.
+
+Those twelve numbers are expected-value quantities derived from the DGM --- so are the log-odds they come from, and so is the class ("votes" / "does not vote") a highest-probability rule would assign. When a question needs an *individual* outcome, we go back to the DGM itself and take the draw.
 
 ## Temperance
 

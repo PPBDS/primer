@@ -597,7 +597,17 @@ fit_smokes <- logistic_reg(engine = "glm") |>
   fit(smoke ~ age + sex, data = smokes)
 ```
 
-With the parameters estimated, the fitted DGM in log-odds form is:
+With the parameters estimated, we can write down the fitted DGM. A logistic DGM has no additive error term. Instead, it runs in two stages. The first stage is deterministic: the covariates fix the log-odds, and therefore the probability $\rho$, of being an ever-smoker:
+
+$$\log \left( \frac{\rho}{1-\rho} \right) = -0.875 + 0.007 \cdot \text{Age} + 0.545 \cdot \text{sexMale}$$
+
+The second stage is random: the outcome is a draw with that probability:
+
+$$Y \sim \text{Bernoulli}(\rho)$$
+
+**This is our data generating mechanism** --- both stages together, the draw included. `sexMale` is a 0/1 dummy: 1 for male, 0 for female. The draw is where the randomness lives; it plays the role that the error term $\epsilon$ plays in a linear DGM. Two adults with identical covariates share a $\rho$, not a smoking history. This DGM serves both the primary predictive question and the paired causal question.
+
+Most questions want a single number rather than a random draw. Setting the randomness aside gives the DGM's *expected value*, which we mark with a hat. In log-odds form:
 
 $$\log \left( \frac{\widehat{\rho}}{1-\widehat{\rho}} \right) = -0.875 + 0.007 \cdot \text{Age} + 0.545 \cdot \text{sexMale}$$
 
@@ -605,15 +615,9 @@ Equivalently, on the probability scale:
 
 $$\widehat{\rho} = \frac{1}{1 + \exp(-(-0.875 + 0.007 \cdot \text{Age} + 0.545 \cdot \text{sexMale}))}$$
 
-`sexMale` is a 0/1 dummy: 1 for male, 0 for female. The first form makes the model's structure visible: it is linear in the log-odds. The second form is what we read off as an answer: a probability between 0 and 1 for any combination of `Age` and `Sex`. The Temperance section computes these probabilities for the specific demographic profiles the question asks about.
+The hat marks an estimated expected value, not the mechanism itself: the randomness hasn't vanished, it is just set aside until a question needs it back. The first form makes the model's structure visible: it is linear in the log-odds. The second form is what we read off as an answer: a probability between 0 and 1 for any combination of `Age` and `Sex`. The Temperance section computes these probabilities for the specific demographic profiles the question asks about.
 
-Notice that this one DGM already answers on two scales: the first equation returns log-odds (the model's native output), the second a probability. There is a third scale: apply a decision rule --- highest probability wins --- and the DGM emits a *class*, ever-smoker or not. All three are expected-value quantities. When a question needs an *individual* outcome, the randomness enters at exactly one place, the final draw:
-
-$$Y \sim \text{Bernoulli}(\widehat{\rho})$$
-
-Two adults with identical covariates share a $\widehat{\rho}$, not a smoking history. Which scale, and which mode --- expected value or draw --- depends entirely on the question being asked.
-
-**This is our data generating mechanism.** It serves both the primary predictive question and the paired causal question.
+Notice that the expected value already answers on two scales: the first hatted equation returns log-odds (the model's native output), the second a probability. There is a third scale: apply a decision rule --- highest probability wins --- and we get a *class*, ever-smoker or not. All three are expected-value quantities derived from the DGM. When a question needs an *individual* outcome, we go back to the DGM itself and take the draw. Which scale, and which mode --- expected value or draw --- depends entirely on the question being asked.
 
 ## Temperance
 
