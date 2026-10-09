@@ -64,7 +64,7 @@ The screenshot should capture enough that we can confirm that you followed our i
 
 ## Use either Chrome or Edge {.unnumbered}
 
-In theory, the below instructions work in any browser. In practice, we have found that the best experience is with either Chrome or Edge. If you are not using either Chrome or Edge, then install one of them now. We recommend Chrome.
+In theory, the below instructions work in any browser. In practice, we have found that the best experience is with either Chrome or Edge. If you are not using either Chrome or Edge, then install one of them now: [Chrome](https://www.google.com/chrome/) or [Edge](https://explore.microsoft.com/en-us/edge/download). We recommend Chrome.
 
 Once you have Chrome (or Edge) installed, start it. Paste a screenshot of it below. Make sure that the screenshot includes the name of the browser, probably best captured from the menu.
 
