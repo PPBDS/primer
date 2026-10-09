@@ -72,10 +72,9 @@ Once you have Chrome (or Edge) installed, start it. Paste a screenshot of it bel
 #| label: use-either-chrome-or-edge-1
 #| echo: false
 learnr2::question(
-  "Open a new tab in your browser and paste a screenshot of it below. Chrome's and Edge's default new-tab pages look distinct from other browsers', so this shows which browser you are using.",
+  "Paste a screenshot of your browser, including its name (probably best captured from the menu).",
   type = "reflection",
-  allow_image = TRUE,
-  show_text = FALSE
+  allow_image = TRUE
 )
 ```
 
@@ -85,16 +84,13 @@ Click [here](https://github.com/) and sign up for a GitHub by using the green bu
 
 Useful [advice](https://happygitwithr.com/github-acct.html#username-advice) for choosing a username includes using your real name, so people know who they are dealing with and can guess or remember it easily; making sure it is something you would be comfortable showing a future boss; keeping it short, and making it as unique as possible in as few characters as you can. Finally, make it timeless by avoiding references to your current university, employer, or home town. 
 
-Go to github.com while signed in, and paste a screenshot of your GitHub dashboard below. The dashboard looks different when you are signed in than when you are not, so this shows that you actually signed in.
-
 ```{r}
 #| label: github-1
 #| echo: false
 learnr2::question(
   "Go to github.com while signed in, and paste a screenshot of your GitHub dashboard below. The dashboard looks different when you are signed in than when you are not, so this shows that you actually signed in.",
   type = "reflection",
-  allow_image = TRUE,
-  show_text = FALSE
+  allow_image = TRUE
 )
 ```
 
@@ -148,16 +144,13 @@ knitr::include_graphics("getting-started-2/images/ready-message.png")
 
 The GitHub name, `fictional winner`, now appears next to the repo name as well as in the quick access window above the editor. Your name will be different, as GitHub assigns a unique name to each Codespace.
 
-Paste a screenshot of the quick access window above the editor, or of a bash Terminal, showing your own randomly-assigned Codespace name.
-
 ```{r}
 #| label: launching-the-codespace-1
 #| echo: false
 learnr2::question(
   "Paste a screenshot of the quick access window above the editor, or of a bash Terminal, showing your own randomly-assigned Codespace name.",
   type = "reflection",
-  allow_image = TRUE,
-  show_text = FALSE
+  allow_image = TRUE
 )
 ```
 
@@ -242,16 +235,13 @@ knitr::include_graphics("getting-started-2/images/t4.png")
 
 You have created a plot in the "Plots" tab of the Panel.
 
-Paste a screenshot of the plot you created with `plot(1:10)`.
-
 ```{r}
 #| label: touring-the-workspace-1
 #| echo: false
 learnr2::question(
   "Paste a screenshot of the plot you created with `plot(1:10)`.",
   type = "reflection",
-  allow_image = TRUE,
-  show_text = FALSE
+  allow_image = TRUE
 )
 ```
 
@@ -403,16 +393,13 @@ Once you are done with a Codespace, you should **delete it.** To do so, go to yo
 
 This Codespace was a sandbox. You do not own [`PPBDS/codespace-starter`](https://github.com/PPBDS/codespace-starter), so there is nowhere for your work to go once you stop using the Codespace. That is fine — you have already downloaded your answers, which is the only thing here worth keeping.
 
-Paste a screenshot of your Codespaces control panel (https://github.com/codespaces) showing this Codespace stopped, or already deleted.
-
 ```{r}
 #| label: stopping-restarting-and-deleting-the-codespace-1
 #| echo: false
 learnr2::question(
   "Paste a screenshot of your Codespaces control panel (https://github.com/codespaces) showing this Codespace stopped, or already deleted.",
   type = "reflection",
-  allow_image = TRUE,
-  show_text = FALSE
+  allow_image = TRUE
 )
 ```
 
@@ -454,16 +441,13 @@ Create a second GitHub account by following the same instructions as in the [Git
 
 GitHub requires a different email address for each account, so you cannot reuse the one you gave your first account.
 
-Go to your new account's profile page, github.com/ followed by your new username, and paste a screenshot of it below. Make sure the address bar is visible, so that the full username (ending in -tutorials) shows in the screenshot.
-
 ```{r}
 #| label: a-second-github-account-1
 #| echo: false
 learnr2::question(
   "Go to your new account's profile page, github.com/ followed by your new username, and paste a screenshot of it below. Make sure the address bar is visible, so that the full username (ending in -tutorials) shows in the screenshot.",
   type = "reflection",
-  allow_image = TRUE,
-  show_text = FALSE
+  allow_image = TRUE
 )
 ```
 
@@ -477,16 +461,13 @@ Once your Codespace is ready, look at the Activity Bar, the narrow vertical stri
 
 Find the tutorial named **Orientation**. Hover over its name and click the rightward-pointing arrow that appears. Doing so starts the tutorial, which takes a minute or so. A new terminal named "R Tutorial" appears in the Panel, and the tutorial then offers to open in your browser. Accept that offer. If you miss it, hover over the web address in the "R Tutorial" terminal and press `Cmd + Click` (Mac) or `Ctrl + Click` (Windows, Chromebook).
 
-Open the Orientation tutorial in your browser and paste a screenshot of its first page below. Make sure the address bar is visible in the screenshot.
-
 ```{r}
 #| label: start-a-tutorial-1
 #| echo: false
 learnr2::question(
   "Open the Orientation tutorial in your browser and paste a screenshot of its first page below. Make sure the address bar is visible in the screenshot.",
   type = "reflection",
-  allow_image = TRUE,
-  show_text = FALSE
+  allow_image = TRUE
 )
 ```
 
