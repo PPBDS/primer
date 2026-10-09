@@ -189,7 +189,7 @@ knitr::include_graphics("getting-started-2/images/codespace-name-example.png")
 #| label: launching-the-codespace-1
 #| echo: false
 learnr2::question(
-  "Paste a screenshot of your browser window showing your own Codespace's name in each of the four places the red arrows point to above. Do not add arrows to your screenshot.",
+  "Paste a screenshot of your browser window showing your own Codespace's name in each of the four places the red arrows point to above.",
   type = "reflection",
   allow_image = TRUE,
   allow_text = FALSE
