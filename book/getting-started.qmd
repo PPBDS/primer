@@ -436,11 +436,19 @@ Once you are done with a Codespace, you should **delete it.** To do so, go to yo
 
 This Codespace was a sandbox. You do not own [`PPBDS/codespace-starter`](https://github.com/PPBDS/codespace-starter), so there is nowhere for your work to go once you stop using the Codespace. That is fine — you have already downloaded your answers, which is the only thing here worth keeping.
 
+Delete your Codespace now. When you do, GitHub shows a message at the top of your Codespaces page confirming that it was deleted. Your screenshot should look similar to this.
+
+```{r}
+#| echo: false
+#| fig-alt: "A screenshot of the top of the GitHub Codespaces page with a light blue banner reading: Codespace ominous space adventure deleted."
+knitr::include_graphics("getting-started-2/images/codespace-deleted-example.png")
+```
+
 ```{r}
 #| label: stopping-restarting-and-deleting-the-codespace-1
 #| echo: false
 learnr2::question(
-  "Paste a screenshot of your Codespaces control panel (https://github.com/codespaces) showing this Codespace stopped, or already deleted.",
+  "Paste a screenshot of the message at the top of your Codespaces page confirming that your Codespace was deleted.",
   type = "reflection",
   allow_image = TRUE,
   allow_text = FALSE
