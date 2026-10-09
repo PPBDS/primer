@@ -450,7 +450,7 @@ But this should be enough to get you started, should you decide to go this route
 
 ## A second GitHub account {.unnumbered}
 
-Create a second GitHub account by following the same instructions as in the [GitHub](#github) section above. Name it the same as your first account, with `-tutorials` added to the end. If your first username is `jane-doe`, your second one is `jane-doe-tutorials`.
+Create a second GitHub account by following the same instructions as in the [GitHub](#github) section above. Name it the same as your first account, with `-tutorials` added to the end. If your first username is `john-doe`, your second one is `john-doe-tutorials`.
 
 GitHub requires a different email address for each account, so you cannot reuse the one you gave your first account.
 
