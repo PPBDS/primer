@@ -520,7 +520,15 @@ Sign in to GitHub with your second account, the one ending in `-tutorials`. Go t
 
 Once your Codespace is ready, look at the Activity Bar, the narrow vertical strip of icons on the far left. Hover over the icons until you find the one labeled **R Tutorials**, near the bottom, and click it. This lists the R packages that have tutorials. Click the package named **[vscode.tutorials](https://ppbds.github.io/vscode.tutorials/)** to see its tutorials.
 
-Find the tutorial named **Orientation**. Hover over its name and click the rightward-pointing arrow that appears. Doing so starts the tutorial, which takes a minute or so. A new terminal named "R Tutorial" appears in the Panel, and the tutorial then offers to open in your browser. Accept that offer. If you miss it, hover over the web address in the "R Tutorial" terminal and press `Cmd + Click` (Mac) or `Ctrl + Click` (Windows, Chromebook).
+Find the tutorial named **Orientation**. Hover over its name and click the play button that appears. Doing so starts the tutorial, which takes a minute or so.
+
+```{r}
+#| echo: false
+#| fig-alt: "The R Tutorials panel in VS Code, listing tutorial packages. The vscode.tutorials package is expanded, with Orientation at the top of its tutorials and a play button next to it."
+knitr::include_graphics("getting-started-2/images/r-tutorials-orientation.png")
+```
+
+A new terminal named "R Tutorial" appears in the Panel, and the tutorial then offers to open in your browser. Accept that offer. If you miss it, hover over the web address in the "R Tutorial" terminal and press `Ctrl + Click` (Windows, Chromebook) or `Cmd + Click` (Mac).
 
 ```{r}
 #| label: start-a-tutorial-1
