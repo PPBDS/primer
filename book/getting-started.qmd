@@ -407,7 +407,7 @@ Which brings up this lst of options. Select "Codespaces."
 knitr::include_graphics("getting-started-2/images/t8.png")
 ```
 
-You main Codespaces page should look something like this:
+Your main Codespaces page should look something like this:
 
 ```{r}
 #| echo: false
