@@ -68,11 +68,19 @@ In theory, the below instructions work in any browser. In practice, we have foun
 
 Once you have Chrome (or Edge) installed, start it. Paste a screenshot of it below. Make sure that the screenshot includes the name of the browser, probably best captured from the menu.
 
+Your screenshot should look similar to this.
+
+```{r}
+#| echo: false
+#| fig-alt: "A screenshot of an entire Windows screen showing a new Google Chrome tab, with the Windows taskbar along the bottom."
+knitr::include_graphics("getting-started-2/images/chrome-new-tab-example.png")
+```
+
 ```{r}
 #| label: use-either-chrome-or-edge-1
 #| echo: false
 learnr2::question(
-  "Paste a screenshot of your browser, including its name (probably best captured from the menu).",
+  "Paste a screenshot of your entire screen, including the taskbar (or the Dock, on a Mac).",
   type = "reflection",
   allow_image = TRUE,
   allow_text = FALSE
