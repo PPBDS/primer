@@ -177,13 +177,19 @@ Once the process is done, a banner message appears announcing "✅  YOUR CODESPA
 knitr::include_graphics("getting-started-2/images/ready-message.png")
 ```
 
-The GitHub name, `fictional winner`, now appears next to the repo name as well as in the quick access window above the editor. Your name will be different, as GitHub assigns a unique name to each Codespace.
+GitHub gives your Codespace a randomly generated name. Mine is "ominous space adventure", but yours will be different. The red arrows in the example below point to the four places where that name appears: the address bar of your browser, the box at the top center of VS Code, the top of the Explorer panel on the left, and the blue button at the bottom left.
+
+```{r}
+#| echo: false
+#| fig-alt: "A screenshot of a new Codespace in the browser, with red arrows pointing to the Codespace name ominous space adventure in the address bar, in the box at the top center of VS Code, at the top of the Explorer panel, and in the blue button at the bottom left."
+knitr::include_graphics("getting-started-2/images/codespace-name-example.png")
+```
 
 ```{r}
 #| label: launching-the-codespace-1
 #| echo: false
 learnr2::question(
-  "Paste a screenshot of the quick access window above the editor, or of a bash Terminal, showing your own randomly-assigned Codespace name.",
+  "Paste a screenshot of your browser window showing your own Codespace's name in each of the four places the red arrows point to above. Do not add arrows to your screenshot.",
   type = "reflection",
   allow_image = TRUE,
   allow_text = FALSE
@@ -194,7 +200,7 @@ learnr2::question(
 
 VS Code is an integrated development environment (IDE) for coding and data science. Highlights:
 
-* This Codespace is in the cloud. The URL will be a combination of the GitHub-determined human-readable but somewhat nonsensical name — `fictional winner` in this case — and a bunch of letters and numbers. There is no need to remember this URL. GitHub keeps track of things. You can see all your current Codespaces at [`https://github.com/codespaces`](https://github.com/codespaces).
+* This Codespace is in the cloud. The URL will be a combination of the GitHub-determined human-readable but somewhat nonsensical name — `ominous space adventure` in my case — and a bunch of letters and numbers. There is no need to remember this URL. GitHub keeps track of things. You can see all your current Codespaces at [`https://github.com/codespaces`](https://github.com/codespaces).
 
 * In the upper right-hand corner are the "Customize Layout ..." buttons. These are part of the VS Code "Title Bar." Since we aren't using the AI tools right now, it often makes sense to close the "Chat" window, which appears on the right side of the screen. You can close this in two ways: Click the "X" mark or click the "Toggle Secondary Side Bar" button, the furthest right-hand button. You can then bring the Chat window back by clicking the "Toggle Secondary Side Bar" button again. Try it now.
 
