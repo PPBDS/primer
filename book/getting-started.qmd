@@ -64,18 +64,26 @@ The screenshot should capture enough that we can confirm that you followed our i
 
 ## Use either Chrome or Edge {.unnumbered}
 
-In theory, the below instructions work in any browser. In practice, we have found that the best experience is with either Chrome or Edge. If you are not using either Chrome or Edge, then install one of them now. We recommend Chrome.
+In theory, the below instructions work in any browser. In practice, we have found that the best experience is with either Chrome or Edge. If you are not using either Chrome or Edge, then install one of them now: [Chrome](https://www.google.com/chrome/) or [Edge](https://explore.microsoft.com/en-us/edge/download). We recommend Chrome.
 
 Once you have Chrome (or Edge) installed, start it. Paste a screenshot of it below. Make sure that the screenshot includes the name of the browser, probably best captured from the menu.
+
+Your screenshot should look similar to this.
+
+```{r}
+#| echo: false
+#| fig-alt: "A screenshot of an entire Windows screen showing a new Google Chrome tab, with the Windows taskbar along the bottom."
+knitr::include_graphics("getting-started-2/images/chrome-new-tab-example.png")
+```
 
 ```{r}
 #| label: use-either-chrome-or-edge-1
 #| echo: false
 learnr2::question(
-  "Open a new tab in your browser and paste a screenshot of it below. Chrome's and Edge's default new-tab pages look distinct from other browsers', so this shows which browser you are using.",
+  "Paste a screenshot of your entire screen, including the taskbar (or the Dock, on a Mac).",
   type = "reflection",
   allow_image = TRUE,
-  show_text = FALSE
+  allow_text = FALSE
 )
 ```
 
@@ -85,22 +93,45 @@ Click [here](https://github.com/) and sign up for a GitHub by using the green bu
 
 Useful [advice](https://happygitwithr.com/github-acct.html#username-advice) for choosing a username includes using your real name, so people know who they are dealing with and can guess or remember it easily; making sure it is something you would be comfortable showing a future boss; keeping it short, and making it as unique as possible in as few characters as you can. Finally, make it timeless by avoiding references to your current university, employer, or home town. 
 
-Go to github.com while signed in, and paste a screenshot of your GitHub dashboard below. The dashboard looks different when you are signed in than when you are not, so this shows that you actually signed in.
+Once you have signed up and are signed in, go to `github.com/` followed by your username, and click the **Overview** tab. Your screenshot should look similar to this.
+
+```{r}
+#| echo: false
+#| fig-alt: "A screenshot of a GitHub profile page in a browser, on the Overview tab, with the address bar showing github.com followed by the username."
+knitr::include_graphics("getting-started-2/images/github-profile-example.png")
+```
 
 ```{r}
 #| label: github-1
 #| echo: false
 learnr2::question(
-  "Go to github.com while signed in, and paste a screenshot of your GitHub dashboard below. The dashboard looks different when you are signed in than when you are not, so this shows that you actually signed in.",
+  "Paste a screenshot of the Overview tab of your GitHub profile, at github.com/[your username]. Make sure the address bar is visible.",
   type = "reflection",
   allow_image = TRUE,
-  show_text = FALSE
+  allow_text = FALSE
 )
 ```
 
 The [GitHub Student Developer Pack](https://education.github.com/pack) provides all sorts of perks, but you must visit that page to turn on the benefits. It confirms your student status on the basis of you having an email account at your school. 
 
-<!-- DK: Need a question which confirm that this has been done. Probably a screen shot of how GitHub responded. -->
+If you are a student, go to that page now, sign in, and apply for the benefits. When you finish, GitHub tells you that your application has been submitted. Your screenshot should look similar to this. (If you are not a student, skip this question.)
+
+```{r}
+#| echo: false
+#| fig-alt: "A screenshot of GitHub's Education Benefits Application dialog with a green message reading: Your application has been submitted."
+knitr::include_graphics("getting-started-2/images/student-pack-submitted-example.png")
+```
+
+```{r}
+#| label: github-2
+#| echo: false
+learnr2::question(
+  "Paste a screenshot of the message from GitHub saying that your Education Benefits Application has been submitted.",
+  type = "reflection",
+  allow_image = TRUE,
+  allow_text = FALSE
+)
+```
 
 On GitHub, your projects are organized into "repositories," usually called "repos."
 
@@ -146,18 +177,22 @@ Once the process is done, a banner message appears announcing "✅  YOUR CODESPA
 knitr::include_graphics("getting-started-2/images/ready-message.png")
 ```
 
-The GitHub name, `fictional winner`, now appears next to the repo name as well as in the quick access window above the editor. Your name will be different, as GitHub assigns a unique name to each Codespace.
+GitHub gives your Codespace a randomly generated name. Mine is "ominous space adventure", but yours will be different. The red arrows in the example below point to the four places where that name appears: the address bar of your browser, the box at the top center of VS Code, the top of the Explorer panel on the left, and the blue button at the bottom left.
 
-Paste a screenshot of the quick access window above the editor, or of a bash Terminal, showing your own randomly-assigned Codespace name.
+```{r}
+#| echo: false
+#| fig-alt: "A screenshot of a new Codespace in the browser, with red arrows pointing to the Codespace name ominous space adventure in the address bar, in the box at the top center of VS Code, at the top of the Explorer panel, and in the blue button at the bottom left."
+knitr::include_graphics("getting-started-2/images/codespace-name-example.png")
+```
 
 ```{r}
 #| label: launching-the-codespace-1
 #| echo: false
 learnr2::question(
-  "Paste a screenshot of the quick access window above the editor, or of a bash Terminal, showing your own randomly-assigned Codespace name.",
+  "Paste a screenshot of your browser window showing your own Codespace's name in each of the four places the red arrows point to above.",
   type = "reflection",
   allow_image = TRUE,
-  show_text = FALSE
+  allow_text = FALSE
 )
 ```
 
@@ -165,7 +200,7 @@ learnr2::question(
 
 VS Code is an integrated development environment (IDE) for coding and data science. Highlights:
 
-* This Codespace is in the cloud. The URL will be a combination of the GitHub-determined human-readable but somewhat nonsensical name — `fictional winner` in this case — and a bunch of letters and numbers. There is no need to remember this URL. GitHub keeps track of things. You can see all your current Codespaces at [`https://github.com/codespaces`](https://github.com/codespaces).
+* This Codespace is in the cloud. The URL will be a combination of the GitHub-determined human-readable but somewhat nonsensical name — `ominous space adventure` in my case — and a bunch of letters and numbers. There is no need to remember this URL. GitHub keeps track of things. You can see all your current Codespaces at [`https://github.com/codespaces`](https://github.com/codespaces).
 
 * In the upper right-hand corner are the "Customize Layout ..." buttons. These are part of the VS Code "Title Bar." Since we aren't using the AI tools right now, it often makes sense to close the "Chat" window, which appears on the right side of the screen. You can close this in two ways: Click the "X" mark or click the "Toggle Secondary Side Bar" button, the furthest right-hand button. You can then bring the Chat window back by clicking the "Toggle Secondary Side Bar" button again. Try it now.
 
@@ -242,8 +277,6 @@ knitr::include_graphics("getting-started-2/images/t4.png")
 
 You have created a plot in the "Plots" tab of the Panel.
 
-Paste a screenshot of the plot you created with `plot(1:10)`.
-
 ```{r}
 #| label: touring-the-workspace-1
 #| echo: false
@@ -251,7 +284,7 @@ learnr2::question(
   "Paste a screenshot of the plot you created with `plot(1:10)`.",
   type = "reflection",
   allow_image = TRUE,
-  show_text = FALSE
+  allow_text = FALSE
 )
 ```
 
@@ -374,7 +407,7 @@ Which brings up this lst of options. Select "Codespaces."
 knitr::include_graphics("getting-started-2/images/t8.png")
 ```
 
-You main Codespaces page should look something like this:
+Your main Codespaces page should look something like this:
 
 ```{r}
 #| echo: false
@@ -403,16 +436,22 @@ Once you are done with a Codespace, you should **delete it.** To do so, go to yo
 
 This Codespace was a sandbox. You do not own [`PPBDS/codespace-starter`](https://github.com/PPBDS/codespace-starter), so there is nowhere for your work to go once you stop using the Codespace. That is fine — you have already downloaded your answers, which is the only thing here worth keeping.
 
-Paste a screenshot of your Codespaces control panel (https://github.com/codespaces) showing this Codespace stopped, or already deleted.
+Delete your Codespace now. When you do, GitHub shows a message at the top of your Codespaces page confirming that it was deleted. Your screenshot should look similar to this.
+
+```{r}
+#| echo: false
+#| fig-alt: "A screenshot of the top of the GitHub Codespaces page with a light blue banner reading: Codespace ominous space adventure deleted."
+knitr::include_graphics("getting-started-2/images/codespace-deleted-example.png")
+```
 
 ```{r}
 #| label: stopping-restarting-and-deleting-the-codespace-1
 #| echo: false
 learnr2::question(
-  "Paste a screenshot of your Codespaces control panel (https://github.com/codespaces) showing this Codespace stopped, or already deleted.",
+  "Paste a screenshot of the message at the top of your Codespaces page confirming that your Codespace was deleted.",
   type = "reflection",
   allow_image = TRUE,
-  show_text = FALSE
+  allow_text = FALSE
 )
 ```
 
@@ -450,20 +489,26 @@ But this should be enough to get you started, should you decide to go this route
 
 ## A second GitHub account {.unnumbered}
 
-Create a second GitHub account by following the same instructions as in the [GitHub](#github) section above. Name it the same as your first account, with `-tutorials` added to the end. If your first username is `jane-doe`, your second one is `jane-doe-tutorials`.
+Create a second GitHub account by following the same instructions as in the [GitHub](#github) section above. Name it the same as your first account, with `-tutorials` added to the end. If your first username is `john-doe`, your second one is `john-doe-tutorials`.
 
 GitHub requires a different email address for each account, so you cannot reuse the one you gave your first account.
 
-Go to your new account's profile page, github.com/ followed by your new username, and paste a screenshot of it below. Make sure the address bar is visible, so that the full username (ending in -tutorials) shows in the screenshot.
+Once you have signed up and are signed in to your new account, go to `github.com/` followed by its username, which ends in `-tutorials`, and click the **Overview** tab. Your screenshot should look similar to this.
+
+```{r}
+#| echo: false
+#| fig-alt: "A screenshot of a GitHub profile page in a browser, on the Overview tab, with the address bar showing github.com followed by the username."
+knitr::include_graphics("getting-started-2/images/github-profile-example.png")
+```
 
 ```{r}
 #| label: a-second-github-account-1
 #| echo: false
 learnr2::question(
-  "Go to your new account's profile page, github.com/ followed by your new username, and paste a screenshot of it below. Make sure the address bar is visible, so that the full username (ending in -tutorials) shows in the screenshot.",
+  "Paste a screenshot of the Overview tab of your second GitHub profile, at github.com/[your username]-tutorials. Make sure the address bar is visible, so that the username ending in -tutorials shows.",
   type = "reflection",
   allow_image = TRUE,
-  show_text = FALSE
+  allow_text = FALSE
 )
 ```
 
@@ -475,9 +520,23 @@ Sign in to GitHub with your second account, the one ending in `-tutorials`. Go t
 
 Once your Codespace is ready, look at the Activity Bar, the narrow vertical strip of icons on the far left. Hover over the icons until you find the one labeled **R Tutorials**, near the bottom, and click it. This lists the R packages that have tutorials. Click the package named **[vscode.tutorials](https://ppbds.github.io/vscode.tutorials/)** to see its tutorials.
 
-Find the tutorial named **Orientation**. Hover over its name and click the rightward-pointing arrow that appears. Doing so starts the tutorial, which takes a minute or so. A new terminal named "R Tutorial" appears in the Panel, and the tutorial then offers to open in your browser. Accept that offer. If you miss it, hover over the web address in the "R Tutorial" terminal and press `Cmd + Click` (Mac) or `Ctrl + Click` (Windows, Chromebook).
+Find the tutorial named **Orientation**. Hover over its name and click the play button that appears. Doing so starts the tutorial, which takes a minute or so.
 
-Open the Orientation tutorial in your browser and paste a screenshot of its first page below. Make sure the address bar is visible in the screenshot.
+```{r}
+#| echo: false
+#| fig-alt: "The R Tutorials panel in VS Code, listing tutorial packages. The vscode.tutorials package is expanded, with Orientation at the top of its tutorials and a play button next to it."
+knitr::include_graphics("getting-started-2/images/r-tutorials-orientation.png")
+```
+
+A new terminal named "R Tutorial" appears in the Panel, and the tutorial then offers to open in your browser. Accept that offer. If you miss it, hover over the web address in the "R Tutorial" terminal and press `Ctrl + Click` (Windows, Chromebook) or `Cmd + Click` (Mac).
+
+Your screenshot should look similar to this.
+
+```{r}
+#| echo: false
+#| fig-alt: "A screenshot of the Orientation tutorial open in a browser tab, with the address bar showing a github.dev web address ending in vscode.tutorials/01-orientation, and the Information section with Name, Email and ID boxes."
+knitr::include_graphics("getting-started-2/images/orientation-tutorial-example.png")
+```
 
 ```{r}
 #| label: start-a-tutorial-1
@@ -486,7 +545,7 @@ learnr2::question(
   "Open the Orientation tutorial in your browser and paste a screenshot of its first page below. Make sure the address bar is visible in the screenshot.",
   type = "reflection",
   allow_image = TRUE,
-  show_text = FALSE
+  allow_text = FALSE
 )
 ```
 
