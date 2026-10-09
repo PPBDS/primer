@@ -114,7 +114,24 @@ learnr2::question(
 
 The [GitHub Student Developer Pack](https://education.github.com/pack) provides all sorts of perks, but you must visit that page to turn on the benefits. It confirms your student status on the basis of you having an email account at your school. 
 
-<!-- DK: Need a question which confirm that this has been done. Probably a screen shot of how GitHub responded. -->
+If you are a student, go to that page now, sign in, and apply for the benefits. When you finish, GitHub tells you that your application has been submitted. Your screenshot should look similar to this. (If you are not a student, skip this question.)
+
+```{r}
+#| echo: false
+#| fig-alt: "A screenshot of GitHub's Education Benefits Application dialog with a green message reading: Your application has been submitted."
+knitr::include_graphics("getting-started-2/images/student-pack-submitted-example.png")
+```
+
+```{r}
+#| label: github-2
+#| echo: false
+learnr2::question(
+  "Paste a screenshot of the message from GitHub saying that your Education Benefits Application has been submitted.",
+  type = "reflection",
+  allow_image = TRUE,
+  allow_text = FALSE
+)
+```
 
 On GitHub, your projects are organized into "repositories," usually called "repos."
 
