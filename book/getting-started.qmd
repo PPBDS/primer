@@ -530,6 +530,14 @@ knitr::include_graphics("getting-started-2/images/r-tutorials-orientation.png")
 
 A new terminal named "R Tutorial" appears in the Panel, and the tutorial then offers to open in your browser. Accept that offer. If you miss it, hover over the web address in the "R Tutorial" terminal and press `Ctrl + Click` (Windows, Chromebook) or `Cmd + Click` (Mac).
 
+Your screenshot should look similar to this.
+
+```{r}
+#| echo: false
+#| fig-alt: "A screenshot of the Orientation tutorial open in a browser tab, with the address bar showing a github.dev web address ending in vscode.tutorials/01-orientation, and the Information section with Name, Email and ID boxes."
+knitr::include_graphics("getting-started-2/images/orientation-tutorial-example.png")
+```
+
 ```{r}
 #| label: start-a-tutorial-1
 #| echo: false
