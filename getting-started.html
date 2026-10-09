@@ -1,0 +1,1256 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.10.19">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+<title>Getting Started – Preceptor’s Primer for Bayesian Data Science: Using the Cardinal Virtues for Inference</title>
+<style>
+/* Default styles provided by pandoc.
+** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
+*/
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: 1.5em;}
+div.column{flex: auto;}
+@media screen {
+div.columns{gap: min(4vw, 1.5em);}
+div.column{overflow-x: auto;}
+}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+</style>
+
+<script src="site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="site_libs/quarto-nav/headroom.min.js"></script>
+<script src="site_libs/clipboard/clipboard.min.js"></script>
+<script src="site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="site_libs/quarto-search/fuse.min.js"></script>
+<script src="site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="./">
+<link href="./git-and-github.html" rel="next">
+<link href="./preamble.html" rel="prev">
+<script src="site_libs/quarto-html/quarto.js" type="module"></script>
+<script src="site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
+<script src="site_libs/quarto-html/popper.min.js"></script>
+<script src="site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="site_libs/quarto-html/anchor.min.js"></script>
+<link href="site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting-bf27225e3a48a9273f3daa8f8e829971.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="site_libs/bootstrap/bootstrap-f33c690696fd41d7fda21c68aa2185f1.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light"><script id="quarto-search-options" type="application/json">{
+  "location": "sidebar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "start",
+  "type": "textbox",
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "show-item-context": false,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-text-placeholder": "",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit",
+    "search-label": "Search"
+  }
+}</script><link href="site_libs/learnr2-quiz-0.1.3.9002/quiz.css" rel="stylesheet">
+<script src="site_libs/learnr2-quiz-0.1.3.9002/quiz.js"></script>
+</head>
+<body class="nav-sidebar floating quarto-light">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top"><nav class="quarto-secondary-nav"><div class="container-fluid d-flex">
+      <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+        <i class="bi bi-layout-text-sidebar-reverse"></i>
+      </button>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./getting-started.html">Getting Started</a></li></ol></nav>
+        <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
+        </a>
+      <button type="button" class="btn quarto-search-button" aria-label="Search" onclick="window.quartoOpenSearch();">
+        <i class="bi bi-search"></i>
+      </button>
+    </div>
+  </nav></header><!-- content --><div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article">
+<!-- sidebar -->
+  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal quarto-sidebar-collapse-item sidebar-navigation floating overflow-auto"><div class="pt-lg-2 mt-2 text-left sidebar-header">
+    <div class="sidebar-title mb-0 py-0">
+      <a href="./">Preceptor’s Primer for Bayesian Data Science: Using the Cardinal Virtues for Inference</a> 
+        <div class="sidebar-tools-main">
+    <a href="https://github.com/PPBDS/primer/tree/main/book/" title="Source Code" class="quarto-navigation-tool px-1" aria-label="Source Code"><i class="bi bi-github"></i></a>
+</div>
+    </div>
+      </div>
+        <div class="mt-2 flex-shrink-0 align-items-center">
+        <div class="sidebar-search">
+        <div id="quarto-search" class="" title="Search"></div>
+        </div>
+        </div>
+    <div class="sidebar-menu-container"> 
+    <ul class="list-unstyled mt-1">
+<li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Welcome</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./preamble.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Preamble</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./getting-started.html" class="sidebar-item-text sidebar-link active">
+ <span class="menu-text">Getting Started</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./git-and-github.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Git and GitHub</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./01-probability.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">Probability</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./02-sampling.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">Sampling</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./03-rubin-causal-model.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">Rubin Causal Model</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./04-cardinal-virtues.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">Cardinal Virtues</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./05-recruits.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">Recruits</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./06-trains.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">6</span>&nbsp; <span class="chapter-title">Trains</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./07-colleges.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">7</span>&nbsp; <span class="chapter-title">Colleges</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./08-seguro-popular.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">8</span>&nbsp; <span class="chapter-title">Seguro Popular</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./09-smokes.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">9</span>&nbsp; <span class="chapter-title">Smokes</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./10-shaming.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">10</span>&nbsp; <span class="chapter-title">Shaming</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./11-nes.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">11</span>&nbsp; <span class="chapter-title">NES</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./12-mail.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">12</span>&nbsp; <span class="chapter-title">Mail</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./key-concepts.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Key Concepts</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./set-up.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Set Up for Working on PPBDS Projects</span></a>
+  </div>
+</li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" role="navigation" aria-expanded="true">
+ <span class="menu-text">Appendices</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-1" class="collapse list-unstyled sidebar-section depth1 show">
+<li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./set-up.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Set Up for Working on PPBDS Projects</span></a>
+  </div>
+</li>
+      </ul>
+</li>
+    </ul>
+</div>
+</nav><div id="quarto-sidebar-glass" class="quarto-sidebar-collapse-item" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item"></div>
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active"><h2 id="toc-title">Table of contents</h2>
+   
+  <ul>
+<li><a href="#how-to-take-a-screenshot" id="toc-how-to-take-a-screenshot" class="nav-link active" data-scroll-target="#how-to-take-a-screenshot">How to take a screenshot</a></li>
+  <li><a href="#use-either-chrome-or-edge" id="toc-use-either-chrome-or-edge" class="nav-link" data-scroll-target="#use-either-chrome-or-edge">Use either Chrome or Edge</a></li>
+  <li><a href="#github" id="toc-github" class="nav-link" data-scroll-target="#github">GitHub</a></li>
+  <li>
+<a href="#a-throwaway-codespace" id="toc-a-throwaway-codespace" class="nav-link" data-scroll-target="#a-throwaway-codespace">A throwaway Codespace</a>
+  <ul class="collapse">
+<li><a href="#launching-the-codespace" id="toc-launching-the-codespace" class="nav-link" data-scroll-target="#launching-the-codespace">Launching the Codespace</a></li>
+  <li><a href="#touring-the-workspace" id="toc-touring-the-workspace" class="nav-link" data-scroll-target="#touring-the-workspace">Touring the workspace</a></li>
+  <li><a href="#the-getting-started-exercises" id="toc-the-getting-started-exercises" class="nav-link" data-scroll-target="#the-getting-started-exercises">The Getting Started exercises</a></li>
+  <li><a href="#stopping-restarting-and-deleting-the-codespace" id="toc-stopping-restarting-and-deleting-the-codespace" class="nav-link" data-scroll-target="#stopping-restarting-and-deleting-the-codespace">Stopping, restarting and deleting the Codespace</a></li>
+  </ul>
+</li>
+  <li><a href="#using-your-own-machine" id="toc-using-your-own-machine" class="nav-link" data-scroll-target="#using-your-own-machine">Using your own machine</a></li>
+  <li><a href="#a-second-github-account" id="toc-a-second-github-account" class="nav-link" data-scroll-target="#a-second-github-account">A second GitHub account</a></li>
+  <li><a href="#start-a-tutorial" id="toc-start-a-tutorial" class="nav-link" data-scroll-target="#start-a-tutorial">Start a tutorial</a></li>
+  <li><a href="#summary" id="toc-summary" class="nav-link" data-scroll-target="#summary">Summary</a></li>
+  </ul><div class="toc-actions"><ul><li><a href="https://github.com/PPBDS/primer/edit/main/book/getting-started.qmd" class="toc-action"><i class="bi bi-github"></i>Edit this page</a></li></ul></div></nav>
+    </div>
+<!-- main -->
+<main class="content" id="quarto-document-content"><header id="title-block-header" class="quarto-title-block default"><div class="quarto-title">
+<h1 class="title">Getting Started</h1>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    
+  
+    
+  </div>
+  
+
+
+</header><!-- DK: Check that the images are correct. --><!-- DK: Show them our answer first. --><!-- DK: Make them click on codespaces link by asking for a screenshot. --><!-- DK: Never just say Try it now. They never will! Tell them to do it and prove they have done so with an image. --><!-- DK: Delete the text which never appears, like line 71. --><p><em>You can never look at the data too much.</em> – Mark Engerman</p>
+<p>The world confronts us. Make decisions we must.</p>
+<p>We do all of our data science in the cloud, using GitHub Codespaces with Visual Studio Code (VS Code).</p>
+<p>In this chapter you will sign up for GitHub, create a Codespace, and answer questions along the way, all right here on this page, powered by <strong><a href="https://ppbds.github.io/learnr2/">learnr2</a></strong>. Everything runs in your browser.</p>
+<p>Your answers to the questions on this page save automatically in your browser, so you can close the page and come back later without losing anything. If you ever want to wipe them all and begin again, click the <strong>Start Over</strong> button in the right-hand sidebar, below the table of contents.</p>
+<p>Start by telling us who you are. Your instructor might also ask you to fill in the “ID” field so that your work can be matched to a grading database. If not, leave the “ID” field blank. Fill in the fields below and click <strong>Submit</strong>. You can edit your answers.</p>
+<div class="cell">
+<div class="cell-output-display">
+<div class="learnr2-info" data-learnr2-info="eyJpZCI6ImxlYXJucjItaW5mby1zdHVkZW50LWluZm8iLCJmaWVsZHMiOlt7ImtleSI6Im5h
+bWUiLCJsYWJlbCI6Ik5hbWU6IiwicmVxdWlyZWQiOnRydWV9LHsia2V5IjoiZW1haWwiLCJs
+YWJlbCI6IkVtYWlsOiIsInJlcXVpcmVkIjp0cnVlfSx7ImtleSI6ImlkIiwibGFiZWwiOiJJ
+RCAoaWYgcmVxdWVzdGVkIGJ5IHlvdXIgaW5zdHJ1Y3Rvcik6IiwicmVxdWlyZWQiOmZhbHNl
+fV0sInN1Ym1pdExhYmVsIjoiU3VibWl0IiwiZWRpdExhYmVsIjoiRWRpdCJ9">
+<noscript>This form requires JavaScript.</noscript>
+</div>
+</div>
+</div>
+<style>
+/* learnr2's quiz.js auto-gates every ##/### heading (section.level2 /
+   section.level3) behind a "Continue" button, hiding later sections via
+   a shared .d-none class it also uses for unrelated widget state
+   (feedback boxes, image-paste previews, submit/try-again toggles).
+   Forcing *all* .d-none visible would break those. Scoping the override
+   to section.level2/.level3 specifically only cancels the section-reveal
+   gating, so this chapter reads as one continuous page, without touching
+   quiz.js itself -- other learnr2 tutorials still want progressive reveal. */
+section.level2.d-none,
+section.level3.d-none {
+  display: block !important;
+}
+.learnr2-continue-container {
+  display: none !important;
+}
+</style>
+<section id="how-to-take-a-screenshot" class="level2 unnumbered"><h2 class="unnumbered anchored" data-anchor-id="how-to-take-a-screenshot">How to take a screenshot</h2>
+<p>Many questions in this chapter ask you to paste a screenshot as proof that you did something. Take the screenshot first, then click into the question’s answer box and paste it with <code>Ctrl + V</code> (Windows, Chromebook) or <code>Cmd + V</code> (Mac). There is no upload button. A preview of your screenshot appears in the box when it has worked. Then click <strong>Submit Answer</strong>.</p>
+<p>The easiest way to acccomplsh this is to copy the screenshot to your clipboard, so that you can paste it right away:</p>
+<ul>
+<li><p><strong>Windows:</strong> press <code>Windows + Shift + S</code>, then drag a box around what you want to capture. The screenshot is copied to your clipboard.</p></li>
+<li><p><strong>Mac:</strong> press <code>Cmd + Control + Shift + 4</code>, then drag a box around what you want to capture. Adding <code>Control</code> is what copies the screenshot to your clipboard. Without it, <code>Cmd + Shift + 4</code> saves a file to your Desktop instead, which you cannot paste.</p></li>
+<li><p><strong>Chromebook:</strong> press <code>Ctrl + Shift + Show windows</code> (the key with a rectangle and two lines on it), drag a box around what you want to capture, and click <strong>Copy to clipboard</strong> in the notification that appears.</p></li>
+</ul>
+<p>The screenshot should capture enough that we can confirm that you followed our instructions.</p>
+</section><section id="use-either-chrome-or-edge" class="level2 unnumbered"><h2 class="unnumbered anchored" data-anchor-id="use-either-chrome-or-edge">Use either Chrome or Edge</h2>
+<p>In theory, the below instructions work in any browser. In practice, we have found that the best experience is with either Chrome or Edge. If you are not using either Chrome or Edge, then install one of them now: <a href="https://www.google.com/chrome/">Chrome</a> or <a href="https://explore.microsoft.com/en-us/edge/download">Edge</a>. We recommend Chrome.</p>
+<p>Once you have Chrome (or Edge) installed, start it. Paste a screenshot of it below. Make sure that the screenshot includes the name of the browser, probably best captured from the menu.</p>
+<p>Your screenshot should look similar to this.</p>
+<div class="cell">
+<div class="cell-output-display">
+<div>
+<figure class="figure"><p><img src="getting-started-2/images/chrome-new-tab-example.png" class="img-fluid figure-img" alt="A screenshot of an entire Windows screen showing a new Google Chrome tab, with the Windows taskbar along the bottom."></p>
+</figure>
+</div>
+</div>
+</div>
+<div class="cell">
+<div class="cell-output-display">
+<div class="learnr2-question" data-learnr2-question="eyJpZCI6InVzZS1laXRoZXItY2hyb21lLW9yLWVkZ2UtMSIsInRleHQiOiJQYXN0ZSBhIHNj
+cmVlbnNob3Qgb2YgeW91ciBlbnRpcmUgc2NyZWVuLCBpbmNsdWRpbmcgdGhlIHRhc2tiYXIg
+KG9yIHRoZSBEb2NrLCBvbiBhIE1hYykuIiwidHlwZSI6InJlZmxlY3Rpb24iLCJhbnN3ZXJz
+IjpbXSwiY29ycmVjdE1lc3NhZ2UiOiJDb3JyZWN0ISIsImluY29ycmVjdE1lc3NhZ2UiOiJJ
+bmNvcnJlY3QuIiwiYWxsb3dSZXRyeSI6ZmFsc2UsInJhbmRvbUFuc3dlck9yZGVyIjpmYWxz
+ZSwic3VibWl0TGFiZWwiOiJTdWJtaXQgQW5zd2VyIiwidHJ5QWdhaW5MYWJlbCI6IlRyeSBB
+Z2FpbiIsImVkaXRMYWJlbCI6IkVkaXQgQW5zd2VyIiwiYWxsb3dJbWFnZSI6dHJ1ZSwiYWxs
+b3dUZXh0IjpmYWxzZSwic2hvd1RleHQiOnRydWUsInZhbGlkYXRlIjoibm9uZSJ9">
+<noscript>This quiz question requires JavaScript.</noscript>
+</div>
+</div>
+</div>
+</section><section id="github" class="level2 unnumbered"><h2 class="unnumbered anchored" data-anchor-id="github">GitHub</h2>
+<p>Click <a href="https://github.com/">here</a> and sign up for a GitHub by using the green button. Use your school email address for this account, if you are a student.</p>
+<p>Useful <a href="https://happygitwithr.com/github-acct.html#username-advice">advice</a> for choosing a username includes using your real name, so people know who they are dealing with and can guess or remember it easily; making sure it is something you would be comfortable showing a future boss; keeping it short, and making it as unique as possible in as few characters as you can. Finally, make it timeless by avoiding references to your current university, employer, or home town.</p>
+<p>Once you have signed up and are signed in, go to <code>github.com/</code> followed by your username, and click the <strong>Overview</strong> tab. Your screenshot should look similar to this.</p>
+<div class="cell">
+<div class="cell-output-display">
+<div>
+<figure class="figure"><p><img src="getting-started-2/images/github-profile-example.png" class="img-fluid figure-img" alt="A screenshot of a GitHub profile page in a browser, on the Overview tab, with the address bar showing github.com followed by the username."></p>
+</figure>
+</div>
+</div>
+</div>
+<div class="cell">
+<div class="cell-output-display">
+<div class="learnr2-question" data-learnr2-question="eyJpZCI6ImdpdGh1Yi0xIiwidGV4dCI6IlBhc3RlIGEgc2NyZWVuc2hvdCBvZiB0aGUgT3Zl
+cnZpZXcgdGFiIG9mIHlvdXIgR2l0SHViIHByb2ZpbGUsIGF0IGdpdGh1Yi5jb20vW3lvdXIg
+dXNlcm5hbWVdLiBNYWtlIHN1cmUgdGhlIGFkZHJlc3MgYmFyIGlzIHZpc2libGUuIiwidHlw
+ZSI6InJlZmxlY3Rpb24iLCJhbnN3ZXJzIjpbXSwiY29ycmVjdE1lc3NhZ2UiOiJDb3JyZWN0
+ISIsImluY29ycmVjdE1lc3NhZ2UiOiJJbmNvcnJlY3QuIiwiYWxsb3dSZXRyeSI6ZmFsc2Us
+InJhbmRvbUFuc3dlck9yZGVyIjpmYWxzZSwic3VibWl0TGFiZWwiOiJTdWJtaXQgQW5zd2Vy
+IiwidHJ5QWdhaW5MYWJlbCI6IlRyeSBBZ2FpbiIsImVkaXRMYWJlbCI6IkVkaXQgQW5zd2Vy
+IiwiYWxsb3dJbWFnZSI6dHJ1ZSwiYWxsb3dUZXh0IjpmYWxzZSwic2hvd1RleHQiOnRydWUs
+InZhbGlkYXRlIjoibm9uZSJ9">
+<noscript>This quiz question requires JavaScript.</noscript>
+</div>
+</div>
+</div>
+<p>The <a href="https://education.github.com/pack">GitHub Student Developer Pack</a> provides all sorts of perks, but you must visit that page to turn on the benefits. It confirms your student status on the basis of you having an email account at your school.</p>
+<p>If you are a student, go to that page now, sign in, and apply for the benefits. When you finish, GitHub tells you that your application has been submitted. Your screenshot should look similar to this. (If you are not a student, skip this question.)</p>
+<div class="cell">
+<div class="cell-output-display">
+<div>
+<figure class="figure"><p><img src="getting-started-2/images/student-pack-submitted-example.png" class="img-fluid figure-img" alt="A screenshot of GitHub's Education Benefits Application dialog with a green message reading: Your application has been submitted."></p>
+</figure>
+</div>
+</div>
+</div>
+<div class="cell">
+<div class="cell-output-display">
+<div class="learnr2-question" data-learnr2-question="eyJpZCI6ImdpdGh1Yi0yIiwidGV4dCI6IlBhc3RlIGEgc2NyZWVuc2hvdCBvZiB0aGUgbWVz
+c2FnZSBmcm9tIEdpdEh1YiBzYXlpbmcgdGhhdCB5b3VyIEVkdWNhdGlvbiBCZW5lZml0cyBB
+cHBsaWNhdGlvbiBoYXMgYmVlbiBzdWJtaXR0ZWQuIiwidHlwZSI6InJlZmxlY3Rpb24iLCJh
+bnN3ZXJzIjpbXSwiY29ycmVjdE1lc3NhZ2UiOiJDb3JyZWN0ISIsImluY29ycmVjdE1lc3Nh
+Z2UiOiJJbmNvcnJlY3QuIiwiYWxsb3dSZXRyeSI6ZmFsc2UsInJhbmRvbUFuc3dlck9yZGVy
+IjpmYWxzZSwic3VibWl0TGFiZWwiOiJTdWJtaXQgQW5zd2VyIiwidHJ5QWdhaW5MYWJlbCI6
+IlRyeSBBZ2FpbiIsImVkaXRMYWJlbCI6IkVkaXQgQW5zd2VyIiwiYWxsb3dJbWFnZSI6dHJ1
+ZSwiYWxsb3dUZXh0IjpmYWxzZSwic2hvd1RleHQiOnRydWUsInZhbGlkYXRlIjoibm9uZSJ9
+">
+<noscript>This quiz question requires JavaScript.</noscript>
+</div>
+</div>
+</div>
+<p>On GitHub, your projects are organized into “repositories,” usually called “repos.”</p>
+<p>GitHub gives every account 60 free Codespaces hours per month. Free hours are not infinite, however, so it is your responsibility to stop (and delete) Codespaces you are no longer using.</p>
+</section><section id="a-throwaway-codespace" class="level2 unnumbered"><h2 class="unnumbered anchored" data-anchor-id="a-throwaway-codespace">A throwaway Codespace</h2>
+<p>You create a new Codespace using the <code>https://github.com/PPBDS/codespace-starter</code> repository. We refer to this repo as <code>codespace-starter</code>.</p>
+<p>Go to <a href="https://github.com/PPBDS/codespace-starter"><code>https://github.com/PPBDS/codespace-starter</code></a>.</p>
+<div class="cell">
+<div class="cell-output-display">
+<div>
+<figure class="figure"><p><img src="getting-started-2/images/cs-1.png" class="img-fluid figure-img"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>This Codespace is for learning the platform, not for your permanent work.</p>
+<section id="launching-the-codespace" class="level3 unnumbered"><h3 class="unnumbered anchored" data-anchor-id="launching-the-codespace">Launching the Codespace</h3>
+<p>Click the green <strong>Code</strong> button at the top right of the repository page, switch to the <strong>Codespaces</strong> tab, and click <strong>“Create codespace on main.”</strong></p>
+<div class="cell">
+<div class="cell-output-display">
+<div>
+<figure class="figure"><p><img src="getting-started-2/images/new-1.png" class="img-fluid figure-img"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>This will take a minute or so. Behind the scenes, GitHub is creating a virtual machine in the cloud with all the necessary tools for doing data science. That machine is called a “Codespace.”</p>
+<p>You may be asked: “Do you trust the authors of the files in this folder?”</p>
+<div class="cell">
+<div class="cell-output-display">
+<div>
+<figure class="figure"><p><img src="getting-started-2/images/trust.png" class="img-fluid figure-img"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>Click to agree.</p>
+<p>Once the process is done, a banner message appears announcing “✅ YOUR CODESPACE IS READY.”</p>
+<div class="cell">
+<div class="cell-output-display">
+<div>
+<figure class="figure"><p><img src="getting-started-2/images/ready-message.png" class="img-fluid figure-img"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>GitHub gives your Codespace a randomly generated name. Mine is “ominous space adventure”, but yours will be different. The red arrows in the example below point to the four places where that name appears: the address bar of your browser, the box at the top center of VS Code, the top of the Explorer panel on the left, and the blue button at the bottom left.</p>
+<div class="cell">
+<div class="cell-output-display">
+<div>
+<figure class="figure"><p><img src="getting-started-2/images/codespace-name-example.png" class="img-fluid figure-img" alt="A screenshot of a new Codespace in the browser, with red arrows pointing to the Codespace name ominous space adventure in the address bar, in the box at the top center of VS Code, at the top of the Explorer panel, and in the blue button at the bottom left."></p>
+</figure>
+</div>
+</div>
+</div>
+<div class="cell">
+<div class="cell-output-display">
+<div class="learnr2-question" data-learnr2-question="eyJpZCI6ImxhdW5jaGluZy10aGUtY29kZXNwYWNlLTEiLCJ0ZXh0IjoiUGFzdGUgYSBzY3Jl
+ZW5zaG90IG9mIHlvdXIgYnJvd3NlciB3aW5kb3cgc2hvd2luZyB5b3VyIG93biBDb2Rlc3Bh
+Y2UncyBuYW1lIGluIGVhY2ggb2YgdGhlIGZvdXIgcGxhY2VzIHRoZSByZWQgYXJyb3dzIHBv
+aW50IHRvIGFib3ZlLiIsInR5cGUiOiJyZWZsZWN0aW9uIiwiYW5zd2VycyI6W10sImNvcnJl
+Y3RNZXNzYWdlIjoiQ29ycmVjdCEiLCJpbmNvcnJlY3RNZXNzYWdlIjoiSW5jb3JyZWN0LiIs
+ImFsbG93UmV0cnkiOmZhbHNlLCJyYW5kb21BbnN3ZXJPcmRlciI6ZmFsc2UsInN1Ym1pdExh
+YmVsIjoiU3VibWl0IEFuc3dlciIsInRyeUFnYWluTGFiZWwiOiJUcnkgQWdhaW4iLCJlZGl0
+TGFiZWwiOiJFZGl0IEFuc3dlciIsImFsbG93SW1hZ2UiOnRydWUsImFsbG93VGV4dCI6ZmFs
+c2UsInNob3dUZXh0Ijp0cnVlLCJ2YWxpZGF0ZSI6Im5vbmUifQ==">
+<noscript>This quiz question requires JavaScript.</noscript>
+</div>
+</div>
+</div>
+</section><section id="touring-the-workspace" class="level3 unnumbered"><h3 class="unnumbered anchored" data-anchor-id="touring-the-workspace">Touring the workspace</h3>
+<p>VS Code is an integrated development environment (IDE) for coding and data science. Highlights:</p>
+<ul>
+<li><p>This Codespace is in the cloud. The URL will be a combination of the GitHub-determined human-readable but somewhat nonsensical name — <code>ominous space adventure</code> in my case — and a bunch of letters and numbers. There is no need to remember this URL. GitHub keeps track of things. You can see all your current Codespaces at <a href="https://github.com/codespaces"><code>https://github.com/codespaces</code></a>.</p></li>
+<li><p>In the upper right-hand corner are the “Customize Layout …” buttons. These are part of the VS Code “Title Bar.” Since we aren’t using the AI tools right now, it often makes sense to close the “Chat” window, which appears on the right side of the screen. You can close this in two ways: Click the “X” mark or click the “Toggle Secondary Side Bar” button, the furthest right-hand button. You can then bring the Chat window back by clicking the “Toggle Secondary Side Bar” button again. Try it now.</p></li>
+</ul>
+<div class="cell">
+<div class="cell-output-display">
+<div>
+<figure class="figure"><p><img src="getting-started-2/images/chat-buttons-cs.png" class="img-fluid figure-img"></p>
+</figure>
+</div>
+</div>
+</div>
+<ul>
+<li>The “Activity Bar” is the narrow vertical strip on the far left with icons for Explorer, Search, Source Control, Extensions, etc. By default, the “Explorer” button is selected, showing that the only thing in the project is a folder called <code>.devcontainer</code>. Click on that folder to show its contents.</li>
+</ul>
+<div class="cell">
+<div class="cell-output-display">
+<div>
+<figure class="figure"><p><img src="getting-started-2/images/cs-4.png" class="img-fluid figure-img"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>Click on the <code>STUDENT_WORKFLOW.md</code> file. Doing so opens that file in the Editor window. Your screen should now look like this:</p>
+<div class="cell">
+<div class="cell-output-display">
+<div>
+<figure class="figure"><p><img src="getting-started-2/images/cs-4b.png" class="img-fluid figure-img"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>The “Editor” is the large central area where you edit files.</p>
+<p>The “Panel” is the horizontal area below the Editor, containing the Problems, Output, Debug Console, Terminal, and Ports views. Our main focus is the Terminal view. This is where we “talk” to both the (cloud) computer itself and to the R program that it provides.</p>
+<div class="cell">
+<div class="cell-output-display">
+<div>
+<figure class="figure"><p><img src="getting-started-2/images/cs-5.png" class="img-fluid figure-img"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>The Terminal view currently shows two terminals. They are listed along the right-hand side. You can move back and forth between them by clicking on them. You can close a terminal by clicking on the trash can icon next to its name, which appears when you hover your cursor over the name.</p>
+<div class="cell">
+<div class="cell-output-display">
+<div>
+<figure class="figure"><p><img src="getting-started-2/images/t1.png" class="img-fluid figure-img"></p>
+</figure>
+</div>
+</div>
+</div>
+<ul>
+<li>You can start new bash Terminals by clicking on the <code>+</code> sign above the list of terminals. Do so now.</li>
+</ul>
+<div class="cell">
+<div class="cell-output-display">
+<div>
+<figure class="figure"><p><img src="getting-started-2/images/t2.png" class="img-fluid figure-img"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>The language can be a little confusing. There is a capital T “Terminal” view, which is one of the tabs across the top of the Panel. In that Terminal view, we can work with many individual small T “terminals” of various sorts. So far, you have only seen bash Terminals, which get a capital T because they are a type of named terminal. The bash shell is a program that lets you “talk” to the computer itself.</p>
+<p>In addition to bash Terminals, we can also start an R session under the Terminal. Instead of clicking the <code>+</code> sign, click the small downward-pointing arrow next to it. This will show a variety of options.</p>
+<div class="cell">
+<div class="cell-output-display">
+<div>
+<figure class="figure"><p><img src="getting-started-2/images/cs-6.png" class="img-fluid figure-img"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>Select “R Terminal.” This will start an R session that lets you “talk” to R in the same way that a bash shell allows you to talk to the computer.</p>
+<p>Click on the “R Interactive” tab which should appear beneath the other terminals on the right side of the Panel.</p>
+<p>Type in <code>2 + 2</code> at the R prompt and hit <code>enter</code> (Windows) or <code>return</code> (Mac). (Going forward we will just use <code>Enter</code> to refer to this action. Mac users should hit <code>return</code>.)</p>
+<div class="cell">
+<div class="cell-output-display">
+<div>
+<figure class="figure"><p><img src="getting-started-2/images/t3.png" class="img-fluid figure-img"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>An IDE like VS Code is designed to organize all the different work we do as data scientists. We need to talk to the computer via the bash Terminal (a terminal running the bash shell), talk to R, view plots, and so on.</p>
+<p>At the R Terminal, run <code>plot(1:10)</code>. We use the terms “run” and “execute” interchangeably. They both indicate that you should type the command at the appropriate terminal and hit <code>Enter</code>.</p>
+<div class="cell">
+<div class="cell-output-display">
+<div>
+<figure class="figure"><p><img src="getting-started-2/images/t4.png" class="img-fluid figure-img"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>You have created a plot in the “Plots” tab of the Panel.</p>
+<div class="cell">
+<div class="cell-output-display">
+<div class="learnr2-question" data-learnr2-question="eyJpZCI6InRvdXJpbmctdGhlLXdvcmtzcGFjZS0xIiwidGV4dCI6IlBhc3RlIGEgc2NyZWVu
+c2hvdCBvZiB0aGUgcGxvdCB5b3UgY3JlYXRlZCB3aXRoIGBwbG90KDE6MTApYC4iLCJ0eXBl
+IjoicmVmbGVjdGlvbiIsImFuc3dlcnMiOltdLCJjb3JyZWN0TWVzc2FnZSI6IkNvcnJlY3Qh
+IiwiaW5jb3JyZWN0TWVzc2FnZSI6IkluY29ycmVjdC4iLCJhbGxvd1JldHJ5IjpmYWxzZSwi
+cmFuZG9tQW5zd2VyT3JkZXIiOmZhbHNlLCJzdWJtaXRMYWJlbCI6IlN1Ym1pdCBBbnN3ZXIi
+LCJ0cnlBZ2FpbkxhYmVsIjoiVHJ5IEFnYWluIiwiZWRpdExhYmVsIjoiRWRpdCBBbnN3ZXIi
+LCJhbGxvd0ltYWdlIjp0cnVlLCJhbGxvd1RleHQiOmZhbHNlLCJzaG93VGV4dCI6dHJ1ZSwi
+dmFsaWRhdGUiOiJub25lIn0=">
+<noscript>This quiz question requires JavaScript.</noscript>
+</div>
+</div>
+</div>
+</section><section id="the-getting-started-exercises" class="level3 unnumbered"><h3 class="unnumbered anchored" data-anchor-id="the-getting-started-exercises">The Getting Started exercises</h3>
+<p>The exercises below run directly on this page, powered by <strong><a href="https://ppbds.github.io/learnr2/">learnr2</a></strong>, so you do not need to launch anything inside your Codespace. Keep your Codespace open in another window – you will switch back to its bash Terminal for one of the exercises below.</p>
+<section id="introduction" class="level4 unnumbered"><h4 class="unnumbered anchored" data-anchor-id="introduction">Introduction</h4>
+<p>This chapter teaches you how tutorials work. There are only three steps: tell us who you are (which you did at the top of this page), run a command in a Terminal and copy the result, and download a copy of your answers. It should take about five minutes. Every tutorial you complete after this chapter uses the same sequence.</p>
+</section><section id="the-bash-terminal" class="level4 unnumbered"><h4 class="unnumbered anchored" data-anchor-id="the-bash-terminal">The bash Terminal</h4>
+<p>Tutorials include exercises. Most exercises ask you to run a command in a terminal and then copy the result into the answer box below. You will do that once now.</p>
+<p>Look at the bottom of your VS Code window. The horizontal area below the editor is called the “Panel.” The red arrow below points to the new-terminal plus button (<code>+</code>) on the right side of the Panel.</p>
+<div class="cell">
+<div class="cell-output-display">
+<div>
+<figure class="figure"><p><img src="getting-started-2/images/get-bash.png" class="img-fluid figure-img"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>Press <code>+</code>. This opens a new <strong>bash</strong> Terminal – the text-based interface in which you type commands to tell your Codespace what to do. The pattern is always the same: you send a command, the terminal executes it, and it gives you something back.</p>
+<section id="exercise-1" class="level5 unnumbered"><h5 class="unnumbered anchored" data-anchor-id="exercise-1">Exercise 1</h5>
+<p>Click into the bash Terminal, type <code>pwd</code>, and then press <code>Enter</code>. To “run” a command means to type it and then press this key.</p>
+<div class="cell">
+<div class="cell-output-display">
+<div>
+<figure class="figure"><p><img src="getting-started-2/images/pwd.png" class="img-fluid figure-img"></p>
+</figure>
+</div>
+</div>
+</div>
+<p><strong>Do not just type the command into the answer box!</strong> You must run the command in the bash Terminal and then copy the result.</p>
+<p><strong>C</strong>opy and <strong>P</strong>aste both the <strong>C</strong>ommand <em>and</em> the <strong>R</strong>esponse from the bash Terminal into the box below. We abbreviate this instruction throughout the book as <strong>CP</strong>/<strong>CR</strong>.</p>
+<div class="cell">
+<div class="cell-output-display">
+<div class="learnr2-question" data-learnr2-question="eyJpZCI6InRoZS1nZXR0aW5nLXN0YXJ0ZWQtZXhlcmNpc2VzLTEiLCJ0ZXh0IjoiUGFzdGUs
+IGludG8gdGhlIGJveCBiZWxvdywgYm90aCB0aGUgY29tbWFuZCB5b3UgcmFuIGFuZCB0aGUg
+cmVzcG9uc2UgdGhlIFRlcm1pbmFsIHByaW50ZWQuIiwidHlwZSI6InJlZmxlY3Rpb25fZWRp
+dGFibGUiLCJhbnN3ZXJzIjpbXSwiY29ycmVjdE1lc3NhZ2UiOiJDb3JyZWN0ISIsImluY29y
+cmVjdE1lc3NhZ2UiOiJJbmNvcnJlY3QuIiwiYWxsb3dSZXRyeSI6ZmFsc2UsInJhbmRvbUFu
+c3dlck9yZGVyIjpmYWxzZSwic3VibWl0TGFiZWwiOiJTdWJtaXQgQW5zd2VyIiwidHJ5QWdh
+aW5MYWJlbCI6IlRyeSBBZ2FpbiIsImVkaXRMYWJlbCI6IkVkaXQgQW5zd2VyIiwiYWxsb3dJ
+bWFnZSI6ZmFsc2UsImFsbG93VGV4dCI6dHJ1ZSwic2hvd1RleHQiOnRydWUsInZhbGlkYXRl
+Ijoibm9uZSJ9">
+<noscript>This quiz question requires JavaScript.</noscript>
+</div>
+</div>
+</div>
+<p>We typically provide example answers, like the one below, after you submit your own response. Do not be concerned if your answer differs from the example we show.</p>
+<pre><code>codespace-starter $ pwd
+/workspaces/codespace-starter
+codespace-starter $</code></pre>
+<p><code>pwd</code> stands for <strong>p</strong>rint <strong>w</strong>orking <strong>d</strong>irectory: it shows the directory in which the terminal is working. The response confirms that you are inside your Codespace, a complete computer running in the cloud. It is OK if your formatting differs from ours. What matters is that you show that you ran the command as instructed.</p>
+<p>That is the usual process: run something in a terminal, copy the command and the response, paste them into the answer box. Almost every exercise in every later tutorial works this way.</p>
+</section><section id="exercise-2" class="level5 unnumbered"><h5 class="unnumbered anchored" data-anchor-id="exercise-2">Exercise 2</h5>
+<p>Every answer on this page, including the one you just gave, is saved to your browser as you go – not only once you finally download your work. Reload this page right now to see for yourself: your name, email, and the answer above should all still be there, exactly as you left them.</p>
+<p>There is no R session running in your Codespace for this chapter – your answers live in your browser, not on a server, so nothing about your Codespace needs to stay open for your progress to be safe. There is also a “Start Over” button at the bottom of the sidebar if you ever want to clear your answers and begin again, which only acts after you confirm.</p>
+</section></section><section id="your-answers" class="level4 unnumbered"><h4 class="unnumbered anchored" data-anchor-id="your-answers">Your answers</h4>
+<p>At the end of every tutorial, you download a copy of your answers, and you do the same here. First, answer the question below about how many minutes you spent on this chapter. Then click the button below that to gather every answer on this page into a single file and download it.</p>
+<div class="cell">
+<div class="cell-output-display">
+<div class="learnr2-question" data-learnr2-question="eyJpZCI6InRoZS1nZXR0aW5nLXN0YXJ0ZWQtZXhlcmNpc2VzLTIiLCJ0ZXh0IjoiSG93IG1h
+bnkgbWludXRlcywgYXBwcm94aW1hdGVseSwgZGlkIGl0IHRha2UgeW91IHRvIGNvbXBsZXRl
+IHRoaXNcbiAgY2hhcHRlcj8gRm9yIGV4YW1wbGUsIGFuIGhvdXIgYW5kIGEgaGFsZiB3b3Vs
+ZCBiZSA5MCBtaW51dGVzLiIsInR5cGUiOiJyZWZsZWN0aW9uX2VkaXRhYmxlIiwiYW5zd2Vy
+cyI6W10sImNvcnJlY3RNZXNzYWdlIjoiQ29ycmVjdCEiLCJpbmNvcnJlY3RNZXNzYWdlIjoi
+SW5jb3JyZWN0LiIsImFsbG93UmV0cnkiOmZhbHNlLCJyYW5kb21BbnN3ZXJPcmRlciI6ZmFs
+c2UsInN1Ym1pdExhYmVsIjoiU3VibWl0IEFuc3dlciIsInRyeUFnYWluTGFiZWwiOiJUcnkg
+QWdhaW4iLCJlZGl0TGFiZWwiOiJFZGl0IEFuc3dlciIsImFsbG93SW1hZ2UiOmZhbHNlLCJh
+bGxvd1RleHQiOnRydWUsInNob3dUZXh0Ijp0cnVlLCJ2YWxpZGF0ZSI6ImludGVnZXIifQ==">
+<noscript>This quiz question requires JavaScript.</noscript>
+</div>
+</div>
+</div>
+<div class="cell">
+<div class="cell-output-display">
+<div class="learnr2-download-answers" data-learnr2-download="eyJmaWxlbmFtZVByZWZpeCI6ImdldHRpbmctc3RhcnRlZC0yIiwibGFiZWwiOiJEb3dubG9h
+ZCBNeSBBbnN3ZXJzIn0=">
+<noscript>This button requires JavaScript.</noscript>
+</div>
+</div>
+</div>
+<p>After clicking the “Download My Answers” button, you will be prompted to save a file whose name starts with <code>getting-started-2</code>, followed by a timestamp. By default, this file will be saved in the <code>Downloads</code> folder on your computer. This action only downloads the file; it does not send the file to anyone.</p>
+<p>Unless your instructor tells you otherwise, send them this file as-is (for example, attached to an email or uploaded to your course’s learning management system).</p>
+</section></section><section id="stopping-restarting-and-deleting-the-codespace" class="level3 unnumbered"><h3 class="unnumbered anchored" data-anchor-id="stopping-restarting-and-deleting-the-codespace">Stopping, restarting and deleting the Codespace</h3>
+<p>A Codespace is your responsibility in the same way that your laptop is your responsibility. While a Codespace is running it counts against your free hours, and an unused Codespace will be deleted by GitHub after 30 days.</p>
+<p>There are three common ways to close a Codespace.</p>
+<p>First, just leave it alone. GitHub will close it on its own after 30 minutes of inactivity, though we recommend changing that default to 15 minutes in your <a href="https://github.com/settings/codespaces">Codespaces settings</a>.</p>
+<p>Second, type <code>Cmd/Ctrl + Shift + P</code>. The Command Palette provides access to all VS Code commands. Type <code>stop</code> into the search bar.</p>
+<p>On some browsers, the keyboard shortcut does not work. You can always access the Command Palette by clicking the search bar at the top of the window and typing <code>&gt;</code> followed by key words from the command you would like to use.</p>
+<div class="cell">
+<div class="cell-output-display">
+<div>
+<figure class="figure"><p><img src="getting-started-2/images/command-palette.png" class="img-fluid figure-img"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>Select “Codespaces: Stop Current Codespace.”</p>
+<p>Third, you can go to your personal Codespaces control panel at <a href="https://github.com/codespaces"><code>https://github.com/codespaces</code></a>. You can also reach this page from any page on GitHub by clicking the menu icon in the upper left and selecting “Codespaces”:</p>
+<div class="cell">
+<div class="cell-output-display">
+<div>
+<figure class="figure"><p><img src="getting-started-2/images/t7.png" class="img-fluid figure-img"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>Which brings up this lst of options. Select “Codespaces.”</p>
+<div class="cell">
+<div class="cell-output-display">
+<div>
+<figure class="figure"><p><img src="getting-started-2/images/t8.png" class="img-fluid figure-img"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>Your main Codespaces page should look something like this:</p>
+<div class="cell">
+<div class="cell-output-display">
+<div>
+<figure class="figure"><p><img src="getting-started-2/images/codespaces-1.png" class="img-fluid figure-img"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>This shows all your Codespaces, both active and inactive. The <code>...</code> menu on each row provides several commands, including “Stop Codespace.”</p>
+<div class="cell">
+<div class="cell-output-display">
+<div>
+<figure class="figure"><p><img src="getting-started-2/images/codespaces-2.png" class="img-fluid figure-img"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>Simply closing the browser window <em>does not</em> stop your Codespace from running. Always stop a Codespace explicitly to preserve your free hours.</p>
+<p>Now stop this Codespace using whichever method you prefer.</p>
+<p>Once it is stopped, you can restart it from your <a href="https://github.com/codespaces">Codespaces page</a> by clicking the <code>...</code> menu next to this Codespace and then selecting <strong>Open in Browser</strong>.</p>
+<div class="cell">
+<div class="cell-output-display">
+<div>
+<figure class="figure"><p><img src="getting-started-2/images/codespaces-3.png" class="img-fluid figure-img"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>Once you are done with a Codespace, you should <strong>delete it.</strong> To do so, go to your <a href="https://github.com/codespaces">Codespaces page</a>, click the <code>...</code> menu next to this Codespace and select <strong>Delete</strong>.</p>
+<p>This Codespace was a sandbox. You do not own <a href="https://github.com/PPBDS/codespace-starter"><code>PPBDS/codespace-starter</code></a>, so there is nowhere for your work to go once you stop using the Codespace. That is fine — you have already downloaded your answers, which is the only thing here worth keeping.</p>
+<p>Delete your Codespace now. When you do, GitHub shows a message at the top of your Codespaces page confirming that it was deleted. Your screenshot should look similar to this.</p>
+<div class="cell">
+<div class="cell-output-display">
+<div>
+<figure class="figure"><p><img src="getting-started-2/images/codespace-deleted-example.png" class="img-fluid figure-img" alt="A screenshot of the top of the GitHub Codespaces page with a light blue banner reading: Codespace ominous space adventure deleted."></p>
+</figure>
+</div>
+</div>
+</div>
+<div class="cell">
+<div class="cell-output-display">
+<div class="learnr2-question" data-learnr2-question="eyJpZCI6InN0b3BwaW5nLXJlc3RhcnRpbmctYW5kLWRlbGV0aW5nLXRoZS1jb2Rlc3BhY2Ut
+MSIsInRleHQiOiJQYXN0ZSBhIHNjcmVlbnNob3Qgb2YgdGhlIG1lc3NhZ2UgYXQgdGhlIHRv
+cCBvZiB5b3VyIENvZGVzcGFjZXMgcGFnZSBjb25maXJtaW5nIHRoYXQgeW91ciBDb2Rlc3Bh
+Y2Ugd2FzIGRlbGV0ZWQuIiwidHlwZSI6InJlZmxlY3Rpb24iLCJhbnN3ZXJzIjpbXSwiY29y
+cmVjdE1lc3NhZ2UiOiJDb3JyZWN0ISIsImluY29ycmVjdE1lc3NhZ2UiOiJJbmNvcnJlY3Qu
+IiwiYWxsb3dSZXRyeSI6ZmFsc2UsInJhbmRvbUFuc3dlck9yZGVyIjpmYWxzZSwic3VibWl0
+TGFiZWwiOiJTdWJtaXQgQW5zd2VyIiwidHJ5QWdhaW5MYWJlbCI6IlRyeSBBZ2FpbiIsImVk
+aXRMYWJlbCI6IkVkaXQgQW5zd2VyIiwiYWxsb3dJbWFnZSI6dHJ1ZSwiYWxsb3dUZXh0Ijpm
+YWxzZSwic2hvd1RleHQiOnRydWUsInZhbGlkYXRlIjoibm9uZSJ9">
+<noscript>This quiz question requires JavaScript.</noscript>
+</div>
+</div>
+</div>
+</section></section><section id="using-your-own-machine" class="level2"><h2 class="anchored" data-anchor-id="using-your-own-machine">Using your own machine</h2>
+<p>You can do all of this work on your own laptop, if you prefer. But, in that case, you are responsible for setting everything up. That means installing VS Code, Git and R. You will almost certainly want to install the same VS Code extensions which we use, including:</p>
+<pre><code>"reditorsupport.r",
+"quarto.quarto",
+"PPBDS.vscode-r-tutorials",
+"ritwickdey.LiveServer",
+"tomoki1207.pdf",
+"mechatroner.rainbow-csv"x</code></pre>
+<p>This listing is from the <code>.devcontainer/devcontainer.json</code> file from <a href="https://github.com/PPBDS/codespace-starter"><code>PPBDS/codespace-starter</code></a>. You may also find it useful to use the same VS settings which are defined there.</p>
+<p>You will also need to install, by hand, various R packages. From the R Terminal, you would run commands like:</p>
+<pre><code>install.packages("pak")</code></pre>
+<p>You may be asked to select a CRAN mirror. It does not matter which you choose.</p>
+<pre><code>pak::pak("tidyverse")
+pak::pak("PPBDS/vscode.tutorials")</code></pre>
+<p>These steps are not enough to perfectly replicate what we show in the Codespace. See <code>PPBDS/devcontainers</code> for more details.</p>
+<p>But this should be enough to get you started, should you decide to go this route. If you have trouble, ask AI, pointing it toward this chapter and to the <a href="https://github.com/PPBDS/codespace-starter"><code>PPBDS/codespace-starter</code></a> and <code>PPBDS/devcontainers</code> repos.</p>
+</section><section id="a-second-github-account" class="level2 unnumbered"><h2 class="unnumbered anchored" data-anchor-id="a-second-github-account">A second GitHub account</h2>
+<p>Create a second GitHub account by following the same instructions as in the <a href="#github">GitHub</a> section above. Name it the same as your first account, with <code>-tutorials</code> added to the end. If your first username is <code>john-doe</code>, your second one is <code>john-doe-tutorials</code>.</p>
+<p>GitHub requires a different email address for each account, so you cannot reuse the one you gave your first account.</p>
+<p>Once you have signed up and are signed in to your new account, go to <code>github.com/</code> followed by its username, which ends in <code>-tutorials</code>, and click the <strong>Overview</strong> tab. Your screenshot should look similar to this.</p>
+<div class="cell">
+<div class="cell-output-display">
+<div>
+<figure class="figure"><p><img src="getting-started-2/images/github-profile-example.png" class="img-fluid figure-img" alt="A screenshot of a GitHub profile page in a browser, on the Overview tab, with the address bar showing github.com followed by the username."></p>
+</figure>
+</div>
+</div>
+</div>
+<div class="cell">
+<div class="cell-output-display">
+<div class="learnr2-question" data-learnr2-question="eyJpZCI6ImEtc2Vjb25kLWdpdGh1Yi1hY2NvdW50LTEiLCJ0ZXh0IjoiUGFzdGUgYSBzY3Jl
+ZW5zaG90IG9mIHRoZSBPdmVydmlldyB0YWIgb2YgeW91ciBzZWNvbmQgR2l0SHViIHByb2Zp
+bGUsIGF0IGdpdGh1Yi5jb20vW3lvdXIgdXNlcm5hbWVdLXR1dG9yaWFscy4gTWFrZSBzdXJl
+IHRoZSBhZGRyZXNzIGJhciBpcyB2aXNpYmxlLCBzbyB0aGF0IHRoZSB1c2VybmFtZSBlbmRp
+bmcgaW4gLXR1dG9yaWFscyBzaG93cy4iLCJ0eXBlIjoicmVmbGVjdGlvbiIsImFuc3dlcnMi
+OltdLCJjb3JyZWN0TWVzc2FnZSI6IkNvcnJlY3QhIiwiaW5jb3JyZWN0TWVzc2FnZSI6Iklu
+Y29ycmVjdC4iLCJhbGxvd1JldHJ5IjpmYWxzZSwicmFuZG9tQW5zd2VyT3JkZXIiOmZhbHNl
+LCJzdWJtaXRMYWJlbCI6IlN1Ym1pdCBBbnN3ZXIiLCJ0cnlBZ2FpbkxhYmVsIjoiVHJ5IEFn
+YWluIiwiZWRpdExhYmVsIjoiRWRpdCBBbnN3ZXIiLCJhbGxvd0ltYWdlIjp0cnVlLCJhbGxv
+d1RleHQiOmZhbHNlLCJzaG93VGV4dCI6dHJ1ZSwidmFsaWRhdGUiOiJub25lIn0=">
+<noscript>This quiz question requires JavaScript.</noscript>
+</div>
+</div>
+</div>
+</section><section id="start-a-tutorial" class="level2 unnumbered"><h2 class="unnumbered anchored" data-anchor-id="start-a-tutorial">Start a tutorial</h2>
+<p>You will do most of your work in tutorials like the one you are about to start. This section shows you how to start one. That is all you need to know: the tutorial itself asks for your name and email, helps you download your answers, and so on.</p>
+<p>Sign in to GitHub with your second account, the one ending in <code>-tutorials</code>. Go to <a href="https://github.com/PPBDS/codespace-starter"><code>https://github.com/PPBDS/codespace-starter</code></a> and create a Codespace, exactly as you did in the “Launching the Codespace” section above.</p>
+<p>Once your Codespace is ready, look at the Activity Bar, the narrow vertical strip of icons on the far left. Hover over the icons until you find the one labeled <strong>R Tutorials</strong>, near the bottom, and click it. This lists the R packages that have tutorials. Click the package named <strong><a href="https://ppbds.github.io/vscode.tutorials/">vscode.tutorials</a></strong> to see its tutorials.</p>
+<p>Find the tutorial named <strong>Orientation</strong>. Hover over its name and click the play button that appears. Doing so starts the tutorial, which takes a minute or so.</p>
+<div class="cell">
+<div class="cell-output-display">
+<div>
+<figure class="figure"><p><img src="getting-started-2/images/r-tutorials-orientation.png" class="img-fluid figure-img" alt="The R Tutorials panel in VS Code, listing tutorial packages. The vscode.tutorials package is expanded, with Orientation at the top of its tutorials and a play button next to it."></p>
+</figure>
+</div>
+</div>
+</div>
+<p>A new terminal named “R Tutorial” appears in the Panel, and the tutorial then offers to open in your browser. Accept that offer. If you miss it, hover over the web address in the “R Tutorial” terminal and press <code>Ctrl + Click</code> (Windows, Chromebook) or <code>Cmd + Click</code> (Mac).</p>
+<p>Your screenshot should look similar to this.</p>
+<div class="cell">
+<div class="cell-output-display">
+<div>
+<figure class="figure"><p><img src="getting-started-2/images/orientation-tutorial-example.png" class="img-fluid figure-img" alt="A screenshot of the Orientation tutorial open in a browser tab, with the address bar showing a github.dev web address ending in vscode.tutorials/01-orientation, and the Information section with Name, Email and ID boxes."></p>
+</figure>
+</div>
+</div>
+</div>
+<div class="cell">
+<div class="cell-output-display">
+<div class="learnr2-question" data-learnr2-question="eyJpZCI6InN0YXJ0LWEtdHV0b3JpYWwtMSIsInRleHQiOiJPcGVuIHRoZSBPcmllbnRhdGlv
+biB0dXRvcmlhbCBpbiB5b3VyIGJyb3dzZXIgYW5kIHBhc3RlIGEgc2NyZWVuc2hvdCBvZiBp
+dHMgZmlyc3QgcGFnZSBiZWxvdy4gTWFrZSBzdXJlIHRoZSBhZGRyZXNzIGJhciBpcyB2aXNp
+YmxlIGluIHRoZSBzY3JlZW5zaG90LiIsInR5cGUiOiJyZWZsZWN0aW9uIiwiYW5zd2VycyI6
+W10sImNvcnJlY3RNZXNzYWdlIjoiQ29ycmVjdCEiLCJpbmNvcnJlY3RNZXNzYWdlIjoiSW5j
+b3JyZWN0LiIsImFsbG93UmV0cnkiOmZhbHNlLCJyYW5kb21BbnN3ZXJPcmRlciI6ZmFsc2Us
+InN1Ym1pdExhYmVsIjoiU3VibWl0IEFuc3dlciIsInRyeUFnYWluTGFiZWwiOiJUcnkgQWdh
+aW4iLCJlZGl0TGFiZWwiOiJFZGl0IEFuc3dlciIsImFsbG93SW1hZ2UiOnRydWUsImFsbG93
+VGV4dCI6ZmFsc2UsInNob3dUZXh0Ijp0cnVlLCJ2YWxpZGF0ZSI6Im5vbmUifQ==">
+<noscript>This quiz question requires JavaScript.</noscript>
+</div>
+</div>
+</div>
+<p>You do not need to finish the Orientation tutorial now. When you are done with this Codespace, stop it and delete it, as described in the “Stopping, restarting and deleting the Codespace” section above.</p>
+</section><section id="summary" class="level2 unnumbered"><h2 class="unnumbered anchored" data-anchor-id="summary">Summary</h2>
+<p>You should have done the following:</p>
+<ul>
+<li>Signed up for a GitHub account.</li>
+<li>Signed up for a second GitHub account, named like your first one with <code>-tutorials</code> added to the end.</li>
+<li>Used your second account to start the <strong>Orientation</strong> tutorial from <strong><a href="https://ppbds.github.io/vscode.tutorials/">vscode.tutorials</a></strong> in a Codespace.</li>
+<li>Used a throwaway Codespace on <a href="https://github.com/PPBDS/codespace-starter"><code>PPBDS/codespace-starter</code></a> to complete the <strong>Getting Started</strong> exercises right here on this page, powered by <strong><a href="https://ppbds.github.io/learnr2/">learnr2</a></strong>, downloaded your answers, then <strong>deleted</strong> the Codespace.</li>
+</ul>
+<p>For doing some tutorials, a throwaway Codespace is all you need: complete the tutorial and download your answers — no repository needed. When a later tutorial asks you to keep your work and build on it, the next chapter, <a href="./git-and-github.html">Git and GitHub</a>, shows you how to create a repository you own.</p>
+<p>Let’s get started!</p>
+<div class="cell">
+<div class="cell-output-display">
+<div>
+<figure class="figure"><p><img src="getting-started-2/images/ending.gif" class="img-fluid figure-img"></p>
+</figure>
+</div>
+</div>
+</div>
+
+
+</section></main><!-- /main --><script id="quarto-html-after-body" type="application/javascript">
+  window.document.addEventListener("DOMContentLoaded", function (event) {
+    const icon = "";
+    const anchorJS = new window.AnchorJS();
+    anchorJS.options = {
+      placement: 'right',
+      icon: icon
+    };
+    anchorJS.add('.anchored');
+    const isCodeAnnotation = (el) => {
+      for (const clz of el.classList) {
+        if (clz.startsWith('code-annotation-')) {                     
+          return true;
+        }
+      }
+      return false;
+    }
+    const onCopySuccess = function(e) {
+      // button target
+      const button = e.trigger;
+      // don't keep focus
+      button.blur();
+      // flash "checked"
+      button.classList.add('code-copy-button-checked');
+      var currentTitle = button.getAttribute("title");
+      button.setAttribute("title", "Copied!");
+      let tooltip;
+      if (window.bootstrap) {
+        button.setAttribute("data-bs-toggle", "tooltip");
+        button.setAttribute("data-bs-placement", "left");
+        button.setAttribute("data-bs-title", "Copied!");
+        tooltip = new bootstrap.Tooltip(button, 
+          { trigger: "manual", 
+            customClass: "code-copy-button-tooltip",
+            offset: [0, -8]});
+        tooltip.show();    
+      }
+      setTimeout(function() {
+        if (tooltip) {
+          tooltip.hide();
+          button.removeAttribute("data-bs-title");
+          button.removeAttribute("data-bs-toggle");
+          button.removeAttribute("data-bs-placement");
+        }
+        button.setAttribute("title", currentTitle);
+        button.classList.remove('code-copy-button-checked');
+      }, 1000);
+      // clear code selection
+      e.clearSelection();
+    }
+    const getTextToCopy = function(trigger) {
+      const outerScaffold = trigger.parentElement.cloneNode(true);
+      const codeEl = outerScaffold.querySelector('code');
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+    }
+    const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+      text: getTextToCopy
+    });
+    clipboard.on('success', onCopySuccess);
+    if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+      const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+        text: getTextToCopy,
+        container: window.document.getElementById('quarto-embedded-source-code-modal')
+      });
+      clipboardModal.on('success', onCopySuccess);
+    }
+      var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+      var mailtoRegex = new RegExp(/^mailto:/);
+        var filterRegex = new RegExp('/' + window.location.host + '/');
+      var isInternal = (href) => {
+          return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+      }
+      // Inspect non-navigation links and adorn them if external
+     var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+      for (var i=0; i<links.length; i++) {
+        const link = links[i];
+        if (!isInternal(link.href)) {
+          // undo the damage that might have been done by quarto-nav.js in the case of
+          // links that we want to consider external
+          if (link.dataset.originalHref !== undefined) {
+            link.href = link.dataset.originalHref;
+          }
+        }
+      }
+    function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+      const config = {
+        allowHTML: true,
+        maxWidth: 500,
+        delay: 100,
+        arrow: false,
+        appendTo: function(el) {
+            return el.parentElement;
+        },
+        interactive: true,
+        interactiveBorder: 10,
+        theme: 'quarto',
+        placement: 'bottom-start',
+      };
+      if (contentFn) {
+        config.content = contentFn;
+      }
+      if (onTriggerFn) {
+        config.onTrigger = onTriggerFn;
+      }
+      if (onUntriggerFn) {
+        config.onUntrigger = onUntriggerFn;
+      }
+      window.tippy(el, config); 
+    }
+    const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+    for (var i=0; i<noterefs.length; i++) {
+      const ref = noterefs[i];
+      tippyHover(ref, function() {
+        // use id or data attribute instead here
+        let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+        try { href = new URL(href).hash; } catch {}
+        const id = href.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note) {
+          return note.innerHTML;
+        } else {
+          return "";
+        }
+      });
+    }
+    const xrefs = window.document.querySelectorAll('a.quarto-xref');
+    const processXRef = (id, note) => {
+      // Strip column container classes
+      const stripColumnClz = (el) => {
+        el.classList.remove("page-full", "page-columns");
+        if (el.children) {
+          for (const child of el.children) {
+            stripColumnClz(child);
+          }
+        }
+      }
+      stripColumnClz(note)
+      if (id === null || id.startsWith('sec-')) {
+        // Special case sections, only their first couple elements
+        const container = document.createElement("div");
+        if (note.children && note.children.length > 2) {
+          container.appendChild(note.children[0].cloneNode(true));
+          for (let i = 1; i < note.children.length; i++) {
+            const child = note.children[i];
+            if (child.tagName === "P" && child.innerText === "") {
+              continue;
+            } else {
+              container.appendChild(child.cloneNode(true));
+              break;
+            }
+          }
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(container);
+          }
+          return container.innerHTML
+        } else {
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(note);
+          }
+          return note.innerHTML;
+        }
+      } else {
+        // Remove any anchor links if they are present
+        const anchorLink = note.querySelector('a.anchorjs-link');
+        if (anchorLink) {
+          anchorLink.remove();
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        if (note.classList.contains("callout")) {
+          return note.outerHTML;
+        } else {
+          return note.innerHTML;
+        }
+      }
+    }
+    for (var i=0; i<xrefs.length; i++) {
+      const xref = xrefs[i];
+      tippyHover(xref, undefined, function(instance) {
+        instance.disable();
+        let url = xref.getAttribute('href');
+        let hash = undefined; 
+        if (url.startsWith('#')) {
+          hash = url;
+        } else {
+          try { hash = new URL(url).hash; } catch {}
+        }
+        if (hash) {
+          const id = hash.replace(/^#\/?/, "");
+          const note = window.document.getElementById(id);
+          if (note !== null) {
+            try {
+              const html = processXRef(id, note.cloneNode(true));
+              instance.setContent(html);
+            } finally {
+              instance.enable();
+              instance.show();
+            }
+          } else {
+            // See if we can fetch this
+            fetch(url.split('#')[0])
+            .then(res => res.text())
+            .then(html => {
+              const parser = new DOMParser();
+              const htmlDoc = parser.parseFromString(html, "text/html");
+              const note = htmlDoc.getElementById(id);
+              if (note !== null) {
+                const html = processXRef(id, note);
+                instance.setContent(html);
+              } 
+            }).finally(() => {
+              instance.enable();
+              instance.show();
+            });
+          }
+        } else {
+          // See if we can fetch a full url (with no hash to target)
+          // This is a special case and we should probably do some content thinning / targeting
+          fetch(url)
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.querySelector('main.content');
+            if (note !== null) {
+              // This should only happen for chapter cross references
+              // (since there is no id in the URL)
+              // remove the first header
+              if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+                note.children[0].remove();
+              }
+              const html = processXRef(null, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      }, function(instance) {
+      });
+    }
+        let selectedAnnoteEl;
+        const selectorForAnnotation = ( cell, annotation) => {
+          let cellAttr = 'data-code-cell="' + cell + '"';
+          let lineAttr = 'data-code-annotation="' +  annotation + '"';
+          const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+          return selector;
+        }
+        const selectCodeLines = (annoteEl) => {
+          const doc = window.document;
+          const targetCell = annoteEl.getAttribute("data-target-cell");
+          const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+          const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+          const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+          const lineIds = lines.map((line) => {
+            return targetCell + "-" + line;
+          })
+          let top = null;
+          let height = null;
+          let parent = null;
+          if (lineIds.length > 0) {
+              //compute the position of the single el (top and bottom and make a div)
+              const el = window.document.getElementById(lineIds[0]);
+              top = el.offsetTop;
+              height = el.offsetHeight;
+              parent = el.parentElement.parentElement;
+            if (lineIds.length > 1) {
+              const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+              const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+              height = bottom - top;
+            }
+            if (top !== null && height !== null && parent !== null) {
+              // cook up a div (if necessary) and position it 
+              let div = window.document.getElementById("code-annotation-line-highlight");
+              if (div === null) {
+                div = window.document.createElement("div");
+                div.setAttribute("id", "code-annotation-line-highlight");
+                div.style.position = 'absolute';
+                parent.appendChild(div);
+              }
+              div.style.top = top - 2 + "px";
+              div.style.height = height + 4 + "px";
+              div.style.left = 0;
+              let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+              if (gutterDiv === null) {
+                gutterDiv = window.document.createElement("div");
+                gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+                gutterDiv.style.position = 'absolute';
+                const codeCell = window.document.getElementById(targetCell);
+                const gutter = codeCell.querySelector('.code-annotation-gutter');
+                gutter.appendChild(gutterDiv);
+              }
+              gutterDiv.style.top = top - 2 + "px";
+              gutterDiv.style.height = height + 4 + "px";
+            }
+            selectedAnnoteEl = annoteEl;
+          }
+        };
+        const unselectCodeLines = () => {
+          const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+          elementsIds.forEach((elId) => {
+            const div = window.document.getElementById(elId);
+            if (div) {
+              div.remove();
+            }
+          });
+          selectedAnnoteEl = undefined;
+        };
+          // Handle positioning of the toggle
+      window.addEventListener(
+        "resize",
+        throttle(() => {
+          elRect = undefined;
+          if (selectedAnnoteEl) {
+            selectCodeLines(selectedAnnoteEl);
+          }
+        }, 10)
+      );
+      function throttle(fn, ms) {
+      let throttle = false;
+      let timer;
+        return (...args) => {
+          if(!throttle) { // first call gets through
+              fn.apply(this, args);
+              throttle = true;
+          } else { // all the others get throttled
+              if(timer) clearTimeout(timer); // cancel #2
+              timer = setTimeout(() => {
+                fn.apply(this, args);
+                timer = throttle = false;
+              }, ms);
+          }
+        };
+      }
+        // Attach click handler to the DT
+        const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+        for (const annoteDlNode of annoteDls) {
+          annoteDlNode.addEventListener('click', (event) => {
+            const clickedEl = event.target;
+            if (clickedEl !== selectedAnnoteEl) {
+              unselectCodeLines();
+              const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+              if (activeEl) {
+                activeEl.classList.remove('code-annotation-active');
+              }
+              selectCodeLines(clickedEl);
+              clickedEl.classList.add('code-annotation-active');
+            } else {
+              // Unselect the line
+              unselectCodeLines();
+              clickedEl.classList.remove('code-annotation-active');
+            }
+          });
+        }
+    const findCites = (el) => {
+      const parentEl = el.parentElement;
+      if (parentEl) {
+        const cites = parentEl.dataset.cites;
+        if (cites) {
+          return {
+            el,
+            cites: cites.split(' ')
+          };
+        } else {
+          return findCites(el.parentElement)
+        }
+      } else {
+        return undefined;
+      }
+    };
+    var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+    for (var i=0; i<bibliorefs.length; i++) {
+      const ref = bibliorefs[i];
+      const citeInfo = findCites(ref);
+      if (citeInfo) {
+        tippyHover(citeInfo.el, function() {
+          var popup = window.document.createElement('div');
+          citeInfo.cites.forEach(function(cite) {
+            var citeDiv = window.document.createElement('div');
+            citeDiv.classList.add('hanging-indent');
+            citeDiv.classList.add('csl-entry');
+            var biblioDiv = window.document.getElementById('ref-' + cite);
+            if (biblioDiv) {
+              citeDiv.innerHTML = biblioDiv.innerHTML;
+            }
+            popup.appendChild(citeDiv);
+          });
+          return popup.innerHTML;
+        });
+      }
+    }
+  });
+  </script><nav class="page-navigation"><div class="nav-page nav-page-previous">
+      <a href="./preamble.html" class="pagination-link" aria-label="Preamble">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text">Preamble</span>
+      </a>          
+  </div>
+  <div class="nav-page nav-page-next">
+      <a href="./git-and-github.html" class="pagination-link" aria-label="Git and GitHub">
+        <span class="nav-page-text">Git and GitHub</span> <i class="bi bi-arrow-right-short"></i>
+      </a>
+  </div>
+</nav>
+</div> <!-- /content -->
+
+
+
+<footer class="footer"><div class="nav-footer"><div class="nav-footer-center"><div class="toc-actions d-sm-block d-md-none"><ul><li><a href="https://github.com/PPBDS/primer/edit/main/book/getting-started.qmd" class="toc-action"><i class="bi bi-github"></i>Edit this page</a></li></ul></div></div></div></footer></body></html>
