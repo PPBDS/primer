@@ -93,11 +93,19 @@ Click [here](https://github.com/) and sign up for a GitHub by using the green bu
 
 Useful [advice](https://happygitwithr.com/github-acct.html#username-advice) for choosing a username includes using your real name, so people know who they are dealing with and can guess or remember it easily; making sure it is something you would be comfortable showing a future boss; keeping it short, and making it as unique as possible in as few characters as you can. Finally, make it timeless by avoiding references to your current university, employer, or home town. 
 
+Once you have signed up and are signed in, go to `github.com/` followed by your username, and click the **Overview** tab. Your screenshot should look similar to this.
+
+```{r}
+#| echo: false
+#| fig-alt: "A screenshot of a GitHub profile page in a browser, on the Overview tab, with the address bar showing github.com followed by the username."
+knitr::include_graphics("getting-started-2/images/github-profile-example.png")
+```
+
 ```{r}
 #| label: github-1
 #| echo: false
 learnr2::question(
-  "Go to github.com while signed in, and paste a screenshot of your GitHub dashboard below. The dashboard looks different when you are signed in than when you are not, so this shows that you actually signed in.",
+  "Paste a screenshot of the Overview tab of your GitHub profile, at github.com/[your username]. Make sure the address bar is visible.",
   type = "reflection",
   allow_image = TRUE,
   allow_text = FALSE
