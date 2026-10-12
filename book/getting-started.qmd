@@ -1,14 +1,6 @@
 # Getting Started {.unnumbered}
 
-<!-- DK: Check that the images are correct. -->
-
-<!-- DK: Show them our answer first. -->
-
-<!-- DK: Make them click on codespaces link by asking for a screenshot. -->
-
-<!-- DK: Never just say Try it now. They never will! Tell them to do it and prove they have done so with an image. -->
-
-<!-- DK: Delete the text which never appears, like line 71. -->
+<!-- DK: Explain Cmd/Ctrl. -->
 
 *You can never look at the data too much.* -- Mark Engerman
 
@@ -16,9 +8,9 @@ The world confronts us. Make decisions we must.
 
 We do all of our data science in the cloud, using GitHub Codespaces with Visual Studio Code (VS Code).
 
-In this chapter you will sign up for GitHub, create a Codespace, and learn about tutorials. Everything runs in your browser. You don't install anything on your own machine.  
+In this chapter you will sign up for GitHub, create a Codespace, and learn about tutorials. Everything runs in your browser. You don't install anything on your own machine. Tutorials are the standard format we use for homework assignments. They allow you to work at your own pace
 
-Your answers to the questions on this page save automatically in your browser, so you can close the page and come back later without losing anything. If you ever want to wipe them all and begin again, click the **Start Over** button in the right-hand sidebar, below the table of contents. 
+Your answers to the questions on this page save automatically in your browser, so you can close the page and come back later without losing anything. If you ever want to wipe them all and begin again, click the **Start Over** button in the right-hand sidebar. 
 
 Start by telling us who you are. Your instructor might also ask you to fill in the "ID" field so that your work can be matched to a grading database. If not, leave the "ID" field blank. Fill in the fields below and click **Submit**. You can edit your answers. 
 
@@ -93,7 +85,7 @@ Click [here](https://github.com/) and sign up for a GitHub by using the green bu
 
 Useful [advice](https://happygitwithr.com/github-acct.html#username-advice) for choosing a username includes using your real name, so people know who they are dealing with and can guess or remember it easily; making sure it is something you would be comfortable showing a future boss; keeping it short, and making it as unique as possible in as few characters as you can. Finally, make it timeless by avoiding references to your current university, employer, or home town. 
 
-Once you have signed up and are signed in, go to `github.com/` followed by your username, and click the **Overview** tab. Your screenshot should look similar to this.
+Once you have signed up for GitHub and are signed in to GitHub, go to `github.com/` followed by your username, and click the **Overview** tab. Your screenshot should look similar to this.
 
 ```{r}
 #| echo: false
@@ -135,8 +127,6 @@ learnr2::question(
 
 On GitHub, your projects are organized into "repositories," usually called "repos."
 
-GitHub gives every account 60 free Codespaces hours per month. Free hours are not infinite, however, so it is your responsibility to stop (and delete) Codespaces you are no longer using.
-
 ## A throwaway Codespace {.unnumbered}
 
 You create a new Codespace using the `https://github.com/PPBDS/codespace-starter` repository. We refer to this repo as `codespace-starter`.
@@ -149,6 +139,8 @@ knitr::include_graphics("getting-started/images/cs-1.png")
 ```
 
 This Codespace is for learning the platform, not for your permanent work.
+
+GitHub gives every account 60 free Codespaces hours per month. Free hours are not infinite, however, so it is your responsibility to stop (and delete) Codespaces you are no longer using.
 
 ### Launching the Codespace {.unnumbered}
 
@@ -177,7 +169,7 @@ Once the process is done, a banner message appears announcing "✅  YOUR CODESPA
 knitr::include_graphics("getting-started/images/ready-message.png")
 ```
 
-GitHub gives your Codespace a randomly generated name. Mine is "cuddly space giggle", but yours will be different. The red arrows in the example below point to the four places where that name appears: the address bar of your browser, the box at the top center of VS Code, the top of the Explorer panel on the left, and the blue button at the bottom left.
+GitHub gives your Codespace a randomly generated name. Mine is "cuddly space giggle", but yours will be different. The name appears in four spots: the address bar of your browser, the box at the top center of VS Code, the top of the Explorer panel on the left, and the blue button at the bottom left.
 
 ```{r}
 #| echo: false
@@ -204,6 +196,8 @@ VS Code is an integrated development environment (IDE) for coding and data scien
 
 * In the upper right-hand corner are the "Customize Layout ..." buttons. These are part of the VS Code "Title Bar." Since we aren't using the AI tools right now, it often makes sense to close the "Chat" window, which appears on the right side of the screen. You can close this in two ways: Click the "X" mark or click the "Toggle Secondary Side Bar" button, the furthest right-hand button. You can then bring the Chat window back by clicking the "Toggle Secondary Side Bar" button again. Try it now.
 
+<!-- DK: They won't try it without a demand for a screenshot! -->
+
 ```{r}
 #| echo: false
 knitr::include_graphics("getting-started/images/chat-buttons-cs.png")
@@ -211,21 +205,29 @@ knitr::include_graphics("getting-started/images/chat-buttons-cs.png")
 
 * The "Activity Bar" is the narrow vertical strip on the far left with icons for Explorer, Search, Source Control, Extensions, etc. 
 
-The "Editor" is the large central area where you edit files.
+* The "Editor" is the large central area where you edit files.
 
-The "Panel" is the horizontal area below the Editor, containing the Problems, Output, Debug Console, Terminal, and Ports views. Our main focus is the Terminal view. This is where we "talk" to both the (cloud) computer itself and to the R program that it provides.
+* The "Panel" is the horizontal area below the Editor, containing the Problems, Output, Debug Console, Terminal, and Ports views. Our main focus is the Terminal view. This is where we "talk" to both the (cloud) computer itself and to the R program that it provides.
 
 ```{r}
 #| echo: false
 knitr::include_graphics("getting-started/images/ready-message.png")
 ```
 
-* You can start new bash Terminals by clicking on the `+` sign above the list of terminals. Do so now.
+You can start new bash Terminals by clicking on the `+` sign above the list of terminals. Do so now. As you can see below, you now have two bash Terminals. You switch by selecting the one you want to work with from the list. You can type commands at the "prompt," which is where the red arrow is pointing below. 
 
 ```{r}
 #| echo: false
 knitr::include_graphics("getting-started/images/t2.png")
 ```
+
+If you hover your cursor over the terminal list, a split-screen and a trash can appear. Clicking on the trash can will close the terminal.
+
+```{r}
+#| echo: false
+knitr::include_graphics("getting-started/images/can.png")
+```
+
 
 The language can be a little confusing. There is a capital T "Terminal" view, which is one of the tabs across the top of the Panel. In that Terminal view, we can work with many individual small T "terminals" of various sorts. So far, you have only seen bash Terminals, which get a capital T because they are a type of named terminal. The bash shell is a program that lets you "talk" to the computer itself.
 
@@ -247,7 +249,7 @@ Type in `2 + 2` at the R prompt and hit `enter` (Windows) or `return` (Mac). (Go
 knitr::include_graphics("getting-started/images/t3.png")
 ```
 
-An IDE like VS Code is designed to organize all the different work we do as data scientists. We need to talk to the computer via the bash Terminal (a terminal running the bash shell), talk to R, view plots, and so on.
+An IDE like VS Code is designed to help us organize our work. We need to talk to the computer via the bash Terminal (a terminal running the bash shell), talk to R, view plots, and so on.
 
 At the R Terminal, run `plot(1:10)`. We use the terms "run" and "execute" interchangeably. They both indicate that you should type the command at the appropriate terminal and hit `Enter`.
 
@@ -256,7 +258,7 @@ At the R Terminal, run `plot(1:10)`. We use the terms "run" and "execute" interc
 knitr::include_graphics("getting-started/images/t4.png")
 ```
 
-You have created a plot in the "Plots" tab of the Panel.
+Data scientists make lots of plots.
 
 ```{r}
 #| label: touring-the-workspace-1
@@ -269,21 +271,23 @@ learnr2::question(
 )
 ```
 
-Click into the bash Terminal, type `pwd`, and then press `Enter`. To "run" a command means to type it and then press `Enter`
+
+
+Click into the bash Terminal, type `pwd`, and then press `Enter`. 
 
 ```{r}
 #| echo: false
 knitr::include_graphics("getting-started/images/pwd.png")
 ```
 
-**C**opy and **P**aste both the **C**ommand *and* the **R**esponse from the bash Terminal into the box below. We abbreviate this instruction throughout the book as **CP**/**CR**.
+**C**opy and **P**aste both the **C**ommand *and* the **R**esponse from the bash Terminal into the box below. We abbreviate this instruction as **CP**/**CR**.
 
 ```{r}
 #| label: the-getting-started-exercises-1
 #| echo: false
 learnr2::question(
-  "Paste, into the box below, both the command you ran and the response the Terminal printed.",
-  type = "reflection_editable"
+  "Paste, into the box below, both the command you ran and the response the bash Terminal printed.",
+  type = "reflection"
 )
 ```
 
@@ -295,15 +299,38 @@ codespace-starter $ pwd
 codespace-starter $
 ````
 
+Also, we generally do not allow you to edit answers once you have submitted them. If you make a mistake, don't worry! Tutorials are graded Pass/Fail. 
+
 `pwd` stands for **p**rint **w**orking **d**irectory: it shows the directory in which the terminal is working. The response confirms that you are inside your Codespace, a complete computer running in the cloud. It is OK if your formatting differs from ours. What matters is that you show that you ran the command as instructed.
 
 That is the usual process: run something in a terminal, copy the command and the response, paste them into the answer box. Almost every exercise in every later tutorial works this way.
 
+#### Your answers {.unnumbered}
 
+At the end of every tutorial, you download a copy of your answers, and you do the same here. First, answer the question below about how many minutes you spent on this chapter. Then click the button below that to gather every answer on this page into a single file and download it.
+
+```{r}
+#| label: the-getting-started-exercises-2
+#| echo: false
+learnr2::question(
+  "How many minutes, approximately, did it take you to complete this
+  chapter? For example, an hour and a half would be 90 minutes.",
+  type = "reflection_editable",
+  validate = "integer"
+)
+```
+
+```{r}
+#| label: the-getting-started-exercises-3
+#| echo: false
+learnr2::download_answers_button(filename_prefix = "getting-started")
+```
+
+After clicking the "Download My Answers" button, this file will be saved in the `Downloads` folder on your computer. This action only downloads the file. It does not send the file to anyone. Unless your instructor tells you otherwise, send them this file as-is (for example, attached to an email or uploaded to your course's learning management system).
 
 ### Stopping, restarting and deleting the Codespace {.unnumbered}
 
-A Codespace is your responsibility in the same way that your laptop is your responsibility. While a Codespace is running it counts against your free hours, and an unused Codespace will be deleted by GitHub after 30 days.
+A Codespace is your responsibility in the same way that your laptop is your responsibility. While a Codespace is running it counts against your free hours. An unused Codespace will be deleted by GitHub after 30 days.
 
 There are three common ways to close a Codespace.
 
@@ -312,6 +339,8 @@ First, just leave it alone. GitHub will close it on its own after 30 minutes of 
 Second, type `Cmd/Ctrl + Shift + P`. The Command Palette provides access to all VS Code commands. Type `stop` into the search bar.
 
 On some browsers, the keyboard shortcut does not work. You can always access the Command Palette by clicking the search bar at the top of the window and typing `>` followed by key words from the command you would like to use.
+
+<!-- DK: Update the image. -->
 
 ```{r}
 #| echo: false
@@ -382,32 +411,10 @@ learnr2::question(
 )
 ```
 
-#### Your answers {.unnumbered}
-
-At the end of every tutorial, you download a copy of your answers, and you do the same here. First, answer the question below about how many minutes you spent on this chapter. Then click the button below that to gather every answer on this page into a single file and download it.
-
-```{r}
-#| label: the-getting-started-exercises-2
-#| echo: false
-learnr2::question(
-  "How many minutes, approximately, did it take you to complete this
-  chapter? For example, an hour and a half would be 90 minutes.",
-  type = "reflection_editable",
-  validate = "integer"
-)
-```
-
-```{r}
-#| label: the-getting-started-exercises-3
-#| echo: false
-learnr2::download_answers_button(filename_prefix = "getting-started")
-```
-
-After clicking the "Download My Answers" button, this file will be saved in the `Downloads` folder on your computer. This action only downloads the file. It does not send the file to anyone. Unless your instructor tells you otherwise, send them this file as-is (for example, attached to an email or uploaded to your course's learning management system).
 
 ## Using your own machine
 
-You can do all of this work on your own laptop, if you prefer. But, in that case, you are responsible for setting everything up. That means installing VS Code, Git and R. Take a look at the `.devcontainer/devcontainer.json` file from [`PPBDS/codespace-starter`](https://github.com/PPBDS/codespace-starter). You may also find it useful to use the same VS settings which are defined there.
+You can do all of this work on your own laptop, if you prefer. But, in that case, you are responsible for setting everything up. That means installing VS Code, Git and R. Ask your favorite AI to take a look at the `.devcontainer/devcontainer.json` file from [`PPBDS/codespace-starter`](https://github.com/PPBDS/codespace-starter). The AI will then give you good advice as to the steps to take.You may also find it useful to use the same VS settings which are defined there.
 
 You will also need to install, by hand, various R packages. From the R Terminal, you would run commands like:
 
@@ -422,16 +429,13 @@ pak::pak("tidyverse")
 pak::pak("PPBDS/vscode.tutorials")
 ```
 
-These steps are not enough to perfectly replicate what we show in the Codespace. See `PPBDS/devcontainers` for more details.
-
-But this should be enough to get you started, should you decide to go this route. If you have trouble, ask AI, pointing it toward this chapter and to the [`PPBDS/codespace-starter`](https://github.com/PPBDS/codespace-starter) and `PPBDS/devcontainers` repos.
-
+These steps are not enough to perfectly replicate what we show in the Codespace. See `PPBDS/devcontainers` for more details. But this should be enough to get you started, should you decide to go this route. 
 
 ## Start a tutorial {.unnumbered}
 
-You will do most of your work in tutorials like the one you are about to start. This section shows you how to start a tutorial. 
+This section shows you how to start a tutorial. 
 
-Create a Codespace, exactly as you did in the "Launching the Codespace" section above.
+Create another Codespace, exactly as you did in the "Launching the Codespace" section above.
 
 Once your Codespace is ready, look at the Activity Bar, the narrow vertical strip of icons on the far left. Hover over the icons until you find the one labeled **R Tutorials**, near the bottom, and click it. This lists the R packages that have tutorials. Click the package named **[vscode.tutorials](https://ppbds.github.io/vscode.tutorials/)** to see its tutorials.
 
@@ -443,7 +447,23 @@ Find the tutorial named **Orientation**. Hover over its name and click the sidew
 knitr::include_graphics("getting-started/images/r-tutorials-orientation.png")
 ```
 
-A new terminal named "R Tutorial" appears in the Panel, and the tutorial then offers to open in your browser. Accept that offer. If you miss it, hover over the web address in the "R Tutorial" terminal and press `Ctrl + Click` (Windows, Chromebook) or `Cmd + Click` (Mac).
+A new terminal named "R Tutorial" appears in the Panel.
+
+```{r}
+#| echo: false
+knitr::include_graphics("getting-started/images/t2.png")
+```
+
+The tutorial should automatically open in your browser. 
+
+```{r}
+#| echo: false
+knitr::include_graphics("getting-started/images/t3.png")
+```
+
+Note how the web address includes `cuddly-space-giggle`, the GitHub name for my Codespace. The tutorial is running in the Codespace, viewable via my browser.
+
+If the tutorial does not open automatically, hover over the web address in the "R Tutorial" terminal and press `Ctrl + Click` (Windows, Chromebook) or `Cmd + Click` (Mac).
 
 ```{r}
 #| label: start-a-tutorial-1
@@ -456,13 +476,14 @@ learnr2::question(
 )
 ```
 
-You do not need to finish the Orientation tutorial now. When you are done with that Codespace, stop it and delete it, as described in the "Stopping, restarting and deleting the Codespace" section above.
+You do not need to finish the Orientation tutorial now. After you finish, and download your answer, you should stop that Codespace and delete it.
 
 ## Summary {.unnumbered}
 
 You should have done the following:
 
 - Signed up for a GitHub account.
+- Downloaded your answers from these exercises. 
 - Started the **Orientation** tutorial from **[vscode.tutorials](https://ppbds.github.io/vscode.tutorials/)** in a Codespace.
 
 Let's get started!
