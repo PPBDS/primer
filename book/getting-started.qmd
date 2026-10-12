@@ -16,7 +16,7 @@ The world confronts us. Make decisions we must.
 
 We do all of our data science in the cloud, using GitHub Codespaces with Visual Studio Code (VS Code).
 
-In this chapter you will sign up for GitHub, create a Codespace, and answer questions along the way, all right here on this page, powered by **[learnr2](https://ppbds.github.io/learnr2/)**. Everything runs in your browser. 
+In this chapter you will sign up for GitHub, create a Codespace, and learn about tutorials. Everything runs in your browser. You don't install anything on your own machine.  
 
 Your answers to the questions on this page save automatically in your browser, so you can close the page and come back later without losing anything. If you ever want to wipe them all and begin again, click the **Start Over** button in the right-hand sidebar, below the table of contents. 
 
@@ -60,7 +60,7 @@ The easiest way to acccomplsh this is to copy the screenshot to your clipboard, 
 
 * **Chromebook:** press `Ctrl + Shift + Show windows` (the key with a rectangle and two lines on it), drag a box around what you want to capture, and click **Copy to clipboard** in the notification that appears.
 
-The screenshot should capture enough that we can confirm that you followed our instructions.
+The screenshot should capture enough of the screenthat we can confirm that you followed our instructions.
 
 ## Use either Chrome or Edge {.unnumbered}
 
@@ -73,7 +73,7 @@ Your screenshot should look similar to this.
 ```{r}
 #| echo: false
 #| fig-alt: "A screenshot of an entire Windows screen showing a new Google Chrome tab, with the Windows taskbar along the bottom."
-knitr::include_graphics("getting-started-2/images/chrome-new-tab-example.png")
+knitr::include_graphics("getting-started/images/chrome-new-tab-example.png")
 ```
 
 ```{r}
@@ -98,7 +98,7 @@ Once you have signed up and are signed in, go to `github.com/` followed by your 
 ```{r}
 #| echo: false
 #| fig-alt: "A screenshot of a GitHub profile page in a browser, on the Overview tab, with the address bar showing github.com followed by the username."
-knitr::include_graphics("getting-started-2/images/github-profile-example.png")
+knitr::include_graphics("getting-started/images/github-profile-example.png")
 ```
 
 ```{r}
@@ -119,7 +119,7 @@ If you are a student, go to that page now, sign in, and apply for the benefits. 
 ```{r}
 #| echo: false
 #| fig-alt: "A screenshot of GitHub's Education Benefits Application dialog with a green message reading: Your application has been submitted."
-knitr::include_graphics("getting-started-2/images/student-pack-submitted-example.png")
+knitr::include_graphics("getting-started/images/student-pack-submitted-example.png")
 ```
 
 ```{r}
@@ -145,7 +145,7 @@ Go to [`https://github.com/PPBDS/codespace-starter`](https://github.com/PPBDS/co
 
 ```{r}
 #| echo: false
-knitr::include_graphics("getting-started-2/images/cs-1.png")
+knitr::include_graphics("getting-started/images/cs-1.png")
 ```
 
 This Codespace is for learning the platform, not for your permanent work.
@@ -156,7 +156,7 @@ Click the green **Code** button at the top right of the repository page, switch 
 
 ```{r}
 #| echo: false
-knitr::include_graphics("getting-started-2/images/new-1.png")
+knitr::include_graphics("getting-started/images/new-1.png")
 ```
 
 This will take a minute or so. Behind the scenes, GitHub is creating a virtual machine in the cloud with all the necessary tools for doing data science. That machine is called a "Codespace."
@@ -165,7 +165,7 @@ You may be asked: "Do you trust the authors of the files in this folder?"
 
 ```{r}
 #| echo: false
-knitr::include_graphics("getting-started-2/images/trust.png")
+knitr::include_graphics("getting-started/images/trust.png")
 ```
 
 Click to agree.
@@ -174,7 +174,7 @@ Once the process is done, a banner message appears announcing "✅  YOUR CODESPA
 
 ```{r}
 #| echo: false
-knitr::include_graphics("getting-started-2/images/ready-message.png")
+knitr::include_graphics("getting-started/images/ready-message.png")
 ```
 
 GitHub gives your Codespace a randomly generated name. Mine is "ominous space adventure", but yours will be different. The red arrows in the example below point to the four places where that name appears: the address bar of your browser, the box at the top center of VS Code, the top of the Explorer panel on the left, and the blue button at the bottom left.
@@ -182,7 +182,7 @@ GitHub gives your Codespace a randomly generated name. Mine is "ominous space ad
 ```{r}
 #| echo: false
 #| fig-alt: "A screenshot of a new Codespace in the browser, with red arrows pointing to the Codespace name ominous space adventure in the address bar, in the box at the top center of VS Code, at the top of the Explorer panel, and in the blue button at the bottom left."
-knitr::include_graphics("getting-started-2/images/codespace-name-example.png")
+knitr::include_graphics("getting-started/images/codespace-name-example.png")
 ```
 
 ```{r}
@@ -206,21 +206,21 @@ VS Code is an integrated development environment (IDE) for coding and data scien
 
 ```{r}
 #| echo: false
-knitr::include_graphics("getting-started-2/images/chat-buttons-cs.png")
+knitr::include_graphics("getting-started/images/chat-buttons-cs.png")
 ```
 
 * The "Activity Bar" is the narrow vertical strip on the far left with icons for Explorer, Search, Source Control, Extensions, etc. By default, the "Explorer" button is selected, showing that the only thing in the project is a folder called `.devcontainer`. Click on that folder to show its contents.
 
 ```{r}
 #| echo: false
-knitr::include_graphics("getting-started-2/images/cs-4.png")
+knitr::include_graphics("getting-started/images/cs-4.png")
 ```
 
 Click on the `STUDENT_WORKFLOW.md` file. Doing so opens that file in the Editor window. Your screen should now look like this:
 
 ```{r}
 #| echo: false
-knitr::include_graphics("getting-started-2/images/cs-4b.png")
+knitr::include_graphics("getting-started/images/cs-4b.png")
 ```
 
 The "Editor" is the large central area where you edit files.
@@ -229,21 +229,21 @@ The "Panel" is the horizontal area below the Editor, containing the Problems, Ou
 
 ```{r}
 #| echo: false
-knitr::include_graphics("getting-started-2/images/cs-5.png")
+knitr::include_graphics("getting-started/images/cs-5.png")
 ```
 
  The Terminal view currently shows two terminals. They are listed along the right-hand side. You can move back and forth between them by clicking on them. You can close a terminal by clicking on the trash can icon next to its name, which appears when you hover your cursor over the name.
 
 ```{r}
 #| echo: false
-knitr::include_graphics("getting-started-2/images/t1.png")
+knitr::include_graphics("getting-started/images/t1.png")
 ```
 
 * You can start new bash Terminals by clicking on the `+` sign above the list of terminals. Do so now.
 
 ```{r}
 #| echo: false
-knitr::include_graphics("getting-started-2/images/t2.png")
+knitr::include_graphics("getting-started/images/t2.png")
 ```
 
 The language can be a little confusing. There is a capital T "Terminal" view, which is one of the tabs across the top of the Panel. In that Terminal view, we can work with many individual small T "terminals" of various sorts. So far, you have only seen bash Terminals, which get a capital T because they are a type of named terminal. The bash shell is a program that lets you "talk" to the computer itself.
@@ -252,7 +252,7 @@ In addition to bash Terminals, we can also start an R session under the Terminal
 
 ```{r}
 #| echo: false
-knitr::include_graphics("getting-started-2/images/cs-6.png")
+knitr::include_graphics("getting-started/images/cs-6.png")
 ```
 
 Select "R Terminal." This will start an R session that lets you "talk" to R in the same way that a bash shell allows you to talk to the computer.
@@ -263,7 +263,7 @@ Type in `2 + 2` at the R prompt and hit `enter` (Windows) or `return` (Mac). (Go
 
 ```{r}
 #| echo: false
-knitr::include_graphics("getting-started-2/images/t3.png")
+knitr::include_graphics("getting-started/images/t3.png")
 ```
 
 An IDE like VS Code is designed to organize all the different work we do as data scientists. We need to talk to the computer via the bash Terminal (a terminal running the bash shell), talk to R, view plots, and so on.
@@ -272,7 +272,7 @@ At the R Terminal, run `plot(1:10)`. We use the terms "run" and "execute" interc
 
 ```{r}
 #| echo: false
-knitr::include_graphics("getting-started-2/images/t4.png")
+knitr::include_graphics("getting-started/images/t4.png")
 ```
 
 You have created a plot in the "Plots" tab of the Panel.
@@ -304,7 +304,7 @@ Look at the bottom of your VS Code window. The horizontal area below the editor 
 
 ```{r}
 #| echo: false
-knitr::include_graphics("getting-started-2/images/get-bash.png")
+knitr::include_graphics("getting-started/images/get-bash.png")
 ```
 
 Press `+`. This opens a new **bash** Terminal -- the text-based interface in which you type commands to tell your Codespace what to do. The pattern is always the same: you send a command, the terminal executes it, and it gives you something back.
@@ -315,7 +315,7 @@ Click into the bash Terminal, type `pwd`, and then press `Enter`. To "run" a com
 
 ```{r}
 #| echo: false
-knitr::include_graphics("getting-started-2/images/pwd.png")
+knitr::include_graphics("getting-started/images/pwd.png")
 ```
 
 **Do not just type the command into the answer box!** You must run the command in the bash Terminal and then copy the result.
@@ -367,10 +367,10 @@ learnr2::question(
 ```{r}
 #| label: the-getting-started-exercises-3
 #| echo: false
-learnr2::download_answers_button(filename_prefix = "getting-started-2")
+learnr2::download_answers_button(filename_prefix = "getting-started")
 ```
 
-After clicking the "Download My Answers" button, you will be prompted to save a file whose name starts with `getting-started-2`, followed by a timestamp. By default, this file will be saved in the `Downloads` folder on your computer. This action only downloads the file; it does not send the file to anyone.
+After clicking the "Download My Answers" button, you will be prompted to save a file whose name starts with `getting-started`, followed by a timestamp. By default, this file will be saved in the `Downloads` folder on your computer. This action only downloads the file; it does not send the file to anyone.
 
 Unless your instructor tells you otherwise, send them this file as-is (for example, attached to an email or uploaded to your course's learning management system).
 
@@ -388,7 +388,7 @@ On some browsers, the keyboard shortcut does not work. You can always access the
 
 ```{r}
 #| echo: false
-knitr::include_graphics("getting-started-2/images/command-palette.png")
+knitr::include_graphics("getting-started/images/command-palette.png")
 ```
 
 Select "Codespaces: Stop Current Codespace."
@@ -397,28 +397,28 @@ Third, you can go to your personal Codespaces control panel at [`https://github.
 
 ```{r}
 #| echo: false
-knitr::include_graphics("getting-started-2/images/t7.png")
+knitr::include_graphics("getting-started/images/t7.png")
 ```
 
 Which brings up this lst of options. Select "Codespaces."
 
 ```{r}
 #| echo: false
-knitr::include_graphics("getting-started-2/images/t8.png")
+knitr::include_graphics("getting-started/images/t8.png")
 ```
 
 Your main Codespaces page should look something like this:
 
 ```{r}
 #| echo: false
-knitr::include_graphics("getting-started-2/images/codespaces-1.png")
+knitr::include_graphics("getting-started/images/codespaces-1.png")
 ```
 
 This shows all your Codespaces, both active and inactive. The `...` menu on each row provides several commands, including "Stop Codespace."
 
 ```{r}
 #| echo: false
-knitr::include_graphics("getting-started-2/images/codespaces-2.png")
+knitr::include_graphics("getting-started/images/codespaces-2.png")
 ```
 
 Simply closing the browser window *does not* stop your Codespace from running. Always stop a Codespace explicitly to preserve your free hours.
@@ -429,7 +429,7 @@ Once it is stopped, you can restart it from your [Codespaces page](https://githu
 
 ```{r}
 #| echo: false
-knitr::include_graphics("getting-started-2/images/codespaces-3.png")
+knitr::include_graphics("getting-started/images/codespaces-3.png")
 ```
 
 Once you are done with a Codespace, you should **delete it.** To do so, go to your [Codespaces page](https://github.com/codespaces), click the `...` menu next to this Codespace and select **Delete**.
@@ -441,7 +441,7 @@ Delete your Codespace now. When you do, GitHub shows a message at the top of you
 ```{r}
 #| echo: false
 #| fig-alt: "A screenshot of the top of the GitHub Codespaces page with a light blue banner reading: Codespace ominous space adventure deleted."
-knitr::include_graphics("getting-started-2/images/codespace-deleted-example.png")
+knitr::include_graphics("getting-started/images/codespace-deleted-example.png")
 ```
 
 ```{r}
@@ -498,7 +498,7 @@ Once you have signed up and are signed in to your new account, go to `github.com
 ```{r}
 #| echo: false
 #| fig-alt: "A screenshot of a GitHub profile page in a browser, on the Overview tab, with the address bar showing github.com followed by the username."
-knitr::include_graphics("getting-started-2/images/github-profile-example.png")
+knitr::include_graphics("getting-started/images/github-profile-example.png")
 ```
 
 ```{r}
@@ -525,7 +525,7 @@ Find the tutorial named **Orientation**. Hover over its name and click the play 
 ```{r}
 #| echo: false
 #| fig-alt: "The R Tutorials panel in VS Code, listing tutorial packages. The vscode.tutorials package is expanded, with Orientation at the top of its tutorials and a play button next to it."
-knitr::include_graphics("getting-started-2/images/r-tutorials-orientation.png")
+knitr::include_graphics("getting-started/images/r-tutorials-orientation.png")
 ```
 
 A new terminal named "R Tutorial" appears in the Panel, and the tutorial then offers to open in your browser. Accept that offer. If you miss it, hover over the web address in the "R Tutorial" terminal and press `Ctrl + Click` (Windows, Chromebook) or `Cmd + Click` (Mac).
@@ -535,7 +535,7 @@ Your screenshot should look similar to this.
 ```{r}
 #| echo: false
 #| fig-alt: "A screenshot of the Orientation tutorial open in a browser tab, with the address bar showing a github.dev web address ending in vscode.tutorials/01-orientation, and the Information section with Name, Email and ID boxes."
-knitr::include_graphics("getting-started-2/images/orientation-tutorial-example.png")
+knitr::include_graphics("getting-started/images/orientation-tutorial-example.png")
 ```
 
 ```{r}
@@ -566,5 +566,5 @@ Let's get started!
 
 ```{r}
 #| echo: false
-knitr::include_graphics("getting-started-2/images/ending.gif")
+knitr::include_graphics("getting-started/images/ending.gif")
 ```
