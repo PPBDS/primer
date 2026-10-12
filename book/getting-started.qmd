@@ -269,37 +269,12 @@ learnr2::question(
 )
 ```
 
-### The Getting Started exercises {.unnumbered}
-
-The exercises below run directly on this page, powered by **[learnr2](https://ppbds.github.io/learnr2/)**, so you do not need to launch anything inside your Codespace. Keep your Codespace open in another window -- you will switch back to its bash Terminal for one of the exercises below.
-
-#### Introduction {.unnumbered}
-
-This chapter teaches you how tutorials work. There are only three steps: tell us who you are (which you did at the top of this page), run a command in a Terminal and copy the result, and download a copy of your answers. It should take about five minutes. Every tutorial you complete after this chapter uses the same sequence.
-
-#### The bash Terminal {.unnumbered}
-
-Tutorials include exercises. Most exercises ask you to run a command in a terminal and then copy the result into the answer box below. You will do that once now.
-
-Look at the bottom of your VS Code window. The horizontal area below the editor is called the "Panel." The red arrow below points to the new-terminal plus button (`+`) on the right side of the Panel.
-
-```{r}
-#| echo: false
-knitr::include_graphics("getting-started/images/get-bash.png")
-```
-
-Press `+`. This opens a new **bash** Terminal -- the text-based interface in which you type commands to tell your Codespace what to do. The pattern is always the same: you send a command, the terminal executes it, and it gives you something back.
-
-##### Exercise 1 {.unnumbered}
-
-Click into the bash Terminal, type `pwd`, and then press `Enter`. To "run" a command means to type it and then press this key.
+Click into the bash Terminal, type `pwd`, and then press `Enter`. To "run" a command means to type it and then press `Enter`
 
 ```{r}
 #| echo: false
 knitr::include_graphics("getting-started/images/pwd.png")
 ```
-
-**Do not just type the command into the answer box!** You must run the command in the bash Terminal and then copy the result.
 
 **C**opy and **P**aste both the **C**ommand *and* the **R**esponse from the bash Terminal into the box below. We abbreviate this instruction throughout the book as **CP**/**CR**.
 
@@ -324,36 +299,7 @@ codespace-starter $
 
 That is the usual process: run something in a terminal, copy the command and the response, paste them into the answer box. Almost every exercise in every later tutorial works this way.
 
-##### Exercise 2 {.unnumbered}
 
-Every answer on this page, including the one you just gave, is saved to your browser as you go -- not only once you finally download your work. Reload this page right now to see for yourself: your name, email, and the answer above should all still be there, exactly as you left them.
-
-There is no R session running in your Codespace for this chapter -- your answers live in your browser, not on a server, so nothing about your Codespace needs to stay open for your progress to be safe. There is also a "Start Over" button at the bottom of the sidebar if you ever want to clear your answers and begin again, which only acts after you confirm.
-
-#### Your answers {.unnumbered}
-
-At the end of every tutorial, you download a copy of your answers, and you do the same here. First, answer the question below about how many minutes you spent on this chapter. Then click the button below that to gather every answer on this page into a single file and download it.
-
-```{r}
-#| label: the-getting-started-exercises-2
-#| echo: false
-learnr2::question(
-  "How many minutes, approximately, did it take you to complete this
-  chapter? For example, an hour and a half would be 90 minutes.",
-  type = "reflection_editable",
-  validate = "integer"
-)
-```
-
-```{r}
-#| label: the-getting-started-exercises-3
-#| echo: false
-learnr2::download_answers_button(filename_prefix = "getting-started")
-```
-
-After clicking the "Download My Answers" button, you will be prompted to save a file whose name starts with `getting-started`, followed by a timestamp. By default, this file will be saved in the `Downloads` folder on your computer. This action only downloads the file; it does not send the file to anyone.
-
-Unless your instructor tells you otherwise, send them this file as-is (for example, attached to an email or uploaded to your course's learning management system).
 
 ### Stopping, restarting and deleting the Codespace {.unnumbered}
 
@@ -436,20 +382,32 @@ learnr2::question(
 )
 ```
 
+#### Your answers {.unnumbered}
+
+At the end of every tutorial, you download a copy of your answers, and you do the same here. First, answer the question below about how many minutes you spent on this chapter. Then click the button below that to gather every answer on this page into a single file and download it.
+
+```{r}
+#| label: the-getting-started-exercises-2
+#| echo: false
+learnr2::question(
+  "How many minutes, approximately, did it take you to complete this
+  chapter? For example, an hour and a half would be 90 minutes.",
+  type = "reflection_editable",
+  validate = "integer"
+)
+```
+
+```{r}
+#| label: the-getting-started-exercises-3
+#| echo: false
+learnr2::download_answers_button(filename_prefix = "getting-started")
+```
+
+After clicking the "Download My Answers" button, this file will be saved in the `Downloads` folder on your computer. This action only downloads the file. It does not send the file to anyone. Unless your instructor tells you otherwise, send them this file as-is (for example, attached to an email or uploaded to your course's learning management system).
+
 ## Using your own machine
 
-You can do all of this work on your own laptop, if you prefer. But, in that case, you are responsible for setting everything up. That means installing VS Code, Git and R. You will almost certainly want to install the same VS Code extensions which we use, including:
-
-```
-"reditorsupport.r",
-"quarto.quarto",
-"PPBDS.vscode-r-tutorials",
-"ritwickdey.LiveServer",
-"tomoki1207.pdf",
-"mechatroner.rainbow-csv"x
-```
-
-This listing is from  the `.devcontainer/devcontainer.json` file from [`PPBDS/codespace-starter`](https://github.com/PPBDS/codespace-starter). You may also find it useful to use the same VS settings which are defined there.
+You can do all of this work on your own laptop, if you prefer. But, in that case, you are responsible for setting everything up. That means installing VS Code, Git and R. Take a look at the `.devcontainer/devcontainer.json` file from [`PPBDS/codespace-starter`](https://github.com/PPBDS/codespace-starter). You may also find it useful to use the same VS settings which are defined there.
 
 You will also need to install, by hand, various R packages. From the R Terminal, you would run commands like:
 
@@ -468,40 +426,16 @@ These steps are not enough to perfectly replicate what we show in the Codespace.
 
 But this should be enough to get you started, should you decide to go this route. If you have trouble, ask AI, pointing it toward this chapter and to the [`PPBDS/codespace-starter`](https://github.com/PPBDS/codespace-starter) and `PPBDS/devcontainers` repos.
 
-## A second GitHub account {.unnumbered}
-
-Create a second GitHub account by following the same instructions as in the [GitHub](#github) section above. Name it the same as your first account, with `-tutorials` added to the end. If your first username is `john-doe`, your second one is `john-doe-tutorials`.
-
-GitHub requires a different email address for each account, so you cannot reuse the one you gave your first account.
-
-Once you have signed up and are signed in to your new account, go to `github.com/` followed by its username, which ends in `-tutorials`, and click the **Overview** tab. Your screenshot should look similar to this.
-
-```{r}
-#| echo: false
-#| fig-alt: "A screenshot of a GitHub profile page in a browser, on the Overview tab, with the address bar showing github.com followed by the username."
-knitr::include_graphics("getting-started/images/github-profile-example.png")
-```
-
-```{r}
-#| label: a-second-github-account-1
-#| echo: false
-learnr2::question(
-  "Paste a screenshot of the Overview tab of your second GitHub profile, at github.com/[your username]-tutorials. Make sure the address bar is visible, so that the username ending in -tutorials shows.",
-  type = "reflection",
-  allow_image = TRUE,
-  allow_text = FALSE
-)
-```
 
 ## Start a tutorial {.unnumbered}
 
-You will do most of your work in tutorials like the one you are about to start. This section shows you how to start one. That is all you need to know: the tutorial itself asks for your name and email, helps you download your answers, and so on.
+You will do most of your work in tutorials like the one you are about to start. This section shows you how to start a tutorial. 
 
-Sign in to GitHub with your second account, the one ending in `-tutorials`. Go to [`https://github.com/PPBDS/codespace-starter`](https://github.com/PPBDS/codespace-starter) and create a Codespace, exactly as you did in the "Launching the Codespace" section above.
+Create a Codespace, exactly as you did in the "Launching the Codespace" section above.
 
 Once your Codespace is ready, look at the Activity Bar, the narrow vertical strip of icons on the far left. Hover over the icons until you find the one labeled **R Tutorials**, near the bottom, and click it. This lists the R packages that have tutorials. Click the package named **[vscode.tutorials](https://ppbds.github.io/vscode.tutorials/)** to see its tutorials.
 
-Find the tutorial named **Orientation**. Hover over its name and click the play button that appears. Doing so starts the tutorial, which takes a minute or so.
+Find the tutorial named **Orientation**. Hover over its name and click the sideways triangle button that appears. Doing so starts the tutorial.
 
 ```{r}
 #| echo: false
@@ -510,14 +444,6 @@ knitr::include_graphics("getting-started/images/r-tutorials-orientation.png")
 ```
 
 A new terminal named "R Tutorial" appears in the Panel, and the tutorial then offers to open in your browser. Accept that offer. If you miss it, hover over the web address in the "R Tutorial" terminal and press `Ctrl + Click` (Windows, Chromebook) or `Cmd + Click` (Mac).
-
-Your screenshot should look similar to this.
-
-```{r}
-#| echo: false
-#| fig-alt: "A screenshot of the Orientation tutorial open in a browser tab, with the address bar showing a github.dev web address ending in vscode.tutorials/01-orientation, and the Information section with Name, Email and ID boxes."
-knitr::include_graphics("getting-started/images/orientation-tutorial-example.png")
-```
 
 ```{r}
 #| label: start-a-tutorial-1
@@ -530,18 +456,14 @@ learnr2::question(
 )
 ```
 
-You do not need to finish the Orientation tutorial now. When you are done with this Codespace, stop it and delete it, as described in the "Stopping, restarting and deleting the Codespace" section above.
+You do not need to finish the Orientation tutorial now. When you are done with that Codespace, stop it and delete it, as described in the "Stopping, restarting and deleting the Codespace" section above.
 
 ## Summary {.unnumbered}
 
 You should have done the following:
 
 - Signed up for a GitHub account.
-- Signed up for a second GitHub account, named like your first one with `-tutorials` added to the end.
-- Used your second account to start the **Orientation** tutorial from **[vscode.tutorials](https://ppbds.github.io/vscode.tutorials/)** in a Codespace.
-- Used a throwaway Codespace on [`PPBDS/codespace-starter`](https://github.com/PPBDS/codespace-starter) to complete the **Getting Started** exercises right here on this page, powered by **[learnr2](https://ppbds.github.io/learnr2/)**, downloaded your answers, then **deleted** the Codespace.
-
-For doing some tutorials, a throwaway Codespace is all you need: complete the tutorial and download your answers --- no repository needed. When a later tutorial asks you to keep your work and build on it, the next chapter, [Git and GitHub](git-and-github.qmd), shows you how to create a repository you own.
+- Started the **Orientation** tutorial from **[vscode.tutorials](https://ppbds.github.io/vscode.tutorials/)** in a Codespace.
 
 Let's get started!
 
