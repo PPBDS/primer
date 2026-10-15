@@ -400,18 +400,6 @@ Delete your Codespace now. When you do, GitHub shows a message at the top of you
 knitr::include_graphics("getting-started/images/codespace-deleted-example.png")
 ```
 
-```{r}
-#| label: stopping-restarting-and-deleting-the-codespace-1
-#| echo: false
-learnr2::question(
-  "Paste a screenshot of the message at the top of your Codespaces page confirming that your Codespace was deleted.",
-  type = "reflection",
-  allow_image = TRUE,
-  allow_text = FALSE
-)
-```
-
-
 ## Using your own machine
 
 You can do all of this work on your own laptop, if you prefer. But, in that case, you are responsible for setting everything up. That means installing VS Code, Git and R. Ask your favorite AI to take a look at the `.devcontainer/devcontainer.json` file from [`PPBDS/codespace-starter`](https://github.com/PPBDS/codespace-starter). The AI will then give you good advice as to the steps to take.You may also find it useful to use the same VS settings which are defined there.
@@ -464,17 +452,6 @@ knitr::include_graphics("getting-started/images/t3.png")
 Note how the web address includes `cuddly-space-giggle`, the GitHub name for my Codespace. The tutorial is running in the Codespace, viewable via my browser.
 
 If the tutorial does not open automatically, hover over the web address in the "R Tutorial" terminal and press `Ctrl + Click` (Windows, Chromebook) or `Cmd + Click` (Mac).
-
-```{r}
-#| label: start-a-tutorial-1
-#| echo: false
-learnr2::question(
-  "Open the Orientation tutorial in your browser and paste a screenshot of its first page below. Make sure the address bar is visible in the screenshot.",
-  type = "reflection",
-  allow_image = TRUE,
-  allow_text = FALSE
-)
-```
 
 You do not need to finish the Orientation tutorial now. After you finish, and download your answer, you should stop that Codespace and delete it.
 
