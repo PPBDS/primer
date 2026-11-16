@@ -617,7 +617,7 @@ $$\widehat{\rho} = \frac{1}{1 + \exp(-(-0.875 + 0.007 \cdot \text{Age} + 0.545 \
 
 The hat marks an estimated expected value, not the mechanism itself: the randomness hasn't vanished, it is just set aside until a question needs it back. The first form makes the model's structure visible: it is linear in the log-odds. The second form is what we read off as an answer: a probability between 0 and 1 for any combination of `Age` and `Sex`. The Temperance section computes these probabilities for the specific demographic profiles the question asks about.
 
-Notice that the expected value already answers on two scales: the first hatted equation returns log-odds (the model's native output), the second a probability. There is a third scale: apply a decision rule --- highest probability wins --- and we get a *class*, ever-smoker or not. All three are expected-value quantities derived from the DGM. When a question needs an *individual* outcome, we go back to the DGM itself and take the draw. Which scale, and which mode --- expected value or draw --- depends entirely on the question being asked.
+Notice that the expected value already answers on two scales: the first hatted equation returns log-odds (the model's native output), the second a probability. When a question needs an *individual* outcome, we go back to the DGM itself and take the draw. Which scale, and which mode --- expected value or draw --- depends entirely on the question being asked.
 
 ## Temperance
 

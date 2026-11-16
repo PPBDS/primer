@@ -583,7 +583,7 @@ $$
 
 The hat marks an estimated expected value, not the mechanism itself: the randomness hasn't vanished, it is just set aside until a question needs it back. Translating to probability requires the inverse-logit. Twelve (treatment, voter_class) combinations each produce a different expected turnout probability $\widehat{\rho}$. The Temperance section computes all twelve via `marginaleffects` and reads them off.
 
-Those twelve numbers are expected-value quantities derived from the DGM --- so are the log-odds they come from, and so is the class ("votes" / "does not vote") a highest-probability rule would assign. When a question needs an *individual* outcome, we go back to the DGM itself and take the draw.
+Those twelve numbers are expected-value quantities derived from the DGM --- so are the log-odds they come from. When a question needs an *individual* outcome, we go back to the DGM itself and take the draw.
 
 ## Temperance
 
